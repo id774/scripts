@@ -1,0 +1,31 @@
+defscrollback 10000
+
+defutf8 on
+defkanji utf-8
+encoding utf-8 utf-8
+defencoding utf-8
+
+escape ^Tt
+bind ^E escape ^Ee
+bind ^Y escape ^Yy
+bind ^A escape ^Aa
+bind -c REGION 2 split
+bind -c REGION 1 only
+bind -c REGION 0 remove
+bind -c REGION o focus
+bind -c REGION ^ resize
+bind x command -c REGION
+
+termcap kterm hs@
+terminfo kterm hs@
+vbell off
+bell_msg "Bell in window %"
+bind w windowlist -b
+hardstatus alwayslastline "%{= wk} %-w%{=bu dr}%n %t%{-}%+w %= %{=b wb}%y/%m/%d %{=b wb}%c"
+shell -$SHELL
+startup_message off
+autodetach on
+
+logfile "$HOME/.screen/screen-%Y%m%d-%n.log"
+log on
+deflog on

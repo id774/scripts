@@ -1,0 +1,6 @@
+deb     http://ftp.jp.debian.org/debian/ lenny main contrib non-free
+deb-src http://ftp.jp.debian.org/debian/ lenny main contrib non-free
+deb     http://security.debian.org/ lenny/updates main contrib non-free
+deb-src http://security.debian.org/ lenny/updates main contrib non-free
+#deb     http://download.skype.com/linux/repos/debian/ stable non-free
+#deb     http://deb.opera.com/opera unstable non-free

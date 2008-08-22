@@ -1,0 +1,10 @@
+user "em@em"
+connect "/usr/sbin/chat -v -f /etc/chatscripts/pap -T *99***1#"
+/dev/ttyUSB0
+115200
+
+noipdefault
+usepeerdns
+defaultroute
+persist
+noauth

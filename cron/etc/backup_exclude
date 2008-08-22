@@ -1,0 +1,17 @@
+.tmp/
+.Trash/
+.mozilla/
+.thunderbird/
+.mozilla-thunderbird/
+.thumbnails/
+.beagle/
+.ochusha/
+.themes/
+tmp/
+mnt/
+arc/
+local/
+largefiles/
+svnwork/
+samba/
+crypt/

@@ -1,0 +1,13 @@
+/var/log/clamav_upgrade {
+  monthly
+  missingok
+  create 0640 root adm
+  rotate 6
+}
+
+/var/log/clamscan.log {
+  monthly
+  missingok
+  create 0640 root adm
+  rotate 6
+}

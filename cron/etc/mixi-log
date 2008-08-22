@@ -1,0 +1,6 @@
+/var/log/mixi.log {
+  weekly
+  missingok
+  create 0640 plagger adm
+  rotate 30
+}

@@ -1,0 +1,15 @@
+#!/bin/sh
+
+JOBLOG=/var/log/mixi-update.log
+MIXI_LOG=/var/log/mixi.log
+
+test -x /home/plagger/bin/mixidiary2txt.py && /home/plagger/bin/mixidiary2txt.py>$JOBLOG
+cat $JOBLOG>>$MIXI_LOG
+
+# ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
+case "$ADMIN_MAIL_ADDRESS" in
+  *@*)
+    cat $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Mixi Logger" $ADMIN_MAIL_ADDRESS
+    ;;
+esac
+

@@ -1,0 +1,269 @@
+" vim:set ts=8 sts=2 sw=2 tw=0
+"
+" Last Change: 21-Jun-2008.
+" Maintainer:  id774 <idnanashi@gmail.com>
+
+if &encoding !=# 'utf-8'
+  set encoding=japan
+endif
+set fileencodings=japan
+if has('iconv')
+  let s:enc_euc = 'euc-jp'
+  let s:enc_jis = 'iso-2022-jp'
+  if iconv("\x87\x64\x87\x6a", 'cp932', 'euc-jisx0213') ==# "\xad\xc5\xad\xcb"
+  let s:enc_euc = 'euc-jisx0213'
+  let s:enc_jis = 'iso-2022-jp-3'
+endif
+if &encoding ==# 'utf-8'
+  let s:fileencodings_default = &fileencodings
+  let &fileencodings = s:enc_jis .','. s:enc_euc .',cp932'
+  let &fileencodings = &fileencodings .','. s:fileencodings_default
+  unlet s:fileencodings_default
+else
+  let &fileencodings = &fileencodings .','. s:enc_jis
+  set fileencodings+=utf-8,ucs-2le,ucs-2
+  if &encoding =~# '^euc-\%(jp\|jisx0213\)$'
+    set fileencodings+=cp932
+    set fileencodings-=euc-jp
+    set fileencodings-=euc-jisx0213
+    let &encoding = s:enc_euc
+    else
+      let &fileencodings = &fileencodings .','. s:enc_euc
+    endif
+  endif
+  unlet s:enc_euc
+  unlet s:enc_jis
+endif
+
+if has('mac')
+  set langmenu=japanese
+endif
+
+if has('keymap')
+endif
+if !has('gui_running') && &encoding != 'cp932' && &term == 'win32'
+  set termencoding=cp932
+endif
+
+if 1 && !filereadable($VIMRUNTIME . '/menu.vim') && has('gui_running')
+  set guioptions+=M
+endif
+
+if 1 && (!exists('g:no_vimrc_example') || g:no_vimrc_example == 0)
+  source $VIMRUNTIME/vimrc_example.vim
+endif
+
+set ignorecase
+set smartcase
+
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+set modelines=0
+set expandtab
+set smartindent
+set autoindent
+set backspace=2
+set nowrapscan
+set showmatch
+set wildmenu
+set wildmode=list:longest
+set formatoptions+=mM
+let format_allow_over_tw = 1
+set clipboard=unnamed
+set hidden
+set autoread
+
+set number
+set ruler
+set nolist
+set wrap
+set laststatus=2
+set cmdheight=1
+set showcmd
+set title
+"colorscheme evening
+colorscheme desert
+set backupdir=$TMP
+set backupext=.bak
+set directory=$TMP
+
+if filereadable($VIM . '/vimrc') && filereadable($VIM . '/ViMrC')
+  set tags=./tags,tags
+endif
+
+if has('unix') && !has('gui_running')
+  let uname = system('uname')
+  if uname =~? "linux"
+    set term=builtin_linux
+  elseif uname =~? "freebsd"
+    set term=builtin_cons25
+  elseif uname =~? "Darwin"
+    set term=beos-ansi
+  else
+    set term=builtin_xterm
+  endif
+  unlet uname
+endif
+
+if !has('gui_running') && has('xterm_clipboard')
+  set clipboard=exclude:cons\\\|linux\\\|cygwin\\\|rxvt\\\|screen
+endif
+
+if has('win32') && $PATH !~? '\(^\|;\)' . escape($VIM, '\\') . '\(;\|$\)'
+  let $PATH = $VIM . ';' . $PATH
+endif
+
+if has('mac')
+  set iskeyword=@,48-57,_,128-167,224-235
+endif
+
+" vim -b : edit binary using xxd-format!
+augroup Binary
+  au!
+  au BufReadPre  *.bin let &bin=1
+  au BufReadPost *.bin if &bin | silent %!xxd -g 1
+  au BufReadPost *.bin set ft=xxd | endif
+  au BufWritePre *.bin if &bin | %!xxd -r
+  au BufWritePre *.bin endif
+  au BufWritePost *.bin if &bin | silent %!xxd -g 1
+  au BufWritePost *.bin set nomod | endif
+augroup END
+
+inoremap { {}<LEFT>
+inoremap [ []<LEFT>
+inoremap ( ()<LEFT>
+inoremap " ""<LEFT>
+inoremap ' ''<LEFT>
+vnoremap { "zdi^V{<C-R>z}<ESC>
+vnoremap [ "zdi^V[<C-R>z]<ESC>
+vnoremap ( "zdi^V(<C-R>z)<ESC>
+vnoremap " "zdi^V"<C-R>z^V"<ESC>
+vnoremap ' "zdi'<C-R>z'<ESC>
+
+nmap j gj
+nmap k gk
+vmap j gj
+vmap k gk
+
+nmap n nzz
+nmap N Nzz
+nmap * *zz
+nmap # #zz
+nmap g* g*zz
+nmap g# g#zz
+
+autocmd FileType cvs    :set fileencoding=euc-jp
+autocmd FileType svn    :set fileencoding=utf-8
+autocmd FileType ruby   :set fileencoding=utf-8
+autocmd FileType eruby  :set fileencoding=utf-8
+autocmd FileType python :set fileencoding=utf-8
+autocmd FileType python :set tabstop=4
+autocmd FileType python :set softtabstop=4
+autocmd FileType python :set shiftwidth=4
+
+:cnoremap <C-A>		<Home>
+:cnoremap <C-B>		<Left>
+:cnoremap <C-D>		<Del>
+:cnoremap <C-E>		<End>
+:cnoremap <C-F>		<Right>
+:cnoremap <C-N>		<Down>
+:cnoremap <C-P>		<Up>
+:cnoremap <Esc><C-B>	<S-Left>
+:cnoremap <Esc><C-F>	<S-Right> 
+
+map ' `
+map! <C-A>  <Home>
+map! <C-E>  <End>
+map! <C-B>  <Left>
+map! <C-F>  <Right>
+map! <C-D>  <Down>
+map! <C-U>  <UP>
+map <C-N>   :bnext<CR>
+map <C-P>   :bprevious<CR>
+map <C-X><C-M>   <C-B>
+map <C-X><C-V>   <C-F>
+nmap <C-X><C-L>  :ls<CR>
+map  <C-X><C-E>  :Explore<CR>
+nmap <C-X><C-I>  ggVG
+nmap <C-X><C-J>  :vsp<CR>
+nmap <C-X><C-Y>  :sp<CR>
+nmap <C-C><C-C>  :qa<CR>
+nmap <C-X><C-C>  :qa!<CR>
+nmap <C-W><C-W>  :w<CR>
+nmap <C-X><C-W>  :w!<CR>
+nmap <C-H><C-H>  :bdelete<CR>
+nmap <C-X><C-H>  :bdelete!<CR>
+nmap <C-X><C-K>  :close<CR>
+nmap <C-X><C-G>  :TlistToggle<CR>
+imap <C-K>  <ESC>"*pa
+nnoremap <C-S-J> <C-W>k<C-E><C-W><C-W>
+
+:set browsedir=buffer
+
+nmap <F2> ggVG
+map  <F3> :Explore<CR>
+nmap <F4> :bdelete<CR>
+nmap <F5> :ls<CR>
+map  <F6> :bnext<CR>
+map  <F7> :bprevious<CR>
+map  <F8> <C-d>
+map  <F9> <C-u>
+
+" scroll
+set scrolloff=999
+
+" fold
+set foldmethod=marker
+set fillchars=vert:I " :vsplit (i)
+
+" history
+set history=200
+
+" match time
+set matchtime=2
+
+" status line
+set statusline=
+set statusline+=[*%n]\
+set statusline+=%f\
+set statusline+=%{'['.(&fenc!=''?&fenc:'?').'-'.&ff.']'}
+" set statusline+=%{'['.GetShortEncodingJP().'-'.&ff.']'}
+set statusline+=%m
+set statusline+=%r
+set statusline+=%h
+set statusline+=%w
+set statusline+=%=
+set statusline+=\ %{strftime('%c')}
+set statusline+=%4l,%2c
+set statusline+=%3p%%
+set statusline+=%<
+
+set hlsearch
+nmap <Esc><Esc> :nohlsearch<CR><Esc>
+
+" http://subtech.g.hatena.ne.jp/cho45/20071009#c1191925480
+set completeopt=menuone,preview
+function! CompleteWithoutInsert()
+	return "\<C-n>\<C-r>=pumvisible() ? \"\\<C-P>\\<C-N>\\<C-P>\": \"\"\<CR>"
+endfunction
+inoremap <expr> <C-n> pumvisible() ? "\<C-n>" : CompleteWithoutInsert()
+let letter = "a"
+while letter <=# "z"
+	execute 'inoremap <expr> ' letter ' "' . letter . '" . (pumvisible() ? "" : CompleteWithoutInsert())'
+	let letter = nr2char(char2nr(letter) + 1)
+endwhile
+let letter = "A"
+while letter <=# "Z"
+	execute 'inoremap <expr> ' letter ' "' . letter . '" . (pumvisible() ? "" : CompleteWithoutInsert())'
+	let letter = nr2char(char2nr(letter) + 1)
+endwhile
+let letter = "0"
+while letter <=# "9"
+	execute 'inoremap <expr> ' letter ' "' . letter . '" . (pumvisible() ? "" : CompleteWithoutInsert())'
+	let letter = nr2char(char2nr(letter) + 1)
+endwhile
+inoremap <expr> <CR> pumvisible() ? "\<C-Y>\<CR>" : "\<CR>"
+set lazyredraw
+
+" Copyright (C) 2008 id774 <idnanashi@gmail.com>

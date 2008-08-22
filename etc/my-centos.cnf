@@ -1,0 +1,30 @@
+[mysqld_safe]
+pid-file                        = /var/lib/mysql/mysqld.pid
+err-log                         = /var/log/mysql/mysqld.log
+
+[mysqld]
+user                            = mysql
+port                            = 3306
+socket                          = /var/lib/mysql/mysql.sock
+default-character-set           = utf8
+datadir                         = /var/lib/mysql/data
+innodb_data_home_dir            = /var/lib/mysql/data
+innodb_log_group_home_dir       = /var/log/mysql_innodb/
+innodb_log_arch_dir             = /var/log/mysql_innodb/
+
+[client]
+user                            = root
+port                            = 3306
+socket                          = /var/lib/mysql/mysql.sock
+default-character-set           = utf8
+
+[mysql]
+user                            = root
+port                            = 3306
+socket                          = /var/lib/mysql/mysql.sock
+default-character-set           = utf8
+
+[mysqladmin]
+user                            = root
+socket                          = /var/lib/mysql/mysql.sock
+default-character-set           = utf8

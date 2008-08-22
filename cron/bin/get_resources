@@ -1,0 +1,13 @@
+#!/bin/sh
+
+JOBLOG=/var/log/resources.log
+
+echo -n "*** $0: Job start at `/bin/hostname` on ">>$JOBLOG 2>&1
+date "+%Y/%m/%d %T">>$JOBLOG 2>&1
+
+test -x /root/bin/get_resources.sh && /root/bin/get_resources.sh>>$JOBLOG 2>&1;
+
+echo -n "*** $0: End of Job at `/bin/hostname` on ">>$JOBLOG 2>&1
+date "+%Y/%m/%d %T">>$JOBLOG 2>&1
+echo>>$JOBLOG 2>&1
+

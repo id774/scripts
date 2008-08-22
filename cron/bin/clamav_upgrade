@@ -1,0 +1,23 @@
+#!/bin/sh
+
+JOBLOG=/var/log/clamav_upgrade
+SCANLOG=/var/log/clamscan.log
+SVN=/usr/bin/svn
+
+echo -n "*** $0: Job start at `/bin/hostname` on ">>$JOBLOG 2>&1
+date "+%Y/%m/%d %T">>$JOBLOG 2>&1
+
+test -x $SVN && test -x /root/bin/clamav_upgrade.sh && /root/bin/clamav_upgrade.sh>>$JOBLOG 2>&1;
+
+echo -n "*** $0: End of Job at `/bin/hostname` on ">>$JOBLOG 2>&1
+date "+%Y/%m/%d %T">>$JOBLOG 2>&1
+echo>>$JOBLOG 2>&1
+
+# ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
+case "$ADMIN_MAIL_ADDRESS" in
+  *@*)
+    cat $JOBLOG | mail -s "[cron-log][`/bin/hostname`] ClamAV Upgrade Log" $ADMIN_MAIL_ADDRESS
+    cat $SCANLOG | mail -s "[cron-log][`/bin/hostname`] ClamAV Scan Log" $ADMIN_MAIL_ADDRESS
+    ;;
+esac
+

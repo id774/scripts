@@ -1,0 +1,35 @@
+#!/bin/sh
+
+JOBLOG=/var/log/rsync_backup
+TRIGGER_FILE=/home/ubuntu/mnt/rsync_backup
+
+echo -n "*** $0: Job start at `/bin/hostname` on ">>$JOBLOG 2>&1
+date "+%Y/%m/%d %T">>$JOBLOG 2>&1
+
+# trigger check
+test -f $TRIGGER_FILE && RSYNC_BACKUP_RUN=run
+case "$RSYNC_BACKUP_RUN" in
+  run)
+    rm -f $TRIGGER_FILE
+    test -x /root/bin/rsync_backup.sh && /root/bin/rsync_backup.sh>>$JOBLOG 2>&1;
+    ;;
+  *)
+    echo Trigger file $TRIGGER_FILE not found, job not run.>>$JOBLOG 2>&1  
+    ;;
+esac
+
+echo -n "*** $0: End of Job at `/bin/hostname` on ">>$JOBLOG 2>&1
+date "+%Y/%m/%d %T">>$JOBLOG 2>&1
+echo>>$JOBLOG 2>&1
+
+# ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
+case "$ADMIN_MAIL_ADDRESS" in
+  *@*)
+    case "$RSYNC_BACKUP_RUN" in
+      run)
+        cat $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Rsync Backup Log" $ADMIN_MAIL_ADDRESS
+        ;;
+    esac
+    ;;
+esac
+

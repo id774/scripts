@@ -1,0 +1,14 @@
+deb     http://ubuntutym.u-toyama.ac.jp/ubuntu/ hardy main restricted universe multiverse
+deb-src http://ubuntutym.u-toyama.ac.jp/ubuntu/ hardy main restricted universe multiverse
+deb     http://ubuntutym.u-toyama.ac.jp/ubuntu/ hardy-updates main restricted universe multiverse
+deb-src http://ubuntutym.u-toyama.ac.jp/ubuntu/ hardy-updates main restricted universe multiverse
+deb     http://security.ubuntu.com/ubuntu/      hardy-security main restricted universe multiverse
+deb-src http://security.ubuntu.com/ubuntu/      hardy-security main restricted universe multiverse
+deb     http://ubuntutym.u-toyama.ac.jp/ubuntu/ hardy-backports main restricted universe multiverse
+deb-src http://ubuntutym.u-toyama.ac.jp/ubuntu/ hardy-backports main restricted universe multiverse
+deb     http://archive.ubuntulinux.jp/ubuntu-ja hardy/
+deb-src http://archive.ubuntulinux.jp/ubuntu-ja hardy/
+deb     http://archive.ubuntulinux.jp/ubuntu-ja hardy-ja/
+deb-src http://archive.ubuntulinux.jp/ubuntu-ja hardy-ja/
+#deb     http://download.skype.com/linux/repos/debian/ stable non-free
+#deb     http://deb.opera.com/opera unstable non-free

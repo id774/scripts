@@ -1,0 +1,10 @@
+deb     http://ftp.jp.debian.org/debian/ stable main contrib non-free
+deb-src http://ftp.jp.debian.org/debian/ stable main contrib non-free
+deb     http://security.debian.org/ stable/updates main contrib non-free
+deb-src http://security.debian.org/ stable/updates main contrib non-free
+deb     http://www.jp.backports.org etch-backports main contrib non-free
+deb-src http://www.jp.backports.org etch-backports main contrib non-free
+deb     http://volatile.debian.org/debian-volatile etch/volatile main contrib non-free
+deb-src http://volatile.debian.org/debian-volatile etch/volatile main contrib non-free
+deb     http://download.skype.com/linux/repos/debian/ stable non-free
+deb     http://deb.opera.com/opera unstable non-free

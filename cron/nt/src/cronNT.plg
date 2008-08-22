@@ -1,0 +1,82 @@
+<html>
+<body>
+<pre>
+<h1>ﾋﾞﾙﾄﾞのﾛｸﾞ</h1>
+<h3>
+--------------------構成: cronNT - Win32 Release MinDependency--------------------
+</h3>
+<h3>ｺﾏﾝﾄﾞ ﾗｲﾝ</h3>
+ｺﾏﾝﾄﾞ ﾗｲﾝ "midl.exe /tlb ".\cronNT.tlb" /h "cronNT.h" /iid "cronNT_i.c" /Oicf "E:\Project\private\cronNT\cronNT_src\cronNT.idl"" の作成中
+Creating command line "rc.exe /l 0x411 /fo"ReleaseMinDependency/cronNT.res" /d "NDEBUG" "E:\Project\private\cronNT\cronNT_src\cronNT.rc"" 
+一時ﾌｧｲﾙ "D:\TEMP\RSP16.tmp" を作成し、次の内容を記録します
+[
+/nologo /MT /W3 /GX /O1 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_ATL_STATIC_REGISTRY" /Fp"ReleaseMinDependency/cronNT.pch" /Yu"stdafx.h" /Fo"ReleaseMinDependency/" /Fd"ReleaseMinDependency/" /FD /c 
+"E:\Project\private\cronNT\cronNT_src\cronNT.cpp"
+"E:\Project\private\cronNT\cronNT_src\schedule.cpp"
+]
+Creating command line "cl.exe @D:\TEMP\RSP16.tmp" 
+一時ﾌｧｲﾙ "D:\TEMP\RSP17.tmp" を作成し、次の内容を記録します
+[
+/nologo /MT /W3 /GX /O1 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_ATL_STATIC_REGISTRY" /Fp"ReleaseMinDependency/cronNT.pch" /Yc"stdafx.h" /Fo"ReleaseMinDependency/" /Fd"ReleaseMinDependency/" /FD /c 
+"E:\Project\private\cronNT\cronNT_src\StdAfx.cpp"
+]
+Creating command line "cl.exe @D:\TEMP\RSP17.tmp" 
+一時ﾌｧｲﾙ "D:\TEMP\RSP18.tmp" を作成し、次の内容を記録します
+[
+/nologo /subsystem:windows /incremental:no /pdb:"ReleaseMinDependency/cronNT.pdb" /machine:I386 /out:"ReleaseMinDependency/cronNT.exe" 
+.\ReleaseMinDependency\cronNT.obj
+.\ReleaseMinDependency\schedule.obj
+.\ReleaseMinDependency\StdAfx.obj
+.\ReleaseMinDependency\cronNT.res
+]
+ｺﾏﾝﾄﾞ ﾗｲﾝ "link.exe @D:\TEMP\RSP18.tmp" の作成中
+一時ﾌｧｲﾙ "D:\TEMP\RSP19.bat" を作成し、次の内容を記録します
+[
+@echo off
+".\ReleaseMinDependency\cronNT.exe" /RegServer
+echo regsvr32 exec. time > ".\ReleaseMinDependency\regsvr32.trg"
+echo ｻｰﾊﾞｰ登録が完了しました!
+]
+ｺﾏﾝﾄﾞ ﾗｲﾝ "D:\TEMP\RSP19.bat" の作成中
+ﾀｲﾌﾟ ﾗｲﾌﾞﾗﾘを作成中...
+Microsoft (R) MIDL Compiler Version 5.01.0164  
+Copyright (c) Microsoft Corp 1991-1997. All rights reserved.
+Processing E:\Project\private\cronNT\cronNT_src\cronNT.idl
+cronNT.idl
+Processing E:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\oaidl.idl
+oaidl.idl
+Processing E:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\objidl.idl
+objidl.idl
+Processing E:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\unknwn.idl
+unknwn.idl
+Processing E:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\wtypes.idl
+wtypes.idl
+Processing E:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\ocidl.idl
+ocidl.idl
+Processing E:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\oleidl.idl
+oleidl.idl
+Processing E:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\servprov.idl
+servprov.idl
+Processing E:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\urlmon.idl
+urlmon.idl
+Processing E:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\msxml.idl
+msxml.idl
+ﾘｿｰｽをｺﾝﾊﾟｲﾙ中...
+ｺﾝﾊﾟｲﾙ中...
+StdAfx.cpp
+ｺﾝﾊﾟｲﾙ中...
+cronNT.cpp
+schedule.cpp
+ｺｰﾄﾞを生成中...
+ﾘﾝｸ中...
+<h3>ｱｳﾄﾌﾟｯﾄ ｳｨﾝﾄﾞｳ</h3>
+登録を行っています
+ｻｰﾊﾞｰ登録が完了しました!
+
+
+
+<h3>結果</h3>
+cronNT.exe - ｴﾗｰ 0、警告 0
+</pre>
+</body>
+</html>

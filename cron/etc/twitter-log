@@ -1,0 +1,6 @@
+/var/log/twitter.log {
+  daily
+  missingok
+  create 0640 plagger adm
+  rotate 30
+}

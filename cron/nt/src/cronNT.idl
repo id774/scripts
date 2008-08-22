@@ -1,0 +1,20 @@
+// cronNT.idl : cronNT.dll 用の IDL ソース ファイル
+//
+
+// このファイルはタイプ ライブラリ (cronNT.tlb) を作成するために
+// タイプ ライブラリ作成ツール MIDL によって処理されます。
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	uuid(16001B21-F5E8-11D5-A455-525405E32B2D),
+	version(1.0),
+	helpstring("cronNT 1.0 ﾀｲﾌﾟ ﾗｲﾌﾞﾗﾘ")
+]
+library CRONNTLib
+{
+	importlib("stdole32.tlb");
+	importlib("stdole2.tlb");
+
+};

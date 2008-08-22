@@ -1,0 +1,6 @@
+/var/log/clone_git2svn.log {
+  daily
+  missingok
+  create 0640 root adm
+  rotate 10
+}

@@ -1,0 +1,8 @@
+keycode 9 = Zenkaku_Hankaku Kanji
+keycode 131 = Escape
+keycode 129 = Return
+keycode 208 = Down
+keycode 211 = backslash underscore
+keycode 49 = BackSpace
+keycode 116 = Up
+keycode 115 = Up

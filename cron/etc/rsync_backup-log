@@ -1,0 +1,6 @@
+/var/log/rsync_backup {
+  daily
+  missingok
+  create 0640 root adm
+  rotate 60
+}

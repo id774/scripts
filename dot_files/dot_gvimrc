@@ -1,0 +1,84 @@
+" vim:set ts=8 sts=2 sw=2 tw=0
+"
+" Last Change: 28-May-2008.
+" Maintainer:  id774 <idnanashi@gmail.com>
+
+if 1 && filereadable($VIM . '/gvimrc_local.vim')
+  source $VIM/gvimrc_local.vim
+  if exists('g:gvimrc_local_finish') && g:gvimrc_local_finish != 0
+    finish
+  endif
+endif
+
+if 0 && exists('$HOME') && filereadable($HOME . '/.gvimrc_first.vim')
+  unlet! g:gvimrc_first_finish
+  source $HOME/.gvimrc_first.vim
+  if exists('g:gvimrc_first_finish') && g:gvimrc_first_finish != 0
+    finish
+  endif
+endif
+
+if 1 && (!exists('g:no_gvimrc_example') || g:no_gvimrc_example == 0)
+  source $VIMRUNTIME/gvimrc_example.vim
+endif
+
+"colorscheme evening
+"colorscheme emacs
+colorscheme desert
+
+if has('win32')
+  "set guifont=MS_Gothic:h12:cSHIFTJIS
+  "set guifont=MS_Mincho:h12:cSHIFTJIS
+  set guifont=Osakaー等幅:h12
+  set linespace=1
+  if has('kaoriya')
+    set ambiwidth=auto
+  endif
+elseif has('mac')
+  set guifont=Osaka-Mono:h16
+  set linespace=2
+elseif has('xfontset')
+  set guifontset=a14,r14,k14
+else
+  set guifont=Monospace\ 10
+endif
+
+set columns=80
+set lines=25
+set cmdheight=1
+set visualbell t_vb=
+
+if has('multi_byte_ime') || has('xim')
+  highlight CursorIM guibg=Purple guifg=NONE
+  set iminsert=0 imsearch=0
+  if has('xim') && has('GUI_GTK')
+  endif
+endif
+
+set mouse=a
+set nomousefocus
+set mousehide
+"set guioptions+=a
+set guioptions=gt
+
+if &guioptions =~# 'M'
+  let &guioptions = substitute(&guioptions, '[mT]', '', 'g')
+endif
+
+if has('printer')
+  if has('win32')
+    set printfont=MS_Mincho:h12:cSHIFTJIS
+    "set printfont=MS_Gothic:h12:cSHIFTJIS
+  endif
+endif
+
+set list
+set listchars=tab:>-,eol:<
+"set listchars=tab:>-,extends:<,trail:-,eol:<
+highlight SpecialKey guifg=grey30
+highlight clear NonText
+highlight NonText guifg=grey30
+highlight ZenkakuSpace cterm=underline guibg=grey30
+match ZenkakuSpace /　/
+
+" Copyright (C) 2008 id774 <idnanashi@gmail.com>

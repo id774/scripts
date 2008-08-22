@@ -1,0 +1,202 @@
+#!/bin/bash
+
+#---------------------------------------#
+# 設定開始                              #
+#---------------------------------------#
+
+# インタフェース名定義
+LAN=eth0
+
+# 内部ネットワークとして許可する範囲
+LOCALNET=192.168.1.1/16
+
+# iptablesのパス
+IPTABLES=/sbin/iptables
+
+#---------------------------------------#
+# 設定終了                              #
+#---------------------------------------#
+
+# 初期化
+$IPTABLES -F
+
+# デフォルトルール(以降のルールにマッチしなかった場合に適用するルール)設定
+$IPTABLES -P INPUT   DROP   # 受信はすべて破棄
+$IPTABLES -P OUTPUT  ACCEPT # 送信はすべて許可
+$IPTABLES -P FORWARD DROP   # 通過はすべて破棄
+
+# 自ホストからのアクセスをすべて許可
+$IPTABLES -A INPUT -i lo -j ACCEPT
+
+# 内部からのアクセスをすべて許可
+#$IPTABLES -A INPUT -s $LOCALNET -j ACCEPT
+
+# 内部から行ったアクセスに対する外部からの返答アクセスを許可
+$IPTABLES -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# SYN Cookiesを有効にする
+# ※TCP SYN Flood攻撃対策
+sysctl -w net.ipv4.tcp_syncookies=1 > /dev/null
+sed -i '/net.ipv4.tcp_syncookies/d' /etc/sysctl.conf
+echo "net.ipv4.tcp_syncookies=1" >> /etc/sysctl.conf
+
+# ブロードキャストアドレス宛pingには応答しない
+# ※Smurf攻撃対策
+sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=1 > /dev/null
+sed -i '/net.ipv4.icmp_echo_ignore_broadcasts/d' /etc/sysctl.conf
+echo "net.ipv4.icmp_echo_ignore_broadcasts=1" >> /etc/sysctl.conf
+
+# ICMP Redirectパケットは拒否
+sed -i '/net.ipv4.conf.*.accept_redirects/d' /etc/sysctl.conf
+for dev in `ls /proc/sys/net/ipv4/conf/`
+do
+    sysctl -w net.ipv4.conf.$dev.accept_redirects=0 > /dev/null
+    echo "net.ipv4.conf.$dev.accept_redirects=0" >> /etc/sysctl.conf
+done
+
+# Source Routedパケットは拒否
+sed -i '/net.ipv4.conf.*.accept_source_route/d' /etc/sysctl.conf
+for dev in `ls /proc/sys/net/ipv4/conf/`
+do
+    sysctl -w net.ipv4.conf.$dev.accept_source_route=0 > /dev/null
+    echo "net.ipv4.conf.$dev.accept_source_route=0" >> /etc/sysctl.conf
+done
+
+# フラグメント化されたパケットはログを記録して破棄
+$IPTABLES -A INPUT -f -j LOG --log-prefix '[IPTABLES FRAGMENT] : '
+$IPTABLES -A INPUT -f -j DROP
+
+# 外部とのNetBIOS関連のアクセスはログを記録せずに破棄
+# ※不要ログ記録防止
+$IPTABLES -A INPUT -s ! $LOCALNET -p tcp -m multiport --dports 135,136,137,138,139,445 -j DROP
+$IPTABLES -A INPUT -s ! $LOCALNET -p udp -m multiport --dports 135,136,137,138,139,445 -j DROP
+$IPTABLES -A OUTPUT -d ! $LOCALNET -p tcp -m multiport --sports 135,136,137,138,139,445 -j DROP
+$IPTABLES -A OUTPUT -d ! $LOCALNET -p udp -m multiport --sports 135,136,137,138,139,445 -j DROP
+
+# 1秒間に4回を超えるpingはログを記録して破棄
+# ※Ping of Death攻撃対策
+$IPTABLES -N LOG_PINGDEATH
+$IPTABLES -A LOG_PINGDEATH -m limit --limit 1/s --limit-burst 4 -j ACCEPT
+$IPTABLES -A LOG_PINGDEATH -j LOG --log-prefix '[IPTABLES PINGDEATH] : '
+$IPTABLES -A LOG_PINGDEATH -j DROP
+$IPTABLES -A INPUT -p icmp --icmp-type echo-request -j LOG_PINGDEATH
+
+# 全ホスト(ブロードキャストアドレス、マルチキャストアドレス)宛パケットはログを記録せずに破棄
+# ※不要ログ記録防止
+$IPTABLES -A INPUT -d 255.255.255.255 -j DROP
+$IPTABLES -A INPUT -d 224.0.0.1 -j DROP
+
+# 113番ポート(IDENT)へのアクセスには拒否応答
+# ※メールサーバ等のレスポンス低下防止
+$IPTABLES -A INPUT -p tcp --dport 113 -j REJECT --reject-with tcp-reset
+
+# (Ubuntu/Debian系のみ)
+# 180秒以内に5回以上のssh接続を試みたIPアドレスをシャットアウトする
+$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name ssh_attack
+$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 180 --hitcount 5 --rttl --name ssh_attack -j LOG --log-prefix 'SSH attack: '
+$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 180 --hitcount 5 --rttl --name ssh_attack -j DROP
+
+#----------------------------------------------------------#
+# 各種サービスを公開する場合の設定(ここから)               #
+#----------------------------------------------------------#
+
+# 外部からのTCP22番ポート(SSH)へのアクセスを許可
+# ※SSHサーバーを公開する場合のみ
+$IPTABLES -A INPUT -p tcp --dport 22 -j ACCEPT
+
+# 外部からのTCP/UDP53番ポート(DNS)へのアクセスを許可
+# ※外部向けDNSサーバーを運用する場合のみ
+#$IPTABLES -A INPUT -p tcp --dport 53 -j ACCEPT
+#$IPTABLES -A INPUT -p udp --dport 53 -j ACCEPT
+
+# 外部からのTCP80番ポート(HTTP)へのアクセスを許可
+# ※Webサーバーを公開する場合のみ
+$IPTABLES -A INPUT -p tcp --dport 80 -j ACCEPT
+
+# 外部からのTCP8080番ポート(AP)へのアクセスを許可
+# ※APサーバーを公開する場合のみ
+$IPTABLES -A INPUT -p tcp --dport 8080 -j ACCEPT
+
+# 外部からのTCP443番ポート(HTTPS)へのアクセスを許可
+# ※Webサーバーを公開する場合のみ
+$IPTABLES -A INPUT -p tcp --dport 443 -j ACCEPT
+
+# 外部からのTCP21番ポート(FTP)へのアクセスを許可
+# ※FTPサーバーを公開する場合のみ
+#$IPTABLES -A INPUT -p tcp --dport 21 -j ACCEPT
+
+# 外部からのPASV用ポート(FTP-DATA)へのアクセスを許可
+# ※FTPサーバーを公開する場合のみ
+# ※PASV用ポート60000:60030は設定例
+#$IPTABLES -A INPUT -p tcp --dport 60000:60030 -j ACCEPT
+
+# 外部からのTCP25番ポート(SMTP)へのアクセスを許可
+# ※SMTPサーバーを公開する場合のみ
+#$IPTABLES -A INPUT -p tcp --dport 25 -j ACCEPT
+
+# 外部からのTCP465番ポート(SMTPS)へのアクセスを許可
+# ※SMTPSサーバーを公開する場合のみ
+#$IPTABLES -A INPUT -p tcp --dport 465 -j ACCEPT
+
+# 外部からのTCP110番ポート(POP3)へのアクセスを許可
+# ※POP3サーバーを公開する場合のみ
+#$IPTABLES -A INPUT -p tcp --dport 110 -j ACCEPT
+
+# 外部からのTCP995番ポート(POP3S)へのアクセスを許可
+# ※POP3Sサーバーを公開する場合のみ
+#$IPTABLES -A INPUT -p tcp --dport 995 -j ACCEPT
+
+# 外部からのTCP143番ポート(IMAP)へのアクセスを許可
+# ※IMAPサーバーを公開する場合のみ
+#$IPTABLES -A INPUT -p tcp --dport 143 -j ACCEPT
+
+# 外部からのTCP993番ポート(IMAPS)へのアクセスを許可
+# ※IMAPSサーバーを公開する場合のみ
+#$IPTABLES -A INPUT -p tcp --dport 993 -j ACCEPT
+
+# 外部からのUDP1194番ポート(OpenVPN)へのアクセスを許可
+# ※OpenVPNサーバーを公開する場合のみ
+#$IPTABLES -A INPUT -p udp --dport 1194 -j ACCEPT
+
+# 外部からのUDP137,138,TCP139,445番ポート(SMB)へのアクセスを許可
+# ※Sambaサーバーを公開する場合のみ
+#$IPTABLES -A INPUT -p udp --dport 137 -j ACCEPT
+#$IPTABLES -A INPUT -p udp --dport 138 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 139 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 445 -j ACCEPT
+
+# 外部からのTCP123番ポート(NTP)へのアクセスを許可
+# ※NTPサーバーを公開する場合のみ
+$IPTABLES -A INPUT -p tcp --dport 123 -j ACCEPT
+
+# 外部からのTCP3306番ポート(MySQL)へのアクセスを許可
+# ※MySQLサーバーを公開する場合のみ
+#$IPTABLES -A INPUT -p tcp --dport 3306 -j ACCEPT
+
+# 外部からのTCP5432番ポート(PostgreSQL)へのアクセスを許可
+# ※PostgreSQLサーバーを公開する場合のみ
+#$IPTABLES -A INPUT -p tcp --dport 5432 -j ACCEPT
+
+#----------------------------------------------------------#
+# 各種サービスを公開する場合の設定(ここまで)               #
+#----------------------------------------------------------#
+
+# 拒否IPアドレスからのアクセスはログを記録せずに破棄
+# ※拒否IPアドレスは/root/.deny_ipに1行ごとに記述しておくこと
+# (/root/.deny_ipがなければなにもしない)
+if [ -s /root/.deny_ip ]; then
+    iptables -N DENY_HOST
+    for ip in `cat /root/.deny_ip`
+    do
+        iptables -A DENY_HOST -s $ip -m limit --limit 1/s -j LOG --log-prefix '[IPTABLES DENY_HOST] : '
+        iptables -A DENY_HOST -s $ip -j DROP
+        iptables -I INPUT -j DENY_HOST
+    done
+fi
+
+# 上記のルールにマッチしなかったアクセスは破棄
+#$IPTABLES -A INPUT -m limit --limit 1/s -j LOG --log-prefix '[IPTABLES INPUT] : '
+$IPTABLES -A INPUT -j DROP
+#$IPTABLES -A FORWARD -m limit --limit 1/s -j LOG --log-prefix '[IPTABLES FORWARD] : '
+$IPTABLES -A FORWARD -j DROP
+

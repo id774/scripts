@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+########################################################################
+# Auto APT Upgrade
+#
+#  Maintainer: id774 <idnanashi@gmail.com>
+#
+#  v0.4 6/21,2008
+#       Auto Kernel Upgrade.
+#  v0.3 9/20,2007
+#       Add freshclam.
+#  v0.2 9/14,2007
+#       Add log header.
+########################################################################
+JOBLOG=/var/log/auto-upgrade.log
+
+echo -n "*** $0: Job start at `/bin/hostname` on ">>$JOBLOG 2>&1
+date "+%Y/%m/%d %T">>$JOBLOG 2>&1
+
+# Debian sid (unstable)
+#sudo aptitude update >> $JOBLOG 2>&1 && sudo aptitude -y dist-upgrade >> $JOBLOG 2>&1 && sudo aptitude autoclean >> $JOBLOG 2>&1
+
+# Debian testing
+aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && sudo aptitude autoclean >> $JOBLOG 2>&1
+
+# Ubuntu Server
+#aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && sudo aptitude -y install linux-image-server linux-server gnupg >> $JOBLOG 2>&1 && sudo aptitude autoclean >> $JOBLOG 2>&1
+
+# Ubuntu Desktop
+#aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && sudo aptitude -y install linux-image-generic linux-generic linux-restricted-modules-generic linux-headers linux-headers-generic gnupg >> $JOBLOG 2>&1 && sudo aptitude autoclean >> $JOBLOG 2>&1
+
+# AntiVirus Database
+freshclam >> $JOBLOG 2>&1
+
+echo -n "*** $0: End of Job at `/bin/hostname` on ">>$JOBLOG 2>&1
+date "+%Y/%m/%d %T">>$JOBLOG 2>&1
+echo>>$JOBLOG 2>&1
+
+# ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
+case "$ADMIN_MAIL_ADDRESS" in
+  *@*)
+    cat $JOBLOG | mail -s "[cron-log][`/bin/hostname`] APT Upgrade Log" $ADMIN_MAIL_ADDRESS
+    ;;
+esac
+
