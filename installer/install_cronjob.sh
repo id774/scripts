@@ -172,7 +172,7 @@ sudo chown root:root /etc/logrotate.d/clone_git2svn
 
 # Rsync Backup Job
 sudo cp $SCRIPTS/rsync_backup.sh /root/bin/rsync_backup.sh
-#sudo cp $SCRIPTS/dev/rsync_backup2.sh /root/bin/rsync_backup.sh
+#sudo cp $SCRIPTS/rsync_backup2.sh /root/bin/rsync_backup.sh
 sudo vim /root/bin/rsync_backup.sh
 sudo chmod 700 /root/bin/rsync_backup.sh
 sudo cp $SCRIPTS/cleanup4mac.sh /root/bin/cleanup4mac.sh
