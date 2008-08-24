@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 8/24,2008
+#       Change directory of ruby trunk source.
 #  v1.1 8/12,2008
 #       Fix permission.
 #  v1.0 6/23,2008
@@ -12,8 +14,8 @@
 ########################################################################
 
 install_trunk() {
-    test -d /usr/local/src/ruby/branches || sudo mkdir -p /usr/local/src/ruby/branches
-    cd /usr/local/src/ruby/branches
+    test -d /usr/local/src/ruby || sudo mkdir -p /usr/local/src/ruby
+    cd /usr/local/src/ruby
     sudo svn co http://svn.ruby-lang.org/repos/ruby/trunk trunk
     cd trunk
     sudo autoconf
