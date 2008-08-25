@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 8/25,2008
+#       Edit group, pass test.
 #  v1.0 8/16,2008
 #       Stable.
 ########################################################################
@@ -83,9 +85,12 @@ sudo chown -R apache:apache /var/lib/trac
 sudo chmod -R 770 /var/lib/svn
 sudo chmod -R 770 /var/lib/trac
 
-# Test
-sudo tracd --basic-auth $TRAC_PROJECT_ID,/var/lib/svn/$TRAC_PROJECT_ID/.htpasswd,$TRAC_PROJECT_ID -p 4080 /var/lib/trac/$TRAC_PROJECT_ID/
+# Edit Group
+sudo vim /etc/group
 
-# Apache2 Reload
+# Test
+#sudo tracd --basic-auth $TRAC_PROJECT_ID,/var/lib/svn/$TRAC_PROJECT_ID/.htpasswd,$TRAC_PROJECT_ID -p 4080 /var/lib/trac/$TRAC_PROJECT_ID/
+
+# Apache2 Restart
 sudo service httpd restart
 
