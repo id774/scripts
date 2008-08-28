@@ -18,6 +18,8 @@
 # 1. Run after yum installed.
 ########################################################################
 
+export SCRIPTS=/home/centos/scripts
+
 # Show Memory and CPU
 cat /proc/meminfo
 cat /proc/cpuinfo

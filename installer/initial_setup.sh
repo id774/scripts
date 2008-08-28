@@ -24,6 +24,8 @@
 #       First version.
 ########################################################################
 
+export SCRIPTS=/home/ubuntu/scripts
+
 # Show Memory and CPU
 cat /proc/meminfo
 cat /proc/cpuinfo
@@ -40,7 +42,7 @@ sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
 sudo vim /etc/apt/sources.list
 sudo aptitude update
 
-# Ubuntu-ja GPG Automatic Import (Ubuntu)
+# Ubuntu-ja GPG Automatic Import (Ubuntu Server)
 #eval `cat /etc/lsb-release`
 #wget -q http://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
 #sudo wget http://www.ubuntulinux.jp/sources.list.d/$DISTRIB_CODENAME.list -O /etc/apt/sources.list.d/ubuntu-ja.list
