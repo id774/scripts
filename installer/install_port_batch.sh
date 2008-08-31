@@ -13,8 +13,8 @@
 
 sudo port -d selfupdate
 sudo port -d install libiconv +enable_cp932fix
-sudo port -d install coreutils +with_default_names
-sudo port -d install findutils +with_default_names
+sudo port -d install coreutils
+sudo port -d install findutils
 sudo port -d install wget
 sudo port -d install curl
 sudo port -d install nkf

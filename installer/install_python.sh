@@ -57,8 +57,3 @@ wget http://www.crummy.com/software/BeautifulSoup/download/BeautifulSoup.py
 sudo cp BeautifulSoup.py $TARGET_PATH/BeautifulSoup.py
 rm BeautifulSoup.py
 
-# The path Python module
-wget http://www.jorendorff.com/articles/python/path/src/path.py
-sudo cp path.py $TARGET_PATH/path.py
-rm path.py
-
