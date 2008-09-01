@@ -4,7 +4,7 @@ add lock = Caps_Lock
 clear control
 add control = Control_L Control_R
 keycode 49 = Zenkaku_Hankaku Kanji
-keycode 9 = Zenkaku_Hankaku Kanji
+keycode 9 = Escape
 keycode 131 = Escape
 keycode 129 = Return
 keycode 208 = Down
@@ -16,4 +16,3 @@ keycode 115 = Alt_L
 keycode 211 = backslash underscore
 keycode 234 = underscore
 keycode 233 = asciitilde
-keycode 36 = BackSpace
