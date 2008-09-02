@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 15-Aug-2008.
+# Last Change: 03-Sep-2008.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_linux_env() {
@@ -211,10 +211,15 @@ set_scripts_path() {
     fi
 }
 
+mount_cryptfs() {
+    test -d $HOME/crypt/bin && test -d $HOME/bin || cryptmount home-$USER-crypt
+}
+
 set_standard_options() {
     set_basic_options
     set_terminal_options
     set_os_env
+    test -r $HOME/local/crypt.fs && mount_cryptfs
     set_tmp_path $HOME/.tmp
     set_scripts_path $HOME/scripts
     test -d $HOME/bin && export PATH=$HOME/bin:$PATH
