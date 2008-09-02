@@ -7,3 +7,4 @@ keycode 117 = Alt_L
 keycode 116 = Alt_L
 keycode 115 = Alt_L
 keycode 211 = backslash underscore
+keycode 36 = Return

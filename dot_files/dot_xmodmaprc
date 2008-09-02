@@ -16,3 +16,4 @@ keycode 115 = Alt_L
 keycode 211 = backslash underscore
 keycode 234 = underscore
 keycode 233 = asciitilde
+keycode 36 = Return

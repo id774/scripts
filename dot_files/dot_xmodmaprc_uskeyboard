@@ -12,3 +12,4 @@ keycode 47 = colon semicolon
 keycode 21 = plus equal
 keycode 234 = underscore
 keycode 233 = asciitilde bar
+keycode 36 = Return
