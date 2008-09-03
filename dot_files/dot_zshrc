@@ -231,6 +231,10 @@ if [ -f ~/.zshrc_local ]; then
     . ~/.zshrc_local
 fi
 
+if [ `ps ax | grep screen | grep -v grep | wc -l` = 0 ]; then
+    exec screen -U -D -RR
+fi
+
 case "${TERM}" in
   *xterm*|rxvt|(dt|k|E)term)
     exec screen -U -D -RR
