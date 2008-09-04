@@ -178,9 +178,9 @@ sudo aptitude -y install ctags
 #$SCRIPTS/installer/install_dotemacs.sh
 
 # Vim (Original Build)
-#$SCRIPTS/installer/install_ncurses.sh
-#vim $SCRIPTS/installer/install_vim.sh
-#$SCRIPTS/installer/install_vim.sh
+$SCRIPTS/installer/install_ncurses.sh
+vim $SCRIPTS/installer/install_vim.sh
+$SCRIPTS/installer/install_vim.sh
 
 # Deploy dot_vim
 $SCRIPTS/installer/install_dotvim.sh
