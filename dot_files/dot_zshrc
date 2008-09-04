@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 03-Sep-2008.
+# Last Change: 04-Sep-2008.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_linux_env() {
@@ -225,18 +225,28 @@ set_standard_options() {
     test -d $HOME/bin && export PATH=$HOME/bin:$PATH
 }
 
-set_standard_options
+set_local_settings() {
+    if [ -f ~/.zshrc_local ]; then
+        . ~/.zshrc_local
+    fi
+}
 
-if [ -f ~/.zshrc_local ]; then
-    . ~/.zshrc_local
-fi
+call_exec_screen() {
+    if [ `ps ax | grep screen | grep -v grep | wc -l` = 0 ]; then
+        exec screen -U -D -RR
+    fi
 
-if [ `ps ax | grep screen | grep -v grep | wc -l` = 0 ]; then
-    exec screen -U -D -RR
-fi
+    case "${TERM}" in
+      *xterm*|rxvt|(dt|k|E)term)
+        exec screen -U -D -RR
+        ;;
+    esac
+}
 
-case "${TERM}" in
-  *xterm*|rxvt|(dt|k|E)term)
-    exec screen -U -D -RR
-    ;;
-esac
+zshrc_main() {
+    set_standard_options
+    set_local_settings
+    call_exec_screen
+}
+
+zshrc_main
