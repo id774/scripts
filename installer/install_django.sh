@@ -29,4 +29,4 @@ test -n "$1" && install_branch $1
 test -n "$1" || install_trunk
 
 sudo chown -R root:root /usr/local/src/django
-django-admin --version
+django-admin.py --version
