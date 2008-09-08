@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 ########################################################################
-# Install Ruby
+# Install Django
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
