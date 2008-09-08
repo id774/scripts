@@ -23,7 +23,7 @@ sudo aptitude -y install readline-common
 sudo aptitude -y install ipython
 
 # Web Application Framework
-sudo aptitude -y install python-django
+$SCRIPTS/installer/install_django.sh 1.0
 sudo aptitude -y install python-cherrypy
 sudo aptitude -y install python-twisted
 sudo aptitude -y install python-nose
