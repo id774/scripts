@@ -28,5 +28,13 @@ install_branch() {
 test -n "$1" && install_branch $1
 test -n "$1" || install_trunk
 
-sudo chown -R root:root /usr/local/src/django
+case $OSTYPE in
+  *darwin*)
+    sudo chown -R root:wheel /usr/local/src/django
+    ;;
+  *)
+    sudo chown -R root:root /usr/local/src/django
+    ;;
+esac
+
 django-admin.py --version

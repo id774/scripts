@@ -93,5 +93,13 @@ case "$1" in
     ;;
 esac
 
-sudo chown -R root:root /usr/local/src/ruby
+case $OSTYPE in
+  *darwin*)
+    sudo chown -R root:wheel /usr/local/src/ruby
+    ;;
+  *)
+    sudo chown -R root:root /usr/local/src/ruby
+    ;;
+esac
+
 ruby -v

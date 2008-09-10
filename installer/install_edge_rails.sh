@@ -23,4 +23,11 @@ install_rails() {
 test -d /usr/local/src/rails && update_rails
 test -d /usr/local/src/rails || install_rails
 
-sudo chown -R root:root /usr/local/src/rails
+case $OSTYPE in
+  *darwin*)
+    sudo chown -R root:wheel /usr/local/src/rails
+    ;;
+  *)
+    sudo chown -R root:root /usr/local/src/rails
+    ;;
+esac

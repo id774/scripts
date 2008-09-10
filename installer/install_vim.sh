@@ -28,7 +28,6 @@ sudo cp vim-7.2-extra.tar.gz /usr/local/src/vim
 sudo cp vim-7.2-lang.tar.gz /usr/local/src/vim
 sudo cp -a vim72 /usr/local/src/vim
 sudo cp -a patches /usr/local/src/vim
-sudo chown -R root:root /usr/local/src/vim
 cd vim72
 cat ../patches/7.2.* | patch -p0
 ./configure --enable-multibyte --enable-xim --enable-fontset --with-features=big --enable-perlinterp --enable-rubyinterp --enable-pythoninterp
@@ -36,3 +35,14 @@ make
 sudo make install
 cd ../../
 rm -rf install_vim
+
+case $OSTYPE in
+  *darwin*)
+    sudo chown -R root:wheel /usr/local/src/vim
+    ;;
+  *)
+    sudo chown -R root:root /usr/local/src/vim
+    ;;
+esac
+
+vim --version

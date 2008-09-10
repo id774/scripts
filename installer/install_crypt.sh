@@ -36,7 +36,6 @@ case "$1" in
     sudo tar xzvf truecrypt-5.1a-source-code.tar.gz -C /usr/local/src/crypt/truecrypt
     sudo mv truecrypt-5.1a-source-code.tar.gz /usr/local/src/crypt/truecrypt
     sudo mv truecrypt_5.1a-0_i386.deb /usr/local/src/crypt/truecrypt
-    sudo chown -R root:root /usr/local/src/crypt/truecrypt
     sudo chmod 644 /usr/local/src/crypt/truecrypt/truecrypt-5.1a-source-code.tar.gz
     cd ..
     rm -rf truecrypt-5.1a
@@ -52,7 +51,6 @@ case "$1" in
     sudo tar xzvf truecrypt-5.1a-source-code.tar.gz -C /usr/local/src/crypt/truecrypt
     sudo mv truecrypt-5.1a-source-code.tar.gz /usr/local/src/crypt/truecrypt
     sudo mv truecrypt_5.1a-0_amd64.deb /usr/local/src/crypt/truecrypt
-    sudo chown -R root:root /usr/local/src/crypt/truecrypt
     sudo chmod 644 /usr/local/src/crypt/truecrypt/truecrypt-5.1a-source-code.tar.gz
     cd ..
     rm -rf truecrypt-5.1a
@@ -62,7 +60,6 @@ case "$1" in
     sudo mkdir -p /usr/local/src/crypt/truecrypt
     sudo tar xzvf truecrypt-4.3a-source-code.tar.gz -C /usr/local/src/crypt/truecrypt
     sudo mv truecrypt-4.3a-source-code.tar.gz /usr/local/src/crypt/truecrypt
-    sudo chown -R root:root /usr/local/src/crypt/truecrypt
     sudo chmod 644 /usr/local/src/crypt/truecrypt/truecrypt-4.3a-source-code.tar.gz
     ;;
 esac
@@ -77,9 +74,16 @@ sudo mkdir -p /usr/local/src/crypt/des
 sudo cp * /usr/local/src/crypt/des
 make
 sudo make install
-sudo chown -R root:root /usr/local/src/crypt/des
 cd ..
 rm -rf des
-
 cd ..
 rm -rf install_crypt
+
+case $OSTYPE in
+  *darwin*)
+    sudo chown -R root:wheel /usr/local/src/crypt
+    ;;
+  *)
+    sudo chown -R root:root /usr/local/src/crypt
+    ;;
+esac
