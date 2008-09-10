@@ -16,7 +16,7 @@
 #    tmp/
 #    unused/
 ########################################################################
-BACKUPDIRS="/home/ubuntu /etc"
+BACKUPDIRS="/home/ubuntu /etc /boot"
 BACKUPTO="/home/backup"
 EXPIREDAYS=60
 EXECDIR=${0%/*}
