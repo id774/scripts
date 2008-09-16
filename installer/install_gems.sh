@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 9/16,2008
+#       Add rspec.
 #  v1.0 8/15,2008
 #       Stable.
 ########################################################################
@@ -26,5 +28,6 @@ sudo gem install zentest
 sudo gem install capistrano
 sudo gem install magic_multi_connections
 sudo gem install redgreen
+sudo gem install rspec
 sudo gem cleanup
 gem list --local
