@@ -46,6 +46,10 @@ do
   test -f /var/lib/postgresql/$DOT_FILES && sudo rm -vf /var/lib/postgresql/.$DOT_FILES
 done
 
+test -f ~/.zshrc.zwc && rm -f ~/.zshrc.zwc
+cd
+zsh -c 'zcompile ~/.zshrc'
+
 test -d /etc/xdg/xfce4 && sudo cp $SCRIPTS/dot_files/$DEFAULT_KEYMAPFILE /etc/xdg/xfce4/xmodmaprc
 test -f /etc/xdg/xfce4/xmodmaprc && sudo vim /etc/xdg/xfce4/xmodmaprc
 test -f /etc/xdg/xfce4/xinitrc && sudo vim /etc/xdg/xfce4/xinitrc
