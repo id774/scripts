@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 18-Sep-2008.
+# Last Change: 19-Sep-2008.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_linux_env() {
@@ -114,7 +114,7 @@ set_basic_options() {
     autoload -U promptinit ; promptinit
     autoload -U colors     ; colors
     PROMPT="%{$reset_color%}%(!.#.$) "
-    PROMPT="%{$reset_color%}[%{$fg[red]%}%B%~%b%{$reset_color%}]$PROMPT"
+    PROMPT="%{$reset_color%}:%{$fg[red]%}%B%~%b%{$reset_color%} $PROMPT"
     PROMPT="%{$reset_color%}%{$fg[yellow]%}$USER%{$reset_color%}@%{$fg[cyan]%}%m%{$reset_color%}$PROMPT"
     PROMPT="%{$reset_color%}%{$fg[green]%}%*%{$reset_color%} $PROMPT"
     setopt auto_cd
