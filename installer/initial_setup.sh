@@ -320,6 +320,7 @@ sudo vim /etc/ssh/sshd_config
 # server 130.69.251.23
 sudo vim /etc/ntp.conf
 sudo vim /etc/fstab
+sudo vim /etc/deluser.conf
 sudo vim /etc/hosts
 # ServerName, charset
 test -f /etc/apache2/apache2.conf && sudo vim /etc/apache2/apache2.conf
