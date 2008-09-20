@@ -8,7 +8,7 @@
 # User alias specification
 
 # Cmnd alias specification
-Cmnd_Alias ADMIN_PASSWD_CMD = /sbin/shutdown
+Cmnd_Alias ADMIN_PASSWD_CMD = /sbin/shutdown, /bin/ls
 
 # Defaults
 
