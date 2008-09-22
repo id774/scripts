@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 9/23,2008
+#       Add curl.
 #  v1.1 8/14,2008
 #       Automatic Install for gpg,browser,iptable,trac,passenger,
 #       and Install Xfce4.
@@ -140,6 +142,7 @@ sudo aptitude -y install linux-source
 sudo aptitude -y install checkinstall
 sudo aptitude -y install xdelta
 sudo aptitude -y install alien
+sudo aptitude -y install curl
 
 # SCM Client
 sudo aptitude -y install subversion
@@ -179,7 +182,6 @@ sudo aptitude -y install ctags
 
 # Vim (Original Build)
 $SCRIPTS/installer/install_ncurses.sh
-vim $SCRIPTS/installer/install_vim.sh
 $SCRIPTS/installer/install_vim.sh
 
 # Deploy dot_vim
