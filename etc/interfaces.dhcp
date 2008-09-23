@@ -9,7 +9,13 @@ iface lo inet loopback
 allow-hotplug eth0
 iface eth0 inet dhcp
 #iface eth0 inet static
-#address 192.168.11.xxx
+#address 192.168.xx.xx
 #netmask 255.255.255.0
-#gateway 192.168.11.1
+#gateway 192.168.xx.1
 auto eth0
+
+# The wireless network interface (WEP)
+#auto ath0
+#iface ath0 inet dhcp
+#wireless-key s:XXXXXXXXXXXXX
+#wireless-essid XXXX
