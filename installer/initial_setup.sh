@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 9/25,2008
+#       Auto tune2fs when using LVM.
 #  v1.2 9/23,2008
 #       Add curl.
 #  v1.1 8/14,2008
@@ -308,12 +310,17 @@ sudo aptitude -y install manpages-ja-dev
 sudo aptitude -y install xmanpages-ja
 
 # tune2fs
-sudo tune2fs -i 0 -c 0 /dev/sda5
-sudo tune2fs -i 0 -c 0 /dev/sda6
-sudo tune2fs -i 0 -c 0 /dev/sda7
-sudo tune2fs -i 0 -c 0 /dev/sda8
-sudo tune2fs -i 0 -c 0 /dev/sda9
-sudo tune2fs -i 0 -c 0 /dev/sda10
+test -b /dev/sda5  && sudo tune2fs -i 0 -c 0 /dev/sda5
+test -b /dev/sda6  && sudo tune2fs -i 0 -c 0 /dev/sda6
+test -b /dev/sda7  && sudo tune2fs -i 0 -c 0 /dev/sda7
+test -b /dev/sda8  && sudo tune2fs -i 0 -c 0 /dev/sda8
+test -b /dev/sda9  && sudo tune2fs -i 0 -c 0 /dev/sda9
+test -b /dev/sda10 && sudo tune2fs -i 0 -c 0 /dev/sda10
+test -b /dev/mapper/`/bin/hostname`-root && sudo tune2fs -i 0 -c 0 /dev/mapper/`/bin/hostname`-root
+test -b /dev/mapper/`/bin/hostname`-tmp  && sudo tune2fs -i 0 -c 0 /dev/mapper/`/bin/hostname`-tmp
+test -b /dev/mapper/`/bin/hostname`-var  && sudo tune2fs -i 0 -c 0 /dev/mapper/`/bin/hostname`-var
+test -b /dev/mapper/`/bin/hostname`-usr  && sudo tune2fs -i 0 -c 0 /dev/mapper/`/bin/hostname`-usr
+test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 /dev/mapper/`/bin/hostname`-home
 
 # Last Setup
 sudo vim /etc/anacrontab
