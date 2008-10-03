@@ -19,7 +19,7 @@ tar xzvf vim-7.2-extra.tar.gz
 tar xzvf vim-7.2-lang.tar.gz
 mkdir patches
 cd patches
-curl -O 'ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.[001-022]'
+curl -O 'ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.[001-025]'
 cd ../
 test -d /usr/local/src/vim && sudo rm -rf /usr/local/src/vim
 test -d /usr/local/src/vim || sudo mkdir -p /usr/local/src/vim
