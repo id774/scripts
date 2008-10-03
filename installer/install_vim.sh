@@ -30,7 +30,7 @@ get_source_and_install() {
     if [ -n "$1" ]; then
         unzip $1
         cd vim
-        b5uild_and_install
+        build_and_install
         cd ../../../
     else
         wget ftp://ftp.vim.org/pub/vim/unix/vim-7.2.tar.bz2
