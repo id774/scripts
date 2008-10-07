@@ -149,7 +149,7 @@ sudo aptitude -y install curl
 # SCM Client
 sudo aptitude -y install subversion
 sudo aptitude -y install git-core git-cvs git-svn git-email
-#sudo aptitude -y install svk
+sudo aptitude -y install svk
 
 # sshfs
 sudo aptitude -y install sshfs
