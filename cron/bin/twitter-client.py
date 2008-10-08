@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-username="twitt"
-password="xxxxxxxx"
-
 import os, sys
 import urllib2
 from xml.dom.minidom import parse
@@ -10,32 +7,19 @@ import re
 import time
 import pynotify
 
-tmpfile="/home/plagger/.plagger_tmp/last_id"
-update_url = "http://twitter.com/statuses/update.xml"
 timeline_url ='http://twitter.com/statuses/friends_timeline.xml' 
 last_id = 0
 
-auth_handler = urllib2.HTTPBasicAuthHandler()
-auth_handler.add_password(
+def notify(username, password, tmpfile):
+  auth_handler = urllib2.HTTPBasicAuthHandler()
+  auth_handler.add_password(
     'Twitter API', 'http://twitter.com/',
     username, password)
-opener = urllib2.build_opener(auth_handler)
-urllib2.install_opener(opener)
+  opener = urllib2.build_opener(auth_handler)
+  urllib2.install_opener(opener)
 
-tagText = lambda node, tagName: \
+  tagText = lambda node, tagName: \
   node.getElementsByTagName(tagName)[0].firstChild.nodeValue
-
-def update(text):
-  print >>sys.stderr, time.strftime("[%H:%M:%S] "), "updating"
-  req = urllib2.Request(update_url)
-  req.add_header("User-Agent", "TwitterNotifier http://yanbe.org/twitter-notifier/")
-  req.add_header("X-Twitter-Client", "TwitterNotifier")
-  req.add_header("X-Twitter-Client-URL", "http://yanbe.org/twitter-notifier/")
-  req.add_header("X-Twitter-Client-Version", "0.1")
-  req.add_data("status="+text)
-  res = parse(file=urllib2.urlopen(req))
-
-def notify():
   print >>sys.stderr, time.strftime("[%H:%M:%S] "), "checking update"
 
   global last_id
@@ -66,12 +50,18 @@ def show_notify(screen_name, text, source, icon_url):
 
 if __name__ == '__main__':
   from optparse import OptionParser
-  usage = "usage: %prog [options] arg"
+  usage = "usage: %prog [options]"
   parser = OptionParser(usage)
+  parser.add_option("-u", "--username", dest="username",
+                    help="your username")
+  parser.add_option("-p", "--password", dest="password",
+                    help="your password")
+  parser.add_option("-t", "--tmpfile", dest="tmpfile",
+                    help="temporary file")
   (options, args) = parser.parse_args()
   pynotify.init("TwitterNotifier")
-  if len(args) != 1:
-    notify()
+  if options.username and options.password and options.tmpfile:
+    notify(options.username, options.password, options.tmpfile)
   else:
-    update(sys.argv[1])
+    parser.error("Incorrect options, Add -h option for help.")
 
