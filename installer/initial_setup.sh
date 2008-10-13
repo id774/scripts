@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 10/14,2008
+#       Splash various problems of initial setup and set debian as default.
 #  v1.3 9/25,2008
 #       Auto tune2fs when using LVM.
 #  v1.2 9/23,2008
@@ -28,7 +30,12 @@
 #       First version.
 ########################################################################
 
-export SCRIPTS=/home/ubuntu/scripts
+export SCRIPTS=/home/debian/scripts
+#export SCRIPTS=/home/ubuntu/scripts
+
+# Groups
+sudo groupadd admin
+sudo groupadd wheel
 
 # Show Memory and CPU
 cat /proc/meminfo
@@ -40,7 +47,7 @@ sudo update-rc.d -f hplip remove
 sudo apt-get remove apt-index-watcher
 
 # APT Update
-DISTRIB_CODENAME=hardy
+DISTRIB_CODENAME=lenny
 SOURCESLIST=sources-$DISTRIB_CODENAME.list
 sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
 sudo vim /etc/apt/sources.list
@@ -153,7 +160,7 @@ sudo aptitude -y install svk
 
 # sshfs
 sudo aptitude -y install sshfs
-#sudo vim /etc/modules
+sudo vim /etc/modules
 
 # Samba (Not Recommended)
 #sudo aptitude -y install samba smbfs smbclient swat
@@ -189,15 +196,13 @@ $SCRIPTS/installer/install_vim.sh
 # Deploy dot_vim
 $SCRIPTS/installer/install_dotvim.sh
 
+# Deploy dot_files
+$SCRIPTS/installer/install_dotfiles.sh
+
 # Ruby
 sudo aptitude -y install autoconf byacc bison autoconf-doc automake
 sudo aptitude -y install libopenssl-ruby
 $SCRIPTS/installer/install_ruby.sh 187-svn
-$SCRIPTS/installer/install_rubygems.sh
-$SCRIPTS/installer/install_rails.sh
-$SCRIPTS/installer/install_gems.sh
-mkdir ~/.vim
-vim-ruby-install.rb
 
 # Apache
 sudo aptitude -y install apache2
@@ -215,19 +220,19 @@ $SCRIPTS/installer/install_python.sh
 sudo aptitude install -y sun-java6-jdk
 
 # GDM Themes
-$SCRIPTS/installer/install_gdmthemes.sh
+#$SCRIPTS/installer/install_gdmthemes.sh
 
 # gthumb
 #sudo aptitude -y install gthumb
 
 # Iceweasel and Icedove (Debian)
-#$SCRIPTS/install_iceweasel.sh
-
-# Adobe Flash Player
-#sudo aptitude -y install swf-player
+#$SCRIPTS/installer/install_iceweasel.sh
 
 # Mozilla Thunderbird (Ubuntu)
 #sudo aptitude -y install mozilla-thunderbird
+
+# Adobe Flash Player
+#sudo aptitude -y install swf-player
 
 # Opera (need apt-line)
 #GPG_PUBKEY=033431536A423791
@@ -243,9 +248,7 @@ $SCRIPTS/installer/install_gdmthemes.sh
 #im-switch -c
 #sudo rmmod pcspkr
 #sudo vim /etc/modprobe.d/blacklist
-
-# Deploy dot_files
-$SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
+#$SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
 
 # 2ch Browser
 #sudo aptitude -y install ochusha
@@ -277,11 +280,11 @@ sudo aptitude -y install libtemplate-perl libxml-libxml-perl
 sudo aptitude -y install ghc
 
 # Share Documents
-wget http://big.freett.com/railsinstall2/share-documents.tar.gz
-sudo tar xzvf share-documents.tar.gz -C /usr/local/share
-rm share-documents.tar.gz
-sudo chmod -R 755 /usr/local/share/share-documents
-ln -s /usr/local/share/share-documents ~/share
+#wget http://big.freett.com/railsinstall2/share-documents.tar.gz
+#sudo tar xzvf share-documents.tar.gz -C /usr/local/share
+#rm share-documents.tar.gz
+#sudo chmod -R 755 /usr/local/share/share-documents
+#ln -s /usr/local/share/share-documents ~/share
 
 # Crypt
 $SCRIPTS/installer/install_crypt.sh ubuntu-x86
@@ -291,15 +294,17 @@ sudo aptitude -y install clamav avscan
 sudo useradd clamav
 $SCRIPTS/installer/install_clamav.sh
 
-# Permissions for /src
-sudo chown -R root:root /usr/src
-sudo chown -R root:root /usr/local/src
-
 # iptables
 $SCRIPTS/installer/install_iptables.sh
 
 # Trac
 $SCRIPTS/installer/install_trac.sh
+
+# RubyGems
+$SCRIPTS/installer/install_rubygems.sh
+$SCRIPTS/installer/install_rails.sh
+$SCRIPTS/installer/install_gems.sh
+vim-ruby-install.rb
 
 # Passenger
 $SCRIPTS/installer/install_passenger.sh
@@ -308,6 +313,10 @@ $SCRIPTS/installer/install_passenger.sh
 sudo aptitude -y install manpages-ja
 sudo aptitude -y install manpages-ja-dev
 sudo aptitude -y install xmanpages-ja
+
+# Permissions for /src
+sudo chown -R root:root /usr/src
+sudo chown -R root:root /usr/local/src
 
 # tune2fs
 test -b /dev/sda5  && sudo tune2fs -i 0 -c 0 /dev/sda5
@@ -321,6 +330,9 @@ test -b /dev/mapper/`/bin/hostname`-tmp  && sudo tune2fs -i 0 -c 0 /dev/mapper/`
 test -b /dev/mapper/`/bin/hostname`-var  && sudo tune2fs -i 0 -c 0 /dev/mapper/`/bin/hostname`-var
 test -b /dev/mapper/`/bin/hostname`-usr  && sudo tune2fs -i 0 -c 0 /dev/mapper/`/bin/hostname`-usr
 test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 /dev/mapper/`/bin/hostname`-home
+
+# Linux kernel source, headers, kbuild (Debian)
+#sudo aptitude install linux-kbuild-2.6.26 linux-headers-2.6.26-1-686 linux-source-2.6.26
 
 # Last Setup
 sudo vim /etc/anacrontab
@@ -338,7 +350,7 @@ sudo vim /etc/group
 sudo vim /etc/syslog.conf
 # SYSLOGD="-m 0"
 sudo vim /etc/default/syslogd
-sudo vim /boot/grub/menu.conf
+sudo vim /boot/grub/menu.lst
 sudo passwd root
 mysql -u root
 test -f ~/.bash_history && sudo rm ~/.bash_history
