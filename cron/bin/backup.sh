@@ -6,6 +6,8 @@
 #  Customize & Maintain: id774 <idnanashi@gmail.com>
 #  Copyright (C) 2002 Takeru KOMORIYA <komoriya@paken.org>
 #
+#  v0.3 10/15,2008
+#       Add disk capacity report.
 #  v0.2a 9/14,2007 (base version 0.2)
 #       Log header moved.
 ########################################################################
@@ -16,15 +18,16 @@
 #    tmp/
 #    unused/
 ########################################################################
-BACKUPDIRS="/home/ubuntu /etc /boot"
+BACKUPDIRS="/home/debian /home/ubuntu /etc /boot"
 BACKUPTO="/home/backup"
 EXPIREDAYS=60
 EXECDIR=${0%/*}
 EXCLUDEFILE=$EXECDIR/backup_exclude 
+DATE=`date +%Y%m%d`
 
 # delete old backup directories
-echo "  Deleting old backup directories..."
-DATE=`date +%Y%m%d`
+echo -n "* Deleting old backup directories on "
+date "+%Y/%m/%d %T"
 
 for DIR in `ls $BACKUPTO | grep "_backup_"`
 do
@@ -32,7 +35,7 @@ do
     EXPIREDATE=`date +%Y%m%d -d "$EXPIREDAYS days ago"`
     if [ $BDATE -le $EXPIREDATE ]
     then
-        echo "   deleting $BACKUPTO/$DIR"
+        echo "deleting $BACKUPTO/$DIR"
         rm -rf $BACKUPTO/$DIR
     fi
 done
@@ -44,10 +47,14 @@ if [ -f $EXCLUDEFILE ]; then
 fi
 
 # execute backup
-echo "  Executing backup with rsync..."
+echo -n "* Executing backup with rsync on "
+date "+%Y/%m/%d %T"
 for dir in $BACKUPDIRS
 do
-    echo "  rsync $OPTS $dir $BACKUPTO"
+    echo "rsync $OPTS $dir $BACKUPTO"
     rsync $OPTS $dir $BACKUPTO
 done
+
+# disk capacity report
+df -T
 
