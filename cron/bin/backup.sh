@@ -25,6 +25,9 @@ EXECDIR=${0%/*}
 EXCLUDEFILE=$EXECDIR/backup_exclude 
 DATE=`date +%Y%m%d`
 
+# disk capacity report
+df -T
+
 # delete old backup directories
 echo -n "* Deleting old backup directories on "
 date "+%Y/%m/%d %T"
@@ -54,7 +57,4 @@ do
     echo "rsync $OPTS $dir $BACKUPTO"
     rsync $OPTS $dir $BACKUPTO
 done
-
-# disk capacity report
-df -T
 
