@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 10/20,2008
+#       Add pastedeploy, yaml.
 #  v1.0 10/19,2008
 #       Stable.
 ########################################################################
@@ -25,11 +27,13 @@ sudo port -d install py25-pgsql
 sudo port -d install py25-mechanize
 sudo port -d install py25-openssl
 sudo port -d install py25-paste
+sudo port -d install py25-pastedeploy
 sudo port -d install py25-simplejson
 sudo port -d install py25-nose
 sudo port -d install py25-sqlalchemy
 sudo port -d install py25-sqlalchemy-migrate
 sudo port -d install py25-turbogears
 sudo port -d install py25-memcached
+sudo port -d install py25-yaml
 
 port installed
