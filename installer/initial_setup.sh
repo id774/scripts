@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.5 10/24,2008
+#       Add sysstat.
 #  v1.4 10/14,2008
 #       Splash various problems of initial setup and set debian as default.
 #  v1.3 9/25,2008
@@ -30,8 +32,7 @@
 #       First version.
 ########################################################################
 
-export SCRIPTS=/home/debian/scripts
-#export SCRIPTS=/home/ubuntu/scripts
+export SCRIPTS=$HOME/scripts
 
 # Groups
 sudo groupadd admin
@@ -334,7 +335,17 @@ test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 /dev/mapper/`
 # Linux kernel source, headers, kbuild (Debian)
 #sudo aptitude install linux-kbuild-2.6.26 linux-headers-2.6.26-1-686 linux-source-2.6.26
 
+# hddtemp
+sudo aptitude -y install hddtemp
+sudo dpkg-reconfigure hddtemp
+
+# sysstat
+sudo aptitude -y install sysstat
+sudo dpkg-reconfigure sysstat
+sudo /etc/init.d/sysstat start
+
 # Last Setup
+sudo dpkg-reconfigure exim4-config
 sudo vim /etc/anacrontab
 # PermitRootLogin yes->no
 sudo vim /etc/ssh/sshd_config
