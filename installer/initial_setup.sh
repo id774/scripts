@@ -232,9 +232,6 @@ sudo aptitude install -y sun-java6-jdk
 # Mozilla Thunderbird (Ubuntu)
 #sudo aptitude -y install mozilla-thunderbird
 
-# Adobe Flash Player
-#sudo aptitude -y install swf-player
-
 # Opera (need apt-line)
 #GPG_PUBKEY=033431536A423791
 #gpg --keyserver pgp.nic.ad.jp --recv-keys $GPG_PUBKEY

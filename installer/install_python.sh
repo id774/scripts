@@ -9,7 +9,7 @@
 #       Stable.
 ########################################################################
 
-TARGET_PATH=/usr/lib/python2.5/site-packages
+TARGET_PATH=`python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"`
 
 # Development tool and package manager
 sudo aptitude -y install python-dev
