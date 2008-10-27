@@ -44,6 +44,6 @@ sudo -u mysql mysql_install_db5
 sudo cp /opt/local/share/mysql5/mysql/my-small.cnf /opt/local/etc/mysql5/my.cnf
 sudo vim /opt/local/etc/mysql5/my.cnf
 sudo /opt/local/share/mysql5/mysql/mysql.server start
-mysql -u root -p
+mysql5 -u root -p
 port installed
 
