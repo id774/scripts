@@ -171,6 +171,14 @@
 (global-set-key "\C-j" 'newline)
 
 
+;; fullscreen
+(defun toggle-fullscreen ()
+  (interactive)
+    (set-frame-parameter nil 'fullscreen (if (frame-parameter nil 'fullscreen)
+      nil
+      'fullboth)))
+(global-set-key [(meta return)] 'toggle-fullscreen)
+
 ;; \C-h は backspace であるべきだ
 (global-set-key "\C-h" 'delete-backward-char)
 
