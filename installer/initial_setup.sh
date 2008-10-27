@@ -188,7 +188,7 @@ sudo aptitude -y install vim-gnome vim-gui-common vim-runtime colordiff
 sudo aptitude -y install ctags
 
 # Deploy dot_emacs
-#$SCRIPTS/installer/install_dotemacs.sh
+$SCRIPTS/installer/install_dotemacs.sh
 
 # Vim (Original Build)
 $SCRIPTS/installer/install_ncurses.sh
