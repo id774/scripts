@@ -15,7 +15,7 @@
   "*Base of `load-path'.
 It is used as a default value of target path to search file or
 subdirectory under load-path.")
-(setq shyouhei-load-path
+(setq my-load-path
       (list "/usr/local/share/emacs/21.4/site-lisp/navi2ch"
 	    (expand-file-name "~/.emacs.d/elisp")
 	    (expand-file-name "~/.emacs.d/elisp/3rd-party")
@@ -24,14 +24,14 @@ subdirectory under load-path.")
 	    (expand-file-name "~/.emacs.d/elisp/3rd-party/navi2ch")
 	    (expand-file-name "~/.emacs.d/elisp/3rd-party/italk")
 	    (expand-file-name "~/.emacs.d/elisp/3rd-party/riece")))
-(setq load-path (append shyouhei-load-path default-load-path))
+(setq load-path (append my-load-path default-load-path))
 
 ;; custom
 (setq custom-file (expand-file-name "~/.emacs.d/elisp/custom.el"))
 
 ;; whoami
-(setq user-full-name "URABE Shyouhei")
-(setq user-mail-address "shyouhei@ice.uec.ac.jp")
+(setq user-full-name "id774")
+(setq user-mail-address "idnanashi@gmail.com")
 
 ;; main
 (load "autoloads")

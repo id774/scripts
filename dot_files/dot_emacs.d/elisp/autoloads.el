@@ -97,8 +97,7 @@
 	'("white" "black" "DarkBlue" "DarkGreen"
 	  "red" "maroon" "purple" "orange"
 	  "yellow" "green" "DarkCyan" "cyan"
-	  "blue" "magenta" "gray" "DimGray"))
-  (setq riece-keywords '("shyouhei" "mput" "卜部" "うらべ")))
+	  "blue" "magenta" "gray" "DimGray")))
 ;;   (setq riece-server "ircnet"
 ;; 	riece-server-alist '(("ircnet" :host "irc.tokyo.wide.ad.jp")
 ;; 			     ("freenode" :host "chat.freenode.net"))
