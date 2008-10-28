@@ -48,7 +48,8 @@
       (set-face-foreground 'font-lock-warning-face "magenta")
       (set-face-bold-p 'font-lock-function-name-face t)
       (set-face-bold-p 'font-lock-warning-face nil)
-))))
+    ))
+))
 ;;
 
 
