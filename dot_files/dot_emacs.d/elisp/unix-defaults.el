@@ -11,6 +11,9 @@
 ;; (set-clipboard-coding-system 'iso-2022-jp-unix)
 ;; (setq default-process-coding-system '(undecided . euc-jp-unix))
 
+;; UTF-8の優先順位を高くする
+(prefer-coding-system 'utf-8-unix)
+
 (if window-system
   (progn
     (set-default-font "Bitstream Vera Sans Mono-10")
@@ -19,13 +22,16 @@
                       '("VL ゴシック" . "unicode-bmp"))
 ;;フレーム設定
     (setq default-frame-alist
-          (append (list '(top . 50) ; 起動時の表示位置（上から）
-                        '(left . 50) ; 起動時の表示位置（左から）
-                        '(width . 150) ; 起動時のサイズ（幅）
-                        '(height . 70) ; 起動時のサイズ（縦）
-                        '(foreground-color . "#FFFFFF") ; 文字の色
-                        '(background-color . "gray30") ; 背景の色
-                        '(cursor-color . "gray") ; カーソルの色
+          (append (list '(top . 0) ; 起動時の表示位置（上から）
+                        '(left . 0) ; 起動時の表示位置（左から）
+                        '(width . 80) ; 起動時のサイズ（幅）
+                        '(height . 40) ; 起動時のサイズ（縦）
+                        '(foreground-color . "#00FF00") ; 文字の色
+                        '(background-color . "#000000") ; 背景の色
+                        '(border-color . "#000000") ;
+                        '(mouse-color . "#00FFFF") ;
+                        '(cursor-color . "#FFFFFF") ; カーソルの色
+                        '(vertical-scroll-bars . nil) ;
                    )
                   default-frame-alist))
 ;;リージョンに色を付ける
