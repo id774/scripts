@@ -30,7 +30,7 @@
                         '(background-color . "#000000") ; 背景の色
                         '(border-color . "#000000") ;
                         '(mouse-color . "#00FFFF") ;
-                        '(cursor-color . "#FFFFFF") ; カーソルの色
+                        '(cursor-color . "#FF0000") ; カーソルの色
                         '(vertical-scroll-bars . nil) ;
                    )
                   default-frame-alist))
