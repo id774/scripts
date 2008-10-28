@@ -73,7 +73,7 @@
 (setq inhibit-startup-message t)
 
 ;; ビープ音のかわりに画面反転
-(setq visible-bell nil)
+(setq visible-bell t)
 
 ;; あまりに大きいファイルは色付けると時間かかるので、上限を指定
 (setq font-lock-maximum-size nil)
