@@ -16,10 +16,14 @@
 
 (if window-system
   (progn
-    (set-default-font "Bitstream Vera Sans Mono-10")
-    (set-fontset-font (frame-parameter nil 'font)
-                      'japanese-jisx0208
-                      '("VL ゴシック" . "unicode-bmp"))
+;;GUIでsystem-typeがGNU/Linuxの場合はVLゴシックを指定
+    (cond
+      ((eq system-type 'gnu/linux)
+        (set-default-font "Bitstream Vera Sans Mono-10")
+        (set-fontset-font (frame-parameter nil 'font)
+                          'japanese-jisx0208
+                          '("VL ゴシック" . "unicode-bmp"))
+      ))
 ;;フレーム設定
     (setq default-frame-alist
           (append (list '(top . 0) ; 起動時の表示位置（上から）
