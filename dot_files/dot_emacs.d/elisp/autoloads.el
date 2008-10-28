@@ -140,8 +140,8 @@
 ;;  (setq recentf-max-saved-items 48))
 
 ;; 物理行移動
-;; (when (load-p "physical-line")
-;;  (physical-line-mode))
+(when (load-p "physical-line")
+  (physical-line-mode))
 
 ;; なんでもタブでやるac-mdoe
 ;; (when (load-p "ac-mode")

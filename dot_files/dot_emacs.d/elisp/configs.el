@@ -27,7 +27,7 @@
 ;; (fringe-mode 8)
 
 ;; ;; 時間表示
-;; (display-time)
+(display-time)
 
 ;; 行番号と列番号
 (line-number-mode t)
@@ -177,14 +177,6 @@
       nil
       'fullboth)))
 (global-set-key [(meta return)] 'toggle-fullscreen)
-
-;; Color
-(if window-system (progn
-  (set-background-color "Black")
-  (set-foreground-color "LightGray")
-  (set-cursor-color "Gray")
-  (set-frame-parameter nil 'alpha 80)
-  ))
 
 ;; \C-h は backspace であるべきだ
 (global-set-key "\C-h" 'delete-backward-char)
