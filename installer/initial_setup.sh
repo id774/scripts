@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.6 10/30,2008
+#       Emacs snapshot as default.
 #  v1.5 10/24,2008
 #       Add sysstat.
 #  v1.4 10/14,2008
@@ -184,6 +186,8 @@ $SCRIPTS/installer/install_mysql.sh
 
 # Text Editor
 sudo aptitude -y install emacs
+sudo aptitude -y install emacs-snapshot emacs-snapshot-el
+sudo update-alternatives --config emacs
 sudo aptitude -y install vim-gnome vim-gui-common vim-runtime colordiff
 sudo aptitude -y install ctags
 
@@ -333,6 +337,7 @@ test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 /dev/mapper/`
 #sudo aptitude install linux-kbuild-2.6.26 linux-headers-2.6.26-1-686 linux-source-2.6.26
 
 # hddtemp
+sudo aptitude -y install lm-sensors
 sudo aptitude -y install hddtemp
 sudo dpkg-reconfigure hddtemp
 
