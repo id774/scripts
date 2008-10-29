@@ -171,6 +171,7 @@
 (global-set-key "\C-j" 'newline)
 
 ;; fullscreen
+(set-frame-parameter nil 'fullscreen 'fullboth)
 (defun toggle-fullscreen ()
   (interactive)
     (set-frame-parameter nil 'fullscreen (if (frame-parameter nil 'fullscreen)
