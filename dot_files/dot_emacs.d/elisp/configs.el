@@ -182,6 +182,11 @@
 ;; \C-h は backspace であるべきだ
 (global-set-key "\C-h" 'delete-backward-char)
 
+;; Redo! (need byte-compile redo.el)
+(when (require 'redo nil t)
+  (define-key ctl-x-map (if window-system "U" "r") 'redo)
+  (define-key global-map [?\C-.] 'redo))
+
 (load "custom")
 
 
