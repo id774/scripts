@@ -16,7 +16,7 @@
 It is used as a default value of target path to search file or
 subdirectory under load-path.")
 (setq my-load-path
-      (list "/usr/local/share/emacs/21.4/site-lisp/navi2ch"
+      (list "/usr/local/share/emacs/site-lisp"
 	    (expand-file-name "~/.emacs.d/elisp")
 	    (expand-file-name "~/.emacs.d/elisp/3rd-party")
 	    (expand-file-name "~/.emacs.d/elisp/3rd-party/haskell-mode")
