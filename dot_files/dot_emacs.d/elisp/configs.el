@@ -124,9 +124,6 @@
 (put 'narrow-to-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
 
-;; こっちのwidowで編集しながらあっちの*help*をスクロールとか。
-(global-set-key "\M-V" 'scroll-other-window-down)
-
 ;; カーソル一個
 (setq cursor-in-non-selected-windows nil)
 
@@ -135,14 +132,6 @@
 
 ;; 行間(これ消してもいいかなぁ)
 ;; (setq-default line-spacing 0)
-
-;; No more bobcat, no more keyswap!
-(cond ((eq window-system 'x)
-       (progn
-	 (global-set-key [delete] 'delete-char)))
-      ((eq window-system 'mac)
-       t) ;; ok
-      (t (keyboard-translate ?\C-h ?\C-?)))
 
 ;; Anthy! Anthy!
 ;; (set-input-method "japanese-anthy")
@@ -166,10 +155,6 @@
   (setq indent-tabs-mode nil)
   (setq c-basic-offset 4))
 
-;; 普段、インデントするようにする
-(global-set-key "\C-m" 'newline-and-indent)
-(global-set-key "\C-j" 'newline)
-
 ;; fullscreen
 (set-frame-parameter nil 'fullscreen 'fullboth)
 (defun toggle-fullscreen ()
@@ -179,14 +164,15 @@
       'fullboth)))
 (global-set-key [(meta return)] 'toggle-fullscreen)
 
-;; \C-h は backspace であるべきだ
-(global-set-key "\C-h" 'delete-backward-char)
-
 ;; Redo! (need byte-compile redo.el)
 (when (require 'redo nil t)
   (define-key ctl-x-map (if window-system "U" "r") 'redo)
   (define-key global-map [?\C-.] 'redo))
 
+;; キーバインド設定
+(load "global-set-key")
+
+;; カスタム設定
 (load "custom")
 
 
