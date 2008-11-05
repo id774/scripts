@@ -25,7 +25,7 @@
 (define-key global-map [down] 'delete-other-windows)
 
 ;; 分割したウィンドウを時計回りに移動
-(global-set-key "\M-b" 'other-window)
+(global-set-key "\M-l" 'other-window)
 
 ;; バッファをM-n,M-pで切り替え
 (defun previous-buffer ()
