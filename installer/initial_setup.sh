@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.7 11/06,2008
+#       Change root shell from zsh to bash.
 #  v1.6 10/30,2008
 #       Emacs snapshot as default.
 #  v1.5 10/24,2008
@@ -130,7 +132,7 @@ sudo aptitude -y install tar zip gzip unzip bzip2
 sudo aptitude -y install lha-sjis
 sudo aptitude -y install zsh
 chsh -s /bin/zsh
-sudo chsh -s /bin/zsh root
+sudo chsh -s /bin/bash root
 sudo aptitude -y install screen
 
 # Libraries and Programming Tools
