@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 19-Sep-2008.
+# Last Change: 08-Nov-2008.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_linux_env() {
@@ -169,8 +169,8 @@ set_basic_options() {
     alias -g W='| wc'
     alias g='gvim'
     alias vi='vim'
-    alias v='vim'
-    alias e='emacs -nw'
+    alias v='screen -U vim'
+    alias e='screen -U emacs -nw'
     alias em='emacs -nw'
     alias l='ls -ltra'
     alias d='ls -ltr'

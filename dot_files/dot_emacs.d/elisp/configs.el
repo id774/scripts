@@ -172,6 +172,9 @@
 ;; キーバインド設定
 (load "global-set-key")
 
+;; view-modeキーバインド設定
+(load "view-mode-key")
+
 ;; カスタム設定
 (load "custom")
 

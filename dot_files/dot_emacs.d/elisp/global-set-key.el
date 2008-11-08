@@ -15,6 +15,9 @@
        t) ;; ok
       (t (keyboard-translate ?\C-h ?\C-?)))
 
+;; C-M-g でも keyboard-escape-quit する
+(global-set-key "\C-\M-g" 'keyboard-escape-quit)
+
 ;; \C-h を backspace にする
 (global-set-key "\C-h" 'delete-backward-char)
 
