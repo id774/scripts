@@ -15,6 +15,9 @@
        t) ;; ok
       (t (keyboard-translate ?\C-h ?\C-?)))
 
+;; auto-complete-modeの有効/無効を切り替える
+(define-key global-map "\C-x\C-a" 'auto-complete-mode)
+
 ;; C-M-g でも keyboard-escape-quit する
 (global-set-key "\C-\M-g" 'keyboard-escape-quit)
 

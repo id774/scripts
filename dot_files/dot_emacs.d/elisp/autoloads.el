@@ -3,6 +3,13 @@
 
 (load "utils")
 
+;; Textモードをデフォルトに
+(setq default-major-mode 'text-mode)
+
+;; オートコンプリート
+(require 'auto-complete)
+(global-auto-complete-mode t)
+
 ;; timidity-mode : TiMidity++ emacs front-end
 (when (autoload-p 'timidity "timidity" "TiMidity++" 'interactive))
 
