@@ -20,7 +20,7 @@ echo -n "*** $0: Job start at `/bin/hostname` on ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1
 
 # Debian unstable (simulate only)
-#aptitude update >> $JOBLOG 2>&1 && aptitude -s -v -y dist-upgrade >> $JOBLOG 2>&1
+#aptitude update >> $JOBLOG 2>&1 && aptitude -s -v -y full-upgrade >> $JOBLOG 2>&1
 
 # Debian stable/testing
 #aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && aptitude autoclean >> $JOBLOG 2>&1
