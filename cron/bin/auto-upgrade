@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.5 11/10,2008
+#       Only simulate upgrade in debian unstable.
 #  v0.4 6/21,2008
 #       Auto Kernel Upgrade.
 #  v0.3 9/20,2007
@@ -17,17 +19,17 @@ JOBLOG=/var/log/auto-upgrade.log
 echo -n "*** $0: Job start at `/bin/hostname` on ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1
 
-# Debian sid (unstable)
-#sudo aptitude update >> $JOBLOG 2>&1 && sudo aptitude -y dist-upgrade >> $JOBLOG 2>&1 && sudo aptitude autoclean >> $JOBLOG 2>&1
+# Debian unstable (simulate only)
+#aptitude update >> $JOBLOG 2>&1 && aptitude -s -v -y dist-upgrade >> $JOBLOG 2>&1
 
-# Debian testing
-#aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && sudo aptitude autoclean >> $JOBLOG 2>&1
+# Debian stable/testing
+#aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && aptitude autoclean >> $JOBLOG 2>&1
 
 # Ubuntu Server
-aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && sudo aptitude -y install linux-image-server linux-server gnupg >> $JOBLOG 2>&1 && sudo aptitude autoclean >> $JOBLOG 2>&1
+aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && aptitude -y install linux-image-server linux-server gnupg >> $JOBLOG 2>&1 && aptitude autoclean >> $JOBLOG 2>&1
 
 # Ubuntu Desktop
-#aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && sudo aptitude -y install linux-image-generic linux-generic linux-restricted-modules-generic linux-headers linux-headers-generic gnupg >> $JOBLOG 2>&1 && sudo aptitude autoclean >> $JOBLOG 2>&1
+#aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && aptitude -y install linux-image-generic linux-generic linux-restricted-modules-generic linux-headers linux-headers-generic gnupg >> $JOBLOG 2>&1 && aptitude autoclean >> $JOBLOG 2>&1
 
 # AntiVirus Database
 freshclam >> $JOBLOG 2>&1
