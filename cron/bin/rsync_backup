@@ -1,6 +1,7 @@
 #!/bin/sh
 
 JOBLOG=/var/log/rsync_backup
+JOBLOG_1=/var/log/rsync_backup.1
 TRIGGER_FILE=/home/ubuntu/mnt/rsync_backup
 
 echo -n "*** $0: Job start at `/bin/hostname` on ">>$JOBLOG 2>&1
@@ -27,7 +28,8 @@ case "$ADMIN_MAIL_ADDRESS" in
   *@*)
     case "$RSYNC_BACKUP_RUN" in
       run)
-        cat $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Rsync Backup Log" $ADMIN_MAIL_ADDRESS
+        test -r $JOBLOG_1 && cat $JOBLOG_1 $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Rsync Backup Log" $ADMIN_MAIL_ADDRESS
+        test -r $JOBLOG_1 || cat $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Rsync Backup Log" $ADMIN_MAIL_ADDRESS
         ;;
     esac
     ;;
