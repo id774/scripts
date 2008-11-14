@@ -53,4 +53,5 @@ zsh -c 'zcompile ~/.zshrc'
 test -d /etc/xdg/xfce4 && sudo cp $SCRIPTS/dot_files/$DEFAULT_KEYMAPFILE /etc/xdg/xfce4/xmodmaprc
 test -f /etc/xdg/xfce4/xmodmaprc && sudo vim /etc/xdg/xfce4/xmodmaprc
 test -f /etc/xdg/xfce4/xinitrc && sudo vim /etc/xdg/xfce4/xinitrc
+vim ~/.gitconfig
 

@@ -1,0 +1,6 @@
+#export http_proxy=http://proxy.hoge.co.jp:8080
+#export ftp_proxy=http://proxy.hoge.co.jp:8080
+#export HTTP_PROXY=http://proxy.hoge.co.jp:8080
+#export FTP_PROXY=http://proxy.hoge.co.jp:8080
+
+#export _JAVA_OPTIONS="-Dawt.useSystemAAFontSettings=lcd"
