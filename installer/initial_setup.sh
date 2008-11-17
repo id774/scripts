@@ -228,6 +228,7 @@ sudo aptitude install -y sun-java6-jdk
 
 # GDM Themes
 #$SCRIPTS/installer/install_gdmthemes.sh
+#$SCRIPTS/installer/install_gdmthemes2.sh
 
 # gthumb
 #sudo aptitude -y install gthumb
