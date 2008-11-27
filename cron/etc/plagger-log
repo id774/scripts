@@ -1,0 +1,27 @@
+/var/log/plagger.log {
+  daily
+  missingok
+  create 0640 plagger adm
+  rotate 30
+}
+
+/var/log/plaggersbm.log {
+  daily
+  missingok
+  create 0640 plagger adm
+  rotate 30
+}
+
+/var/log/plagger2ch2twitter.log {
+  daily
+  missingok
+  create 0640 plagger adm
+  rotate 30
+}
+
+/var/log/plagger2ch2gmail.log {
+  daily
+  missingok
+  create 0640 plagger adm
+  rotate 30
+}

@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 11/27,2008
+#       Increase plagger scripts.
 #  v1.3 9/11,2008
 #       Split.
 ########################################################################
@@ -18,6 +20,7 @@ sudo mkdir -p /home/plagger/.plagger_tmp/tmp2
 sudo mkdir -p /home/plagger/.plagger_tmp/tmp3
 sudo mkdir -p /home/plagger/.plagger_tmp/tmp4
 sudo mkdir -p /home/plagger/.plagger_tmp/tmp5
+sudo mkdir -p /home/plagger/.plagger_tmp/2ch
 sudo mkdir -p /home/plagger/bin
 sudo mkdir -p /home/plagger/yaml
 sudo chmod -R 750 /home/plagger
@@ -27,15 +30,21 @@ sudo chmod 750 /home/plagger/bin/*
 sudo cp $SCRIPTS/cron/plagger/yaml/* /home/plagger/yaml/
 sudo vim /home/plagger/yaml/*
 sudo chmod 640 /home/plagger/yaml/*
-sudo cp $SCRIPTS/cron/plagger-log /etc/logrotate.d/plagger
+sudo cp $SCRIPTS/cron/etc/plagger-log /etc/logrotate.d/plagger
 sudo chmod 644 /etc/logrotate.d/plagger
 sudo chown root:root /etc/logrotate.d/plagger
 sudo touch /var/log/plagger.log
 sudo touch /var/log/plaggersbm.log
+sudo touch /var/log/plagger2ch2twitter.log
+sudo touch /var/log/plagger2ch2gmail.log
 sudo chmod 640 /var/log/plagger.log
 sudo chmod 640 /var/log/plaggersbm.log
+sudo chmod 640 /var/log/plagger2ch2twitter.log
+sudo chmod 640 /var/log/plagger2ch2gmail.log
 sudo chown plagger:adm /var/log/plagger.log
 sudo chown plagger:adm /var/log/plaggersbm.log
+sudo chown plagger:adm /var/log/plagger2ch2twitter.log
+sudo chown plagger:adm /var/log/plagger2ch2gmail.log
 sudo chown -R plagger:plagger /home/plagger
 
 # Twitter

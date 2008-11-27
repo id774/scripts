@@ -1,0 +1,42 @@
+global:
+  assets_path: /usr/local/share/perl/5.10.0/Plagger/assets
+  timezone: Asia/Tokyo
+  cache:
+    base: /home/plagger/.plagger_tmp/2ch
+  log:
+    level: info
+
+plugins:
+  - module: CustomFeed::2ch
+    config:
+      cache: /home/plagger/.plagger_tmp/2ch
+      fetch_body_interval: 10
+      fetch_items: 15
+      urls:
+       - url: http://pc11.2ch.net/test/read.cgi/sns/1226405234/ # Twitter
+       - url: http://pc11.2ch.net/test/read.cgi/net/1226137775/ # HatenaDiary
+       - url: http://pc11.2ch.net/test/read.cgi/win/1213292291/ # hasigotan
+       - url: http://pc11.2ch.net/test/read.cgi/linux/1223378806/ # Debian
+       - url: http://pc11.2ch.net/test/read.cgi/linux/1162356771/ # Debian kimo
+       - url: http://pc11.2ch.net/test/read.cgi/linux/1154631461/ # Debian moe
+       - url: http://pc11.2ch.net/test/read.cgi/cdr/1101596318/ # Data
+       - url: http://pc11.2ch.net/test/read.cgi/software/1217020056/ # crypt
+       - url: http://gimpo.2ch.net/test/read.cgi/juice/1018809225/ # lemoria
+       - url: http://gimpo.2ch.net/test/read.cgi/toy/1213890647/ # Rozen
+       - url: http://pc11.2ch.net/test/read.cgi/unix/1226188082/ # Emacs
+       - url: http://pc11.2ch.net/test/read.cgi/unix/1202050038/ # Vim
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1188688416/ # Compiler
+       - url: http://namidame.2ch.net/test/read.cgi/ojyuken/1205690127/ # aoyama
+
+  - module: Filter::StripRSSAd
+
+  - module: Filter::EntryFullText
+
+  - module: Publish::Gmail
+    config:
+      mailto: plagger.receiver@gmail.com
+      mailfrom: plagger@elven.mcm.nir.jp
+      mailroute:
+        via: smtp
+        host: localhost:25
+
