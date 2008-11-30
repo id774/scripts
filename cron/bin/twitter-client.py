@@ -7,10 +7,11 @@ import re
 import time
 import pynotify
 
+password = 'xxxxxxxx'
 timeline_url ='http://twitter.com/statuses/friends_timeline.xml' 
 last_id = 0
 
-def notify(username, password, tmpfile):
+def notify(username, tmpfile):
   auth_handler = urllib2.HTTPBasicAuthHandler()
   auth_handler.add_password(
     'Twitter API', 'http://twitter.com/',
@@ -54,14 +55,12 @@ if __name__ == '__main__':
   parser = OptionParser(usage)
   parser.add_option("-u", "--username", dest="username",
                     help="your username")
-  parser.add_option("-p", "--password", dest="password",
-                    help="your password")
   parser.add_option("-t", "--tmpfile", dest="tmpfile",
                     help="temporary file")
   (options, args) = parser.parse_args()
   pynotify.init("TwitterNotifier")
-  if options.username and options.password and options.tmpfile:
-    notify(options.username, options.password, options.tmpfile)
+  if options.username and options.tmpfile:
+    notify(options.username, options.tmpfile)
   else:
     parser.error("Incorrect options, Add -h option for help.")
 
