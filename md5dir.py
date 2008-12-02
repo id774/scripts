@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 
 import sys, os
-from stat import *
-script_dir = os.path.dirname(os.path.abspath(__file__))
-python_userlib_dir = script_dir + os.sep + 'lib'
-if not python_userlib_dir in sys.path:
-    sys.path.append(python_userlib_dir)
+p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib')
+if not p in sys.path:
+    sys.path.append(p)
+try:
+    p = os.path.join(os.environ['SCRIPTS'], 'lib')
+    if not p in sys.path:
+        sys.path.append(p)
+except KeyError:
+    pass
 
 def md5_dir(subdirectory, args):
     import md5sum, os
+    from stat import *
     m = md5sum.Md5sum()
     if subdirectory or S_ISDIR(os.stat(args[0])[ST_MODE]):
         for root, dirs, files in os.walk(args[0]):

@@ -13,10 +13,15 @@
 ########################################################################
 
 import sys, os
-script_dir = os.path.dirname(os.path.abspath(__file__))
-python_userlib_dir = script_dir + os.sep + 'lib'
-if not python_userlib_dir in sys.path:
-    sys.path.append(python_userlib_dir)
+p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib')
+if not p in sys.path:
+    sys.path.append(p)
+try:
+    p = os.path.join(os.environ['SCRIPTS'], 'lib')
+    if not p in sys.path:
+        sys.path.append(p)
+except KeyError:
+    pass
 
 def show_version():
     import python_module_version
