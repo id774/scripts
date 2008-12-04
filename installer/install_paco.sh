@@ -11,7 +11,6 @@
 
 PACO=paco-2.0.6
 
-sudo aptitude install libgtkmm-2.4-dev
 mkdir paco
 cd paco
 wget http://downloads.sourceforge.net/paco/$PACO.tar.gz
