@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 12/15,2008
+#       Set permission of source.
 #  v1.0 8/15,2008
 #       Stable.
 ########################################################################
@@ -24,7 +26,8 @@ make
 sudo make install
 cd ..
 sudo mkdir -p /usr/local/src/ipmsg
-sudo cp -av $IPMSG/ /usr/local/src/ipmsg/
+sudo cp -av $IPMSG /usr/local/src/ipmsg/
+sudo chown -R root:root /usr/local/src/ipmsg
 
 cd ..
 rm -rf install_ipmsg
