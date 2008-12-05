@@ -19,7 +19,7 @@
 ;;GUIでsystem-typeがGNU/Linuxの場合はVLゴシックを指定
     (cond
       ((eq system-type 'gnu/linux)
-        (set-default-font "Bitstream Vera Sans Mono-10")
+        (set-default-font "VL ゴシック-10")
         (set-fontset-font (frame-parameter nil 'font)
                           'japanese-jisx0208
                           '("VL ゴシック" . "unicode-bmp"))
