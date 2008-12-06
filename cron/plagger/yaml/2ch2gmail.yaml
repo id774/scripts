@@ -13,19 +13,85 @@ plugins:
       fetch_body_interval: 10
       fetch_items: 15
       urls:
-       - url: http://pc11.2ch.net/test/read.cgi/sns/1226405234/ # Twitter
-       - url: http://pc11.2ch.net/test/read.cgi/net/1226137775/ # HatenaDiary
-       - url: http://pc11.2ch.net/test/read.cgi/win/1213292291/ # hasigotan
+       - url: http://gimpo.2ch.net/test/read.cgi/juice/1018809225/ # lemoria
+       - url: http://gimpo.2ch.net/test/read.cgi/toy/1213890647/ # Rozen Maden
+       - url: http://pc11.2ch.net/test/read.cgi/cdr/1101596318/ # Data Eternal
+       - url: http://pc11.2ch.net/test/read.cgi/software/1217020056/ # TrueCrypt
+       - url: http://pc11.2ch.net/test/read.cgi/software/1228112642/ # Firefox
+       - url: http://pc11.2ch.net/test/read.cgi/software/1165277378/ # Build Firefox
+       - url: http://pc11.2ch.net/test/read.cgi/software/1212476412/ # Safari
+       - url: http://pc11.2ch.net/test/read.cgi/software/1223645400/ # Thunderbird
+       - url: http://pc11.2ch.net/test/read.cgi/software/1206780544/ # Songbird
+       - url: http://pc11.2ch.net/test/read.cgi/software/1224384366/ # OpenOffice.org
+       - url: http://pc11.2ch.net/test/read.cgi/software/1151128986/ # JmEditor
+       - url: http://pc11.2ch.net/test/read.cgi/mac/1228189972/ # MacBook Pro
+       - url: http://pc11.2ch.net/test/read.cgi/mac/1227918912/ # MacBook
+       - url: http://pc11.2ch.net/test/read.cgi/mac/1226579723/ # MacBook Air
+       - url: http://pc11.2ch.net/test/read.cgi/mac/1194243286/ # OS X Server
+       - url: http://pc11.2ch.net/test/read.cgi/mac/1228571556/ # Snow Leopard
+       - url: http://pc11.2ch.net/test/read.cgi/mac/1227319093/ # VMware Fusion
+       - url: http://pc11.2ch.net/test/read.cgi/mac/1227023728/ # OS X Beginner
+       - url: http://pc11.2ch.net/test/read.cgi/mac/1159105251/ # OS X Customize
+       - url: http://pc11.2ch.net/test/read.cgi/mac/1209741584/ # Mac Security
+       - url: http://pc11.2ch.net/test/read.cgi/mac/1216828888/ # MacBook Touch
+       - url: http://pc11.2ch.net/test/read.cgi/mac/1227232767/ # Buy Mac
+       - url: http://pc11.2ch.net/test/read.cgi/mac/1222863226/ # OS X Leopard
        - url: http://pc11.2ch.net/test/read.cgi/linux/1223378806/ # Debian
        - url: http://pc11.2ch.net/test/read.cgi/linux/1162356771/ # Debian kimo
        - url: http://pc11.2ch.net/test/read.cgi/linux/1154631461/ # Debian moe
-       - url: http://pc11.2ch.net/test/read.cgi/cdr/1101596318/ # Data
-       - url: http://pc11.2ch.net/test/read.cgi/software/1217020056/ # crypt
-       - url: http://gimpo.2ch.net/test/read.cgi/juice/1018809225/ # lemoria
-       - url: http://gimpo.2ch.net/test/read.cgi/toy/1213890647/ # Rozen
-       - url: http://pc11.2ch.net/test/read.cgi/unix/1226188082/ # Emacs
+       - url: http://pc11.2ch.net/test/read.cgi/linux/1101718848/ # ogochan
+       - url: http://pc11.2ch.net/test/read.cgi/linux/1226118505/ # Ubuntu
+       - url: http://pc11.2ch.net/test/read.cgi/linux/1228483503/ # Ubuntu Beginner
+       - url: http://pc11.2ch.net/test/read.cgi/linux/1194349469/ # Fedora vs Ubuntu
+       - url: http://pc11.2ch.net/test/read.cgi/linux/1197805152/ # Xubuntu
+       - url: http://pc11.2ch.net/test/read.cgi/linux/1195969717/ # Thanks Ubuntu
+       - url: http://pc11.2ch.net/test/read.cgi/linux/1178076924/ # King Ubuntu
+       - url: http://pc11.2ch.net/test/read.cgi/linux/1210999497/ # ShellScript (Linux)
+       - url: http://pc11.2ch.net/test/read.cgi/unix/1224085718/ # ShellScript (UNIX)
+       - url: http://pc11.2ch.net/test/read.cgi/unix/1226188082/ # GNU Emacs
        - url: http://pc11.2ch.net/test/read.cgi/unix/1202050038/ # Vim
+       - url: http://pc11.2ch.net/test/read.cgi/unix/1148721522/ # GNU Screen
+       - url: http://pc11.2ch.net/test/read.cgi/notepc/1226905371/ # ThinkPad X
+       - url: http://pc11.2ch.net/test/read.cgi/notepc/1226594699/ # ThinkPad All
+       - url: http://pc11.2ch.net/test/read.cgi/notepc/1227960605/ # EeePC S101
+       - url: http://pc11.2ch.net/test/read.cgi/notepc/1228229567/ # AspireOne
+       - url: http://pc11.2ch.net/test/read.cgi/hard/1226986127/ # PowerEdge
+       - url: http://pc11.2ch.net/test/read.cgi/hard/1228307372/ # ML115
+       - url: http://pc11.2ch.net/test/read.cgi/hard/1222027292/ # ML115 Q&A
+       - url: http://pc11.2ch.net/test/read.cgi/hard/1228478885/ # Express 5800
+       - url: http://pc11.2ch.net/test/read.cgi/hard/1223897072/ # HHK
+       - url: http://pc11.2ch.net/test/read.cgi/hard/1224866926/ # RealForce
+       - url: http://pc11.2ch.net/test/read.cgi/hard/1220125954/ # SSD
+       - url: http://pc11.2ch.net/test/read.cgi/hard/1210423135/ # 3.5HDD
+       - url: http://pc11.2ch.net/test/read.cgi/hard/1218792198/ # 2.5HDD
+       - url: http://pc11.2ch.net/test/read.cgi/hard/1222611050/ # 24inch Monitor
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1218959013/ # NetBeans
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1220531647/ # Java7
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1226830195/ # Python leaning
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1218155094/ # Python Beginner
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1219618707/ # Python Fun
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1227123021/ # Ruby Beginner
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1223709050/ # Ruby
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1158807229/ # Ruby > Java
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1156496224/ # Ruby hard
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1216829388/ # RubyGems
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1215319832/ # LL Battle
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1217851121/ # About Perl
        - url: http://pc11.2ch.net/test/read.cgi/tech/1188688416/ # Compiler
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1163314891/ # Mac Dev
+       - url: http://pc11.2ch.net/test/read.cgi/tech/1163173901/ # BTS
+       - url: http://pc11.2ch.net/test/read.cgi/prog/1143189036/ # FreeSoft
+       - url: http://pc11.2ch.net/test/read.cgi/prog/1205992205/ # Programmer Payment
+       - url: http://pc11.2ch.net/test/read.cgi/prog/1226126584/ # Japan IT
+       - url: http://pc11.2ch.net/test/read.cgi/prog/1223160289/ # GPL
+       - url: http://pc11.2ch.net/test/read.cgi/prog/1226626956/ # IPA mitou
+       - url: http://pc11.2ch.net/test/read.cgi/prog/1215795267/ # Programmer Family
+       - url: http://pc11.2ch.net/test/read.cgi/prog/1169920035/ # Programmer Age
+       - url: http://pc11.2ch.net/test/read.cgi/prog/1210355862/ # chu2 Programmer
+       - url: http://pc11.2ch.net/test/read.cgi/prog/1156073931/ # SCM
+       - url: http://pc11.2ch.net/test/read.cgi/sns/1226405234/ # Twitter
+       - url: http://pc11.2ch.net/test/read.cgi/net/1226137775/ # HatenaDiary
+       - url: http://pc11.2ch.net/test/read.cgi/win/1213292291/ # hasigotan
        - url: http://namidame.2ch.net/test/read.cgi/ojyuken/1205690127/ # aoyama
 
   - module: Filter::StripRSSAd
