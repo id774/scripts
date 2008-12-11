@@ -40,6 +40,9 @@
 (iswitchb-mode)
 (iswitchb-default-keybindings)
 
+;; バックアップファイルを残さない
+(setq make-backup-files nil)
+
 ;; バックアップファイルの保存位置指定
 ;; CVSで管理していても設定しておくと安全
 ;; !path!to!file-name~ で保存される
