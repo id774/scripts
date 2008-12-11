@@ -16,11 +16,12 @@
 
 (if window-system
   (progn
-;;GUIでsystem-typeがGNU/Linuxの場合はVLゴシックを指定
+;; GUIでsystem-typeがGNU/Linuxの場合は
+;; Bitstream Vera Sans Mono/VLゴシックを指定
+;; (要:ttf-bitstream-veraパッケージ)
     (cond
       ((eq system-type 'gnu/linux)
-        ;; (set-default-font "VL ゴシック-10")
-        (set-default-font "Bitstream Vera Sans Mono-10")
+        (set-default-font "Bitstream Vera Sans Mono-8")
         (set-fontset-font (frame-parameter nil 'font)
                           'japanese-jisx0208
                           '("VL ゴシック" . "unicode-bmp"))

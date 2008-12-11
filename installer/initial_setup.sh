@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.8 12/11,2008
+#       Add Bitstream Vera Sans Mono font, set emacs default, purge vim-gnome.
 #  v1.7 11/06,2008
 #       Change root shell from zsh to bash.
 #  v1.6 10/30,2008
@@ -190,8 +192,11 @@ $SCRIPTS/installer/install_mysql.sh
 sudo aptitude -y install emacs
 sudo aptitude -y install emacs-snapshot emacs-snapshot-el
 sudo update-alternatives --config emacs
-sudo aptitude -y install vim-gnome vim-gui-common vim-runtime colordiff
+sudo aptitude -y install vim-gui-common vim-runtime colordiff
 sudo aptitude -y install ctags
+
+# Bitstream Vera Sans Mono font(for Emacs)
+sudo aptitude -y install ttf-bitstream-vera
 
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
