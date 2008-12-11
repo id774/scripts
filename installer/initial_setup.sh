@@ -196,7 +196,7 @@ sudo aptitude -y install vim-gui-common vim-runtime colordiff
 sudo aptitude -y install ctags
 
 # Bitstream Vera Sans Mono font(for Emacs)
-sudo aptitude -y install ttf-bitstream-vera
+sudo aptitude -y install ttf-vlgothic ttf-bitstream-vera
 
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
