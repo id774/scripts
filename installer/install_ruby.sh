@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 12/11,2008
+#       Make symbolic link of ruby-mode.el.
 #  v1.2 8/24,2008
 #       Change directory of ruby trunk source.
 #  v1.1 8/12,2008
@@ -30,6 +32,8 @@ install_trunk() {
     sudo ruby extconf.rb
     sudo make
     sudo make install
+    test -L /usr/local/share/emacs/site-lisp/ruby-mode.el && sudo rm /usr/local/share/emacs/site-lisp/ruby-mode.el
+    sudo ln -s /usr/local/src/ruby/trunk/misc/ruby-mode.el /usr/local/share/emacs/site-lisp/ruby-mode.el
 }
 
 install_branch() {
@@ -49,6 +53,8 @@ install_branch() {
     sudo ruby extconf.rb
     sudo make
     sudo make install
+    test -L /usr/local/share/emacs/site-lisp/ruby-mode.el && sudo rm /usr/local/share/emacs/site-lisp/ruby-mode.el
+    sudo ln -s /usr/local/src/ruby/branches/$1/misc/ruby-mode.el /usr/local/share/emacs/site-lisp/ruby-mode.el
 }
 
 install_stable() {
@@ -73,11 +79,13 @@ install_stable() {
     sudo cp -a ruby-$1 /usr/local/src/ruby
     cd ..
     rm -rf install_ruby
+    test -L /usr/local/share/emacs/site-lisp/ruby-mode.el && sudo rm /usr/local/share/emacs/site-lisp/ruby-mode.el
+    sudo ln -s /usr/local/src/ruby/ruby-$1/misc/ruby-mode.el /usr/local/share/emacs/site-lisp/ruby-mode.el
 }
 
 case "$1" in
-  187-72)
-    install_stable 1.8.7-p72 1.8
+  187-73)
+    install_stable 1.8.7-p73 1.8
     ;;
   186-287)
     install_stable 1.8.6-p287 1.8
