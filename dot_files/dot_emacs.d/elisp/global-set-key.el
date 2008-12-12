@@ -25,10 +25,10 @@
 (global-set-key "\C-h" 'delete-backward-char)
 
 ;; ウィンドウ分割
-(global-set-key [right] 'split-window-horizontally)
-(global-set-key [left] 'split-window-horizontally)
-(define-key global-map [up] 'split-window-vertically)
-(define-key global-map [down] 'delete-other-windows)
+(global-set-key [right] 'delete-other-windows)
+(global-set-key [left] 'split-window-vertically)
+(define-key global-map [up] 'find-file)
+(define-key global-map [down] 'electric-buffer-list)
 
 ;; 分割したウィンドウを時計回りに移動
 (global-set-key "\M-l" 'other-window)
