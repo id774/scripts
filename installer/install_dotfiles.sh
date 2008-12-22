@@ -54,4 +54,6 @@ test -d /etc/xdg/xfce4 && sudo cp $SCRIPTS/dot_files/$DEFAULT_KEYMAPFILE /etc/xd
 test -f /etc/xdg/xfce4/xmodmaprc && sudo vim /etc/xdg/xfce4/xmodmaprc
 test -f /etc/xdg/xfce4/xinitrc && sudo vim /etc/xdg/xfce4/xinitrc
 vim ~/.gitconfig
+test -f ~/.tmp/.gitconfig.bak && rm ~/.tmp/.gitconfig.bak
+test -f ~/.viminfo && sudo chown $USER ~/.viminfo
 
