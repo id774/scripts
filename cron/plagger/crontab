@@ -7,32 +7,38 @@
 SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
-# m h dom mon dow user	command
 # Server 1
+# m h dom mon dow user	command
 07 *	* * *	root    cd / && run-parts --report /etc/cron.hourly
 15 6	* * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
 37 6	* * 7	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
 42 6	1 * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
 #
-48 2,5,8,11,14,17,20,23 * * * plagger test -x /home/plagger/bin/mixi-logger && /home/plagger/bin/mixi-logger
+17 5,11,17,23 * * * plagger test -x /home/plagger/bin/mixi-logger && /home/plagger/bin/mixi-logger
 */3 * * * * plagger test -x /home/plagger/bin/twitter-logger && /home/plagger/bin/twitter-logger
-45 1,9,17  * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail1.sh && /home/plagger/bin/plagger_ldr2gmail1.sh
-45 3,11,19 * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail2.sh && /home/plagger/bin/plagger_ldr2gmail2.sh
-45 5,13,21 * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail3.sh && /home/plagger/bin/plagger_ldr2gmail3.sh
-45 7,15,23 * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail4.sh && /home/plagger/bin/plagger_ldr2gmail4.sh
+15 2  * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail1.sh && /home/plagger/bin/plagger_ldr2gmail1.sh
+15 8 * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail2.sh && /home/plagger/bin/plagger_ldr2gmail2.sh
+15 14 * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail3.sh && /home/plagger/bin/plagger_ldr2gmail3.sh
+15 20 * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail4.sh && /home/plagger/bin/plagger_ldr2gmail4.sh
 */10 * * * * plagger test -x /home/plagger/bin/plagger_ldr2hatenabookmark.sh && /home/plagger/bin/plagger_ldr2hatenabookmark.sh
+50 * * * * plagger test -x /home/plagger/bin/twitter-logger2 && /home/plagger/bin/twitter-logger2
+*/12 * * * * plagger test -x /home/plagger/bin/twitter-logger3 && /home/plagger/bin/twitter-logger3
+
 # Server 2
+# m h dom mon dow user	command
 01 *	* * *	root    cd / && run-parts --report /etc/cron.hourly
 09 6	* * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
 31 6	* * 7	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
 36 6	1 * *	root	test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
 #
-17 1,4,7,10,13,16,19,22 * * * plagger test -x /home/plagger/bin/mixi-logger && /home/plagger/bin/mixi-logger
+48 2,8,14,20 * * * plagger test -x /home/plagger/bin/mixi-logger && /home/plagger/bin/mixi-logger
 */5 * * * * plagger test -x /home/plagger/bin/twitter-logger && /home/plagger/bin/twitter-logger
-15 1,9,17  * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail1.sh && /home/plagger/bin/plagger_ldr2gmail1.sh
-15 3,11,19 * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail2.sh && /home/plagger/bin/plagger_ldr2gmail2.sh
-15 5,13,21 * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail3.sh && /home/plagger/bin/plagger_ldr2gmail3.sh
-15 7,15,23 * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail4.sh && /home/plagger/bin/plagger_ldr2gmail4.sh
+45 5 * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail1.sh && /home/plagger/bin/plagger_ldr2gmail1.sh
+45 11 * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail2.sh && /home/plagger/bin/plagger_ldr2gmail2.sh
+45 17 * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail3.sh && /home/plagger/bin/plagger_ldr2gmail3.sh
+45 23 * * * plagger test -x /home/plagger/bin/plagger_ldr2gmail4.sh && /home/plagger/bin/plagger_ldr2gmail4.sh
 5,15,25,35,45,55 * * * * plagger test -x /home/plagger/bin/plagger_ldr2hatenabookmark.sh && /home/plagger/bin/plagger_ldr2hatenabookmark.sh
+*/10 * * * * plagger test -x /home/plagger/bin/plagger_2ch2twitter.sh && /home/plagger/bin/plagger_2ch2twitter.sh
+44 4 * * * plagger test -x /home/plagger/bin/plagger_2ch2gmail.sh && /home/plagger/bin/plagger_2ch2gmail.sh
 #
 
