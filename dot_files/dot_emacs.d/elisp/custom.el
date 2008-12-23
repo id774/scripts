@@ -1,8 +1,11 @@
 ;; 透明化
 (add-to-list 'default-frame-alist '(alpha . (80 50)))
 
-;; Twitter(twittering-mode.el)
-(load "twitter-account")
+;; Twitter
+(load "twitter1-account")
+(load "twitter2-account")
+(load "twitter3-account")
+(load "twitter4-account")
 
 ;; Local Variables:
 ;; mode : emacs-lisp

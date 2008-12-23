@@ -17,6 +17,6 @@ cp $OPTIONS $SCRIPTS/dot_files/dot_emacs $HOME/.emacs
 TARGET=$HOME/.emacs.d
 test -d $TARGET || mkdir -p $TARGET
 cp $OPTIONS $SCRIPTS/dot_files/dot_emacs.d/* $TARGET/
-chmod 600 $TARGET/elisp/twitter-account.el
-vim $TARGET/elisp/twitter-account.el
+
+test -f ~/private/scripts/etc/twitter1-account.el && cp $OPTIONS ~/private/scripts/etc/twitter*-account.el $TARGET/elisp/
 

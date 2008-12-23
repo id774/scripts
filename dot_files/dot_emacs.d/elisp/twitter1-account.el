@@ -1,7 +1,7 @@
 ;; Twitterアカウント設定
-(require 'twittering-mode)
-(setq twittering-username "")
-(setq twittering-password "")
+(require 'twitter1-mode)
+(setq twitter1-username "twitt")
+(setq twitter1-password "xxxxxxxx")
 
 ;; Local Variables:
 ;; mode : emacs-lisp
