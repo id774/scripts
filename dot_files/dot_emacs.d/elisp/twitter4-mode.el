@@ -60,7 +60,7 @@
 
 (defvar twitter4-timer nil "Timer object for timeline refreshing will be stored here. DO NOT SET VALUE MANUALLY.")
 
-(defvar twitter4-idle-time 15)
+(defvar twitter4-idle-time 20)
 
 (defvar twitter4-timer-interval 90)
 
@@ -122,11 +122,11 @@
   `(setq ,listvar (cons ,value ,listvar)))
 
 ;;; Proxy
-(defvar twitter4-proxy-use nil)
-(defvar twitter4-proxy-server nil)
-(defvar twitter4-proxy-port 8080)
-(defvar twitter4-proxy-user nil)
-(defvar twitter4-proxy-password nil)
+(defvar twitter4-proxy-use global-proxy-use)
+(defvar twitter4-proxy-server global-proxy-server)
+(defvar twitter4-proxy-port global-proxy-port)
+(defvar twitter4-proxy-user global-proxy-user)
+(defvar twitter4-proxy-password global-proxy-password)
 
 (defun twitter4-toggle-proxy () ""
   (interactive)

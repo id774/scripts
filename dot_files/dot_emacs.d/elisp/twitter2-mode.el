@@ -62,7 +62,7 @@
 
 (defvar twitter2-idle-time 25)
 
-(defvar twitter2-timer-interval 200)
+(defvar twitter2-timer-interval 150)
 
 (defvar twitter2-username nil)
 
@@ -122,11 +122,11 @@
   `(setq ,listvar (cons ,value ,listvar)))
 
 ;;; Proxy
-(defvar twitter2-proxy-use nil)
-(defvar twitter2-proxy-server nil)
-(defvar twitter2-proxy-port 8080)
-(defvar twitter2-proxy-user nil)
-(defvar twitter2-proxy-password nil)
+(defvar twitter2-proxy-use global-proxy-use)
+(defvar twitter2-proxy-server global-proxy-server)
+(defvar twitter2-proxy-port global-proxy-port)
+(defvar twitter2-proxy-user global-proxy-user)
+(defvar twitter2-proxy-password global-proxy-password)
 
 (defun twitter2-toggle-proxy () ""
   (interactive)

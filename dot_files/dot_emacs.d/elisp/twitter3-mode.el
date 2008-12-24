@@ -122,11 +122,11 @@
   `(setq ,listvar (cons ,value ,listvar)))
 
 ;;; Proxy
-(defvar twitter3-proxy-use nil)
-(defvar twitter3-proxy-server nil)
-(defvar twitter3-proxy-port 8080)
-(defvar twitter3-proxy-user nil)
-(defvar twitter3-proxy-password nil)
+(defvar twitter3-proxy-use global-proxy-use)
+(defvar twitter3-proxy-server global-proxy-server)
+(defvar twitter3-proxy-port global-proxy-port)
+(defvar twitter3-proxy-user global-proxy-user)
+(defvar twitter3-proxy-password global-proxy-password)
 
 (defun twitter3-toggle-proxy () ""
   (interactive)
