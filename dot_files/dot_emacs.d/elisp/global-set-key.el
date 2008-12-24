@@ -37,8 +37,8 @@
 (define-key global-map [up] 'find-file)
 (define-key global-map [down] 'electric-buffer-list)
 (define-key global-map "\C-c\C-c\ k" 'delete-other-windows)
-(define-key global-map "\C-c\C-c\ j" 'split-window-vertically)
-(define-key global-map "\C-c\C-c\ y" 'split-window-horizontally)
+(define-key global-map "\C-c\C-c\ y" 'split-window-vertically)
+(define-key global-map "\C-c\C-c\ j" 'split-window-horizontally)
 
 ;; 分割したウィンドウを時計回りに移動
 (define-key global-map "\C-c\C-c\ w" 'other-window)
