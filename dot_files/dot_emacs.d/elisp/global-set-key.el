@@ -16,6 +16,7 @@
       (t (keyboard-translate ?\C-h ?\C-?)))
 
 ;; auto-complete-modeの有効/無効を切り替える
+(define-key global-map "\C-x\C-a" 'auto-complete-mode)
 (define-key global-map "\C-c\C-c\ c" 'auto-complete-mode)
 
 ;; Twitter
