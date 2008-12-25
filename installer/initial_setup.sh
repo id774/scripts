@@ -352,7 +352,7 @@ sudo dpkg-reconfigure hddtemp
 # sysstat
 sudo aptitude -y install sysstat
 sudo dpkg-reconfigure sysstat
-sudo /etc/init.d/sysstat start
+#sudo /etc/init.d/sysstat start
 
 # Last Setup
 sudo dpkg-reconfigure exim4-config
