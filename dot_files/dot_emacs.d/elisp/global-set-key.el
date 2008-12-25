@@ -34,11 +34,13 @@
 ;; \C-h を backspace にする
 (global-set-key "\C-h" 'delete-backward-char)
 
+;; ウィンドウ移動
+(global-set-key [right] 'windmove-right)
+(global-set-key [left] 'windmove-left)
+(define-key global-map [up] 'windmove-up)
+(define-key global-map [down] 'windmove-down)
+
 ;; ウィンドウ分割
-(global-set-key [right] 'delete-other-windows)
-(global-set-key [left] 'split-window-vertically)
-(define-key global-map [up] 'find-file)
-(define-key global-map [down] 'electric-buffer-list)
 (define-key global-map "\C-c\C-c\ k" 'delete-other-windows)
 (define-key global-map "\C-c\C-c\ y" 'split-window-vertically)
 (define-key global-map "\C-c\C-c\ j" 'split-window-horizontally)
