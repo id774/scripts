@@ -28,6 +28,9 @@
 ;; C-M-g でも keyboard-escape-quit する
 (global-set-key "\C-\M-g" 'keyboard-escape-quit)
 
+;; C-x C-kでもkill bufferする
+(define-key global-map "\C-x\C-k" 'kill-buffer)
+
 ;; \C-h を backspace にする
 (global-set-key "\C-h" 'delete-backward-char)
 
@@ -63,6 +66,9 @@
 ;; C-x C-wを上書き保存にする(別名保存はC-x w)
 (define-key global-map "\C-x\C-w" 'save-buffer)
 (define-key global-map "\C-x\ w" 'write-file)
+
+;; C-M-x C-wでも上書き保存する
+(global-set-key "\C-\M-x\C-w" 'save-buffer)
 
 ;; バッファ先頭/末尾へのカーソル移動
 (define-key global-map "\C-c\C-c\ a" 'beginning-of-buffer)
