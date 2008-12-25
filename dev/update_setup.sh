@@ -19,6 +19,9 @@ sudo aptitude -y install ttf-vlgothic ttf-bitstream-vera
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
 
+# paco
+$SCRIPTS/installer/install_paco.sh
+
 # Ruby
 $SCRIPTS/installer/install_ruby.sh 187-svn
 
@@ -41,6 +44,12 @@ sudo dpkg-reconfigure hddtemp
 # sysstat
 sudo aptitude -y install sysstat
 sudo dpkg-reconfigure sysstat
+
+# cron job
+$SCRIPTS/installer/install_cronjob.sh
+
+# fix python doc
+$SCRIPTS/dev/fix_doc_python_empty_modindex.sh
 
 test -f ~/.viminfo && sudo chown $USER ~/.viminfo
 

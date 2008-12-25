@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.9 12/26,2008
+#       Add paco.
 #  v1.8 12/11,2008
 #       Add Bitstream Vera Sans Mono font, set emacs default, purge vim-gnome.
 #  v1.7 11/06,2008
@@ -200,6 +202,9 @@ sudo aptitude -y install ttf-vlgothic ttf-bitstream-vera
 
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
+
+# paco
+$SCRIPTS/installer/install_paco.sh
 
 # Vim (Original Build)
 $SCRIPTS/installer/install_ncurses.sh
