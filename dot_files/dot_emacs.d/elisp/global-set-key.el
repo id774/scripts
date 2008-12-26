@@ -49,15 +49,15 @@
 (define-key global-map "\C-c\C-c\ w" 'other-window)
 
 ;; C-x C-y または C-x y で view-mode を切り替える
-(defun edit-mode ()
+(defun toggle-view-mode ()
   (interactive)
   (cond (view-mode
       (view-mode nil)
       (setq hl-line-mode nil))
     (t
       (view-mode))))
-(define-key global-map "\C-x\C-y" 'edit-mode)
-(define-key global-map "\C-x\ y" 'edit-mode)
+(define-key global-map "\C-x\C-y" 'toggle-view-mode)
+(define-key global-map "\C-x\ y" 'toggle-view-mode)
 
 ;; バッファをM-n,M-pで切り替え
 (defun previous-buffer ()
