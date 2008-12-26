@@ -17,11 +17,11 @@
 ;; スクロールバー使う?
 (scroll-bar-mode -1)
 
-;; ホイールマウス使う? なら入れとけ。
+;; ホイールマウス使う?
 (mouse-wheel-mode 1)
 
 ;; xtermとかgnome-terminalとか。
-(xterm-mouse-mode 1)
+(xterm-mouse-mode -1)
 
 ;; ;; fringe(左右に余白のように見えてるアレ)
 ;; (fringe-mode 8)
@@ -40,8 +40,8 @@
 (iswitchb-mode)
 (iswitchb-default-keybindings)
 
-;; バックアップファイルを残さない
-(setq make-backup-files nil)
+;; バックアップファイルを作成するかどうか
+(setq make-backup-files t)
 
 ;; バックアップファイルの保存位置指定
 ;; CVSで管理していても設定しておくと安全
