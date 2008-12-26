@@ -28,10 +28,10 @@
 ;; C-M-g でも keyboard-escape-quit する
 (global-set-key "\C-\M-g" 'keyboard-escape-quit)
 
-;; C-x C-kでもkill bufferする
+;; C-x C-k でも kill bufferする
 (define-key global-map "\C-x\C-k" 'kill-buffer)
 
-;; \C-h を backspace にする
+;; C-h を backspace にする
 (global-set-key "\C-h" 'delete-backward-char)
 
 ;; ウィンドウ移動
@@ -47,6 +47,17 @@
 
 ;; 分割したウィンドウを時計回りに移動
 (define-key global-map "\C-c\C-c\ w" 'other-window)
+
+;; C-x C-y または C-x y で view-mode を切り替える
+(defun edit-mode ()
+  (interactive)
+  (cond (view-mode
+      (view-mode nil)
+      (setq hl-line-mode nil))
+    (t
+      (view-mode))))
+(define-key global-map "\C-x\C-y" 'edit-mode)
+(define-key global-map "\C-x\ y" 'edit-mode)
 
 ;; バッファをM-n,M-pで切り替え
 (defun previous-buffer ()
