@@ -75,8 +75,8 @@
 ;; スプラッシュ非表示 : 起動が速くなる
 (setq inhibit-startup-message t)
 
-;; ビープ音のかわりに画面反転
-(setq visible-bell t)
+;; 画面反転をやめる
+(setq visible-bell nil)
 
 ;; あまりに大きいファイルは色付けると時間かかるので、上限を指定
 (setq font-lock-maximum-size nil)
