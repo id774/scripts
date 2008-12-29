@@ -88,11 +88,15 @@
 (global-set-key "\C-\M-x\C-w" 'save-buffer)
 
 ;; バッファ先頭/末尾へのカーソル移動
+(define-key global-map "\C-c\C-c\C-a" 'beginning-of-buffer)
 (define-key global-map "\C-c\C-c\ a" 'beginning-of-buffer)
+(define-key global-map "\C-c\C-c\C-e" 'end-of-buffer)
 (define-key global-map "\C-c\C-c\ e" 'end-of-buffer)
 
 ;; アンドゥ/リドゥ
+(define-key global-map "\C-c\C-c\C-u" 'undo)
 (define-key global-map "\C-c\C-c\ u" 'undo)
+(define-key global-map "\C-c\C-c\C-r" 'redo)
 (define-key global-map "\C-c\C-c\ r" 'redo)
 
 ;; Local Variables:
