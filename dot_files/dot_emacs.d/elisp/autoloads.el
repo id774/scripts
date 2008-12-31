@@ -66,7 +66,9 @@
   (autoload 'w3m-search "w3m-search" "Search words using emacs-w3m." t)
   (autoload 'w3m-weather "w3m-weather" "Display a weather report." t)
   (autoload 'w3m-antenna "w3m-antenna" "Report changes of web sites." t)
-  (autoload 'w3m-namazu "w3m-namazu" "Search files with Namazu." t))
+  (autoload 'w3m-namazu "w3m-namazu" "Search files with Namazu." t)
+  (define-key global-map "\C-c\C-c\C-l" 'w3m)
+  (define-key global-map "\C-c\C-c\ l" 'w3m))
 
 ;; 廃人御用達
 (when (autoload-p 'riece "riece" "Riece IRC Client for Emacs" 'interactive)

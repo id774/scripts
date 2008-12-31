@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.10 12/31,2008
+#       Add emacs-w3m.
 #  v1.9 12/26,2008
 #       Add paco.
 #  v1.8 12/11,2008
@@ -191,9 +193,9 @@ sudo aptitude -y install mysql-server mysql-client
 $SCRIPTS/installer/install_mysql.sh
 
 # Text Editor
-sudo aptitude -y install emacs
 sudo aptitude -y install emacs-snapshot emacs-snapshot-el
 sudo update-alternatives --config emacs
+sudo aptitude -y install w3m-el-snapshot w3m-img imagemagick
 sudo aptitude -y install vim-gui-common vim-runtime colordiff
 sudo aptitude -y install ctags
 
