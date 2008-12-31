@@ -67,6 +67,8 @@
   (autoload 'w3m-weather "w3m-weather" "Display a weather report." t)
   (autoload 'w3m-antenna "w3m-antenna" "Report changes of web sites." t)
   (autoload 'w3m-namazu "w3m-namazu" "Search files with Namazu." t)
+  (setq browse-url-browser-function 'w3m-browse-url)
+  (global-set-key "\C-xm" 'browse-url-at-point)
   (define-key global-map "\C-c\C-c\C-l" 'w3m)
   (define-key global-map "\C-c\C-c\ l" 'w3m))
 
