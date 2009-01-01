@@ -46,6 +46,9 @@ $SCRIPTS/installer/install_ruby.sh 187-svn
 # Deploy dot_files
 $SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
 
+# RubyGems
+$SCRIPTS/installer/install_rubygems.sh
+
 # Permissions for /src
 sudo chown -R root:root /usr/src
 sudo chown -R root:root /usr/local/src
@@ -70,7 +73,7 @@ test -f ~/.viminfo && sudo chown $USER ~/.viminfo
 
 # Upgrade
 
-# Debian unstable (simulate only)
+# Debian unstable
 #sudo aptitude -v full-upgrade && sudo aptitude autoclean
 
 # Debian stable/testing

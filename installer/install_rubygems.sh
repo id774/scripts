@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 1/1,2009
+#       Update to 1.3.1.
 #  v1.0 8/15,2008
 #       Stable.
 ########################################################################
@@ -22,9 +24,13 @@ case "$1" in
     RUBY_GEMS_ZIP=rubygems-1.1.1
     wget http://rubyforge.org/frs/download.php/35284/$RUBY_GEMS_ZIP.zip
     ;;
-  *)
+  120)
     RUBY_GEMS_ZIP=rubygems-1.2.0
     wget http://rubyforge.org/frs/download.php/38647/$RUBY_GEMS_ZIP.zip
+    ;;
+  *)
+    RUBY_GEMS_ZIP=rubygems-1.3.1
+    wget http://rubyforge.org/frs/download.php/45906/$RUBY_GEMS_ZIP.zip
     ;;
 esac
 
