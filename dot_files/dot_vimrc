@@ -184,6 +184,7 @@ map <C-P>   :bprevious<CR>
 map <C-X><C-M>   <C-B>
 map <C-X><C-V>   <C-F>
 nmap <C-X><C-L>  :ls<CR>
+nmap <C-X><C-B>  :ls<CR>
 map  <C-X><C-E>  :Explore<CR>
 nmap <C-X><C-I>  ggVG
 nmap <C-X><C-J>  :vsp<CR>
