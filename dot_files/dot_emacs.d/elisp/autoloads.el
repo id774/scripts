@@ -69,7 +69,6 @@
   (autoload 'w3m-namazu "w3m-namazu" "Search files with Namazu." t)
   (setq w3m-use-cookies t)
   (setq w3m-cookie-accept-bad-cookies t)
-  (setq w3m-home-page "http://www.google.co.jp")
   (setq browse-url-browser-function 'w3m-browse-url)
   (global-set-key "\C-xm" 'browse-url-at-point)
   (define-key global-map "\C-c\C-c\C-l" 'w3m)

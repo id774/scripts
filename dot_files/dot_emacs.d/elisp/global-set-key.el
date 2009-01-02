@@ -19,11 +19,35 @@
 (define-key global-map "\C-x\C-a" 'auto-complete-mode)
 (define-key global-map "\C-c\C-c\ c" 'auto-complete-mode)
 
+;; ウィンドウが1つしかない場合は縦に分割する関数
+(defun split-one-window-p ()
+  (if (one-window-p)
+    (split-window-horizontally)))
+(defun split-one-window ()
+  (interactive)
+  (split-one-window-p))
+
 ;; Twitter
-(define-key global-map "\C-c\C-c\ 1" 'twitter1-mode)
-(define-key global-map "\C-c\C-c\ 2" 'twitter2-mode)
-(define-key global-map "\C-c\C-c\ 3" 'twitter3-mode)
-(define-key global-map "\C-c\C-c\ 4" 'twitter4-mode)
+(defun switch-to-twitter1-mode ()
+  (interactive)
+  (split-one-window-p)
+  (twitter1-mode))
+(defun switch-to-twitter2-mode ()
+  (interactive)
+  (split-one-window-p)
+  (twitter2-mode))
+(defun switch-to-twitter3-mode ()
+  (interactive)
+  (split-one-window-p)
+  (twitter3-mode))
+(defun switch-to-twitter4-mode ()
+  (interactive)
+  (split-one-window-p)
+  (twitter4-mode))
+(define-key global-map "\C-c\C-c\ 1" 'switch-to-twitter1-mode)
+(define-key global-map "\C-c\C-c\ 2" 'switch-to-twitter2-mode)
+(define-key global-map "\C-c\C-c\ 3" 'switch-to-twitter3-mode)
+(define-key global-map "\C-c\C-c\ 4" 'switch-to-twitter4-mode)
 
 ;; C-M-g でも keyboard-escape-quit する
 (global-set-key "\C-\M-g" 'keyboard-escape-quit)
@@ -45,8 +69,8 @@
 (define-key global-map "\C-c\C-c\ k" 'delete-other-windows)
 (define-key global-map "\C-c\C-c\C-y" 'split-window-vertically)
 (define-key global-map "\C-c\C-c\ y" 'split-window-vertically)
-(define-key global-map "\C-c\C-c\C-j" 'split-window-horizontally)
-(define-key global-map "\C-c\C-c\ j" 'split-window-horizontally)
+(define-key global-map "\C-c\C-c\C-j" 'split-one-window)
+(define-key global-map "\C-c\C-c\ j" 'split-one-window)
 
 ;; 分割したウィンドウを時計回りに移動
 (define-key global-map "\C-c\C-c\C-w" 'other-window)
