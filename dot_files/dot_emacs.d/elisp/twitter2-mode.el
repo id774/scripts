@@ -75,7 +75,7 @@
 (make-variable-buffer-local 'twitter2-jojo-mode)
 
 (defvar twitter2-status-format nil)
-(setq twitter2-status-format "%i %s,  %@:\n  %t // from %f%L")
+(setq twitter2-status-format "%i %s: %t")
 ;; %s - screen_name
 ;; %S - name
 ;; %i - profile_image
