@@ -30,6 +30,7 @@ def notify(username, tmpfile):
   r = urllib2.Request(timeline_url)
   r.add_data("since_id="+str(last_id))
   e = parse(file=urllib2.urlopen(r))
+  print >>sys.stdout, time.strftime("[%Y-%m-%d %H:%M:%S]")
   for s in reversed(e.getElementsByTagName("status")):
     if int(tagText(s, "id")) > last_id:
       screen_name = tagText(s, "screen_name")
