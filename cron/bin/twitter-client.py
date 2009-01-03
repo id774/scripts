@@ -30,25 +30,17 @@ def notify(username, tmpfile):
   r = urllib2.Request(timeline_url)
   r.add_data("since_id="+str(last_id))
   e = parse(file=urllib2.urlopen(r))
-  print >>sys.stdout, time.strftime("[%Y-%m-%d %H:%M:%S]")
+  print >>sys.stdout, time.strftime("[%Y-%m-%d %H:%M:%S] "), username, "friends timeline"
   for s in reversed(e.getElementsByTagName("status")):
     if int(tagText(s, "id")) > last_id:
       screen_name = tagText(s, "screen_name")
       text = tagText(s, "text")
-      source = tagText(s,"source")
-      icon_url = tagText(s,"profile_image_url")
-      show_notify(screen_name, text, source, icon_url)
-      print >>sys.stdout, "%s: %s from %s" % (screen_name, text, source)
+      print >>sys.stdout, "%s: %s" % (screen_name, text)
   last_id = int(tagText(s, "id"))
   print >>sys.stderr, time.strftime("[%H:%M:%S] "), "last_id is", last_id
   f = open(tmpfile,'w')
   f.write(str(last_id))
   f.close()
-
-def show_notify(screen_name, text, source, icon_url):
-  n = pynotify.Notification(screen_name,
-      "%s from %s" % (text, source))
-  text_url = re.match("^.*(http://.*).*$", text)
 
 if __name__ == '__main__':
   from optparse import OptionParser

@@ -27,6 +27,24 @@
   (interactive)
   (split-one-window-p))
 
+;; ウィンドウ移動
+(global-set-key [right] 'windmove-right)
+(global-set-key [left] 'windmove-left)
+(define-key global-map [up] 'windmove-up)
+(define-key global-map [down] 'windmove-down)
+
+;; ウィンドウ分割
+(define-key global-map "\C-c\C-c\C-k" 'delete-other-windows)
+(define-key global-map "\C-c\C-c\ k" 'delete-other-windows)
+(define-key global-map "\C-c\C-c\C-y" 'split-window-vertically)
+(define-key global-map "\C-c\C-c\ y" 'split-window-vertically)
+(define-key global-map "\C-c\C-c\C-j" 'split-one-window)
+(define-key global-map "\C-c\C-c\ j" 'split-one-window)
+
+;; 分割したウィンドウを時計回りに移動
+(define-key global-map "\C-c\C-c\C-w" 'other-window)
+(define-key global-map "\C-c\C-c\ w" 'other-window)
+
 ;; Twitter
 (defun switch-to-twitter1-mode ()
   (interactive)
@@ -57,24 +75,6 @@
 
 ;; C-h を backspace にする
 (global-set-key "\C-h" 'delete-backward-char)
-
-;; ウィンドウ移動
-(global-set-key [right] 'windmove-right)
-(global-set-key [left] 'windmove-left)
-(define-key global-map [up] 'windmove-up)
-(define-key global-map [down] 'windmove-down)
-
-;; ウィンドウ分割
-(define-key global-map "\C-c\C-c\C-k" 'delete-other-windows)
-(define-key global-map "\C-c\C-c\ k" 'delete-other-windows)
-(define-key global-map "\C-c\C-c\C-y" 'split-window-vertically)
-(define-key global-map "\C-c\C-c\ y" 'split-window-vertically)
-(define-key global-map "\C-c\C-c\C-j" 'split-one-window)
-(define-key global-map "\C-c\C-c\ j" 'split-one-window)
-
-;; 分割したウィンドウを時計回りに移動
-(define-key global-map "\C-c\C-c\C-w" 'other-window)
-(define-key global-map "\C-c\C-c\ w" 'other-window)
 
 ;; C-x C-y または C-x y で view-mode を切り替える
 (defun toggle-view-mode ()
