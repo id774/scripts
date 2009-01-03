@@ -1,0 +1,21 @@
+global:
+  assets_path: /usr/local/share/perl/5.10.0/Plagger/assets
+  timezone: Asia/Tokyo
+  cache:
+    base: /home/plagger/.plagger_tmp/tmp6
+  log:
+    level: info
+
+plugins:
+  - module: Subscription::LivedoorReader
+    config:
+      username: xxxxxxxx
+      password: xxxxxxxx
+      mark_read: 1
+      fetch_meta: 1
+
+  - module: Publish::Twitter
+    config:
+      username: linux_cafe
+      password: xxxxxxxx
+
