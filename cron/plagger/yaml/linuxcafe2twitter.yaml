@@ -14,6 +14,10 @@ plugins:
       mark_read: 1
       fetch_meta: 1
 
+  - module: Filter::Regexp
+    config:
+      regexp: s/@//g;
+
   - module: Publish::Twitter
     config:
       username: linux_cafe
