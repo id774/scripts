@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 08-Nov-2008.
+# Last Change: 05-Jan-2009.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_linux_env() {
