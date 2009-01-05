@@ -71,6 +71,12 @@
   (setq w3m-cookie-accept-bad-cookies t)
   (setq browse-url-browser-function 'w3m-browse-url)
   (global-set-key "\C-xm" 'browse-url-at-point)
+  ;; startup.elのProxy情報を参照
+  (if global-proxy-use
+      (setq w3m-command-arguments-alist
+        '(("^http://\\([^/]*\\.\\)hoge\\.co\\.jp\\(/\\|$\\)" "-no-proxy")
+        ;; Use the proxy server to visit any other urls.
+        ("" "-o" "http_proxy=http://proxy.hoge.co.jp:8080/"))))
   (define-key global-map "\C-c\C-c\C-l" 'w3m)
   (define-key global-map "\C-c\C-c\ l" 'w3m))
 

@@ -1,7 +1,7 @@
 ;; startup.el
 ;; 環境設定してautoloads.elを呼ぶ
 
-;; プロキシ設定
+;; Proxyを利用するならglobal-proxy-useをtに
 (defvar global-proxy-use nil)
 (defvar global-proxy-server "proxy.hoge.co.jp")
 (defvar global-proxy-port 8080)
