@@ -212,6 +212,13 @@ set_scripts_path() {
     fi
 }
 
+set_private_path() {
+    if [ -d $1 ]; then
+        export PRIVATE=$1
+        export PATH=$PATH:$PRIVATE
+    fi
+}
+
 mount_cryptfs() {
     test -d $HOME/crypt/bin && test -d $HOME/bin || cryptmount home-$USER-crypt
 }
@@ -222,6 +229,7 @@ set_standard_options() {
     set_os_env
     test -r $HOME/local/crypt.fs && mount_cryptfs
     set_tmp_path $HOME/.tmp
+    set_private_path $HOME/private/scripts
     set_scripts_path $HOME/scripts
     test -d $HOME/bin && export PATH=$HOME/bin:$PATH
 }
