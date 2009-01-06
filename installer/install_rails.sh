@@ -23,6 +23,7 @@ set_rails_permission() {
 }
 
 unzip_rails_zip() {
+    test -d $RAILS_ZIP && sudo rm -rf $RAILS_ZIP
     sudo mkdir $RAILS_ZIP
     cd $RAILS_ZIP
     sudo unzip ../$RAILS_ZIP.zip
@@ -33,28 +34,46 @@ unzip_rails_zip() {
 select_rails_package() {
     case "$1" in
       222)
-        RAILS_ZIP=rails-2.2.2
+        RAILS_TARGET=2.2.2
+        sudo gem install rails -v $RAILS_TARGET
+        RAILS_ZIP=rails-$RAILS_TARGET
         sudo wget http://rubyforge.org/frs/download.php/47183/$RAILS_ZIP.zip
         ;;
       212)
-        RAILS_ZIP=rails-2.1.2
+        RAILS_TARGET=2.1.2
+        sudo gem install rails -v $RAILS_TARGET
+        RAILS_ZIP=rails-$RAILS_TARGET
         sudo wget http://rubyforge.org/frs/download.php/45625/$RAILS_ZIP.zip
         ;;
       210)
-        RAILS_ZIP=rails-2.1.0
+        RAILS_TARGET=2.1.0
+        sudo gem install rails -v $RAILS_TARGET
+        RAILS_ZIP=rails-$RAILS_TARGET
         sudo wget http://rubyforge.org/frs/download.php/37770/$RAILS_ZIP.zip
         ;;
       205)
-        RAILS_ZIP=rails-2.0.5
+        RAILS_TARGET=2.0.5
+        sudo gem install rails -v $RAILS_TARGET
+        RAILS_ZIP=rails-$RAILS_TARGET
         sudo wget http://rubyforge.org/frs/download.php/45369/$RAILS_ZIP.zip
         ;;
       202)
-        RAILS_ZIP=rails-2.0.2
+        RAILS_TARGET=2.0.2
+        sudo gem install rails -v $RAILS_TARGET
+        RAILS_ZIP=rails-$RAILS_TARGET
         sudo wget http://rubyforge.org/frs/download.php/29361/$RAILS_ZIP.zip
         ;;
       126)
-        RAILS_ZIP=rails-1.2.6
+        RAILS_TARGET=1.2.6
+        sudo gem install rails -v $RAILS_TARGET
+        RAILS_ZIP=rails-$RAILS_TARGET
         sudo wget http://rubyforge.org/frs/download.php/28340/$RAILS_ZIP.zip
+        ;;
+      116)
+        RAILS_TARGET=1.1.6
+        sudo gem install rails -v $RAILS_TARGET
+        RAILS_ZIP=rails-$RAILS_TARGET
+        sudo wget http://rubyforge.org/frs/download.php/12324/$RAILS_ZIP.zip
         ;;
     esac
     unzip_rails_zip $RAILS_ZIP

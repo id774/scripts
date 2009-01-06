@@ -320,8 +320,10 @@ $SCRIPTS/installer/install_trac.sh
 # RubyGems
 $SCRIPTS/installer/install_rubygems.sh
 $SCRIPTS/installer/install_rails.sh
-$SCRIPTS/installer/install_rails.sh 212
 $SCRIPTS/installer/install_gems.sh
+$SCRIPTS/installer/install_rails.sh 212
+$SCRIPTS/installer/install_rails.sh 205
+$SCRIPTS/installer/install_rails.sh 126
 vim-ruby-install.rb
 
 # Passenger

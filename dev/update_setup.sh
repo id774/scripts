@@ -49,6 +49,8 @@ $SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
 # RubyGems
 $SCRIPTS/installer/install_rubygems.sh
 $SCRIPTS/installer/install_rails.sh 212
+$SCRIPTS/installer/install_rails.sh 205
+$SCRIPTS/installer/install_rails.sh 126
 
 # Permissions for /src
 sudo chown -R root:root /usr/src
