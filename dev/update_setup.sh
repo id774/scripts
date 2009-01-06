@@ -48,6 +48,12 @@ $SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
 
 # RubyGems
 $SCRIPTS/installer/install_rubygems.sh
+sudo gem uninstall rails
+sudo gem uninstall actionmailer
+sudo gem uninstall actionpack
+sudo gem uninstall activerecord
+sudo gem uninstall activeresource
+sudo gem uninstall activesupport
 $SCRIPTS/installer/install_rails.sh 212
 $SCRIPTS/installer/install_rails.sh 205
 $SCRIPTS/installer/install_rails.sh 126
