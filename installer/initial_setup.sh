@@ -10,7 +10,7 @@
 #  v1.9 12/26,2008
 #       Add paco.
 #  v1.8 12/11,2008
-#       Add Bitstream Vera Sans Mono font, set emacs default, purge vim-gnome.
+#       Add Bitstream Vera Sans Mono, set emacs default, purge vim-gnome.
 #  v1.7 11/06,2008
 #       Change root shell from zsh to bash.
 #  v1.6 10/30,2008
@@ -320,6 +320,7 @@ $SCRIPTS/installer/install_trac.sh
 # RubyGems
 $SCRIPTS/installer/install_rubygems.sh
 $SCRIPTS/installer/install_rails.sh
+$SCRIPTS/installer/install_rails.sh 212
 $SCRIPTS/installer/install_gems.sh
 vim-ruby-install.rb
 
