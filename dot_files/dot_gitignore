@@ -12,3 +12,4 @@
 tags
 *.pyc
 *.class
+.svn

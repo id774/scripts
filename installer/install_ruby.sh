@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 1/7,2009
+#       Ruby 1.8 svn head.
 #  v1.3 12/11,2008
 #       Make symbolic link of ruby-mode.el.
 #  v1.2 8/24,2008
