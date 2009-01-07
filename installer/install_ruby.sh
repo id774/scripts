@@ -84,11 +84,14 @@ install_stable() {
 }
 
 case "$1" in
-  187-73)
-    install_stable 1.8.7-p73 1.8
+  187-72)
+    install_stable 1.8.7-p72 1.8
     ;;
   186-287)
     install_stable 1.8.6-p287 1.8
+    ;;
+  18-svn)
+    install_branch ruby_1_8
     ;;
   187-svn)
     install_branch ruby_1_8_7
