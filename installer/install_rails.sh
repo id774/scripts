@@ -31,35 +31,39 @@ extract_rails_zip() {
     set_rails_permission
 }
 
+wget_rails_zip() {
+    sudo wget http://rubyforge.org/frs/download.php/$2/rails-$1.zip
+}
+
 select_rails_package() {
     case "$1" in
       222)
         RAILS_VER=2.2.2
-        sudo wget http://rubyforge.org/frs/download.php/47183/rails-$RAILS_VER.zip
+        wget_rails_zip $RAILS_VER 47183
         ;;
       212)
         RAILS_VER=2.1.2
-        sudo wget http://rubyforge.org/frs/download.php/45625/rails-$RAILS_VER.zip
+        wget_rails_zip $RAILS_VER 45625
         ;;
       210)
         RAILS_VER=2.1.0
-        sudo wget http://rubyforge.org/frs/download.php/37770/rails-$RAILS_VER.zip
+        wget_rails_zip $RAILS_VER 37770
         ;;
       205)
         RAILS_VER=2.0.5
-        sudo wget http://rubyforge.org/frs/download.php/45369/rails-$RAILS_VER.zip
+        wget_rails_zip $RAILS_VER 45369
         ;;
       202)
         RAILS_VER=2.0.2
-        sudo wget http://rubyforge.org/frs/download.php/29361/rails-$RAILS_VER.zip
+        wget_rails_zip $RAILS_VER 29361
         ;;
       126)
         RAILS_VER=1.2.6
-        sudo wget http://rubyforge.org/frs/download.php/28340/rails-$RAILS_VER.zip
+        wget_rails_zip $RAILS_VER 28340
         ;;
       116)
         RAILS_VER=1.1.6
-        sudo wget http://rubyforge.org/frs/download.php/12324/rails-$RAILS_VER.zip
+        wget_rails_zip $RAILS_VER 12324
         ;;
     esac
     extract_rails_zip rails-$RAILS_VER
