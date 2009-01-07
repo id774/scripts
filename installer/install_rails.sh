@@ -73,13 +73,10 @@ install_rails_standalone() {
 }
 
 install_rails_gem() {
-    export RUBYOPT=rubygems
-    sudo gem update
-    sudo gem install rails
-    sudo gem cleanup
-    gem list --local
+    sudo gem install -v rails
 }
 
+export RUBYOPT=rubygems
 case "$1" in
   *[0-9]*)
     install_rails_standalone $1
@@ -88,4 +85,5 @@ case "$1" in
     install_rails_gem
     ;;
 esac
+gem list --local
 
