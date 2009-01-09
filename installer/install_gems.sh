@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 1/9,2009
+#       Add rspec-rails.
 #  v1.1 9/16,2008
 #       Add rspec.
 #  v1.0 8/15,2008
@@ -29,5 +31,7 @@ sudo gem install capistrano
 sudo gem install magic_multi_connections
 sudo gem install redgreen
 sudo gem install rspec
+sudo gem install rspec-rails
+sudo gem install cucumber
 sudo gem cleanup
 gem list --local

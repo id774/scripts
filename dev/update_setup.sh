@@ -58,6 +58,9 @@ sudo gem uninstall activesupport
 $SCRIPTS/installer/install_rails.sh 212
 $SCRIPTS/installer/install_rails.sh 205
 $SCRIPTS/installer/install_rails.sh 126
+sudo gem install rspec
+sudo gem install rspec-rails
+sudo gem install cucumber
 
 # Permissions for /src
 sudo chown -R root:root /usr/src
