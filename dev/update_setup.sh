@@ -37,7 +37,7 @@ $SCRIPTS/installer/install_dotemacs.sh
 $SCRIPTS/installer/install_paco.sh
 
 # Ruby
-sudo aptitude -y install ruby1.8 rubygems
+sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
 $SCRIPTS/installer/install_ruby.sh 187-svn
 
 # GDM Themes

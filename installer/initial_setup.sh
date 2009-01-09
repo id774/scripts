@@ -221,7 +221,7 @@ $SCRIPTS/installer/install_dotfiles.sh
 # Ruby
 sudo aptitude -y install autoconf byacc bison autoconf-doc automake
 sudo aptitude -y install libopenssl-ruby
-sudo aptitude -y install ruby1.8 rubygems
+sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
 $SCRIPTS/installer/install_ruby.sh 187-svn
 
 # Apache
@@ -233,8 +233,8 @@ sudo aptitude -y install apache-perl
 sudo aptitude -y install apache2-utils
 
 # Python Framework
-vim $SCRIPTS/installer/install_python.sh
-$SCRIPTS/installer/install_python.sh
+vim $SCRIPTS/installer/install_python_framework.sh
+$SCRIPTS/installer/install_python_framework.sh
 
 # Sun Java JDK
 sudo aptitude install -y sun-java6-jdk
