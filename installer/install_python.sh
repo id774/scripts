@@ -22,10 +22,19 @@ install_python_bzip() {
     test -n "$2" && make install
     cd ..
     test -d /usr/local/src/python || sudo mkdir -p /usr/local/src/python
-    sudo cp -a Python-$1 /usr/local/src/python
+    sudo cp $OPTIONS Python-$1 /usr/local/src/python
     cd ..
     rm -rf install_python
 }
+
+case $OSTYPE in
+  *darwin*)
+    OPTIONS=-R
+    ;;
+  *)
+    OPTIONS=-a
+    ;;
+esac
 
 test -n "$1" || exit 1
 install_python_bzip $1 $2

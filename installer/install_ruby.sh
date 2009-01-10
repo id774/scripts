@@ -78,12 +78,21 @@ install_stable() {
     sudo make install
     cd ../../..
     test -d /usr/local/src/ruby || sudo mkdir -p /usr/local/src/ruby
-    sudo cp -a ruby-$1 /usr/local/src/ruby
+    sudo cp $OPTIONS ruby-$1 /usr/local/src/ruby
     cd ..
     rm -rf install_ruby
     test -L /usr/local/share/emacs/site-lisp/ruby-mode.el && sudo rm /usr/local/share/emacs/site-lisp/ruby-mode.el
     sudo ln -s /usr/local/src/ruby/ruby-$1/misc/ruby-mode.el /usr/local/share/emacs/site-lisp/ruby-mode.el
 }
+
+case $OSTYPE in
+  *darwin*)
+    OPTIONS=-R
+    ;;
+  *)
+    OPTIONS=-a
+    ;;
+esac
 
 case "$1" in
   187-72)
