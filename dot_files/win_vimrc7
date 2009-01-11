@@ -3,7 +3,7 @@
 " An example for a Japanese version vimrc file.
 " 日本語版のデフォルト設定ファイル(vimrc) - Vim7用試作
 "
-" Last Change: 21-Jun-2008.
+" Last Change: 12-Jun-2009.
 " Maintainer:  id774 <idnanashi@gmail.com>
 "
 " 解説:
@@ -267,6 +267,11 @@ nmap g* g*zz
 nmap g# g#zz
 
 "---------------------------------------------------------------------------
+" フレームサイズを変更する
+map <kPlus> <C-W>+
+map <kMinus> <C-W>-
+
+"---------------------------------------------------------------------------
 " 文字コード設定
 autocmd FileType cvs    :set fileencoding=euc-jp
 autocmd FileType svn    :set fileencoding=utf-8
@@ -432,4 +437,9 @@ endwhile
 inoremap <expr> <CR> pumvisible() ? "\<C-Y>\<CR>" : "\<CR>"
 set lazyredraw
 
-" Copyright (C) 2008 id774 <idnanashi@gmail.com>
+" 全角の丸や四角でずれないようにする
+if exists('&ambiwidth')
+  set ambiwidth=double
+endif
+
+" Copyright (C) 2008-2009 id774 <idnanashi@gmail.com>
