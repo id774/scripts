@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 05-Jan-2009.
+# Last Change: 12-Jan-2009.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_linux_env() {
@@ -149,6 +149,10 @@ set_basic_options() {
     setopt rm_star_silent
     unsetopt no_clobber
     setopt no_unset
+    setopt nolistbeep
+    setopt magic_equal_subst
+    setopt print_eightbit
+    setopt print_exit_value
     LESS=-M
     export LESS
     if type /usr/bin/lesspipe &>/dev/null
@@ -234,6 +238,46 @@ set_standard_options() {
     test -d $HOME/bin && export PATH=$HOME/bin:$PATH
 }
 
+show_window_title() {
+    if [ "$TERM" = "screen" ]; then
+      chpwd() { echo -n "_`dirs`\\" }
+      preexec() {
+        emulate -L zsh
+        local -a cmd; cmd=(${(z)2})
+        case $cmd[1] in
+          fg)
+              if (( $#cmd == 1 )); then
+                cmd=(builtin jobs -l %+)
+              else
+                cmd=(builtin jobs -l $cmd[2])
+              fi
+              ;;
+          %*)
+              cmd=(builtin jobs -l $cmd[1])
+              ;;
+          cd)
+              if (( $#cmd == 2 )); then
+                cmd[1]=$cmd[2]
+              fi
+              ;;
+          *)
+              echo -n "k$cmd[1]:t\\"
+              return
+              ;;
+        esac
+        local -A jt; jt=(${(kv)jobtexts})
+        $cmd >>(read num rest
+                cmd=(${(z)${(e):-\$jt$num}})
+                echo -n "k$cmd[1]:t\\") 2>/dev/null
+      }
+      chpwd
+    fi
+}
+
+set_extended_options() {
+    show_window_title
+}
+
 set_local_settings() {
     if [ -f ~/.zshrc_local ]; then
         . ~/.zshrc_local
@@ -254,6 +298,7 @@ call_exec_screen() {
 
 zshrc_main() {
     set_standard_options
+    set_extended_options
     set_local_settings
     call_exec_screen
 }
