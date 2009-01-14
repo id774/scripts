@@ -15,8 +15,9 @@ plugins:
       urls:
        - url: http://pc11.2ch.net/test/read.cgi/net/1226137775/
 
-  - module: Publish::Twitter
+  - module: Publish::Tweet
     config:
       username: 2ch_hatenadiary
       password: xxxxxxxx
+      templatize: 1
 

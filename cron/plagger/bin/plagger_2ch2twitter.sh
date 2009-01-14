@@ -8,6 +8,8 @@ date "+%Y/%m/%d %T">>$JOBLOG 2>&1
 /usr/local/bin/plagger -c $HOME/yaml/2ch_hatenadiary.yaml>>$JOBLOG 2>&1
 /usr/local/bin/plagger -c $HOME/yaml/2ch_tw.yaml>>$JOBLOG 2>&1
 /usr/local/bin/plagger -c $HOME/yaml/linuxcafe2twitter.yaml>>$JOBLOG 2>&1
+/usr/local/bin/plagger -c $HOME/yaml/hackerscafeblog2twitter.yaml>>$JOBLOG 2>&1
+/usr/local/bin/plagger -c $HOME/yaml/commitlog2twitter.yaml>>$JOBLOG 2>&1
 
 echo -n "*** $0: End of Job at `/bin/hostname` on ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1

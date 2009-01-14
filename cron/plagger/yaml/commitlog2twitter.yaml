@@ -2,7 +2,7 @@ global:
   assets_path: /usr/local/share/perl/5.10.0/Plagger/assets
   timezone: Asia/Tokyo
   cache:
-    base: /home/plagger/.plagger_tmp/tmp6
+    base: /home/plagger/.plagger_tmp/tmp8
   log:
     level: info
 
@@ -14,13 +14,9 @@ plugins:
       mark_read: 1
       fetch_meta: 1
 
-  - module: Filter::Regexp
-    config:
-      regexp: s/@//g;
-
   - module: Publish::Tweet
     config:
-      username: linux_cafe
+      username: commit_log
       password: xxxxxxxx
       templatize: 1
 
