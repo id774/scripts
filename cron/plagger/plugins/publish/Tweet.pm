@@ -32,7 +32,7 @@ sub publish_entry {
     my $body = $args->{entry}->body_text;
 
     if ($self->conf->{templatize}) {
-	    $body = $self->templatize('tweet.tt', $args);
+	    $body = $self->templatize($self->conf->{templatize}, $args);
     }
 
     $context->log(info => "Updating Twitter status to '$body'");
@@ -48,7 +48,7 @@ __END__
 
 =head1 NAME
 
-Plagger::Plugin::Publish::Tweet - Update Tweet
+Plagger::Plugin::Publish::Tweet - Update your tweet
 
 =head1 SYNOPSIS
 
@@ -56,7 +56,7 @@ Plagger::Plugin::Publish::Tweet - Update Tweet
     config:
       username: twitter-id
       password: twitter-password
-      templatize: 1
+      templatize: tweet.tt # Template-Toolkit filename
 
 =head1 DESCRIPTION
 
@@ -71,12 +71,6 @@ This plugin sends feed entries summary to your Twitter account status.
 Twitter username. Required.
 
 =item password
-
-Twitter password. Required.
-
-=item templatize
-
-Optional.
 
 Twitter password. Required.
 
@@ -100,13 +94,13 @@ If you do point to a different URL, you will also need to set "apihost" and "api
 
 =item templatize
 Optional.
-A flag to use Template-Toolkit to message formatting. Defaults to 0.
+A filename of use Template-Toolkit to message formatting. Defaults to 0 (nothing).
 
 =back
 
 =head1 AUTHOR
 
-id774 <idnanashi@gmail.com>
+id774
 
 =head1 SEE ALSO
 
