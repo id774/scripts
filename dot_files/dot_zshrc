@@ -255,7 +255,7 @@ show_window_title() {
           %*)
               cmd=(builtin jobs -l $cmd[1])
               ;;
-          cd|screen)
+          cd)
               if (( $#cmd == 2 )); then
                 cmd[1]=$cmd[2]
               fi
