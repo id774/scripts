@@ -22,5 +22,5 @@ plugins:
     config:
       username: linux_cafe
       password: xxxxxxxx
-      templatize: 1
+      templatize: 0
 

@@ -18,5 +18,5 @@ plugins:
     config:
       username: commit_log
       password: xxxxxxxx
-      templatize: 1
+      templatize: tweet.tt
 

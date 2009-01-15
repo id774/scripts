@@ -19,5 +19,5 @@ plugins:
     config:
       username: 2ch_tw
       password: xxxxxxxx
-      templatize: 1
+      templatize: tweet.tt
 
