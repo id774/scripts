@@ -8,14 +8,14 @@
 ;; blinkうざいし
 (blink-cursor-mode nil)
 
-;; ツールバー使う? 俺は使わんけど
-(tool-bar-mode nil)
+;; hide tool-bar and scroll-bar
+(if window-system
+  (progn
+    (tool-bar-mode nil)
+    (scroll-bar-mode -1)))
 
 ;; メニューバー使う?
 (menu-bar-mode -1)
-
-;; スクロールバー使う?
-(scroll-bar-mode -1)
 
 ;; ホイールマウス使う?
 (mouse-wheel-mode 1)
