@@ -415,8 +415,7 @@
 	     #'twitter2-cache-status-datum
 	     (reverse (twitter2-xmltree-to-status
 		       body)))
-	    (twitter2-render-friends-timeline)
-	    (message (if suc-msg suc-msg "Success: Get.")))
+	    (twitter2-render-friends-timeline))
 	   (t (message status))))
       (message "Failure: Bad http response.")))
   )
