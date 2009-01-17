@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.11 1/18,2009
+#       Update to truecrypt 6.1.
 # v1.10 12/31,2008
 #       Add emacs-w3m.
 #  v1.9 12/26,2008
@@ -305,7 +307,7 @@ sudo aptitude -y install ghc
 #ln -s /usr/local/share/share-documents ~/share
 
 # Crypt
-$SCRIPTS/installer/install_crypt.sh ubuntu-x86
+$SCRIPTS/installer/install_crypt.sh 6.1a-ubuntu-x86
 
 # Security (Anti-Virus)
 sudo aptitude -y install clamav avscan

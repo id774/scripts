@@ -62,6 +62,9 @@ sudo gem install rspec
 sudo gem install rspec-rails
 sudo gem install cucumber
 
+# Crypt
+$SCRIPTS/installer/install_crypt.sh 6.1a-ubuntu-x86
+
 # Permissions for /src
 sudo chown -R root:root /usr/src
 sudo chown -R root:root /usr/local/src
