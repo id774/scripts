@@ -6,7 +6,7 @@
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
 #  v1.1 1/18,2009
-#       Update to 6.1, and refactoring.
+#       Update to 6.1a, and refactoring.
 #  v1.0 8/15,2008
 #       Stable.
 ########################################################################
@@ -127,6 +127,7 @@ install_des() {
     mkdir install_des
     cd install_des
     wget http://page.freett.com/railsinstall2/kmdes-ubuntu.tar.gz
+    md5sum kmdes-ubuntu.tar.gz
     tar xzvf kmdes-ubuntu.tar.gz
     rm kmdes-ubuntu.tar.gz
     cd des

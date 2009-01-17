@@ -6,7 +6,7 @@
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
 # v1.11 1/18,2009
-#       Update to truecrypt 6.1.
+#       Update to truecrypt 6.1a.
 # v1.10 12/31,2008
 #       Add emacs-w3m.
 #  v1.9 12/26,2008
