@@ -26,13 +26,30 @@ set_truecrypt_permission() {
     esac
 }
 
+md5_universal() {
+    if [ -x $SCRIPTS/md5dir.rb ]; then
+        $SCRIPTS/md5dir.rb $1
+    elif [ -x $SCRIPTS/md5dir.py ]; then
+        $SCRIPTS/md5dir.py $1
+    else
+        case $OSTYPE in
+          *darwin*)
+            md5 $1
+            ;;
+          *)
+            md5sum $1
+            ;;
+        esac
+    fi
+}
+
 get_truecrypt_source() {
     wget http://big.freett.com/railsinstall2/$1
     test -d /usr/local/src/crypt/truecrypt || sudo mkdir -p /usr/local/src/crypt/truecrypt
     sudo tar xzvf $1 -C /usr/local/src/crypt/truecrypt
     sudo mv $1 /usr/local/src/crypt/truecrypt
     sudo chmod 644 /usr/local/src/crypt/truecrypt/$1
-    md5sum /usr/local/src/crypt/truecrypt/$1
+    md5_universal /usr/local/src/crypt/truecrypt/$1
 }
 
 setup_truecrypt_deb() {
@@ -43,7 +60,7 @@ setup_truecrypt_deb() {
 
 install_truecrypt_43a() {
     wget http://page.freett.com/railsinstall2/$1
-    md5sum $1
+    md5_universal $1
     tar xzvf $1
     rm $1
     cd truecrypt-4.3a
@@ -54,7 +71,7 @@ install_truecrypt_43a() {
 
 install_truecrypt_51a() {
     wget http://big.freett.com/railsinstall2/$1
-    md5sum $1
+    md5_universal $1
     tar xzvf $1
     rm $1
     cd truecrypt-5.1a
@@ -65,7 +82,7 @@ install_truecrypt_51a() {
 
 install_truecrypt_61a() {
     wget http://big.freett.com/railsinstall2/$1
-    md5sum $1
+    md5_universal $1
     setup_truecrypt_deb $1
 }
 
@@ -127,7 +144,7 @@ install_des() {
     mkdir install_des
     cd install_des
     wget http://page.freett.com/railsinstall2/kmdes-ubuntu.tar.gz
-    md5sum kmdes-ubuntu.tar.gz
+    md5_universal kmdes-ubuntu.tar.gz
     tar xzvf kmdes-ubuntu.tar.gz
     rm kmdes-ubuntu.tar.gz
     cd des
