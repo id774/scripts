@@ -123,6 +123,7 @@
 
 (when (autoload-p 'navi2ch "navi2ch" "navi2ch" 'interactive)
   (setq navi2ch-list-bbstable-url "http://menu.2ch.net/bbsmenu.html")
+  (setq navi2ch-article-auto-range nil)
   (setq navi2ch-mona-enable t))
 
 ;; ³ç¸Ì¶¯Ä´
