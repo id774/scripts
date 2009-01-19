@@ -67,6 +67,14 @@
 (define-key global-map "\C-c\C-c\ 3" 'switch-to-twitter3-mode)
 (define-key global-map "\C-c\C-c\ 4" 'switch-to-twitter4-mode)
 
+;; Navi2ch
+(defun switch-to-navi2ch()
+  (interactive)
+  (split-one-window-p)
+  (navi2ch))
+(define-key global-map "\C-c\C-c\C-i" 'switch-to-navi2ch)
+(define-key global-map "\C-c\C-c\ i" 'switch-to-navi2ch)
+
 ;; C-M-g でも keyboard-escape-quit する
 (global-set-key "\C-\M-g" 'keyboard-escape-quit)
 
