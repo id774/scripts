@@ -69,14 +69,18 @@ $SCRIPTS/installer/install_crypt.sh 6.1a-ubuntu-x86
 sudo chown -R root:root /usr/src
 sudo chown -R root:root /usr/local/src
 
+# Monitoring Tools
+# sysstat
+sudo aptitude -y install sysstat
+sudo dpkg-reconfigure sysstat
 # hddtemp
 sudo aptitude -y install lm-sensors
 sudo aptitude -y install hddtemp
 sudo dpkg-reconfigure hddtemp
-
-# sysstat
-sudo aptitude -y install sysstat
-sudo dpkg-reconfigure sysstat
+# smartmontools
+sudo aptitude -y install smartmontools
+# smartmontools
+sudo aptitude -y install ext2resize
 
 # cron job
 $SCRIPTS/installer/install_cronjob.sh

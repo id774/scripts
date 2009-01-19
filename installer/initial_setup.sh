@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.12 1/19,2009
+#       Add monitoring tools.
 # v1.11 1/18,2009
 #       Update to truecrypt 6.1a.
 # v1.10 12/31,2008
@@ -356,15 +358,18 @@ test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 /dev/mapper/`
 # Linux kernel source, headers, kbuild (Debian)
 #sudo aptitude install linux-kbuild-2.6.26 linux-headers-2.6.26-1-686 linux-source-2.6.26
 
+# Monitoring Tools
+# sysstat
+sudo aptitude -y install sysstat
+sudo dpkg-reconfigure sysstat
 # hddtemp
 sudo aptitude -y install lm-sensors
 sudo aptitude -y install hddtemp
 sudo dpkg-reconfigure hddtemp
-
-# sysstat
-sudo aptitude -y install sysstat
-sudo dpkg-reconfigure sysstat
-#sudo /etc/init.d/sysstat start
+# smartmontools
+sudo aptitude -y install smartmontools
+# smartmontools
+sudo aptitude -y install ext2resize
 
 # Last Setup
 sudo dpkg-reconfigure exim4-config
