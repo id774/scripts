@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 12-Jan-2009.
+# Last Change: 19-Jan-2009.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_linux_env() {
@@ -259,6 +259,13 @@ show_window_title() {
               if (( $#cmd == 2 )); then
                 cmd[1]=$cmd[2]
               fi
+              ;;
+          ls|clear)
+              echo -n "k$ZSH_NAME\\"
+              return
+              ;;
+          screen|pwd)
+              return
               ;;
           *)
               echo -n "k$cmd[1]:t\\"
