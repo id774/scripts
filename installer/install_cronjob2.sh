@@ -5,13 +5,15 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 1/22,2009
+#       Fix script path.
 #  v1.3 9/11,2008
 #       Split.
 ########################################################################
 
 # Rsync Backup Job
-sudo cp $SCRIPTS/rsync_backup.sh /root/bin/rsync_backup.sh
-#sudo cp $SCRIPTS/rsync_backup2.sh /root/bin/rsync_backup.sh
+sudo cp $SCRIPTS/cron/bin/rsync_backup.sh /root/bin/rsync_backup.sh
+#sudo cp $SCRIPTS/cron/bin/rsync_backup2.sh /root/bin/rsync_backup.sh
 sudo vim /root/bin/rsync_backup.sh
 sudo chmod 700 /root/bin/rsync_backup.sh
 sudo cp $SCRIPTS/cleanup4mac.sh /root/bin/cleanup4mac.sh
