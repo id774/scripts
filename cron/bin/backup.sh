@@ -6,6 +6,8 @@
 #  Customize & Maintain: id774 <idnanashi@gmail.com>
 #  Copyright (C) 2002 Takeru KOMORIYA <komoriya@paken.org>
 #
+#  v0.4 1/22,2009
+#       SMART information.
 #  v0.3 10/15,2008
 #       Add disk capacity report.
 #  v0.2a 9/14,2007 (base version 0.2)
@@ -27,6 +29,9 @@ DATE=`date +%Y%m%d`
 
 # disk capacity report
 df -T
+
+# SMART information
+test -b /dev/sda && smartctl -a /dev/sda
 
 # delete old backup directories
 echo -n "* Deleting old backup directories on "

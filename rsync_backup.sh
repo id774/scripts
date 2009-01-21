@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.6 1/22,2009
+#       SMART information.
 #  v1.5 12/22,2008
 #       Remove update area.
 #  v1.4 8/20,2008
@@ -23,6 +25,13 @@ test -n "$1" || RSYNC_BACKUP_HOME=/home/ubuntu
 
 # df at start
 df -T
+
+# SMART information
+test -b /dev/sdb && smartctl -a /dev/sdb
+test -b /dev/sdc && smartctl -a /dev/sdc
+test -b /dev/sdd && smartctl -a /dev/sdd
+test -b /dev/sde && smartctl -a /dev/sde
+test -b /dev/sdf && smartctl -a /dev/sdf
 
 # cleanup
 test -x /root/bin/cleanup4mac.sh && /root/bin/cleanup4mac.sh /home/ubuntu/mnt/sdb

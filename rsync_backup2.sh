@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.5 1/22,2009
+#       SMART information.
 #  v1.4 12/22,2008
 #       Remove update area.
 #  v1.3 8/16,2008
@@ -21,6 +23,10 @@ test -n "$1" || RSYNC_BACKUP_HOME=/home/ubuntu
 
 # df at start
 df -T
+
+# SMART information
+test -b /dev/sdb && smartctl -a /dev/sdb
+test -b /dev/sdc && smartctl -a /dev/sdc
 
 # rsync func
 rsync_disk2disk() {
