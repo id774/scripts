@@ -40,6 +40,9 @@ $SCRIPTS/installer/install_paco.sh
 sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
 $SCRIPTS/installer/install_ruby.sh 187-svn
 
+# Django
+$SCRIPTS/installer/install_django.sh 1.0.2
+
 # GDM Themes
 #$SCRIPTS/installer/install_gdmthemes.sh
 #$SCRIPTS/installer/install_gdmthemes2.sh
