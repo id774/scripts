@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 1/22,2009
+#       Add smartmontools.
 #  v1.2 10/28,2008
 #       Add MySQL server configuration.
 #  v1.1 8/29,2008
@@ -39,6 +41,7 @@ sudo port -d install bzip2
 sudo port -d install ctags
 sudo port -d install ncurses
 sudo port -d install vim
+sudo port -d install smartmontools
 sudo port -d install mysql5 +server
 sudo -u mysql mysql_install_db5
 sudo cp /opt/local/share/mysql5/mysql/my-small.cnf /opt/local/etc/mysql5/my.cnf
