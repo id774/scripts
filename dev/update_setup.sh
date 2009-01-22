@@ -36,6 +36,10 @@ $SCRIPTS/installer/install_dotemacs.sh
 # paco
 $SCRIPTS/installer/install_paco.sh
 
+# Vim (Original Build)
+$SCRIPTS/installer/install_ncurses.sh
+$SCRIPTS/installer/install_vim.sh
+
 # Ruby
 sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
 $SCRIPTS/installer/install_ruby.sh 187-svn
