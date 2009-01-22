@@ -9,16 +9,16 @@
 #       Stable.
 ########################################################################
 
-mkdir ncurses56
-cd ncurses56
-wget http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.6.tar.gz
-tar xzvf ncurses-5.6.tar.gz
-cd ncurses-5.6
+mkdir ncurses57
+cd ncurses57
+wget http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.7.tar.gz
+tar xzvf ncurses-5.7.tar.gz
+cd ncurses-5.7
 ./configure --with-shared --with-normal
 make
 sudo make install
 cd ../
 test -d /usr/local/src/ncurses || sudo mkdir -p /usr/local/src/ncurses
-sudo cp -a ncurses-5.6 /usr/local/src/ncurses
+sudo cp -a ncurses-5.7 /usr/local/src/ncurses
 cd ../
-rm -rf ncurses56
+rm -rf ncurses57

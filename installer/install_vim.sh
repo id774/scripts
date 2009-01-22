@@ -41,7 +41,7 @@ get_source_and_install() {
         tar xzvf vim-7.2-lang.tar.gz
         mkdir patches
         cd patches
-        curl -O 'ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.[001-025]'
+        curl -O 'ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.[001-084]'
         cd ../
         build_and_install
         cd ../../
