@@ -17,7 +17,6 @@
 
 ;; auto-complete-modeの有効/無効を切り替える
 (define-key global-map "\C-x\C-a" 'auto-complete-mode)
-(define-key global-map "\C-c\C-c\ c" 'auto-complete-mode)
 
 ;; ウィンドウが1つしかない場合は縦に分割する関数
 (defun split-one-window-p ()
@@ -42,8 +41,8 @@
 (define-key global-map "\C-c\C-c\ j" 'split-one-window)
 
 ;; 分割したウィンドウを時計回りに移動
-(define-key global-map "\C-c\C-c\C-w" 'other-window)
-(define-key global-map "\C-c\C-c\ w" 'other-window)
+(define-key global-map "\C-c\C-c\C-c" 'other-window)
+(define-key global-map "\C-c\C-c\ c" 'other-window)
 
 ;; Twitter
 (defun switch-to-twitter1-mode ()
@@ -110,7 +109,6 @@
 
 ;; バッファリスト
 (define-key global-map "\C-x\C-b" 'electric-buffer-list)
-(define-key global-map "\C-c\C-c\C-c" 'electric-buffer-list)
 
 ;; C-x C-wを上書き保存にする(別名保存はC-x w)
 (define-key global-map "\C-x\C-w" 'save-buffer)
