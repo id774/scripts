@@ -86,6 +86,7 @@ sudo aptitude -y install hddtemp
 sudo dpkg-reconfigure hddtemp
 # smartmontools
 sudo aptitude -y install smartmontools
+sudo vim /etc/default/smartmontools
 # smartmontools
 sudo aptitude -y install ext2resize
 
