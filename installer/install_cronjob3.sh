@@ -102,10 +102,10 @@ sudo mkdir -p /root/svnwork
 sudo cp $SCRIPTS/cron/bin/clone_git2svn.sh /root/bin/clone_git2svn.sh
 sudo vim /root/bin/clone_git2svn.sh
 sudo chmod 700 /root/bin/clone_git2svn.sh
-sudo cp $SCRIPTS/cron/bin/clone_git2svn /etc/cron.daily/clone_git2svn
-sudo vim /etc/cron.dairy/clone_git2svn
-sudo chmod 750 /etc/cron.dairy/clone_git2svn
-sudo chown root:adm /etc/cron.dairy/clone_git2svn
+sudo cp $SCRIPTS/cron/bin/clone_git2svn /etc/cron.hourly/clone_git2svn
+sudo vim /etc/cron.hourly/clone_git2svn
+sudo chmod 750 /etc/cron.hourly/clone_git2svn
+sudo chown root:adm /etc/cron.hourly/clone_git2svn
 sudo touch /var/log/clone_git2svn.log
 sudo chmod 640 /var/log/clone_git2svn.log
 sudo chown root:adm /var/log/clone_git2svn.log
