@@ -80,12 +80,16 @@ sudo chown -R root:root /usr/local/src
 # sysstat
 sudo aptitude -y install sysstat
 sudo dpkg-reconfigure sysstat
+# ENABLED="true"
+sudo vim /etc/default/sysstat
 # hddtemp
 sudo aptitude -y install lm-sensors
 sudo aptitude -y install hddtemp
 sudo dpkg-reconfigure hddtemp
 # smartmontools
 sudo aptitude -y install smartmontools
+# start_smartd=yes
+# smartd_opts="--interval=7200"
 sudo vim /etc/default/smartmontools
 # smartmontools
 sudo aptitude -y install ext2resize
