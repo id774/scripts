@@ -41,6 +41,8 @@
 (define-key global-map "\C-c\C-c\ j" 'split-one-window)
 
 ;; 分割したウィンドウを時計回りに移動
+(define-key global-map "\C-c\C-c\C-w" 'other-window)
+(define-key global-map "\C-c\C-c\ w" 'other-window)
 (define-key global-map "\C-c\C-c\C-c" 'other-window)
 (define-key global-map "\C-c\C-c\ c" 'other-window)
 

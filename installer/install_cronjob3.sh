@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.5 1/24,2009
+#       Add clone coderepos.
 #  v1.4 11/27,2008
 #       Increase plagger scripts.
 #  v1.3 9/11,2008
@@ -100,10 +102,10 @@ sudo mkdir -p /root/svnwork
 sudo cp $SCRIPTS/cron/bin/clone_git2svn.sh /root/bin/clone_git2svn.sh
 sudo vim /root/bin/clone_git2svn.sh
 sudo chmod 700 /root/bin/clone_git2svn.sh
-sudo cp $SCRIPTS/cron/bin/clone_git2svn /etc/cron.hourly/clone_git2svn
-sudo vim /etc/cron.hourly/clone_git2svn
-sudo chmod 750 /etc/cron.hourly/clone_git2svn
-sudo chown root:adm /etc/cron.hourly/clone_git2svn
+sudo cp $SCRIPTS/cron/bin/clone_git2svn /etc/cron.daily/clone_git2svn
+sudo vim /etc/cron.dairy/clone_git2svn
+sudo chmod 750 /etc/cron.dairy/clone_git2svn
+sudo chown root:adm /etc/cron.dairy/clone_git2svn
 sudo touch /var/log/clone_git2svn.log
 sudo chmod 640 /var/log/clone_git2svn.log
 sudo chown root:adm /var/log/clone_git2svn.log
@@ -111,6 +113,21 @@ sudo cp $SCRIPTS/cron/etc/clone_git2svn-log /etc/logrotate.d/clone_git2svn
 sudo chmod 644 /etc/logrotate.d/clone_git2svn
 sudo chown root:root /etc/logrotate.d/clone_git2svn
 # (root) /etc/cron.hourly/clone_git2svn
+
+# clone coderepos
+sudo cp $SCRIPTS/cron/bin/clone_coderepos.sh /root/bin/clone_coderepos.sh
+sudo vim /root/bin/clone_coderepos.sh
+sudo chmod 700 /root/bin/clone_coderepos.sh
+sudo cp $SCRIPTS/cron/bin/clone_coderepos /etc/cron.daily/clone_coderepos
+sudo vim /etc/cron.daily/clone_coderepos
+sudo chmod 750 /etc/cron.daily/clone_coderepos
+sudo chown root:adm /etc/cron.daily/clone_coderepos
+sudo touch /var/log/clone_coderepos.log
+sudo chmod 640 /var/log/clone_coderepos.log
+sudo chown root:adm /var/log/clone_coderepos.log
+sudo cp $SCRIPTS/cron/etc/clone_coderepos-log /etc/logrotate.d/clone_coderepos
+sudo chmod 644 /etc/logrotate.d/clone_coderepos
+sudo chown root:root /etc/logrotate.d/clone_coderepos
 
 # Edit crontab
 sudo vim /etc/crontab $SCRIPTS/cron/plagger/crontab
