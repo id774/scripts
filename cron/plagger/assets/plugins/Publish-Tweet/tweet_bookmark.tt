@@ -1,0 +1,1 @@
+[% IF entry.title %][% entry.title %][% END %]: [% IF entry.link %][% entry.link %][% END %]

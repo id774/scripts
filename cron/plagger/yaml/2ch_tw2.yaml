@@ -1,0 +1,23 @@
+global:
+  assets_path: /usr/local/share/perl/5.10.0/Plagger/assets
+  timezone: Asia/Tokyo
+  cache:
+    base: /home/plagger/.plagger_tmp/2ch
+  log:
+    level: info
+
+plugins:
+  - module: CustomFeed::2ch
+    config:
+      cache: /home/plagger/.plagger_tmp/2ch
+      fetch_body_interval: 10
+      fetch_items: 15
+      urls:
+       - url: http://pc11.2ch.net/test/read.cgi/net/1232368220/
+
+  - module: Publish::Tweet
+    config:
+      username: 2ch_tw2
+      password: xxxxxxxx
+      templatize: tweet.tt
+

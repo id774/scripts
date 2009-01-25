@@ -25,6 +25,9 @@ sudo mkdir -p /home/plagger/.plagger_tmp/tmp5
 sudo mkdir -p /home/plagger/.plagger_tmp/tmp6
 sudo mkdir -p /home/plagger/.plagger_tmp/tmp7
 sudo mkdir -p /home/plagger/.plagger_tmp/tmp8
+sudo mkdir -p /home/plagger/.plagger_tmp/tmp9
+sudo mkdir -p /home/plagger/.plagger_tmp/tmp10
+sudo mkdir -p /home/plagger/.plagger_tmp/tmp11
 sudo mkdir -p /home/plagger/.plagger_tmp/2ch
 sudo mkdir -p /home/plagger/bin
 sudo mkdir -p /home/plagger/yaml
