@@ -1,12 +1,10 @@
 #!/bin/sh
 
-test -f $HOME/local/git/coderepos.tar.gz && rm $HOME/local/git/coderepos.tar.gz
-cd $HOME/local/git/share
+test -f /home/git/coderepos/coderepos.tar.gz && rm /home/git/coderepos/coderepos.tar.gz
+cd /home/git/coderepos/share
 git svn rebase
 cd ..
-tar czvf $HOME/local/git/coderepos.tar.gz share/ >/dev/null
-
-cp $HOME/local/git/coderepos.tar.gz /home/plagger/local/git/coderepos.tar.gz
-chmod 640 /home/plagger/local/git/coderepos.tar.gz
-chown plagger:plagger /home/plagger/local/git/coderepos.tar.gz
+tar czvf /home/git/coderepos/coderepos.tar.gz share/ >/dev/null
+chmod 640 /home/git/coderepos/coderepos.tar.gz
+chown root:admin /home/git/coderepos/coderepos.tar.gz
 
