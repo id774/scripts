@@ -11,7 +11,10 @@ def chmodtree(options, arg):
     if options.quiet:
         quiet = ''
     else:
-        quiet = '-c '
+        if sys.platform == 'linux2':
+            quiet = '-c '
+        else:
+            quiet = '-v '
 
     if options.name:
         name = ' -name "%s"' % options.name
