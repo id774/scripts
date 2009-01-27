@@ -2,7 +2,7 @@ global:
   assets_path: /usr/local/share/perl/5.10.0/Plagger/assets
   timezone: Asia/Tokyo
   cache:
-    base: /home/plagger/.plagger_tmp/tmp6
+    base: /home/plagger/.plagger_tmp/tmp11
   log:
     level: info
 

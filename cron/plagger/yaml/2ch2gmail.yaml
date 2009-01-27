@@ -15,7 +15,7 @@ plugins:
       urls:
        - url: http://gimpo.2ch.net/test/read.cgi/juice/1018809225/ # lemoria
        - url: http://gimpo.2ch.net/test/read.cgi/toy/1229602400/ # Rozen
-       - url: http://pc11.2ch.net/test/read.cgi/software/1217020056/ # TrueCrypt
+       - url: http://pc11.2ch.net/test/read.cgi/software/1232865288/ # TrueCrypt
        - url: http://pc11.2ch.net/test/read.cgi/cdr/1101596318/ # Data Eternal
        - url: http://pc11.2ch.net/test/read.cgi/software/1165277378/ # Build Firefox
        - url: http://pc11.2ch.net/test/read.cgi/software/1212476412/ # Safari
@@ -26,10 +26,10 @@ plugins:
        - url: http://pc11.2ch.net/test/read.cgi/mac/1194243286/ # OS X Server
        - url: http://pc11.2ch.net/test/read.cgi/mac/1228571556/ # Snow Leopard
        - url: http://pc11.2ch.net/test/read.cgi/mac/1227319093/ # VMware Fusion
-       - url: http://pc11.2ch.net/test/read.cgi/mac/1229266785/ # MacBook Air
+       - url: http://pc11.2ch.net/test/read.cgi/mac/1232549823/ # MacBook Air
        - url: http://pc11.2ch.net/test/read.cgi/mac/1227918912/ # MacBook
        - url: http://pc11.2ch.net/test/read.cgi/mac/1230131955/ # MacBook Pro
-       - url: http://pc11.2ch.net/test/read.cgi/mac/1230119481/ # OS X Beginner
+       - url: http://pc11.2ch.net/test/read.cgi/mac/1232891103/ # OS X Beginner
        - url: http://pc11.2ch.net/test/read.cgi/mac/1159105251/ # OS X Customize
        - url: http://pc11.2ch.net/test/read.cgi/mac/1209741584/ # Mac Security
        - url: http://pc11.2ch.net/test/read.cgi/mac/1216828888/ # MacBook Touch
