@@ -13,6 +13,7 @@ install_python_bzip() {
     mkdir install_python
     cd install_python
     wget http://www.python.org/ftp/python/$1/Python-$1.tar.bz2
+    test -f Python-$1.tar.bz2 || exit 1
     tar xjvf Python-$1.tar.bz2
     cd Python-$1
     test -n "$2" || ./configure
