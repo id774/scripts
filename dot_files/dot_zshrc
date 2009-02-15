@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 26-Jan-2009.
+# Last Change: 15-Feb-2009.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_linux_env() {
@@ -292,15 +292,17 @@ set_local_settings() {
 }
 
 call_exec_screen() {
-    if [ `ps ax | grep screen | grep -v grep | wc -l` = 0 ]; then
-        exec screen -U -D -RR
-    fi
+    if [ "$TERM" != "linux" ]; then
+        if [ `ps ax | grep screen | grep -v grep | wc -l` = 0 ]; then
+            exec screen -U -D -RR
+        fi
 
-    case "${TERM}" in
-      *xterm*|rxvt|(dt|k|E)term)
-        exec screen -U -D -RR
-        ;;
-    esac
+        case "${TERM}" in
+          *xterm*|rxvt|(dt|k|E)term)
+            exec screen -U -D -RR
+            ;;
+        esac
+    fi
 }
 
 zshrc_main() {

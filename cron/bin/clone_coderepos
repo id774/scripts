@@ -11,3 +11,10 @@ echo -n "*** $0: End of Job at `/bin/hostname` on ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1
 echo>>$JOBLOG 2>&1
 
+# ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
+case "$ADMIN_MAIL_ADDRESS" in
+  *@*)
+    cat $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Git Pull Log (coderepos)" $ADMIN_MAIL_ADDRESS
+    ;;
+esac
+

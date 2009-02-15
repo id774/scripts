@@ -17,6 +17,7 @@
 sudo useradd -m plagger
 sudo passwd plagger
 sudo chsh -s /bin/false plagger
+sudo mkdir -p /home/plagger/.plagger_tmp/tmp0
 sudo mkdir -p /home/plagger/.plagger_tmp/tmp1
 sudo mkdir -p /home/plagger/.plagger_tmp/tmp2
 sudo mkdir -p /home/plagger/.plagger_tmp/tmp3

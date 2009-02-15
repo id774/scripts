@@ -2,5 +2,5 @@
   daily
   missingok
   create 0640 plagger adm
-  rotate 180
+  rotate 1024
 }
