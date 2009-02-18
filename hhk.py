@@ -3,10 +3,13 @@
 import sys, os
 
 def hhk_switch(options, args):
+    xmodmap_default = '/etc/xdg/xfce4/xmodmaprc'
+    xmodmap_hhklite2 = '$SCRIPTS/dot_files/dot_xmodmaprc_hhklite2'
+
     if len(args) == 1:
-        syscmd = 'xmodmap /etc/xdg/xfce4/xmodmaprc'
+        syscmd = 'xmodmap %s' % xmodmap_default
     else:
-        syscmd = 'xmodmap $SCRIPTS/dot_files/dot_xmodmaprc_hhklite2'
+        syscmd = 'xmodmap %s' % xmodmap_hhklite2
 
     os.system(syscmd)
 
