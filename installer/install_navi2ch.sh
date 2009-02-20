@@ -41,7 +41,7 @@ install_navi2ch() {
 
 case $OSTYPE in
   *darwin*)
-    OPTIONS=-R
+    OPTIONS=-pR
     ;;
   *)
     OPTIONS=-a

@@ -30,7 +30,7 @@ install_python_bzip() {
 
 case $OSTYPE in
   *darwin*)
-    OPTIONS=-R
+    OPTIONS=-pR
     ;;
   *)
     OPTIONS=-a

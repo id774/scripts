@@ -27,7 +27,7 @@ install_python_packages() {
 
 case $OSTYPE in
   *darwin*)
-    OPTIONS=-R
+    OPTIONS=-pR
     ;;
   *)
     OPTIONS=-a
