@@ -27,7 +27,7 @@ get_python() {
     wget http://www.python.org/ftp/python/$1/Python-$1.tar.bz2
     test -f Python-$1.tar.bz2 || exit 1
     tar xjvf Python-$1.tar.bz2
-    test "$2" = "sourceonly" || make_and_install
+    test "$2" = "sourceonly" || make_and_install $1 $2
     test -d /usr/local/src/python || sudo mkdir -p /usr/local/src/python
     sudo cp $OPTIONS Python-$1 /usr/local/src/python
     cd ..
