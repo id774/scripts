@@ -4,12 +4,18 @@ import sys, os
 
 def hhk_switch(options, args):
     xmodmap_default = '/etc/xdg/xfce4/xmodmaprc'
+    xmodmap_hhkprojp = '$SCRIPTS/dot_files/dot_xmodmaprc_hhkprojp'
     xmodmap_hhklite2 = '$SCRIPTS/dot_files/dot_xmodmaprc_hhklite2'
 
     if len(args) == 1:
-        syscmd = 'xmodmap %s' % xmodmap_default
+        if args[0] == 'projp':
+            syscmd = 'xmodmap %s' % xmodmap_hhkprojp
+        elif args[0] == 'lite2':
+            syscmd = 'xmodmap %s' % xmodmap_hhklite2
+        else:
+            syscmd = 'xmodmap %s' % xmodmap_default
     else:
-        syscmd = 'xmodmap %s' % xmodmap_hhklite2
+        syscmd = 'xmodmap %s' % xmodmap_default
 
     os.system(syscmd)
 
