@@ -157,6 +157,10 @@
 (define-key global-map "\C-c\C-c\C-r" 'redo)
 (define-key global-map "\C-c\C-c\ r" 'redo)
 
+;; C-x C-jでバッファ再読み込み
+(define-key global-map "\C-x\C-j" 'revert-buffer)
+(define-key global-map "\C-x\ j" 'revert-buffer)
+
 ;; Local Variables:
 ;; mode : emacs-lisp
 ;; coding : euc-jp-unix
