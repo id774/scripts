@@ -121,6 +121,7 @@
       (view-mode))))
 (define-key global-map "\C-x\C-y" 'toggle-view-mode)
 (define-key global-map "\C-x\ y" 'toggle-view-mode)
+(define-key global-map [C-backspace] 'toggle-view-mode)
 
 ;; バッファをM-n,M-pで切り替え
 (defun previous-buffer ()
@@ -137,6 +138,7 @@
 
 ;; バッファリスト
 (define-key global-map "\C-x\C-b" 'electric-buffer-list)
+(define-key global-map [C-return] 'electric-buffer-list)
 
 ;; C-x C-wを上書き保存にする(別名保存はC-x w)
 (define-key global-map "\C-x\C-w" 'save-buffer)
