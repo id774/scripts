@@ -3,7 +3,7 @@
 " An example for a Japanese version vimrc file.
 " 日本語版のデフォルト設定ファイル(vimrc) - Vim7用試作
 "
-" Last Change: 12-Jun-2009.
+" Last Change: 5-Mar-2009.
 " Maintainer:  id774 <idnanashi@gmail.com>
 "
 " 解説:
@@ -236,19 +236,6 @@ augroup Binary
   au BufWritePost *.bin if &bin | silent %!xxd -g 1
   au BufWritePost *.bin set nomod | endif
 augroup END
-
-"---------------------------------------------------------------------------
-" 括弧とクォートを自動補完
-inoremap { {}<LEFT>
-inoremap [ []<LEFT>
-inoremap ( ()<LEFT>
-inoremap " ""<LEFT>
-inoremap ' ''<LEFT>
-vnoremap { "zdi^V{<C-R>z}<ESC>
-vnoremap [ "zdi^V[<C-R>z]<ESC>
-vnoremap ( "zdi^V(<C-R>z)<ESC>
-vnoremap " "zdi^V"<C-R>z^V"<ESC>
-vnoremap ' "zdi'<C-R>z'<ESC>
 
 "---------------------------------------------------------------------------
 "表示行単位で行移動する
