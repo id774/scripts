@@ -6,14 +6,18 @@ def hhk_switch(options, args):
     xmodmap_default = '/etc/xdg/xfce4/xmodmaprc'
     xmodmap_hhkprojp = '$SCRIPTS/dot_files/dot_xmodmaprc_hhkprojp'
     xmodmap_hhklite2 = '$SCRIPTS/dot_files/dot_xmodmaprc_hhklite2'
+    xmodmap_uskeymap = '$SCRIPTS/dot_files/dot_xmodmaprc_uskeyboard'
+    xmodmap_original = '$SCRIPTS/dot_files/dot_xmodmaprc'
 
     if len(args) == 1:
         if args[0] == 'projp':
             syscmd = 'xmodmap %s' % xmodmap_hhkprojp
         elif args[0] == 'lite2':
             syscmd = 'xmodmap %s' % xmodmap_hhklite2
+        elif args[0] == 'us':
+            syscmd = 'xmodmap %s' % xmodmap_uskeymap
         else:
-            syscmd = 'xmodmap %s' % xmodmap_default
+            syscmd = 'xmodmap %s' % xmodmap_original
     else:
         syscmd = 'xmodmap %s' % xmodmap_default
 
