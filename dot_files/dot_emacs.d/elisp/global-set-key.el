@@ -106,7 +106,7 @@
 (define-key global-map "\C-c\C-c\ 4" 'switch-to-twitter4-mode)
 (define-key global-map "\C-c\C-c\ 5" 'switch-to-twitter-all-mode-left)
 (define-key global-map "\C-c\C-c\ 6" 'switch-to-twitter-all-mode-up)
-(define-key global-map "\C-c\C-c\ 7" 'switch-to-twitter-all-mode-all)
+(define-key global-map "\C-c\C-c\ 7" 'switch-to-twitter-all-mode-center)
 
 ;; Navi2ch
 (defun switch-to-navi2ch()
