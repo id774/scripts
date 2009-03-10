@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 3/10,2009
+#       Switch wget to curl.
 #  v1.1 10/3,2008
 #       Implement local build from source.
 #  v1.0 8/15,2008
@@ -33,15 +35,17 @@ get_source_and_install() {
         build_and_install
         cd ../../../
     else
-        wget ftp://ftp.vim.org/pub/vim/unix/vim-7.2.tar.bz2
-        wget ftp://ftp.vim.org/pub/vim/extra/vim-7.2-extra.tar.gz
-        wget ftp://ftp.vim.org/pub/vim/extra/vim-7.2-lang.tar.gz
+        curl -O ftp://ftp.vim.org/pub/vim/unix/vim-7.2.tar.bz2
+        curl -O ftp://ftp.vim.org/pub/vim/extra/vim-7.2-extra.tar.gz
+        curl -O ftp://ftp.vim.org/pub/vim/extra/vim-7.2-lang.tar.gz
         tar xjvf vim-7.2.tar.bz2
         tar xzvf vim-7.2-extra.tar.gz
         tar xzvf vim-7.2-lang.tar.gz
         mkdir patches
         cd patches
-        curl -O 'ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.[001-084]'
+        curl -O ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.001-100.gz
+        gunzip 7.2.001-100.gz
+        curl -O 'ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.[101-132]'
         cd ../
         build_and_install
         cd ../../
