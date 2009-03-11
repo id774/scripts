@@ -8,9 +8,8 @@ export SCRIPTS=$HOME/scripts
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
 
-# Vim (Original Build)
-$SCRIPTS/installer/install_ncurses.sh
-$SCRIPTS/installer/install_vim.sh
+# Uninstall local build vim
+$SCRIPTS/installer/uninstall_vim.sh
 
 # Deploy dot_files
 $SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2

@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.13 3/11,2009
+#       Disable local build vim.
 # v1.12 1/19,2009
 #       Add monitoring tools.
 # v1.11 1/18,2009
@@ -213,8 +215,8 @@ $SCRIPTS/installer/install_dotemacs.sh
 $SCRIPTS/installer/install_paco.sh
 
 # Vim (Original Build)
-$SCRIPTS/installer/install_ncurses.sh
-$SCRIPTS/installer/install_vim.sh
+#$SCRIPTS/installer/install_ncurses.sh
+#$SCRIPTS/installer/install_vim.sh
 
 # Deploy dot_vim
 $SCRIPTS/installer/install_dotvim.sh
