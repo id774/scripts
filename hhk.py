@@ -7,6 +7,7 @@ def hhk_switch(options, args):
     xmodmap_hhkprojp = '$SCRIPTS/dot_files/dot_xmodmaprc_hhkprojp'
     xmodmap_hhklite2 = '$SCRIPTS/dot_files/dot_xmodmaprc_hhklite2'
     xmodmap_uskeymap = '$SCRIPTS/dot_files/dot_xmodmaprc_uskeyboard'
+    xmodmap_intrepid = '$SCRIPTS/dot_files/dot_xmodmaprc_intrepid'
     xmodmap_original = '$SCRIPTS/dot_files/dot_xmodmaprc'
 
     if len(args) == 1:
@@ -16,6 +17,8 @@ def hhk_switch(options, args):
             syscmd = 'xmodmap %s' % xmodmap_hhklite2
         elif args[0] == 'us':
             syscmd = 'xmodmap %s' % xmodmap_uskeymap
+        elif args[0] == 'intrepid':
+            syscmd = 'xmodmap %s' % xmodmap_intrepid
         else:
             syscmd = 'xmodmap %s' % xmodmap_original
     else:
