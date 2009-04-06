@@ -25,7 +25,7 @@ plugins:
 
   - module: Publish::Tumblr
     config:
-      username: linux_cafe
+      username: xxxxxxxx
       password: xxxxxxxx
       type: quote
       interval: 10
