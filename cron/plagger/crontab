@@ -47,5 +47,6 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 #*/10 * * * * plagger test -x /home/plagger/bin/plagger_2ch2twitter.sh && /home/plagger/bin/plagger_2ch2twitter.sh
 #44 4 * * * plagger test -x /home/plagger/bin/plagger_2ch2gmail.sh && /home/plagger/bin/plagger_2ch2gmail.sh
 #59 5,8,10,13,15,17,20,23 * * * root test -x /root/bin/irc-logger && /root/bin/irc-logger
+21,51 * * * * plagger test -x /home/plagger/bin/plagger_twitter2tumblr.sh && /home/plagger/bin/plagger_twitter2tumblr.sh
 #
 

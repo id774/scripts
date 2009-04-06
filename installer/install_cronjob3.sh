@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.6 4/7,2009
+#       Add twitter2tumblr.
 #  v1.5 1/24,2009
 #       Add clone coderepos.
 #  v1.4 11/27,2008
@@ -29,6 +31,7 @@ sudo mkdir -p /home/plagger/.plagger_tmp/tmp8
 sudo mkdir -p /home/plagger/.plagger_tmp/tmp9
 sudo mkdir -p /home/plagger/.plagger_tmp/tmp10
 sudo mkdir -p /home/plagger/.plagger_tmp/tmp11
+sudo mkdir -p /home/plagger/.plagger_tmp/tmp12
 sudo mkdir -p /home/plagger/.plagger_tmp/2ch
 sudo mkdir -p /home/plagger/bin
 sudo mkdir -p /home/plagger/yaml
@@ -46,14 +49,17 @@ sudo touch /var/log/plagger.log
 sudo touch /var/log/plaggersbm.log
 sudo touch /var/log/plagger2ch2twitter.log
 sudo touch /var/log/plagger2ch2gmail.log
+sudo touch /var/log/plagger_twitter2tumblr.log
 sudo chmod 640 /var/log/plagger.log
 sudo chmod 640 /var/log/plaggersbm.log
 sudo chmod 640 /var/log/plagger2ch2twitter.log
 sudo chmod 640 /var/log/plagger2ch2gmail.log
+sudo chmod 640 /var/log/plagger_twitter2tumblr.log
 sudo chown plagger:adm /var/log/plagger.log
 sudo chown plagger:adm /var/log/plaggersbm.log
 sudo chown plagger:adm /var/log/plagger2ch2twitter.log
 sudo chown plagger:adm /var/log/plagger2ch2gmail.log
+sudo chown plagger:adm /var/log/plagger_twitter2tumblr.log
 sudo chown -R plagger:plagger /home/plagger
 
 # Twitter

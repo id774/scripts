@@ -25,3 +25,10 @@
   create 0640 plagger adm
   rotate 30
 }
+
+/var/log/plagger_twitter2tumblr.log {
+  daily
+  missingok
+  create 0640 plagger adm
+  rotate 30
+}
