@@ -9,10 +9,14 @@ export SCRIPTS=$HOME/scripts
 $SCRIPTS/installer/install_dotemacs.sh
 
 # Uninstall local build vim
-$SCRIPTS/installer/uninstall_vim.sh
+#$SCRIPTS/installer/uninstall_vim.sh
 
 # Deploy dot_files
 $SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
+
+# Last Setup
+sudo cp $SCRIPTS/etc/sudoers /etc/sudoers
+sudo vim /etc/sudoers
 
 # Upgrade
 

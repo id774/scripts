@@ -172,11 +172,23 @@
   (define-key ctl-x-map (if window-system "U" "r") 'redo)
   (define-key global-map [?\C-.] 'redo))
 
+;; 透明化
+(add-to-list 'default-frame-alist '(alpha . (80 50)))
+
 ;; キーバインド設定
 (load "global-set-key")
 
 ;; view-modeキーバインド設定
 (load "view-mode-key")
+
+;; Twitter
+(load "twitter1-account")
+(load "twitter2-account")
+(load "twitter3-account")
+(load "twitter4-account")
+
+;; Twitter用キーバインド設定
+(load "twitter-key")
 
 ;; カスタム設定
 (load "custom")
