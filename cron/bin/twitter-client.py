@@ -28,8 +28,9 @@ def notify(username, tmpfile):
   last_id = int(f.read())
   f.close
   r = urllib2.Request(timeline_url)
-  r.add_data("since_id="+str(last_id))
-  e = parse(file=urllib2.urlopen(r))
+  #r.add_data("since_id="+str(last_id))
+  r = timeline_url + "?since_id=" + str(last_id)
+  e = parse(file=urllib2.geturl(r))
   print >>sys.stdout, time.strftime("[%Y-%m-%d %H:%M:%S] "), username, "friends timeline"
   for s in reversed(e.getElementsByTagName("status")):
     if int(tagText(s, "id")) > last_id:
