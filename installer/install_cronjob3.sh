@@ -65,6 +65,9 @@ sudo chown -R plagger:plagger /home/plagger
 # Twitter
 sudo cp $SCRIPTS/cron/etc/last_id /home/plagger/.plagger_tmp/last_id
 sudo chmod 640 /home/plagger/.plagger_tmp/last_id
+sudo touch /home/plagger/.plagger_tmp/banlist
+sudo vim /home/plagger/.plagger_tmp/banlist
+sudo chmod 640 /home/plagger/.plagger_tmp/banlist
 sudo cp $SCRIPTS/cron/bin/twitter-client.py /home/plagger/bin/twitter-client.py
 sudo vim /home/plagger/bin/twitter-client.py
 sudo chmod 750 /home/plagger/bin/twitter-client.py
