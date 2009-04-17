@@ -115,6 +115,13 @@
 (define-key global-map "\C-x\C-j" 'revert-buffer)
 (define-key global-map "\C-x\ j" 'revert-buffer)
 
+;; C-x C-cで必ず確認する
+(defun confirm-save-buffers-kill-emacs ()
+  (interactive)
+  (if (y-or-n-p "quit emacs? ")
+    (save-buffers-kill-emacs)))
+(global-set-key "\C-x\C-c" 'confirm-save-buffers-kill-emacs)
+
 ;; Local Variables:
 ;; mode : emacs-lisp
 ;; coding : euc-jp-unix
