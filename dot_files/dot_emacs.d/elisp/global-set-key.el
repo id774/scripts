@@ -118,7 +118,7 @@
 ;; C-x C-cで必ず確認する
 (defun confirm-save-buffers-kill-emacs ()
   (interactive)
-  (if (y-or-n-p "quit emacs? ")
+  (if (yes-or-no-p "quit emacs? ")
     (save-buffers-kill-emacs)))
 (global-set-key "\C-x\C-c" 'confirm-save-buffers-kill-emacs)
 
