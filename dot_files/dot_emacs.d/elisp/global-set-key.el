@@ -112,6 +112,11 @@
 (define-key global-map "\C-c\C-c\ r" 'redo)
 
 ;; C-x C-jでバッファ再読み込み
+(defun revert-buffer-force ()
+  (interactive)
+  (revert-buffer t t))
+(define-key global-map "\C-c\C-x\C-j" 'revert-buffer-force)
+(define-key global-map "\C-c\C-x\ j" 'revert-buffer-force)
 (define-key global-map "\C-x\C-j" 'revert-buffer)
 (define-key global-map "\C-x\ j" 'revert-buffer)
 
