@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.5 4/29,2009
+#       Put emacs-ruby installer to out.
 #  v1.4 1/7,2009
 #       Ruby 1.8 svn head.
 #  v1.3 12/11,2008
@@ -34,8 +36,7 @@ install_trunk() {
     sudo ruby extconf.rb
     sudo make
     sudo make install
-    test -L /usr/local/share/emacs/site-lisp/ruby-mode.el && sudo rm /usr/local/share/emacs/site-lisp/ruby-mode.el
-    sudo ln -s /usr/local/src/ruby/trunk/misc/ruby-mode.el /usr/local/share/emacs/site-lisp/ruby-mode.el
+    test -x $SCRIPTS/installer/install_emacs_ruby.sh && $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/trunk/misc
 }
 
 install_branch() {
@@ -55,8 +56,7 @@ install_branch() {
     sudo ruby extconf.rb
     sudo make
     sudo make install
-    test -L /usr/local/share/emacs/site-lisp/ruby-mode.el && sudo rm /usr/local/share/emacs/site-lisp/ruby-mode.el
-    sudo ln -s /usr/local/src/ruby/branches/$1/misc/ruby-mode.el /usr/local/share/emacs/site-lisp/ruby-mode.el
+    test -x $SCRIPTS/installer/install_emacs_ruby.sh && $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/branches/$1/misc
 }
 
 install_stable() {
@@ -81,8 +81,7 @@ install_stable() {
     sudo cp $OPTIONS ruby-$1 /usr/local/src/ruby
     cd ..
     rm -rf install_ruby
-    test -L /usr/local/share/emacs/site-lisp/ruby-mode.el && sudo rm /usr/local/share/emacs/site-lisp/ruby-mode.el
-    sudo ln -s /usr/local/src/ruby/ruby-$1/misc/ruby-mode.el /usr/local/share/emacs/site-lisp/ruby-mode.el
+    test -x $SCRIPTS/installer/install_emacs_ruby.sh && $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/ruby-$1/misc
 }
 
 case $OSTYPE in
