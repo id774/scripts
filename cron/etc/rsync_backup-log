@@ -2,5 +2,5 @@
   daily
   missingok
   create 0640 root adm
-  rotate 60
+  rotate 90
 }

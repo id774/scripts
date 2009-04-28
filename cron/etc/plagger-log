@@ -2,33 +2,33 @@
   daily
   missingok
   create 0640 plagger adm
-  rotate 30
+  rotate 90
 }
 
 /var/log/plaggersbm.log {
   daily
   missingok
   create 0640 plagger adm
-  rotate 30
+  rotate 90
 }
 
 /var/log/plagger2ch2twitter.log {
   daily
   missingok
   create 0640 plagger adm
-  rotate 30
+  rotate 90
 }
 
 /var/log/plagger2ch2gmail.log {
   daily
   missingok
   create 0640 plagger adm
-  rotate 30
+  rotate 90
 }
 
 /var/log/plagger_twitter2tumblr.log {
   daily
   missingok
   create 0640 plagger adm
-  rotate 30
+  rotate 90
 }
