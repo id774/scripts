@@ -2,8 +2,8 @@
 ;; 環境設定してautoloads.elを呼ぶ
 
 ;; Proxyを利用するならglobal-proxy-useをtに
-(defvar global-proxy-use nil)
-(defvar global-proxy-server "proxy.hoge.co.jp")
+(defvar global-proxy-use t)
+(defvar global-proxy-server "proxy.dts.co.jp")
 (defvar global-proxy-port 8080)
 (defvar global-proxy-user nil)
 (defvar global-proxy-password nil)
@@ -26,6 +26,7 @@ subdirectory under load-path.")
       (list "/usr/local/share/emacs/site-lisp"
 	    (expand-file-name "~/.emacs.d/elisp")
 	    (expand-file-name "~/.emacs.d/elisp/3rd-party")
+	    (expand-file-name "~/.emacs.d/elisp/3rd-party/rhtml-mode")
 	    (expand-file-name "~/.emacs.d/elisp/3rd-party/haskell-mode")
 	    (expand-file-name "~/.emacs.d/elisp/3rd-party/fixed-width-fontset")
 	    (expand-file-name "~/.emacs.d/elisp/3rd-party/navi2ch")
