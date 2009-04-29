@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.14 4/29,2009
+#       Add GNU GLOBAL.
 # v1.13 3/11,2009
 #       Disable local build vim.
 # v1.12 1/19,2009
@@ -169,6 +171,7 @@ sudo aptitude -y install checkinstall
 sudo aptitude -y install xdelta
 sudo aptitude -y install alien
 sudo aptitude -y install curl
+sudo aptitude -y Install global
 
 # SCM Client
 sudo aptitude -y install subversion
@@ -316,7 +319,7 @@ $SCRIPTS/installer/install_crypt.sh 6.1a-ubuntu-x86
 # Security (Anti-Virus)
 sudo aptitude -y install clamav avscan
 sudo useradd clamav
-$SCRIPTS/installer/install_clamav.sh
+#$SCRIPTS/installer/install_clamav.sh
 
 # iptables
 $SCRIPTS/installer/install_iptables.sh
@@ -328,8 +331,8 @@ $SCRIPTS/installer/install_trac.sh
 $SCRIPTS/installer/install_rubygems.sh
 $SCRIPTS/installer/install_gems.sh
 $SCRIPTS/installer/install_rails.sh 212
-$SCRIPTS/installer/install_rails.sh 205
-$SCRIPTS/installer/install_rails.sh 126
+#$SCRIPTS/installer/install_rails.sh 205
+#$SCRIPTS/installer/install_rails.sh 126
 vim-ruby-install.rb
 
 # Passenger
