@@ -5,6 +5,9 @@
 
 export SCRIPTS=$HOME/scripts
 
+# Libraries and Programming Tools
+sudo aptitude -y install global
+
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
 

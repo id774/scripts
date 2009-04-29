@@ -171,7 +171,7 @@ sudo aptitude -y install checkinstall
 sudo aptitude -y install xdelta
 sudo aptitude -y install alien
 sudo aptitude -y install curl
-sudo aptitude -y Install global
+sudo aptitude -y install global
 
 # SCM Client
 sudo aptitude -y install subversion
