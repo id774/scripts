@@ -22,12 +22,8 @@ subdirectory under load-path.")
       (list "/usr/local/share/emacs/site-lisp"
 	    (expand-file-name "~/.emacs.d/elisp")
 	    (expand-file-name "~/.emacs.d/elisp/3rd-party")
-	    (expand-file-name "~/.emacs.d/elisp/3rd-party/rhtml-mode")
-	    (expand-file-name "~/.emacs.d/elisp/3rd-party/haskell-mode")
-	    (expand-file-name "~/.emacs.d/elisp/3rd-party/fixed-width-fontset")
-	    (expand-file-name "~/.emacs.d/elisp/3rd-party/navi2ch")
-	    (expand-file-name "~/.emacs.d/elisp/3rd-party/italk")
-	    (expand-file-name "~/.emacs.d/elisp/3rd-party/riece")))
+	    (expand-file-name "~/.emacs.d/elisp/3rd-party/rhtml")
+	    (expand-file-name "~/.emacs.d/elisp/3rd-party/rinari")))
 (setq load-path (append my-load-path default-load-path))
 
 ;; custom

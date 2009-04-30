@@ -68,13 +68,11 @@
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
 
 ;; rhtml-mode
-(add-to-list 'load-path "~/local/github/rhtml")
 (require 'rhtml-mode)
 (setq auto-mode-alist (cons '("\\.erb$" . rhtml-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.rhtml$" . rhtml-mode) auto-mode-alist))
 
 ;; Rinari
-(add-to-list 'load-path "~/local/github/rinari")
 (require 'rinari)
 
 ;; gtags-mode : global ÊØÍø¡£
