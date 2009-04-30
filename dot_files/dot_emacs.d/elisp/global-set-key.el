@@ -110,15 +110,24 @@
 (define-key global-map "\C-c\C-c\ u" 'undo)
 (define-key global-map "\C-c\C-c\C-r" 'redo)
 (define-key global-map "\C-c\C-c\ r" 'redo)
+(global-set-key "\C-\\" 'redo)
 
-;; C-x C-jでバッファ再読み込み
-(defun revert-buffer-force ()
+;; バッファ再読み込み
+(defun revert-current-buffer ()
   (interactive)
   (revert-buffer t t))
-(define-key global-map "\C-c\C-x\C-j" 'revert-buffer-force)
-(define-key global-map "\C-c\C-x\ j" 'revert-buffer-force)
-(define-key global-map "\C-x\C-j" 'revert-buffer)
-(define-key global-map "\C-x\ j" 'revert-buffer)
+(defun revert-all-buffers ()
+  (interactive)
+  (let ((cbuf (current-buffer)))
+    (dolist (buf (buffer-list))
+      (if (not (buffer-file-name buf)) ;only the file which visit on path
+   nil
+ (switch-to-buffer buf)
+ (revert-buffer t t)))
+    (switch-to-buffer cbuf)
+    ))
+(define-key global-map "\C-c\C-c\C-p" 'revert-current-buffer)
+(define-key global-map "\C-c\C-c\ p" 'revert-all-buffers)
 
 ;; C-x C-cで必ず確認する
 (defun confirm-save-buffers-kill-emacs ()
