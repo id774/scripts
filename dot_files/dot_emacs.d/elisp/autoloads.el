@@ -242,6 +242,9 @@
   (setq tramp-auto-save-directory "~/.emacs.d/tramp-auto-save")
   (setq tramp-verbose 3))
 
+;; ファイルの内容が無ければ、ファイルとバッファを消す
+(load-p "delete-empty-file")
+
 ;; 行末の空白とかを取り除く
 (load-p "trim-buffer")
 
