@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 test -d $HOME/.vmware || exit 1
 

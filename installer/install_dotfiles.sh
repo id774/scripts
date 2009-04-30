@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 test -n "$1" && DEFAULT_KEYMAPFILE=$1
 test -n "$1" || DEFAULT_KEYMAPFILE=dot_xmodmaprc_hhklite2

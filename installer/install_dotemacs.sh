@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 setup_dotemacs() {
     test -d ~/.emacs.d && rm -rf ~/.emacs.d/
@@ -18,6 +18,7 @@ setup_rhtml() {
         git clone git://github.com/eschulte/rhtml.git
         cd ~/local/github/rhtml
     fi
+    ln -s ~/local/github/rhtml ~/.emacs.d/elisp/3rd-party
 }
 
 setup_rinari() {
@@ -31,6 +32,7 @@ setup_rinari() {
     fi
     git submodule init
     git submodule update
+    ln -s ~/local/github/rinari ~/.emacs.d/elisp/3rd-party
 }
 
 emacs_private_settings() {
