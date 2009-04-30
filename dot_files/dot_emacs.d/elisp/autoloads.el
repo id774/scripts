@@ -242,6 +242,9 @@
   (setq tramp-auto-save-directory "~/.emacs.d/tramp-auto-save")
   (setq tramp-verbose 3))
 
+;; 開いているすべてのバッファをkillする
+(load-p "kill-all-buffers")
+
 ;; ファイルの内容が無ければ、ファイルとバッファを消す
 (load-p "delete-empty-file")
 

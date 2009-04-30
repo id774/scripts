@@ -133,6 +133,9 @@
 (define-key global-map "\C-c\C-c\C-p" 'revert-current-buffer)
 (define-key global-map "\C-c\C-c\ p" 'revert-all-buffers)
 
+;; 開いているすべてのバッファをkillする
+(define-key global-map "\C-c\C-c\ 0" 'kill-all-buffers)
+
 ;; C-x C-cで必ず確認する
 (defun confirm-save-buffers-kill-emacs ()
   (interactive)
