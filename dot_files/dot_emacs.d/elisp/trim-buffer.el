@@ -1,5 +1,4 @@
 ;; 行末の空白を一括削除する
-;; usage M-x trim-buffer
 (defun trim-buffer ()
   "Delete excess white space."
   (interactive)
