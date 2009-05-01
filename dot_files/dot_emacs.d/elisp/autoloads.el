@@ -67,13 +67,15 @@
   (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
   (add-hook 'haskell-mode-hook 'turn-on-haskell-indent))
 
+;; Rinari
+(require 'rinari)
+
 ;; rhtml-mode
 (require 'rhtml-mode)
 (setq auto-mode-alist (cons '("\\.erb$" . rhtml-mode) auto-mode-alist))
 (setq auto-mode-alist (cons '("\\.rhtml$" . rhtml-mode) auto-mode-alist))
-
-;; Rinari
-(require 'rinari)
+(add-hook 'rhtml-mode-hook
+  (lambda () (rinari-launch)))
 
 ;; gtags-mode : global ÊØÍø¡£
 (when (autoload-p 'gtags-mode "gtags" "GNU GLOBAL" 'interactive)
