@@ -55,8 +55,8 @@
 (define-key global-map "\C-c\C-c\ i" 'switch-to-navi2ch)
 
 ;; 行末の空白を一括削除する
-(define-key global-map "\C-c\C-c\C-t" 'trim-buffer)
-(define-key global-map "\C-c\C-c\ t" 'trim-buffer)
+(define-key global-map "\C-c\C-c\C-t" 'delete-trailing-whitespace)
+(define-key global-map "\C-c\C-c\ t" 'delete-trailing-whitespace)
 
 ;; C-M-g でも keyboard-escape-quit する
 (global-set-key "\C-\M-g" 'keyboard-escape-quit)
