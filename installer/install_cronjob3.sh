@@ -93,7 +93,7 @@ sudo chmod 750 /home/plagger/bin/mixidiary2txt.py
 sudo cp $SCRIPTS/cron/bin/mixi-logger /home/plagger/bin/mixi-logger
 sudo vim /home/plagger/bin/mixi-logger
 sudo chmod 750 /home/plagger/bin/mixi-logger
-sudo cp $SCRIPTS/cron/etc/mixi-log /etc/logrotate.d/mixi-log
+sudo cp $SCRIPTS/cron/etc/mixi-log /etc/logrotate.d/mixi
 sudo chmod 644 /etc/logrotate.d/mixi-log
 sudo chown root:root /etc/logrotate.d/mixi-log
 sudo touch /var/log/mixi.log
