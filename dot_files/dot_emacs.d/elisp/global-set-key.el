@@ -16,7 +16,7 @@
       (t (keyboard-translate ?\C-h ?\C-?)))
 
 ;; auto-complete-modeの有効/無効を切り替える
-(define-key global-map "\C-x\C-a" 'auto-complete-mode)
+(define-key global-map "\C-x\C-j" 'auto-complete-mode)
 
 ;; ウィンドウが1つしかない場合は縦に分割する関数
 (defun split-one-window-p ()
