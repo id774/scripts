@@ -72,7 +72,7 @@ sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
 sudo vim /etc/apt/sources.list
 sudo aptitude update
 
-# Ubuntu-ja GPG Automatic Import (Ubuntu Server)
+# Ubuntu-ja GPG Automatic Import
 #eval `cat /etc/lsb-release`
 #wget -q http://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
 #sudo wget http://www.ubuntulinux.jp/sources.list.d/$DISTRIB_CODENAME.list -O /etc/apt/sources.list.d/ubuntu-ja.list
@@ -276,6 +276,17 @@ sudo aptitude install -y sun-java6-jdk
 #sudo rmmod pcspkr
 #sudo vim /etc/modprobe.d/blacklist
 #$SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
+
+#sudo aptitude install -y ubuntu-desktop-ja
+#sudo aptitude install -y openoffice.org
+
+# codec
+#sudo aptitude install -y ubuntu-restricted-extras
+#sudo aptitude install -y xubuntu-restricted-extras
+
+# icon
+#sudo aptitude install -y human-icon-theme
+#sudo aptitude install -y gnome-themes gnome-themes-extras
 
 # 2ch Browser
 #sudo aptitude -y install ochusha

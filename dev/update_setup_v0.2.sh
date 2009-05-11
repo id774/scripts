@@ -24,6 +24,9 @@ $SCRIPTS/installer/install_dotemacs.sh
 # Deploy dot_files
 $SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
 
+# Ruby
+$SCRIPTS/installer/install_ruby.sh 187-svn
+
 # Last Setup
 sudo cp $SCRIPTS/etc/sudoers /etc/sudoers
 sudo vim /etc/sudoers
