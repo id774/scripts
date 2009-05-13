@@ -27,6 +27,19 @@ $SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
 # Ruby
 $SCRIPTS/installer/install_ruby.sh 187-svn
 
+# tune2fs
+test -b /dev/sda5  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda5
+test -b /dev/sda6  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda6
+test -b /dev/sda7  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda7
+test -b /dev/sda8  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda8
+test -b /dev/sda9  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda9
+test -b /dev/sda10 && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda10
+test -b /dev/mapper/`/bin/hostname`-root && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-root
+test -b /dev/mapper/`/bin/hostname`-tmp  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-tmp
+test -b /dev/mapper/`/bin/hostname`-var  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-var
+test -b /dev/mapper/`/bin/hostname`-usr  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-usr
+test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-home
+
 # Last Setup
 sudo cp $SCRIPTS/etc/sudoers /etc/sudoers
 sudo vim /etc/sudoers

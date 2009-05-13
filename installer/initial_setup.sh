@@ -5,6 +5,9 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.15 5/13,2009
+#       Add ubuntu-ja, OpenOffice.org, codec, icons.
+#       Setting reserved blocks percentage of ext3 filesystem to 1%.
 # v1.14 4/29,2009
 #       Add GNU GLOBAL.
 # v1.13 3/11,2009
@@ -277,14 +280,17 @@ sudo aptitude install -y sun-java6-jdk
 #sudo vim /etc/modprobe.d/blacklist
 #$SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
 
+# Ubuntu-ja
 #sudo aptitude install -y ubuntu-desktop-ja
+
+# OpenOffice.org
 #sudo aptitude install -y openoffice.org
 
-# codec
+# Codec
 #sudo aptitude install -y ubuntu-restricted-extras
 #sudo aptitude install -y xubuntu-restricted-extras
 
-# icon
+# Icons
 #sudo aptitude install -y human-icon-theme
 #sudo aptitude install -y gnome-themes gnome-themes-extras
 
@@ -359,17 +365,17 @@ sudo chown -R root:root /usr/src
 sudo chown -R root:root /usr/local/src
 
 # tune2fs
-test -b /dev/sda5  && sudo tune2fs -i 0 -c 0 /dev/sda5
-test -b /dev/sda6  && sudo tune2fs -i 0 -c 0 /dev/sda6
-test -b /dev/sda7  && sudo tune2fs -i 0 -c 0 /dev/sda7
-test -b /dev/sda8  && sudo tune2fs -i 0 -c 0 /dev/sda8
-test -b /dev/sda9  && sudo tune2fs -i 0 -c 0 /dev/sda9
-test -b /dev/sda10 && sudo tune2fs -i 0 -c 0 /dev/sda10
-test -b /dev/mapper/`/bin/hostname`-root && sudo tune2fs -i 0 -c 0 /dev/mapper/`/bin/hostname`-root
-test -b /dev/mapper/`/bin/hostname`-tmp  && sudo tune2fs -i 0 -c 0 /dev/mapper/`/bin/hostname`-tmp
-test -b /dev/mapper/`/bin/hostname`-var  && sudo tune2fs -i 0 -c 0 /dev/mapper/`/bin/hostname`-var
-test -b /dev/mapper/`/bin/hostname`-usr  && sudo tune2fs -i 0 -c 0 /dev/mapper/`/bin/hostname`-usr
-test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 /dev/mapper/`/bin/hostname`-home
+test -b /dev/sda5  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda5
+test -b /dev/sda6  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda6
+test -b /dev/sda7  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda7
+test -b /dev/sda8  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda8
+test -b /dev/sda9  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda9
+test -b /dev/sda10 && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda10
+test -b /dev/mapper/`/bin/hostname`-root && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-root
+test -b /dev/mapper/`/bin/hostname`-tmp  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-tmp
+test -b /dev/mapper/`/bin/hostname`-var  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-var
+test -b /dev/mapper/`/bin/hostname`-usr  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-usr
+test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-home
 
 # Linux kernel source, headers, kbuild (Debian)
 #sudo aptitude install linux-kbuild-2.6.26 linux-headers-2.6.26-1-686 linux-source-2.6.26
