@@ -8,7 +8,20 @@
 ;; Created: Sep 4, 2007
 ;; Version: 0.4
 ;; Keywords: twitter web
-;; URL: http://lambdarepos.svnrepository.com/share/trac.cgi/browser/lang/elisp/twitter3-mode
+;; URL: http://lambdarepos.svnrepository.com/share/trac.cgi/browser/lang/elisp/twittering-mode
+
+;; Modified by Alberto Garcia <agarcia@igalia.com> to add the following methods:
+;; twitter3-replies-timeline
+;; twitter3-public-timeline
+;; twitter3-user-timeline
+;; twitter3-current-timeline
+
+;; Modified by id774 <idnanashi@gmail.com> to following changes:
+;; Divide namespace of twittering-mode into 4 accounts.
+;; Change status format.
+;; Use global proxy settings.
+;; Remove http get success message.
+;; URL: http://github.com/id774/scripts
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -58,15 +71,18 @@
 
 (defvar twitter3-mode-map (make-sparse-keymap))
 
-(defvar twitter3-timer nil "Timer object for timeline refreshing will be stored here. DO NOT SET VALUE MANUALLY.")
+(defvar twitter3-timer nil "Timer object for timeline refreshing will be
+stored here. DO NOT SET VALUE MANUALLY.")
 
-(defvar twitter3-idle-time 20)
+(defvar twitter3-idle-time 22)
 
-(defvar twitter3-timer-interval 120)
+(defvar twitter3-timer-interval 98)
 
 (defvar twitter3-username nil)
 
 (defvar twitter3-password nil)
+
+(defvar twitter3-last-timeline-retrieved nil)
 
 (defvar twitter3-scroll-mode nil)
 (make-variable-buffer-local 'twitter3-scroll-mode)
@@ -75,7 +91,7 @@
 (make-variable-buffer-local 'twitter3-jojo-mode)
 
 (defvar twitter3-status-format nil)
-(setq twitter3-status-format "%i %s: %t %p")
+(setq twitter3-status-format "%i %s: %t %p [%C]")
 ;; %s - screen_name
 ;; %S - name
 ;; %i - profile_image
@@ -101,8 +117,8 @@
 (defun twitter3-http-buffer ()
   (twitter3-get-or-generate-buffer twitter3-http-buffer))
 
-(defvar twitter3-friends-timeline-data nil)
-(defvar twitter3-friends-timeline-last-update nil)
+(defvar twitter3-timeline-data nil)
+(defvar twitter3-timeline-last-update nil)
 
 (defvar twitter3-username-face 'twitter3-username-face)
 (defvar twitter3-uri-face 'twitter3-uri-face)
@@ -162,7 +178,9 @@
   (expand-file-name (concat "twmode-images-" (user-login-name))
 		    temporary-file-directory))
 
-(defvar twitter3-icon-mode nil "You MUST NOT CHANGE this variable directory. You should change through function'twitter3-icon-mode'")
+(defvar twitter3-icon-mode nil "You MUST NOT CHANGE this variable
+directory. You should change through function'twitter3-icon-mode'")
+
 (make-variable-buffer-local 'twitter3-icon-mode)
 (defun twitter3-icon-mode (&optional arg)
   (interactive)
@@ -178,7 +196,7 @@
 		(if (not (file-directory-p twitter3-tmp-dir))
 		    (make-directory twitter3-tmp-dir))
 		t)))))
-  (twitter3-render-friends-timeline))
+  (twitter3-render-timeline))
 
 (defun twitter3-scroll-mode (&optional arg)
   (interactive)
@@ -236,12 +254,16 @@
 (if twitter3-mode-map
     (let ((km twitter3-mode-map))
       (define-key km "\C-c\C-f" 'twitter3-friends-timeline)
+      (define-key km "\C-c\C-r" 'twitter3-replies-timeline)
+      (define-key km "\C-c\C-g" 'twitter3-public-timeline)
+      (define-key km "\C-c\C-u" 'twitter3-user-timeline)
       (define-key km "\C-c\C-s" 'twitter3-update-status-interactive)
       (define-key km "\C-c\C-e" 'twitter3-erase-old-statuses)
       (define-key km "\C-m" 'twitter3-enter)
       (define-key km "\C-c\C-l" 'twitter3-update-lambda)
       (define-key km [mouse-1] 'twitter3-click)
       (define-key km "\C-c\C-v" 'twitter3-view-user-page)
+      (define-key km "g" 'twitter3-current-timeline)
       ;; (define-key km "j" 'next-line)
       ;; (define-key km "k" 'previous-line)
       (define-key km "j" 'twitter3-goto-next-status)
@@ -294,7 +316,8 @@
 	 (let ((keylist (car clause))
 	       (body (cdr clause)))
 	   `(,(if (listp keylist)
-		  `(or ,@(mapcar (lambda (key) `(string-equal ,str ,key)) keylist))
+		  `(or ,@(mapcar (lambda (key) `(string-equal ,str ,key))
+				 keylist))
 		't)
 	     ,@body)))
        clauses)))
@@ -312,7 +335,8 @@
   "twitter3-mode hook.")
 
 (defun twitter3-mode ()
-  "Major mode for Twitter"
+  "Major mode for Twitter
+\\{twitter3-mode-map}"
   (interactive)
   (switch-to-buffer (twitter3-buffer))
   (kill-all-local-variables)
@@ -323,8 +347,7 @@
   (set-syntax-table twitter3-mode-syntax-table)
   (run-hooks 'twitter3-mode-hook)
   (font-lock-mode -1)
-  (twitter3-start)
-  )
+  (twitter3-start))
 
 ;;;
 ;;; Basic HTTP functions
@@ -367,8 +390,10 @@
 				     (mapconcat
 				      (lambda (param-pair)
 					(format "%s=%s"
-						(twitter3-percent-encode (car param-pair))
-						(twitter3-percent-encode (cdr param-pair))))
+						(twitter3-percent-encode (car
+									    param-pair))
+						(twitter3-percent-encode (cdr
+									    param-pair))))
 				      parameters
 				      "&")))
 			   " HTTP/1.1" nl
@@ -376,7 +401,8 @@
 			   "User-Agent: " (twitter3-user-agent) nl
 			   "Authorization: Basic "
 			   (base64-encode-string
-			    (concat twitter3-username ":" (twitter3-get-password)))
+			    (concat twitter3-username ":"
+				    (twitter3-get-password)))
 			   nl
 			   "Accept: text/xml"
 			   ",application/xml"
@@ -415,12 +441,12 @@
 	     #'twitter3-cache-status-datum
 	     (reverse (twitter3-xmltree-to-status
 		       body)))
-	    (twitter3-render-friends-timeline))
+	    (twitter3-render-timeline))
 	   (t (message status))))
       (message "Failure: Bad http response.")))
   )
 
-(defun twitter3-render-friends-timeline ()
+(defun twitter3-render-timeline ()
   (with-current-buffer (twitter3-buffer)
     (let ((point (point))
 	  (end (point-max)))
@@ -432,7 +458,7 @@
 	      (fill-region-as-paragraph
 	       (save-excursion (beginning-of-line) (point)) (point))
 	      (insert "\n"))
-	    twitter3-friends-timeline-data)
+	    twitter3-timeline-data)
       (if twitter3-image-stack
 	  (clear-image-cache))
       (setq buffer-read-only t)
@@ -448,7 +474,8 @@
 	  (let ((profile-image-url (attr 'user-profile-image-url))
 		(icon-string "\n  "))
 	    (if (string-match "/\\([^/?]+\\)\\(?:\\?\\|$\\)" profile-image-url)
-		(let ((filename (match-string-no-properties 1 profile-image-url)))
+		(let ((filename (match-string-no-properties 1
+							    profile-image-url)))
 		  ;; download icons if does not exist
 		  (if (file-exists-p (concat twitter3-tmp-dir
 					     "/" filename))
@@ -471,7 +498,8 @@
 	  found-at)
       (setq cursor 0)
       (setq result '())
-      (while (setq found-at (string-match "%\\(C{\\([^}]+\\)}\\|[A-Za-z#@']\\)" format-str cursor))
+      (while (setq found-at (string-match "%\\(C{\\([^}]+\\)}\\|[A-Za-z#@']\\)"
+					  format-str cursor))
 	(setq c (string-to-char (match-string-no-properties 1 format-str)))
 	(if (> found-at cursor)
 	    (list-push (substring format-str cursor found-at) result)
@@ -503,7 +531,8 @@
 	       (list-push "[x]" result))))
 	  ((?c)                     ; %c - created_at (raw UTC string)
 	   (list-push (attr 'created-at) result))
-	  ((?C) ; %C{time-format-str} - created_at (formatted with time-format-str)
+	  ((?C) ; %C{time-format-str} - created_at (formatted with
+		; time-format-str)
 	   (list-push (twitter3-local-strftime
 		       (or (match-string-no-properties 2 format-str) "%H:%M:%S")
 		       (attr 'created-at))
@@ -529,8 +558,10 @@
 			   ((< secs 5400) "about 1 hour ago")
 			   ((< secs 84600) (format "about %d hours ago"
 						   (/ (+ secs 1800) 3600)))
-			   (t (format-time-string "%I:%M %p %B %d, %Y" created-at))))
-	       (setq url (twitter3-get-status-url (attr 'user-screen-name) (attr 'id)))
+			   (t (format-time-string "%I:%M %p %B %d, %Y"
+						  created-at))))
+	       (setq url (twitter3-get-status-url (attr 'user-screen-name)
+						    (attr 'id)))
 	       ;; make status url clickable
 	       (add-text-properties
 		0 (length time-string)
@@ -566,9 +597,11 @@
   (method-class method &optional parameters contents sentinel)
   "Send HTTP POST request to twitter.com
 
-METHOD-CLASS must be one of Twitter API method classes(statuses, users or direct_messages).
+METHOD-CLASS must be one of Twitter API method classes
+ (statuses, users or direct_messages).
 METHOD must be one of Twitter API method which belongs to METHOD-CLASS.
-PARAMETERS is alist of URI parameters. ex) ((\"mode\" . \"view\") (\"page\" . \"6\")) => <URI>?mode=view&page=6"
+PARAMETERS is alist of URI parameters.
+ ex) ((\"mode\" . \"view\") (\"page\" . \"6\")) => <URI>?mode=view&page=6"
   (if (null sentinel) (setq sentinel 'twitter3-http-post-default-sentinel))
 
   ;; clear the buffer
@@ -657,9 +690,9 @@ PARAMETERS is alist of URI parameters. ex) ((\"mode\" . \"view\") (\"page\" . \"
       (substring content 0 (string-match "\r?\n\r?\n" content)))))
 
 (defun twitter3-get-response-body (&optional buffer)
-  "Exract HTTP response body from HTTP response, parse it as XML, and return a XML tree as list.
-`buffer' may be a buffer or the name of an existing buffer.
- If `buffer' is omitted, the value of `twitter3-http-buffer' is used as `buffer'."
+  "Exract HTTP response body from HTTP response, parse it as XML, and return a
+XML tree as list. `buffer' may be a buffer or the name of an existing buffer. If
+`buffer' is omitted, the value of `twitter3-http-buffer' is used as `buffer'."
   (if (stringp buffer) (setq buffer (get-buffer buffer)))
   (if (null buffer) (setq buffer (twitter3-http-buffer)))
   (save-excursion
@@ -672,10 +705,10 @@ PARAMETERS is alist of URI parameters. ex) ((\"mode\" . \"view\") (\"page\" . \"
       )))
 
 (defun twitter3-cache-status-datum (status-datum &optional data-var)
-  "Cache status datum into data-var(default twitter3-friends-timeline-data)
+  "Cache status datum into data-var(default twitter3-timeline-data)
 If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
   (if (null data-var)
-      (setf data-var 'twitter3-friends-timeline-data))
+      (setf data-var 'twitter3-timeline-data))
   (let ((id (cdr (assq 'id status-datum))))
     (if (or (null (symbol-value data-var))
 	    (not (find-if
@@ -684,7 +717,8 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 		  (symbol-value data-var))))
 	(progn
 	  (if twitter3-jojo-mode
-	      (twitter3-update-jojo (cdr (assq 'user-screen-name status-datum))
+	      (twitter3-update-jojo (cdr (assq 'user-screen-name
+						 status-datum))
 				      (cdr (assq 'text status-datum))))
 	  (set data-var (cons status-datum (symbol-value data-var)))
 	  t)
@@ -785,7 +819,7 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 	    ))
 
       ;; save last update time
-      (setq twitter3-friends-timeline-last-update created-at)
+      (setq twitter3-timeline-last-update created-at)
 
       (mapcar
        (lambda (sym)
@@ -905,7 +939,7 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 (defun twitter3-start (&optional action)
   (interactive)
   (if (null action)
-      (setq action #'twitter3-friends-timeline))
+      (setq action #'twitter3-current-timeline))
   (if twitter3-timer
       nil
     (setq twitter3-timer
@@ -918,20 +952,23 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
   (cancel-timer twitter3-timer)
   (setq twitter3-timer nil))
 
-(defun twitter3-friends-timeline ()
-  (interactive)
+(defun twitter3-get-timeline (method)
+  (if (not (eq twitter3-last-timeline-retrieved method))
+      (setq twitter3-timeline-last-update nil
+	    twitter3-timeline-data nil))
+  (setq twitter3-last-timeline-retrieved method)
   (let ((buf (get-buffer twitter3-buffer)))
     (if (not buf)
 	(twitter3-stop)
-       (if (not twitter3-friends-timeline-last-update)
-	   (twitter3-http-get "statuses" "friends_timeline")
-	 (let* ((system-time-locale "C")
-		(since
-		  (twitter3-global-strftime
-		   "%a, %d %b %Y %H:%M:%S GMT"
-		   twitter3-friends-timeline-last-update)))
-	   (twitter3-http-get "statuses" "friends_timeline"
-				`(("since" . ,since)))))))
+      (if (not twitter3-timeline-last-update)
+	  (twitter3-http-get "statuses" method)
+	(let* ((system-time-locale "C")
+	       (since
+		(twitter3-global-strftime
+		 "%a, %d %b %Y %H:%M:%S JST"
+		 twitter3-timeline-last-update)))
+	  (twitter3-http-get "statuses" method
+			       `(("since" . ,since)))))))
 
   (if twitter3-icon-mode
       (if twitter3-image-stack
@@ -953,21 +990,45 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 		 (set-buffer (twitter3-wget-buffer))
 		 )))))))
 
+(defun twitter3-friends-timeline ()
+  (interactive)
+  (twitter3-get-timeline "friends_timeline"))
+
+(defun twitter3-replies-timeline ()
+  (interactive)
+  (twitter3-get-timeline "replies"))
+
+(defun twitter3-public-timeline ()
+  (interactive)
+  (twitter3-get-timeline "public_timeline"))
+
+(defun twitter3-user-timeline ()
+  (interactive)
+  (twitter3-get-timeline "user_timeline"))
+
+(defun twitter3-current-timeline ()
+  (interactive)
+  (if (not twitter3-last-timeline-retrieved)
+      (setq twitter3-last-timeline-retrieved "friends_timeline"))
+  (twitter3-get-timeline twitter3-last-timeline-retrieved))
+
 (defun twitter3-update-status-interactive ()
   (interactive)
   (twitter3-update-status-from-minibuffer))
 
 (defun twitter3-erase-old-statuses ()
   (interactive)
-  (setq twitter3-friends-timeline-data nil)
-  (if (not twitter3-friends-timeline-last-update)
-      (twitter3-http-get "statuses" "friends_timeline")
+  (setq twitter3-timeline-data nil)
+  (if (not twitter3-last-timeline-retrieved)
+      (setq twitter3-last-timeline-retrieved "friends_timeline"))
+  (if (not twitter3-timeline-last-update)
+      (twitter3-http-get "statuses" twitter3-last-timeline-retrieved)
     (let* ((system-time-locale "C")
 	   (since
-	     (twitter3-global-strftime
-	      "%a, %d %b %Y %H:%M:%S GMT"
-	      twitter3-friends-timeline-last-update)))
-      (twitter3-http-get "statuses" "friends_timeline"
+	    (twitter3-global-strftime
+	     "%a, %d %b %Y %H:%M:%S JST"
+	     twitter3-timeline-last-update)))
+      (twitter3-http-get "statuses" twitter3-last-timeline-retrieved
 			   `(("since" . ,since))))))
 
 (defun twitter3-click ()

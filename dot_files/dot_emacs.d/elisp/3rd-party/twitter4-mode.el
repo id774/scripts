@@ -8,7 +8,20 @@
 ;; Created: Sep 4, 2007
 ;; Version: 0.4
 ;; Keywords: twitter web
-;; URL: http://lambdarepos.svnrepository.com/share/trac.cgi/browser/lang/elisp/twitter4-mode
+;; URL: http://lambdarepos.svnrepository.com/share/trac.cgi/browser/lang/elisp/twittering-mode
+
+;; Modified by Alberto Garcia <agarcia@igalia.com> to add the following methods:
+;; twitter4-replies-timeline
+;; twitter4-public-timeline
+;; twitter4-user-timeline
+;; twitter4-current-timeline
+
+;; Modified by id774 <idnanashi@gmail.com> to following changes:
+;; Divide namespace of twittering-mode into 4 accounts.
+;; Change status format.
+;; Use global proxy settings.
+;; Remove http get success message.
+;; URL: http://github.com/id774/scripts
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -58,15 +71,18 @@
 
 (defvar twitter4-mode-map (make-sparse-keymap))
 
-(defvar twitter4-timer nil "Timer object for timeline refreshing will be stored here. DO NOT SET VALUE MANUALLY.")
+(defvar twitter4-timer nil "Timer object for timeline refreshing will be
+stored here. DO NOT SET VALUE MANUALLY.")
 
-(defvar twitter4-idle-time 20)
+(defvar twitter4-idle-time 21)
 
-(defvar twitter4-timer-interval 90)
+(defvar twitter4-timer-interval 96)
 
 (defvar twitter4-username nil)
 
 (defvar twitter4-password nil)
+
+(defvar twitter4-last-timeline-retrieved nil)
 
 (defvar twitter4-scroll-mode nil)
 (make-variable-buffer-local 'twitter4-scroll-mode)
@@ -75,7 +91,7 @@
 (make-variable-buffer-local 'twitter4-jojo-mode)
 
 (defvar twitter4-status-format nil)
-(setq twitter4-status-format "%i %s: %t %p")
+(setq twitter4-status-format "%i %s: %t %p [%C]")
 ;; %s - screen_name
 ;; %S - name
 ;; %i - profile_image
@@ -101,8 +117,8 @@
 (defun twitter4-http-buffer ()
   (twitter4-get-or-generate-buffer twitter4-http-buffer))
 
-(defvar twitter4-friends-timeline-data nil)
-(defvar twitter4-friends-timeline-last-update nil)
+(defvar twitter4-timeline-data nil)
+(defvar twitter4-timeline-last-update nil)
 
 (defvar twitter4-username-face 'twitter4-username-face)
 (defvar twitter4-uri-face 'twitter4-uri-face)
@@ -162,7 +178,9 @@
   (expand-file-name (concat "twmode-images-" (user-login-name))
 		    temporary-file-directory))
 
-(defvar twitter4-icon-mode nil "You MUST NOT CHANGE this variable directory. You should change through function'twitter4-icon-mode'")
+(defvar twitter4-icon-mode nil "You MUST NOT CHANGE this variable
+directory. You should change through function'twitter4-icon-mode'")
+
 (make-variable-buffer-local 'twitter4-icon-mode)
 (defun twitter4-icon-mode (&optional arg)
   (interactive)
@@ -178,7 +196,7 @@
 		(if (not (file-directory-p twitter4-tmp-dir))
 		    (make-directory twitter4-tmp-dir))
 		t)))))
-  (twitter4-render-friends-timeline))
+  (twitter4-render-timeline))
 
 (defun twitter4-scroll-mode (&optional arg)
   (interactive)
@@ -236,12 +254,16 @@
 (if twitter4-mode-map
     (let ((km twitter4-mode-map))
       (define-key km "\C-c\C-f" 'twitter4-friends-timeline)
+      (define-key km "\C-c\C-r" 'twitter4-replies-timeline)
+      (define-key km "\C-c\C-g" 'twitter4-public-timeline)
+      (define-key km "\C-c\C-u" 'twitter4-user-timeline)
       (define-key km "\C-c\C-s" 'twitter4-update-status-interactive)
       (define-key km "\C-c\C-e" 'twitter4-erase-old-statuses)
       (define-key km "\C-m" 'twitter4-enter)
       (define-key km "\C-c\C-l" 'twitter4-update-lambda)
       (define-key km [mouse-1] 'twitter4-click)
       (define-key km "\C-c\C-v" 'twitter4-view-user-page)
+      (define-key km "g" 'twitter4-current-timeline)
       ;; (define-key km "j" 'next-line)
       ;; (define-key km "k" 'previous-line)
       (define-key km "j" 'twitter4-goto-next-status)
@@ -294,7 +316,8 @@
 	 (let ((keylist (car clause))
 	       (body (cdr clause)))
 	   `(,(if (listp keylist)
-		  `(or ,@(mapcar (lambda (key) `(string-equal ,str ,key)) keylist))
+		  `(or ,@(mapcar (lambda (key) `(string-equal ,str ,key))
+				 keylist))
 		't)
 	     ,@body)))
        clauses)))
@@ -312,7 +335,8 @@
   "twitter4-mode hook.")
 
 (defun twitter4-mode ()
-  "Major mode for Twitter"
+  "Major mode for Twitter
+\\{twitter4-mode-map}"
   (interactive)
   (switch-to-buffer (twitter4-buffer))
   (kill-all-local-variables)
@@ -323,8 +347,7 @@
   (set-syntax-table twitter4-mode-syntax-table)
   (run-hooks 'twitter4-mode-hook)
   (font-lock-mode -1)
-  (twitter4-start)
-  )
+  (twitter4-start))
 
 ;;;
 ;;; Basic HTTP functions
@@ -367,8 +390,10 @@
 				     (mapconcat
 				      (lambda (param-pair)
 					(format "%s=%s"
-						(twitter4-percent-encode (car param-pair))
-						(twitter4-percent-encode (cdr param-pair))))
+						(twitter4-percent-encode (car
+									    param-pair))
+						(twitter4-percent-encode (cdr
+									    param-pair))))
 				      parameters
 				      "&")))
 			   " HTTP/1.1" nl
@@ -376,7 +401,8 @@
 			   "User-Agent: " (twitter4-user-agent) nl
 			   "Authorization: Basic "
 			   (base64-encode-string
-			    (concat twitter4-username ":" (twitter4-get-password)))
+			    (concat twitter4-username ":"
+				    (twitter4-get-password)))
 			   nl
 			   "Accept: text/xml"
 			   ",application/xml"
@@ -415,12 +441,12 @@
 	     #'twitter4-cache-status-datum
 	     (reverse (twitter4-xmltree-to-status
 		       body)))
-	    (twitter4-render-friends-timeline))
+	    (twitter4-render-timeline))
 	   (t (message status))))
       (message "Failure: Bad http response.")))
   )
 
-(defun twitter4-render-friends-timeline ()
+(defun twitter4-render-timeline ()
   (with-current-buffer (twitter4-buffer)
     (let ((point (point))
 	  (end (point-max)))
@@ -432,7 +458,7 @@
 	      (fill-region-as-paragraph
 	       (save-excursion (beginning-of-line) (point)) (point))
 	      (insert "\n"))
-	    twitter4-friends-timeline-data)
+	    twitter4-timeline-data)
       (if twitter4-image-stack
 	  (clear-image-cache))
       (setq buffer-read-only t)
@@ -448,7 +474,8 @@
 	  (let ((profile-image-url (attr 'user-profile-image-url))
 		(icon-string "\n  "))
 	    (if (string-match "/\\([^/?]+\\)\\(?:\\?\\|$\\)" profile-image-url)
-		(let ((filename (match-string-no-properties 1 profile-image-url)))
+		(let ((filename (match-string-no-properties 1
+							    profile-image-url)))
 		  ;; download icons if does not exist
 		  (if (file-exists-p (concat twitter4-tmp-dir
 					     "/" filename))
@@ -471,7 +498,8 @@
 	  found-at)
       (setq cursor 0)
       (setq result '())
-      (while (setq found-at (string-match "%\\(C{\\([^}]+\\)}\\|[A-Za-z#@']\\)" format-str cursor))
+      (while (setq found-at (string-match "%\\(C{\\([^}]+\\)}\\|[A-Za-z#@']\\)"
+					  format-str cursor))
 	(setq c (string-to-char (match-string-no-properties 1 format-str)))
 	(if (> found-at cursor)
 	    (list-push (substring format-str cursor found-at) result)
@@ -503,7 +531,8 @@
 	       (list-push "[x]" result))))
 	  ((?c)                     ; %c - created_at (raw UTC string)
 	   (list-push (attr 'created-at) result))
-	  ((?C) ; %C{time-format-str} - created_at (formatted with time-format-str)
+	  ((?C) ; %C{time-format-str} - created_at (formatted with
+		; time-format-str)
 	   (list-push (twitter4-local-strftime
 		       (or (match-string-no-properties 2 format-str) "%H:%M:%S")
 		       (attr 'created-at))
@@ -529,8 +558,10 @@
 			   ((< secs 5400) "about 1 hour ago")
 			   ((< secs 84600) (format "about %d hours ago"
 						   (/ (+ secs 1800) 3600)))
-			   (t (format-time-string "%I:%M %p %B %d, %Y" created-at))))
-	       (setq url (twitter4-get-status-url (attr 'user-screen-name) (attr 'id)))
+			   (t (format-time-string "%I:%M %p %B %d, %Y"
+						  created-at))))
+	       (setq url (twitter4-get-status-url (attr 'user-screen-name)
+						    (attr 'id)))
 	       ;; make status url clickable
 	       (add-text-properties
 		0 (length time-string)
@@ -566,9 +597,11 @@
   (method-class method &optional parameters contents sentinel)
   "Send HTTP POST request to twitter.com
 
-METHOD-CLASS must be one of Twitter API method classes(statuses, users or direct_messages).
+METHOD-CLASS must be one of Twitter API method classes
+ (statuses, users or direct_messages).
 METHOD must be one of Twitter API method which belongs to METHOD-CLASS.
-PARAMETERS is alist of URI parameters. ex) ((\"mode\" . \"view\") (\"page\" . \"6\")) => <URI>?mode=view&page=6"
+PARAMETERS is alist of URI parameters.
+ ex) ((\"mode\" . \"view\") (\"page\" . \"6\")) => <URI>?mode=view&page=6"
   (if (null sentinel) (setq sentinel 'twitter4-http-post-default-sentinel))
 
   ;; clear the buffer
@@ -657,9 +690,9 @@ PARAMETERS is alist of URI parameters. ex) ((\"mode\" . \"view\") (\"page\" . \"
       (substring content 0 (string-match "\r?\n\r?\n" content)))))
 
 (defun twitter4-get-response-body (&optional buffer)
-  "Exract HTTP response body from HTTP response, parse it as XML, and return a XML tree as list.
-`buffer' may be a buffer or the name of an existing buffer.
- If `buffer' is omitted, the value of `twitter4-http-buffer' is used as `buffer'."
+  "Exract HTTP response body from HTTP response, parse it as XML, and return a
+XML tree as list. `buffer' may be a buffer or the name of an existing buffer. If
+`buffer' is omitted, the value of `twitter4-http-buffer' is used as `buffer'."
   (if (stringp buffer) (setq buffer (get-buffer buffer)))
   (if (null buffer) (setq buffer (twitter4-http-buffer)))
   (save-excursion
@@ -672,10 +705,10 @@ PARAMETERS is alist of URI parameters. ex) ((\"mode\" . \"view\") (\"page\" . \"
       )))
 
 (defun twitter4-cache-status-datum (status-datum &optional data-var)
-  "Cache status datum into data-var(default twitter4-friends-timeline-data)
+  "Cache status datum into data-var(default twitter4-timeline-data)
 If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
   (if (null data-var)
-      (setf data-var 'twitter4-friends-timeline-data))
+      (setf data-var 'twitter4-timeline-data))
   (let ((id (cdr (assq 'id status-datum))))
     (if (or (null (symbol-value data-var))
 	    (not (find-if
@@ -684,7 +717,8 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 		  (symbol-value data-var))))
 	(progn
 	  (if twitter4-jojo-mode
-	      (twitter4-update-jojo (cdr (assq 'user-screen-name status-datum))
+	      (twitter4-update-jojo (cdr (assq 'user-screen-name
+						 status-datum))
 				      (cdr (assq 'text status-datum))))
 	  (set data-var (cons status-datum (symbol-value data-var)))
 	  t)
@@ -785,7 +819,7 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 	    ))
 
       ;; save last update time
-      (setq twitter4-friends-timeline-last-update created-at)
+      (setq twitter4-timeline-last-update created-at)
 
       (mapcar
        (lambda (sym)
@@ -905,7 +939,7 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 (defun twitter4-start (&optional action)
   (interactive)
   (if (null action)
-      (setq action #'twitter4-friends-timeline))
+      (setq action #'twitter4-current-timeline))
   (if twitter4-timer
       nil
     (setq twitter4-timer
@@ -918,20 +952,23 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
   (cancel-timer twitter4-timer)
   (setq twitter4-timer nil))
 
-(defun twitter4-friends-timeline ()
-  (interactive)
+(defun twitter4-get-timeline (method)
+  (if (not (eq twitter4-last-timeline-retrieved method))
+      (setq twitter4-timeline-last-update nil
+	    twitter4-timeline-data nil))
+  (setq twitter4-last-timeline-retrieved method)
   (let ((buf (get-buffer twitter4-buffer)))
     (if (not buf)
 	(twitter4-stop)
-       (if (not twitter4-friends-timeline-last-update)
-	   (twitter4-http-get "statuses" "friends_timeline")
-	 (let* ((system-time-locale "C")
-		(since
-		  (twitter4-global-strftime
-		   "%a, %d %b %Y %H:%M:%S GMT"
-		   twitter4-friends-timeline-last-update)))
-	   (twitter4-http-get "statuses" "friends_timeline"
-				`(("since" . ,since)))))))
+      (if (not twitter4-timeline-last-update)
+	  (twitter4-http-get "statuses" method)
+	(let* ((system-time-locale "C")
+	       (since
+		(twitter4-global-strftime
+		 "%a, %d %b %Y %H:%M:%S JST"
+		 twitter4-timeline-last-update)))
+	  (twitter4-http-get "statuses" method
+			       `(("since" . ,since)))))))
 
   (if twitter4-icon-mode
       (if twitter4-image-stack
@@ -953,21 +990,45 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 		 (set-buffer (twitter4-wget-buffer))
 		 )))))))
 
+(defun twitter4-friends-timeline ()
+  (interactive)
+  (twitter4-get-timeline "friends_timeline"))
+
+(defun twitter4-replies-timeline ()
+  (interactive)
+  (twitter4-get-timeline "replies"))
+
+(defun twitter4-public-timeline ()
+  (interactive)
+  (twitter4-get-timeline "public_timeline"))
+
+(defun twitter4-user-timeline ()
+  (interactive)
+  (twitter4-get-timeline "user_timeline"))
+
+(defun twitter4-current-timeline ()
+  (interactive)
+  (if (not twitter4-last-timeline-retrieved)
+      (setq twitter4-last-timeline-retrieved "friends_timeline"))
+  (twitter4-get-timeline twitter4-last-timeline-retrieved))
+
 (defun twitter4-update-status-interactive ()
   (interactive)
   (twitter4-update-status-from-minibuffer))
 
 (defun twitter4-erase-old-statuses ()
   (interactive)
-  (setq twitter4-friends-timeline-data nil)
-  (if (not twitter4-friends-timeline-last-update)
-      (twitter4-http-get "statuses" "friends_timeline")
+  (setq twitter4-timeline-data nil)
+  (if (not twitter4-last-timeline-retrieved)
+      (setq twitter4-last-timeline-retrieved "friends_timeline"))
+  (if (not twitter4-timeline-last-update)
+      (twitter4-http-get "statuses" twitter4-last-timeline-retrieved)
     (let* ((system-time-locale "C")
 	   (since
-	     (twitter4-global-strftime
-	      "%a, %d %b %Y %H:%M:%S GMT"
-	      twitter4-friends-timeline-last-update)))
-      (twitter4-http-get "statuses" "friends_timeline"
+	    (twitter4-global-strftime
+	     "%a, %d %b %Y %H:%M:%S JST"
+	     twitter4-timeline-last-update)))
+      (twitter4-http-get "statuses" twitter4-last-timeline-retrieved
 			   `(("since" . ,since))))))
 
 (defun twitter4-click ()
