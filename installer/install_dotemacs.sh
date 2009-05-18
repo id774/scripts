@@ -35,11 +35,44 @@ setup_rinari() {
     ln -s ~/local/github/rinari ~/.emacs.d/elisp/3rd-party
 }
 
+wget_js2mode() {
+    wget http://js2-mode.googlecode.com/files/js2-20080616a.el -O ~/.emacs.d/elisp/3rd-party/js2.el
+}
+
 emacs_private_settings() {
     test -f ~/private/scripts/etc/twitter1-account.el && cp $OPTIONS ~/private/scripts/etc/twitter*-account.el $TARGET/elisp/
 
-    chmod 600 $TARGET/elisp/twitter*-account.el
+    chmod 600 $TARGET/elisp/twitter*-account.el*
     vim $TARGET/elisp/proxy.el $TARGET/elisp/emacs-w3m.el $TARGET/elisp/unix-defaults.el
+}
+
+batch_byte_compile() {
+    cd ~/.emacs.d/elisp/3rd-party
+    emacs --batch --eval '(byte-compile-file "js2.el")'
+    emacs --batch --eval '(byte-compile-file "redo.el")'
+    emacs --batch --eval '(byte-compile-file "ruby-block.el")'
+    emacs --batch --eval '(byte-compile-file "auto-complete.el")'
+    emacs --batch --eval '(byte-compile-file "twitter1-mode.el")'
+    emacs --batch --eval '(byte-compile-file "twitter2-mode.el")'
+    emacs --batch --eval '(byte-compile-file "twitter3-mode.el")'
+    emacs --batch --eval '(byte-compile-file "twitter4-mode.el")'
+    cd ~/.emacs.d/elisp
+    emacs --batch --eval '(byte-compile-file "autoloads.el")'
+    emacs --batch --eval '(byte-compile-file "config.el")'
+    emacs --batch --eval '(byte-compile-file "delete-empty-file.el")'
+    emacs --batch --eval '(byte-compile-file "emacs-w3m.el")'
+    emacs --batch --eval '(byte-compile-file "global-set-key.el")'
+    emacs --batch --eval '(byte-compile-file "kill-all-buffers.el")'
+    emacs --batch --eval '(byte-compile-file "new-file-p.el")'
+    emacs --batch --eval '(byte-compile-file "persistent-scratch.el")'
+    emacs --batch --eval '(byte-compile-file "physical-line.el")'
+    emacs --batch --eval '(byte-compile-file "proxy.el")'
+    emacs --batch --eval '(byte-compile-file "startup.el")'
+    emacs --batch --eval '(byte-compile-file "tab4.el")'
+    emacs --batch --eval '(byte-compile-file "twitter-key.el")'
+    emacs --batch --eval '(byte-compile-file "unix-defaults.el")'
+    emacs --batch --eval '(byte-compile-file "utils.el")'
+    emacs --batch --eval '(byte-compile-file "view-mode-key.el")'
 }
 
 test -d $SCRIPTS/dot_files/dot_emacs.d || exit 1
@@ -57,5 +90,7 @@ esac
 setup_dotemacs
 setup_rhtml
 setup_rinari
+wget_js2mode
 emacs_private_settings
+batch_byte_compile
 

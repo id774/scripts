@@ -88,6 +88,15 @@
   ;; C-mode のときは常に gtags 使用。
   (defun-add-hook 'c-mode-common-hook (gtags-mode 1)))
 
+;; js2-mode
+(cond
+  ((eq system-type 'gnu/linux)
+    (autoload 'js2-mode "js2" nil t)
+    (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+    (add-hook 'js2-mode-hook
+              '(lambda ()
+                 (setq js2-basic-offset 4)))))
+
 ;; sense-region.el : \C-spc で region<->rectabgle をトグル。便利。
 (when (autoload-p 'sense-region-on "sense-region" "sense-region" 'interactive)
   (sense-region-on))
