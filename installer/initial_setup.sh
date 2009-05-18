@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.16 5/18,2009
+#       Remove uim-el, and update misc setup.
 # v1.15 5/13,2009
 #       Add ubuntu-ja, OpenOffice.org, codec, icons.
 #       Setting reserved blocks percentage of ext3 filesystem to 1%.
@@ -208,6 +210,7 @@ $SCRIPTS/installer/install_mysql.sh
 sudo aptitude -y install emacs-snapshot emacs-snapshot-el
 sudo update-alternatives --config emacs
 sudo aptitude -y install w3m-el-snapshot w3m-img imagemagick
+sudo aptitude -y remove uim-el
 sudo aptitude -y install vim-gui-common vim-runtime colordiff
 sudo aptitude -y install ctags
 
@@ -415,9 +418,14 @@ sudo vim /etc/group
 sudo vim /etc/syslog.conf
 # SYSLOGD="-m 0"
 sudo vim /etc/default/syslogd
+# xfsuspend
+which s2ram > /dev/null && which xflock4 > /dev/null && sudo cp $SCRIPTS/xfsuspend /usr/local/sbin/xfsuspend && sudo chown root:root /usr/local/sbin/xfsuspend && sudo chmod 755 /usr/local/sbin/xfsuspend
+# sudoers
+sudo cp $SCRIPTS/etc/sudoers /etc/sudoers
+sudo vim /etc/sudoers
+# menu.lst
 sudo vim /boot/grub/menu.lst
 sudo passwd root
-mysql -u root
 test -f ~/.bash_history && sudo rm ~/.bash_history
 test -f ~/.mysql_history && sudo rm ~/.mysql_history
 test -f ~/.viminfo && sudo rm ~/.viminfo
