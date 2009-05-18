@@ -1,4 +1,13 @@
 #!/bin/sh
+#
+########################################################################
+# Install dot_emacs
+#
+#  Maintainer: id774 <idnanashi@gmail.com>
+#
+#  v1.0 5/18,2009
+#       Stable.
+########################################################################
 
 setup_dotemacs() {
     test -d ~/.emacs.d && rm -rf ~/.emacs.d/
@@ -57,7 +66,6 @@ batch_byte_compile() {
     emacs --batch --eval '(byte-compile-file "twitter3-mode.el")'
     emacs --batch --eval '(byte-compile-file "twitter4-mode.el")'
     cd ~/.emacs.d/elisp
-    emacs --batch --eval '(byte-compile-file "autoloads.el")'
     emacs --batch --eval '(byte-compile-file "config.el")'
     emacs --batch --eval '(byte-compile-file "delete-empty-file.el")'
     emacs --batch --eval '(byte-compile-file "emacs-w3m.el")'
