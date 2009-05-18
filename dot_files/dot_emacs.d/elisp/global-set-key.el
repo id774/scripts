@@ -15,8 +15,9 @@
        t) ;; ok
       (t (keyboard-translate ?\C-h ?\C-?)))
 
-;; auto-complete-modeの有効/無効を切り替える
-(define-key global-map "\C-x\C-j" 'auto-complete-mode)
+;; C-x C-y または C-x y で auto-complete-modeの有効/無効を切り替える
+(define-key global-map "\C-x\C-y" 'auto-complete-mode)
+(define-key global-map "\C-x\ y" 'auto-complete-mode)
 
 ;; ウィンドウが1つしかない場合は縦に分割する関数
 (defun split-one-window-p ()
@@ -67,7 +68,7 @@
 ;; C-h を backspace にする
 (global-set-key "\C-h" 'delete-backward-char)
 
-;; C-x C-y または C-x y で view-mode を切り替える
+;; C-x C-j または C-x j で view-mode を切り替える
 (defun toggle-view-mode ()
   (interactive)
   (cond (view-mode
@@ -75,8 +76,8 @@
       (setq hl-line-mode nil))
     (t
       (view-mode))))
-(define-key global-map "\C-x\C-y" 'toggle-view-mode)
-(define-key global-map "\C-x\ y" 'toggle-view-mode)
+(define-key global-map "\C-x\C-j" 'toggle-view-mode)
+(define-key global-map "\C-x\ j" 'toggle-view-mode)
 (define-key global-map [C-backspace] 'toggle-view-mode)
 
 ;; バッファをM-n,M-pで切り替え
