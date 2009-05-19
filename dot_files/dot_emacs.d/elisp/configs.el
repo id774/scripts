@@ -158,6 +158,13 @@
   (setq indent-tabs-mode nil)
   (setq c-basic-offset 4))
 
+;; ファイルオープン直後は読み取り専用(C-x j で切替)
+(add-hook 'find-file-hooks
+  (lambda ()
+    (cond (view-mode)
+      (t
+      (view-mode)))))
+
 ;; 分割時、画面端で折り返す
 (setq truncate-partial-width-windows nil)
 
