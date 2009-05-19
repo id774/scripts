@@ -7,7 +7,7 @@
 (key-chord-define-global "io" 'windmove-up)
 (key-chord-define-global ",." 'windmove-down)
 (key-chord-define-global "hj" 'windmove-left)
-(key-chord-define-global ";:" 'windmove-right)
+(key-chord-define-global "l;" 'windmove-right)
 
 ;; fg で keyboard-escape-quit する
 (key-chord-define-global "fg" 'keyboard-escape-quit)
@@ -27,15 +27,15 @@
 (key-chord-define-global "vb" 'end-of-buffer)
 
 ;; アンドゥ/リドゥ
-(key-chord-define-global "l;" 'undo)
-(key-chord-define-global "op" 'redo)
+(key-chord-define-global "as" 'undo)
+(key-chord-define-global "sd" 'redo)
 
 ;; ファイルを開く
 (key-chord-define-global "df" 'find-file)
 
 ;; スクロール
-(key-chord-define-global "er" 'scroll-up)
-(key-chord-define-global "cv" 'scroll-down)
+(key-chord-define-global "er" 'scroll-down)
+(key-chord-define-global "cv" 'scroll-up)
 
 ;; Local Variables:
 ;; mode : emacs-lisp
