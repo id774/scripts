@@ -264,6 +264,12 @@
 ;; emacs21で*scratch*を消してしまって悲しい思いをした人向け
 (load-p "persistent-scratch")
 
+;; key-chord.el 複数キー同時押しをサポート
+;; http://www.emacswiki.org/cgi-bin/wiki/download/key-chord.el
+(require 'key-chord)
+(setq key-chord-two-keys-delay 0.04)
+(key-chord-mode 1)
+
 ;; UNIX系設定
 (load-p "unix-defaults")
 

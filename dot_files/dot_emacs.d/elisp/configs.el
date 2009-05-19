@@ -191,6 +191,9 @@
 ;; view-modeキーバインド設定
 (load "view-mode-key")
 
+;; key-chord.el専用キーバインド設定
+(load "key-chord-define-global")
+
 ;; Twitter
 (load "twitter1-account")
 (load "twitter2-account")
