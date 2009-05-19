@@ -28,7 +28,8 @@ $SCRIPTS/installer/install_dotemacs.sh
 $SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
 
 # Ruby
-$SCRIPTS/installer/install_ruby.sh 187-svn
+#$SCRIPTS/installer/install_ruby.sh 187-svn
+$SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/branches/ruby_1_8_7/misc
 
 # tune2fs
 test -b /dev/sda5  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda5

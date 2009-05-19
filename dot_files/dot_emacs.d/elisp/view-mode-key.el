@@ -1,4 +1,6 @@
-;; view-modeキーバインド設定
+;; http://d.hatena.ne.jp/rubikitch/20081104/1225745862
+;; http://d.hatena.ne.jp/yaotti/20081104/1225809687
+;; http://gist.github.com/22143
 
 (setq view-read-only t)
 (defvar pager-keybind
@@ -7,22 +9,26 @@
         ("l" . forward-word)
         ("j" . next-window-line)
         ("k" . previous-window-line)
-        (";" . gene-word)
+        ;;(";" . gene-word)
         ("b" . scroll-down)
         (" " . scroll-up)
         ;; w3m-like
-        ("m" . gene-word)
-        ("i" . win-delete-current-window-and-squeeze)
+        ;;("m" . gene-word)
+        ;;("i" . win-delete-current-window-and-squeeze)
         ("w" . forward-word)
         ("e" . backward-word)
-        ("(" . point-undo)
-        (")" . point-redo)
+        ;;("(" . point-undo)
+        ;;(")" . point-redo)
         ("J" . ,(lambda () (interactive) (scroll-up 1)))
         ("K" . ,(lambda () (interactive) (scroll-down 1)))
-        ;; bm-easy
-        ("." . bm-toggle)
-        ("[" . bm-previous)
-        ("]" . bm-next)
+        ("[" . forward-sexp)
+        ("]" . backward-sexp)
+        ;; 
+        ("." anything-c-moccur-occur-by-moccur)
+        ;;("<" . )
+        ;;(">" . )
+        ;; elscreen
+        ;;("o" . elscreen-toggle)
         ;; langhelp-like
         ("c" . scroll-other-window-down)
         ("v" . scroll-other-window)
@@ -62,7 +68,4 @@
 (do-not-exit-view-mode-unless-writable-advice view-mode-exit)
 (do-not-exit-view-mode-unless-writable-advice view-mode-disable)
 
-;; Local Variables:
-;; mode : emacs-lisp
-;; coding : euc-jp-unix
-;; End:
+(provide 'view-support)

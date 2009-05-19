@@ -163,7 +163,7 @@
   (lambda ()
     (cond (view-mode)
       (t
-      (view-mode)))))
+        (view-mode)))))
 
 ;; 分割時、画面端で折り返す
 (setq truncate-partial-width-windows nil)
