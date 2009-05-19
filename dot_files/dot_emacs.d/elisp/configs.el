@@ -158,6 +158,9 @@
   (setq indent-tabs-mode nil)
   (setq c-basic-offset 4))
 
+;; 分割時、画面端で折り返す
+(setq truncate-partial-width-windows nil)
+
 ;; fullscreen
 (set-frame-parameter nil 'fullscreen 'fullboth)
 (defun toggle-fullscreen ()
