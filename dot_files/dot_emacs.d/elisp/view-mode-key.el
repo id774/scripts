@@ -7,8 +7,10 @@
       `( ;; vi-like
         ("h" . backward-word)
         ("l" . forward-word)
-        ("j" . next-window-line)
-        ("k" . previous-window-line)
+        ("j" . next-line)
+        ("k" . previous-line)
+        ("n" . next-window-line)
+        ("p" . previous-window-line)
         ("b" . scroll-down)
         (" " . scroll-up)
         ("w" . forward-word)
