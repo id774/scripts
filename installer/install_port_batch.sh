@@ -58,6 +58,7 @@ sudo port -d install postgresql83
 sudo port -d install postgresql83-server
 sudo launchctl load -w /Library/LaunchDaemons/org.macports.postgresql83-server.plist
 sudo mkdir -p /opt/local/var/db/postgresql83/defaultdb
+sudo chown postgres:postgres /opt/local/var/db/postgresql83
 sudo chown postgres:postgres /opt/local/var/db/postgresql83/defaultdb
 sudo su postgres -c '/opt/local/lib/postgresql83/bin/initdb -D /opt/local/var/db/postgresql83/defaultdb'
 sudo su postgres -c '/opt/local/lib/postgresql83/bin/postgres -D /opt/local/var/db/postgresql83/defaultdb &'
