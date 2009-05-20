@@ -54,14 +54,14 @@ sudo /opt/local/share/mysql5/mysql/mysql.server start
 mysql5 -u root -p
 sudo port -d install rb-dbi +dbd_mysql
 # PostgreSQL
-sudo port -d install postgresql83
-sudo port -d install postgresql83-server
-sudo launchctl load -w /Library/LaunchDaemons/org.macports.postgresql83-server.plist
-sudo mkdir -p /opt/local/var/db/postgresql83/defaultdb
-sudo chown postgres:postgres /opt/local/var/db/postgresql83
-sudo chown postgres:postgres /opt/local/var/db/postgresql83/defaultdb
-sudo su postgres -c '/opt/local/lib/postgresql83/bin/initdb -D /opt/local/var/db/postgresql83/defaultdb'
-sudo su postgres -c '/opt/local/lib/postgresql83/bin/postgres -D /opt/local/var/db/postgresql83/defaultdb &'
-psql83 -d postgres -U postgres
+#sudo port -d install postgresql83
+#ssudo port -d install postgresql83-server
+#ssudo launchctl load -w /Library/LaunchDaemons/org.macports.postgresql83-server.plist
+#ssudo mkdir -p /opt/local/var/db/postgresql83/defaultdb
+#ssudo chown postgres:postgres /opt/local/var/db/postgresql83/defaultdb
+#ssudo chown postgres:postgres /opt/local/var/db/postgresql83/
+#ssudo su postgres -c '/opt/local/lib/postgresql83/bin/initdb -D /opt/local/var/db/postgresql83/defaultdb'
+#ssudo su postgres -c '/opt/local/lib/postgresql83/bin/postgres -D /opt/local/var/db/postgresql83/defaultdb &'
+#spsql83 -d postgres -U postgres
 port installed
 
