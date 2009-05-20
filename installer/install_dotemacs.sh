@@ -44,13 +44,8 @@ setup_rinari() {
     ln -s ~/local/github/rinari ~/.emacs.d/elisp/3rd-party
 }
 
-wget_js2mode() {
-    wget http://js2-mode.googlecode.com/files/js2-20080616a.el -O ~/.emacs.d/elisp/3rd-party/js2.el
-}
-
 emacs_private_settings() {
     test -f ~/private/scripts/etc/twitter1-account.el && cp $OPTIONS ~/private/scripts/etc/twitter*-account.el $TARGET/elisp/
-
     chmod 600 $TARGET/elisp/twitter*-account.el*
     vim $TARGET/elisp/proxy.el $TARGET/elisp/emacs-w3m.el $TARGET/elisp/unix-defaults.el
 }
@@ -100,7 +95,6 @@ esac
 setup_dotemacs
 setup_rhtml
 setup_rinari
-wget_js2mode
 emacs_private_settings
 batch_byte_compile
 
