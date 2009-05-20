@@ -12,7 +12,6 @@
        (buffer-file-name (current-buffer)))
       (kill-buffer (current-buffer)))))
 
-
 ;; Local Variables:
 ;; mode : emacs-lisp
 ;; coding : euc-jp-unix

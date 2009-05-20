@@ -7,7 +7,6 @@
        (format "\"%s\"not found. Create this file?"
 	       buffer-file-name))))
 
-
 ;; Local Variables:
 ;; mode : emacs-lisp
 ;; coding : euc-jp-unix

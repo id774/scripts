@@ -19,7 +19,6 @@
   (define-key global-map "\C-c\C-c\C-l" 'w3m)
   (define-key global-map "\C-c\C-c\ l" 'w3m))
 
-
 ;; Local Variables:
 ;; mode : emacs-lisp
 ;; coding : euc-jp-unix

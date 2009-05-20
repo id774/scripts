@@ -1,5 +1,5 @@
 ;; autoloads.el
-;; loadとその周辺
+;; 外部ファイルをロードしてconfigs.elを最後に呼ぶ
 
 (load "utils")
 
@@ -102,7 +102,7 @@
 ;; emacs-w3m
 (load-p "emacs-w3m")
 
-;; 廃人御用達
+;; riece
 (when (autoload-p 'riece "riece" "Riece IRC Client for Emacs" 'interactive)
   (setq riece-channel-list-buffer-mode t)
   (setq riece-user-list-buffer-mode t)
@@ -276,7 +276,6 @@
 ;; 依存関係があるのでこいつは一番最後に。
 (load-p "configs")
 
-
 ;; Local Variables:
 ;; mode : emacs-lisp
 ;; coding : euc-jp-unix

@@ -23,7 +23,6 @@
 	    (unless (member (get-buffer "*scratch*") (buffer-list))
 	      (my-make-scratch 1))))
 
-
 ;; Local Variables:
 ;; mode : emacs-lisp
 ;; coding : euc-jp-unix

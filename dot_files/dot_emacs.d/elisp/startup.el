@@ -1,5 +1,5 @@
 ;; startup.el
-;; 環境設定してautoloads.elを呼ぶ
+;; ロードパスなどの初期設定をしてautoloads.elを呼ぶ
 
 ;; proxy
 (load "~/.emacs.d/elisp/proxy")
@@ -36,7 +36,6 @@ subdirectory under load-path.")
 ;; main
 (load "autoloads")
 
-
 ;; Local Variables:
 ;; mode : emacs-lisp
 ;; coding : euc-jp-unix

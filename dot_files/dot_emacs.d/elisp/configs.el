@@ -1,11 +1,11 @@
 ;; configs.el
-;; 設定系
+;; 基本的な環境設定
 
 ;;モードラインに今いる関数を表示
 ;;読み込み時のみスキャンっていうのがちょっといけてない
 (which-func-mode)
 
-;; blinkうざいし
+;; blink
 (blink-cursor-mode nil)
 
 ;; hide tool-bar and scroll-bar
@@ -123,7 +123,7 @@
 (setq vc-suppress-confirm t)
 (setq vc-command-messages t)
 
-;; narrowingするときにいちいち警告してくるのがウザイ
+;; narrowingの警告を抑止
 (put 'narrow-to-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
 
@@ -133,14 +133,13 @@
 ;; 空行強調
 (setq-default indicate-empty-lines t)
 
-;; 行間(これ消してもいいかなぁ)
+;; 行間
 ;; (setq-default line-spacing 0)
 
-;; Anthy! Anthy!
+;; Anthy
 ;; (set-input-method "japanese-anthy")
 ;; (set-input-method "japanese-prime")
 
-
 ;; C言語系の設定群
 
 ;; Ruby default style
@@ -165,7 +164,7 @@
       (t
         (view-mode)))))
 
-;; 分割時、画面端で折り返す
+;; 画面端で折り返す
 (setq truncate-partial-width-windows nil)
 
 ;; fullscreen
@@ -186,27 +185,26 @@
 (add-to-list 'default-frame-alist '(alpha . (80 50)))
 
 ;; キーバインド設定
-(load "global-set-key")
+(load-p "global-set-key")
 
 ;; view-modeキーバインド設定
-(load "view-mode-key")
+(load-p "view-mode-key")
 
 ;; key-chord.el専用キーバインド設定
-(load "key-chord-define-global")
+(load-p "key-chord-define-global")
 
 ;; Twitter
-(load "twitter1-account")
-(load "twitter2-account")
-(load "twitter3-account")
-(load "twitter4-account")
+(load-p "twitter1-account")
+(load-p "twitter2-account")
+(load-p "twitter3-account")
+(load-p "twitter4-account")
 
 ;; Twitter用キーバインド設定
-(load "twitter-key")
+(load-p "twitter-key")
 
-;; カスタム設定
-(load "custom")
+;; ローカル設定
+(load-p "local")
 
-
 ;; Local Variables:
 ;; mode : emacs-lisp
 ;; coding : euc-jp-unix

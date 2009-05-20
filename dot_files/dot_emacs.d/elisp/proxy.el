@@ -8,7 +8,6 @@
 (defvar global-proxy-user nil)
 (defvar global-proxy-password nil)
 
-
 ;; Local Variables:
 ;; mode : emacs-lisp
 ;; coding : euc-jp-unix

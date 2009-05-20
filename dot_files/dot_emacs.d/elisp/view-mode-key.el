@@ -9,27 +9,15 @@
         ("l" . forward-word)
         ("j" . next-window-line)
         ("k" . previous-window-line)
-        ;;(";" . gene-word)
         ("b" . scroll-down)
         (" " . scroll-up)
-        ;; w3m-like
-        ;;("m" . gene-word)
-        ;;("i" . win-delete-current-window-and-squeeze)
         ("w" . forward-word)
         ("e" . backward-word)
-        ;;("(" . point-undo)
-        ;;(")" . point-redo)
         ("J" . ,(lambda () (interactive) (scroll-up 1)))
         ("K" . ,(lambda () (interactive) (scroll-down 1)))
         ("[" . forward-sexp)
         ("]" . backward-sexp)
-        ;; 
         ("." anything-c-moccur-occur-by-moccur)
-        ;;("<" . )
-        ;;(">" . )
-        ;; elscreen
-        ;;("o" . elscreen-toggle)
-        ;; langhelp-like
         ("c" . scroll-other-window-down)
         ("v" . scroll-other-window)
         ))

@@ -67,6 +67,7 @@ batch_byte_compile() {
     emacs --batch --eval '(byte-compile-file "twitter3-mode.el")'
     emacs --batch --eval '(byte-compile-file "twitter4-mode.el")'
     cd ~/.emacs.d/elisp
+    emacs --batch --eval '(byte-compile-file "custom.el")'
     emacs --batch --eval '(byte-compile-file "delete-empty-file.el")'
     emacs --batch --eval '(byte-compile-file "emacs-w3m.el")'
     emacs --batch --eval '(byte-compile-file "global-set-key.el")'
