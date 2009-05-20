@@ -419,7 +419,7 @@ sudo vim /etc/syslog.conf
 # SYSLOGD="-m 0"
 sudo vim /etc/default/syslogd
 # xfsuspend
-which s2ram > /dev/null && which xflock4 > /dev/null && sudo cp $SCRIPTS/xfsuspend /usr/local/sbin/xfsuspend && sudo chown root:root /usr/local/sbin/xfsuspend && sudo chmod 755 /usr/local/sbin/xfsuspend
+which s2ram > /dev/null && which xflock4 > /dev/null && sudo cp $SCRIPTS/xfsuspend /usr/local/sbin/xfsuspend && sudo chown root:root /usr/local/sbin/xfsuspend && sudo chmod 755 /usr/local/sbin/xfsuspend && sudo vim /usr/local/sbin/xfsuspend
 # sudoers
 sudo cp $SCRIPTS/etc/sudoers /etc/sudoers
 sudo vim /etc/sudoers
