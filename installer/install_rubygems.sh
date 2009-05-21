@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 5/21,2009
+#       Update to 1.3.3, Keep sources.
 #  v1.1 1/1,2009
 #       Update to 1.3.1.
 #  v1.0 8/15,2008
@@ -28,16 +30,24 @@ case "$1" in
     RUBY_GEMS_ZIP=rubygems-1.2.0
     wget http://rubyforge.org/frs/download.php/38647/$RUBY_GEMS_ZIP.zip
     ;;
-  *)
+  131)
     RUBY_GEMS_ZIP=rubygems-1.3.1
     wget http://rubyforge.org/frs/download.php/45906/$RUBY_GEMS_ZIP.zip
+    ;;
+  *)
+    RUBY_GEMS_ZIP=rubygems-1.3.3
+    wget http://rubyforge.org/frs/download.php/56228/$RUBY_GEMS_ZIP.zip
     ;;
 esac
 
 unzip $RUBY_GEMS_ZIP
 cd $RUBY_GEMS_ZIP
 sudo ruby setup.rb
-cd ../../
+cd ..
+sudo mkdir -p /usr/local/src/gems
+sudo cp -av $RUBY_GEMS_ZIP /usr/local/src/gems
+sudo chown -R root:root /usr/local/src/gems
+cd ..
 rm -rf install_rubygems
 sudo gem update --system
 gem list --local

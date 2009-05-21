@@ -38,6 +38,9 @@ $SCRIPTS/installer/install_crypt.sh win
 $SCRIPTS/installer/install_crypt.sh macosx
 $SCRIPTS/installer/install_crypt.sh i386_deb
 
+# RubyGems
+$SCRIPTS/installer/install_rubygems.sh
+
 # tune2fs
 test -b /dev/sda5  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda5
 test -b /dev/sda6  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda6
