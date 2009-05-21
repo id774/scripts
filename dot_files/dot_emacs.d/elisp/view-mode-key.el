@@ -12,6 +12,7 @@
         ("n" . next-window-line)
         ("p" . previous-window-line)
         ("b" . scroll-down)
+        ("f" . scroll-up)
         (" " . scroll-up)
         ("w" . forward-word)
         ("e" . backward-word)
