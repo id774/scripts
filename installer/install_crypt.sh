@@ -88,14 +88,6 @@ install_truecrypt_deb() {
     setup_truecrypt_deb $1
 }
 
-install_truecrypt_source() {
-    wget "http://id774.net/truecrypt/$1"
-    sudo tar xzvf $1 -C /usr/local/src/crypt/truecrypt
-    sudo mv $1 /usr/local/src/crypt/truecrypt
-    sudo chmod 644 /usr/local/src/crypt/truecrypt/$1
-    md5.sh /usr/local/src/crypt/truecrypt/$1
-}
-
 install_truecrypt() {
     mkdir install_truecrypt
     cd install_truecrypt
