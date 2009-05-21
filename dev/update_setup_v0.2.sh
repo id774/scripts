@@ -31,6 +31,13 @@ $SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
 #$SCRIPTS/installer/install_ruby.sh 187-svn
 $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/branches/ruby_1_8_7/misc
 
+# Crypt
+$SCRIPTS/installer/install_des.sh
+$SCRIPTS/installer/install_crypt.sh 6.2_source
+$SCRIPTS/installer/install_crypt.sh 6.2_win
+$SCRIPTS/installer/install_crypt.sh 6.2_macosx
+$SCRIPTS/installer/install_crypt.sh 6.2_i386_deb
+
 # tune2fs
 test -b /dev/sda5  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda5
 test -b /dev/sda6  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda6
