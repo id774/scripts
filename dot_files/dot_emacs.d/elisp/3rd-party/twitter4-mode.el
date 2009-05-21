@@ -21,6 +21,7 @@
 ;; Change status format.
 ;; Use global proxy settings.
 ;; Remove http get success message.
+;; Add keybind for window move and quick operation.
 ;; URL: http://github.com/id774/scripts
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -254,10 +255,14 @@ directory. You should change through function'twitter4-icon-mode'")
 (if twitter4-mode-map
     (let ((km twitter4-mode-map))
       (define-key km "\C-c\C-f" 'twitter4-friends-timeline)
+      (define-key km "e" 'twitter4-friends-timeline)
       (define-key km "\C-c\C-r" 'twitter4-replies-timeline)
+      (define-key km "r" 'twitter4-replies-timeline)
       (define-key km "\C-c\C-g" 'twitter4-public-timeline)
       (define-key km "\C-c\C-u" 'twitter4-user-timeline)
+      (define-key km "u" 'twitter4-user-timeline)
       (define-key km "\C-c\C-s" 'twitter4-update-status-interactive)
+      (define-key km "w" 'twitter4-update-status-interactive)
       (define-key km "\C-c\C-e" 'twitter4-erase-old-statuses)
       (define-key km "\C-m" 'twitter4-enter)
       (define-key km "\C-c\C-l" 'twitter4-update-lambda)
@@ -268,13 +273,20 @@ directory. You should change through function'twitter4-icon-mode'")
       ;; (define-key km "k" 'previous-line)
       (define-key km "j" 'twitter4-goto-next-status)
       (define-key km "k" 'twitter4-goto-previous-status)
-      (define-key km "l" 'forward-char)
-      (define-key km "h" 'backward-char)
+      ;; (define-key km "l" 'forward-char)
+      ;; (define-key km "h" 'backward-char)
+      (define-key km "l" 'windmove-right)
+      (define-key km "h" 'windmove-left)
+      (define-key km "b" 'scroll-down)
+      (define-key km "f" 'scroll-up)
+      (define-key km " " 'scroll-up)
       (define-key km "0" 'beginning-of-line)
       (define-key km "^" 'beginning-of-line-text)
       (define-key km "$" 'end-of-line)
-      (define-key km "n" 'twitter4-goto-next-status-of-user)
-      (define-key km "p" 'twitter4-goto-previous-status-of-user)
+      ;; (define-key km "n" 'twitter4-goto-next-status-of-user)
+      ;; (define-key km "p" 'twitter4-goto-previous-status-of-user)
+      (define-key km "n" 'windmove-down)
+      (define-key km "p" 'windmove-up)
       (define-key km [backspace] 'backward-char)
       (define-key km "G" 'end-of-buffer)
       (define-key km "H" 'beginning-of-buffer)
