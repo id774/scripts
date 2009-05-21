@@ -6,7 +6,7 @@
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
 #  v1.2 5/21,2009
-#       Update to 6.2, add new method.
+#       Refactoring truecrypt installer.
 #  v1.1 1/18,2009
 #       Update to 6.1a, and refactoring.
 #  v1.0 8/15,2008
@@ -119,27 +119,27 @@ install_truecrypt() {
       6.1a-source)
         get_truecrypt_source TrueCrypt_6.1a_Source.tar.gz
         ;;
-      6.2_i386_deb)
+      i386_deb)
         install_truecrypt_deb truecrypt_6.2-0_i386.deb
         ;;
-      6.2_amd64_deb)
+      amd64_deb)
         install_truecrypt_deb truecrypt_6.2-0_amd64.deb
         ;;
-      6.2_i586_rpm)
+      i586_rpm)
         install_truecrypt_rpm truecrypt-6.2-0.i586.rpm
         ;;
-      6.2_x86_64_rpm)
+      x86_64_rpm)
         install_truecrypt_rpm truecrypt-6.2-0.x86_64.rpm
         ;;
-      6.2_win)
+      win)
         sudo wget "http://id774.net/truecrypt/TrueCrypt Setup 6.2.exe"
         sudo mv * /usr/local/src/crypt/truecrypt
         ;;
-      6.2_macosx)
+      macosx)
         sudo wget "http://id774.net/truecrypt/TrueCrypt 6.2 Mac OS X.dmg"
         sudo mv * /usr/local/src/crypt/truecrypt
         ;;
-      6.2_source)
+      source)
         sudo wget "http://id774.net/truecrypt/TrueCrypt 6.2 Source.tar.gz"
         sudo mv * /usr/local/src/crypt/truecrypt
         ;;

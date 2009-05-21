@@ -33,10 +33,10 @@ $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/branches/ruby_1_8_7
 
 # Crypt
 $SCRIPTS/installer/install_des.sh
-$SCRIPTS/installer/install_crypt.sh 6.2_source
-$SCRIPTS/installer/install_crypt.sh 6.2_win
-$SCRIPTS/installer/install_crypt.sh 6.2_macosx
-$SCRIPTS/installer/install_crypt.sh 6.2_i386_deb
+$SCRIPTS/installer/install_crypt.sh source
+$SCRIPTS/installer/install_crypt.sh win
+$SCRIPTS/installer/install_crypt.sh macosx
+$SCRIPTS/installer/install_crypt.sh i386_deb
 
 # tune2fs
 test -b /dev/sda5  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda5

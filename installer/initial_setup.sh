@@ -335,10 +335,10 @@ sudo aptitude -y install ghc
 
 # Crypt
 $SCRIPTS/installer/install_des.sh
-$SCRIPTS/installer/install_crypt.sh 6.2_source
-$SCRIPTS/installer/install_crypt.sh 6.2_win
-$SCRIPTS/installer/install_crypt.sh 6.2_macosx
-$SCRIPTS/installer/install_crypt.sh 6.2_i386_deb
+$SCRIPTS/installer/install_crypt.sh source
+$SCRIPTS/installer/install_crypt.sh win
+$SCRIPTS/installer/install_crypt.sh macosx
+$SCRIPTS/installer/install_crypt.sh i386_deb
 
 # Security (Anti-Virus)
 sudo aptitude -y install clamav avscan
