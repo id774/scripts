@@ -1,6 +1,6 @@
 " vim:set ts=8 sts=2 sw=2 tw=0
 "
-" Last Change: 5-Mar-2009.
+" Last Change: 22-May-2009.
 " Maintainer:  id774 <idnanashi@gmail.com>
 
 if &encoding !=# 'utf-8'
@@ -181,8 +181,7 @@ map  <C-X><C-E>  :Explore<CR>
 nmap <C-X><C-I>  ggVG
 nmap <C-X><C-J>  :vsp<CR>
 nmap <C-X><C-Y>  :sp<CR>
-nmap <C-C><C-C>  :qa<CR>
-nmap <C-X><C-C>  :qa!<CR>
+nmap <C-X><C-C>  :qa<CR>
 nmap <C-W><C-W>  :w<CR>
 nmap <C-X><C-W>  :w!<CR>
 nmap <C-H><C-H>  :bdelete<CR>
