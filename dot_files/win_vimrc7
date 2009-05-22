@@ -3,7 +3,7 @@
 " An example for a Japanese version vimrc file.
 " 日本語版のデフォルト設定ファイル(vimrc) - Vim7用試作
 "
-" Last Change: 22-May-2009.
+" Last Change: 5-Mar-2009.
 " Maintainer:  id774 <idnanashi@gmail.com>
 "
 " 解説:
@@ -310,7 +310,8 @@ map  <C-X><C-E>  :Explore<CR>
 nmap <C-X><C-I>  ggVG
 nmap <C-X><C-J>  :vsp<CR>
 nmap <C-X><C-Y>  :sp<CR>
-nmap <C-X><C-C>  :qa<CR>
+nmap <C-C><C-C>  :qa<CR>
+nmap <C-X><C-C>  :qa!<CR>
 nmap <C-W><C-W>  :w<CR>
 nmap <C-X><C-W>  :w!<CR>
 nmap <C-H><C-H>  :bdelete<CR>
