@@ -119,8 +119,16 @@
 
 ;; Describe
 (define-key global-map "\C-c\C-c\C-d" 'describe-variable)
+(define-key global-map "\C-c\C-c\ d" 'describe-variable)
 (define-key global-map "\C-c\C-c\C-f" 'describe-function)
+(define-key global-map "\C-c\C-c\ f" 'describe-function)
 (define-key global-map "\C-c\C-c\C-b" 'describe-bindings)
+(define-key global-map "\C-c\C-c\ b" 'describe-bindings)
+
+;; 検索/置換
+(define-key global-map "\C-c\C-c\C-q" 'query-replace-regexp)
+(define-key global-map "\C-c\C-c\ q" 'query-replace-regexp-eval)
+(global-set-key "\C-x\C-q" 'query-replace)
 
 ;; アンドゥ/リドゥ
 (define-key global-map "\C-c\C-c\C-u" 'undo)
@@ -155,7 +163,6 @@
   (if (yes-or-no-p "quit emacs? ")
     (save-buffers-kill-emacs)))
 (global-set-key "\C-x\C-c" 'confirm-save-buffers-kill-emacs)
-(global-set-key "\C-x\C-q" 'confirm-save-buffers-kill-emacs)
 
 ;; Local Variables:
 ;; mode : emacs-lisp
