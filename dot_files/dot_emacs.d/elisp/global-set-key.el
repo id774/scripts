@@ -108,7 +108,7 @@
 ;; C-M-x C-wでも上書き保存する
 (global-set-key "\C-\M-x\C-w" 'save-buffer)
 
-;; C-f C-rの存在意義が無いのでライブラリ検索に割り当て
+;; C-x C-rの存在意義が無いのでライブラリ検索に割り当て
 (global-set-key "\C-x\C-r" 'find-library)
 
 ;; バッファ先頭/末尾へのカーソル移動
@@ -116,6 +116,11 @@
 (define-key global-map "\C-c\C-c\ a" 'beginning-of-buffer)
 (define-key global-map "\C-c\C-c\C-e" 'end-of-buffer)
 (define-key global-map "\C-c\C-c\ e" 'end-of-buffer)
+
+;; Describe
+(define-key global-map "\C-c\C-c\C-d" 'describe-variable)
+(define-key global-map "\C-c\C-c\C-f" 'describe-function)
+(define-key global-map "\C-c\C-c\C-b" 'describe-bindings)
 
 ;; アンドゥ/リドゥ
 (define-key global-map "\C-c\C-c\C-u" 'undo)
@@ -150,6 +155,7 @@
   (if (yes-or-no-p "quit emacs? ")
     (save-buffers-kill-emacs)))
 (global-set-key "\C-x\C-c" 'confirm-save-buffers-kill-emacs)
+(global-set-key "\C-x\C-q" 'confirm-save-buffers-kill-emacs)
 
 ;; Local Variables:
 ;; mode : emacs-lisp
