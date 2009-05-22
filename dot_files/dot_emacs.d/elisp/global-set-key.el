@@ -72,6 +72,9 @@
 ;; C-h を backspace にする
 (global-set-key "\C-h" 'delete-backward-char)
 
+;; C-\ を help-command にする
+(global-set-key "\C-\\" 'help-command)
+
 ;; C-x C-j または C-x j で view-mode を切り替える
 (defun toggle-view-mode ()
   (interactive)
@@ -135,7 +138,6 @@
 (define-key global-map "\C-c\C-c\ u" 'undo)
 (define-key global-map "\C-c\C-c\C-r" 'redo)
 (define-key global-map "\C-c\C-c\ r" 'redo)
-(global-set-key "\C-\\" 'redo)
 
 ;; バッファ再読み込み
 (defun revert-current-buffer ()
