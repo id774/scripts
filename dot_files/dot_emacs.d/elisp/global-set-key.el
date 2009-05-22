@@ -108,6 +108,9 @@
 ;; C-M-x C-wでも上書き保存する
 (global-set-key "\C-\M-x\C-w" 'save-buffer)
 
+;; C-f C-rの存在意義が無いのでライブラリ検索に割り当て
+(global-set-key "\C-x\C-r" 'find-library)
+
 ;; バッファ先頭/末尾へのカーソル移動
 (define-key global-map "\C-c\C-c\C-a" 'beginning-of-buffer)
 (define-key global-map "\C-c\C-c\ a" 'beginning-of-buffer)
