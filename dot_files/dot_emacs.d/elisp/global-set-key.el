@@ -38,12 +38,12 @@
 (define-key global-map [down] 'windmove-down)
 
 ;; ウィンドウ分割
-(define-key global-map "\C-c\C-c\C-k" 'delete-other-windows)
+(define-key global-map "\C-c\C-c\C-k" 'delete-window)
 (define-key global-map "\C-c\C-c\ k" 'delete-other-windows)
 (define-key global-map "\C-c\C-c\C-y" 'split-window-vertically)
 (define-key global-map "\C-c\C-c\ y" 'split-window-vertically)
 (define-key global-map "\C-c\C-c\C-j" 'split-one-window)
-(define-key global-map "\C-c\C-c\ j" 'split-one-window)
+(define-key global-map "\C-c\C-c\ j" 'split-window-horizontally)
 
 ;; 分割したウィンドウを時計回りに移動
 (define-key global-map "\C-c\C-c\C-w" 'other-window)
