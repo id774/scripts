@@ -9,7 +9,7 @@ case $OSTYPE in
     tar czvf ~/arc/skype.tar.gz "Library/Application Support/Skype"
     ;;
   *)
-    tar czvf ~/arc/skype.tar.gz .mozilla
+    tar czvf ~/arc/skype.tar.gz .Skype
     ;;
 esac
 
