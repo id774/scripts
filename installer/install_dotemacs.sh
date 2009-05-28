@@ -47,7 +47,8 @@ setup_rinari() {
 emacs_private_settings() {
     test -f ~/private/scripts/etc/twitter1-account.el && cp $OPTIONS ~/private/scripts/etc/twitter*-account.el $TARGET/elisp/
     chmod 600 $TARGET/elisp/twitter*-account.el*
-    vim $TARGET/elisp/proxy.el $TARGET/elisp/emacs-w3m.el $TARGET/elisp/unix-defaults.el
+    test -f ~/etc/config.local/local.el && cp $OPTIONS ~/etc/config.local/*.el $TARGET/elisp/
+    vim $TARGET/elisp/proxy.el $TARGET/elisp/emacs-w3m.el $TARGET/elisp/unix-defaults.el $TARGET/elisp/local.el
 }
 
 batch_byte_compile() {
