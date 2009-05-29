@@ -103,6 +103,8 @@
 ;; バッファリスト
 (define-key global-map "\C-x\C-b" 'electric-buffer-list)
 (define-key global-map [C-return] 'electric-buffer-list)
+(define-key global-map "\C-x\ b" 'buffer-menu)
+(define-key global-map "\C-c\C-c\ b" 'iswitchb-buffer)
 
 ;; C-x C-wを上書き保存にする(別名保存はC-x w)
 (define-key global-map "\C-x\C-w" 'save-buffer)
@@ -126,12 +128,15 @@
 (define-key global-map "\C-c\C-c\C-f" 'describe-function)
 (define-key global-map "\C-c\C-c\ f" 'describe-function)
 (define-key global-map "\C-c\C-c\C-b" 'describe-bindings)
-(define-key global-map "\C-c\C-c\ b" 'describe-bindings)
 
 ;; 検索/置換
 (define-key global-map "\C-c\C-c\C-q" 'query-replace-regexp)
 (define-key global-map "\C-c\C-c\ q" 'query-replace-regexp-eval)
 (global-set-key "\C-x\C-q" 'query-replace)
+
+;; grep
+(define-key global-map "\C-c\C-c\C-g" 'grep-find)
+(define-key global-map "\C-c\C-c\ g" 'grep)
 
 ;; アンドゥ/リドゥ
 (define-key global-map "\C-c\C-c\C-u" 'undo)
