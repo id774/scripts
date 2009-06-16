@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.3 6/16,2009
+#       Refactoring.
 #  v0.2 11/10,2007
 #       Add clamscan. Not delete source and object code.
 #  v0.1 10/16,2007

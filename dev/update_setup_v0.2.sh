@@ -75,6 +75,14 @@ ls -ltra /etc/logrotate.d/
 sudo chmod 644 /etc/logrotate.d/*
 sudo chown root:root /etc/logrotate.d/*
 
+# ClamAV Auto Upgrade Job
+sudo cp $SCRIPTS/cron/bin/clamav_upgrade.sh /root/bin/clamav_upgrade.sh
+sudo chmod 700 /root/bin/clamav_upgrade.sh
+sudo cp $SCRIPTS/cron/etc/clamscan_exclude /root/bin/clamscan_exclude
+sudo vim /root/bin/clamscan_exclude
+sudo chmod 600 /root/bin/clamscan_exclude
+sudo chown -R root:root /root/bin
+
 # Upgrade
 
 # Debian unstable
