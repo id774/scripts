@@ -15,7 +15,10 @@
 # 2. install_clamav.sh
 # 3. Install this script to cron.
 ########################################################################
-
+TARGETDIRS="/"
+LOGFILE=/var/log/clamscan.log
+EXECDIR=${0%/*}
+EXCLUDEFILE=$EXECDIR/clamscan_exclude 
 test -d /usr/local/src/security || mkdir -p /usr/local/src/security
 #test -d /usr/local/src/security/clamav && rm -rf /usr/local/src/security/clamav
 cd /usr/local/src/security
@@ -30,5 +33,20 @@ test -f /usr/local/etc/clamd.conf.base && cp /usr/local/etc/clamd.conf.base /usr
 chmod 700 /usr/local/etc/freshclam.conf.base
 chmod 700 /usr/local/etc/freshclam.conf
 freshclam
-clamscan / --exclude-dir=/usr/local/src/security/clamav --exclude-dir=/sys --exclude-dir=/mnt --exclude-dir=/media --exclude-dir=/home/ubuntu/tmp --exclude-dir=/home/debian/tmp -r -i -l /var/log/clamscan.log
+if [ -s $EXCLUDEFILE ]; then
+    for i in `cat $EXCLUDEFILE`
+    do
+        if [ $(echo "$i"|grep \/$) ]; then
+            i=`echo $i|sed -e 's/^\([^ ]*\)\/$/\1/p' -e d`
+            OPTS="${OPTS} --exclude-dir=$i"
+        else
+            OPTS="${OPTS} --exclude=$i"
+        fi
+    done
+fi
+for dir in $TARGETDIRS
+do
+    echo "clamscan ${dir} ${OPTS} -r -i -l ${LOGFILE}"
+    clamscan ${dir} ${OPTS} -r -i -l ${LOGFILE}
+done
 
