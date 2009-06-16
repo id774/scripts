@@ -30,5 +30,5 @@ test -f /usr/local/etc/clamd.conf.base && cp /usr/local/etc/clamd.conf.base /usr
 chmod 700 /usr/local/etc/freshclam.conf.base
 chmod 700 /usr/local/etc/freshclam.conf
 freshclam
-clamscan / -r -i -l /var/log/clamscan.log
+clamscan / --exclude-dir=/usr/local/src/security/clamav --exclude-dir=/sys --exclude-dir=/mnt --exclude-dir=/media --exclude-dir=/home/ubuntu/tmp --exclude-dir=/home/debian/tmp -r -i -l /var/log/clamscan.log
 
