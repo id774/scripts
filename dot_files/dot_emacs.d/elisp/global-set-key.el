@@ -138,6 +138,10 @@
 (define-key global-map "\C-c\C-c\C-g" 'grep-find)
 (define-key global-map "\C-c\C-c\ g" 'grep)
 
+;; ansi-term
+(global-set-key "\C-x\C-a" '(lambda ()(interactive)(ansi-term "/bin/zsh")))
+(global-set-key "\C-x\ a" '(lambda ()(interactive)(ansi-term "/bin/zsh")))
+
 ;; アンドゥ/リドゥ
 (define-key global-map "\C-c\C-c\C-u" 'undo)
 (define-key global-map "\C-c\C-c\ u" 'undo)
