@@ -120,27 +120,27 @@ install_truecrypt() {
         get_truecrypt_source TrueCrypt_6.1a_Source.tar.gz
         ;;
       i386_deb)
-        install_truecrypt_deb truecrypt_6.2-0_i386.deb
+        install_truecrypt_deb truecrypt_6.2a-0_i386.deb
         ;;
       amd64_deb)
-        install_truecrypt_deb truecrypt_6.2-0_amd64.deb
+        install_truecrypt_deb truecrypt_6.2a-0_amd64.deb
         ;;
       i586_rpm)
-        install_truecrypt_rpm truecrypt-6.2-0.i586.rpm
+        install_truecrypt_rpm truecrypt-6.2a-0.i586.rpm
         ;;
       x86_64_rpm)
-        install_truecrypt_rpm truecrypt-6.2-0.x86_64.rpm
+        install_truecrypt_rpm truecrypt-6.2a-0.x86_64.rpm
         ;;
       win)
-        sudo wget "http://id774.net/truecrypt/TrueCrypt Setup 6.2.exe"
+        sudo wget "http://id774.net/truecrypt/TrueCrypt Setup 6.2a.exe"
         sudo mv * /usr/local/src/crypt/truecrypt
         ;;
       macosx)
-        sudo wget "http://id774.net/truecrypt/TrueCrypt 6.2 Mac OS X.dmg"
+        sudo wget "http://id774.net/truecrypt/TrueCrypt 6.2a Mac OS X.dmg"
         sudo mv * /usr/local/src/crypt/truecrypt
         ;;
       source)
-        sudo wget "http://id774.net/truecrypt/TrueCrypt 6.2 Source.tar.gz"
+        sudo wget "http://id774.net/truecrypt/TrueCrypt 6.2a Source.tar.gz"
         sudo mv * /usr/local/src/crypt/truecrypt
         ;;
     esac
