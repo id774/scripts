@@ -77,6 +77,10 @@ ls -ltra /etc/logrotate.d/
 sudo chmod 644 /etc/logrotate.d/*
 sudo chown root:root /etc/logrotate.d/*
 
+# Server Resource Report Job
+sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
+sudo chmod 700 /root/bin/get_resources.sh
+sudo chown -R root:root /root/bin
 # ClamAV Auto Upgrade Job
 sudo cp $SCRIPTS/cron/bin/clamav_upgrade.sh /root/bin/clamav_upgrade.sh
 sudo chmod 700 /root/bin/clamav_upgrade.sh

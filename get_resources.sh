@@ -60,6 +60,10 @@ echo "[ps -H auxwww]"
 ps -H auxwww
 echo
 
+echo "[ps xl --sort -vsize | head -10]"
+ps xl --sort -vsize | head -10
+echo
+
 echo "[grep SSH attack /var/log/messages]"
 grep "SSH attack" /var/log/messages
 echo
