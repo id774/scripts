@@ -47,9 +47,17 @@ sub add_entry {
 #    }
 
     if ($self->conf->{tag_string}) {
-        $entry->summary( encode('utf-8', '[' . $self->conf->{tag_string} . ']') );
+        if ($self->conf->{comments}) {
+            $entry->summary( encode('utf-8', '[' . $self->conf->{tag_string} . ']' . $self->conf->{comments} ) );
+        } else {
+            $entry->summary( encode('utf-8', '[' . $self->conf->{tag_string} . ']' ) );
+        }
     } else {
-        $entry->summary('');
+        if ($self->conf->{comments}) {
+            $entry->summary( encode('utf-8', $self->conf->{comments} ) );
+        } else {
+            $entry->summary('');
+        }
     }
 
     my $loc = $self->{client}->createEntry('http://b.hatena.ne.jp/atom/post', $entry);
@@ -61,7 +69,8 @@ sub add_entry {
     my $sleeping_time = $self->conf->{interval} || 5;
     my $bookmark_url = encode('utf-8', $args->{entry}->link);
     my $tag = encode('utf-8', $self->conf->{tag_string}) || '';
-    $context->log(info => "sleep: $sleeping_time, tag: $tag, bookmark: $bookmark_url");
+    my $comments = encode('utf-8', $self->conf->{comments}) || '';
+    $context->log(info => "sleep: $sleeping_time, bookmark: $bookmark_url, tag: $tag, comments: $comments");
     sleep( $sleeping_time );
 }
 
@@ -81,6 +90,7 @@ Plagger::Plugin::Publish::HatenaBookmark - Post to Hatena::Bookmark automaticall
       password: your-password
       interval: 10
       tag_string: tag
+      comments: your-comment
 
 =head1 DESCRIPTION
 

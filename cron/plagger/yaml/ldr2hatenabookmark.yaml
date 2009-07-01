@@ -19,6 +19,13 @@ plugins:
       username: xxxxxxxx
       password: xxxxxxxx
       interval: 5
+      tag_string:
+      comments:
+
+  - module: Filter::Rule
+    rule:
+      module: Deduped
+      path: /home/plagger/.plagger_tmp/tmp5/plagger-ldr2hatenabookmark.db
 
   - module: Filter::StripRSSAd
 
