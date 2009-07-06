@@ -103,8 +103,7 @@
 ;; バッファリスト
 (define-key global-map "\C-x\C-b" 'electric-buffer-list)
 (define-key global-map [C-return] 'electric-buffer-list)
-(define-key global-map "\C-x\ b" 'buffer-menu)
-(define-key global-map "\C-c\C-c\ b" 'iswitchb-buffer)
+(define-key global-map "\C-c\C-c\ b" 'buffer-menu)
 
 ;; C-x C-wを上書き保存にする(別名保存はC-x w)
 (define-key global-map "\C-x\C-w" 'save-buffer)
