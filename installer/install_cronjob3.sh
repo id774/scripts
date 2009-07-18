@@ -56,6 +56,7 @@ sudo chmod 640 /var/log/plagger.log
 sudo chmod 640 /var/log/plaggersbm.log
 sudo chmod 640 /var/log/plagger2ch2twitter.log
 sudo chmod 640 /var/log/plagger2ch2gmail.log
+sudo chmod 640 /var/log/plagger_twitter2tumblr.log
 sudo chmod 640 /var/log/plagger_tumblr2gmail.log
 sudo chown plagger:adm /var/log/plagger.log
 sudo chown plagger:adm /var/log/plaggersbm.log
