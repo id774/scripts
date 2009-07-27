@@ -86,7 +86,7 @@ sudo cp $SCRIPTS/cron/bin/clamav_upgrade.sh /root/bin/clamav_upgrade.sh
 sudo chmod 700 /root/bin/clamav_upgrade.sh
 sudo cp $SCRIPTS/cron/bin/auto-upgrade /etc/cron.daily/auto-upgrade
 sudo vim /etc/cron.daily/auto-upgrade
-sudo chmod 700 /etc/cron.daily/auto-upgrade
+sudo chmod 750 /etc/cron.daily/auto-upgrade
 sudo cp $SCRIPTS/cron/etc/clamscan_exclude /root/bin/clamscan_exclude
 sudo vim /root/bin/clamscan_exclude
 sudo chmod 600 /root/bin/clamscan_exclude
