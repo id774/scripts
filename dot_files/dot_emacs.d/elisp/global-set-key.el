@@ -19,7 +19,12 @@
        t) ;; ok
       (t (keyboard-translate ?\C-h ?\C-?)))
 
-;; C-x C-y または C-x y で auto-complete-modeの有効/無効を切り替える
+;; C-x t で linum-mode のトグル
+(cond
+  ((>= emacs-major-version '23)
+    (define-key global-map "\C-x\ t" 'linum-mode)))
+
+;; C-x C-y または C-x y で auto-complete-mode の有効/無効を切り替える
 (define-key global-map "\C-x\C-y" 'auto-complete-mode)
 (define-key global-map "\C-x\ y" 'auto-complete-mode)
 

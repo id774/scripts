@@ -162,7 +162,10 @@
   (lambda ()
     (cond (view-mode)
       (t
-        (view-mode)))))
+        (view-mode)))
+    (cond
+      ((>= emacs-major-version '23)
+        (linum-mode)))))
 
 ;; 画面端で折り返す
 (setq truncate-partial-width-windows nil)

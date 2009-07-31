@@ -47,7 +47,7 @@
   (cond
     ((eq system-type 'darwin)
       (cond
-        ((eq emacs-major-version '22)
+        ((< emacs-major-version '23)
           (ruby-optional-load))))))
 
 ;; rd-mode
