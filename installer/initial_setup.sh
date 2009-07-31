@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.17 7/31,2009
+#       Remove opera
 # v1.16 5/18,2009
 #       Remove uim-el, and update misc setup.
 # v1.15 5/13,2009
@@ -267,13 +269,6 @@ sudo aptitude install -y sun-java6-jdk
 # Mozilla Thunderbird (Ubuntu)
 #sudo aptitude -y install mozilla-thunderbird
 
-# Opera (need apt-line)
-#GPG_PUBKEY=033431536A423791
-#gpg --keyserver pgp.nic.ad.jp --recv-keys $GPG_PUBKEY
-#sudo gpg --armor --export $GPG_PUBKEY | sudo apt-key add -
-#sudo aptitude update
-#sudo aptitude install -y opera
-
 # Xfce4(Debian) / Xubuntu(Ubuntu)
 #sudo apt-get install xfce4
 #sudo apt-get install xubuntu-desktop
@@ -294,7 +289,7 @@ sudo aptitude install -y sun-java6-jdk
 #sudo aptitude install -y xubuntu-restricted-extras
 
 # Icons
-#sudo aptitude install -y human-icon-theme
+#sudo aptitude install -y ubuntu-artwork xubuntu-artwork human-icon-theme
 #sudo aptitude install -y gnome-themes gnome-themes-extras
 
 # 2ch Browser
