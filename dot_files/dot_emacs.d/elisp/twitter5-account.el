@@ -1,7 +1,7 @@
 ;; Twitterアカウント設定
-(require 'twitter4-mode)
-(setq twitter4-username "twitt___")
-(setq twitter4-password "xxxxxxxx")
+(require 'twitter5-mode)
+(setq twitter5-username "twitt____")
+(setq twitter5-password "xxxxxxxx")
 
 ;; Local Variables:
 ;; mode : emacs-lisp
