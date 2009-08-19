@@ -1132,7 +1132,7 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 	(text (get-text-property (point) 'text)))
     (when username
 	(twitter3-update-status-from-minibuffer
-	 (concat "RT: " text " (via @" username ")") id))))
+	 (concat "のっかりつぶやき: " text " (via @" username ")") id))))
 
 (defun twitter3-view-user-page ()
   (interactive)
