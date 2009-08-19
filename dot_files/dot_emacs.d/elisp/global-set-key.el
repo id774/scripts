@@ -19,7 +19,7 @@
        t) ;; ok
       (t (keyboard-translate ?\C-h ?\C-?)))
 
-;; C-x t で linum-mode のトグル
+;; C-x t で行数表示/非表示
 (cond
   ((>= emacs-major-version '23)
     (define-key global-map "\C-x\ t" 'linum-mode)))

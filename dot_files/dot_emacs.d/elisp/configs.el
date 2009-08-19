@@ -163,6 +163,7 @@
     (cond (view-mode)
       (t
         (view-mode)))
+;; 行数表示(C-x t で切替)
     (cond
       ((>= emacs-major-version '23)
         (linum-mode)))))
