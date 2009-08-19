@@ -289,6 +289,7 @@ directory. You should change through function'twitter4-icon-mode'")
       (define-key km "\C-c\C-v" 'twitter4-view-user-page)
       (define-key km "\C-c\C-m" 'twitter4-retweet)
       (define-key km "m" 'twitter4-retweet)
+      (define-key km "\C-c\C-n" 'twitter4-naruhodius)
       (define-key km "g" 'twitter4-current-timeline)
       (define-key km "c" 'twitter4-current-timeline-interactive)
       ;; (define-key km "j" 'next-line)
@@ -1133,6 +1134,15 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
     (when username
 	(twitter4-update-status-from-minibuffer
 	 (concat "のっかりつぶやき: " text " (via @" username ")") id))))
+
+(defun twitter4-naruhodius ()
+  (interactive)
+  (let ((username (get-text-property (point) 'username))
+	(id (get-text-property (point) 'id))
+	(text (get-text-property (point) 'text)))
+    (when username
+	(twitter4-update-status-from-minibuffer
+	 (concat "ナルホディウス: " text " (via @" username ")") id))))
 
 (defun twitter4-view-user-page ()
   (interactive)
