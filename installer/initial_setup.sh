@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.18 8/27,2009
+#       Update to rails 2.3.3
 # v1.17 7/31,2009
 #       Remove opera
 # v1.16 5/18,2009
@@ -239,7 +241,9 @@ $SCRIPTS/installer/install_dotfiles.sh
 sudo aptitude -y install autoconf byacc bison autoconf-doc automake
 sudo aptitude -y install libopenssl-ruby
 sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
-$SCRIPTS/installer/install_ruby.sh 187-svn
+#sudo aptitude -y install ruby1.9 ruby1.9-dev rubygems
+$SCRIPTS/installer/install_ruby.sh 187-174
+#$SCRIPTS/installer/install_ruby.sh 191-243
 
 # Apache
 sudo aptitude -y install apache2

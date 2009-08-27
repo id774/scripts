@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 8/27,2009
+#       Update to rails 2.3.3
 #  v1.2 1/9,2009
 #       Add rspec-rails.
 #  v1.1 9/16,2008
@@ -21,6 +23,7 @@ sudo gem install mechanize
 sudo gem install Selenium
 sudo gem install vim-ruby
 sudo gem install postgres-pr
+sudo gem install mysql
 sudo gem install BlueCloth
 sudo gem install RedCloth
 sudo gem install net-ssh

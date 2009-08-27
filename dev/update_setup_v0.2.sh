@@ -28,8 +28,12 @@ $SCRIPTS/installer/install_dotemacs.sh
 $SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
 
 # Ruby
-#$SCRIPTS/installer/install_ruby.sh 187-svn
+sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
+#sudo aptitude -y install ruby1.9 ruby1.9-dev rubygems
+$SCRIPTS/installer/install_ruby.sh 187-174
+#$SCRIPTS/installer/install_ruby.sh 191-243
 $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/branches/ruby_1_8_7/misc
+#$SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/branches/ruby_1_9_1/misc
 
 # Crypt
 $SCRIPTS/installer/install_des.sh
@@ -40,6 +44,7 @@ $SCRIPTS/installer/install_crypt.sh i386_deb
 
 # RubyGems
 $SCRIPTS/installer/install_rubygems.sh
+$SCRIPTS/installer/install_gems.sh
 $SCRIPTS/installer/install_rails.sh
 
 # tune2fs

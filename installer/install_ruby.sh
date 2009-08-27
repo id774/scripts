@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.6 8/27,2009
+#       Update to ruby 1.9.1-p243
 #  v1.5 4/29,2009
 #       Put emacs-ruby installer to out.
 #  v1.4 1/7,2009
@@ -80,7 +82,7 @@ install_stable() {
     test -d /usr/local/src/ruby || sudo mkdir -p /usr/local/src/ruby
     sudo cp $OPTIONS ruby-$1 /usr/local/src/ruby
     cd ..
-    rm -rf install_ruby
+    sudo rm -rf install_ruby
     test -x $SCRIPTS/installer/install_emacs_ruby.sh && $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/ruby-$1/misc
 }
 
@@ -94,14 +96,26 @@ case $OSTYPE in
 esac
 
 case "$1" in
+  191-243)
+    install_stable 1.9.1-p243 1.9
+    ;;
+  187-174)
+    install_stable 1.8.7-p174 1.8
+    ;;
   187-72)
-    install_stable 1.8.7-p72 1.8
+    install_stable 1.8.7-p72 1.7
+    ;;
+  186-383)
+    install_stable 1.8.6-p383 1.8
     ;;
   186-287)
     install_stable 1.8.6-p287 1.8
     ;;
   18-svn)
     install_branch ruby_1_8
+    ;;
+  191-svn)
+    install_branch ruby_1_9_1
     ;;
   187-svn)
     install_branch ruby_1_8_7
