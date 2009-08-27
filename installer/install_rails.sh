@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 8/27,2009
+#       Update to 2.3.3.
 #  v1.1 1/6,2009
 #       Install stand-alone package.
 #  v1.0 8/15,2008
@@ -37,33 +39,37 @@ wget_rails_zip() {
 
 select_rails_package() {
     case "$1" in
-      222)
-        RAILS_VER=2.2.2
-        wget_rails_zip $RAILS_VER 47183
-        ;;
-      212)
-        RAILS_VER=2.1.2
-        wget_rails_zip $RAILS_VER 45625
-        ;;
-      210)
-        RAILS_VER=2.1.0
-        wget_rails_zip $RAILS_VER 37770
-        ;;
-      205)
-        RAILS_VER=2.0.5
-        wget_rails_zip $RAILS_VER 45369
-        ;;
-      202)
-        RAILS_VER=2.0.2
-        wget_rails_zip $RAILS_VER 29361
+      116)
+        RAILS_VER=1.1.6
+        wget_rails_zip $RAILS_VER 12324
         ;;
       126)
         RAILS_VER=1.2.6
         wget_rails_zip $RAILS_VER 28340
         ;;
-      116)
-        RAILS_VER=1.1.6
-        wget_rails_zip $RAILS_VER 12324
+      202)
+        RAILS_VER=2.0.2
+        wget_rails_zip $RAILS_VER 29361
+        ;;
+      205)
+        RAILS_VER=2.0.5
+        wget_rails_zip $RAILS_VER 45369
+        ;;
+      210)
+        RAILS_VER=2.1.0
+        wget_rails_zip $RAILS_VER 37770
+        ;;
+      212)
+        RAILS_VER=2.1.2
+        wget_rails_zip $RAILS_VER 45625
+        ;;
+      222)
+        RAILS_VER=2.2.2
+        wget_rails_zip $RAILS_VER 47183
+        ;;
+      *)
+        RAILS_VER=2.3.3
+        wget_rails_zip $RAILS_VER 60600
         ;;
     esac
     extract_rails_zip rails-$RAILS_VER
@@ -76,18 +82,7 @@ install_rails_standalone() {
     select_rails_package $1
 }
 
-install_rails_gem() {
-    sudo gem install -v rails
-}
-
 export RUBYOPT=rubygems
-case "$1" in
-  *[0-9]*)
-    install_rails_standalone $1
-    ;;
-  *)
-    install_rails_gem
-    ;;
-esac
+install_rails_standalone $1
 gem list --local
 

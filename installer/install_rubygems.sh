@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 8/27,2009
+#       Update to 1.3.5.
 #  v1.2 5/21,2009
 #       Update to 1.3.3, Keep sources.
 #  v1.1 1/1,2009
