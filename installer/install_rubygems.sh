@@ -34,9 +34,13 @@ case "$1" in
     RUBY_GEMS_ZIP=rubygems-1.3.1
     wget http://rubyforge.org/frs/download.php/45906/$RUBY_GEMS_ZIP.zip
     ;;
-  *)
+  133)
     RUBY_GEMS_ZIP=rubygems-1.3.3
     wget http://rubyforge.org/frs/download.php/56228/$RUBY_GEMS_ZIP.zip
+    ;;
+  *)
+    RUBY_GEMS_ZIP=rubygems-1.3.5
+    wget http://rubyforge.org/frs/download.php/60719/$RUBY_GEMS_ZIP.zip
     ;;
 esac
 
