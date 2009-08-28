@@ -1133,7 +1133,7 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 	(text (get-text-property (point) 'text)))
     (when username
 	(twitter2-update-status-from-minibuffer
-	 (concat "のっかりつぶやき: " text " (via @" username ")") id))))
+	  (concat "のっかりつぶやき: @" username " " text ) id))))
 
 (defun twitter2-naruhodius ()
   (interactive)
@@ -1142,7 +1142,7 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 	(text (get-text-property (point) 'text)))
     (when username
 	(twitter2-update-status-from-minibuffer
-	 (concat "ナルホディウス: " text " (via @" username ")") id))))
+	  (concat "ナルホディウス: " text " (via @" username ")") id))))
 
 (defun twitter2-view-user-page ()
   (interactive)
