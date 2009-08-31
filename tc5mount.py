@@ -9,7 +9,7 @@ def os_exec(cmd0, cmd1, device):
 
 def os_command(mount_options, device):
     cmd1 = 'test -b /dev/' + device + '1 && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' + mount_options + ' /dev/' + device + '1 ~/mnt/' + device 
-    cmd0 = 'test -b /dev/' + device + '1 || ( test -b /dev/sdb && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' + mount_options + ' /dev/' + device + ' ~/mnt/' + device + ' )'
+    cmd0 = 'test -b /dev/' + device + '1 || ( test -b /dev/' + device + ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' + mount_options + ' /dev/' + device + ' ~/mnt/' + device + ' )'
     os_exec(cmd0, cmd1, device)
 
 def mount_local(options, args):
