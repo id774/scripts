@@ -6,7 +6,7 @@ rm -rf ~/.opera
 
 case $OSTYPE in
   *darwin*)
-    rm -rf  "~/Library/Preferences/Opera Preferences 10"
+    rm -rf  "~/Library/Preferences/Opera Preferences"
     ;;
   *)
     rm -rf ~/.opera
