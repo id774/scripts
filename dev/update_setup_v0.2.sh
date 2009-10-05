@@ -35,6 +35,9 @@ $SCRIPTS/installer/install_ruby.sh 187-174
 $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/branches/ruby_1_8_7/misc
 #$SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/branches/ruby_1_9_1/misc
 
+# exiftool
+sudo aptitude -y install exiftool libimage-exiftool-perl
+
 # Crypt
 $SCRIPTS/installer/install_des.sh
 $SCRIPTS/installer/install_crypt.sh source

@@ -325,6 +325,9 @@ sudo aptitude -y install libssl-dev libio-socket-ssl-perl libnet-ssleay-perl
 sudo aptitude -y install libtemplate-perl libxml-libxml-perl
 sudo aptitude -y install ghc
 
+# exiftool
+sudo aptitude -y install exiftool libimage-exiftool-perl
+
 # Share Documents
 #wget http://big.freett.com/railsinstall2/share-documents.tar.gz
 #sudo tar xzvf share-documents.tar.gz -C /usr/local/share
