@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 28-May-2009.
+# Last Change: 16-Oct-2009.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_linux_env() {
@@ -139,6 +139,7 @@ set_basic_options() {
     setopt ignore_eof
     setopt bsd_echo
     setopt no_hup
+    setopt no_checkjobs
     setopt notify
     setopt long_list_jobs
     setopt mail_warning

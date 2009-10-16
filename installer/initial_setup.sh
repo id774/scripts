@@ -5,10 +5,12 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.19 10/5,2009
+#       Add exiftool.
 # v1.18 8/27,2009
 #       Update to rails 2.3.3
 # v1.17 7/31,2009
-#       Remove opera
+#       Remove opera.
 # v1.16 5/18,2009
 #       Remove uim-el, and update misc setup.
 # v1.15 5/13,2009
