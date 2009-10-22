@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.4 10/22,2009
+#       Upgrade repository svn to git.
 #  v0.3 6/16,2009
 #       Refactoring.
 #  v0.2 11/10,2007
@@ -21,11 +23,8 @@ TARGETDIRS="/"
 LOGFILE=/var/log/clamscan.log
 EXECDIR=${0%/*}
 EXCLUDEFILE=$EXECDIR/clamscan_exclude 
-test -d /usr/local/src/security || mkdir -p /usr/local/src/security
-#test -d /usr/local/src/security/clamav && rm -rf /usr/local/src/security/clamav
-cd /usr/local/src/security
-svn co http://svn.clamav.net/svn/clamav-devel/trunk/ clamav
-cd clamav
+cd /usr/local/src/security/clamav-devel
+git pull
 make clean
 ./configure
 make

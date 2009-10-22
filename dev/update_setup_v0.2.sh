@@ -86,6 +86,9 @@ ls -ltra /etc/logrotate.d/
 sudo chmod 644 /etc/logrotate.d/*
 sudo chown root:root /etc/logrotate.d/*
 
+# Install clamav_upgrade
+$SCRIPTS/install/install_clamav.sh
+
 # Server Resource Report Job
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
 sudo chmod 700 /root/bin/get_resources.sh
