@@ -59,5 +59,5 @@ case "$ADMIN_MAIL_ADDRESS" in
     ;;
 esac
 
-sudo test -b /dev/sdb && smartctl -a /dev/sdb
-sudo test -b /dev/sdc && smartctl -a /dev/sdc
+test -b /dev/sdb && sudo smartctl -a /dev/sdb
+test -b /dev/sdc && sudo smartctl -a /dev/sdc
