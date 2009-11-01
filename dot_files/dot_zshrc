@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 31-Oct-2009.
+# Last Change: 2-Nov-2009.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_linux_env() {
@@ -196,7 +196,7 @@ set_basic_options() {
     alias s='screen -U'
     alias scrr='screen -U -D -RR'
     alias mv='mv -vi'
-    alias rm='rm -vi'
+    alias rm='rm -i'
     export RUBYOPT=rubygems
 }
 
