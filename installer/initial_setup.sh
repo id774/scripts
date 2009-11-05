@@ -328,7 +328,7 @@ sudo aptitude -y install libtemplate-perl libxml-libxml-perl
 sudo aptitude -y install ghc
 
 # exiftool
-sudo aptitude -y install exiftool libimage-exiftool-perl
+sudo aptitude -y install exiftool libimage-exiftool-perl jhead
 
 # Share Documents
 #wget http://big.freett.com/railsinstall2/share-documents.tar.gz
