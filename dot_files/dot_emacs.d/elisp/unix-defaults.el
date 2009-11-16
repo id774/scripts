@@ -30,7 +30,7 @@
     (setq default-frame-alist
           (append (list '(top . 0) ; 起動時の表示位置（上から）
                         '(left . 0) ; 起動時の表示位置（左から）
-                        '(width . 160) ; 起動時のサイズ（幅）
+                        '(width . 120) ; 起動時のサイズ（幅）
                         '(height . 40) ; 起動時のサイズ（縦）
                         '(foreground-color . "#00FF00") ; 文字の色
                         '(background-color . "#000000") ; 背景の色

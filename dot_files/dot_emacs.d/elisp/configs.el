@@ -172,7 +172,8 @@
 (setq truncate-partial-width-windows nil)
 
 ;; fullscreen
-(set-frame-parameter nil 'fullscreen 'fullboth)
+;; 起動時にウィンドウを最大化する場合はコメントアウトを解除
+;(set-frame-parameter nil 'fullscreen 'fullboth)
 (defun toggle-fullscreen ()
   (interactive)
     (set-frame-parameter nil 'fullscreen (if (frame-parameter nil 'fullscreen)
