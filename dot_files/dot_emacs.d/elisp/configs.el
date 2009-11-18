@@ -40,6 +40,9 @@
 (iswitchb-mode)
 (iswitchb-default-keybindings)
 
+;; 自動セーブファイルを作成するかどうか
+(setq auto-save-default nil)
+
 ;; バックアップファイルを作成するかどうか
 (setq make-backup-files t)
 
