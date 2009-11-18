@@ -90,7 +90,6 @@
       (view-mode))))
 (define-key global-map "\C-x\C-j" 'toggle-view-mode)
 (define-key global-map "\C-x\ j" 'toggle-view-mode)
-(define-key global-map [C-backspace] 'toggle-view-mode)
 
 ;; バッファをM-n,M-pで切り替え
 (defun previous-buffer ()
@@ -107,8 +106,11 @@
 
 ;; バッファリスト
 (define-key global-map "\C-x\C-b" 'electric-buffer-list)
-(define-key global-map [C-return] 'electric-buffer-list)
 (define-key global-map "\C-c\C-c\ b" 'buffer-menu)
+
+;; 動的略語変換
+(define-key global-map [C-return] 'dabbrev-expand)
+(define-key global-map [C-S-return] 'dabbrev-completion)
 
 ;; C-x C-wを上書き保存にする(別名保存はC-x w)
 (define-key global-map "\C-x\C-w" 'save-buffer)
