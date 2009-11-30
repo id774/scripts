@@ -25,12 +25,39 @@
         (set-fontset-font (frame-parameter nil 'font)
                           'japanese-jisx0208
                           '("VL ゴシック" . "unicode-bmp"))
-      ))
-;;フレーム設定
+      )
+      ((eq system-type 'darwin)
+        (cond
+;; Cocoa Emacs 向けフォント設定
+;; http://diary.mrmt.net/item/1356
+          ((>= emacs-major-version '23)
+            (progn
+              ;; (set-input-method "MacOSX")
+              (setq ns-command-modifier (quote meta))
+              (setq ns-alternate-modifier (quote super))
+              (setq my-font "-*-*-medium-r-normal--12-*-*-*-*-*-fontset-hiramaru")
+              (setq fixed-width-use-QuickDraw-for-ascii t)
+              (setq mac-allow-anti-aliasing t)
+              (set-default-font my-font)
+              (add-to-list 'default-frame-alist `(font . ,my-font))
+              (set-fontset-font
+                (frame-parameter nil 'font)
+                'japanese-jisx0208
+                '("Hiragino Maru Gothic Pro" . "iso10646-1"))
+              (setq face-font-rescale-alist
+	            '(("^-apple-hiragino.*" . 1.2)
+	              (".*osaka-bold.*" . 1.2)
+	              (".*osaka-medium.*" . 1.2)
+	              (".*courier-bold-.*-mac-roman" . 1.0)
+	              (".*monaco cy-bold-.*-mac-cyrillic" . 0.9)
+	              (".*monaco-bold-.*-mac-roman" . 0.9)
+	              ("-cdac$" . 1.3)))))))
+      )
+;; フレーム設定
     (setq default-frame-alist
           (append (list '(top . 0) ; 起動時の表示位置（上から）
                         '(left . 0) ; 起動時の表示位置（左から）
-                        '(width . 120) ; 起動時のサイズ（幅）
+                        '(width . 160) ; 起動時のサイズ（幅）
                         '(height . 40) ; 起動時のサイズ（縦）
                         '(foreground-color . "#00FF00") ; 文字の色
                         '(background-color . "#000000") ; 背景の色
