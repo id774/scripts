@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2.2 12/3,2009
+#       Update to 6.3a
 #  v1.2.1 10/23,2009
 #       Update to 6.3, and refactoring.
 #  v1.2 5/21,2009
@@ -14,7 +16,7 @@
 #  v1.0 8/15,2008
 #       Stable.
 ########################################################################
-TRUECRYPT_CURRENT_VERSION=6.3
+TRUECRYPT_CURRENT_VERSION=6.3a
 
 set_truecrypt_permission() {
     case $OSTYPE in
