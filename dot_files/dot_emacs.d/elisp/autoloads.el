@@ -104,6 +104,11 @@
           '(lambda ()
              (setq js2-basic-offset 4)))
 
+;; actionscript-mode
+(when (require 'actionscript-mode nil t)
+  (setq auto-mode-alist
+    (cons '("\.as\'" . actionscript-mode) auto-mode-alist)))
+
 ;; sense-region.el : \C-spc で region<->rectabgle をトグル。便利。
 (when (autoload-p 'sense-region-on "sense-region" "sense-region" 'interactive)
   (sense-region-on))

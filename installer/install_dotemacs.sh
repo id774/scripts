@@ -56,6 +56,8 @@ batch_byte_compile() {
     emacs --batch --eval '(byte-compile-file "js2.el")'
     emacs --batch --eval '(byte-compile-file "redo.el")'
     emacs --batch --eval '(byte-compile-file "ruby-block.el")'
+    emacs --batch --eval '(byte-compile-file "jaspace.el")'
+    emacs --batch --eval '(byte-compile-file "actionscript-mode.el")'
     emacs --batch --eval '(byte-compile-file "auto-complete.el")'
     emacs --batch --eval '(byte-compile-file "key-chord.el")'
     emacs --batch --eval '(byte-compile-file "twitter1-mode.el")'
