@@ -42,6 +42,9 @@
                             '(height . 60) ; 起動時のサイズ（縦）
                             )))
         (cond
+          ((< emacs-major-version '23)
+            (progn
+              (set-frame-parameter nil 'fullscreen 'fullboth)))
           ((>= emacs-major-version '23)
             (progn
               ;; (set-input-method "MacOSX")
