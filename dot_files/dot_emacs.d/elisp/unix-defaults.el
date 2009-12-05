@@ -21,21 +21,33 @@
 ;; (要:ttf-bitstream-veraパッケージ)
     (cond
       ((eq system-type 'gnu/linux)
+        (setq default-frame-alist ; ThinkPad X60/X61 に最適化
+              (append (list '(top . 0) ; 起動時の表示位置（上から）
+                            '(left . 0) ; 起動時の表示位置（左から）
+                            '(width . 120) ; 起動時のサイズ（幅）
+                            '(height . 40) ; 起動時のサイズ（縦）
+                            )))
         (set-default-font "Bitstream Vera Sans Mono-8")
         (set-fontset-font (frame-parameter nil 'font)
                           'japanese-jisx0208
                           '("VL ゴシック" . "unicode-bmp"))
       )
       ((eq system-type 'darwin)
-        (cond
 ;; Cocoa Emacs 向けフォント設定
 ;; http://diary.mrmt.net/item/1356
+        (setq default-frame-alist ; 13inch MacBook Pro に最適化
+              (append (list '(top . 0) ; 起動時の表示位置（上から）
+                            '(left . 0) ; 起動時の表示位置（左から）
+                            '(width . 210) ; 起動時のサイズ（幅）
+                            '(height . 60) ; 起動時のサイズ（縦）
+                            )))
+        (cond
           ((>= emacs-major-version '23)
             (progn
               ;; (set-input-method "MacOSX")
               (setq ns-command-modifier (quote meta))
               (setq ns-alternate-modifier (quote super))
-              (setq my-font "-*-*-medium-r-normal--12-*-*-*-*-*-fontset-hiramaru")
+              (setq my-font "-*-*-medium-r-normal--10-*-*-*-*-*-fontset-hiramaru")
               (setq fixed-width-use-QuickDraw-for-ascii t)
               (setq mac-allow-anti-aliasing t)
               (set-default-font my-font)
@@ -55,11 +67,7 @@
       )
 ;; フレーム設定
     (setq default-frame-alist
-          (append (list '(top . 0) ; 起動時の表示位置（上から）
-                        '(left . 0) ; 起動時の表示位置（左から）
-                        '(width . 120) ; 起動時のサイズ（幅）
-                        '(height . 40) ; 起動時のサイズ（縦）
-                        '(foreground-color . "#00FF00") ; 文字の色
+          (append (list '(foreground-color . "#00FF00") ; 文字の色
                         '(background-color . "#000000") ; 背景の色
                         '(border-color . "#000000") ;
                         '(mouse-color . "#00FFFF") ;
