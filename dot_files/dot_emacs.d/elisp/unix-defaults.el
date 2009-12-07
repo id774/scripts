@@ -35,18 +35,25 @@
       ((eq system-type 'darwin)
 ;; Cocoa Emacs 向けフォント設定
 ;; http://diary.mrmt.net/item/1356
-        (setq default-frame-alist ; 13inch MacBook Pro に最適化
-              (append (list '(top . 0) ; 起動時の表示位置（上から）
-                            '(left . 0) ; 起動時の表示位置（左から）
-                            '(width . 210) ; 起動時のサイズ（幅）
-                            '(height . 60) ; 起動時のサイズ（縦）
-                            )))
         (cond
           ((< emacs-major-version '23)
             (progn
-              (set-frame-parameter nil 'fullscreen 'fullboth)))
+              (setq default-frame-alist
+                    (append (list '(top . 0) ; 起動時の表示位置（上から）
+                                  '(left . 0) ; 起動時の表示位置（左から）
+                                  '(width . 180) ; 起動時のサイズ（幅）
+                                  '(height . 45) ; 起動時のサイズ（縦）
+                                  )))
+              (set-frame-parameter nil 'fullscreen 'fullboth) ; 最大化
+              ))
           ((>= emacs-major-version '23)
             (progn
+              (setq default-frame-alist ; 13inch MacBook Pro に最適化
+                    (append (list '(top . 0) ; 起動時の表示位置（上から）
+                                  '(left . 0) ; 起動時の表示位置（左から）
+                                  '(width . 210) ; 起動時のサイズ（幅）
+                                  '(height . 60) ; 起動時のサイズ（縦）
+                                  )))
               ;; (set-input-method "MacOSX")
               (setq ns-command-modifier (quote meta))
               (setq ns-alternate-modifier (quote super))
