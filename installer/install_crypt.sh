@@ -6,7 +6,7 @@
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
 #  v1.2.2 12/3,2009
-#       Update to 6.3a
+#       Update to 6.3a.
 #  v1.2.1 10/23,2009
 #       Update to 6.3, and refactoring.
 #  v1.2 5/21,2009

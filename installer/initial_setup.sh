@@ -5,10 +5,12 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.20 12/17,2009
+#       Add xfwm4-themes.
 # v1.19 10/5,2009
 #       Add exiftool.
 # v1.18 8/27,2009
-#       Update to rails 2.3.3
+#       Update to rails 2.3.3.
 # v1.17 7/31,2009
 #       Remove opera.
 # v1.16 5/18,2009
@@ -278,6 +280,7 @@ sudo aptitude install -y sun-java6-jdk
 # Xfce4(Debian) / Xubuntu(Ubuntu)
 #sudo apt-get install xfce4
 #sudo apt-get install xubuntu-desktop
+#sudo aptitude -y install xfwm4 xfwm4-themes
 #sudo aptitude -y install xfce4-goodies
 #im-switch -c
 #sudo rmmod pcspkr
@@ -390,7 +393,7 @@ test -b /dev/mapper/`/bin/hostname`-usr  && sudo tune2fs -i 0 -c 0 -m 1 /dev/map
 test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-home
 
 # Linux kernel source, headers, kbuild (Debian)
-#sudo aptitude install linux-kbuild-2.6.26 linux-headers-2.6.26-1-686 linux-source-2.6.26
+#sudo aptitude -y install linux-kbuild-2.6.26 linux-headers-2.6.26-1-686 linux-source-2.6.26
 
 # Monitoring Tools
 # sysstat
