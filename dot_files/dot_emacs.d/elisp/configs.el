@@ -207,6 +207,7 @@
 (load-p "twitter3-account")
 (load-p "twitter4-account")
 (load-p "twitter5-account")
+(load-p "twitter6-account")
 
 ;; Twitter用キーバインド設定
 (load-p "twitter-key")
