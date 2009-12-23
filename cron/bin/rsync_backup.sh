@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.7 12/23,2009
+#       Add rsync function for portable media device.
 #  v1.6 1/22,2009
 #       SMART information.
 #  v1.5 12/22,2008
@@ -59,6 +61,17 @@ rsync_disk2disk() {
   test -d $RSYNC_BACKUP_HOME/$1/largefiles && test -d $RSYNC_BACKUP_HOME/$2/largefiles && rsync -av --delete $RSYNC_BACKUP_HOME/$1/largefiles $RSYNC_BACKUP_HOME/$2/
 }
 
+# rsync func_portable
+rsync_disk2disk_portable() {
+  echo -n "* Executing rsync (for portable) $1 -> $2 on "
+  date "+%Y/%m/%d %T"
+  test -d $RSYNC_BACKUP_HOME/$1/user1 && test -d $RSYNC_BACKUP_HOME/$2/user1 && rsync -av --delete $RSYNC_BACKUP_HOME/$1/user1 $RSYNC_BACKUP_HOME/$2/
+  test -d $RSYNC_BACKUP_HOME/$1/user2 && test -d $RSYNC_BACKUP_HOME/$2/user2 && rsync -av --delete $RSYNC_BACKUP_HOME/$1/user2 $RSYNC_BACKUP_HOME/$2/
+  test -d $RSYNC_BACKUP_HOME/$1/user3 && test -d $RSYNC_BACKUP_HOME/$2/user3 && rsync -av --delete $RSYNC_BACKUP_HOME/$1/user3 $RSYNC_BACKUP_HOME/$2/
+  test -d $RSYNC_BACKUP_HOME/$1/largefiles/iso && test -d $RSYNC_BACKUP_HOME/$2/largefiles/iso && rsync -av --delete $RSYNC_BACKUP_HOME/$1/largefiles/iso $RSYNC_BACKUP_HOME/$2/largefiles/
+  test -d $RSYNC_BACKUP_HOME/$1/largefiles/VMwareImages && test -d $RSYNC_BACKUP_HOME/$2/largefiles/VMwareImages && rsync -av --delete $RSYNC_BACKUP_HOME/$1/largefiles/VMwareImages $RSYNC_BACKUP_HOME/$2/largefiles/
+}
+
 # sdb -> sdc
 rsync_disk2disk mnt/sdb mnt/sdc
 
@@ -66,7 +79,7 @@ rsync_disk2disk mnt/sdb mnt/sdc
 rsync_disk2disk mnt/sdb mnt/sdd
 
 # sdb -> sde
-rsync_disk2disk mnt/sdb mnt/sde
+rsync_disk2disk_portable mnt/sdb mnt/sde
 
 # sdb -> sdf
 rsync_disk2disk mnt/sdb mnt/sdf
