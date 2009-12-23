@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 12/23,2009
+#       Add new option 6.3a.
 #  v1.2.2 12/3,2009
 #       Update to 6.3a.
 #  v1.2.1 10/23,2009
@@ -75,7 +77,7 @@ install_truecrypt_51a() {
     rm -rf truecrypt-5.1a
 }
 
-install_truecrypt_61a() {
+install_truecrypt_63a() {
     wget http://big.freett.com/railsinstall2/$1
     md5.sh $1
     setup_truecrypt_deb $1
@@ -115,14 +117,14 @@ install_truecrypt() {
       5.1a-source)
         get_truecrypt_source truecrypt-5.1a-source-code.tar.gz
         ;;
-      6.1a-ubuntu-x64)
-        install_truecrypt_61a truecrypt_6.1a-0_amd64.deb
+      6.3a-ubuntu-x64)
+        install_truecrypt_63a truecrypt_6.3a-0_amd64.deb
         ;;
-      6.1a-ubuntu-x86)
-        install_truecrypt_61a truecrypt_6.1a-0_i386.deb
+      6.3a-ubuntu-x86)
+        install_truecrypt_63a truecrypt_6.3a-0_i386.deb
         ;;
-      6.1a-source)
-        get_truecrypt_source TrueCrypt_6.1a_Source.tar.gz
+      6.3a-source)
+        get_truecrypt_source TrueCrypt_6.3a_Source.tar.gz
         ;;
       i386_deb)
         install_truecrypt_deb truecrypt_$TRUECRYPT_CURRENT_VERSION-0_i386.deb
