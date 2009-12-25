@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.7 12/26,2009
+#       Update to ruby 1.8.7-p248, 1.9.1-p376
 #  v1.6 8/27,2009
 #       Update to ruby 1.9.1-p243
 #  v1.5 4/29,2009
@@ -96,8 +98,14 @@ case $OSTYPE in
 esac
 
 case "$1" in
+  191-376)
+    install_stable 1.9.1-p376 1.9
+    ;;
   191-243)
     install_stable 1.9.1-p243 1.9
+    ;;
+  187-248)
+    install_stable 1.8.7-p248 1.8
     ;;
   187-174)
     install_stable 1.8.7-p174 1.8

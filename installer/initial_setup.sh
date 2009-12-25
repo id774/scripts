@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.21 12/26,2009
+#       Update to ruby 1.8.7-p248, 1.9.1-p376
 # v1.20 12/17,2009
 #       Add xfwm4-themes.
 # v1.19 10/5,2009
@@ -246,8 +248,8 @@ sudo aptitude -y install autoconf byacc bison autoconf-doc automake
 sudo aptitude -y install libopenssl-ruby
 sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
 #sudo aptitude -y install ruby1.9 ruby1.9-dev rubygems
-$SCRIPTS/installer/install_ruby.sh 187-174
-#$SCRIPTS/installer/install_ruby.sh 191-243
+$SCRIPTS/installer/install_ruby.sh 187-248
+#$SCRIPTS/installer/install_ruby.sh 191-376
 
 # Apache
 sudo aptitude -y install apache2
