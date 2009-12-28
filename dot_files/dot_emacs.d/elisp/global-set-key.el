@@ -41,6 +41,11 @@
 (global-set-key [left] 'windmove-left)
 (define-key global-map [up] 'windmove-up)
 (define-key global-map [down] 'windmove-down)
+(setq windmove-wrap-around t)
+(define-key global-map [(C shift n)] 'windmove-down)
+(define-key global-map [(C shift p)] 'windmove-up)
+(define-key global-map [(C shift b)] 'windmove-left)
+(define-key global-map [(C shift f)] 'windmove-right)
 
 ;; ウィンドウ分割
 (define-key global-map "\C-c\C-c\C-k" 'delete-window)
