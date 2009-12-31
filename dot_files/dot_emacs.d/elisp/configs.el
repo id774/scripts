@@ -212,6 +212,28 @@
 ;; Twitter用キーバインド設定
 (load-p "twitter-key")
 
+;; 環境固有の設定をここに
+(if window-system
+  (progn
+    (cond
+      ((eq system-type 'gnu/linux)
+      )
+      ((eq system-type 'darwin)
+        (cond
+          ((< emacs-major-version '23)
+            (progn
+              (set-frame-parameter nil 'fullscreen 'fullboth) ; 最大化
+              ))
+          ((>= emacs-major-version '23)
+            (progn
+              (tool-bar-mode 0) ; toolbar非表示
+              ))
+        )
+      )
+    )
+  )
+)
+
 ;; ローカル設定
 (load-p "local")
 

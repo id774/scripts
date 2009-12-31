@@ -44,7 +44,6 @@
                                   '(width . 180) ; 起動時のサイズ（幅）
                                   '(height . 45) ; 起動時のサイズ（縦）
                                   )))
-              (set-frame-parameter nil 'fullscreen 'fullboth) ; 最大化
               ))
           ((>= emacs-major-version '23)
             (progn
