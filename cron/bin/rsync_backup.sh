@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.8 1/4,2010
+#       Show truecrypt version.
 #  v1.7 12/23,2009
 #       Add rsync function for portable media device.
 #  v1.6 1/22,2009
@@ -24,6 +26,8 @@
 
 test -n "$1" && RSYNC_BACKUP_HOME=$1
 test -n "$1" || RSYNC_BACKUP_HOME=/home/ubuntu
+
+truecrypt -t --version
 
 # df at start
 df -T

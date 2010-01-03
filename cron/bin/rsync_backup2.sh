@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.6 1/4,2010
+#       Show truecrypt version.
 #  v1.5 1/22,2009
 #       SMART information.
 #  v1.4 12/22,2008
@@ -20,6 +22,8 @@
 
 test -n "$1" && RSYNC_BACKUP_HOME=$1
 test -n "$1" || RSYNC_BACKUP_HOME=/home/ubuntu
+
+truecrypt -t --version
 
 # df at start
 df -T
