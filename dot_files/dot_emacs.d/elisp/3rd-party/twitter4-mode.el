@@ -1856,7 +1856,7 @@ variable `twitter4-status-format'"
 		  (if (or (string= "" reply-id) (string= "" reply-name))
 		      ""
 		    (let ((in-reply-to-string
-			   (concat "in reply to " reply-name))
+			   (concat "to @" reply-name))
 			  (url
 			   (twitter4-get-status-url reply-name reply-id)))
 		      (concat " "
@@ -1865,7 +1865,7 @@ variable `twitter4-status-format'"
 	      ("R" .
 	       ,(let ((retweeted-by (attr 'original-user-screen-name)))
 		  (if retweeted-by
-		      (concat " (retweeted by " retweeted-by ")")
+		      (concat "RT @" retweeted-by)
 		    "")))
 
 	      ("S" . ,(attr 'user-name))
