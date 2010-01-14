@@ -1,20 +1,22 @@
+;;; -*- indent-tabs-mode: t; tab-width: 8 -*-
+;;;
 ;;; twitter4-mode.el --- Major mode for Twitter
 
-;; Copyright (C) 2007 Yuto Hayamizu.
+;; Copyright (C) 2007, 2009, 2010 Yuto Hayamizu.
 ;;               2008 Tsuyoshi CHO
 
 ;; Author: Y. Hayamizu <y.hayamizu@gmail.com>
 ;;         Tsuyoshi CHO <Tsuyoshi.CHO+develop@Gmail.com>
 ;;         Alberto Garcia  <agarcia@igalia.com>
 ;; Created: Sep 4, 2007
-;; Version: 0.4
+;; Version: 0.9.0
 ;; Keywords: twitter web
-;; URL: http://lambdarepos.svnrepository.com/share/trac.cgi/browser/lang/elisp/twitter4-mode
+;; URL: http://github.com/hayamiz/twittering-mode/
 
 ;; Modified by id774 <idnanashi@gmail.com> to following changes:
-;; Divide namespace of twittering-mode into 4 accounts.
+;; Divide namespace of twittering-mode into 6 accounts.
 ;; Change status format.
-;; Use global proxy settings.
+;; Use my global proxy settings.
 ;; Remove http get success message.
 ;; Add keybind for window move and quick operation.
 ;; URL: http://github.com/id774/scripts
@@ -36,25 +38,30 @@
 
 ;;; Commentary:
 
-;; twitter4-mode.el is a major mode for Twitter.
+;; twittering-mode.el is a major mode for Twitter.
 ;; You can check friends timeline, and update your status on Emacs.
 
 ;;; Feature Request:
 
 ;; URL : http://twitter.com/d00dle/statuses/577876082
-;; URL : http://twitter.com/d00dle/statuses/577879732
 ;; * Status Input from Popup buffer and C-cC-c to POST.
-;; * Mark fav(star)
 ;; URL : http://code.nanigac.com/source/view/419
 ;; * update status for region
 
 ;;; Code:
 
-(require 'cl)
+(eval-when-compile (require 'cl))
 (require 'xml)
 (require 'parse-time)
+(when (< emacs-major-version 22)
+  (add-to-list 'load-path
+	       (expand-file-name
+		"url-emacs21" (file-name-directory load-file-name)))
+  (require 'un-define)
+  (set-terminal-coding-system 'utf-8))
+(require 'url)
 
-(defconst twitter4-mode-version "0.8")
+(defconst twitter4-mode-version "0.9.0")
 
 (defun twitter4-mode-version ()
   "Display a message for twitter4-mode version."
@@ -65,22 +72,73 @@
 	(message "%s" version-string)
       version-string)))
 
+(defconst twitter4-max-number-of-tweets-on-retrieval 200
+  "The maximum number of `twitter4-number-of-tweets-on-retrieval'.")
+
+(defvar twitter4-number-of-tweets-on-retrieval 20
+  "*The number of tweets which will be retrieved in one request.
+The upper limit is `twitter4-max-number-of-tweets-on-retrieval'.")
+
+(defvar twitter4-tinyurl-service 'tinyurl
+  "The service to use. One of 'tinyurl' or 'toly'")
+
+(defvar twitter4-tinyurl-services-map
+  '((tinyurl . "http://tinyurl.com/api-create.php?url=")
+    (toly    . "http://to.ly/api.php?longurl="))
+  "Alist of tinyfy services")
+
 (defvar twitter4-mode-map (make-sparse-keymap))
 
-(defvar twitter4-timer nil "Timer object for timeline refreshing will be
-stored here. DO NOT SET VALUE MANUALLY.")
+(defvar twitter4-tweet-history nil)
+(defvar twitter4-user-history nil)
+(defvar twitter4-timeline-history nil)
+(defvar twitter4-hashtag-history nil)
 
-(defvar twitter4-idle-time 21)
+(defvar twitter4-current-hashtag nil
+  "A hash tag string currently set. You can set it by calling
+`twitter4-set-current-hashtag'")
 
-(defvar twitter4-timer-interval 96)
+(defvar twitter4-timer nil
+  "Timer object for timeline refreshing will be stored here.
+DO NOT SET VALUE MANUALLY.")
 
-(defvar twitter4-username nil)
+(defvar twitter4-timer-interval 90
+  "The interval of auto reloading. You should use 60 or more
+seconds for this variable because the number of API call is
+limited by the hour.")
 
-(defvar twitter4-password nil)
+(defvar twitter4-username nil
+  "An username of your Twitter account.")
+(defvar twitter4-username-active nil
+  "Copy of `twitter4-username' for internal use.")
 
-(defvar twitter4-last-timeline-retrieved nil)
+(defvar twitter4-password nil
+  "A password of your Twitter account. Leave it blank is the
+recommended way because writing a password in .emacs file is so
+dangerous.")
+(defvar twitter4-password-active nil
+  "Copy of `twitter4-password' for internal use.")
 
-(defvar twitter4-last-timeline-interactive nil)
+(defvar twitter4-initial-timeline-spec-string ":friends"
+  "The initial timeline spec string.")
+
+(defvar twitter4-timeline-spec-alias nil
+  "*Alist for aliases of timeline spec.
+Each element is (NAME . SPEC-STRING), where NAME and SPEC-STRING are
+strings. The alias can be referred as \"$NAME\" in timeline spec
+string.
+
+For example, if you specify
+ '((\"FRIENDS\" . \"(USER1+USER2+USER3)\")
+   (\"to_me\" . \"(:mentions+:retweets_of_me+:direct-messages)\")),
+then you can use \"$to_me\" as
+\"(:mentions+:retweets_of_me+:direct-messages)\".")
+
+(defvar twitter4-last-requested-timeline-spec-string nil
+  "The last requested timeline spec string.")
+(defvar twitter4-last-retrieved-timeline-spec-string nil
+  "The last successfully retrieved timeline spec string.")
+(defvar twitter4-list-index-retrieved nil)
 
 (defvar twitter4-new-tweets-count 0
   "Number of new tweets when `twitter4-new-tweets-hook' is run")
@@ -97,33 +155,59 @@ tweets received when this hook is run.")
 (defvar twitter4-jojo-mode nil)
 (make-variable-buffer-local 'twitter4-jojo-mode)
 
-(defvar twitter4-status-format nil)
-(setq twitter4-status-format "%i %s: %t %p [%C]")
-;; %s - screen_name
-;; %S - name
-;; %i - profile_image
-;; %d - description
-;; %l - location
-;; %L - " [location]"
-;; %r - " in reply to user"
-;; %u - url
-;; %j - user.id
-;; %p - protected?
-;; %c - created_at (raw UTC string)
-;; %C{time-format-str} - created_at (formatted with time-format-str)
-;; %@ - X seconds ago
-;; %t - text
-;; %' - truncated
-;; %f - source
-;; %# - id
+(defvar twitter4-status-format "%i %s: %t %r%R%p [%C]"
+  "Format string for rendering statuses.
+Ex. \"%i %s,  %@:\\n%FILL{  %T // from %f%L%r%R}\"
+
+Items:
+ %s - screen_name
+ %S - name
+ %i - profile_image
+ %d - description
+ %l - location
+ %L - \" [location]\"
+ %r - \" in reply to user\"
+ %R - \" retweeted by user\"
+ %u - url
+ %j - user.id
+ %p - protected?
+ %c - created_at (raw UTC string)
+ %C{time-format-str} - created_at (formatted with time-format-str)
+ %@ - X seconds ago
+ %T - raw text
+ %t - text filled as one paragraph
+ %' - truncated
+ %FILL{...} - strings filled as a paragrah.
+              You can use any other specifiers in braces.
+ %f - source
+ %# - id
+")
+
+(defvar twitter4-retweet-format "RT: %t (via @%s)"
+  "Format string for retweet.
+
+Items:
+ %s - screen_name
+ %t - text
+ %% - %
+")
+
+(defvar twitter4-use-show-minibuffer-length t
+  "*Show current length of minibuffer if this variable is non-nil.
+
+We suggest that you should set to nil to disable the showing function
+when it conflict with your input method (such as AquaSKK, etc.)")
+
+(defvar twitter4-notify-successful-http-get t)
+
+(defvar twitter4-use-ssl t
+  "Use SSL connection if this variable is non-nil.
+
+SSL connections use 'curl' command as a backend.")
 
 (defvar twitter4-buffer "*twitter4*")
 (defun twitter4-buffer ()
   (twitter4-get-or-generate-buffer twitter4-buffer))
-
-(defvar twitter4-http-buffer "*twitter4-http-buffer*")
-(defun twitter4-http-buffer ()
-  (twitter4-get-or-generate-buffer twitter4-http-buffer))
 
 (defvar twitter4-timeline-data nil)
 (defvar twitter4-timeline-last-update nil)
@@ -131,43 +215,157 @@ tweets received when this hook is run.")
 (defvar twitter4-username-face 'twitter4-username-face)
 (defvar twitter4-uri-face 'twitter4-uri-face)
 
-(defun twitter4-get-or-generate-buffer (buffer)
-  (if (bufferp buffer)
-      (if (buffer-live-p buffer)
-	  buffer
-	(generate-new-buffer (buffer-name buffer)))
-    (if (stringp buffer)
-	(or (get-buffer buffer)
-	    (generate-new-buffer buffer)))))
+(defvar twitter4-use-native-retweet nil
+  "Post retweets using native retweets if this variable is non-nil.")
 
-(defun assocref (item alist)
-  (cdr (assoc item alist)))
-(defmacro list-push (value listvar)
-  `(setq ,listvar (cons ,value ,listvar)))
+;;;
+;;; Proxy setting / functions
+;;;
 
-;;; Proxy
 (defvar twitter4-proxy-use global-proxy-use)
-(defvar twitter4-proxy-server global-proxy-server)
-(defvar twitter4-proxy-port global-proxy-port)
+(defvar twitter4-proxy-keep-alive nil)
+(defvar twitter4-proxy-server global-proxy-server
+  "*The proxy server for `twitter4-mode'.
+If nil, it is initialized on entering `twitter4-mode'.
+The port number is specified by `twitter4-proxy-port'.")
+(defvar twitter4-proxy-port global-proxy-port
+  "*The port number of a proxy server for `twitter4-mode'.
+If nil, it is initialized on entering `twitter4-mode'.
+The server is specified by `twitter4-proxy-server'.")
 (defvar twitter4-proxy-user global-proxy-user)
 (defvar twitter4-proxy-password global-proxy-password)
 
-(defun twitter4-toggle-proxy () ""
+
+(defun twitter4-find-proxy (scheme)
+  "Find proxy server and its port for `twitter4-mode' and returns
+a cons pair of them.
+SCHEME must be \"http\" or \"https\"."
+  (cond
+   ((require 'url-methods nil t)
+    (url-scheme-register-proxy scheme)
+    (let* ((proxy-service (assoc scheme url-proxy-services))
+           (proxy (if proxy-service (cdr proxy-service) nil)))
+      (if (and proxy
+               (string-match "^\\([^:]+\\):\\([0-9]+\\)$" proxy))
+          (let* ((host (match-string 1 proxy))
+                 (port (string-to-number (match-string 2 proxy))))
+            (cons host port))
+        nil)))
+   (t
+    (let* ((env-var (concat scheme "_proxy"))
+           (env-proxy (or (getenv (upcase env-var))
+                          (getenv (downcase env-var))))
+	   (default-port (if (string= "https" scheme) "443" "80")))
+      (if (and env-proxy
+	       (string-match
+		"^\\(https?://\\)?\\([^:/]+\\)\\(:\\([0-9]+\\)\\)?/?$"
+		env-proxy))
+          (let* ((host (match-string 2 env-proxy))
+		 (port-str (or (match-string 4 env-proxy) default-port))
+		 (port (string-to-number port-str)))
+            (cons host port))
+	nil)))))
+
+(defun twitter4-setup-proxy ()
+  (unless (and twitter4-proxy-server twitter4-proxy-port)
+    (let ((proxy-info (or (if twitter4-use-ssl
+			      (twitter4-find-proxy "https"))
+			  (twitter4-find-proxy "http"))))
+      (when proxy-info
+	(let ((host (car proxy-info))
+	      (port (cdr proxy-info)))
+	  (setq twitter4-proxy-server host)
+	  (setq twitter4-proxy-port port)))))
+  (when (and twitter4-proxy-use
+	     (null twitter4-proxy-server)
+	     (null twitter4-proxy-port))
+    (message "Disabling proxy due to lack of configuration.")
+    (setq twitter4-proxy-use nil)))
+
+(defun twitter4-toggle-proxy ()
   (interactive)
   (setq twitter4-proxy-use
 	(not twitter4-proxy-use))
-  (message "%s %s"
-	   "Use Proxy:"
-	   (if twitter4-proxy-use
-	       "on" "off")))
+  (twitter4-update-mode-line)
+  (message (if twitter4-proxy-use "Use Proxy:on" "Use Proxy:off")))
+
+;;;
+;;; to show image files
+;;;
+
+(defvar twitter4-icon-mode nil
+  "You MUST NOT CHANGE this variable directly.
+You should change through function'twitter4-icon-mode'")
+
+(make-variable-buffer-local 'twitter4-icon-mode)
+(defun twitter4-icon-mode (&optional arg)
+  "Toggle display of icon images on timelines.
+With a numeric argument, if the argument is positive, turn on
+icon mode; otherwise, turn off icon mode."
+  (interactive)
+  (setq twitter4-icon-mode
+	(if (null arg)
+	    (not twitter4-icon-mode)
+	  (> (prefix-numeric-value arg) 0)))
+  (twitter4-update-mode-line)
+  (twitter4-render-timeline))
+
+(defvar twitter4-image-data-table
+  (make-hash-table :test 'equal))
+
+(defvar twitter4-image-stack nil)
+(defvar twitter4-image-type-cache nil)
+(defvar twitter4-convert-program (executable-find "convert"))
+(defvar twitter4-convert-fix-size 48)
+(defvar twitter4-use-convert (not (null twitter4-convert-program))
+  "*This variable makes a sense only if `twitter4-convert-fix-size'
+is non-nil. If this variable is non-nil, icon images are converted by
+invoking \"convert\". Otherwise, cropped images are displayed.")
+
+(defun twitter4-image-type (image-url buffer)
+  "Return the type of a given image based on the URL(IMAGE-URL)
+and its contents(BUFFER)"
+  (let ((type-cache (assoc image-url twitter4-image-type-cache))
+	(case-fold-search t))
+    (if type-cache
+	(cdr type-cache)
+      (let ((image-type
+	     (cond
+	      ((image-type-from-data (buffer-string)))
+	      ((executable-find "file")
+	       (with-temp-buffer
+		 (let ((res-buf (current-buffer)))
+		   (save-excursion
+		     (set-buffer buffer)
+		     (call-process-region (point-min) (point-max)
+					  (executable-find "file")
+					  nil res-buf nil "-b" "-")))
+		 (let ((file-output (buffer-string)))
+		   (cond
+		    ((string-match "JPEG" file-output) 'jpeg)
+		    ((string-match "PNG" file-output) 'png)
+		    ((string-match "GIF" file-output) 'gif)
+		    ((string-match "bitmap" file-output) 'bitmap)
+		    (t nil)))))
+	      ((string-match "\\.jpe?g\\(\\?[^/]+\\)?$" image-url) 'jpeg)
+	      ((string-match "\\.png\\(\\?[^/]+\\)?$" image-url) 'png)
+	      ((string-match "\\.gif\\(\\?[^/]+\\)?$" image-url) 'gif)
+	      (t nil))))
+	(add-to-list 'twitter4-image-type-cache `(,image-url . ,image-type))
+	image-type))))
+
+;;;
+;;; functions
+;;;
+
+(defun twitter4-get-status-url (username id)
+  "Generate status URL."
+  (format "http://twitter.com/%s/statuses/%s" username id))
 
 (defun twitter4-user-agent-default-function ()
   "twitter4 mode default User-Agent function."
-  (concat "Emacs/"
-	  (int-to-string emacs-major-version) "." (int-to-string
-						   emacs-minor-version)
-	  " "
-	  "twitter4-mode/"
+  (format "Emacs/%d.%d twitter4-mode/%s"
+	  emacs-major-version emacs-minor-version
 	  twitter4-mode-version))
 
 (defvar twitter4-sign-simple-string nil)
@@ -175,7 +373,7 @@ tweets received when this hook is run.")
 (defun twitter4-sign-string-default-function ()
   "Tweet append sign string:simple "
   (if twitter4-sign-simple-string
-      (concat " [" twitter4-sign-simple-string "]")
+      (format " [%s]" twitter4-sign-simple-string)
     ""))
 
 (defvar twitter4-user-agent-function 'twitter4-user-agent-default-function)
@@ -189,88 +387,409 @@ tweets received when this hook is run.")
   "Return Tweet sign string."
   (funcall twitter4-sign-string-function))
 
-;;; to show image files
+;;;
+;;; Utility functions
+;;;
 
-(defvar twitter4-wget-buffer "*twitter4-wget-buffer*")
-(defun twitter4-wget-buffer ()
-  (twitter4-get-or-generate-buffer twitter4-wget-buffer))
+(defun twitter4-get-or-generate-buffer (buffer)
+  (if (bufferp buffer)
+      (if (buffer-live-p buffer)
+	  buffer
+	(generate-new-buffer (buffer-name buffer)))
+    (if (stringp buffer)
+	(or (get-buffer buffer)
+	    (generate-new-buffer buffer)))))
 
-(defvar twitter4-tmp-dir
-  (expand-file-name (concat "twmode-images-" (user-login-name))
-		    temporary-file-directory))
+(defun assocref (item alist)
+  (cdr (assoc item alist)))
 
-(defvar twitter4-icon-mode nil "You MUST NOT CHANGE this variable
-directory. You should change through function'twitter4-icon-mode'")
+(defmacro list-push (value listvar)
+  `(setq ,listvar (cons ,value ,listvar)))
 
-(make-variable-buffer-local 'twitter4-icon-mode)
-(defun twitter4-icon-mode (&optional arg)
-  (interactive)
-  (setq twitter4-icon-mode
-	(if twitter4-icon-mode
-	    (if (null arg)
-		nil
-	      (> (prefix-numeric-value arg) 0))
-	  (when (or (null arg)
-		    (and arg (> (prefix-numeric-value arg) 0)))
-	    (when (file-writable-p twitter4-tmp-dir)
-	      (progn
-		(if (not (file-directory-p twitter4-tmp-dir))
-		    (make-directory twitter4-tmp-dir))
-		t)))))
-  (twitter4-render-timeline))
+(defmacro case-string (str &rest clauses)
+  `(cond
+    ,@(mapcar
+       (lambda (clause)
+	 (let ((keylist (car clause))
+	       (body (cdr clause)))
+	   `(,(if (listp keylist)
+		  `(or ,@(mapcar (lambda (key) `(string-equal ,str ,key))
+				 keylist))
+		't)
+	     ,@body)))
+       clauses)))
 
-(defun twitter4-scroll-mode (&optional arg)
-  (interactive)
-  (setq twitter4-scroll-mode
-	(if (null arg)
-	    (not twitter4-scroll-mode)
-	  (> (prefix-numeric-value arg) 0))))
-
-(defun twitter4-jojo-mode (&optional arg)
-  (interactive)
-  (setq twitter4-jojo-mode
-	(if (null arg)
-	    (not twitter4-jojo-mode)
-	  (> (prefix-numeric-value arg) 0))))
-
-(defvar twitter4-image-stack nil)
-
-(defun twitter4-image-type (file-name)
-  (cond
-   ((string-match "\\.jpe?g" file-name) 'jpeg)
-   ((string-match "\\.png" file-name) 'png)
-   ((string-match "\\.gif" file-name) 'gif)
-   (t nil)))
+;; If you use Emacs21, decode-char 'ucs will fail unless Mule-UCS is loaded.
+;; TODO: Show error messages if Emacs 21 without Mule-UCS
+(defun twitter4-ucs-to-char (num)
+  (if (functionp 'ucs-to-char)
+      (ucs-to-char num)
+    (decode-char 'ucs num)))
 
 (defun twitter4-setftime (fmt string uni)
   (format-time-string fmt ; like "%Y-%m-%d %H:%M:%S"
 		      (apply 'encode-time (parse-time-string string))
 		      uni))
+
 (defun twitter4-local-strftime (fmt string)
   (twitter4-setftime fmt string nil))
 (defun twitter4-global-strftime (fmt string)
   (twitter4-setftime fmt string t))
 
+;;;
+;;; Utility functions for portability
+;;;
+
+(defun twitter4-remove-duplicates (list)
+  "Return a copy of LIST with all duplicate elements removed.
+This is non-destructive version of `delete-dups' which is not
+defined in Emacs21."
+  (if (< emacs-major-version 22)
+      (let ((rest list)
+            (result nil))
+        (while rest
+          (unless (member (car rest) result)
+            (setq result (cons (car rest) result)))
+          (setq rest (cdr rest)))
+        (nreverse result))
+    (delete-dups (copy-sequence list))))
+
+(defun twitter4-completing-read (prompt collection &optional predicate require-match initial-input hist def inherit-input-method)
+"Read a string in the minibuffer, with completion.
+This is a modified version of `completing-read' and accepts candidates
+as a list of a string on Emacs21."
+  ;; completing-read() of Emacs21 does not accepts candidates as
+  ;; a list. Candidates must be given as an alist.
+  (let* ((collection (twitter4-remove-duplicates collection))
+         (collection
+          (if (and (< emacs-major-version 22)
+                   (listp collection)
+                   (stringp (car collection)))
+              (mapcar (lambda (x) (cons x nil)) collection)
+            collection)))
+    (completing-read prompt collection predicate require-match
+                     initial-input hist def inherit-input-method)))
+
+;;;
+;;; Timeline spec functions
+;;;
+
+;;; Timeline spec as S-expression
+;;; - (user USER): timeline of the user whose name is USER. USER is a string.
+;;; - (list USER LIST):
+;;;     the list LIST of the user USER. LIST and USER are strings.
+;;;
+;;; - (direct-messages): received direct messages.
+;;; - (direct-messages-sent): sent direct messages.
+;;; - (friends): friends timeline.
+;;; - (home): home timeline.
+;;; - (mentions): mentions timeline.
+;;;     mentions (status containing @username) for the authenticating user.
+;;; - (public): public timeline.
+;;; - (replies): replies.
+;;; - (retweeted_by_me): retweets posted by the authenticating user.
+;;; - (retweeted_to_me): retweets posted by the authenticating user's friends.
+;;; - (retweets_of_me):
+;;;     tweets of the authenticated user that have been retweeted by others.
+;;;
+;;; - (search STRING): the result of searching with query STRING.
+;;; - (merge SPEC1 SPEC2 ...): result of merging timelines SPEC1 SPEC2 ...
+;;; - (filter REGEXP SPEC): timeline filtered with REGEXP.
+;;;
+
+;;; Timeline spec string
+;;;
+;;; SPEC ::= PRIMARY | COMPOSITE
+;;; PRIMARY ::= USER | LIST | DIRECT-MESSSAGES | DIRECT-MESSSAGES-SENT
+;;;             | FRIENDS | HOME | MENTIONS | PUBLIC | REPLIES
+;;;             | RETWEETED_BY_ME | RETWEETED_TO_ME | RETWEETS_OF_ME
+;;; COMPOSITE ::= MERGE | FILTER
+;;;
+;;; USER ::= /[a-zA-Z0-9_-]+/
+;;; LIST ::= USER "/" LISTNAME
+;;; LISTNAME ::= /[a-zA-Z0-9_-]+/
+;;; DIRECT-MESSSAGES ::= ":direct-messages"
+;;; DIRECT-MESSSAGES-SENT ::= ":direct-messages-sent"
+;;; FRIENDS ::= ":friends"
+;;; HOME ::= ":home" | "~"
+;;; MENTIONS ::= ":mentions"
+;;; PUBLIC ::= ":public"
+;;; REPLIES ::= ":replies" | "@"
+;;; RETWEETED_BY_ME ::= ":retweeted_by_me"
+;;; RETWEETED_TO_ME ::= ":retweeted_to_me"
+;;; RETWEETS_OF_ME ::= ":retweets_of_me"
+;;;
+;;; MERGE ::= "(" MERGED_SPECS ")"
+;;; MERGED_SPECS ::= SPEC | SPEC "+" MERGED_SPECS
+;;; FILTER ::= ":filter/" REGEXP "/" SPEC
+;;;
+
+(defun twitter4-timeline-spec-to-string (timeline-spec &optional shorten)
+  "Convert TIMELINE-SPEC into a string.
+If SHORTEN is non-nil, the abbreviated expression will be used."
+  (let ((type (car timeline-spec))
+	(value (cdr timeline-spec)))
+    (cond
+     ;; user
+     ((eq type 'user) (car value))
+     ;; list
+     ((eq type 'list) (concat (car value) "/" (cadr value)))
+     ;; simple
+     ((eq type 'direct-messages) ":direct-messages")
+     ((eq type 'direct-messages-sent) ":direct-messages-sent")
+     ((eq type 'friends) ":friends")
+     ((eq type 'home) (if shorten "~" ":home"))
+     ((eq type 'mentions) ":mentions")
+     ((eq type 'public) ":public")
+     ((eq type 'replies) (if shorten "@" ":replies"))
+     ((eq type 'retweeted_by_me) ":retweeted_by_me")
+     ((eq type 'retweeted_to_me) ":retweeted_to_me")
+     ((eq type 'retweets_of_me) ":retweets_of_me")
+     ;; composite
+     ((eq type 'filter)
+      (let ((regexp (car value))
+	    (spec (cadr value)))
+	(concat ":filter/"
+		(replace-regexp-in-string "/" "\\/" regexp nil t)
+		"/"
+		(twitter4-timeline-spec-to-string spec))))
+     ((eq type 'merge)
+      (concat "("
+	      (mapconcat 'twitter4-timeline-spec-to-string value "+" )
+	      ")"))
+     (t
+      nil))))
+
+(defun twitter4-extract-timeline-spec (str &optional unresolved-aliases)
+  "Extract one timeline spec from STR.
+Return cons of the spec and the rest string."
+  (cond
+   ((string-match "^\\([a-zA-Z0-9_-]+\\)/\\([a-zA-Z0-9_-]+\\)" str)
+    (let ((user (match-string 1 str))
+	  (listname (match-string 2 str))
+	  (rest (substring str (match-end 0))))
+      `((list ,user ,listname) . ,rest)))
+   ((string-match "^\\([a-zA-Z0-9_-]+\\)" str)
+    (let ((user (match-string 1 str))
+	  (rest (substring str (match-end 0))))
+      `((user ,user) . ,rest)))
+   ((string-match "^~" str)
+    `((home) . ,(substring str (match-end 0))))
+   ((string-match "^@" str)
+    `((replies) . ,(substring str (match-end 0))))
+   ((string-match "^:\\([a-z_-]+\\)" str)
+    (let ((type (match-string 1 str))
+	  (following (substring str (match-end 0)))
+	  (alist '(("direct-messages" . direct-messages)
+		   ("direct-messages-sent" . direct-messages-sent)
+		   ("friends" . friends)
+		   ("home" . home)
+		   ("mentions" . mentions)
+		   ("public" . public)
+		   ("replies" . replies)
+		   ("retweeted_by_me" . retweeted_by_me)
+		   ("retweeted_to_me" . retweeted_to_me)
+		   ("retweets_of_me" . retweets_of_me))))
+      (cond
+       ((assoc type alist)
+	(let ((first-spec (list (cdr (assoc type alist)))))
+	  (cons first-spec following)))
+       ((string= type "filter")
+	(if (string-match "^:filter/\\(.*?[^\\]\\)??/" str)
+	    (let* ((escaped-regexp (or (match-string 1 str) ""))
+		   (regexp
+		    (replace-regexp-in-string "\\\\/" "/"
+					      escaped-regexp nil t))
+		   (following (substring str (match-end 0)))
+		   (pair (twitter4-extract-timeline-spec
+			  following unresolved-aliases))
+		   (spec (car pair))
+		   (rest (cdr pair)))
+	      `((filter ,regexp ,spec) . ,rest))
+	  (error "\"%s\" has no valid regexp" str)
+	  nil))
+       (t
+	nil))))
+   ((string-match "^\\$\\([a-zA-Z0-9_-]+\\)" str)
+    (let* ((name (match-string 1 str))
+	   (rest (substring str (match-end 1)))
+	   (value (cdr-safe (assoc name twitter4-timeline-spec-alias))))
+      (if (member name unresolved-aliases)
+	  (error "Alias \"%s\" includes a recursive reference" name)
+	(if value
+	    (twitter4-extract-timeline-spec
+	     (concat value rest)
+	     (cons name unresolved-aliases))
+	  (error "Alias \"%s\" is undefined" name)))))
+   ((string-match "^(" str)
+    (let* ((rest (concat "+" (substring str (match-end 0))))
+	   (result '()))
+      (while (and rest (string-match "^\\+" rest))
+	(let* ((spec-string (substring rest (match-end 0)))
+	       (pair (twitter4-extract-timeline-spec
+		      spec-string unresolved-aliases))
+	       (spec (car pair))
+	       (next-rest (cdr pair)))
+	  (setq result (cons spec result))
+	  (setq rest next-rest)))
+      (if (and rest (string-match "^)" rest))
+	  (let ((spec-list
+		 (apply 'append
+			(mapcar (lambda (x) (if (eq 'merge (car x))
+						(cdr x)
+					      (list x)))
+				(reverse result)))))
+	    (if (= 1 (length spec-list))
+		`(,(car spec-list) . ,(substring rest 1))
+	      `((merge ,@spec-list) . ,(substring rest 1))))
+	(if rest
+	    (error "\"%s\" lacks a closing parenthesis" str))
+	nil)))
+   (t
+    nil)
+   ))
+
+(defun twitter4-string-to-timeline-spec (spec-str)
+  "Convert STR into a timeline spec.
+Return nil if STR is invalid as a timeline spec."
+  (let ((result-pair (twitter4-extract-timeline-spec spec-str)))
+    (if (and result-pair (string= "" (cdr result-pair)))
+	(car result-pair)
+      nil)))
+
+(defun twitter4-timeline-spec-primary-p (spec)
+  "Return non-nil if SPEC is a primary timeline spec.
+`primary' means that the spec is not a composite timeline spec such as
+`filter' and `merge'."
+  (let ((primary-spec-types
+	 '(user list
+		direct-messages direct-messages-sent
+		friends home mentions public replies
+		retweeted_by_me retweeted_to_me retweets_of_me))
+	(type (car spec)))
+    (memq type primary-spec-types)))
+
+(defun twitter4-equal-string-as-timeline (spec-str1 spec-str2)
+  "Return non-nil if SPEC-STR1 equals SPEC-STR2 as a timeline spec."
+  (if (and (stringp spec-str1) (stringp spec-str2))
+      (let ((spec1 (twitter4-string-to-timeline-spec spec-str1))
+	    (spec2 (twitter4-string-to-timeline-spec spec-str2)))
+	(equal spec1 spec2))
+    nil))
+
+(defun twitter4-timeline-spec-to-host-method (spec)
+  (if (twitter4-timeline-spec-primary-p spec)
+      (let ((type (car spec))
+	    (value (cdr spec)))
+	(cond
+	 ((eq type 'user)
+	  (let ((username (car value)))
+	    `("twitter.com" ,(concat "statuses/user_timeline/" username))))
+	 ((eq type 'list)
+	  (let ((username (car value))
+		(list-name (cadr value)))
+	    `("api.twitter.com"
+	      ,(concat "1/" username "/lists/" list-name "/statuses" ))))
+	 ((or (eq type 'direct-messages)
+	      (eq type 'direct-messages-sent))
+	  (error "%s has not been supported yet" type))
+	 ((eq type 'friends)
+	  '("twitter.com" "statuses/friends_timeline"))
+	 ((eq type 'home)
+	  '("api.twitter.com" "1/statuses/home_timeline"))
+	 ((eq type 'mentions)
+	  '("twitter.com" "statuses/mentions"))
+	 ((eq type 'public)
+	  '("twitter.com" "statuses/public_timeline"))
+	 ((eq type 'replies)
+	  '("twitter.com" "statuses/replies"))
+	 ((eq type 'retweeted_by_me)
+	  '("api.twitter.com" "1/statuses/retweeted_by_me"))
+	 ((eq type 'retweeted_to_me)
+	  '("api.twitter.com" "1/statuses/retweeted_to_me"))
+	 ((eq type 'retweets_of_me)
+	  '("api.twitter.com" "1/statuses/retweets_of_me"))
+	 (t
+	  (error "Invalid timeline spec")
+	  nil)))
+    nil))
+
+(defun twitter4-host-method-to-timeline-spec (host method)
+  (cond
+   ((or (not (stringp host)) (not (stringp method))) nil)
+   ((string= host "twitter.com")
+    (cond
+     ((string= method "statuses/friends_timeline") '(friends))
+     ((string= method "statuses/mentions") '(mentions))
+     ((string= method "statuses/replies") '(replies))
+     ((string= method "statuses/public_timeline") '(public_timeline))
+     ((string= method "statuses/user_timeline")
+      `(user ,(twitter4-get-username)))
+     ((string-match "^statuses/user_timeline/\\(.+\\)$" method)
+      `(user ,(match-string-no-properties 1 method)))
+     (t nil)))
+   ((string= host "api.twitter.com")
+    (cond
+     ((string= method "1/statuses/home_timeline") '(home))
+     ((string= method "1/statuses/retweeted_by_me") '(retweeted_by_me))
+     ((string= method "1/statuses/retweeted_to_me") '(retweeted_to_me))
+     ((string= method "1/statuses/retweets_of_me") '(retweets_of_me))
+     ((string-match "^1/\\([^/]+\\)/lists/\\([^/]+\\)/statuses" method)
+      (let ((username (match-string-no-properties 1 method))
+	    (listname (match-string-no-properties 2 method)))
+	`(list ,username ,listname)))
+     (t nil)))
+   (t nil)))
+
+(defun twitter4-add-timeline-history (&optional timeline-spec)
+  (let* ((spec-string
+	  (if timeline-spec
+	      (twitter4-timeline-spec-to-string timeline-spec t)
+	    twitter4-last-retrieved-timeline-spec-string)))
+    (when spec-string
+      (when (or (null twitter4-timeline-history)
+		(not (string= spec-string (car twitter4-timeline-history))))
+	(if (functionp 'add-to-history)
+	    (add-to-history 'twitter4-timeline-history spec-string)
+	  (setq twitter4-timeline-history
+		(cons spec-string twitter4-timeline-history)))))))
+
+;;;
+;;; Debug mode
+;;;
 
 (defvar twitter4-debug-mode nil)
 (defvar twitter4-debug-buffer "*debug*")
+
 (defun twitter4-debug-buffer ()
   (twitter4-get-or-generate-buffer twitter4-debug-buffer))
+
 (defmacro debug-print (obj)
   (let ((obsym (gensym)))
     `(let ((,obsym ,obj))
        (if twitter4-debug-mode
 	   (with-current-buffer (twitter4-debug-buffer)
+	     (insert "[debug] ")
 	     (insert (prin1-to-string ,obsym))
 	     (newline)
 	     ,obsym)
 	 ,obsym))))
+
+(defun debug-printf (fmt &rest args)
+  (when twitter4-debug-mode
+    (with-current-buffer (twitter4-debug-buffer)
+      (insert (concat "[debug] " (apply 'format fmt args)))
+      (newline))))
 
 (defun twitter4-debug-mode ()
   (interactive)
   (setq twitter4-debug-mode
 	(not twitter4-debug-mode))
   (message (if twitter4-debug-mode "debug mode:on" "debug mode:off")))
+
+;;;
+;;; keymap
+;;;
 
 (if twitter4-mode-map
     (let ((km twitter4-mode-map))
@@ -284,14 +803,17 @@ directory. You should change through function'twitter4-icon-mode'")
       (define-key km "\C-c\C-s" 'twitter4-update-status-interactive)
       (define-key km "w" 'twitter4-update-status-interactive)
       (define-key km "\C-c\C-d" 'twitter4-erase-old-statuses)
+      (define-key km "\C-c\C-m" 'twitter4-retweet)
+      (define-key km "\C-c\C-h" 'twitter4-set-current-hashtag)
       (define-key km "\C-m" 'twitter4-enter)
+      (define-key km "\C-c\C-l" 'twitter4-update-lambda)
       (define-key km [mouse-1] 'twitter4-click)
       (define-key km "\C-c\C-v" 'twitter4-view-user-page)
-      (define-key km "\C-c\C-m" 'twitter4-retweet)
-      (define-key km "m" 'twitter4-retweet)
-      (define-key km "\C-c\C-n" 'twitter4-naruhodius)
       (define-key km "g" 'twitter4-current-timeline)
-      (define-key km "c" 'twitter4-current-timeline-interactive)
+      (define-key km "d" 'twitter4-direct-message)
+      (define-key km "v" 'twitter4-other-user-timeline)
+      (define-key km "V" 'twitter4-visit-timeline)
+      (define-key km "L" 'twitter4-other-user-list-interactive)
       ;; (define-key km "j" 'next-line)
       ;; (define-key km "k" 'previous-line)
       (define-key km "j" 'twitter4-goto-next-status)
@@ -310,14 +832,40 @@ directory. You should change through function'twitter4-icon-mode'")
       ;; (define-key km "p" 'twitter4-goto-previous-status-of-user)
       (define-key km "n" 'windmove-down)
       (define-key km "p" 'windmove-up)
+      (define-key km "\C-i" 'twitter4-goto-next-thing)
+      (define-key km "\M-\C-i" 'twitter4-goto-previous-thing)
+      (define-key km [backtab] 'twitter4-goto-previous-thing)
       (define-key km [backspace] 'backward-char)
       (define-key km "G" 'end-of-buffer)
       (define-key km "H" 'beginning-of-buffer)
-      (define-key km "\C-c\ i" 'twitter4-icon-mode)
+      (define-key km "i" 'twitter4-icon-mode)
       (define-key km "s" 'twitter4-scroll-mode)
       (define-key km "t" 'twitter4-toggle-proxy)
       (define-key km "\C-c\C-p" 'twitter4-toggle-proxy)
+      (define-key km "\C-c\C-q" 'twitter4-suspend)
       nil))
+
+(defun twitter4-keybind-message ()
+  (let ((important-commands
+	 '(("Timeline" . twitter4-friends-timeline)
+	   ("Replies" . twitter4-replies-timeline)
+	   ("Update status" . twitter4-update-status-interactive)
+	   ("Next" . twitter4-goto-next-status)
+	   ("Prev" . twitter4-goto-previous-status))))
+    (mapconcat (lambda (command-spec)
+		 (let ((descr (car command-spec))
+		       (command (cdr command-spec)))
+		   (format "%s: %s" descr (key-description
+					   (where-is-internal
+					    command
+					    overriding-local-map t)))))
+	       important-commands ", ")))
+
+;; (run-with-idle-timer
+;;  0.1 t
+;;  '(lambda ()
+;;     (when (equal (buffer-name (current-buffer)) twitter4-buffer)
+;;       (message (twitter4-keybind-message)))))
 
 (defvar twitter4-mode-syntax-table nil "")
 
@@ -339,425 +887,508 @@ directory. You should change through function'twitter4-icon-mode'")
   (defface twitter4-uri-face
     `((t nil)) "" :group 'faces)
   (set-face-attribute 'twitter4-uri-face nil :underline t)
-  (add-to-list 'minor-mode-alist '(twitter4-icon-mode " tw-icon"))
-  (add-to-list 'minor-mode-alist '(twitter4-scroll-mode " tw-scroll"))
-  (add-to-list 'minor-mode-alist '(twitter4-jojo-mode " tw-jojo"))
+;;   (add-to-list 'minor-mode-alist '(twitter4-icon-mode " tw-icon"))
+;;   (add-to-list 'minor-mode-alist '(twitter4-scroll-mode " tw-scroll"))
+;;   (add-to-list 'minor-mode-alist '(twitter4-jojo-mode " tw-jojo"))
+  (setq twitter4-username-active twitter4-username)
+  (setq twitter4-password-active twitter4-password)
+  (when twitter4-use-convert
+    (if (null twitter4-convert-program)
+	(setq twitter4-use-convert nil)
+      (with-temp-buffer
+	(call-process twitter4-convert-program nil (current-buffer) nil
+		      "-version")
+	(goto-char (point-min))
+	(if (null (search-forward-regexp "\\(Image\\|Graphics\\)Magick" nil t))
+	    (setq twitter4-use-convert nil)))))
+  (twitter4-setup-proxy)
   )
 
-(defmacro case-string (str &rest clauses)
-  `(cond
-    ,@(mapcar
-       (lambda (clause)
-	 (let ((keylist (car clause))
-	       (body (cdr clause)))
-	   `(,(if (listp keylist)
-		  `(or ,@(mapcar (lambda (key) `(string-equal ,str ,key))
-				 keylist))
-		't)
-	     ,@body)))
-       clauses)))
-
-;; If you use Emacs21, decode-char 'ucs will fail unless Mule-UCS is loaded.
-;; TODO: Show error messages if Emacs 21 without Mule-UCS
-(defmacro twitter4-ucs-to-char (num)
-  (if (functionp 'ucs-to-char)
-      `(ucs-to-char ,num)
-    `(decode-char 'ucs ,num)))
-
-(defvar twitter4-mode-string "twitter4 mode")
+(defvar twitter4-mode-string "twitter4-mode")
 
 (defvar twitter4-mode-hook nil
   "twitter4-mode hook.")
 
-(defun twitter4-mode ()
-  "Major mode for Twitter
-\\{twitter4-mode-map}"
-  (interactive)
-  (switch-to-buffer (twitter4-buffer))
-  (kill-all-local-variables)
-  (twitter4-mode-init-variables)
-  (use-local-map twitter4-mode-map)
-  (setq major-mode 'twitter4-mode)
-  (setq mode-name twitter4-mode-string)
-  (set-syntax-table twitter4-mode-syntax-table)
-  (run-hooks 'twitter4-mode-hook)
-  (font-lock-mode -1)
-  (twitter4-start))
+(defun twitter4-update-mode-line ()
+  "Update mode line"
+  (let ((enabled-options nil)
+	(spec-string twitter4-last-retrieved-timeline-spec-string))
+    (when twitter4-jojo-mode
+      (push "jojo" enabled-options))
+    (when twitter4-icon-mode
+      (push "icon" enabled-options))
+    (when twitter4-scroll-mode
+      (push "scroll" enabled-options))
+    (when twitter4-proxy-use
+      (push "proxy" enabled-options))
+    (when twitter4-use-ssl
+      (push "ssl" enabled-options))
+    (setq mode-name
+	  (concat twitter4-mode-string
+		  (if spec-string
+		      (concat " " spec-string)
+		    "")
+		  (if enabled-options
+		      (concat "["
+			      (mapconcat 'identity enabled-options ",")
+			      "]")
+		    ""))))
+  (force-mode-line-update)
+  )
 
 ;;;
 ;;; Basic HTTP functions
 ;;;
 
-(defun twitter4-http-get (method-class method &optional parameters sentinel)
-  (if (null sentinel) (setq sentinel 'twitter4-http-get-default-sentinel))
+(defun twitter4-find-curl-program ()
+  "Returns an appropriate 'curl' program pathname or nil if not found."
+  (or (executable-find "curl")
+      (let ((windows-p (find system-type '(windows-nt cygwin)))
+	    (curl.exe
+	     (expand-file-name
+	      "curl.exe"
+	      (expand-file-name
+	       "win-curl"
+	       (file-name-directory (symbol-file 'twit))))))
+	(and windows-p
+	     (file-exists-p curl.exe) curl.exe))))
 
-  ;; clear the buffer
-  (save-excursion
-    (set-buffer (twitter4-http-buffer))
-    (erase-buffer))
+(defun twitter4-start-http-session (method headers host port path parameters &optional noninteractive sentinel)
+  "
+METHOD    : http method
+HEADERS   : http request heades in assoc list
+HOST      : remote host name
+PORT      : destination port number. nil means default port(http: 80, https: 443)
+PATH      : http request path
+PARAMETERS: http request parameters (query string)
+"
+  (block nil
+    (unless (find method '("POST" "GET") :test 'equal)
+      (error "Unknown HTTP method: %s" method))
+    (unless (string-match "^/" path)
+      (error "Invalid HTTP path: %s" path))
 
-  (let (proc server port
-	     (proxy-user twitter4-proxy-user)
-	     (proxy-password twitter4-proxy-password))
-    (condition-case nil
-	(progn
-	  (if (and twitter4-proxy-use twitter4-proxy-server)
-	      (setq server twitter4-proxy-server
-		    port (if (integerp twitter4-proxy-port)
-			     (int-to-string twitter4-proxy-port)
-			   twitter4-proxy-port))
-	    (setq server "twitter.com"
-		  port "80"))
-	  (setq proc
-		(open-network-stream
-		 "network-connection-process" (twitter4-http-buffer)
-		 server (string-to-number port)))
-	  (set-process-sentinel proc sentinel)
-	  (process-send-string
-	   proc
-	   (let ((nl "\r\n")
-		 request)
-	     (setq request
-		   (concat "GET http://twitter.com/" method-class "/" method
-			   ".xml"
-			   (when parameters
-			     (concat "?"
-				     (mapconcat
-				      (lambda (param-pair)
-					(format "%s=%s"
-						(twitter4-percent-encode (car
-									    param-pair))
-						(twitter4-percent-encode (cdr
-									    param-pair))))
-				      parameters
-				      "&")))
-			   " HTTP/1.1" nl
-			   "Host: twitter.com" nl
-			   "User-Agent: " (twitter4-user-agent) nl
-			   "Authorization: Basic "
-			   (base64-encode-string
-			    (concat twitter4-username ":"
-				    (twitter4-get-password)))
-			   nl
-			   "Accept: text/xml"
-			   ",application/xml"
-			   ",application/xhtml+xml"
-			   ",application/html;q=0.9"
-			   ",text/plain;q=0.8"
-			   ",image/png,*/*;q=0.5" nl
-			   "Accept-Charset: utf-8;q=0.7,*;q=0.7" nl
-			   (when twitter4-proxy-use
-			     "Proxy-Connection: Keep-Alive" nl
-			     (when (and proxy-user proxy-password)
-			       (concat
-				"Proxy-Authorization: Basic "
-				(base64-encode-string
-				 (concat proxy-user ":"
-					 proxy-password))
-				nl)))
-			   nl))
-	     (debug-print (concat "GET Request\n" request))
-	     request)))
-      (error
-       (message "Failure: HTTP GET") nil))))
+    (unless (assoc "Host" headers)
+      (setq headers (cons `("Host" . ,host) headers)))
+    (unless (assoc "User-Agent" headers)
+      (setq headers (cons `("User-Agent" . ,(twitter4-user-agent))
+			  headers)))
 
-(defun twitter4-http-get-default-sentinel (proc stat &optional suc-msg)
-  (let ((header (twitter4-get-response-header))
-	(body (twitter4-get-response-body))
-	(status nil)
-	)
-    (if (string-match "HTTP/1\.[01] \\([a-z0-9 ]+\\)\r?\n" header)
-	(progn
-	  (setq status (match-string-no-properties 1 header))
-	  (case-string
-	   status
-	   (("200 OK")
-	    (setq twitter4-new-tweets-count
-		  (count t (mapcar
-			    #'twitter4-cache-status-datum
-			    (reverse (twitter4-xmltree-to-status
-				      body)))))
-	    (if (and (> twitter4-new-tweets-count 0)
-		     (not twitter4-last-timeline-interactive))
-		(run-hooks 'twitter4-new-tweets-hook))
-	    (setq twitter4-last-timeline-interactive t)
-	    (twitter4-render-timeline))
-	   (t (message status))))
-      (message "Failure: Bad http response.")))
+    (let ((curl-program nil))
+      (when twitter4-use-ssl
+	(cond 
+	 ((not (setq curl-program (twitter4-find-curl-program)))
+	  (if (yes-or-no-p "HTTPS(SSL) is not available because 'cURL' does not exist. Use HTTP instead? ")
+	      (progn (setq twitter4-use-ssl nil)
+		     (twitter4-update-mode-line))
+	    (message "Request canceled")
+	    (return)))
+	 ((not (with-temp-buffer
+		 (call-process curl-program
+			       nil (current-buffer) nil
+			       "--version")
+		 (goto-char (point-min))
+		 (search-forward-regexp
+		  "^Protocols: .*https" nil t)))
+	  (if (yes-or-no-p "HTTPS(SSL) is not available because your 'cURL' cannot use HTTPS. Use HTTP instead? ")
+	      (progn (setq twitter4-use-ssl nil)
+		     (twitter4-update-mode-line))
+	    (message "Request canceled")
+	    (return)))))
+
+      (if twitter4-use-ssl
+	  (twitter4-start-http-ssl-session
+	   curl-program method headers host port path parameters
+	   noninteractive sentinel)
+	(twitter4-start-http-non-ssl-session
+	 method headers host port path parameters
+	 noninteractive sentinel)))))
+
+;;; FIXME: file name is hard-coded. More robust way is desired.
+(defvar twitter4-cert-file nil)
+(defun twitter4-ensure-ca-cert ()
+  "Create a CA certificate file if it does not exist, and return
+its file name."
+  (if twitter4-cert-file
+      twitter4-cert-file
+    (let ((file-name (make-temp-file "twmode-cacert")))
+      (with-temp-file file-name
+	(insert "-----BEGIN CERTIFICATE-----
+MIICkDCCAfmgAwIBAgIBATANBgkqhkiG9w0BAQQFADBaMQswCQYDVQQGEwJVUzEc
+MBoGA1UEChMTRXF1aWZheCBTZWN1cmUgSW5jLjEtMCsGA1UEAxMkRXF1aWZheCBT
+ZWN1cmUgR2xvYmFsIGVCdXNpbmVzcyBDQS0xMB4XDTk5MDYyMTA0MDAwMFoXDTIw
+MDYyMTA0MDAwMFowWjELMAkGA1UEBhMCVVMxHDAaBgNVBAoTE0VxdWlmYXggU2Vj
+dXJlIEluYy4xLTArBgNVBAMTJEVxdWlmYXggU2VjdXJlIEdsb2JhbCBlQnVzaW5l
+c3MgQ0EtMTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAuucXkAJlsTRVPEnC
+UdXfp9E3j9HngXNBUmCbnaEXJnitx7HoJpQytd4zjTov2/KaelpzmKNc6fuKcxtc
+58O/gGzNqfTWK8D3+ZmqY6KxRwIP1ORROhI8bIpaVIRw28HFkM9yRcuoWcDNM50/
+o5brhTMhHD4ePmBudpxnhcXIw2ECAwEAAaNmMGQwEQYJYIZIAYb4QgEBBAQDAgAH
+MA8GA1UdEwEB/wQFMAMBAf8wHwYDVR0jBBgwFoAUvqigdHJQa0S3ySPY+6j/s1dr
+aGwwHQYDVR0OBBYEFL6ooHRyUGtEt8kj2Puo/7NXa2hsMA0GCSqGSIb3DQEBBAUA
+A4GBADDiAVGqx+pf2rnQZQ8w1j7aDRRJbpGTJxQx78T3LUX47Me/okENI7SS+RkA
+Z70Br83gcfxaz2TE4JaY0KNA4gGK7ycH8WUBikQtBmV1UsCGECAhX2xrD2yuCRyv
+8qIYNMR1pHMc8Y3c7635s3a0kr/clRAevsvIO1qEYBlWlKlV
+-----END CERTIFICATE-----"))
+      (setq twitter4-cert-file file-name))))
+
+(defun twitter4-start-http-ssl-session (curl-program method headers host port path parameters &optional noninteractive sentinel)
+  ;; TODO: use curl
+  (let* ((request (twitter4-make-http-request
+		   method headers host port path parameters))
+	 (headers (if (assoc "Expect" headers)
+		      headers
+		    (cons '("Expect" . "") headers)))
+	 (curl-args
+	  `("--include" "--silent"
+	    ,@(mapcan (lambda (pair)
+			(list "-H"
+			      (format "%s: %s"
+				      (car pair) (cdr pair))))
+		      headers)
+	    "--cacert"
+	    ,(twitter4-ensure-ca-cert))))
+    (when twitter4-proxy-use
+      (nconc curl-args `("-x" ,(format "%s:%s" twitter4-proxy-server
+					 twitter4-proxy-port)))
+      (when (and twitter4-proxy-user
+		 twitter4-proxy-password)
+	(nconc curl-args `("-U" ,(format "%s:%s" twitter4-proxy-user
+					   twitter4-proxy-password)))))
+
+    (flet ((request (key) (funcall request key)))
+      (nconc curl-args `(,(if parameters
+			      (concat (request :uri) "?"
+				      (request :query-string))
+			    (request :uri))))
+      (when (string-equal "POST" method)
+	(nconc curl-args 
+	       `(,@(mapcan (lambda (pair)
+			     (list
+			      "-d"
+			      (format "%s=%s"
+				      (twitter4-percent-encode
+				       (car pair))
+				      (twitter4-percent-encode
+				       (cdr pair)))))
+			   parameters)))))
+    (debug-print curl-args)
+    (lexical-let ((temp-buffer
+		   (generate-new-buffer "*twmode-http-buffer*"))
+		  (noninteractive noninteractive)
+		  (sentinel sentinel))
+      (let ((curl-process
+	     (apply 'start-process
+		    "*twmode-curl*"
+		    temp-buffer
+		    curl-program
+		    curl-args)))
+	(set-process-sentinel
+	 curl-process
+	 (lambda (&rest args)
+	   (apply sentinel temp-buffer noninteractive args))))))
   )
 
-(defun twitter4-render-timeline ()
-  (with-current-buffer (twitter4-buffer)
-    (let ((point (point))
-	  (end (point-max)))
-      (setq buffer-read-only nil)
-      (erase-buffer)
-      (mapc (lambda (status)
-	      (insert (twitter4-format-status
-		       status twitter4-status-format))
-	      (fill-region-as-paragraph
-	       (save-excursion (beginning-of-line) (point)) (point))
-	      (insert "\n"))
-	    twitter4-timeline-data)
-      (if (and twitter4-image-stack window-system)
-	  (clear-image-cache))
-      (setq buffer-read-only t)
-      (debug-print (current-buffer))
-      (goto-char (+ point (if twitter4-scroll-mode (- (point-max) end) 0))))
-    ))
+;; TODO: proxy
+(defun twitter4-start-http-non-ssl-session (method headers host port path parameters &optional noninteractive sentinel)
+  (let ((request (twitter4-make-http-request
+		  method headers host port path parameters)))
+    (flet ((request (key) (funcall request key)))
+      (let* ((request-str
+	      (format "%s %s%s HTTP/1.1\r\n%s\r\n\r\n"
+		      (request :method)
+		      (request :uri)
+		      (if parameters
+			  (concat "?" (request :query-string))
+			"")
+		      (request :headers-string)))
+	     (server (if twitter4-proxy-use
+			 twitter4-proxy-server
+		       (request :host)))
+	     (port (if twitter4-proxy-use
+		       twitter4-proxy-port
+		     (request :port)))
+	     (temp-buffer (generate-new-buffer "*twmode-http-buffer*"))
+	     (proc (open-network-stream
+		    "network-connection-process" temp-buffer server port))
+	     )
+	(lexical-let ((temp-buffer temp-buffer)
+		      (sentinel sentinel)
+		      (noninteractive noninteractive))
+	  (set-process-sentinel
+	   proc
+	   (lambda (&rest args)
+	     (apply sentinel temp-buffer noninteractive args))))
+	(debug-print request-str)
+	(process-send-string proc request-str))))
+  )
 
-(defun twitter4-format-status (status format-str)
-  (flet ((attr (key)
-	       (assocref key status))
-	 (profile-image
-	  ()
-	  (let ((profile-image-url (attr 'user-profile-image-url))
-		(icon-string "\n  "))
-	    (if (string-match "/\\([^/?]+\\)\\(?:\\?\\|$\\)" profile-image-url)
-		(let ((filename (match-string-no-properties 1
-							    profile-image-url)))
-		  ;; download icons if does not exist
-		  (if (file-exists-p (concat twitter4-tmp-dir
-					     "/" filename))
-		      t
-		    (add-to-list 'twitter4-image-stack profile-image-url))
+;;; TODO: proxy
+(defun twitter4-make-http-request (method headers host port path parameters)
+  "Returns an anonymous function, which holds request data.
 
-		  (when (and icon-string twitter4-icon-mode)
-		    (set-text-properties
-		     1 2 `(display
-			   (image :type ,(twitter4-image-type filename)
-				  :file ,(concat twitter4-tmp-dir
-						 "/"
-						 filename)))
-		     icon-string)
-		    icon-string)
-		  )))))
-    (let ((cursor 0)
-	  (result ())
-	  c
-	  found-at)
-      (setq cursor 0)
-      (setq result '())
-      (while (setq found-at (string-match "%\\(C{\\([^}]+\\)}\\|[A-Za-z#@']\\)"
-					  format-str cursor))
-	(setq c (string-to-char (match-string-no-properties 1 format-str)))
-	(if (> found-at cursor)
-	    (list-push (substring format-str cursor found-at) result)
-	  "|")
-	(setq cursor (match-end 1))
+A returned function, say REQUEST, is used in this way:
+  (funcall REQUEST :schema) ; => \"http\" or \"https\"
+  (funcall REQUEST :uri) ; => \"http://twitter.com/user_timeline\"
+  (funcall REQUEST :query-string) ; => \"status=hello+twitter&source=twmode\"
+  ...
 
-	(case c
-	  ((?s)                         ; %s - screen_name
-	   (list-push (attr 'user-screen-name) result))
-	  ((?S)                         ; %S - name
-	   (list-push (attr 'user-name) result))
-	  ((?i)                         ; %i - profile_image
-	   (list-push (profile-image) result))
-	  ((?d)                         ; %d - description
-	   (list-push (attr 'user-description) result))
-	  ((?l)                         ; %l - location
-	   (list-push (attr 'user-location) result))
-	  ((?L)                         ; %L - " [location]"
-	   (let ((location (attr 'user-location)))
-	     (unless (or (null location) (string= "" location))
-	       (list-push (concat " [" location "]") result)) ))
-	  ((?u)                         ; %u - url
-	   (list-push (attr 'user-url) result))
-	  ((?j)                         ; %j - user.id
-	   (list-push (attr 'user-id) result))
-	  ((?r)				; %r - in_reply_to_status_id
-	   (let ((reply-id (attr 'in-reply-to-status-id))
-		 (reply-name (attr 'in-reply-to-screen-name)))
-	     (unless (or (null reply-id) (string= "" reply-id)
-			 (null reply-name) (string= "" reply-name))
-	       (let ((in-reply-to-string (format "in reply to %s" reply-name))
-		     (url (twitter4-get-status-url reply-name reply-id)))
-		 (add-text-properties
-		  0 (length in-reply-to-string)
-		  `(mouse-face highlight
-			       face twitter4-uri-face
-			       uri ,url)
-		  in-reply-to-string)
-		 (list-push (concat " " in-reply-to-string) result)))))
-	  ((?p)                         ; %p - protected?
-	   (let ((protected (attr 'user-protected)))
-	     (when (string= "true" protected)
-	       (list-push "[x]" result))))
-	  ((?c)                     ; %c - created_at (raw UTC string)
-	   (list-push (attr 'created-at) result))
-	  ((?C) ; %C{time-format-str} - created_at (formatted with
-	   ; time-format-str)
-	   (list-push (twitter4-local-strftime
-		       (or (match-string-no-properties 2 format-str) "%H:%M:%S")
-		       (attr 'created-at))
-		      result))
-	  ((?@)                         ; %@ - X seconds ago
-	   (let ((created-at
-		  (apply
-		   'encode-time
-		   (parse-time-string (attr 'created-at))))
-		 (now (current-time)))
-	     (let ((secs (+ (* (- (car now) (car created-at)) 65536)
-			    (- (cadr now) (cadr created-at))))
-		   time-string url)
-	       (setq time-string
-		     (cond ((< secs 5) "less than 5 seconds ago")
-			   ((< secs 10) "less than 10 seconds ago")
-			   ((< secs 20) "less than 20 seconds ago")
-			   ((< secs 30) "half a minute ago")
-			   ((< secs 60) "less than a minute ago")
-			   ((< secs 150) "1 minute ago")
-			   ((< secs 2400) (format "%d minutes ago"
-						  (/ (+ secs 30) 60)))
-			   ((< secs 5400) "about 1 hour ago")
-			   ((< secs 84600) (format "about %d hours ago"
-						   (/ (+ secs 1800) 3600)))
-			   (t (format-time-string "%I:%M %p %B %d, %Y"
-						  created-at))))
-	       (setq url (twitter4-get-status-url (attr 'user-screen-name)
-						    (attr 'id)))
-	       ;; make status url clickable
-	       (add-text-properties
-		0 (length time-string)
-		`(mouse-face highlight
-			     face twitter4-uri-face
-			     uri ,url)
-		time-string)
-	       (list-push time-string result))))
-	  ((?t)                         ; %t - text
-	   (list-push                   ;(clickable-text)
-	    (attr 'text)
-	    result))
-	  ((?')                         ; %' - truncated
-	   (let ((truncated (attr 'truncated)))
-	     (when (string= "true" truncated)
-	       (list-push "..." result))))
-	  ((?f)                         ; %f - source
-	   (list-push (attr 'source) result))
-	  ((?#)                         ; %# - id
-	   (list-push (attr 'id) result))
-	  (t
-	   (list-push (char-to-string c) result)))
-	)
-      (list-push (substring format-str cursor) result)
-      (let ((formatted-status (apply 'concat (nreverse result))))
-	(add-text-properties 0 (length formatted-status)
-			     `(username ,(attr 'user-screen-name)
-					id ,(attr 'id)
-					text ,(attr 'text))
-			     formatted-status)
-	formatted-status)
+Available keywords:
+  :method
+  :host
+  :port
+  :headers
+  :headers-string
+  :schema
+  :uri
+  :query-string
+  "
+  (let* ((schema (if twitter4-use-ssl "https" "http"))
+	 (default-port (if twitter4-use-ssl 443 80))
+	 (port (if port port default-port))
+	 (headers-string
+	  (mapconcat (lambda (pair)
+		       (format "%s: %s" (car pair) (cdr pair)))
+		     headers "\r\n"))
+	 (uri (format "%s://%s%s%s"
+		      schema
+		      host
+		      (if port
+			  (if (equal port default-port)
+			      ""
+			    (format ":%s" port))
+			"")
+		      path))
+	 (query-string
+	  (mapconcat (lambda (pair)
+		       (format
+			"%s=%s"
+			(twitter4-percent-encode (car pair))
+			(twitter4-percent-encode (cdr pair))))
+		     parameters
+		     "&"))
+	 )
+    (lexical-let ((data `((:method . ,method)
+			  (:host . ,host)
+			  (:port . ,port)
+			  (:headers . ,headers)
+			  (:headers-string . ,headers-string)
+			  (:schema . ,schema)
+			  (:uri . ,uri)
+			  (:query-string . ,query-string)
+			  )))
+      (lambda (key)
+	(let ((pair (assoc key data)))
+	  (if pair (cdr pair)
+	    (error "No such key in HTTP request data: %s" key))))
       )))
 
-(defun twitter4-http-post
-  (method-class method &optional parameters contents sentinel)
-  "Send HTTP POST request to twitter.com
+(defun twitter4-http-application-headers (&optional method headers)
+  "Retuns an assoc list of HTTP headers for twitter4-mode."
+  (unless method
+    (setq method "GET"))
 
-METHOD-CLASS must be one of Twitter API method classes
- (statuses, users or direct_messages).
-METHOD must be one of Twitter API method which belongs to METHOD-CLASS.
-PARAMETERS is alist of URI parameters.
- ex) ((\"mode\" . \"view\") (\"page\" . \"6\")) => <URI>?mode=view&page=6"
-  (if (null sentinel) (setq sentinel 'twitter4-http-post-default-sentinel))
-
-  ;; clear the buffer
-  (save-excursion
-    (set-buffer (twitter4-http-buffer))
-    (erase-buffer))
-
-  (let (proc server port
-	     (proxy-user twitter4-proxy-user)
-	     (proxy-password twitter4-proxy-password))
-    (progn
-      (if (and twitter4-proxy-use twitter4-proxy-server)
-	  (setq server twitter4-proxy-server
-		port (if (integerp twitter4-proxy-port)
-			 (int-to-string twitter4-proxy-port)
-		       twitter4-proxy-port))
-	(setq server "twitter.com"
-	      port "80"))
-      (setq proc
-	    (open-network-stream
-	     "network-connection-process" (twitter4-http-buffer)
-	     server (string-to-number port)))
-      (set-process-sentinel proc sentinel)
-      (process-send-string
-       proc
-       (let ((nl "\r\n")
-	     request)
-	 (setq  request
-		(concat "POST http://twitter.com/" method-class "/" method ".xml"
-			(when parameters
-			  (concat "?"
-				  (mapconcat
-				   (lambda (param-pair)
-				     (format "%s=%s"
-					     (twitter4-percent-encode (car param-pair))
-					     (twitter4-percent-encode (cdr param-pair))))
-				   parameters
-				   "&")))
-			" HTTP/1.1" nl
-			"Host: twitter.com" nl
-			"User-Agent: " (twitter4-user-agent) nl
-			"Authorization: Basic "
+  (let ((headers headers))
+    (push (cons "User-Agent" (twitter4-user-agent)) headers)
+    (push (cons "Authorization"
+		(concat "Basic "
 			(base64-encode-string
-			 (concat twitter4-username ":" (twitter4-get-password)))
-			nl
-			"Content-Type: text/plain" nl
-			"Content-Length: 0" nl
-			(when twitter4-proxy-use
-			  "Proxy-Connection: Keep-Alive" nl
-			  (when (and proxy-user proxy-password)
-			    (concat
-			     "Proxy-Authorization: Basic "
-			     (base64-encode-string
-			      (concat proxy-user ":"
-				      proxy-password))
-			     nl)))
-			nl))
-	 (debug-print (concat "POST Request\n" request))
-	 request)))))
+			 (concat
+			  (twitter4-get-username)
+			  ":"
+			  (twitter4-get-password)))))
+	  headers)
+    (when (string-equal "GET" method)
+      (push (cons "Accept"
+		  (concat
+		   "text/xml"
+		   ",application/xml"
+		   ",application/xhtml+xml"
+		   ",application/html;q=0.9"
+		   ",text/plain;q=0.8"
+		   ",image/png,*/*;q=0.5"))
+	    headers)
+      (push (cons "Accept-Charset" "utf-8;q=0.7,*;q=0.7")
+	    headers))
+    (when (string-equal "POST" method)
+      (push (cons "Content-Length" "0") headers)
+      (push (cons "Content-Type" "text/plain") headers))
+    (when twitter4-proxy-use
+      (when twitter4-proxy-keep-alive
+	(push (cons "Proxy-Connection" "Keep-Alive")
+	      headers))
+      (when (and twitter4-proxy-user
+		 twitter4-proxy-password)
+	(push (cons "Proxy-Authorization"
+		    (concat
+		     "Basic "
+		     (base64-encode-string
+		      (concat
+		       twitter4-proxy-user
+		       ":"
+		       twitter4-proxy-password))))
+	      headers)))
+    headers
+    ))
 
-(defun twitter4-http-post-default-sentinel (proc stat &optional suc-msg)
+(defun twitter4-http-get (host method &optional noninteractive parameters sentinel)
+  (if (null sentinel)
+      (setq sentinel 'twitter4-http-get-default-sentinel))
 
-  (condition-case err-signal
-      (let ((header (twitter4-get-response-header))
-	    ;; (body (twitter4-get-response-body)) not used now.
+  (twitter4-start-http-session
+   "GET" (twitter4-http-application-headers "GET")
+   host nil (concat "/" method ".xml") parameters noninteractive sentinel))
+
+(defun twitter4-created-at-to-seconds (created-at)
+  (let ((encoded-time (apply 'encode-time (parse-time-string created-at))))
+    (+ (* (car encoded-time) 65536)
+       (cadr encoded-time))))
+
+(defun twitter4-http-get-default-sentinel (temp-buffer noninteractive proc stat &optional suc-msg)
+  (debug-printf "get-default-sentinel: proc=%s stat=%s" proc stat)
+  (unwind-protect
+      (let ((header (twitter4-get-response-header temp-buffer))
+	    (body (twitter4-get-response-body temp-buffer))
 	    (status nil))
-	(string-match "HTTP/1\.1 \\([a-z0-9 ]+\\)\r?\n" header)
-	(setq status (match-string-no-properties 1 header))
-	(case-string status
-		     (("200 OK")
-		      (message (if suc-msg suc-msg "Success: Post")))
-		     (t (message status)))
-	)
-    (error (message (prin1-to-string err-signal))))
+	(if (string-match "HTTP/1\.[01] \\([a-zA-Z0-9 ]+\\)\r?\n" header)
+	    (when body
+	      (setq status (match-string-no-properties 1 header))
+	      (case-string
+	       status
+	       (("200 OK")
+		(setq twitter4-new-tweets-count
+		      (count t (mapcar
+				#'twitter4-cache-status-datum
+				(reverse (twitter4-xmltree-to-status
+					  body)))))
+		(setq twitter4-timeline-data
+		      (sort twitter4-timeline-data
+			    (lambda (status1 status2)
+			      (let ((created-at1
+				     (twitter4-created-at-to-seconds
+				      (cdr (assoc 'created-at status1))))
+				    (created-at2
+				     (twitter4-created-at-to-seconds
+				      (cdr (assoc 'created-at status2)))))
+				(> created-at1 created-at2)))))
+		(if (and (> twitter4-new-tweets-count 0)
+			 noninteractive)
+		    (run-hooks 'twitter4-new-tweets-hook))
+		(setq twitter4-last-retrieved-timeline-spec-string
+		      twitter4-last-requested-timeline-spec-string)
+		(twitter4-render-timeline)
+		(twitter4-add-timeline-history)
+		(when twitter4-notify-successful-http-get
+		  ))
+	       (t (message status))))
+	  (message "Failure: Bad http response.")))
+    ;; unwindforms
+    (when (and (not twitter4-debug-mode) (buffer-live-p temp-buffer))
+      (kill-buffer temp-buffer)))
   )
 
-(defun twitter4-get-response-header (&optional buffer)
-  "Exract HTTP response header from HTTP response.
-`buffer' may be a buffer or the name of an existing buffer.
- If `buffer' is omitted, the value of `twitter4-http-buffer' is used as `buffer'."
-  (if (stringp buffer) (setq buffer (get-buffer buffer)))
-  (if (null buffer) (setq buffer (twitter4-http-buffer)))
-  (save-excursion
-    (set-buffer buffer)
-    (let ((content (buffer-string)))
-      (substring content 0 (string-match "\r?\n\r?\n" content)))))
+;; XXX: this is a preliminary implementation because we should parse
+;; xmltree in the function.
+(defun twitter4-http-get-list-index-sentinel (temp-buffer noninteractive proc stat &optional suc-msg)
+  (debug-printf "get-list-index-sentinel: proc=%s stat=%s" proc stat)
+  (unwind-protect
+      (let ((header (twitter4-get-response-header temp-buffer)))
+	(if (not (string-match "HTTP/1\.[01] \\([a-zA-Z0-9 ]+\\)\r?\n" header))
+	    (setq twitter4-list-index-retrieved "Failure: Bad http response.")
+	  (let ((status (match-string-no-properties 1 header))
+		(indexes nil))
+	    (if (not (string-match "\r?\nLast-Modified: " header))
+		(setq twitter4-list-index-retrieved
+		      (concat status ", but no contents."))
+	      (case-string
+	       status
+	       (("200 OK")
+		(with-current-buffer temp-buffer
+		  (save-excursion
+		    (goto-char (point-min))
+		    (if (search-forward-regexp "\r?\n\r?\n" nil t)
+			(while (re-search-forward
+				"<slug>\\([-a-zA-Z0-9_]+\\)</slug>" nil t)
+			  (push (match-string 1) indexes)))
+		    (if indexes
+			(setq twitter4-list-index-retrieved indexes)
+		      (setq twitter4-list-index-retrieved "")))))
+	       (t
+		(setq twitter4-list-index-retrieved status)))))))
+    ;; unwindforms
+    (when (and (not twitter4-debug-mode) (buffer-live-p temp-buffer))
+      (kill-buffer temp-buffer)))
+  )
 
-(defun twitter4-get-response-body (&optional buffer)
+(defun twitter4-http-post (host method &optional parameters contents sentinel)
+  "Send HTTP POST request to twitter.com (or api.twitter.com)
+
+HOST is hostname of remote side, twitter.com or api.twitter.com.
+METHOD must be one of Twitter API method classes
+ (statuses, users or direct_messages).
+PARAMETERS is alist of URI parameters.
+ ex) ((\"mode\" . \"view\") (\"page\" . \"6\")) => <URI>?mode=view&page=6"
+  (if (null sentinel)
+      (setq sentinel 'twitter4-http-post-default-sentinel))
+
+  (twitter4-start-http-session
+   "POST" (twitter4-http-application-headers "POST")
+   host nil (concat "/" method ".xml") parameters noninteractive sentinel))
+
+(defun twitter4-http-post-default-sentinel (temp-buffer noninteractive proc stat &optional suc-msg)
+  (debug-printf "post-default-sentinel: proc=%s stat=%s" proc stat)
+  (unwind-protect
+      (let ((header (twitter4-get-response-header temp-buffer))
+	    ;; (body (twitter4-get-response-body temp-buffer)) not used now.
+	    (status nil))
+	(if (string-match "HTTP/1\.[01] \\([a-zA-Z0-9 ]+\\)\r?\n" header)
+	    (setq status (match-string-no-properties 1 header))
+	  (setq status
+		(progn (string-match "^\\([^\r\n]+\\)\r?\n" header)
+		       (match-string-no-properties 1 header))))
+	(case-string status
+		     (("200 OK")
+		       )
+		     (t (message "Response status code: %s" status)))
+	)
+    ;; unwindforms
+    (when (and (not twitter4-debug-mode) (buffer-live-p temp-buffer))
+      (kill-buffer temp-buffer)))
+  )
+
+(defun twitter4-get-response-header (buffer)
+  "Exract HTTP response header from HTTP response.
+`buffer' may be a buffer or the name of an existing buffer which contains the HTTP response."
+  (if (stringp buffer)
+      (setq buffer (get-buffer buffer)))
+
+  ;; FIXME:
+  ;; curl prints HTTP proxy response header, so strip it
+  (with-current-buffer buffer
+    (save-excursion
+      (goto-char (point-min))
+      (when (search-forward-regexp
+	     "HTTP/1\\.[01] 200 Connection established\r\n\r\n" nil t)
+	(delete-region (point-min) (point)))
+      (if (search-forward-regexp "\r?\n\r?\n" nil t)
+	  (buffer-substring (point-min) (match-end 0))
+	(error "Failure: invalid HTTP response")))))
+
+(defun twitter4-get-response-body (buffer)
   "Exract HTTP response body from HTTP response, parse it as XML, and return a
-XML tree as list. `buffer' may be a buffer or the name of an existing buffer. If
-`buffer' is omitted, the value of `twitter4-http-buffer' is used as `buffer'."
-  (if (stringp buffer) (setq buffer (get-buffer buffer)))
-  (if (null buffer) (setq buffer (twitter4-http-buffer)))
-  (save-excursion
-    (set-buffer buffer)
-    (let ((content (buffer-string)))
-      (let ((content (buffer-string)))
-	(xml-parse-region (+ (string-match "\r?\n\r?\n" content)
-			     (length (match-string 0 content)))
-			  (point-max)))
+XML tree as list. Return nil when parse failed.
+`buffer' may be a buffer or the name of an existing buffer. "
+  (if (stringp buffer)
+      (setq buffer (get-buffer buffer)))
+  (with-current-buffer buffer
+    (save-excursion
+      (goto-char (point-min))
+      (if (search-forward-regexp "\r?\n\r?\n" nil t)
+	  (let ((start (match-end 0)))
+	    (condition-case get-error ;; to guard when `xml-parse-region' failed.
+		(xml-parse-region start (point-max))
+	      (error (message "Failure: %s" get-error)
+		     nil)))
+	(error "Failure: invalid HTTP response"))
       )))
 
 (defun twitter4-cache-status-datum (status-datum &optional data-var)
@@ -795,7 +1426,19 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 	   user-profile-image-url
 	   user-url
 	   user-protected
-	   regex-index)
+	   regex-index
+	   (retweeted-status-data (cddr (assq 'retweeted_status status-data)))
+	   original-user-name
+	   original-user-screen-name)
+
+      ;; save original status and adjust data if status was retweeted
+      (when (and retweeted-status-data twitter4-use-native-retweet)
+	(setq original-user-screen-name (twitter4-decode-html-entities
+					 (assq-get 'screen_name user-data))
+	      original-user-name (twitter4-decode-html-entities
+				  (assq-get 'name user-data)))
+	(setq status-data retweeted-status-data
+	      user-data (cddr (assq 'user retweeted-status-data))))
 
       (setq id (assq-get 'id status-data))
       (setq text (twitter4-decode-html-entities
@@ -839,6 +1482,27 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 		    face twitter4-username-face)
        user-screen-name)
 
+      ;; make screen-name in text clickable
+      (let ((pos 0))
+	(block nil
+	  (while (string-match "@\\([_a-zA-Z0-9]+\\)" text pos)
+	    (let ((next-pos (match-end 0))
+		  (screen-name (match-string 1 text)))
+	      (when (eq next-pos pos)
+		(return nil))
+
+	      (add-text-properties
+	       (match-beginning 1) (match-end 1)
+	       `(screen-name-in-text ,screen-name) text)
+	      (add-text-properties
+	       (match-beginning 1) (match-end 1)
+	       `(mouse-face highlight
+			    uri ,(concat "http://twitter.com/" screen-name)
+			    face twitter4-username-face)
+	       text)
+
+	      (setq pos next-pos)))))
+
       ;; make URI clickable
       (setq regex-index 0)
       (while regex-index
@@ -859,16 +1523,18 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 		 `(mouse-face
 		   highlight
 		   face twitter4-uri-face
-		   uri ,(concat "http://twitter.com/" screen-name))
+		   uri ,(concat "http://twitter.com/" screen-name)
+		   uri-in-text ,(concat "http://twitter.com/" screen-name))
 	       `(mouse-face highlight
 			    face twitter4-uri-face
-			    uri ,uri))
+			    uri ,uri
+			    uri-in-text ,uri))
 	     text))
 	  (setq regex-index (match-end 0)) ))
 
 
       ;; make source pretty and clickable
-      (if (string-match "<a href=\"\\(.*\\)\">\\(.*\\)</a>" source)
+      (if (string-match "<a href=\"\\(.*?\\)\".*?>\\(.*\\)</a>" source)
 	  (let ((uri (match-string-no-properties 1 source))
 		(caption (match-string-no-properties 2 source)))
 	    (setq source caption)
@@ -882,7 +1548,11 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 	    ))
 
       ;; save last update time
-      (setq twitter4-timeline-last-update created-at)
+      (when (or (null twitter4-timeline-last-update)
+                (< (twitter4-created-at-to-seconds
+                    twitter4-timeline-last-update)
+                   (twitter4-created-at-to-seconds created-at)))
+        (setq twitter4-timeline-last-update created-at))
 
       (mapcar
        (lambda (sym)
@@ -894,7 +1564,9 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 	    user-description
 	    user-profile-image-url
 	    user-url
-	    user-protected)))))
+	    user-protected
+	    original-user-name
+	    original-user-screen-name)))))
 
 (defun twitter4-xmltree-to-status (xmltree)
   (mapcar #'twitter4-status-to-status-datum
@@ -917,12 +1589,13 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
       ((twitter4-url-reserved-p c)
        (char-to-string c))
       ((eq c ? ) "+")
-      (t (format "%%%x" c))))
+      (t (format "%%%02x" c))))
    (encode-coding-string str coding-system)
    ""))
 
 (defun twitter4-url-reserved-p (ch)
-  (or (and (<= ?A ch) (<= ch ?z))
+  (or (and (<= ?A ch) (<= ch ?Z))
+      (and (<= ?a ch) (<= ch ?z))
       (and (<= ?0 ch) (<= ch ?9))
       (eq ?. ch)
       (eq ?- ch)
@@ -956,6 +1629,279 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 	(apply 'concat (nreverse result)))
     ""))
 
+;;;
+;;; display functions
+;;;
+
+(defun twitter4-render-timeline ()
+  (with-current-buffer (twitter4-buffer)
+    (let ((point (point))
+	  (end (point-max))
+	  (fill-column (- (window-width) 4)))
+      (twitter4-update-mode-line)
+      (setq buffer-read-only nil)
+      (erase-buffer)
+      (mapc (lambda (status)
+	      (insert (twitter4-format-status
+		       status twitter4-status-format))
+	      (insert "\n"))
+	    twitter4-timeline-data)
+      (if (and twitter4-image-stack window-system)
+	  (clear-image-cache))
+      (setq buffer-read-only t)
+      (debug-print (current-buffer))
+      (goto-char (+ point (if twitter4-scroll-mode (- (point-max) end) 0))))
+    ))
+
+(defun twitter4-make-display-spec-for-icon (image-url)
+  "Return the specification for `display' text property, which
+limits the size of an icon image IMAGE-URL up to FIXED-LENGTH. If
+the type of the image is not supported, nil is returned.
+
+If the size of the image exceeds FIXED-LENGTH, the center of the
+image are displayed."
+  (let* ((image-data (twitter4-retrieve-image image-url))
+	 (image-spec
+	  `(image :type ,(car image-data)
+		  :data ,(cdr image-data))))
+    (if (not (image-type-available-p (car image-data)))
+	nil
+      (if (and twitter4-convert-fix-size (not twitter4-use-convert))
+	  (let* ((size (if (cdr image-data)
+			   (image-size image-spec t)
+			 '(48 . 48)))
+		 (width (car size))
+		 (height (cdr size))
+		 (fixed-length twitter4-convert-fix-size)
+		 (half-fixed-length (/ fixed-length 2))
+		 (slice-spec
+		  (if (or (< fixed-length width) (< fixed-length height))
+		      `(slice ,(max 0 (- (/ width 2) half-fixed-length))
+			      ,(max 0 (- (/ height 2) half-fixed-length))
+			      ,fixed-length ,fixed-length)
+		    `(slice 0 0 ,fixed-length ,fixed-length))))
+	    `(display (,image-spec ,slice-spec)))
+	`(display ,image-spec)))))
+
+(defun twitter4-format-string (string prefix replacement-table)
+  "Format STRING according to PREFIX and REPLACEMENT-TABLE.
+PREFIX is a regexp. REPLACEMENT-TABLE is a list of (FROM . TO) pairs,
+where FROM is a regexp and TO is a string or a 2-parameter function.
+
+The pairs in REPLACEMENT-TABLE are stored in order of precedence.
+First, search PREFIX in STRING from left to right.
+If PREFIX is found in STRING, try to match the following string with
+FROM of each pair in the same order of REPLACEMENT-TABLE. If FROM in
+a pair is matched, replace the prefix and the matched string with a
+string generated from TO.
+If TO is a string, the matched string is replaced with TO.
+If TO is a function, the matched string is replaced with the
+return value of (funcall TO CONTEXT), where CONTEXT is an alist.
+Each element of CONTEXT is (KEY . VALUE) and KEY is one of the
+following symbols;
+  'following-string  --the matched string following the prefix
+  'match-data --the match-data for the regexp FROM.
+  'prefix --PREFIX.
+  'replacement-table --REPLACEMENT-TABLE.
+  'from --FROM.
+  'processed-string --the already processed string.
+"
+  (let ((current-pos 0)
+	(result "")
+	(case-fold-search nil))
+    (while (and (string-match prefix string current-pos)
+		(not (eq (match-end 0) current-pos)))
+      (let ((found nil)
+	    (current-table replacement-table)
+	    (next-pos (match-end 0))
+	    (matched-string (match-string 0 string))
+	    (skipped-string
+	     (substring string current-pos (match-beginning 0))))
+	(setq result (concat result skipped-string))
+	(setq current-pos next-pos)
+	(while (and (not (null current-table))
+		    (not found))
+	  (let ((key (caar current-table))
+		(value (cdar current-table))
+		(following-string (substring string current-pos))
+		(case-fold-search nil))
+	    (if (string-match (concat "\\`" key) following-string)
+		(let ((next-pos (+ current-pos (match-end 0)))
+		      (output
+		       (if (stringp value)
+			   value
+			 (funcall value
+				  `((following-string . ,following-string)
+				    (match-data . ,(match-data))
+				    (prefix . ,prefix)
+				    (replacement-table . ,replacement-table)
+				    (from . ,key)
+				    (processed-string . ,result))))))
+		  (setq found t)
+		  (setq current-pos next-pos)
+		  (setq result (concat result output)))
+	      (setq current-table (cdr current-table)))))
+	(if (not found)
+	    (setq result (concat result matched-string)))))
+    (let* ((skipped-string (substring string current-pos)))
+      (concat result skipped-string))
+    ))
+
+(defun twitter4-format-status (status format-str)
+  "Format a string out of a format-str and STATUS.
+Specification of format-str is described in the document for the
+variable `twitter4-status-format'"
+  (flet ((attr (key)
+	       (assocref key status))
+	 (profile-image
+	  ()
+	  (let ((profile-image-url (attr 'user-profile-image-url))
+		(icon-string "\n  "))
+	    (unless (gethash
+		     `(,profile-image-url . ,twitter4-convert-fix-size)
+		     twitter4-image-data-table)
+	      (add-to-list 'twitter4-image-stack profile-image-url))
+	    
+	    (when (and icon-string twitter4-icon-mode)
+	      (let ((display-spec
+		     (twitter4-make-display-spec-for-icon profile-image-url)))
+		(when display-spec
+		  (set-text-properties 1 2 display-spec icon-string)))
+	      icon-string)
+	    ))
+	 (make-string-with-url-property
+	  (str url)
+	  (let ((result (copy-sequence str)))
+	    (add-text-properties
+	     0 (length result)
+	     `(mouse-face highlight face twitter4-uri-face uri ,url)
+	     result)
+	    result)))
+    (let* ((replace-table
+	    `(("%" . "%")
+	      ("#" . ,(attr 'id))
+	      ("'" . ,(if (string= "true" (attr 'truncated)) "..." ""))
+	      ("@" .
+	       ,(let* ((created-at
+			(apply
+			 'encode-time
+			 (parse-time-string (attr 'created-at))))
+		       (now (current-time))
+		       (secs (+ (* (- (car now) (car created-at)) 65536)
+				(- (cadr now) (cadr created-at))))
+		       (time-string
+			(cond
+			 ((< secs 5) "less than 5 seconds ago")
+			 ((< secs 10) "less than 10 seconds ago")
+			 ((< secs 20) "less than 20 seconds ago")
+			 ((< secs 30) "half a minute ago")
+			 ((< secs 60) "less than a minute ago")
+			 ((< secs 150) "1 minute ago")
+			 ((< secs 2400) (format "%d minutes ago"
+						(/ (+ secs 30) 60)))
+			 ((< secs 5400) "about 1 hour ago")
+			 ((< secs 84600) (format "about %d hours ago"
+						 (/ (+ secs 1800) 3600)))
+			 (t (format-time-string "%I:%M %p %B %d, %Y"
+						created-at))))
+		       (url
+			(twitter4-get-status-url (attr 'user-screen-name)
+						   (attr 'id))))
+		  ;; make status url clickable
+		  (make-string-with-url-property time-string url)))
+	      ("C\\({\\([^}]*\\)}\\)?" .
+	       (lambda (context)
+		 (let ((str (cdr (assq 'following-string context)))
+		       (match-data (cdr (assq 'match-data context))))
+		   (let* ((time-format
+			   (or (match-string 2 str) "%H:%M:%S"))
+			  (created-at
+			   (apply 'encode-time
+				  (parse-time-string (attr 'created-at)))))
+		     (format-time-string time-format created-at)))))
+	      ("c" . ,(attr 'created-at))
+	      ("d" . ,(attr 'user-description))
+	      ("FILL{\\(.*?[^%]\\)}" .
+	       ,(lambda (context)
+		  (let* ((str (cdr (assq 'following-string context)))
+			 (match-data (cdr (assq 'match-data context)))
+			 (from (cdr (assq 'from context)))
+			 (prefix (cdr (assq 'prefix context)))
+			 (table (cdr (assq 'replacement-table context)))
+			 (mod-table
+			  (cons '("}" . "}")
+				(delq (assq from table) table))))
+		    (store-match-data match-data)
+		    (let* ((formatted-str
+			    (twitter4-format-string
+			     (match-string 1 str) prefix mod-table)))
+		      (with-temp-buffer
+			(insert formatted-str)
+			(fill-region-as-paragraph (point-min) (point-max))
+			(buffer-substring (point-min) (point-max)))))))
+	      ("f" . ,(attr 'source))
+	      ("i" . (lambda (context) (profile-image)))
+	      ("j" . ,(attr 'user-id))
+	      ("L" . ,(let ((location (or (attr 'user-location) "")))
+			(if (not (string= "" location))
+			    (concat " [" location "]")
+			  "")))
+	      ("l" . ,(attr 'user-location))
+	      ("p" . ,(if (string= "true" (attr 'user-protected))
+			  "[x]"
+			""))
+	      ("r" .
+	       ,(let ((reply-id (or (attr 'in-reply-to-status-id) ""))
+		      (reply-name (or (attr 'in-reply-to-screen-name) "")))
+		  (if (or (string= "" reply-id) (string= "" reply-name))
+		      ""
+		    (let ((in-reply-to-string
+			   (concat "in reply to " reply-name))
+			  (url
+			   (twitter4-get-status-url reply-name reply-id)))
+		      (concat " "
+			      (make-string-with-url-property
+			       in-reply-to-string url))))))
+	      ("R" .
+	       ,(let ((retweeted-by (attr 'original-user-screen-name)))
+		  (if retweeted-by
+		      (concat " (retweeted by " retweeted-by ")")
+		    "")))
+
+	      ("S" . ,(attr 'user-name))
+	      ("s" . ,(attr 'user-screen-name))
+	      ("T" . ,(attr 'text))
+	      ("t\\([^\n]*\\)" .
+	       ,(lambda (context)
+		  (let* ((str (cdr (assq 'processed-string context)))
+			 (prefix (if (string-match "\\([^\n]*\\)\\'" str)
+				     (match-string 1 str)
+				       ""))
+			 (following-str (cdr (assq 'following-string context)))
+			 (from (cdr (assq 'from context)))
+			 (match-data (cdr (assq 'match-data context)))
+			 (replace-prefix (cdr (assq 'prefix context)))
+			 (table (cdr (assq 'replacement-table context))))
+		    (store-match-data match-data)
+		    (let* ((postfix (twitter4-format-string
+				     (match-string 1 following-str)
+				     replace-prefix table))
+			   (text (concat prefix (attr 'text) postfix)))
+		      (with-temp-buffer
+			(insert text)
+			(fill-region-as-paragraph (point-min) (point-max))
+			(buffer-substring (1+ (length prefix)) (point-max)))))
+		  ))
+	      ("u" . ,(attr 'user-url))
+	      ))
+	   (formatted-status
+	    (twitter4-format-string format-str "%" replace-table)))
+      (add-text-properties
+       0 (length formatted-status)
+       `(username ,(attr 'user-screen-name) id ,(attr 'id) text ,(attr 'text))
+       formatted-status)
+      formatted-status)))
+
 (defun twitter4-timer-action (func)
   (let ((buf (get-buffer twitter4-buffer)))
     (if (null buf)
@@ -963,45 +1909,226 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
       (funcall func)
       )))
 
-(defun twitter4-update-status-if-not-blank (status &optional reply-to-id)
-  (if (string-match "^\\s-*\\(?:@[-_a-z0-9]+\\)?\\s-*$" status)
-      nil
-    (setq status (concat status (twitter4-sign-string)))
-    (let ((parameters `(("status" . ,status)
-			("source" . "twmode")
-			,@(if reply-to-id
-			      `(("in_reply_to_status_id"
-				 . ,reply-to-id))))))
-      (twitter4-http-post "statuses" "update" parameters))
-    t))
+(defun twitter4-show-minibuffer-length (&optional beg end len)
+  "Show the number of charactors in minibuffer."
+  (when (minibuffer-window-active-p (selected-window))
+    (if (and transient-mark-mode deactivate-mark)
+	(deactivate-mark))
+    (let* ((deactivate-mark deactivate-mark)
+	   (status-len (- (buffer-size) (minibuffer-prompt-width)))
+	   (sign-len (length (twitter4-sign-string)))
+	   (mes (if (< 0 sign-len)
+		    (format "%d=%d+%d"
+			    (+ status-len sign-len) status-len sign-len)
+		  (format "%d" status-len))))
+      (if (<= 23 emacs-major-version)
+	  (minibuffer-message mes) ; Emacs23 or later
+	(minibuffer-message (concat " (" mes ")")))
+      )))
 
-(defun twitter4-update-status-from-minibuffer (&optional init-str
-							   reply-to-id)
-  (if (null init-str) (setq init-str ""))
-  (let ((status init-str) (not-posted-p t))
-    (while not-posted-p
-      (setq status (read-from-minibuffer "status: " status nil nil nil nil t))
-      (setq not-posted-p
-	    (not (twitter4-update-status-if-not-blank status reply-to-id))))
+(defun twitter4-setup-minibuffer ()
+  (add-hook 'post-command-hook 'twitter4-show-minibuffer-length t t))
+
+(defun twitter4-finish-minibuffer ()
+  (remove-hook 'post-command-hook 'twitter4-show-minibuffer-length t))
+
+(defun twitter4-status-not-blank-p (status)
+  (with-temp-buffer
+    (insert status)
+    (goto-char (point-min))
+    ;; skip user name
+    (re-search-forward "@[-_a-z0-9]+\\([\n\r \t]+@[-_a-z0-9]+\\)*" nil t)
+    (re-search-forward "[^\n\r \t]+" nil t)))
+
+(defun twitter4-update-status-from-minibuffer (&optional init-str reply-to-id)
+  (when (and (null init-str)
+	     twitter4-current-hashtag)
+    (setq init-str (format " #%s " twitter4-current-hashtag)))
+  (let ((status init-str)
+	(sign-str (twitter4-sign-string))
+	(not-posted-p t)
+	(prompt "status: ")
+	(map minibuffer-local-map)
+	(minibuffer-message-timeout nil))
+    (define-key map (kbd "<f4>") 'twitter4-tinyurl-replace-at-point)
+    (when twitter4-use-show-minibuffer-length
+      (add-hook 'minibuffer-setup-hook 'twitter4-setup-minibuffer t)
+      (add-hook 'minibuffer-exit-hook 'twitter4-finish-minibuffer t))
+    (unwind-protect
+	(while not-posted-p
+	  (setq status (read-from-minibuffer prompt status map nil 'twitter4-tweet-history nil t))
+	  (let ((status-with-sign (concat status sign-str)))
+	    (if (< 140 (length status-with-sign))
+		(setq prompt "status (too long): ")
+	      (progn
+		(setq prompt "status: ")
+		(when (twitter4-status-not-blank-p status)
+		  (let ((parameters `(("status" . ,status-with-sign)
+				      ("source" . "twmode")
+				      ,@(if reply-to-id
+					    `(("in_reply_to_status_id"
+					       . ,reply-to-id))))))
+		    (twitter4-http-post "twitter.com" "statuses/update" parameters)
+		    (setq not-posted-p nil)))
+		))))
+      ;; unwindforms
+      (when (memq 'twitter4-setup-minibuffer minibuffer-setup-hook)
+	(remove-hook 'minibuffer-setup-hook 'twitter4-setup-minibuffer))
+      (when (memq 'twitter4-finish-minibuffer minibuffer-exit-hook)
+	(remove-hook 'minibuffer-exit-hook 'twitter4-finish-minibuffer))
+      )))
+
+(defun twitter4-get-list-index (username)
+  (twitter4-http-get "api.twitter.com"
+		       (concat "1/" username "/lists")
+		       t nil
+		       'twitter4-http-get-list-index-sentinel))
+
+(defun twitter4-get-list-index-sync (username)
+  (setq twitter4-list-index-retrieved nil)
+  (twitter4-get-list-index username)
+  (while (not twitter4-list-index-retrieved)
+    (sit-for 0.1))
+  (cond
+   ((stringp twitter4-list-index-retrieved)
+    (if (string= "" twitter4-list-index-retrieved)
+	(message (concat username " has no list"))
+      (message twitter4-list-index-retrieved))
+    nil)
+   ((listp twitter4-list-index-retrieved)
+    twitter4-list-index-retrieved)))
+
+(defun twitter4-manage-friendships (method username)
+  (twitter4-http-post "twitter.com"
+			(concat "friendships/" method)
+			`(("screen_name" . ,username)
+			  ("source" . "twmode"))))
+
+(defun twitter4-manage-favorites (method id)
+  (twitter4-http-post "twitter.com"
+			(concat "favorites/" method "/" id)
+			`(("source" . "twmode"))))
+
+(defun twitter4-get-twits (host method &optional noninteractive id)
+  (let ((buf (get-buffer twitter4-buffer)))
+    (if (not buf)
+	(twitter4-stop)
+      (let* ((default-count 20)
+	     (count twitter4-number-of-tweets-on-retrieval)
+	     (count (cond
+		     ((integerp count) count)
+		     ((string-match "^[0-9]+$" count)
+		      (string-to-number count 10))
+		     (t default-count)))
+	     (count (min (max 1 count)
+			 twitter4-max-number-of-tweets-on-retrieval))
+	     (regexp-list-method "^1/[^/]*/lists/[^/]*/statuses$")
+	     (parameters
+	      (list (cons (if (string-match regexp-list-method method)
+			      "per_page"
+			    "count")
+			  (number-to-string count)))))
+	(if id
+	    (add-to-list 'parameters `("max_id" . ,id))
+	  (when twitter4-timeline-last-update
+	    (let* ((system-time-locale "C")
+		   (since
+		    (twitter4-global-strftime
+		     "%a, %d %b %Y %H:%M:%S GMT"
+		     twitter4-timeline-last-update)))
+	      (add-to-list 'parameters `("since" . ,since)))))
+	(twitter4-http-get host method
+			     noninteractive parameters))))
+
+  (if (and twitter4-icon-mode window-system
+	   twitter4-image-stack)
+      (mapc 'twitter4-retrieve-image twitter4-image-stack)
     ))
 
-(defun twitter4-update-lambda ()
-  (interactive)
-  (twitter4-http-post
-   "statuses" "update"
-   `(("status" . "\xd34b\xd22b\xd26f\xd224\xd224\xd268\xd34b")
-     ("source" . "twmode"))))
+(defun twitter4-get-and-render-timeline (spec &optional noninteractive id)
+  (let* ((original-spec spec)
+	 (spec-string (if (stringp spec)
+			  spec
+			(twitter4-timeline-spec-to-string spec)))
+	 (spec ;; normalized spec.
+	  (twitter4-string-to-timeline-spec spec-string)))
+    (when (null spec)
+      (error "\"%s\" is invalid as a timeline spec"
+	     (or spec-string original-spec)))
+    (setq twitter4-last-requested-timeline-spec-string spec-string)
+    (unless
+	(and twitter4-last-retrieved-timeline-spec-string
+	     (twitter4-equal-string-as-timeline
+	      spec-string twitter4-last-retrieved-timeline-spec-string))
+      (setq twitter4-timeline-last-update nil
+	    twitter4-timeline-data nil))
+    (if (twitter4-timeline-spec-primary-p spec)
+	(let ((pair (twitter4-timeline-spec-to-host-method spec)))
+	  (when pair
+	    (let ((host (car pair))
+		  (method (cadr pair)))
+	      (twitter4-get-twits host method noninteractive id))))
+      (let ((type (car spec)))
+	(error "%s has not been supported yet" type)))))
 
-(defun twitter4-update-jojo (usr msg)
-  (if (string-match "\xde21\xd24b\\(\xd22a\xe0b0\\|\xdaae\xe6cd\\)\xd24f\xd0d6\\([^\xd0d7]+\\)\xd0d7\xd248\xdc40\xd226"
-		    msg)
-      (twitter4-http-post
-       "statuses" "update"
-       `(("status" . ,(concat
-		       "@" usr " "
-		       (match-string-no-properties 2 msg)
-		       "\xd0a1\xd24f\xd243!?"))
-	 ("source" . "twmode")))))
+(defun twitter4-retrieve-image (image-url)
+  (let ((image-data (gethash `(,image-url . ,twitter4-convert-fix-size)
+			     twitter4-image-data-table)))
+    (when (not image-data)
+      (let ((image-type nil)
+	    (image-spec nil)
+	    (converted-image-size
+	     `(,twitter4-convert-fix-size . ,twitter4-convert-fix-size)))
+	(with-temp-buffer
+	  (set-buffer-multibyte nil)
+	  (let ((coding-system-for-read 'binary)
+		(coding-system-for-write 'binary)
+		(require-final-newline nil))
+	    (url-insert-file-contents image-url)
+	    (setq image-type (twitter4-image-type image-url
+						    (current-buffer)))
+	    (setq image-spec `(image :type ,image-type
+				     :data ,(buffer-string)))
+	    (when (and twitter4-convert-fix-size twitter4-use-convert
+		       (not
+			(and (image-type-available-p image-type)
+			     (equal (image-size image-spec t)
+				    converted-image-size))))
+	      (call-process-region 
+	       (point-min) (point-max)
+	       twitter4-convert-program
+	       t t nil
+	       (if image-type (format "%s:-" image-type) "-")
+	       "-resize"
+	       (format "%dx%d" twitter4-convert-fix-size
+		       twitter4-convert-fix-size)
+	       "xpm:-")
+	      (setq image-type 'xpm))
+	    (setq image-data `(,image-type . ,(buffer-string))))
+	  (puthash `(,image-url . ,twitter4-convert-fix-size)
+		   image-data
+		   twitter4-image-data-table))))
+    image-data))
+
+(defun twitter4-tinyurl-get (longurl)
+  "Tinyfy LONGURL"
+  (let ((api (cdr (assoc twitter4-tinyurl-service
+			 twitter4-tinyurl-services-map))))
+    (unless api
+      (error "Invaild `twitter4-tinyurl-service'. try one of %s"
+	     (concat (mapconcat (lambda (x)
+				  (symbol-name (car x)))
+				twitter4-tinyurl-services-map ", "))))
+    (if longurl
+	(let ((buffer (url-retrieve-synchronously (concat api longurl))))
+	  (with-current-buffer buffer
+	    (goto-char (point-min))
+	    (prog1
+		(if (search-forward-regexp "\n\r?\n\\([^\n\r]*\\)" nil t)
+		    (match-string-no-properties 1)
+		  (error "TinyURL failed: %s" longurl))
+	      (kill-buffer buffer))))
+      nil)))
 
 ;;;
 ;;; Commands
@@ -1020,95 +2147,128 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 
 (defun twitter4-stop ()
   (interactive)
-  (cancel-timer twitter4-timer)
-  (setq twitter4-timer nil))
+  (when twitter4-timer
+    (cancel-timer twitter4-timer)
+    (setq twitter4-timer nil)))
 
-(defun twitter4-get-timeline (method)
-  (if (not (eq twitter4-last-timeline-retrieved method))
-      (setq twitter4-timeline-last-update nil
-	    twitter4-timeline-data nil))
-  (setq twitter4-last-timeline-retrieved method)
-  (let ((buf (get-buffer twitter4-buffer)))
-    (if (not buf)
-	(twitter4-stop)
-      (if (not twitter4-timeline-last-update)
-	  (twitter4-http-get "statuses" method)
-	(let* ((system-time-locale "C")
-	       (since
-		(twitter4-global-strftime
-		 "%a, %d %b %Y %H:%M:%S JST"
-		 twitter4-timeline-last-update)))
-	  (twitter4-http-get "statuses" method
-			       `(("since" . ,since)))))))
+(defun twitter4-scroll-mode (&optional arg)
+  (interactive)
+  (setq twitter4-scroll-mode
+	(if (null arg)
+	    (not twitter4-scroll-mode)
+	  (> (prefix-numeric-value arg) 0)))
+  (twitter4-update-mode-line))
 
-  (if (and twitter4-icon-mode window-system)
-      (if twitter4-image-stack
-	  (let ((proc
-		 (apply
-		  #'start-process
-		  "wget-images"
-		  (twitter4-wget-buffer)
-		  "wget"
-		  (format "--directory-prefix=%s" twitter4-tmp-dir)
-		  "--no-clobber"
-		  "--quiet"
-		  twitter4-image-stack)))
-	    (set-process-sentinel
-	     proc
-	     (lambda (proc stat)
-	       (clear-image-cache)
-	       (save-excursion
-		 (set-buffer (twitter4-wget-buffer))
-		 )))))))
+(defun twitter4-jojo-mode (&optional arg)
+  (interactive)
+  (setq twitter4-jojo-mode
+	(if (null arg)
+	    (not twitter4-jojo-mode)
+	  (> (prefix-numeric-value arg) 0)))
+  (twitter4-update-mode-line))
 
 (defun twitter4-friends-timeline ()
   (interactive)
-  (twitter4-get-timeline "friends_timeline"))
+  (twitter4-get-and-render-timeline '(friends)))
 
 (defun twitter4-replies-timeline ()
   (interactive)
-  (twitter4-get-timeline "replies"))
+  (twitter4-get-and-render-timeline '(replies)))
 
 (defun twitter4-public-timeline ()
   (interactive)
-  (twitter4-get-timeline "public_timeline"))
+  (twitter4-get-and-render-timeline '(public)))
 
 (defun twitter4-user-timeline ()
   (interactive)
-  (twitter4-get-timeline "user_timeline"))
-
-(defun twitter4-current-timeline-interactive ()
-  (interactive)
-  (setq twitter4-last-timeline-interactive t)
-  (twitter4-current-timeline))
+  (twitter4-get-and-render-timeline `(user ,(twitter4-get-username))))
 
 (defun twitter4-current-timeline-noninteractive ()
-  (setq twitter4-last-timeline-interactive nil)
-  (twitter4-current-timeline))
+  (twitter4-current-timeline t))
 
-(defun twitter4-current-timeline ()
-  (if (not twitter4-last-timeline-retrieved)
-      (setq twitter4-last-timeline-retrieved "friends_timeline"))
-  (twitter4-get-timeline twitter4-last-timeline-retrieved))
+(defun twitter4-current-timeline (&optional noninteractive)
+  (interactive)
+  (let ((spec (or twitter4-last-retrieved-timeline-spec-string
+		  twitter4-initial-timeline-spec-string)))
+    (twitter4-get-and-render-timeline spec noninteractive)))
 
 (defun twitter4-update-status-interactive ()
   (interactive)
   (twitter4-update-status-from-minibuffer))
 
+(defun twitter4-update-lambda ()
+  (interactive)
+  (when (and (string-equal "Japanese" current-language-environment)
+	     (or (> emacs-major-version 21)
+		 (eq 'utf-8 (terminal-coding-system))))
+    (twitter4-http-post
+     "twitter.com"
+     "statuses/update"
+     `(("status" . ,(mapconcat
+		     'char-to-string
+		     (mapcar 'twitter4-ucs-to-char
+			     '(955 12363 12431 12356 12356 12424 955)) ""))
+       ("source" . "twmode")))))
+
+(defun twitter4-update-jojo (usr msg)
+  (when (and (string-equal "Japanese" current-language-environment)
+	     (or (> emacs-major-version 21)
+		 (eq 'utf-8 (terminal-coding-system))))
+    (if (string-match
+	 (mapconcat
+	  'char-to-string
+	  (mapcar 'twitter4-ucs-to-char
+		  '(27425 12395 92 40 12362 21069 92 124 36020 27096
+			  92 41 12399 12300 92 40 91 94 12301 93 43 92 
+			  41 12301 12392 35328 12358)) "")
+	 msg)
+	(twitter4-http-post
+	 "twitter.com"
+	 "statuses/update"
+	 `(("status" . ,(concat
+			 "@" usr " "
+			 (match-string-no-properties 2 msg)
+			 (string-as-multibyte
+			  (if (>= emacs-major-version 23)
+			      "\343\200\200\343\201\257\343\201\243!?"
+			    "\222\241\241\222\244\317\222\244\303!?"))))
+	   ("source" . "twmode"))))))
+
+(defun twitter4-set-current-hashtag (&optional tag)
+  (interactive)
+  (unless tag
+    (setq tag (twitter4-completing-read "hashtag (blank to clear): #"
+					  twitter4-hashtag-history
+					  nil nil
+					  twitter4-current-hashtag
+					  'twitter4-hashtag-history))
+    (message
+     (if (eq 0 (length tag))
+	 (progn (setq twitter4-current-hashtag nil)
+		"Current hashtag is not set.")
+       (progn
+	 (setq twitter4-current-hashtag tag)
+	 (format "Current hashtag is #%s" twitter4-current-hashtag))))))
+
 (defun twitter4-erase-old-statuses ()
   (interactive)
   (setq twitter4-timeline-data nil)
-  (if (not twitter4-last-timeline-retrieved)
-      (setq twitter4-last-timeline-retrieved "friends_timeline"))
-  (if (not twitter4-timeline-last-update)
-      (twitter4-http-get "statuses" twitter4-last-timeline-retrieved)
-    (let* ((system-time-locale "C")
-	   (since
-	    (twitter4-global-strftime
-	     "%a, %d %b %Y %H:%M:%S JST"
-	     twitter4-timeline-last-update)))
-      (twitter4-http-get "statuses" twitter4-last-timeline-retrieved
-			   `(("since" . ,since))))))
+  (if (not twitter4-last-retrieved-timeline-spec-string)
+      (setq twitter4-last-retrieved-timeline-spec-string
+	    twitter4-initial-timeline-spec-string)
+    (let* ((spec-string twitter4-last-retrieved-timeline-spec-string)
+	   (spec (twitter4-string-to-timeline-spec spec-string))
+	   (pair (twitter4-timeline-spec-to-host-method spec))
+	   (host (car pair))
+	   (method (cadr pair)))
+      (if (not twitter4-timeline-last-update)
+	  (twitter4-http-get host method)
+	(let* ((system-time-locale "C")
+	       (since
+		(twitter4-global-strftime
+		 "%a, %d %b %Y %H:%M:%S GMT"
+		 twitter4-timeline-last-update)))
+	  (twitter4-http-get host method nil `(("since" . ,since))))))))
 
 (defun twitter4-click ()
   (interactive)
@@ -1120,29 +2280,65 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
   (interactive)
   (let ((username (get-text-property (point) 'username))
 	(id (get-text-property (point) 'id))
-	(uri (get-text-property (point) 'uri)))
-    (if username
-	(twitter4-update-status-from-minibuffer (concat "@" username " ") id)
-      (if uri
-	  (browse-url uri)))))
+	(uri (get-text-property (point) 'uri))
+	(uri-in-text (get-text-property (point) 'uri-in-text))
+	(screen-name-in-text
+	 (get-text-property (point) 'screen-name-in-text)))
+    (cond (screen-name-in-text
+	   (twitter4-update-status-from-minibuffer
+	    (concat "@" screen-name-in-text " ") id))
+	  (uri-in-text
+	   (browse-url uri-in-text))
+	  (username
+	   (twitter4-update-status-from-minibuffer
+	    (concat "@" username " ") id))
+	  (uri
+	   (browse-url uri)))))
+
+(defun twitter4-tinyurl-replace-at-point ()
+  "Replace the url at point with a tiny version."
+  (interactive)
+  (let ((url-bounds (bounds-of-thing-at-point 'url)))
+    (when url-bounds
+      (let ((url (twitter4-tinyurl-get (thing-at-point 'url))))
+	(when url
+	  (save-restriction
+	    (narrow-to-region (car url-bounds) (cdr url-bounds))
+	    (delete-region (point-min) (point-max))
+	    (insert url)))))))
 
 (defun twitter4-retweet ()
   (interactive)
-  (let ((username (get-text-property (point) 'username))
-	(id (get-text-property (point) 'id))
-	(text (get-text-property (point) 'text)))
-    (when username
-	(twitter4-update-status-from-minibuffer
-	  (concat "のっかりつぶやき: @" username " " text ) id))))
+  (if twitter4-use-native-retweet
+      (twitter4-native-retweet)
+    (twitter4-organic-retweet)))
 
-(defun twitter4-naruhodius ()
+(defun twitter4-organic-retweet ()
   (interactive)
   (let ((username (get-text-property (point) 'username))
+	(text (get-text-property (point) 'text))
 	(id (get-text-property (point) 'id))
-	(text (get-text-property (point) 'text)))
+	(retweet-time (current-time))
+	(format-str (or twitter4-retweet-format
+			"RT: %t (via @%s)")))
     (when username
+      (let ((prefix "%")
+	    (replace-table
+	     `(("%" . "%")
+	       ("s" . ,username)
+	       ("t" . ,text)
+	       ("#" . ,id)
+	       ("C{\\([^}]*\\)}" .
+		(lambda (context)
+		  (let ((str (cdr (assq 'following-string context)))
+			(match-data (cdr (assq 'match-data context))))
+		    (store-match-data match-data)
+		    (format-time-string (match-string 1 str) ',retweet-time))))
+	       ))
+	    )
 	(twitter4-update-status-from-minibuffer
-	  (concat "ナルホディウス: " text " (via @" username ")") id))))
+	 (twitter4-format-string format-str prefix replace-table))
+	))))
 
 (defun twitter4-view-user-page ()
   (interactive)
@@ -1150,19 +2346,108 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
     (if uri
 	(browse-url uri))))
 
+(defun twitter4-follow (&optional remove)
+  (interactive)
+  (let ((username (get-text-property (point) 'username))
+	(method (if remove "destroy" "create"))
+	(mes (if remove "unfollowing" "following")))
+    (unless username
+      (setq username (twitter4-read-username-with-completion
+		      "who: " "" 'twitter4-user-history)))
+    (if (> (length username) 0)
+	(when (y-or-n-p (format "%s %s? " mes username))
+	  (twitter4-manage-friendships method username))
+      (message "No user selected"))))
+
+(defun twitter4-unfollow ()
+  (interactive)
+  (twitter4-follow t))
+
+(defun twitter4-native-retweet ()
+  (interactive)
+  (let ((id (get-text-property (point) 'id))
+	(text (get-text-property (point) 'text))
+	(len 25))
+    (if id
+	(let ((mes (format "Retweet \"%s\"? "
+			   (if (> (length text) len)
+			       (concat (substring text 0 len) "...")
+			     text))))
+	  (when (y-or-n-p mes)
+	    (twitter4-http-post "api.twitter.com"
+			(concat "1/statuses/retweet/" id)
+			`(("source" . "twmode")))))
+      (message "No status selected"))))
+
+(defun twitter4-favorite (&optional remove)
+  (interactive)
+  (let ((id (get-text-property (point) 'id))
+	(text (get-text-property (point) 'text))
+	(len 25) ;; XXX
+	(method (if remove "destroy" "create")))
+    (if id
+	(let ((mes (format "%s \"%s\"? "
+			   (if remove "unfavorite" "favorite")
+			   (if (> (length text) len)
+			       (concat (substring text 0 len) "...")
+			     text))))
+	  (when (y-or-n-p mes)
+	    (twitter4-manage-favorites method id)))
+      (message "No status selected"))))
+
+(defun twitter4-unfavorite ()
+  (interactive)
+  (twitter4-favorite t))
+
+(defun twitter4-visit-timeline (&optional timeline-spec initial)
+  (interactive)
+  (let ((timeline-spec
+	 (or timeline-spec
+	     (twitter4-read-timeline-spec-with-completion
+	      "timeline: " initial t))))
+    (when timeline-spec
+      (twitter4-get-and-render-timeline timeline-spec))))
+
 (defun twitter4-other-user-timeline ()
   (interactive)
-  (let ((username (get-text-property (point) 'username)))
-    (if (> (length username) 0)
-	(twitter4-get-timeline (concat "user_timeline/" username))
+  (let* ((username (get-text-property (point) 'username))
+	 (screen-name-in-text
+	  (get-text-property (point) 'screen-name-in-text))
+	 (spec (cond (screen-name-in-text `(user ,screen-name-in-text))
+		     (username `(user ,username))
+		     (t nil))))
+    (if spec
+	(twitter4-get-and-render-timeline spec)
       (message "No user selected"))))
 
 (defun twitter4-other-user-timeline-interactive ()
   (interactive)
-  (let ((username (read-from-minibuffer "user: " (get-text-property (point) 'username))))
+  (let ((username
+	 (twitter4-read-username-with-completion
+	  "user: " nil
+	  'twitter4-user-history)))
     (if (> (length username) 0)
-	(twitter4-get-timeline (concat "user_timeline/" username))
+	(twitter4-get-and-render-timeline `(user ,username))
       (message "No user selected"))))
+
+(defun twitter4-other-user-list-interactive ()
+  (interactive)
+  (let ((username (twitter4-read-username-with-completion
+		   "whose list: "
+		   (get-text-property (point) 'username)
+		   'twitter4-user-history)))
+    (if (string= "" username)
+	(message "No user selected")
+      (let* ((list-name (twitter4-read-list-name username))
+	     (spec `(list ,username ,list-name)))
+	(when list-name
+	  (twitter4-get-and-render-timeline spec))))))
+
+(defun twitter4-direct-message ()
+  (interactive)
+  (let ((username (get-text-property (point) 'username)))
+    (if username
+	(twitter4-update-status-from-minibuffer (concat "d " username " ")))))
 
 (defun twitter4-reply-to-user ()
   (interactive)
@@ -1170,9 +2455,67 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
     (if username
 	(twitter4-update-status-from-minibuffer (concat "@" username " ")))))
 
+(defun twitter4-make-list-from-assoc (key data)
+  (mapcar (lambda (status)
+	    (cdr (assoc key status)))
+	  data))
+
+(defun twitter4-read-username-with-completion (prompt init-user &optional history)
+  (let ((collection
+	 (append (twitter4-make-list-from-assoc
+		  'user-screen-name twitter4-timeline-data)
+		 twitter4-user-history)))
+    (twitter4-completing-read prompt collection nil nil init-user history)))
+
+(defun twitter4-read-list-name (username &optional list-index)
+  (let* ((list-index (or list-index
+			 (twitter4-get-list-index-sync username)))
+	 (prompt (concat username "'s list: "))
+	 (listname
+	  (if list-index
+	      (twitter4-completing-read prompt list-index nil t nil)
+	    nil)))
+    (if (string= "" listname)
+	nil
+      listname)))
+
+(defun twitter4-read-timeline-spec-with-completion (prompt initial &optional as-string)
+  (let* ((dummy-hist (append twitter4-timeline-history
+			     (twitter4-make-list-from-assoc
+			      'user-screen-name twitter4-timeline-data)))
+	 (spec-string (twitter4-completing-read prompt dummy-hist
+						  nil nil initial 'dummy-hist))
+	 (spec-string
+	  (if (string-match "^\\([^/]+\\)/$" spec-string)
+	      (let* ((username (match-string 1 spec-string))
+		     (list-index (twitter4-get-list-index-sync username))
+		     (listname
+		      (if list-index
+			  (twitter4-read-list-name username list-index)
+			nil)))
+		(if listname
+		    (concat username "/" listname)
+		  nil))
+	    spec-string))
+	 (spec (twitter4-string-to-timeline-spec spec-string)))
+    (cond
+     (spec (if as-string
+	       spec-string
+	     spec))
+     ((string= "" spec-string)
+      (message "No timeline specs are specified.")
+      nil)
+     (t
+      (message "\"%s\" is invalid as a timeline spec." spec-string)
+      nil))))
+
+(defun twitter4-get-username ()
+  (or twitter4-username-active
+      (setq twitter4-username-active (read-string "your twitter username: "))))
+
 (defun twitter4-get-password ()
-  (or twitter4-password
-      (setq twitter4-password (read-passwd "twitter4-mode: "))))
+  (or twitter4-password-active
+      (setq twitter4-password-active (read-passwd "your twitter password: "))))
 
 (defun twitter4-goto-next-status ()
   "Go to next status."
@@ -1181,7 +2524,11 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
     (setq pos (twitter4-get-next-username-face-pos (point)))
     (if pos
 	(goto-char pos)
-      (message "End of status."))))
+      (let ((id (get-text-property (point) 'id)))
+        (if id
+	    (twitter4-get-and-render-timeline
+	     twitter4-last-retrieved-timeline-spec-string
+	     nil id))))))
 
 (defun twitter4-get-next-username-face-pos (pos)
   (interactive)
@@ -1196,10 +2543,10 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
 (defun twitter4-goto-previous-status ()
   "Go to previous status."
   (interactive)
-  (let ((pos))
-    (setq pos (twitter4-get-previous-username-face-pos (point)))
-    (if pos
-	(goto-char pos)
+  (let* ((current-pos (point))
+         (prev-pos (twitter4-get-previous-username-face-pos current-pos)))
+    (if (and prev-pos (not (eq current-pos prev-pos)))
+        (goto-char prev-pos)
       (message "Start of status."))))
 
 (defun twitter4-get-previous-username-face-pos (pos)
@@ -1208,7 +2555,14 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
     (catch 'not-found
       (while (and pos (not (eq prop twitter4-username-face)))
 	(setq pos (previous-single-property-change pos 'face))
-	(when (eq pos nil) (throw 'not-found nil))
+	(when (eq pos nil)
+	  (let ((head-prop (get-text-property (point-min) 'face)))
+	    (if (and
+		 (not (eq prop twitter4-username-face))
+		 (eq head-prop twitter4-username-face))
+		(setq pos (point-min))
+	      (throw 'not-found nil)
+	      )))
 	(setq prop (get-text-property pos 'face)))
       pos)))
 
@@ -1230,30 +2584,77 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
   "Go to previous status of user."
   (interactive)
   (let ((user-name (twitter4-get-username-at-pos (point)))
+        (prev-pos (point))
 	(pos (twitter4-get-previous-username-face-pos (point))))
     (while (and (not (eq pos nil))
+                (not (eq pos prev-pos))
 		(not (equal (twitter4-get-username-at-pos pos) user-name)))
+      (setq prev-pos pos)
       (setq pos (twitter4-get-previous-username-face-pos pos)))
-    (if pos
+    (if (and pos
+             (not (eq pos prev-pos))
+             (equal (twitter4-get-username-at-pos pos) user-name))
 	(goto-char pos)
       (if user-name
 	  (message "Start of %s's status." user-name)
 	(message "Invalid user-name.")))))
 
-(defun twitter4-get-username-at-pos (pos)
-  (let ((start-pos pos)
-	(end-pos))
-    (catch 'not-found
-      (while (eq (get-text-property start-pos 'face) twitter4-username-face)
-	(setq start-pos (1- start-pos))
-	(when (or (eq start-pos nil) (eq start-pos 0)) (throw 'not-found nil)))
-      (setq start-pos (1+ start-pos))
-      (setq end-pos (next-single-property-change pos 'face))
-      (buffer-substring start-pos end-pos))))
+(defun twitter4-goto-next-thing (&optional backword)
+  "Go to next interesting thing. ex) username, URI, ... "
+  (interactive)
+  (let* ((propety-change-f (if backword
+			       'previous-single-property-change
+			     'next-single-property-change))
+	 (pos (funcall propety-change-f (point) 'face)))
+    (while (and pos
+		(not 
+		 (let* ((current-face (get-text-property pos 'face))
+			(face-pred
+			 (lambda (face)
+			   (cond
+			    ((listp current-face) (memq face current-face))
+			    ((symbolp current-face) (eq face current-face))
+			    (t nil)))))
+		   (member-if face-pred
+			      '(twitter4-username-face
+				twitter4-uri-face)))))
+      (setq pos (funcall propety-change-f pos 'face)))
+    (when pos
+      (goto-char pos))))
 
-(defun twitter4-get-status-url (username id)
-  "Generate status URL."
-  (format "http://twitter.com/%s/statuses/%s" username id))
+(defun twitter4-goto-previous-thing (&optional backword)
+  "Go to previous interesting thing. ex) username, URI, ... "
+  (interactive)
+  (twitter4-goto-next-thing (not backword)))
+
+(defun twitter4-get-username-at-pos (pos)
+  (or (get-text-property pos 'username)
+      (get-text-property (max (point-min) (1- pos)) 'username)
+      (let* ((border (or (previous-single-property-change pos 'username)
+                         (point-min)))
+             (pos (max (point-min) (1- border))))
+        (get-text-property pos 'username))))
+
+(defun twitter4-mode ()
+  "Major mode for Twitter
+\\{twitter4-mode-map}"
+  (interactive)
+  (switch-to-buffer (twitter4-buffer))
+  (kill-all-local-variables)
+  (twitter4-mode-init-variables)
+  (use-local-map twitter4-mode-map)
+  (setq major-mode 'twitter4-mode)
+  (twitter4-update-mode-line)
+  (set-syntax-table twitter4-mode-syntax-table)
+  (run-hooks 'twitter4-mode-hook)
+  (font-lock-mode -1)
+  (twitter4-stop)
+  (twitter4-start))
+
+(defun twitter4-suspend ()
+  "Suspend twitter4-mode then switch to another buffer."
+  (interactive)
+  (switch-to-buffer (other-buffer)))
 
 ;;;###autoload
 (defun twit ()
