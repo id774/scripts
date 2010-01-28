@@ -24,16 +24,16 @@ echo "[meminfo]"
 cat /proc/meminfo
 echo
 
-echo "[free -m -t]"
-free -m -t
+echo "[free -t]"
+free -t
 echo
 
 echo "[vmstat -n]"
 vmstat -n
 echo
 
-echo "[df -P -T -m]"
-df -P -T -m
+echo "[df -P -T]"
+df -P -T
 echo
 
 echo "[ifconfig]"
