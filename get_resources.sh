@@ -16,6 +16,10 @@ echo "[uptime]"
 uptime
 echo
 
+echo "[lsmod]"
+lsmod
+echo
+
 echo "[cpuinfo]"
 cat /proc/cpuinfo
 echo
