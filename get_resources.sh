@@ -16,10 +16,6 @@ echo "[uptime]"
 uptime
 echo
 
-echo "[lsmod]"
-lsmod
-echo
-
 echo "[cpuinfo]"
 cat /proc/cpuinfo
 echo
@@ -58,6 +54,10 @@ echo
 
 echo "[top -b -n 1]"
 top -b -n 1
+echo
+
+echo "[lsmod]"
+lsmod
 echo
 
 echo "[ps -H auxwww]"
