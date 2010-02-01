@@ -6,9 +6,9 @@
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
 #  v1.7 12/26,2009
-#       Update to ruby 1.8.7-p248, 1.9.1-p376
+#       Update to ruby 1.8.7-p248, 1.9.1-p376.
 #  v1.6 8/27,2009
-#       Update to ruby 1.9.1-p243
+#       Update to ruby 1.9.1-p243.
 #  v1.5 4/29,2009
 #       Put emacs-ruby installer to out.
 #  v1.4 1/7,2009

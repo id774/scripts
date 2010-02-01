@@ -5,8 +5,10 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.22 2/2,2010
+#       Add sysklogd.
 # v1.21 12/26,2009
-#       Update to ruby 1.8.7-p248, 1.9.1-p376
+#       Update to ruby 1.8.7-p248, 1.9.1-p376.
 # v1.20 12/17,2009
 #       Add xfwm4-themes.
 # v1.19 10/5,2009
@@ -163,6 +165,9 @@ sudo aptitude -y install zsh
 chsh -s /bin/zsh
 sudo chsh -s /bin/bash root
 sudo aptitude -y install screen
+
+# sysklogd
+sudo aptitude -y install klogd sysklogd
 
 # Libraries and Programming Tools
 sudo aptitude -y install ntp
@@ -395,7 +400,7 @@ test -b /dev/mapper/`/bin/hostname`-usr  && sudo tune2fs -i 0 -c 0 -m 1 /dev/map
 test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-home
 
 # Linux kernel source, headers, kbuild (Debian)
-#sudo aptitude -y install linux-kbuild-2.6.26 linux-headers-2.6.26-1-686 linux-source-2.6.26
+#sudo aptitude -y install linux-kbuild-2.6.26 linux-headers-2.6.26-2-686 linux-source-2.6.26
 
 # Monitoring Tools
 # sysstat
