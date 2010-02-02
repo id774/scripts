@@ -15,6 +15,9 @@ sudo aptitude update
 # sysklogd
 sudo aptitude -y install klogd sysklogd
 
+# Libraries and Programming Tools
+sudo aptitude -y install scheme48 cmuscheme48-el
+
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
 
