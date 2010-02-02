@@ -1,0 +1,1 @@
+[% IF entry.body %][% entry.body_text %][% ELSE %][% END %]

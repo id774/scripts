@@ -19,7 +19,11 @@ plugins:
       module: Deduped
       path: /home/plagger/.plagger_tmp/tmp12/plagger-twitter2tumblr.db
 
+  - module: Filter::TwitterOnly
+
   - module: Filter::TwitterQuote
+
+  - module: Filter::StripBlacklistUrl
 
   - module: Filter::Reverse
 
