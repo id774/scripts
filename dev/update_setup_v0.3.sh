@@ -35,6 +35,10 @@ sudo cp -Rv $SCRIPTS/cron/plagger/plugins/publish/* $plagger_dir/Plugin/Publish/
 sudo cp -Rv $SCRIPTS/cron/plagger/plugins/filter/* $plagger_dir/Plugin/Filter/
 sudo cp -Rv $SCRIPTS/cron/plagger/plugins/customfeed/* $plagger_dir/Plugin/CustomFeed/
 
+# Linux kernel source, headers, kbuild (Debian)
+sudo aptitude -y purge linux-headers-2.6.26-1-686
+sudo aptitude -y install linux-headers-2.6.26-2-686
+
 # Last Setup
 # /var/log/cron.log
 sudo vim /etc/syslog.conf
