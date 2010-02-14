@@ -6,20 +6,20 @@ import re
 def expand_directory(args):
     for root, dirs, files in os.walk(args[0]):
         for f in files:
-            cmd = ("unzip " + args[0] + "/" + f) 
+            cmd = ("unzip " + args[0] + os.sep + f) 
             os.system(cmd)
 
 def unzip_subdir(args):
     l = []
     for root, dirs, files in os.walk(args[0]):
         for f in files:
-            d = re.sub(".zip", "", os.path.basename(f))
+            d = re.sub("\.zip\Z", "", os.path.basename(f))
             if os.access(d, os.F_OK):
                 l.append(d)
             else:
                 os.mkdir(d)
                 os.chdir(d)
-                cmd = ("unzip " + args[0] + "/" + f) 
+                cmd = ("unzip " + args[0] + os.sep + f) 
                 os.system(cmd)
                 os.chdir("..")
     if len(l) > 0:
