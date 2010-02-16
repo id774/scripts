@@ -155,6 +155,10 @@
 (global-set-key "\C-x\C-a" '(lambda ()(interactive)(ansi-term "/bin/zsh")))
 (global-set-key "\C-x\ a" '(lambda ()(interactive)(ansi-term "/bin/zsh")))
 
+;; 矩形選択
+(define-key global-map "\C-c\C-c\C-z" 'cua-mode)
+(define-key global-map "\C-c\C-c\ z" 'cua-mode)
+
 ;; アンドゥ/リドゥ
 (define-key global-map "\C-c\C-c\C-u" 'undo)
 (define-key global-map "\C-c\C-c\ u" 'undo)

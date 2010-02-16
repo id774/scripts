@@ -136,6 +136,9 @@
 ;; 空行強調
 (setq-default indicate-empty-lines t)
 
+;; 行頭の C-k で行全体を削除
+(setq kill-whole-line t)
+
 ;; 行間
 ;; (setq-default line-spacing 0)
 

@@ -28,6 +28,9 @@
 (key-chord-define-global "rt" 'beginning-of-buffer)
 (key-chord-define-global "vb" 'end-of-buffer)
 
+;; 矩形選択
+(key-chord-define-global "we" 'cua-mode)
+
 ;; アンドゥ/リドゥ
 (key-chord-define-global "as" 'undo)
 (key-chord-define-global "sd" 'redo)
