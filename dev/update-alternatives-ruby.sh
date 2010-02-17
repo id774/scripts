@@ -1,37 +1,38 @@
 #!/bin/sh
 
-sudo update-alternatives --remove-all ruby
-sudo update-alternatives --remove-all gem
-sudo update-alternatives --remove-all irb
-sudo update-alternatives --remove-all rake
-sudo update-alternatives --remove-all rdoc
-sudo update-alternatives --remove-all erb
-sudo update-alternatives --remove-all testrb
+remove_alternatives() {
+  while [ $# -gt 0 ]
+  do
+    sudo update-alternatives --remove-all $1
+    shift
+  done 
+}
 
-sudo update-alternatives \
-  --install /opt/bin/ruby   ruby   /usr/bin/ruby1.8 90\
-  --slave   /opt/bin/gem    gem    /usr/bin/gem1.8\
-  --slave   /opt/bin/irb    irb    /usr/bin/irb1.8\
-  --slave   /opt/bin/rake   rake   /usr/bin/rake1.8\
-  --slave   /opt/bin/rdoc   rdoc   /usr/bin/rdoc1.8\
-  --slave   /opt/bin/erb    erb    /usr/bin/erb1.8\
-  --slave   /opt/bin/testrb testrb /usr/bin/testrb1.8
+update_alternatives() {
+    sudo update-alternatives \
+      --install $1/ruby   ruby   $2/ruby$4 $3\
+      --slave   $1/gem    gem    $2/gem$4\
+      --slave   $1/irb    irb    $2/irb$4\
+      --slave   $1/rake   rake   $2/rake$4\
+      --slave   $1/rdoc   rdoc   $2/rdoc$4\
+      --slave   $1/erb    erb    $2/erb$4\
+      --slave   $1/testrb testrb $2/testrb$4
+}
 
-sudo update-alternatives \
-  --install /opt/bin/ruby   ruby   /usr/local/bin/ruby 100\
-  --slave   /opt/bin/gem    gem    /usr/local/bin/gem\
-  --slave   /opt/bin/irb    irb    /usr/local/bin/irb\
-  --slave   /opt/bin/rake   rake   /usr/local/bin/rake\
-  --slave   /opt/bin/rdoc   rdoc   /usr/local/bin/rdoc\
-  --slave   /opt/bin/erb    erb    /usr/local/bin/erb\
-  --slave   /opt/bin/testrb testrb /usr/local/bin/testrb
+make_all_alternatives() {
+    TARGET=/opt/bin
+    SOURCE=/usr/bin
+    PRIORITY=90
+    SUFFIX=1.8
+    update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
+    SOURCE=/usr/local/bin
+    PRIORITY=100
+    SUFFIX=
+    update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
+    SOURCE=/opt/ruby/1.9.1/bin
+    PRIORITY=150
+    update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
+}
 
-sudo update-alternatives \
-  --install /opt/bin/ruby   ruby   /opt/ruby/1.9.1/bin/ruby 150\
-  --slave   /opt/bin/gem    gem    /opt/ruby/1.9.1/bin/gem\
-  --slave   /opt/bin/irb    irb    /opt/ruby/1.9.1/bin/irb\
-  --slave   /opt/bin/rake   rake   /opt/ruby/1.9.1/bin/rake\
-  --slave   /opt/bin/rdoc   rdoc   /opt/ruby/1.9.1/bin/rdoc\
-  --slave   /opt/bin/erb    erb    /opt/ruby/1.9.1/bin/erb\
-  --slave   /opt/bin/testrb testrb /opt/ruby/1.9.1/bin/testrb
-
+remove_alternatives ruby gem irb rake rdoc erb testrb
+make_all_alternatives
