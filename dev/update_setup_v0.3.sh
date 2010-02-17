@@ -12,6 +12,10 @@ export SCRIPTS=$HOME/scripts
 sudo vim /etc/apt/sources.list
 sudo aptitude update
 
+# Make Directory
+sudo mkdir /opt/sbin
+sudo mkdir /opt/bin
+
 # sysklogd
 sudo aptitude -y install klogd sysklogd
 
@@ -23,7 +27,8 @@ $SCRIPTS/installer/install_dotemacs.sh
 
 # Ruby
 $SCRIPTS/installer/install_ruby.sh 187-249
-#$SCRIPTS/installer/install_ruby.sh 191-378
+$SCRIPTS/installer/install_ruby.sh 191-378 /opt/ruby/1.9.1
+$SCRIPTS/dev/update-alternatives-ruby.sh
 
 # Server Resource Report Job
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
