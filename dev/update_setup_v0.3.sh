@@ -28,7 +28,7 @@ $SCRIPTS/installer/install_dotemacs.sh
 # Ruby
 $SCRIPTS/installer/install_ruby.sh 187-249
 $SCRIPTS/installer/install_ruby.sh 191-378 /opt/ruby/1.9.1
-$SCRIPTS/dev/update-alternatives-ruby.sh
+$SCRIPTS/config/update-alternatives-ruby.sh
 
 # Server Resource Report Job
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh

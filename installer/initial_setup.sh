@@ -260,7 +260,7 @@ sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
 #sudo aptitude -y install ruby1.9 ruby1.9-dev rubygems
 $SCRIPTS/installer/install_ruby.sh 187-249
 $SCRIPTS/installer/install_ruby.sh 191-378 /opt/ruby/1.9.1
-$SCRIPTS/dev/update-alternatives-ruby.sh
+$SCRIPTS/config/update-alternatives-ruby.sh
 
 # Apache
 sudo aptitude -y install apache2
