@@ -16,8 +16,7 @@ make_and_install() {
     test -n "$2" || ./configure
     test -n "$2" && ./configure --prefix $2
     make
-    test -n "$2" || sudo make install
-    test -n "$2" && make install
+    sudo make install
     cd ..
 }
 
