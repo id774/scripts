@@ -7,6 +7,7 @@
 #
 #  v1.8 2/17,2010
 #       Update to ruby 1.8.7-p249, 1.9.1-p378.
+#       Add prefix syntax.
 #  v1.7 12/26,2009
 #       Update to ruby 1.8.7-p248, 1.9.1-p376.
 #  v1.6 8/27,2009
@@ -25,15 +26,20 @@
 #       Stable.
 ########################################################################
 
+make_and_install() {
+    sudo autoconf
+    test -n "$1" || ./configure
+    test -n "$1" && ./configure --prefix $1
+    make
+    sudo make install
+}
+
 install_trunk() {
     test -d /usr/local/src/ruby || sudo mkdir -p /usr/local/src/ruby
     cd /usr/local/src/ruby
     sudo svn co http://svn.ruby-lang.org/repos/ruby/trunk trunk
     cd trunk
-    sudo autoconf
-    sudo ./configure
-    sudo make
-    sudo make install
+    make_and_install $2
     cd ext/zlib
     sudo ruby extconf.rb --with-zlib-include=/usr/include -with-zlib-lib=/usr/lib
     sudo make
@@ -50,10 +56,7 @@ install_branch() {
     cd /usr/local/src/ruby/branches
     sudo svn co http://svn.ruby-lang.org/repos/ruby/branches/$1/ $1
     cd $1
-    sudo autoconf
-    sudo ./configure
-    sudo make
-    sudo make install
+    make_and_install $2
     cd ext/zlib
     sudo ruby extconf.rb --with-zlib-include=/usr/include -with-zlib-lib=/usr/lib
     sudo make
@@ -71,9 +74,7 @@ install_stable() {
     wget ftp://ftp.ruby-lang.org/pub/ruby/$2/ruby-$1.zip
     unzip ruby-$1.zip
     cd ruby-$1
-    ./configure
-    make
-    sudo make install
+    make_and_install $3
     cd ext/zlib
     ruby extconf.rb --with-zlib-include=/usr/include -with-zlib-lib=/usr/lib
     make
@@ -101,46 +102,46 @@ esac
 
 case "$1" in
   191-378)
-    install_stable 1.9.1-p378 1.9
+    install_stable 1.9.1-p378 1.9 $2
     ;;
   191-376)
-    install_stable 1.9.1-p376 1.9
+    install_stable 1.9.1-p376 1.9 $2
     ;;
   191-243)
-    install_stable 1.9.1-p243 1.9
+    install_stable 1.9.1-p243 1.9 $2
     ;;
   187-249)
-    install_stable 1.8.7-p249 1.8
+    install_stable 1.8.7-p249 1.8 $2
     ;;
   187-248)
-    install_stable 1.8.7-p248 1.8
+    install_stable 1.8.7-p248 1.8 $2
     ;;
   187-174)
-    install_stable 1.8.7-p174 1.8
+    install_stable 1.8.7-p174 1.8 $2
     ;;
   187-72)
-    install_stable 1.8.7-p72 1.7
+    install_stable 1.8.7-p72 1.8 $2
     ;;
   186-383)
-    install_stable 1.8.6-p383 1.8
+    install_stable 1.8.6-p383 1.8 $2
     ;;
   186-287)
-    install_stable 1.8.6-p287 1.8
+    install_stable 1.8.6-p287 1.8 $2
     ;;
   18-svn)
-    install_branch ruby_1_8
+    install_branch ruby_1_8 $2
     ;;
   191-svn)
-    install_branch ruby_1_9_1
+    install_branch ruby_1_9_1 $2
     ;;
   187-svn)
-    install_branch ruby_1_8_7
+    install_branch ruby_1_8_7 $2
     ;;
   186-svn)
-    install_branch ruby_1_8_6
+    install_branch ruby_1_8_6 $2
     ;;
   *)
-    install_trunk
+    install_trunk $2
     ;;
 esac
 
