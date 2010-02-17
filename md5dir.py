@@ -13,16 +13,16 @@ except KeyError:
 
 def md5_dir(subdirectory, args):
     import md5sum, os
-    from stat import *
+    from stat import S_ISDIR, ST_MODE
     m = md5sum.Md5sum()
     if subdirectory or S_ISDIR(os.stat(args[0])[ST_MODE]):
         for root, dirs, files in os.walk(args[0]):
             for file in files:
-                print m.get_md5(root + os.sep + file), \
-                    root + os.sep + file
+                print((m.get_md5(root + os.sep + file), \
+                    root + os.sep + file))
     else:
         for f in args:
-            print m.get_md5(f), f
+            print((m.get_md5(f), f))
 
 def main():
     from optparse import OptionParser

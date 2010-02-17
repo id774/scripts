@@ -16,9 +16,9 @@ def main():
             for d in dirs:
                 if options.mkdir:
                     os.makedirs(os.path.join(sys.argv[2], root, d))
-                    print 'mkdir ' + os.path.join(sys.argv[2], root, d)
+                    print('mkdir ' + os.path.join(sys.argv[2], root, d))
                 else:
-                    print os.path.join(sys.argv[2], root, d)
+                    print(os.path.join(sys.argv[2], root, d))
 
 if __name__=='__main__':
     main()

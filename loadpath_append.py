@@ -9,4 +9,4 @@ try:
         sys.path.append(p)
 except KeyError:
     pass
-print sys.path
+print(sys.path)

@@ -24,6 +24,8 @@ True
 >>> complete.is_complete(7)
 False
 """
+try: xrange
+except: xrange = range
 
 def get_divisor(number):
     l = []
@@ -44,5 +46,5 @@ if __name__ == '__main__':
     #doctest.testmod()
     for cnt in xrange(1,1001):
         if is_complete(cnt):
-            print cnt
+            print(cnt)
 

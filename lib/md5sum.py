@@ -3,8 +3,10 @@ class Md5sum:
         pass
 
     def get_md5(self, path):
-        import md5
-        m = md5.new()
+        try: import hashlib
+        except: import md5
+        try: m = hashlib.md5()
+        except: m = md5.new()
         for f in open(path, 'rb'):
             m.update(f)
         return m.hexdigest()

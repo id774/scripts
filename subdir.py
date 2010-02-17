@@ -15,9 +15,9 @@ def main():
             for f in files:
                 if options.delete:
                     os.unlink(os.path.join(root, f))
-                    print 'delete ' + os.path.join(root, f)
+                    print('delete ' + os.path.join(root, f))
                 else:
-                    print os.path.join(root, f)
+                    print(os.path.join(root, f))
 
 if __name__=='__main__':
     main()

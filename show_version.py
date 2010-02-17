@@ -27,15 +27,15 @@ def show_version():
     import python_module_version
     import pkg_resources
     m = python_module_version.PythonModuleVersion()
-    print m.python_version()
-    print m.django_version()
-    print m.mysqldb_version()
-    print m.twisted_version()
-    print m.mechanize_version()
-    print m.nose_version()
-    print m.sqlalchemy_version()
-    print m.migrate_version()
-    print m.turbogears_version()
+    print(m.python_version())
+    print(m.django_version())
+    print(m.mysqldb_version())
+    print(m.twisted_version())
+    print(m.mechanize_version())
+    print(m.nose_version())
+    print(m.sqlalchemy_version())
+    print(m.migrate_version())
+    print(m.turbogears_version())
 
 def module_install():
     import os

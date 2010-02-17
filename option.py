@@ -25,10 +25,10 @@ def main():
     if len(args) != 1:
         parser.error("incorrect number of arguments")
     if options.verbose:
-        print "reading %s..." % options.filename
-    print options.filename
-    print options.verbose
-    print args
+        print("reading %s..." % options.filename)
+    print(options.filename)
+    print(options.verbose)
+    print(args)
 
 if __name__ == "__main__":
     main()

@@ -23,8 +23,8 @@ def unzip_subdir(args):
                 os.system(cmd)
                 os.chdir("..")
     if len(l) > 0:
-        print ("These directories already exists.")
-        print (l)
+        print("These directories already exists.")
+        print(l)
 
 def parse_option(options, args):
     os.chdir(args[1])
@@ -35,7 +35,7 @@ def parse_option(options, args):
                 
 def main():
     from optparse import OptionParser
-    usage = "usage: %prog [source_dir] [target_dir]"
+    usage = "usage: %prog source_dir target_dir"
     parser = OptionParser(usage)
     parser.add_option("-e", "--expand", help= \
                       "expand directory (not mkdir)",
