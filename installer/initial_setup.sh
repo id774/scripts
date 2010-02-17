@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.23 2/17,2010
+#       Update to ruby 1.8.7-p249, 1.9.1-p378.
 # v1.22 2/2,2010
 #       Add sysklogd.
 # v1.21 12/26,2009
@@ -254,8 +256,8 @@ sudo aptitude -y install autoconf byacc bison autoconf-doc automake
 sudo aptitude -y install libopenssl-ruby
 sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
 #sudo aptitude -y install ruby1.9 ruby1.9-dev rubygems
-$SCRIPTS/installer/install_ruby.sh 187-248
-#$SCRIPTS/installer/install_ruby.sh 191-376
+$SCRIPTS/installer/install_ruby.sh 187-249
+#$SCRIPTS/installer/install_ruby.sh 191-378
 
 # Apache
 sudo aptitude -y install apache2

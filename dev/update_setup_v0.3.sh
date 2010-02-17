@@ -21,6 +21,10 @@ sudo aptitude -y install scheme48 cmuscheme48-el
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
 
+# Ruby
+$SCRIPTS/installer/install_ruby.sh 187-249
+#$SCRIPTS/installer/install_ruby.sh 191-378
+
 # Server Resource Report Job
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
 sudo chmod 700 /root/bin/get_resources.sh

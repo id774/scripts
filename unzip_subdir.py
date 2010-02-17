@@ -32,7 +32,7 @@ def parse_option(options, args):
         expand_directory(args)
     else:
         unzip_subdir(args)
-                
+
 def main():
     from optparse import OptionParser
     usage = "usage: %prog source_dir target_dir"

@@ -29,7 +29,7 @@ def main(argv):
     import getopt
     def usage(cmd):
         print _USAGE_FORMAT % (cmd)
-        
+
     try:
         opts, args = getopt.getopt(argv[1:], "hnu:p:s:e:o:t:m:")
         proxy = None
@@ -67,7 +67,7 @@ def main(argv):
     if not userid or not password:
         usage(argv[0])
         return 0
-    
+
     m = mixi.MIXI(proxy)
     m.login(userid, password)
     if len(target) == 0:
