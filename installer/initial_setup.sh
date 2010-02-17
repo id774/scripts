@@ -7,6 +7,7 @@
 #
 # v1.23 2/17,2010
 #       Update to ruby 1.8.7-p249, 1.9.1-p378.
+#       Add python install.
 # v1.22 2/2,2010
 #       Add sysklogd.
 # v1.21 12/26,2009
@@ -261,6 +262,11 @@ sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
 $SCRIPTS/installer/install_ruby.sh 187-249
 $SCRIPTS/installer/install_ruby.sh 191-378 /opt/ruby/1.9.1
 $SCRIPTS/config/update-alternatives-ruby.sh
+
+# Python
+$SCRIPTS/installer/install_python.sh 2.6.4 /opt/python/2.6.4
+$SCRIPTS/installer/install_python.sh 3.1.1 /opt/python/3.1.1
+$SCRIPTS/config/update-alternatives-python.sh
 
 # Apache
 sudo aptitude -y install apache2

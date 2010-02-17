@@ -25,10 +25,20 @@ sudo aptitude -y install scheme48 cmuscheme48-el
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
 
+# Deploy dot_files
+$SCRIPTS/installer/install_dotfiles.sh
+
 # Ruby
+test -d /usr/local/src/ruby/ruby-* && sudo rm -rf /usr/local/src/ruby/ruby-*
 $SCRIPTS/installer/install_ruby.sh 187-249
 $SCRIPTS/installer/install_ruby.sh 191-378 /opt/ruby/1.9.1
 $SCRIPTS/config/update-alternatives-ruby.sh
+
+# Python
+test -d /usr/local/src/python/Python-* && sudo rm -rf /usr/local/src/python/Python-*
+$SCRIPTS/installer/install_python.sh 2.6.4 /opt/python/2.6.4
+$SCRIPTS/installer/install_python.sh 3.1.1 /opt/python/3.1.1
+$SCRIPTS/config/update-alternatives-python.sh
 
 # Server Resource Report Job
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh

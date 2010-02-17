@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 2/18,2010
+#       Update to django 1.1.1.
 #  v1.0 8/15,2008
 #       Stable.
 ########################################################################
@@ -23,7 +25,7 @@ sudo aptitude -y install readline-common
 sudo aptitude -y install ipython
 
 # Web Application Framework
-$SCRIPTS/installer/install_django.sh 1.0.2
+$SCRIPTS/installer/install_django.sh 1.1.1
 sudo aptitude -y install python-cherrypy
 sudo aptitude -y install python-twisted
 sudo aptitude -y install python-nose
