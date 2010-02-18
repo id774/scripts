@@ -13,8 +13,8 @@ sudo vim /etc/apt/sources.list
 sudo aptitude update
 
 # Make Directory
-sudo mkdir /opt/sbin
-sudo mkdir /opt/bin
+test -d /opt/sbin && sudo mkdir /opt/sbin
+test -d /opt/bin && sudo mkdir /opt/bin
 
 # sysklogd
 sudo aptitude -y install klogd sysklogd
