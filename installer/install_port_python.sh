@@ -14,11 +14,11 @@
 sudo port -d selfupdate
 
 sudo port -d install python25
-sudo ln -s /opt/local/bin/python2.5 /usr/local/bin/python
+sudo ln -fs /opt/local/bin/python2.5 /usr/local/bin/python
 sudo port -d install py25-hashlib
 sudo port -d install py25-zlib
 sudo port -d install py25-setuptools
-sudo ln -s /opt/local/bin/easy_install-2.5 /usr/local/bin/easy_install
+sudo ln -fs /opt/local/bin/easy_install-2.5 /usr/local/bin/easy_install
 
 sudo port -d install py25-readline
 sudo port -d install py25-mysql
