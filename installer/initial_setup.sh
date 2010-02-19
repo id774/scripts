@@ -259,7 +259,7 @@ sudo aptitude -y install autoconf byacc bison autoconf-doc automake
 sudo aptitude -y install libopenssl-ruby
 sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
 #sudo aptitude -y install ruby1.9 ruby1.9-dev rubygems
-$SCRIPTS/installer/install_ruby.sh 187-249 /opt/ruby/1.8.7
+$SCRIPTS/installer/install_ruby.sh 187-249
 $SCRIPTS/installer/install_ruby.sh 191-378 /opt/ruby/1.9.1
 $SCRIPTS/config/update-alternatives-ruby.sh
 
