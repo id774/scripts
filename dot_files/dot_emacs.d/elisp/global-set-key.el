@@ -113,11 +113,12 @@
 
 ;; バッファリスト
 (define-key global-map "\C-x\C-b" 'electric-buffer-list)
-(define-key global-map "\C-c\C-c\ b" 'buffer-menu)
+(define-key global-map "\C-x\ b" 'anything)
+(define-key global-map "\C-c\C-c\ b" 'iswitchb-buffer)
 
 ;; 動的略語変換
-(define-key global-map [C-return] 'dabbrev-expand)
-(define-key global-map [C-S-return] 'dabbrev-completion)
+(define-key global-map [C-tab] 'dabbrev-expand)
+(define-key global-map [C-S-tab] 'dabbrev-completion)
 
 ;; C-x C-wを上書き保存にする(別名保存はC-x w)
 (define-key global-map "\C-x\C-w" 'save-buffer)

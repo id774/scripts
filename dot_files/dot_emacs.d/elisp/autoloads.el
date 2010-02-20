@@ -285,6 +285,20 @@
 ;; emacs21で*scratch*を消してしまって悲しい思いをした人向け
 (load-p "persistent-scratch")
 
+;; Anything.el
+(require 'anything-config)
+(setq anything-sources (list anything-c-source-buffers
+                             anything-c-source-bookmarks
+                             anything-c-source-recentf
+                             anything-c-source-file-name-history
+                             anything-c-source-locate))
+(define-key anything-map (kbd "C-p") 'anything-previous-line)
+(define-key anything-map (kbd "C-n") 'anything-next-line)
+(define-key anything-map (kbd "C-v") 'anything-next-source)
+(define-key anything-map (kbd "M-v") 'anything-previous-source)
+(global-set-key (kbd "C-;") 'anything)
+(global-set-key (kbd "C-:") 'anything)
+
 ;; key-chord.el 複数キー同時押しをサポート
 ;; http://www.emacswiki.org/cgi-bin/wiki/download/key-chord.el
 (require 'key-chord)
