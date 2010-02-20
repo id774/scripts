@@ -41,6 +41,9 @@ $SCRIPTS/installer/install_ruby.sh 187-svn
 #$SCRIPTS/installer/install_python.sh 3.1.1 /opt/python/3.1.1
 #$SCRIPTS/config/update-alternatives-python.sh
 
+# Web Application Framework
+$SCRIPTS/installer/install_django.sh 1.1.1
+
 # Server Resource Report Job
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
 sudo chmod 700 /root/bin/get_resources.sh
