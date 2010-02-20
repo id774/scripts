@@ -14,7 +14,7 @@ remove_alternatives() {
   do
     sudo update-alternatives --remove-all $1
     shift
-  done 
+  done
 }
 
 update_alternatives() {
@@ -45,3 +45,4 @@ make_all_alternatives() {
 
 remove_alternatives ruby gem irb rake rdoc erb testrb
 make_all_alternatives
+sudo update-alternatives --config ruby
