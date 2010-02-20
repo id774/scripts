@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 2/20,2010
+#       Refactoring.
 #  v1.0 9/8,2008
 #       Stable.
 ########################################################################
@@ -15,6 +17,7 @@ install_trunk() {
     sudo svn co http://code.djangoproject.com/svn/django/trunk/
     cd trunk
     sudo python setup.py install
+    sudo chown -R $OWNER /usr/local/src/django/trunk
 }
 
 install_branch() {
@@ -23,18 +26,19 @@ install_branch() {
     sudo svn co http://code.djangoproject.com/svn/django/tags/releases/$1
     cd $1
     sudo python setup.py install
+    sudo chown -R $OWNER /usr/local/src/django/$1
 }
-
-test -n "$1" && install_branch $1
-test -n "$1" || install_trunk
 
 case $OSTYPE in
   *darwin*)
-    sudo chown -R root:wheel /usr/local/src/django
+    OWNER=root:wheel
     ;;
   *)
-    sudo chown -R root:root /usr/local/src/django
+    OWNER=root:root
     ;;
 esac
+
+test -n "$1" && install_branch $1
+test -n "$1" || install_trunk
 
 django-admin.py --version

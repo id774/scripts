@@ -1,5 +1,14 @@
 #!/bin/sh
 
+########################################################################
+# Create environment of "update-alternatives" for ruby
+#
+#  Maintainer: id774 <idnanashi@gmail.com>
+#
+#  v1.0 2/20,2010
+#       Stable.
+########################################################################
+
 remove_alternatives() {
   while [ $# -gt 0 ]
   do

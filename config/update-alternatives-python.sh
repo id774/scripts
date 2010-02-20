@@ -1,5 +1,14 @@
 #!/bin/sh
 
+########################################################################
+# Create environment of "update-alternatives" for python
+#
+#  Maintainer: id774 <idnanashi@gmail.com>
+#
+#  v1.0 2/21,2010
+#       Stable.
+########################################################################
+
 remove_alternatives() {
   while [ $# -gt 0 ]
   do
@@ -47,3 +56,4 @@ make_all_alternatives() {
 
 remove_alternatives python python-config pydoc idle ipython easy_install py_compilefiles pygettext pygmentize pycolor pycentral pysupport-parseversions pysupport-movemodules 2to3 django
 make_all_alternatives
+sudo update_alternatives --config python

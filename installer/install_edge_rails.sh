@@ -5,29 +5,35 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 2/20,2010
+#       Fix directory.
 #  v1.0 9/8,2008
 #       Stable.
 ########################################################################
 
 update_rails() {
-    cd /usr/local/src/rails
+    cd /usr/local/src/rails/trunk/rails
     sudo git pull
 }
 
 install_rails() {
-    test -d /usr/local/src || sudo mkdir -p /usr/local/src
-    cd /usr/local/src
+    test -d /usr/local/src/rails/trunk || sudo mkdir -p /usr/local/src/rails/trunk
+    cd /usr/local/src/rails/trunk
     sudo git clone git://github.com/rails/rails.git
 }
 
-test -d /usr/local/src/rails && update_rails
-test -d /usr/local/src/rails || install_rails
-
 case $OSTYPE in
   *darwin*)
-    sudo chown -R root:wheel /usr/local/src/rails
+    OPTIONS=-pR
+    OWNER=root:wheel
     ;;
   *)
-    sudo chown -R root:root /usr/local/src/rails
+    OPTIONS=-a
+    OWNER=root:root
     ;;
 esac
+
+test -d /usr/local/src/rails/trunk/rails && update_rails
+test -d /usr/local/src/rails/trunk/rails || install_rails
+sudo chown -R $OSTYPE /usr/local/src/rails/trunk
+

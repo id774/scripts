@@ -31,6 +31,8 @@ get_python() {
     test "$2" = "sourceonly" || make_and_install $1 $2
     test -d /usr/local/src/python || sudo mkdir -p /usr/local/src/python
     sudo cp $OPTIONS Python-$1 /usr/local/src/python
+    sudo chown $OWNER /usr/local/src/python
+    sudo chown -R $OWNER /usr/local/src/python/Python-$1
     cd ..
     rm -rf install_python
 }
@@ -48,6 +50,5 @@ esac
 
 test -n "$1" || exit 1
 get_python $1 $2
-sudo chown -R $OWNER /usr/local/src/python
 
 python -V
