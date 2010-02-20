@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.9 2/20,2010
+#       Implement svn up and build.
 #  v1.8 2/17,2010
 #       Update to ruby 1.8.7-p249, 1.9.1-p378.
 #       Add prefix syntax.
@@ -28,17 +30,22 @@
 
 make_and_install() {
     sudo autoconf
-    test -n "$1" || ./configure
-    test -n "$1" && ./configure --prefix $1
-    make
+    test -n "$1" || sudo ./configure
+    test -n "$1" && sudo ./configure --prefix $1
+    sudo make
     sudo make install
 }
 
 install_trunk() {
     test -d /usr/local/src/ruby || sudo mkdir -p /usr/local/src/ruby
     cd /usr/local/src/ruby
-    sudo svn co http://svn.ruby-lang.org/repos/ruby/trunk trunk
-    cd trunk
+    if [ -d /usr/local/src/ruby/trunk ]; then
+        cd trunk
+        sudo svn up
+    else
+        sudo svn co http://svn.ruby-lang.org/repos/ruby/trunk trunk
+        cd trunk
+    fi
     make_and_install $2
     cd ext/zlib
     sudo ruby extconf.rb --with-zlib-include=/usr/include -with-zlib-lib=/usr/lib
@@ -48,14 +55,21 @@ install_trunk() {
     sudo ruby extconf.rb
     sudo make
     sudo make install
-    test -x $SCRIPTS/installer/install_emacs_ruby.sh && $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/trunk/misc
+    sudo chown -R $OWNER /usr/local/src/ruby/trunk
+    test -x $SCRIPTS/installer/install_emacs_ruby.sh && \
+    $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/trunk/misc
 }
 
 install_branch() {
     test -d /usr/local/src/ruby/branches || sudo mkdir -p /usr/local/src/ruby/branches
     cd /usr/local/src/ruby/branches
-    sudo svn co http://svn.ruby-lang.org/repos/ruby/branches/$1/ $1
-    cd $1
+    if [ -d /usr/local/src/ruby/branches/$1 ]; then
+        cd $1
+        sudo svn up
+    else
+        sudo svn co http://svn.ruby-lang.org/repos/ruby/branches/$1/ $1
+        cd $1
+    fi
     make_and_install $2
     cd ext/zlib
     sudo ruby extconf.rb --with-zlib-include=/usr/include -with-zlib-lib=/usr/lib
@@ -65,7 +79,9 @@ install_branch() {
     sudo ruby extconf.rb
     sudo make
     sudo make install
-    test -x $SCRIPTS/installer/install_emacs_ruby.sh && $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/branches/$1/misc
+    sudo chown -R $OWNER /usr/local/src/ruby/branches/$1
+    test -x $SCRIPTS/installer/install_emacs_ruby.sh && \
+    $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/branches/$1/misc
 }
 
 install_stable() {
@@ -86,17 +102,21 @@ install_stable() {
     cd ../../..
     test -d /usr/local/src/ruby || sudo mkdir -p /usr/local/src/ruby
     sudo cp $OPTIONS ruby-$1 /usr/local/src/ruby
+    sudo chown -R $OWNER /usr/local/src/ruby/ruby-$1
     cd ..
     sudo rm -rf install_ruby
-    test -x $SCRIPTS/installer/install_emacs_ruby.sh && $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/ruby-$1/misc
+    test -x $SCRIPTS/installer/install_emacs_ruby.sh && \
+    $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/ruby-$1/misc
 }
 
 case $OSTYPE in
   *darwin*)
     OPTIONS=-pR
+    OWNER=root:wheel
     ;;
   *)
     OPTIONS=-a
+    OWNER=root:root
     ;;
 esac
 
@@ -140,17 +160,8 @@ case "$1" in
   186-svn)
     install_branch ruby_1_8_6 $2
     ;;
-  *)
+  trunk)
     install_trunk $2
-    ;;
-esac
-
-case $OSTYPE in
-  *darwin*)
-    sudo chown -R root:wheel /usr/local/src/ruby
-    ;;
-  *)
-    sudo chown -R root:root /usr/local/src/ruby
     ;;
 esac
 

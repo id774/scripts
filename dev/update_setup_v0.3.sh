@@ -30,8 +30,9 @@ $SCRIPTS/installer/install_dotfiles.sh
 
 # Ruby
 test -d /usr/local/src/ruby/ruby-* && sudo rm -rf /usr/local/src/ruby/ruby-*
-$SCRIPTS/installer/install_ruby.sh 187-249
-$SCRIPTS/installer/install_ruby.sh 191-378 /opt/ruby/1.9.1
+$SCRIPTS/installer/install_ruby.sh 187-svn
+#$SCRIPTS/installer/install_ruby.sh 187-249 /opt/ruby/1.8.7
+#$SCRIPTS/installer/install_ruby.sh 191-378 /opt/ruby/1.9.1
 $SCRIPTS/config/update-alternatives-ruby.sh
 
 # Python
