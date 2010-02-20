@@ -316,7 +316,7 @@
 ;;    default = nil
 ;;  `anything-c-adaptive-history-file'
 ;;    Path of file where history information is stored.
-;;    default = "~/.emacs.d/anything-c-adaptive-history"
+;;    default = "~/.emacs.d/anything/anything-c-adaptive-history"
 ;;  `anything-c-adaptive-history-length'
 ;;    Maximum number of candidates stored for a source.
 ;;    default = 50
@@ -435,7 +435,7 @@ history, are removed from `anything-map'. "
   :type 'boolean
   :group 'anything-config)
 
-(defcustom anything-c-adaptive-history-file "~/.emacs.d/anything-c-adaptive-history"
+(defcustom anything-c-adaptive-history-file "~/.emacs.d/anything/anything-c-adaptive-history"
   "Path of file where history information is stored."
   :type 'string
   :group 'anything-config)
@@ -3252,7 +3252,7 @@ See http://orgmode.org for the latest version.")
 ;; Be sure to have yaoddmuse.el installed
 ;; install-elisp may be required if you want to install elisp file from here.
 (defvar anything-yaoddmuse-use-cache-file nil)
-(defvar anything-c-yaoddmuse-cache-file "~/.emacs.d/yaoddmuse-cache.el")
+(defvar anything-c-yaoddmuse-cache-file "~/.emacs.d/anything/yaoddmuse-cache.el")
 (defvar anything-c-yaoddmuse-ew-cache nil)
 (defvar anything-c-source-yaoddmuse-emacswiki-edit-or-view
   '((name . "Yaoddmuse Edit or View (EmacsWiki)")
