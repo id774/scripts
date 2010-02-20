@@ -21,7 +21,7 @@
 
 ;; バッファリスト
 (key-chord-define-global "kl" 'electric-buffer-list)
-(key-chord-define-global "nm" 'buffer-menu)
+(key-chord-define-global "nm" 'anything)
 (key-chord-define-global "bn" 'iswitchb-buffer)
 
 ;; バッファ先頭/末尾へのカーソル移動

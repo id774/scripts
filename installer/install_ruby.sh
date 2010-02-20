@@ -163,6 +163,8 @@ case "$1" in
   trunk)
     install_trunk $2
     ;;
+  *)
+    ;;
 esac
 
 ruby -v
