@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.5 2/21,2010
+#       Add emacs-w3m.
 #  v1.4 5/18,2009
 #       Add PostgreSQL, launchd startup settings.
 #  v1.3 1/22,2009
@@ -44,6 +46,8 @@ sudo port -d install ctags
 sudo port -d install ncurses
 sudo port -d install vim
 sudo port -d install smartmontools
+sudo port -d install w3m
+sudo port -d install emacs-w3m
 # MySQL
 sudo port -d install mysql5 +server
 sudo -u mysql mysql_install_db5

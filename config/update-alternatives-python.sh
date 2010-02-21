@@ -57,3 +57,5 @@ make_all_alternatives() {
 remove_alternatives python python-config pydoc idle ipython easy_install py_compilefiles pygettext pygmentize pycolor pycentral pysupport-parseversions pysupport-movemodules 2to3 django
 make_all_alternatives
 sudo update-alternatives --config python
+python -V
+

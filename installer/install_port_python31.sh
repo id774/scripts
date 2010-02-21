@@ -43,8 +43,11 @@ erase_symlink() {
 }
 
 install() {
-    sudo port -d uninstall python31
+    sudo port -d install python31
     setup_symlink
+    curl -O http://python-distribute.org/distribute_setup.py
+    sudo python distribute_setup.py
+    rm distribute_setup.py
 }
 
 activate() {
@@ -81,4 +84,5 @@ parse_option() {
 
 test -n "$1" || exit 1
 test -n "$1" && parse_option "$1"
+python -V
 
