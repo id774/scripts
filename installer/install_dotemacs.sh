@@ -60,6 +60,7 @@ batch_byte_compile() {
     emacs --batch --eval '(byte-compile-file "actionscript-mode.el")'
     emacs --batch --eval '(byte-compile-file "auto-complete.el")'
     emacs --batch --eval '(byte-compile-file "key-chord.el")'
+    emacs --batch --eval '(byte-compile-file "anything.el")'
     emacs --batch --eval '(byte-compile-file "twitter1-mode.el")'
     emacs --batch --eval '(byte-compile-file "twitter2-mode.el")'
     emacs --batch --eval '(byte-compile-file "twitter3-mode.el")'

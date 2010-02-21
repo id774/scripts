@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 2/20,2010
+#       Refactoring.
 #  v1.2 3/10,2009
 #       Switch wget to curl.
 #  v1.1 10/3,2008
@@ -59,11 +61,13 @@ rm -rf install_vim
 
 case $OSTYPE in
   *darwin*)
-    sudo chown -R root:wheel /usr/local/src/vim
+    OWNER=root:wheel
     ;;
   *)
-    sudo chown -R root:root /usr/local/src/vim
+    OWNER=root:root
     ;;
 esac
+
+sudo chown -R $OWNER /usr/local/src/vim
 
 vim --version

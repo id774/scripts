@@ -1,4 +1,13 @@
 #!/bin/sh
+#
+########################################################################
+# MacPorts Ruby 1.9 installer
+#
+#  Maintainer: id774 <idnanashi@gmail.com>
+#
+#  v1.0 2/21,2010
+#       Stable.
+########################################################################
 
 make_symlnk() {
   while [ $# -gt 0 ]
@@ -17,7 +26,7 @@ remove_symlink() {
   do
     sudo rm /usr/local/bin/$1
     shift
-  done 
+  done
 }
 
 erase_symlink() {

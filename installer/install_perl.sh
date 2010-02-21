@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 2/20,2010
+#       Recactoring.
 #  v0.1 6/1,2009
 #       First, only for 5.10.0.
 ########################################################################
@@ -35,22 +37,16 @@ get_perl() {
 case $OSTYPE in
   *darwin*)
     OPTIONS=-pR
+    OWNER=root:wheel
     ;;
   *)
     OPTIONS=-a
+    OWNER=root:root
     ;;
 esac
 
 test -n "$1" || exit 1
 get_perl 5.10.0 $2
-
-case $OSTYPE in
-  *darwin*)
-    sudo chown -R root:wheel /usr/local/src/perl
-    ;;
-  *)
-    sudo chown -R root:root /usr/local/src/perl
-    ;;
-esac
+sudo chown -R $OWNER /usr/local/src/perl
 
 perl -V

@@ -5,22 +5,13 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.3 2/20,2009
+#       Recactoring.
 #  v0.2 1/19,2009
 #       Keep sources.
 #  v0.1 1/19,2009
 #       First version.
 ########################################################################
-
-set_emacs_permission() {
-    case $OSTYPE in
-      *darwin*)
-        sudo chown -R root:wheel /usr/local/src/emacs
-        ;;
-      *)
-        sudo chown -R root:root /usr/local/src/emacs
-        ;;
-    esac
-}
 
 install_navi2ch() {
     mkdir install_navi2ch
@@ -42,14 +33,16 @@ install_navi2ch() {
 case $OSTYPE in
   *darwin*)
     OPTIONS=-pR
+    OWNER=root:wheel
     ;;
   *)
     OPTIONS=-a
+    OWNER=root:root
     ;;
 esac
 
 VER=1.8.1
 SOURCE="http://downloads.sourceforge.net/navi2ch/navi2ch-$VER.tar.gz"
 install_navi2ch
-set_emacs_permission
+sudo chown -R $OWNER /usr/local/src/emacs
 

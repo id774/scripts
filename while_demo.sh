@@ -5,7 +5,7 @@ while_demo() {
   do
     echo $1
     shift
-  done 
+  done
 }
 
 while_demo $*

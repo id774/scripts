@@ -52,7 +52,17 @@ sudo ruby setup.rb
 cd ..
 sudo mkdir -p /usr/local/src/gems
 sudo cp -av $RUBY_GEMS_ZIP /usr/local/src/gems
-sudo chown -R root:root /usr/local/src/gems
+
+case $OSTYPE in
+  *darwin*)
+    OWNER=root:wheel
+    ;;
+  *)
+    OWNER=root:root
+    ;;
+esac
+
+sudo chown -R $OWNER /usr/local/src/gems/$RUBY_GEMS_ZIP
 cd ..
 rm -rf install_rubygems
 sudo gem update --system

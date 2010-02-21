@@ -1,11 +1,20 @@
 #!/bin/sh
 
+########################################################################
+# Create environment of "update-alternatives" for ruby
+#
+#  Maintainer: id774 <idnanashi@gmail.com>
+#
+#  v1.0 2/20,2010
+#       Stable.
+########################################################################
+
 remove_alternatives() {
   while [ $# -gt 0 ]
   do
     sudo update-alternatives --remove-all $1
     shift
-  done 
+  done
 }
 
 update_alternatives() {
@@ -36,3 +45,4 @@ make_all_alternatives() {
 
 remove_alternatives ruby gem irb rake rdoc erb testrb
 make_all_alternatives
+sudo update-alternatives --config ruby

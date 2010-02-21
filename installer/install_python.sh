@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 2/20,2010
+#       Refactoring.
 #  v1.1 2/21,2009
 #       Add sourceonly option.
 #  v1.0 1/7,2009
@@ -29,6 +31,8 @@ get_python() {
     test "$2" = "sourceonly" || make_and_install $1 $2
     test -d /usr/local/src/python || sudo mkdir -p /usr/local/src/python
     sudo cp $OPTIONS Python-$1 /usr/local/src/python
+    sudo chown $OWNER /usr/local/src/python
+    sudo chown -R $OWNER /usr/local/src/python/Python-$1
     cd ..
     rm -rf install_python
 }
@@ -36,22 +40,15 @@ get_python() {
 case $OSTYPE in
   *darwin*)
     OPTIONS=-pR
+    OWNER=root:wheel
     ;;
   *)
     OPTIONS=-a
+    OWNER=root:root
     ;;
 esac
 
 test -n "$1" || exit 1
 get_python $1 $2
-
-case $OSTYPE in
-  *darwin*)
-    sudo chown -R root:wheel /usr/local/src/python
-    ;;
-  *)
-    sudo chown -R root:root /usr/local/src/python
-    ;;
-esac
 
 python -V
