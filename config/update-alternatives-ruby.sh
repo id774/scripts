@@ -5,7 +5,7 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.0 2/20,2010
+#  v1.0 2/21,2010
 #       Stable.
 ########################################################################
 
@@ -46,3 +46,5 @@ make_all_alternatives() {
 remove_alternatives ruby gem irb rake rdoc erb testrb
 make_all_alternatives
 sudo update-alternatives --config ruby
+ruby -v
+

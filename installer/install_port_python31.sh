@@ -81,4 +81,5 @@ parse_option() {
 
 test -n "$1" || exit 1
 test -n "$1" && parse_option "$1"
+python -V
 

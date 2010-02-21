@@ -8,9 +8,8 @@
 (cd "~/")
 
 ;; path 系
-(setq exec-path (append '("/usr/local/bin" "/sw/bin") exec-path))
-
-(setenv "PATH" (concat '"/usr/local/bin:/sw/bin:/usr/bin:" (getenv "PATH")))
+(setq exec-path (append '("/usr/local/bin" "/opt/local/bin") exec-path))
+(setenv "PATH" (concat '"/usr/local/bin:/opt/local/bin:/usr/bin:" (getenv "PATH")))
 
 ;;; my-load-path
 ;;; kaoru プロの設定を読んでかっこいいと思った。
