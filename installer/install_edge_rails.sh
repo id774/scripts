@@ -24,16 +24,14 @@ install_rails() {
 
 case $OSTYPE in
   *darwin*)
-    OPTIONS=-pR
     OWNER=root:wheel
     ;;
   *)
-    OPTIONS=-a
     OWNER=root:root
     ;;
 esac
 
 test -d /usr/local/src/rails/trunk/rails && update_rails
 test -d /usr/local/src/rails/trunk/rails || install_rails
-sudo chown -R $OSTYPE /usr/local/src/rails/trunk
+sudo chown -R $OWNER /usr/local/src/rails/trunk
 
