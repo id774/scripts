@@ -10,6 +10,7 @@ $SCRIPTS/installer/install_dotemacs.sh /usr/bin/emacs
 
 # Deploy dot_files
 $SCRIPTS/installer/install_dotfiles.sh
+$SCRIPTS/installer/install_dotssh_mac.sh
 
 # Web Application Framework
 $SCRIPTS/installer/install_django.sh 1.1.1
