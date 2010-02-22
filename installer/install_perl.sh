@@ -16,8 +16,7 @@ make_and_install() {
     test -n "$2" || ./Configure
     test -n "$2" && ./Configure -des -Dprefix=$2
     make
-    test -n "$2" || sudo make install
-    test -n "$2" && make install
+    sudo make install
     cd ..
 }
 
@@ -46,7 +45,7 @@ case $OSTYPE in
 esac
 
 test -n "$1" || exit 1
-get_perl 5.10.0 $2
+get_perl 5.10.0 $1
 sudo chown -R $OWNER /usr/local/src/perl
 
 perl -V
