@@ -19,28 +19,33 @@
 (key-chord-define-global "m," 'previous-buffer)
 (key-chord-define-global "ui" 'backward-buffer)
 
-;; バッファリスト
-(key-chord-define-global "kl" 'electric-buffer-list)
-(key-chord-define-global "nm" 'anything)
-(key-chord-define-global "bn" 'iswitchb-buffer)
-
 ;; バッファ先頭/末尾へのカーソル移動
 (key-chord-define-global "rt" 'beginning-of-buffer)
 (key-chord-define-global "vb" 'end-of-buffer)
+
+;; スクロール
+(key-chord-define-global "er" 'scroll-down)
+(key-chord-define-global "cv" 'scroll-up)
+
+;; バッファリスト
+(key-chord-define-global "kl" 'electric-buffer-list)
+(key-chord-define-global "nm" 'iswitchb-buffer)
+(key-chord-define-global "bn" 'buffer-menu)
+
+;; ファイルを開く
+(key-chord-define-global "df" 'find-file)
+
+;; Anthing.el
+(key-chord-define-global "as" 'anything)
+(key-chord-define-global "sd" 'anything)
+(key-chord-define-global ";:" 'anything)
 
 ;; 矩形選択
 (key-chord-define-global "we" 'cua-mode)
 
 ;; アンドゥ/リドゥ
-(key-chord-define-global "as" 'undo)
-(key-chord-define-global "sd" 'redo)
-
-;; ファイルを開く
-(key-chord-define-global "df" 'find-file)
-
-;; スクロール
-(key-chord-define-global "er" 'scroll-down)
-(key-chord-define-global "cv" 'scroll-up)
+(key-chord-define-global "zx" 'undo)
+(key-chord-define-global "qw" 'redo)
 
 ;; Local Variables:
 ;; mode : emacs-lisp
