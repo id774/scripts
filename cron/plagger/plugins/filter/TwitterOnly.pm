@@ -16,7 +16,7 @@ sub register {
 sub filter {
     my ($self, $context, $args) = @_;
     for my $entry ($args->{feed}->entries) {
-        if ($entry->link !~ /^http:\/\/twitter.com\//) {
+        if ($entry->link !~ /^http:\/\/twitter\.com\//) {
             $context->log(info => "Delete entry " . $entry->link);
             $args->{feed}->delete_entry($entry);
         }
