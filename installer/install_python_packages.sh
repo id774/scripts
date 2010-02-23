@@ -5,12 +5,16 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 2/23,2010
+#       Refactoring.
 #  v0.1 2/18,2009
 #       First version.
 ########################################################################
 
 install_python_packages() {
-    sudo aptitude install libmysqlclient15-dev
+    if [ `aptitude search libmysqlclient15-dev | awk '/^i/' | wc -l` = 0 ]; then
+        sudo aptitude -y install libmysqlclient15-dev
+    fi
     mkdir install_python_packages
     cd install_python_packages
     wget "http://downloads.sourceforge.net/mysql-python/MySQL-python-1.2.2.tar.gz"

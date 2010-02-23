@@ -17,10 +17,16 @@ test -d /opt/sbin || sudo mkdir /opt/sbin
 test -d /opt/bin || sudo mkdir /opt/bin
 
 # sysklogd
-sudo aptitude -y install klogd sysklogd
+if [ `aptitude search sysklogd | awk '/^i/' | wc -l` = 0 ]; then
+    sudo aptitude -y install klogd sysklogd
+    sudo vim /etc/syslog.conf
+    sudo vim /etc/default/syslogd
+fi
 
 # Libraries and Programming Tools
-sudo aptitude -y install scheme48 cmuscheme48-el
+if [ `aptitude search scheme48 | awk '/^i/' | wc -l` = 0 ]; then
+    sudo aptitude -y install scheme48 cmuscheme48-el
+fi
 
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
@@ -28,8 +34,11 @@ $SCRIPTS/installer/install_dotemacs.sh
 # Deploy dot_files
 $SCRIPTS/installer/install_dotfiles.sh
 
+# Purge old ruby
+test -d /usr/local/src/ruby/ruby-1.8.7-p248 && sudo rm -rf /usr/local/src/ruby/ruby-1.8*
+test -d /usr/local/src/ruby/ruby-1.8.7-p174 && sudo rm -rf /usr/local/src/ruby/ruby-1.8*
+test -d /usr/local/src/ruby/ruby-1.8.7-p72  && sudo rm -rf /usr/local/src/ruby/ruby-1.8*
 # Ruby
-test -d /usr/local/src/ruby/ruby-* && sudo rm -rf /usr/local/src/ruby/ruby-*
 $SCRIPTS/installer/install_ruby.sh 187-svn
 #$SCRIPTS/installer/install_ruby.sh 187-249 /opt/ruby/1.8.7
 #$SCRIPTS/installer/install_ruby.sh 191-378 /opt/ruby/1.9.1
@@ -43,6 +52,7 @@ $SCRIPTS/installer/install_ruby.sh 187-svn
 
 # Web Application Framework
 $SCRIPTS/installer/install_django.sh 1.1.1
+$SCRIPTS/installer/install_django.sh
 
 # Server Resource Report Job
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
@@ -61,12 +71,6 @@ sudo cp -Rv $SCRIPTS/cron/plagger/plugins/customfeed/* $plagger_dir/Plugin/Custo
 # Linux kernel source, headers, kbuild (Debian)
 sudo aptitude -y purge linux-headers-2.6.26-1-686
 sudo aptitude -y install linux-headers-2.6.26-2-686
-
-# Last Setup
-# /var/log/cron.log
-sudo vim /etc/syslog.conf
-# SYSLOGD="-m 0"
-sudo vim /etc/default/syslogd
 
 # Upgrade
 

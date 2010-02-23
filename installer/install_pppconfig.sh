@@ -5,11 +5,15 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 2/23,2010
+#       Refactoring.
 #  v1.0 8/15,2008
 #       Stable.
 ########################################################################
 
-sudo aptitude -y install pppconfig
+if [ `aptitude search pppconfig | awk '/^i/' | wc -l` = 0 ]; then
+    sudo aptitude -y install pppconfig
+fi
 
 sudo cp $SCRIPTS/etc/interfaces.static /etc/network/interfaces.static
 sudo vim /etc/network/interfaces.static

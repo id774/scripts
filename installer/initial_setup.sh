@@ -282,7 +282,7 @@ vim $SCRIPTS/installer/install_python_framework.sh
 $SCRIPTS/installer/install_python_framework.sh
 
 # Sun Java JDK
-sudo aptitude install -y sun-java6-jdk
+sudo aptitude -y install sun-java6-jdk
 
 # GDM Themes
 #$SCRIPTS/installer/install_gdmthemes.sh
@@ -308,18 +308,18 @@ sudo aptitude install -y sun-java6-jdk
 #$SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
 
 # Ubuntu-ja
-#sudo aptitude install -y ubuntu-desktop-ja
+#sudo aptitude -y install ubuntu-desktop-ja
 
 # OpenOffice.org
-#sudo aptitude install -y openoffice.org
+#sudo aptitude -y install openoffice.org
 
 # Codec
-#sudo aptitude install -y ubuntu-restricted-extras
-#sudo aptitude install -y xubuntu-restricted-extras
+#sudo aptitude -y install ubuntu-restricted-extras
+#sudo aptitude -y install xubuntu-restricted-extras
 
 # Icons
-#sudo aptitude install -y ubuntu-artwork xubuntu-artwork human-icon-theme
-#sudo aptitude install -y gnome-themes gnome-themes-extras
+#sudo aptitude -y install ubuntu-artwork xubuntu-artwork human-icon-theme
+#sudo aptitude -y install gnome-themes gnome-themes-extras
 
 # 2ch Browser
 #sudo aptitude -y install ochusha
