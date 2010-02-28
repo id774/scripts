@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.3 3/1,2010
+#       Refactoring.
 #  v0.2 2/23,2010
 #       Refactoring.
 #  v0.1 2/18,2009
@@ -25,6 +27,7 @@ install_python_packages() {
     cd ..
     test -d /usr/local/src/python/packages || sudo mkdir -p /usr/local/src/python/packages
     sudo cp $OPTIONS MySQL-python-1.2.2 /usr/local/src/python/packages/
+    sudo chown -R $OWNER /usr/local/src/python/packages
     cd ..
     sudo rm -rf install_python_packages
 }
@@ -32,19 +35,12 @@ install_python_packages() {
 case $OSTYPE in
   *darwin*)
     OPTIONS=-pR
+    OWNER=root:wheel
     ;;
   *)
     OPTIONS=-a
+    OWNER=root:root
     ;;
 esac
 
 install_python_packages
-
-case $OSTYPE in
-  *darwin*)
-    sudo chown -R root:wheel /usr/local/src/python/packages
-    ;;
-  *)
-    sudo chown -R root:root /usr/local/src/python/packages
-    ;;
-esac
