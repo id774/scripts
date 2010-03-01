@@ -1,9 +1,9 @@
 # .zshrc
 #
-# Last Change: 2-Mar-2010.
+# Last Change: 17-Feb-2010.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
-set_gnu_env() {
+set_linux_env() {
     alias cp='cp -avi'
     if [ "$TERM" != "dumb" ]; then
         eval "`dircolors -b`"
@@ -11,17 +11,7 @@ set_gnu_env() {
         alias dir='ls --color=auto --format=vertical'
         alias vdir='ls --color=auto --format=long'
     fi
-}
-
-set_linux_env() {
     export PATH=/opt/sbin:/opt/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/games
-    set_java_path /usr/lib/jvm/java-1.5.0-sun
-    set_java_path /usr/lib/jvm/java-6-sun
-}
-
-set_solaris_env() {
-    export PATH=/usr/gnu/bin:/usr/bin:/usr/X11/bin:/usr/sbin:/sbin
-    set_java_path /usr/java
 }
 
 set_darwin_env() {
@@ -40,7 +30,6 @@ set_darwin_env() {
     fi
     export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/opt/local/sbin:/opt/local/bin:/usr/sbin:/usr/bin:/usr/X11/bin
     export MANPATH=/usr/local/share/man:/usr/share/man:/opt/local/man:/usr/X11/man
-    set_java_path /System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home
 }
 
 set_java_path() {
@@ -55,14 +44,12 @@ set_os_env() {
     case $OSTYPE in
       *darwin*)
         set_darwin_env
-        ;;
-      *solaris*)
-        set_gnu_env
-        set_solaris_env
+        set_java_path /System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home
         ;;
       *)
-        set_gnu_env
         set_linux_env
+        set_java_path /usr/lib/jvm/java-1.5.0-sun
+        set_java_path /usr/lib/jvm/java-6-sun
         ;;
     esac
 }
