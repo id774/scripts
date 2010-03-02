@@ -257,11 +257,14 @@
   (defun-add-hook 'change-log-mode-hook (setq mode-name "CL")))
 
 ;; TRAMP
+(require 'tramp)
 (when (load-p "tramp")
+  (setq tramp-shell-prompt-pattern "^.*[#$%>] *")
   (setq tramp-debug-buffer t)
   (setq tramp-default-method "scpx")
   (setq tramp-auto-save-directory "~/.emacs.d/tramp-auto-save")
-  (setq tramp-verbose 3))
+  (setq tramp-verbose 3)
+)
 
 ;; ¶ë·ÁÁªÂò
 (cua-mode t)

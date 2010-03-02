@@ -104,8 +104,6 @@ set_basic_options() {
     setopt auto_param_keys
     setopt auto_resume
     autoload -U predict-on
-    zle -N predict-on
-    zle -N predict-off
     bindkey '^xp'  predict-on
     bindkey '^x^p' predict-off
     HISTFILE=$HOME/.zsh_history
@@ -126,10 +124,14 @@ set_basic_options() {
     function history-all { history -E 1 }
     autoload -U promptinit ; promptinit
     autoload -U colors     ; colors
-    PROMPT="%{$reset_color%}%(!.#.$) "
-    PROMPT="%{$reset_color%}:%{$fg[red]%}%B%~%b%{$reset_color%} $PROMPT"
-    PROMPT="%{$reset_color%}%{$fg[yellow]%}$USER%{$reset_color%}@%{$fg[cyan]%}%m%{$reset_color%}$PROMPT"
-    PROMPT="%{$reset_color%}%{%(?.$fg[green].$fg[red])%}%*%{$reset_color%} $PROMPT"
+    if [ "$TERM" != "dumb" ]; then
+        zle -N predict-on
+        zle -N predict-off
+        PROMPT="%{$reset_color%}%(!.#.$) "
+        PROMPT="%{$reset_color%}:%{$fg[red]%}%B%~%b%{$reset_color%} $PROMPT"
+        PROMPT="%{$reset_color%}%{$fg[yellow]%}$USER%{$reset_color%}@%{$fg[cyan]%}%m%{$reset_color%}$PROMPT"
+        PROMPT="%{$reset_color%}%{%(?.$fg[green].$fg[red])%}%*%{$reset_color%} $PROMPT"
+    fi
     setopt auto_cd
     setopt auto_pushd
     setopt pushd_ignore_dups
