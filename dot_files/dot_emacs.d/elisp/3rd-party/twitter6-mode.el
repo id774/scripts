@@ -56,14 +56,19 @@
         (message "%s" version-string)
       version-string)))
 
+(defconst twitter6-http-status-line-regexp
+  "HTTP/1\.[01] \\(\\([0-9][0-9][0-9]\\) [^\r\n]+\\)\r?\n"
+  "Regular expression used in \"sentinel\" functions to pick up
+status-code and reason-phrase from the response.")
+
 (defvar twitter6-mode-map (make-sparse-keymap))
 
 (defvar twitter6-timer nil "Timer object for timeline refreshing will be
 stored here. DO NOT SET VALUE MANUALLY.")
 
-(defvar twitter6-idle-time 26)
+(defvar twitter6-idle-time 18)
 
-(defvar twitter6-timer-interval 106)
+(defvar twitter6-timer-interval 94)
 
 (defvar twitter6-username nil)
 
@@ -84,6 +89,9 @@ tweets received when this hook is run.")
 
 (defvar twitter6-scroll-mode nil)
 (make-variable-buffer-local 'twitter6-scroll-mode)
+
+(defvar twitter6-process-info-alist nil
+  "Alist of active process and timeline spec retrieved by the process.")
 
 (defvar twitter6-status-format nil)
 (setq twitter6-status-format "%i %s: %t %p [%C]")
@@ -238,7 +246,6 @@ directory. You should change through function'twitter6-icon-mode'")
 (defun twitter6-global-strftime (fmt string)
   (twitter6-setftime fmt string t))
 
-
 (defvar twitter6-debug-mode nil)
 (defvar twitter6-debug-buffer "*debug*")
 (defun twitter6-debug-buffer ()
@@ -300,6 +307,8 @@ directory. You should change through function'twitter6-icon-mode'")
       (define-key km "H" 'beginning-of-buffer)
       (define-key km "\C-c\ i" 'twitter6-icon-mode)
       (define-key km "s" 'twitter6-scroll-mode)
+      (define-key km "a" 'twitter6-favorite)
+      (define-key km "q" 'twitter6-unfavorite)
       (define-key km "t" 'twitter6-toggle-proxy)
       (define-key km "\C-c\C-p" 'twitter6-toggle-proxy)
       nil))
@@ -371,6 +380,31 @@ directory. You should change through function'twitter6-icon-mode'")
 ;;;
 ;;; Basic HTTP functions
 ;;;
+
+(defun twitter6-start-http-session (method headers host port path parameters &optional noninteractive sentinel)
+  "
+METHOD    : http method
+HEADERS   : http request heades in assoc list
+HOST      : remote host name
+PORT      : destination port number. nil means default port (http: 80, https: 443)
+PATH      : http request path
+PARAMETERS: http request parameters (query string)
+"
+  (block nil
+    (unless (find method '("POST" "GET") :test 'equal)
+      (error "Unknown HTTP method: %s" method))
+    (unless (string-match "^/" path)
+      (error "Invalid HTTP path: %s" path))
+
+    (unless (assoc "Host" headers)
+      (setq headers (cons `("Host" . ,host) headers)))
+    (unless (assoc "User-Agent" headers)
+      (setq headers (cons `("User-Agent" . ,(twitter6-user-agent))
+                          headers)))
+
+  (twitter6-start-http-non-ssl-session
+   method headers host port path parameters
+   noninteractive sentinel)))
 
 (defun twitter6-http-get (method-class method &optional parameters sentinel)
   (if (null sentinel) (setq sentinel 'twitter6-http-get-default-sentinel))
@@ -702,6 +736,243 @@ PARAMETERS is alist of URI parameters.
          (debug-print (concat "POST Request\n" request))
          request)))))
 
+(defun twitter6-http-post-new (host method &optional parameters format sentinel)
+  "Send HTTP POST request to twitter.com (or api.twitter.com)
+
+HOST is hostname of remote side, twitter.com or api.twitter.com.
+METHOD must be one of Twitter API method classes
+ (statuses, users or direct_messages).
+PARAMETERS is alist of URI parameters.
+ ex) ((\"mode\" . \"view\") (\"page\" . \"6\")) => <URI>?mode=view&page=6
+FORMAT is a response data format (\"xml\", \"atom\", \"json\")"
+  (if (null format)
+      (setq format "xml"))
+  (if (null sentinel)
+      (setq sentinel 'twitter6-http-post-default-sentinel-new))
+
+  (twitter6-start-http-session
+   "POST" (twitter6-http-application-headers "POST")
+   host nil (concat "/" method "." format) parameters noninteractive sentinel))
+
+(defun twitter6-http-default-sentinel-new (func noninteractive proc stat &optional suc-msg)
+  (debug-printf "http-default-sentinel: proc=%s stat=%s" proc stat)
+  (let ((temp-buffer (process-buffer proc)))
+    (unwind-protect
+        (let ((header (twitter6-get-response-header temp-buffer))
+              (mes nil))
+          (if (string-match twitter6-http-status-line-regexp header)
+              (when (and func (fboundp func))
+                (with-current-buffer temp-buffer
+                  (setq mes (funcall func header proc noninteractive suc-msg))))
+            (setq mes "Failure: Bad http response."))
+          (when (and mes (twitter6-buffer-active-p))
+            (message mes)))
+      ;; unwindforms
+      (twitter6-release-process proc)
+      (when (and (not twitter6-debug-mode) (buffer-live-p temp-buffer))
+        (kill-buffer temp-buffer))))
+  )
+
+(defun twitter6-start-http-non-ssl-session (method headers host port path parameters &optional noninteractive sentinel)
+  (let ((request (twitter6-make-http-request
+                  method headers host port path parameters))
+        (temp-buffer (generate-new-buffer "*twmode-http-buffer*")))
+    (flet ((request (key) (funcall request key)))
+      (let* ((request-str
+              (format "%s %s%s HTTP/1.1\r\n%s\r\n\r\n"
+                      (request :method)
+                      (request :uri)
+                      (if parameters
+                          (concat "?" (request :query-string))
+                        "")
+                      (request :headers-string)))
+             (server (if twitter6-proxy-use
+                         twitter6-proxy-server
+                       (request :host)))
+             (port (if twitter6-proxy-use
+                       twitter6-proxy-port
+                     (request :port)))
+             (proc (open-network-stream
+                    "network-connection-process" temp-buffer server port))
+             )
+        (lexical-let ((sentinel sentinel)
+                      (noninteractive noninteractive))
+          (set-process-sentinel
+           proc
+           (lambda (&rest args)
+             (apply #'twitter6-http-default-sentinel
+                    sentinel noninteractive args))))
+        (debug-print request-str)
+        (process-send-string proc request-str)
+        proc)))
+  )
+
+(defun twitter6-make-http-request (method headers host port path parameters)
+  "Returns an anonymous function, which holds request data.
+
+A returned function, say REQUEST, is used in this way:
+  (funcall REQUEST :schema) ; => \"http\" or \"https\"
+  (funcall REQUEST :uri) ; => \"http://twitter.com/user_timeline\"
+  (funcall REQUEST :query-string) ; => \"status=hello+twitter&source=twmode\"
+  ...
+
+Available keywords:
+  :method
+  :host
+  :port
+  :headers
+  :headers-string
+  :schema
+  :uri
+  :query-string
+"
+  (let* ((schema "http")
+         (default-port 80)
+         (port (if port port default-port))
+         (headers-string
+          (mapconcat (lambda (pair)
+                       (format "%s: %s" (car pair) (cdr pair)))
+                     headers "\r\n"))
+         (uri (format "%s://%s%s%s"
+                      schema
+                      host
+                      (if port
+                          (if (equal port default-port)
+                              ""
+                            (format ":%s" port))
+                        "")
+                      path))
+         (query-string
+          (mapconcat (lambda (pair)
+                       (format
+                        "%s=%s"
+                        (twitter6-percent-encode (car pair))
+                        (twitter6-percent-encode (cdr pair))))
+                     parameters
+                     "&"))
+         )
+    (lexical-let ((data `((:method . ,method)
+                          (:host . ,host)
+                          (:port . ,port)
+                          (:headers . ,headers)
+                          (:headers-string . ,headers-string)
+                          (:schema . ,schema)
+                          (:uri . ,uri)
+                          (:query-string . ,query-string)
+                          )))
+      (lambda (key)
+        (let ((pair (assoc key data)))
+          (if pair (cdr pair)
+            (error "No such key in HTTP request data: %s" key))))
+      )))
+
+(defun twitter6-http-application-headers (&optional method headers)
+  "Retuns an assoc list of HTTP headers for twitter6-mode."
+  (unless method
+    (setq method "GET"))
+
+  (let ((headers headers))
+    (push (cons "User-Agent" (twitter6-user-agent)) headers)
+    (push (cons "Authorization"
+                (concat "Basic "
+                        (base64-encode-string
+                         (concat
+                          twitter6-username
+                          ":"
+                          (twitter6-get-password)))))
+          headers)
+    (when (string= "GET" method)
+      (push (cons "Accept"
+                  (concat
+                   "text/xml"
+                   ",application/xml"
+                   ",application/xhtml+xml"
+                   ",application/html;q=0.9"
+                   ",text/plain;q=0.8"
+                   ",image/png,*/*;q=0.5"))
+            headers)
+      (push (cons "Accept-Charset" "utf-8;q=0.7,*;q=0.7")
+            headers))
+    (when (string= "POST" method)
+      (push (cons "Content-Length" "0") headers)
+      (push (cons "Content-Type" "text/plain") headers))
+                        (when twitter6-proxy-use
+                          "Proxy-Connection: Keep-Alive" headers
+                          (when (and twitter6-proxy-user twitter6-proxy-password)
+                            (concat
+                             "Proxy-Authorization: Basic "
+                             (base64-encode-string
+                              (concat twitter6-proxy-user ":"
+                                      twitter6-proxy-password))
+              headers)))
+    headers
+    ))
+
+(defun twitter6-percent-encode (str &optional coding-system)
+  (if (or (null coding-system)
+          (not (coding-system-p coding-system)))
+      (setq coding-system 'utf-8))
+  (mapconcat
+   (lambda (c)
+     (cond
+      ((twitter6-url-reserved-p c)
+       (char-to-string c))
+      ((eq c ? ) "+")
+      (t (format "%%%02x" c))))
+   (encode-coding-string str coding-system)
+   ""))
+
+(defun twitter6-url-reserved-p (ch)
+  (or (and (<= ?A ch) (<= ch ?Z))
+      (and (<= ?a ch) (<= ch ?z))
+      (and (<= ?0 ch) (<= ch ?9))
+      (eq ?. ch)
+      (eq ?- ch)
+      (eq ?_ ch)
+      (eq ?~ ch)))
+
+(defun twitter6-http-default-sentinel (func noninteractive proc stat &optional suc-msg)
+  (debug-printf "http-default-sentinel: proc=%s stat=%s" proc stat)
+  (let ((temp-buffer (process-buffer proc)))
+    (unwind-protect
+        (let ((header (twitter6-get-response-header temp-buffer))
+              (mes nil))
+          (if (string-match twitter6-http-status-line-regexp header)
+              (when (and func (fboundp func))
+                (with-current-buffer temp-buffer
+                  (setq mes (funcall func header proc noninteractive suc-msg))))
+            (setq mes "Failure: Bad http response."))
+          (when (and mes (twitter6-buffer-active-p))
+            (message mes)))
+      ;; unwindforms
+      (twitter6-release-process proc)
+      (when (and (not twitter6-debug-mode) (buffer-live-p temp-buffer))
+        (kill-buffer temp-buffer))))
+  )
+
+(defun twitter6-release-process (proc)
+  (let ((spec (twitter6-get-timeline-spec-from-process proc)))
+    (setq twitter6-process-info-alist
+          (delete `(,proc ,spec) twitter6-process-info-alist))))
+
+(defun twitter6-get-timeline-spec-from-process (proc)
+  (let ((entry (assoc proc twitter6-process-info-alist)))
+    (if entry
+        (elt entry 1)
+      nil)))
+
+(defun debug-printf (fmt &rest args)
+  (when twitter6-debug-mode
+    (with-current-buffer (twitter6-debug-buffer)
+      (insert "[debug] " (apply 'format fmt args))
+      (newline))))
+
+(defun twitter6-debug-mode ()
+  (interactive)
+  (setq twitter6-debug-mode
+        (not twitter6-debug-mode))
+  (message (if twitter6-debug-mode "debug mode:on" "debug mode:off")))
+
 (defun twitter6-http-post-default-sentinel (proc stat &optional suc-msg)
 
   (condition-case err-signal
@@ -1010,6 +1281,11 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
    `(("status" . "\xd34b\xd22b\xd26f\xd224\xd224\xd268\xd34b")
      ("source" . "twmode"))))
 
+(defun twitter6-manage-favorites (method id)
+  (twitter6-http-post-new "twitter.com"
+                        (concat "favorites/" method "/" id)
+                        `(("source" . "twmode"))))
+
 ;;;
 ;;; Commands
 ;;;
@@ -1152,6 +1428,34 @@ If STATUS-DATUM is already in DATA-VAR, return nil. If not, return t."
     (if (> (length username) 0)
         (twitter6-get-timeline (concat "user_timeline/" username))
       (message "No user selected"))))
+
+(defun twitter6-favorite (&optional remove)
+  (interactive)
+  (let ((id (get-text-property (point) 'id))
+        (text (get-text-property (point) 'text))
+        (width (max 40 ;; XXX
+                    (- (frame-width)
+                       1 ;; margin for wide characters
+                       15 ;; == (length (concat "Unfavorite \"" "\"? "))
+                       9) ;; == (length "(y or n) ")
+                    ))
+        (method (if remove "destroy" "create")))
+    (if id
+        (let ((mes (format "%s \"%s\"? "
+                           (if remove "Unfavorite" "Favorite")
+                           (if (< width (string-width text))
+                               (concat
+                                (truncate-string-to-width text (- width 3))
+                                "...")
+                             text))))
+          (when (y-or-n-p mes)
+            (twitter6-manage-favorites method id)))
+      (message "No status selected"))))
+
+(defun twitter6-unfavorite
+ ()
+  (interactive)
+  (twitter6-favorite t))
 
 (defun twitter6-reply-to-user ()
   (interactive)
