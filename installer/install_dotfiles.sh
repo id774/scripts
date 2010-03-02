@@ -1,4 +1,13 @@
 #!/bin/sh
+#
+########################################################################
+# Install dot_files
+#
+#  Maintainer: id774 <idnanashi@gmail.com>
+#
+#  v1.0 3/2,2010
+#       Refactoring.
+########################################################################
 
 test -n "$1" && DEFAULT_KEYMAPFILE=$1
 test -n "$1" || DEFAULT_KEYMAPFILE=dot_xmodmaprc_hhkprojp
@@ -34,11 +43,15 @@ test -f ~/.zshrc.zwc && rm -f ~/.zshrc.zwc
 cd
 zsh -c 'zcompile ~/.zshrc'
 
-test -d /etc/xdg/xfce4 && sudo cp $SCRIPTS/dot_files/$DEFAULT_KEYMAPFILE /etc/xdg/xfce4/xmodmaprc
-test -d /etc/xdg/xfce4 && test -f ~/etc/config.local/dot_xmodmaprc && sudo cp $OPTIONS ~/etc/config.local/dot_xmodmaprc /etc/xdg/xfce4/xmodmaprc
-test -d /etc/xdg/xfce4 && sudo vim /etc/xdg/xfce4/xmodmaprc /etc/xdg/xfce4/xinitrc
+if [ -d /etc/xdg/xfce4 ]; then
+    sudo cp $SCRIPTS/dot_files/$DEFAULT_KEYMAPFILE /etc/xdg/xfce4/xmodmaprc
+    test -f ~/etc/config.local/dot_xmodmaprc && sudo cp $OPTIONS ~/etc/config.local/dot_xmodmaprc /etc/xdg/xfce4/xmodmaprc
+    sudo vim /etc/xdg/xfce4/xmodmaprc /etc/xdg/xfce4/xinitrc
+fi
+
 test -f ~/etc/config.local/dot_gitconfig && cp $OPTIONS ~/etc/config.local/dot_gitconfig ~/.gitconfig
 vim ~/.gitconfig
+
 test -f ~/.tmp/.gitconfig.bak && rm ~/.tmp/.gitconfig.bak
 test -f ~/.viminfo && sudo chown $USER ~/.viminfo
 
