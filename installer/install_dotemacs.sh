@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 3/2,2010
+#       Byte compile by /usr/bin/emacs on mac default.
 #  v1.1 2/21,2010
 #       Specify emacs path.
 #  v1.0 5/18,2009
@@ -94,13 +96,14 @@ TARGET=$HOME/.emacs.d
 case $OSTYPE in
   *darwin*)
     OPTIONS=-Rv
+    test -n "$1" || EMACS=/usr/bin/emacs
     ;;
   *)
     OPTIONS=-Rvd
+    test -n "$1" || EMACS=emacs
     ;;
 esac
 
-test -n "$1" || EMACS=emacs
 test -n "$1" && EMACS=$1
 
 setup_dotemacs
