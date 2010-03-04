@@ -8,8 +8,6 @@ gitpull() {
         cd $HOME/local/$1
         git clone git://github.com/$2/$3.git
     fi
-    cd
-    ln -fs $HOME/local/$1/$3 $3
 }
 
 assembla_git() {
@@ -20,8 +18,6 @@ assembla_git() {
         cd $HOME/local/$1
         git clone git://git.assembla.com/$2.git
     fi
-    cd
-    ln -fs $HOME/local/$1/$2 $2
 }
 
 debian_monthly_report() {
@@ -34,8 +30,6 @@ debian_monthly_report() {
         cd monthly-report
     fi
     cp -p git-pre-commit.sh .git/hooks/pre-commit
-    cd
-    ln -fs $HOME/local/$1/$2 $2
 }
 
 emacswiki_get() {
@@ -71,11 +65,7 @@ gitpull_all() {
     gitpull github miyagawa plagger
 }
 
-main() {
-    debian_monthly_report git monthly-report
-    assembla_git_all
-    anything_get_all
-    gitpull_all
-}
-
-main
+debian_monthly_report git monthly-report
+assembla_git_all
+anything_get_all
+gitpull_all
