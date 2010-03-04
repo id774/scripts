@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.24 3/3,2010
+#       Add Debian Developer Tools
 # v1.23 2/17,2010
 #       Update to ruby 1.8.7-p249, 1.9.1-p378.
 #       Add python install.
@@ -203,6 +205,9 @@ sudo aptitude -y install global
 sudo aptitude -y install subversion
 sudo aptitude -y install git-core git-cvs git-svn git-email
 sudo aptitude -y install svk
+
+# Debian Developer Tools
+sudo aptitude -y install dpkg-dev lintian debhelper yada equivs cvs-buildpackage dupload fakeroot devscripts debget
 
 # sshfs
 sudo aptitude -y install sshfs
