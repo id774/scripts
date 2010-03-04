@@ -20,6 +20,18 @@ assembla_git() {
     fi
 }
 
+debian_monthly_report() {
+    if [ -d $HOME/local/$1/$2 ]; then
+        cd $HOME/local/$1/$2
+        $1 pull
+    else
+        cd $HOME/local/$1
+        git clone git://git.debian.org/$1/tokyodebian/$2.git
+        cd monthly-report
+    fi
+    cp -p git-pre-commit.sh .git/hooks/pre-commit
+}
+
 emacswiki_get() {
     test -d $HOME/local/$1 || mkdir -p $HOME/local/$1
     cd $HOME/local/$1
@@ -43,16 +55,17 @@ anything_get_all() {
     emacswiki_get anything
 }
 
+assembla_git_all() {
+    assembla_git git 774-gthumb
+}
+
 gitpull_all() {
     gitpull github id774 id774.github.com
     gitpull github hayamiz twittering-mode
     gitpull github miyagawa plagger
 }
 
-assembla_git_all() {
-    assembla_git git 774-gthumb
-}
-
+debian_monthly_report git monthly-report
+assembla_git_all
 anything_get_all
 gitpull_all
-assembla_git_all
