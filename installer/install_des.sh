@@ -40,5 +40,10 @@ install_des() {
     set_des_permission
 }
 
-which dmsetup > /dev/null || sudo aptitude -y install dmsetup
-which des > /dev/null || install_des
+main() {
+    which dmsetup > /dev/null || sudo aptitude -y install dmsetup
+    which des > /dev/null || install_des
+}
+
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+main

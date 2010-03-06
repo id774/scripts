@@ -120,51 +120,56 @@ case $OSTYPE in
     ;;
 esac
 
-case "$1" in
-  191-378)
-    install_stable 1.9.1-p378 1.9 $2
-    ;;
-  191-376)
-    install_stable 1.9.1-p376 1.9 $2
-    ;;
-  191-243)
-    install_stable 1.9.1-p243 1.9 $2
-    ;;
-  187-249)
-    install_stable 1.8.7-p249 1.8 $2
-    ;;
-  187-248)
-    install_stable 1.8.7-p248 1.8 $2
-    ;;
-  187-174)
-    install_stable 1.8.7-p174 1.8 $2
-    ;;
-  187-72)
-    install_stable 1.8.7-p72 1.8 $2
-    ;;
-  186-383)
-    install_stable 1.8.6-p383 1.8 $2
-    ;;
-  186-287)
-    install_stable 1.8.6-p287 1.8 $2
-    ;;
-  18-svn)
-    install_branch ruby_1_8 $2
-    ;;
-  191-svn)
-    install_branch ruby_1_9_1 $2
-    ;;
-  187-svn)
-    install_branch ruby_1_8_7 $2
-    ;;
-  186-svn)
-    install_branch ruby_1_8_6 $2
-    ;;
-  trunk)
-    install_trunk $2
-    ;;
-  *)
-    ;;
-esac
+install_ruby() {
+    case "$1" in
+      191-378)
+        install_stable 1.9.1-p378 1.9 $2
+        ;;
+      191-376)
+        install_stable 1.9.1-p376 1.9 $2
+        ;;
+      191-243)
+        install_stable 1.9.1-p243 1.9 $2
+        ;;
+      187-249)
+        install_stable 1.8.7-p249 1.8 $2
+        ;;
+      187-248)
+        install_stable 1.8.7-p248 1.8 $2
+        ;;
+      187-174)
+        install_stable 1.8.7-p174 1.8 $2
+        ;;
+      187-72)
+        install_stable 1.8.7-p72 1.8 $2
+        ;;
+      186-383)
+        install_stable 1.8.6-p383 1.8 $2
+        ;;
+      186-287)
+        install_stable 1.8.6-p287 1.8 $2
+        ;;
+      18-svn)
+        install_branch ruby_1_8 $2
+        ;;
+      191-svn)
+        install_branch ruby_1_9_1 $2
+        ;;
+      187-svn)
+        install_branch ruby_1_8_7 $2
+        ;;
+      186-svn)
+        install_branch ruby_1_8_6 $2
+        ;;
+      trunk)
+        install_trunk $2
+        ;;
+      *)
+        ;;
+    esac
 
-ruby -v
+    ruby -v
+}
+
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+install_ruby $1

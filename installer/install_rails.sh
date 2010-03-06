@@ -82,7 +82,11 @@ install_rails_standalone() {
     select_rails_package $1
 }
 
-export RUBYOPT=rubygems
-install_rails_standalone $1
-gem list --local
+install_rails() {
+    export RUBYOPT=rubygems
+    install_rails_standalone $1
+    gem list --local
+}
 
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+install_rails

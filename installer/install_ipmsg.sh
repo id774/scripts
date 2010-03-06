@@ -11,23 +11,28 @@
 #       Stable.
 ########################################################################
 
-IPMSG=g2ipmsg-0.9.5
+install_ipmsg() {
+    IPMSG=g2ipmsg-0.9.5
 
-sudo aptitude -y install libgtk2.0-dev libgnomeui-dev libpanelappletmm-2.6-dev
+    sudo aptitude -y install libgtk2.0-dev libgnomeui-dev libpanelappletmm-2.6-dev
 
-mkdir install_ipmsg
-cd install_ipmsg
+    mkdir install_ipmsg
+    cd install_ipmsg
 
-wget http://www.ipmsg.org/archive/$IPMSG.tar.gz
-tar xzvf $IPMSG.tar.gz
-cd $IPMSG
-./configure
-make
-sudo make install
-cd ..
-sudo mkdir -p /usr/local/src/ipmsg
-sudo cp -av $IPMSG /usr/local/src/ipmsg/
-sudo chown -R root:root /usr/local/src/ipmsg
+    wget http://www.ipmsg.org/archive/$IPMSG.tar.gz
+    tar xzvf $IPMSG.tar.gz
+    cd $IPMSG
+    ./configure
+    make
+    sudo make install
+    cd ..
+    sudo mkdir -p /usr/local/src/ipmsg
+    sudo cp -av $IPMSG /usr/local/src/ipmsg/
+    sudo chown -R root:root /usr/local/src/ipmsg
 
-cd ..
-rm -rf install_ipmsg
+    cd ..
+    rm -rf install_ipmsg
+}
+
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+install_ipmsg

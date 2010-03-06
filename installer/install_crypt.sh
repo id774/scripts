@@ -162,4 +162,5 @@ install_crypt_main() {
     install_truecrypt $1
 }
 
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
 install_crypt_main $1

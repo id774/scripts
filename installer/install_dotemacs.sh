@@ -76,6 +76,7 @@ byte_compile_all() {
     $EMACS --batch --eval '(byte-compile-file "delete-empty-file.el")'
     $EMACS --batch --eval '(byte-compile-file "emacs-w3m.el")'
     $EMACS --batch --eval '(byte-compile-file "global-set-key.el")'
+    $EMACS --batch --eval '(byte-compile-file "jde-config.el")'
     $EMACS --batch --eval '(byte-compile-file "key-chord-define-global.el")'
     $EMACS --batch --eval '(byte-compile-file "kill-all-buffers.el")'
     $EMACS --batch --eval '(byte-compile-file "new-file-p.el")'
@@ -97,7 +98,7 @@ byte_compile_cedet() {
     make
 }
 
-main() {
+install_dotemacs() {
     setup_dotemacs
     setup_rhtml
     setup_rinari
@@ -122,4 +123,5 @@ esac
 
 test -n "$1" && EMACS=$1
 
-main
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+install_dotemacs

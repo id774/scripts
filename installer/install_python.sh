@@ -37,6 +37,13 @@ get_python() {
     rm -rf install_python
 }
 
+main() {
+    test -n "$1" || exit 1
+    get_python $1 $2
+
+    python -V
+}
+
 case $OSTYPE in
   *darwin*)
     OPTIONS=-pR
@@ -48,7 +55,4 @@ case $OSTYPE in
     ;;
 esac
 
-test -n "$1" || exit 1
-get_python $1 $2
-
-python -V
+ping -c 1 -i 3 google.com > /dev/null 2>&1 && main

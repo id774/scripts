@@ -65,7 +65,11 @@ gitpull_all() {
     gitpull github miyagawa plagger
 }
 
-debian_monthly_report git monthly-report
-assembla_git_all
-anything_get_all
-gitpull_all
+main() {
+    debian_monthly_report git monthly-report
+    assembla_git_all
+    anything_get_all
+    gitpull_all
+}
+
+main

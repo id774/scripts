@@ -9,10 +9,14 @@
 #       First version.
 ########################################################################
 
-TARGET_PATH=`python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"`
+install_easyinstall() {
+    TARGET_PATH=`python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"`
 
-wget http://peak.telecommunity.com/dist/ez_setup.py
-sudo python ez_setup.py -U setuptools
-sudo cp ez_setup.py $TARGET_PATH/ez_setup.py
-rm ez_setup.py
+    wget http://peak.telecommunity.com/dist/ez_setup.py
+    sudo python ez_setup.py -U setuptools
+    sudo cp ez_setup.py $TARGET_PATH/ez_setup.py
+    rm ez_setup.py
+}
 
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+install_easyinstall

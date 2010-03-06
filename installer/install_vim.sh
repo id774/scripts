@@ -54,10 +54,15 @@ get_source_and_install() {
     fi
 }
 
-mkdir install_vim
-cd install_vim
-get_source_and_install $1
-rm -rf install_vim
+install_vim() {
+    mkdir install_vim
+    cd install_vim
+    get_source_and_install $1
+    rm -rf install_vim
+    sudo chown -R $OWNER /usr/local/src/vim
+
+    vim --version
+}
 
 case $OSTYPE in
   *darwin*)
@@ -68,6 +73,5 @@ case $OSTYPE in
     ;;
 esac
 
-sudo chown -R $OWNER /usr/local/src/vim
-
-vim --version
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+install_vim

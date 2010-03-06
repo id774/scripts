@@ -30,6 +30,13 @@ install_navi2ch() {
     rm -rf install_navi2ch
 }
 
+main() {
+    VER=1.8.1
+    SOURCE="http://downloads.sourceforge.net/navi2ch/navi2ch-$VER.tar.gz"
+    install_navi2ch
+    sudo chown -R $OWNER /usr/local/src/emacs
+}
+
 case $OSTYPE in
   *darwin*)
     OPTIONS=-pR
@@ -41,8 +48,5 @@ case $OSTYPE in
     ;;
 esac
 
-VER=1.8.1
-SOURCE="http://downloads.sourceforge.net/navi2ch/navi2ch-$VER.tar.gz"
-install_navi2ch
-sudo chown -R $OWNER /usr/local/src/emacs
-
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+main

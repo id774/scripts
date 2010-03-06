@@ -33,6 +33,14 @@ get_perl() {
     rm -rf install_perl
 }
 
+install_perl() {
+    test -n "$1" || exit 1
+    get_perl 5.10.0 $1
+    sudo chown -R $OWNER /usr/local/src/perl
+
+    perl -V
+}
+
 case $OSTYPE in
   *darwin*)
     OPTIONS=-pR
@@ -44,8 +52,5 @@ case $OSTYPE in
     ;;
 esac
 
-test -n "$1" || exit 1
-get_perl 5.10.0 $1
-sudo chown -R $OWNER /usr/local/src/perl
-
-perl -V
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+install_perl

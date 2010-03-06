@@ -11,22 +11,27 @@
 #       Stable.
 ########################################################################
 
-PACO=paco-2.0.6
+install_paco() {
+    PACO_VERSION=paco-2.0.6
 
-mkdir paco
-cd paco
+    mkdir install_paco
+    cd install_paco
 
-wget http://downloads.sourceforge.net/paco/$PACO.tar.gz
-tar xzvf $PACO.tar.gz
-cd $PACO
-./configure --disable-gpaco
-make
-sudo make install
-sudo make logme
-cd ..
-sudo mkdir -p /usr/local/src/paco
-sudo cp -av $PACO /usr/local/src/paco/
-sudo chown -R root:root /usr/local/src/paco
+    wget http://downloads.sourceforge.net/paco/$PACO_VERSION.tar.gz
+    tar xzvf $PACO_VERSION.tar.gz
+    cd $PACO_VERSION
+    ./configure --disable-gpaco
+    make
+    sudo make install
+    sudo make logme
+    cd ..
+    sudo mkdir -p /usr/local/src/paco
+    sudo cp -av $PACO_VERSION /usr/local/src/paco/
+    sudo chown -R root:root /usr/local/src/paco
 
-cd ..
-rm -rf paco
+    cd ..
+    rm -rf install_paco
+}
+
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+install_paco
