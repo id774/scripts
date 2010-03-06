@@ -55,7 +55,7 @@ emacs_private_settings() {
     vim $TARGET/elisp/proxy.el $TARGET/elisp/emacs-w3m.el $TARGET/elisp/unix-defaults.el $TARGET/elisp/local.el
 }
 
-batch_byte_compile() {
+byte_compile_all() {
     cd ~/.emacs.d/elisp/3rd-party
     $EMACS --batch --eval '(byte-compile-file "js2.el")'
     $EMACS --batch --eval '(byte-compile-file "redo.el")'
@@ -90,6 +90,11 @@ batch_byte_compile() {
     $EMACS --batch --eval '(byte-compile-file "view-mode-key.el")'
 }
 
+byte_compile_cedet() {
+    cd ~/.emacs.d/elisp/3rd-party/cedet
+    make
+}
+
 test -d $SCRIPTS/dot_files/dot_emacs.d || exit 1
 TARGET=$HOME/.emacs.d
 
@@ -110,5 +115,6 @@ setup_dotemacs
 setup_rhtml
 setup_rinari
 emacs_private_settings
-batch_byte_compile
+byte_compile_all
+#byte_compile_cedet
 

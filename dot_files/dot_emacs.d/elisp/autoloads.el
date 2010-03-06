@@ -109,6 +109,23 @@
   (setq auto-mode-alist
     (cons '("\.as\'" . actionscript-mode) auto-mode-alist)))
 
+;; jde
+(autoload 'jde-mode "jde" "Java Development Environment for Emacs." t)
+(setq auto-mode-alist (cons '("\.java$" . jde-mode) auto-mode-alist))
+(setq semantic-load-turn-useful-things-on t)
+
+;; cedet
+(load "cedet")
+(global-ede-mode t)
+(semantic-load-enable-code-helpers)
+(global-srecode-minor-mode 1)
+
+;; ecb
+(require 'ecb)
+
+;; elisp for jdee
+(load-p "jde-config")
+
 ;; sense-region.el : \C-spc で region<->rectabgle をトグル。便利。
 (when (autoload-p 'sense-region-on "sense-region" "sense-region" 'interactive)
   (sense-region-on))
