@@ -92,7 +92,18 @@ byte_compile_all() {
 
 byte_compile_cedet() {
     cd ~/.emacs.d/elisp/3rd-party/cedet
+    make clean-autoloads
+    make clean-all
     make
+}
+
+main() {
+    setup_dotemacs
+    setup_rhtml
+    setup_rinari
+    emacs_private_settings
+    byte_compile_all
+    byte_compile_cedet
 }
 
 test -d $SCRIPTS/dot_files/dot_emacs.d || exit 1
@@ -111,10 +122,4 @@ esac
 
 test -n "$1" && EMACS=$1
 
-setup_dotemacs
-setup_rhtml
-setup_rinari
-emacs_private_settings
-byte_compile_all
-#byte_compile_cedet
-
+main
