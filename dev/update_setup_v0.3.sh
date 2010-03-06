@@ -29,6 +29,9 @@ if [ `aptitude search sysklogd | awk '/^i/' | wc -l` = 0 ]; then
 fi
 
 # Libraries and Programming Tools
+if [ `aptitude search clisp | awk '/^i/' | wc -l` = 0 ]; then
+    sudo aptitude -y install clisp
+fi
 if [ `aptitude search scheme48 | awk '/^i/' | wc -l` = 0 ]; then
     sudo aptitude -y install scheme48 cmuscheme48-el
 fi

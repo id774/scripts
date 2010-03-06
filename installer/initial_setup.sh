@@ -186,6 +186,7 @@ sudo aptitude -y install lynx
 sudo aptitude -y install w3m
 sudo aptitude -y install nasm
 sudo aptitude -y install gauche
+sudo aptitude -y install clisp
 sudo aptitude -y install scheme48 cmuscheme48-el
 sudo aptitude -y install qemu
 sudo aptitude -y install apt-file
