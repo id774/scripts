@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 3/7,2010
+#       Refactoring.
 #  v1.0 2/21,2010
 #       Stable.
 ########################################################################
@@ -55,9 +57,6 @@ deactivate() {
 
 parse_option() {
     case "$1" in
-      install)
-        install
-        ;;
       activate)
         activate
         ;;
@@ -67,10 +66,17 @@ parse_option() {
       uninstall)
         uninstall
         ;;
+      install)
+        ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+        install
+        ;;
     esac
 }
 
-test -n "$1" || exit 1
-test -n "$1" && parse_option "$1"
-ruby -v
+main() {
+    test -n "$1" || exit 1
+    test -n "$1" && parse_option "$1"
+    ruby -v
+}
 
+main $*

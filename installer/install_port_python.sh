@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 3/7,2010
+#       Refactoring.
 #  v1.1 10/20,2008
 #       Add pastedeploy, yaml.
 #  v1.0 10/19,2008

@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.6 3/7,2010
+#       Refactoring.
 #  v1.5 2/21,2010
 #       Add emacs-w3m.
 #  v1.4 5/18,2009

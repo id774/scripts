@@ -5,12 +5,19 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 3/7,2010
+#       Refactoring.
 #  v1.0 8/15,2008
 #       Stable.
 ########################################################################
 
+setup_environment() {
+    test -n "$1" || VERSION=5.7
+    test -n "$1" && VERSION=$1
+}
+
 install_ncurses() {
-    VERSION=5.7
+    setup_environment $*
     mkdir install_ncurses
     cd install_ncurses
     wget http://ftp.gnu.org/pub/gnu/ncurses/ncurses-$VERSION.tar.gz
@@ -27,4 +34,4 @@ install_ncurses() {
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
-install_ncurses
+install_ncurses $*

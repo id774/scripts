@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 3/7,2010
+#       Refactoring.
 #  v1.2 8/27,2009
 #       Update to 2.3.3.
 #  v1.1 1/6,2009
@@ -13,24 +15,13 @@
 #       Stable.
 ########################################################################
 
-set_rails_permission() {
-    case $OSTYPE in
-      *darwin*)
-        sudo chown -R root:wheel /usr/local/src/rails
-        ;;
-      *)
-        sudo chown -R root:root /usr/local/src/rails
-        ;;
-    esac
-}
-
 extract_rails_zip() {
     test -d $1 && sudo rm -rf $1
     sudo mkdir $1
     cd $1
     sudo unzip ../$1.zip
     sudo rm ../$1.zip
-    set_rails_permission
+    sudo chown -R $OWNER /usr/local/src/rails
 }
 
 wget_rails_zip() {
@@ -82,11 +73,23 @@ install_rails_standalone() {
     select_rails_package $1
 }
 
+setup_environment() {
+    case $OSTYPE in
+      *darwin*)
+        OWNER=root:wheel
+        ;;
+      *)
+        OWNER=root:root
+        ;;
+    esac
+}
+
 install_rails() {
+    setup_environment
     export RUBYOPT=rubygems
     install_rails_standalone $1
     gem list --local
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
-install_rails
+install_rails $*

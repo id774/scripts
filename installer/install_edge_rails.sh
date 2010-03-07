@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 3/7,2010
+#       Refactoring.
 #  v1.1 2/20,2010
 #       Fix directory.
 #  v1.0 9/8,2008
@@ -22,16 +24,23 @@ install_rails() {
     sudo git clone git://github.com/rails/rails.git
 }
 
-case $OSTYPE in
-  *darwin*)
-    OWNER=root:wheel
-    ;;
-  *)
-    OWNER=root:root
-    ;;
-esac
+setup_environment() {
+    case $OSTYPE in
+      *darwin*)
+        OWNER=root:root
+        ;;
+      *)
+        OWNER=root:wheel
+        ;;
+    esac
+}
 
-test -d /usr/local/src/rails/trunk/rails && update_rails
-test -d /usr/local/src/rails/trunk/rails || install_rails
-sudo chown -R $OWNER /usr/local/src/rails/trunk
+install_edge_rails() {
+    setup_environment
+    test -d /usr/local/src/rails/trunk/rails && update_rails
+    test -d /usr/local/src/rails/trunk/rails || install_rails
+    sudo chown -R $OWNER /usr/local/src/rails/trunk
+}
 
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+install_edge_rails

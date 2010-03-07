@@ -5,22 +5,25 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 3/7,2010
+#       Refactoring.
 #  v1.0 5/21,2009
 #       Derived from install_crypt.sh.
 ########################################################################
 
-set_des_permission() {
+setup_environment() {
     case $OSTYPE in
       *darwin*)
-        sudo chown -R root:wheel /usr/local/src/crypt/des
+        OWNER=root:root
         ;;
       *)
-        sudo chown -R root:root /usr/local/src/crypt/des
+        OWNER=root:wheel
         ;;
     esac
 }
 
 install_des() {
+    setup_environment
     mkdir install_des
     cd install_des
     wget http://id774.net/archive/kmdes-ubuntu.tar.gz
@@ -37,6 +40,7 @@ install_des() {
     rm -rf des
     cd ..
     rm -rf install_des
+    sudo chown -R $OWNER /usr/local/src/crypt/des
     set_des_permission
 }
 

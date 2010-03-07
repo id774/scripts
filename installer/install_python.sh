@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 3/7,2010
+#       Refactoring.
 #  v1.2 2/20,2010
 #       Refactoring.
 #  v1.1 2/21,2009
@@ -37,22 +39,26 @@ get_python() {
     rm -rf install_python
 }
 
-main() {
+setup_environment() {
+    case $OSTYPE in
+      *darwin*)
+        OPTIONS=-pR
+        OWNER=root:wheel
+        ;;
+      *)
+        OPTIONS=-a
+        OWNER=root:root
+        ;;
+    esac
+}
+
+install_python() {
+    setup_environment
     test -n "$1" || exit 1
     get_python $1 $2
 
     python -V
 }
 
-case $OSTYPE in
-  *darwin*)
-    OPTIONS=-pR
-    OWNER=root:wheel
-    ;;
-  *)
-    OPTIONS=-a
-    OWNER=root:root
-    ;;
-esac
-
-ping -c 1 -i 3 google.com > /dev/null 2>&1 && main
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+install_python

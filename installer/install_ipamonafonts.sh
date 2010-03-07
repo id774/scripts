@@ -5,15 +5,21 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 3/7,2010
+#       Refactoring.
 #  v1.0 9/3,2008
 #       Stable.
 ########################################################################
 
+setup_environment() {
+    test -n "$1" || IPAMonaFontsVersion=1.0.8
+    test -n "$1" && IPAMonaFontsVersion=$1
+}
+
 install_ipamonafonts() {
+    setup_environment $*
     mkdir install_ipamonafonts
     cd install_ipamonafonts
-
-    IPAMonaFontsVersion=1.0.8
     wget http://www.geocities.jp/ipa_mona/opfc-ModuleHP-1.1.1_withIPAMonaFonts-$IPAMonaFontsVersion.tar.gz
     tar xzvf opfc-ModuleHP-1.1.1_withIPAMonaFonts-$IPAMonaFontsVersion.tar.gz
     cd opfc-ModuleHP-1.1.1_withIPAMonaFonts-$IPAMonaFontsVersion/fonts
@@ -27,4 +33,4 @@ install_ipamonafonts() {
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
-install_ipamonafonts
+install_ipamonafonts $*

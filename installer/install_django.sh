@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 3/7,2010
+#       Refactoring.
 #  v1.2 2/23,2010
 #       Implement svn up and build.
 #  v1.1 2/20,2010
@@ -24,6 +26,7 @@ install_trunk() {
         cd trunk
     fi
     sudo python setup.py install
+    svn info
     sudo chown -R $OWNER /usr/local/src/django/trunk
 }
 
@@ -43,16 +46,23 @@ install_branch() {
     fi
 }
 
-case $OSTYPE in
-  *darwin*)
-    OWNER=root:wheel
-    ;;
-  *)
-    OWNER=root:root
-    ;;
-esac
+setup_environment() {
+    case $OSTYPE in
+      *darwin*)
+        OWNER=root:root
+        ;;
+      *)
+        OWNER=root:wheel
+        ;;
+    esac
+}
 
-test -n "$1" && install_branch $1
-test -n "$1" || install_trunk
+install_django() {
+    setup_environment
+    test -n "$1" && install_branch $1
+    test -n "$1" || install_trunk
+    django-admin.py --version
+}
 
-django-admin.py --version
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+install_django $*

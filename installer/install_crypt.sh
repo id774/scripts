@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 3/7,2010
+#       Refactoring.
 #  v1.3 12/23,2009
 #       Add new option 6.3a.
 #  v1.2.2 12/3,2009
@@ -21,18 +23,9 @@
 TRUECRYPT_CURRENT_VERSION=6.3a
 
 set_truecrypt_permission() {
-    case $OSTYPE in
-      *darwin*)
-        sudo chown -R root:wheel /usr/local/src/crypt/truecrypt
-        sudo chown root:wheel /usr/local/src/crypt
-        sudo chown root:wheel /usr/local/src
-        ;;
-      *)
-        sudo chown -R root:root /usr/local/src/crypt/truecrypt
-        sudo chown root:root /usr/local/src/crypt
-        sudo chown root:root /usr/local/src
-        ;;
-    esac
+    sudo chown -R $OWNER /usr/local/src/crypt/truecrypt
+    sudo chown $OWNER /usr/local/src/crypt
+    sudo chown $OWNER /usr/local/src
 }
 
 get_truecrypt_source() {
@@ -156,11 +149,23 @@ install_truecrypt() {
     set_truecrypt_permission
 }
 
+setup_environment() {
+    case $OSTYPE in
+      *darwin*)
+        OWNER=root:root
+        ;;
+      *)
+        OWNER=root:wheel
+        ;;
+    esac
+}
+
 install_crypt_main() {
+    setup_environment
     which dmsetup > /dev/null || sudo aptitude -y install dmsetup
     test -d /usr/local/src/crypt/truecrypt || sudo mkdir -p /usr/local/src/crypt/truecrypt
     install_truecrypt $1
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
-install_crypt_main $1
+install_crypt_main $*

@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.10 3/7,2010
+#       Refactoring.
 #  v1.9 2/20,2010
 #       Implement svn up and build.
 #  v1.8 2/17,2010
@@ -109,18 +111,21 @@ install_stable() {
     $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/ruby-$1/misc
 }
 
-case $OSTYPE in
-  *darwin*)
-    OPTIONS=-pR
-    OWNER=root:wheel
-    ;;
-  *)
-    OPTIONS=-a
-    OWNER=root:root
-    ;;
-esac
+setup_environment() {
+    case $OSTYPE in
+      *darwin*)
+        OPTIONS=-pR
+        OWNER=root:wheel
+        ;;
+      *)
+        OPTIONS=-a
+        OWNER=root:root
+        ;;
+    esac
+}
 
 install_ruby() {
+    setup_environment
     case "$1" in
       191-378)
         install_stable 1.9.1-p378 1.9 $2
@@ -172,4 +177,4 @@ install_ruby() {
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
-install_ruby $1
+install_ruby $*

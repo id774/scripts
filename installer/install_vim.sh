@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 3/7,2010
+#       Refactoring and update to 7.2.385.
 #  v1.3 2/20,2010
 #       Refactoring.
 #  v1.2 3/10,2009
@@ -47,31 +49,37 @@ get_source_and_install() {
         cd patches
         curl -O ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.001-100.gz
         gunzip 7.2.001-100.gz
-        curl -O 'ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.[101-132]'
+        curl -O ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.101-200.gz
+        gunzip 7.2.101-200.gz
+        curl -O ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.201-300.gz
+        gunzip 7.2.101-200.gz
+        curl -O 'ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.[301-385]'
         cd ../
         build_and_install
         cd ../../
     fi
 }
 
+setup_environment() {
+    case $OSTYPE in
+      *darwin*)
+        OWNER=root:root
+        ;;
+      *)
+        OWNER=root:wheel
+        ;;
+    esac
+}
+
 install_vim() {
+    setup_environment
     mkdir install_vim
     cd install_vim
     get_source_and_install $1
     rm -rf install_vim
     sudo chown -R $OWNER /usr/local/src/vim
-
     vim --version
 }
-
-case $OSTYPE in
-  *darwin*)
-    OWNER=root:wheel
-    ;;
-  *)
-    OWNER=root:root
-    ;;
-esac
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
 install_vim

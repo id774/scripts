@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.4 3/7,2010
+#       Refactoring and update to 1.8.3.
 #  v0.3 2/20,2009
 #       Recactoring.
 #  v0.2 1/19,2009
@@ -17,36 +19,41 @@ install_navi2ch() {
     mkdir install_navi2ch
     cd install_navi2ch
     wget $SOURCE
-    tar xzvf navi2ch-$VER.tar.gz
-    cd navi2ch-$VER
+    tar xzvf navi2ch-$VERSION.tar.gz
+    cd navi2ch-$VERSION
     ./configure
     make
     make check
     sudo make install
     test -d /usr/local/src/emacs/navi2ch || sudo mkdir -p /usr/local/src/emacs/navi2ch
     cd ..
-    sudo cp $OPTIONS navi2ch-$VER /usr/local/src/emacs/navi2ch
+    sudo cp $OPTIONS navi2ch-$VERSION /usr/local/src/emacs/navi2ch
     cd ..
     rm -rf install_navi2ch
 }
 
+setup_environment() {
+    test -n "$1" || VERSION=1.8.3
+    test -n "$1" && VERSION=$1
+    SOURCE="http://downloads.sourceforge.net/navi2ch/navi2ch-$VERSION.tar.gz"
+
+    case $OSTYPE in
+      *darwin*)
+        OPTIONS=-pR
+        OWNER=root:wheel
+        ;;
+      *)
+        OPTIONS=-a
+        OWNER=root:root
+        ;;
+    esac
+}
+
 main() {
-    VER=1.8.1
-    SOURCE="http://downloads.sourceforge.net/navi2ch/navi2ch-$VER.tar.gz"
+    setup_environment $*
     install_navi2ch
     sudo chown -R $OWNER /usr/local/src/emacs
 }
 
-case $OSTYPE in
-  *darwin*)
-    OPTIONS=-pR
-    OWNER=root:wheel
-    ;;
-  *)
-    OPTIONS=-a
-    OWNER=root:root
-    ;;
-esac
-
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
-main
+main $*

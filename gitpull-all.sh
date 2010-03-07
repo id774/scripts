@@ -72,4 +72,5 @@ main() {
     gitpull_all
 }
 
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
 main

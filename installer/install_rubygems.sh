@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.5 3/7,2010
+#       Refactoring.
 #  v1.4 2/25,2010
 #       Update to 1.3.6.
 #  v1.3 8/27,2009
@@ -17,7 +19,19 @@
 #       Stable.
 ########################################################################
 
+setup_environment() {
+    case $OSTYPE in
+      *darwin*)
+        OWNER=root:root
+        ;;
+      *)
+        OWNER=root:wheel
+        ;;
+    esac
+}
+
 install_rubygems() {
+    setup_environment
     export RUBYOPT=
     mkdir install_rubygems
     cd install_rubygems
@@ -67,14 +81,5 @@ install_rubygems() {
     gem list --local
 }
 
-case $OSTYPE in
-  *darwin*)
-    OWNER=root:wheel
-    ;;
-  *)
-    OWNER=root:root
-    ;;
-esac
-
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
-install_rubygems $1
+install_rubygems $*

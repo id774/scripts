@@ -5,22 +5,25 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 3/7,2010
+#       Refactoring.
 #  v1.0 1/15,2009
 #       Stable.
 ########################################################################
 
-set_network_permission() {
+setup_environment() {
     case $OSTYPE in
       *darwin*)
-        sudo chown -R root:wheel /usr/local/src/network
+        OWNER=root:root
         ;;
       *)
-        sudo chown -R root:root /usr/local/src/network
+        OWNER=root:wheel
         ;;
     esac
 }
 
 install_trunk() {
+    setup_environment
     test -d /usr/local/src/network/madwifi || sudo mkdir -p /usr/local/src/network/madwifi
     cd /usr/local/src/network/madwifi
     sudo svn co http://svn.madwifi-project.org/madwifi/trunk
@@ -29,8 +32,8 @@ install_trunk() {
     sudo make install
     sudo modinfo ath_pci
     sudo vim /etc/modules # add line "ath_pci"
+    sudo chown -R $OWNER /usr/local/src/network
 }
 
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
 install_trunk
-set_network_permission
-

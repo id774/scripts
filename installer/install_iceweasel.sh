@@ -5,15 +5,20 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 3/7,2010
+#       Refactoring.
 #  v1.1 10/22,2008
 #       Choice x-www-browser for icedove.
 #  v1.0 8/15,2008
 #       Stable.
 ########################################################################
 
-sudo aptitude -y install iceweasel iceweasel-gnome-support iceweasel-l10n-ja
-sudo aptitude -y install icedove icedove-gnome-support icedove-locale-ja
+install_iceweasel() {
+    sudo aptitude -y install iceweasel iceweasel-gnome-support iceweasel-l10n-ja
+    sudo aptitude -y install icedove icedove-gnome-support icedove-locale-ja
+    sudo update-alternatives --config x-www-browser
+    sudo aptitude purge epiphany-gecko epiphany-extensions epiphany-browser
+}
 
-sudo update-alternatives --config x-www-browser
-sudo aptitude purge epiphany-gecko epiphany-extensions epiphany-browser
-
+ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+install_iceweasel
