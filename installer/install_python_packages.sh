@@ -31,7 +31,7 @@ setup_environment() {
 }
 
 install_python_packages() {
-    setup_environment
+    setup_environment $*
     if [ `aptitude search libmysqlclient15-dev | awk '/^i/' | wc -l` = 0 ]; then
         sudo aptitude -y install libmysqlclient15-dev
     fi
@@ -51,4 +51,4 @@ install_python_packages() {
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
-install_python_packages
+install_python_packages $*
