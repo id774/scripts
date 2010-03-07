@@ -100,9 +100,7 @@ byte_compile_all() {
 
 byte_compile_cedet() {
     cd $TARGET/elisp/3rd-party/cedet
-    make clean-autoloads
-    make clean-all
-    make
+    make EMACS=$EMACS
 }
 
 network_connection() {
