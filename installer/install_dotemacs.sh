@@ -16,8 +16,8 @@
 ########################################################################
 
 setup_dotemacs() {
-    test -d ~/.emacs.d && rm -rf ~/.emacs.d/
-    test -f ~/.emacs && rm -f ~/.emacs
+    test -d $TARGET && rm -rf $TARGET/
+    test -f $HOME/.emacs && rm -f $HOME/.emacs
 
     cp $OPTIONS $SCRIPTS/dot_files/dot_emacs $HOME/.emacs
     test -d $TARGET || mkdir -p $TARGET
@@ -25,41 +25,41 @@ setup_dotemacs() {
 }
 
 setup_rhtml() {
-    if [ -d ~/local/github/rhtml ]; then
-        cd ~/local/github/rhtml
+    if [ -d $HOME/local/github/rhtml ]; then
+        cd $HOME/local/github/rhtml
         git pull
     else
-        cd ~/local/github
+        cd $HOME/local/github
         git clone git://github.com/eschulte/rhtml.git
-        cd ~/local/github/rhtml
+        cd $HOME/local/github/rhtml
     fi
-    ln -s ~/local/github/rhtml ~/.emacs.d/elisp/3rd-party
+    ln -s $HOME/local/github/rhtml $TARGET/elisp/3rd-party
 }
 
 setup_rinari() {
-    if [ -d ~/local/github/rinari ]; then
-        cd ~/local/github/rinari
+    if [ -d $HOME/local/github/rinari ]; then
+        cd $HOME/local/github/rinari
         git pull
     else
-        cd ~/local/github
+        cd $HOME/local/github
         git clone git://github.com/eschulte/rinari.git
-        cd ~/local/github/rinari
+        cd $HOME/local/github/rinari
     fi
     git submodule init
     git submodule update
-    ln -s ~/local/github/rinari ~/.emacs.d/elisp/3rd-party
+    ln -s $HOME/local/github/rinari $TARGET/elisp/3rd-party
 }
 
 emacs_private_settings() {
-    if [ -f ~/private/scripts/etc/twitter1-account.el ]; then
-        cp $OPTIONS ~/private/scripts/etc/twitter*-account.el $TARGET/elisp/
+    if [ -f $PRIVATE/etc/twitter1-account.el ]; then
+        cp $OPTIONS $PRIVATE/etc/twitter*-account.el $TARGET/elisp/
     fi
     chmod 600 $TARGET/elisp/twitter*-account.el*
 
-    if [ -f ~/etc/config.local/local.el ]; then
-        cp $OPTIONS ~/etc/config.local/*.el $TARGET/elisp/
+    if [ -f $HOME/etc/config.local/local.el ]; then
+        cp $OPTIONS $HOME/etc/config.local/*.el $TARGET/elisp/
     fi
-    vim $TARGET/elisp/proxy.el $TARGET/elisp/emacs-w3m.el $TARGET/elisp/unix-defaults.el $TARGET/elisp/local.el
+    vim $TARGET/elisp/proxy.el $TARGET/elisp/emacs-w3m.el $TARGET/elisp/unix-defaults.el $TARGET/elisp/local.el $TARGET/elisp/3rd-party/cedet/Makefile
 }
 
 byte_compile_all() {
@@ -99,7 +99,7 @@ byte_compile_all() {
 }
 
 byte_compile_cedet() {
-    cd ~/.emacs.d/elisp/3rd-party/cedet
+    cd $TARGET/elisp/3rd-party/cedet
     make clean-autoloads
     make clean-all
     make
