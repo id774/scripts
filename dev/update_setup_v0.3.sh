@@ -12,6 +12,9 @@ export SCRIPTS=$HOME/scripts
 sudo vim /etc/apt/sources.list
 sudo aptitude update
 
+# chromium-daily
+#sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfbef0d696de1c72ba5a835fe5a9bf3bb4e5e17b5
+
 # Make Directory
 test -d /opt/sbin || sudo mkdir /opt/sbin
 test -d /opt/bin || sudo mkdir /opt/bin

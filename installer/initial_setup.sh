@@ -100,6 +100,9 @@ sudo aptitude update
 #sudo wget http://www.ubuntulinux.jp/sources.list.d/$DISTRIB_CODENAME.list -O /etc/apt/sources.list.d/ubuntu-ja.list
 #sudo aptitude update
 
+# chromium-daily
+#sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfbef0d696de1c72ba5a835fe5a9bf3bb4e5e17b5
+
 # Make Directory
 sudo mkdir /opt/sbin
 sudo mkdir /opt/bin

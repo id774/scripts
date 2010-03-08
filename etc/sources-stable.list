@@ -4,4 +4,6 @@ deb     http://security.debian.org/ lenny/updates main contrib non-free
 deb-src http://security.debian.org/ lenny/updates main contrib non-free
 deb     http://ppa.launchpad.net/avassalotti/ubuntu hardy main
 deb-src http://ppa.launchpad.net/avassalotti/ubuntu hardy main
+#deb     http://ppa.launchpad.net/chromium-daily/ppa/ubuntu hardy main
+#deb-src http://ppa.launchpad.net/chromium-daily/ppa/ubuntu hardy main
 #deb     http://download.skype.com/linux/repos/debian/ stable non-free

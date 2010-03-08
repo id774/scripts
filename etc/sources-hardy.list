@@ -12,4 +12,6 @@ deb-src http://security.ubuntu.com/ubuntu/   hardy-security main restricted univ
 #deb-src http://archive.ubuntulinux.jp/ubuntu-ja hardy-ja/
 deb     http://ppa.launchpad.net/avassalotti/ubuntu hardy main
 deb-src http://ppa.launchpad.net/avassalotti/ubuntu hardy main
+#deb     http://ppa.launchpad.net/chromium-daily/ppa/ubuntu hardy main
+#deb-src http://ppa.launchpad.net/chromium-daily/ppa/ubuntu hardy main
 #deb     http://download.skype.com/linux/repos/debian/ stable non-free
