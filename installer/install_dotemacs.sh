@@ -103,6 +103,10 @@ byte_compile_cedet() {
     make EMACS=$EMACS
 }
 
+byte_compile_jde() {
+    $EMACS --batch -Q -f batch-byte-compile ~/.emacs.d/elisp/3rd-party/jde/lisp/*.el
+}
+
 network_connection() {
     setup_rhtml
     setup_rinari
@@ -131,6 +135,7 @@ install_dotemacs() {
     ping -c 1 -i 3 google.com > /dev/null 2>&1 && network_connection
     emacs_private_settings
     byte_compile_all
+    byte_compile_jde
     byte_compile_cedet
 }
 
