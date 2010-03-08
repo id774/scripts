@@ -35,7 +35,7 @@
 
 (defun view-mode-hook0 ()
   (define-many-keys view-mode-map pager-keybind)
-  (setq global-hl-line-mode nil)
+  (setq global-hl-line-mode t)
   (define-key view-mode-map " " 'scroll-up))
 (add-hook 'view-mode-hook 'view-mode-hook0)
 

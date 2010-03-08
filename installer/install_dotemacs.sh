@@ -33,7 +33,6 @@ setup_rhtml() {
         git clone git://github.com/eschulte/rhtml.git
         cd $HOME/local/github/rhtml
     fi
-    ln -s $HOME/local/github/rhtml $TARGET/elisp/3rd-party
 }
 
 setup_rinari() {
@@ -47,7 +46,6 @@ setup_rinari() {
     fi
     git submodule init
     git submodule update
-    ln -s $HOME/local/github/rinari $TARGET/elisp/3rd-party
 }
 
 emacs_private_settings() {
@@ -59,7 +57,7 @@ emacs_private_settings() {
     if [ -f $HOME/etc/config.local/local.el ]; then
         cp $OPTIONS $HOME/etc/config.local/*.el $TARGET/elisp/
     fi
-    vim $TARGET/elisp/proxy.el $TARGET/elisp/emacs-w3m.el $TARGET/elisp/unix-defaults.el $TARGET/elisp/local.el $TARGET/elisp/3rd-party/cedet/Makefile
+    vim $TARGET/elisp/proxy.el $TARGET/elisp/emacs-w3m.el $TARGET/elisp/unix-defaults.el $TARGET/elisp/local.el
 }
 
 byte_compile_all() {
@@ -133,6 +131,8 @@ install_dotemacs() {
     setup_environment $*
     setup_dotemacs
     ping -c 1 -i 3 google.com > /dev/null 2>&1 && network_connection
+    ln -s $HOME/local/github/rinari $TARGET/elisp/3rd-party
+    ln -s $HOME/local/github/rhtml $TARGET/elisp/3rd-party
     emacs_private_settings
     byte_compile_all
     byte_compile_jde
