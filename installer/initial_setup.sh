@@ -247,6 +247,9 @@ sudo aptitude -y install ttf-vlgothic ttf-bitstream-vera
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
 
+# navi2ch
+#$SCRIPTS/installer/install_navi2ch.sh
+
 # paco
 $SCRIPTS/installer/install_paco.sh
 
