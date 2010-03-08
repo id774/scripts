@@ -265,8 +265,10 @@
   (progn
     (cond
       ((eq system-type 'gnu/linux)
+        (setenv "JAVA_HOME" "/usr/lib/jvm/java-6-sun")
       )
       ((eq system-type 'darwin)
+        (setenv "JAVA_HOME" "/System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home")
         (cond
           ((< emacs-major-version '23)
             (progn

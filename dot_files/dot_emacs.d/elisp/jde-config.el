@@ -1,5 +1,4 @@
 ;; jde-config
-
 (add-hook 'jde-mode-hook
           '(lambda ()
             ))
@@ -32,6 +31,17 @@
 (setq java-mode-hook
     (function (lambda()
         (c-set-style "java2"))))
+
+;; ecb-config
+(setq ecb-tip-of-the-day nil)
+(setq ecb-windows-width 0.25)
+
+(defun ecb-toggle ()
+  (interactive)
+    (if ecb-minor-mode
+          (ecb-deactivate)
+              (ecb-activate)))
+(global-set-key [f2] 'ecb-toggle)
 
 ;; Local Variables:
 ;; mode : emacs-lisp
