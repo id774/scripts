@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 3/9,2010
+#       Auto generate twitter elisp.
 #  v1.3 3/7,2010
 #       Refactoring.
 #  v1.2 3/2,2010
@@ -22,6 +24,21 @@ setup_dotemacs() {
     cp $OPTIONS $SCRIPTS/dot_files/dot_emacs $HOME/.emacs
     test -d $TARGET || mkdir -p $TARGET
     cp $OPTIONS $SCRIPTS/dot_files/dot_emacs.d/* $TARGET/
+}
+
+gen_twitter_el() {
+    sed s/twitter1/twitter$1/g twitter1-mode.el |\
+    sed s/24\)/$2\)/g |\
+    sed s/103\)/$3\)/g > twitter$1-mode.el
+}
+
+gen_twitter_els() {
+    cd $TARGET/elisp/3rd-party
+    gen_twitter_el 2 23 102
+    gen_twitter_el 3 22 101
+    gen_twitter_el 4 21  98
+    gen_twitter_el 5 19  96
+    gen_twitter_el 6 18  94
 }
 
 setup_rhtml() {
@@ -130,6 +147,7 @@ setup_environment() {
 install_dotemacs() {
     setup_environment $*
     setup_dotemacs
+    gen_twitter_els
     ping -c 1 -i 3 google.com > /dev/null 2>&1 && network_connection
     ln -s $HOME/local/github/rinari $TARGET/elisp/3rd-party
     ln -s $HOME/local/github/rhtml $TARGET/elisp/3rd-party
