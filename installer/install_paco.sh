@@ -24,16 +24,16 @@ install_paco() {
     mkdir install_paco
     cd install_paco
 
-    wget http://downloads.sourceforge.net/paco/$PACO_VERSION.tar.gz
-    tar xzvf $PACO_VERSION.tar.gz
-    cd $PACO_VERSION
+    wget http://downloads.sourceforge.net/paco/paco-$PACO_VERSION.tar.gz
+    tar xzvf paco-$PACO_VERSION.tar.gz
+    cd paco-$PACO_VERSION
     ./configure --disable-gpaco
     make
     sudo make install
     sudo make logme
     cd ..
     sudo mkdir -p /usr/local/src/paco
-    sudo cp -av $PACO_VERSION /usr/local/src/paco/
+    sudo cp -av paco-$PACO_VERSION /usr/local/src/paco/
     sudo chown -R root:root /usr/local/src/paco
 
     cd ..
