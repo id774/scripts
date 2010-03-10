@@ -193,6 +193,29 @@
     (save-buffers-kill-emacs)))
 (global-set-key "\C-x\C-c" 'confirm-save-buffers-kill-emacs)
 
+;; Proxyのオンオフを切り替えるする関数
+(defun global-proxy-use-toggle () ""
+  (interactive)
+  (setq global-proxy-use
+        (not global-proxy-use))
+  (setq twitter1-proxy-use
+        (not twitter1-proxy-use))
+  (setq twitter2-proxy-use
+        (not twitter2-proxy-use))
+  (setq twitter3-proxy-use
+        (not twitter3-proxy-use))
+  (setq twitter4-proxy-use
+        (not twitter4-proxy-use))
+  (setq twitter5-proxy-use
+        (not twitter5-proxy-use))
+  (setq twitter6-proxy-use
+        (not twitter6-proxy-use))
+  (message "%s %s"
+           "Use Proxy:"
+           (if global-proxy-use
+               "on" "off")))
+(define-key global-map "\C-c\M-c\ p" 'global-proxy-use-toggle)
+
 ;; Local Variables:
 ;; mode : emacs-lisp
 ;; coding : euc-jp-unix
