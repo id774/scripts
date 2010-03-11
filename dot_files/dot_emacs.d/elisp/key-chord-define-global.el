@@ -37,7 +37,7 @@
 
 ;; Anthing.el
 (key-chord-define-global "as" 'anything)
-(key-chord-define-global "sd" 'anything)
+(key-chord-define-global "sd" 'anything-find-files)
 (key-chord-define-global ";:" 'anything)
 
 ;; 矩形選択

@@ -319,8 +319,6 @@
 (define-key anything-map (kbd "C-n") 'anything-next-line)
 (define-key anything-map (kbd "C-v") 'anything-next-source)
 (define-key anything-map (kbd "M-v") 'anything-previous-source)
-(global-set-key (kbd "C-;") 'anything)
-(global-set-key (kbd "C-:") 'anything)
 
 ;; key-chord.el 複数キー同時押しをサポート
 ;; http://www.emacswiki.org/cgi-bin/wiki/download/key-chord.el

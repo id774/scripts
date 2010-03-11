@@ -116,6 +116,10 @@
 (define-key global-map "\C-x\ b" 'anything)
 (define-key global-map "\C-c\C-c\ b" 'iswitchb-buffer)
 
+;; Anything
+(global-set-key (kbd "C-;") 'anything)
+(global-set-key (kbd "C-:") 'anything)
+
 ;; 動的略語変換
 (define-key global-map [C-tab] 'dabbrev-expand)
 (define-key global-map [C-S-tab] 'dabbrev-completion)
