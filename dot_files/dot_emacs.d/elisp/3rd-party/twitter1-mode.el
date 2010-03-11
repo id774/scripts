@@ -607,7 +607,7 @@ PARAMETERS: http request parameters (query string)
           ((?C) ; %C{time-format-str} - created_at (formatted with
            ; time-format-str)
            (list-push (twitter1-local-strftime
-                       (or (match-string-no-properties 2 format-str) "%H:%M:%S")
+                       (or (match-string-no-properties 2 format-str) "%m/%d %H:%M")
                        (attr 'created-at))
                       result))
           ((?@)                         ; %@ - X seconds ago
