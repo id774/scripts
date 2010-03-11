@@ -238,6 +238,7 @@ sudo aptitude -y install mysql-server mysql-client
 $SCRIPTS/installer/install_mysql.sh
 
 # Text Editor
+sudo aptitude -y install texinfo
 sudo aptitude -y install emacs-snapshot emacs-snapshot-el
 sudo update-alternatives --config emacs
 sudo aptitude -y install w3m-el-snapshot w3m-img imagemagick

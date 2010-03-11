@@ -40,6 +40,11 @@ if [ `aptitude search scheme48 | awk '/^i/' | wc -l` = 0 ]; then
     sudo aptitude -y install scheme48 cmuscheme48-el
 fi
 
+# makeinfo for emacs byte compling
+if [ `aptitude search texinfo | awk '/^i/' | wc -l` = 0 ]; then
+    sudo aptitude -y install texinfo
+fi
+
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
 
