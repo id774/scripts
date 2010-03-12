@@ -83,6 +83,9 @@ $SCRIPTS/installer/install_django.sh
 # Server Resource Report Job
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
 sudo chmod 700 /root/bin/get_resources.sh
+sudo cp $SCRIPTS/cron/etc/backup_exclude /root/bin/backup_exclude
+sudo vim /root/bin/backup_exclude
+sudo chmod 600 /root/bin/backup_exclude
 sudo chown -R root:root /root/bin
 
 # Install plagger plugin
@@ -97,12 +100,6 @@ sudo cp -Rv $SCRIPTS/cron/plagger/plugins/customfeed/* $plagger_dir/Plugin/Custo
 # Linux kernel source, headers, kbuild (Debian)
 sudo aptitude -y purge linux-headers-2.6.26-1-686
 sudo aptitude -y install linux-headers-2.6.26-2-686
-
-# Server Resource Report Job
-sudo cp $SCRIPTS/cron/etc/backup_exclude /root/bin/backup_exclude
-sudo vim /root/bin/backup_exclude
-sudo chmod 600 /root/bin/backup_exclude
-sudo chown -R root:root /root/bin
 
 # Upgrade
 
