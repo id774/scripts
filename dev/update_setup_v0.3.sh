@@ -24,6 +24,9 @@ test -d /opt/bin || sudo mkdir /opt/bin
 if [ `aptitude search dpkg-dev | awk '/^i/' | wc -l` = 0 ]; then
     sudo aptitude -y install dpkg-dev lintian debhelper yada equivs cvs-buildpackage dupload fakeroot devscripts debget
 fi
+if [ `aptitude search apt-listbugs | awk '/^i/' | wc -l` = 0 ]; then
+    sudo aptitude -y install apt-listchanges apt-listbugs
+fi
 
 # sysklogd
 if [ `aptitude search sysklogd | awk '/^i/' | wc -l` = 0 ]; then
