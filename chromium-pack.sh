@@ -5,4 +5,5 @@ test -f ~/arc/chromium.tar.gz && rm ~/arc/chromium.tar.gz
 cd
 
 tar czvf ~/arc/chromium.tar.gz .config/chromium
+chmod 600 ~/arc/chromium.tar.gz
 

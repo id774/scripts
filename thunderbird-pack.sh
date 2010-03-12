@@ -14,3 +14,5 @@ case $OSTYPE in
     ;;
 esac
 
+chmod 600 ~/arc/thunderbird.tar.gz
+

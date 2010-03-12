@@ -13,3 +13,5 @@ case $OSTYPE in
     ;;
 esac
 
+chmod 600 ~/arc/skype.tar.gz
+
