@@ -176,7 +176,7 @@
   "*Face used by hl-line.")
 (setq hl-line-face 'hlline-face)
 ;; (setq hl-line-face 'underline) ; 下線
-(global-hl-line-mode)
+(hl-line-mode 1)
 
 ;; ファイルオープン直後は読み取り専用(C-x j で切替)
 (add-hook 'find-file-hooks

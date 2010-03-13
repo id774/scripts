@@ -92,7 +92,7 @@
   (interactive)
   (cond (view-mode
       (view-mode nil)
-      (setq global-hl-line-mode nil))
+      (setq hl-line-mode nil))
     (t
       (view-mode))))
 (define-key global-map "\C-x\C-j" 'toggle-view-mode)

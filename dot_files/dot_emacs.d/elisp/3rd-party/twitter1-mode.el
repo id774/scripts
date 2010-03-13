@@ -56,8 +56,6 @@
         (message "%s" version-string)
       version-string)))
 
-(setq global-hl-line-mode nil)
-
 (defconst twitter1-http-status-line-regexp
   "HTTP/1\.[01] \\(\\([0-9][0-9][0-9]\\) [^\r\n]+\\)\r?\n"
   "Regular expression used in \"sentinel\" functions to pick up
