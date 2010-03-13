@@ -130,7 +130,7 @@
 	    auto-mode-alist))
 
 ;; jsp
-(setq auto-mode-alist (cons '("\\.jsp$" . html-mode) auto-mode-alist))
+(load "autostart")
 
 ;; sense-region.el : \C-spc で region<->rectabgle をトグル。便利。
 (when (autoload-p 'sense-region-on "sense-region" "sense-region" 'interactive)
