@@ -70,10 +70,10 @@ sudo cp $SCRIPTS/cron/etc/clamscan_exclude /root/bin/clamscan_exclude
 sudo vim /root/bin/clamscan_exclude
 sudo chmod 600 /root/bin/clamscan_exclude
 sudo chown -R root:root /root/bin
-sudo cp $SCRIPTS/cron/bin/clamav_upgrade /etc/cron.monthly/clamav_upgrade
-sudo vim /etc/cron.monthly/clamav_upgrade
-sudo chmod 750 /etc/cron.monthly/clamav_upgrade
-sudo chown root:adm /etc/cron.monthly/clamav_upgrade
+sudo cp $SCRIPTS/cron/bin/clamav_upgrade /etc/cron.weekly/clamav_upgrade
+sudo vim /etc/cron.weekly/clamav_upgrade
+sudo chmod 750 /etc/cron.weekly/clamav_upgrade
+sudo chown root:adm /etc/cron.weekly/clamav_upgrade
 sudo touch /var/log/clamav_upgrade
 sudo chmod 640 /var/log/clamav_upgrade
 sudo chown root:adm /var/log/clamav_upgrade

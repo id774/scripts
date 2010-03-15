@@ -80,13 +80,14 @@ $SCRIPTS/installer/install_ruby.sh 187-svn
 $SCRIPTS/installer/install_django.sh 1.1.1
 $SCRIPTS/installer/install_django.sh
 
-# Server Resource Report Job
+# cronjob
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
 sudo chmod 700 /root/bin/get_resources.sh
 sudo cp $SCRIPTS/cron/etc/backup_exclude /root/bin/backup_exclude
 sudo vim /root/bin/backup_exclude
 sudo chmod 600 /root/bin/backup_exclude
 sudo chown -R root:root /root/bin
+test -f /etc/cron.monthly/clamav_upgrade && sudo mv -v /etc/cron.monthly/clamav_upgrade /etc/cron.weekly/
 
 # Install plagger plugin
 export plagger_dir=$TMP
