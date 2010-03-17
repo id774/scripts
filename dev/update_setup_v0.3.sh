@@ -86,6 +86,8 @@ sudo chmod 700 /root/bin/get_resources.sh
 sudo cp $SCRIPTS/cron/etc/backup_exclude /root/bin/backup_exclude
 sudo vim /root/bin/backup_exclude
 sudo chmod 600 /root/bin/backup_exclude
+sudo cp $SCRIPTS/cron/etc/clamscan_exclude /root/bin/clamscan_exclude
+sudo chmod 600 /root/bin/clamscan_exclude
 sudo chown -R root:root /root/bin
 test -f /etc/cron.monthly/clamav_upgrade && sudo mv -v /etc/cron.monthly/clamav_upgrade /etc/cron.weekly/
 

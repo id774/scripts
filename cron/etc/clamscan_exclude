@@ -1,4 +1,5 @@
 /usr/local/src/security/clamav
+/opt/local/src/security/clamav
 /sys
 /dev
 /mnt
