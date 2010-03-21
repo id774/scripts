@@ -21,7 +21,7 @@ test -d /opt/sbin || sudo mkdir /opt/sbin
 test -d /opt/bin || sudo mkdir /opt/bin
 
 # Debian Developer Tools
-if [ `aptitude search dpkg-dev | awk '/^i/' | wc -l` = 0 ]; then
+if [ `aptitude search debget | awk '/^i/' | wc -l` = 0 ]; then
     sudo aptitude -y install dpkg-dev lintian debhelper yada equivs cvs-buildpackage dupload fakeroot devscripts debget
 fi
 if [ `aptitude search apt-listbugs | awk '/^i/' | wc -l` = 0 ]; then
