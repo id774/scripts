@@ -93,6 +93,9 @@ sudo vim /root/bin/clamscan_exclude
 sudo chmod 600 /root/bin/clamscan_exclude
 sudo chown -R root:root /root/bin
 test -f /etc/cron.monthly/clamav_upgrade && sudo mv -v /etc/cron.monthly/clamav_upgrade /etc/cron.weekly/
+sudo cp $SCRIPTS/cron/etc/clamav_upgrade-log /etc/logrotate.d/clamav_upgrade
+sudo chmod 644 /etc/logrotate.d/clamav_upgrade
+sudo chown root:root /etc/logrotate.d/clamav_upgrade
 
 # Install plagger plugin
 export plagger_dir=$TMP
