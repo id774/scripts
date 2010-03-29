@@ -63,6 +63,7 @@ gitpull_all() {
     gitpull github id774 id774.github.com
     gitpull github hayamiz twittering-mode
     gitpull github miyagawa plagger
+    gitpull github m2ym auto-complete
     gitpull github mooz js2-mode
 }
 
