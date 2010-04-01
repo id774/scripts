@@ -14,6 +14,7 @@
 ;; UTF-8の優先順位を高くする
 (prefer-coding-system 'utf-8-unix)
 
+
 (if window-system
   (progn
 ;; GUIでsystem-typeがGNU/Linuxの場合は
@@ -49,8 +50,14 @@
               strict
               (w32-logfont "VL ゴシック" 0 -12 700 0 t nil nil 128 1 3 49)
               ((spacing . -1))
-             ))))))
-    (cond
+             ))))
+        (setq default-frame-alist
+              (append (list '(top . 0) ; 起動時の表示位置（上から）
+                            '(left . 0) ; 起動時の表示位置（左から）
+                            '(width . 120) ; 起動時のサイズ（幅）
+                            '(height . 40) ; 起動時のサイズ（縦）
+                            '(font . "vl-gothic-12"); VL Gothic
+                            ))))
       ((eq system-type 'gnu/linux)
         (setq default-frame-alist ; ThinkPad X60/X61 に最適化
               (append (list '(top . 0) ; 起動時の表示位置（上から）
@@ -75,6 +82,7 @@
                                   '(width . 180) ; 起動時のサイズ（幅）
                                   '(height . 45) ; 起動時のサイズ（縦）
                                   )))
+              (set-frame-parameter nil 'fullscreen 'fullboth) ; 最大化
               ))
           ((>= emacs-major-version '23)
             (progn
