@@ -264,6 +264,8 @@
 (if window-system
   (progn
     (cond
+      ((eq system-type 'windows-nt)
+      )
       ((eq system-type 'gnu/linux)
         (setenv "JAVA_HOME" "/usr/lib/jvm/java-6-sun")
       )

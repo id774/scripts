@@ -86,6 +86,29 @@
 (add-hook 'rhtml-mode-hook
   (lambda () (rinari-launch)))
 
+;; jsp
+(load "autostart")
+
+;; jde
+(defun dynamic-load-jde ()
+  (interactive)
+  (autoload 'jde-mode "jde" "Java Development Environment for Emacs." t)
+  (setq semantic-load-turn-useful-things-on t)
+  ;; cedet
+  (load "cedet")
+  (global-ede-mode t)
+  (semantic-load-enable-code-helpers)
+  (global-srecode-minor-mode 1)
+  ;; ecb
+  (require 'ecb)
+  ;; elisp for jdee
+  (load-p "jde-config")
+  (jde-mode))
+
+(setq auto-mode-alist
+      (cons '("\.java$" . dynamic-load-jde)
+	    auto-mode-alist))
+
 ;; gtags-mode : global 便利。
 (when (autoload-p 'gtags-mode "gtags" "GNU GLOBAL" 'interactive)
   (setq gtags-mode-hook
@@ -108,29 +131,6 @@
 (when (require 'actionscript-mode nil t)
   (setq auto-mode-alist
     (cons '("\.as\'" . actionscript-mode) auto-mode-alist)))
-
-;; jde
-(defun dynamic-load-jde ()
-  (interactive)
-  (autoload 'jde-mode "jde" "Java Development Environment for Emacs." t)
-  (setq semantic-load-turn-useful-things-on t)
-  ;; cedet
-  (load "cedet")
-  (global-ede-mode t)
-  (semantic-load-enable-code-helpers)
-  (global-srecode-minor-mode 1)
-  ;; ecb
-  (require 'ecb)
-  ;; elisp for jdee
-  (load-p "jde-config")
-  (jde-mode))
-
-(setq auto-mode-alist
-      (cons '("\.java$" . dynamic-load-jde)
-	    auto-mode-alist))
-
-;; jsp
-(load "autostart")
 
 ;; sense-region.el : \C-spc で region<->rectabgle をトグル。便利。
 (when (autoload-p 'sense-region-on "sense-region" "sense-region" 'interactive)
@@ -304,6 +304,9 @@
 
 ;; タブ, 全角スペース、改行直前の半角スペースを表示する
 (load-p "jaspace-mode")
+(setq jaspace-alternate-jaspace-string "□")
+(setq jaspace-alternate-eol-string "↓\n")
+(setq jaspace-highlight-tabs t)
 
 ;; 新しいファイルを作る前に確認
 ;(load-p "new-file-p")

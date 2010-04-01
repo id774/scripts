@@ -20,6 +20,37 @@
 ;; Bitstream Vera Sans Mono/VLゴシックを指定
 ;; (要:ttf-bitstream-veraパッケージ)
     (cond
+      ((eq system-type 'windows-nt)
+        (w32-add-font
+         "vl-gothic-12"
+         '((spec
+            ((:char-spec ascii :height any)
+             strict
+             (w32-logfont "VL ゴシック" 0 -12 400 0 nil nil nil 128 1 3 49))
+             ((:char-spec ascii :height any :weight bold)
+              strict
+              (w32-logfont "VL ゴシック" 0 -12 700 0 nil nil nil 128 1 3 49))
+             ((:char-spec ascii :height any :slant italic)
+             strict
+             (w32-logfont "VL ゴシック" 0 -12 400 0 t nil nil 128 1 3 49))
+             ((:char-spec ascii :height any :weight bold :slant italic)
+              strict
+              (w32-logfont "VL ゴシック" 0 -12 700 0 t nil nil 128 1 3 49))
+             ((:char-spec japanese-jisx0208 :height any)
+              strict
+              (w32-logfont "VL ゴシック" 0 -12 400 0 nil nil nil 128 1 3 49))
+             ((:char-spec japanese-jisx0208 :height any :weight bold)
+              strict
+              (w32-logfont "VL ゴシック" 0 -12 700 0 nil nil nil 128 1 3 49))
+             ((:char-spec japanese-jisx0208 :height any :slant italic)
+             strict
+             (w32-logfont "VL ゴシック" 0 -12 400 0 t nil nil 128 1 3 49))
+             ((:char-spec japanese-jisx0208 :height any :weight bold :slant italic)
+              strict
+              (w32-logfont "VL ゴシック" 0 -12 700 0 t nil nil 128 1 3 49)
+              ((spacing . -1))
+             ))))))
+    (cond
       ((eq system-type 'gnu/linux)
         (setq default-frame-alist ; ThinkPad X60/X61 に最適化
               (append (list '(top . 0) ; 起動時の表示位置（上から）
