@@ -304,8 +304,8 @@
 
 ;; タブ, 全角スペース、改行直前の半角スペースを表示する
 (load-p "jaspace-mode")
-(setq jaspace-alternate-jaspace-string "□")
-(setq jaspace-alternate-eol-string "↓\n")
+;;(setq jaspace-alternate-jaspace-string "□")
+(setq jaspace-alternate-eol-string "$\n")
 (setq jaspace-highlight-tabs t)
 
 ;; 新しいファイルを作る前に確認
