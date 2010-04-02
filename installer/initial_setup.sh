@@ -216,6 +216,7 @@ sudo aptitude -y install svk
 # Debian Developer Tools
 sudo aptitude -y install dpkg-dev lintian debhelper yada equivs cvs-buildpackage dupload fakeroot devscripts debget
 sudo aptitude -y install apt-listchanges apt-listbugs
+sudo vim /etc/apt/apt.conf.d/10apt-listbugs*
 
 # sshfs
 sudo aptitude -y install sshfs

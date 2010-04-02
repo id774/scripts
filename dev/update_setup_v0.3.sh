@@ -29,6 +29,7 @@ fi
 if [ `aptitude search apt-listbugs | awk '/^i/' | wc -l` = 0 ]; then
     sudo aptitude -y install apt-listchanges apt-listbugs
 fi
+sudo vim /etc/apt/apt.conf.d/10apt-listbugs*
 
 # sysklogd
 if [ `aptitude search sysklogd | awk '/^i/' | wc -l` = 0 ]; then
