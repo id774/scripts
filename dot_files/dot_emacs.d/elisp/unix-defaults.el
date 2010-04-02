@@ -14,13 +14,12 @@
 ;; UTF-8の優先順位を高くする
 (prefer-coding-system 'utf-8-unix)
 
-
 (if window-system
   (progn
-;; GUIでsystem-typeがGNU/Linuxの場合は
-;; Bitstream Vera Sans Mono/VLゴシックを指定
-;; (要:ttf-bitstream-veraパッケージ)
     (cond
+;; Windows(Meadow3)用GUI設定
+;; VLゴシックフォント必要
+;; http://dicey.org/vlgothic/
       ((eq system-type 'windows-nt)
         (w32-add-font
          "vl-gothic-12"
@@ -58,6 +57,9 @@
                             '(height . 40) ; 起動時のサイズ（縦）
                             '(font . "vl-gothic-12"); VL Gothic
                             ))))
+;; GNU/Linux用GUI設定
+;; Bitstream Vera Sans Mono/VLゴシックを指定
+;; (要:ttf-bitstream-veraパッケージ)
       ((eq system-type 'gnu/linux)
         (setq default-frame-alist ; ThinkPad X60/X61 に最適化
               (append (list '(top . 0) ; 起動時の表示位置（上から）
@@ -71,7 +73,7 @@
                           '("VL ゴシック" . "unicode-bmp"))
       )
       ((eq system-type 'darwin)
-;; Cocoa Emacs 向けフォント設定
+;; Mac OS X Cocoa/Carbon Emacs用GUI設定
 ;; http://diary.mrmt.net/item/1356
         (cond
           ((< emacs-major-version '23)
@@ -82,7 +84,6 @@
                                   '(width . 180) ; 起動時のサイズ（幅）
                                   '(height . 45) ; 起動時のサイズ（縦）
                                   )))
-              (set-frame-parameter nil 'fullscreen 'fullboth) ; 最大化
               ))
           ((>= emacs-major-version '23)
             (progn
@@ -146,7 +147,6 @@
     ))
 ))
 ;;
-
 
 ;; Local Variables:
 ;; mode : emacs-lisp
