@@ -106,7 +106,7 @@
   (jde-mode))
 
 (setq auto-mode-alist
-      (cons '("\.java$" . dynamic-load-jde)
+      (cons '("\\.java$" . dynamic-load-jde)
 	    auto-mode-alist))
 
 ;; gtags-mode : global ÊØÍø¡£
