@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.9 4/11,2010
+#       Use ssh.
 #  v1.8 1/4,2010
 #       Show truecrypt version.
 #  v1.7 12/23,2009
@@ -24,8 +26,12 @@
 #       Stable.
 ########################################################################
 
-test -n "$1" && RSYNC_BACKUP_HOME=$1
-test -n "$1" || RSYNC_BACKUP_HOME=/home/ubuntu
+RSYNC_BACKUP_HOME=/home/debian
+RSYNC_TARGET_HOME=/home/debian
+RSYNC_BACKUP_MOUNTPOUNT=mnt
+RSYNC_BACKUP_DEVICE=sdb
+RSYNC_TARGET_MOUNTPOUNT=mnt
+RSYNC_TARGET_DEVICE=sdb
 
 truecrypt -t --version
 
@@ -40,7 +46,7 @@ test -b /dev/sde && smartctl -a /dev/sde
 test -b /dev/sdf && smartctl -a /dev/sdf
 
 # cleanup
-test -x /root/bin/cleanup4mac.sh && /root/bin/cleanup4mac.sh /home/ubuntu/mnt/sdb
+test -x /root/bin/cleanup4mac.sh && /root/bin/cleanup4mac.sh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE
 
 # svn backup
 test -x /root/bin/svn_hotcopy.sh && /root/bin/svn_hotcopy.sh
@@ -55,38 +61,51 @@ test -x /root/bin/github-arc.sh && /root/bin/github-arc.sh
 # github -> sdb
 test -f /root/local/github.tar.gz && test -d $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/git && cp -v /root/local/github.tar.gz $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/git/
 
-# rsync func
-rsync_disk2disk() {
-  echo -n "* Executing rsync $1 -> $2 on "
+rsync_disk2ssh_0() {
+  echo -n "* Executing rsync_disk2ssh_0 $RSYNC_BACKUP_DEVICE -> $RSYNC_TARGET_DEVICE of $TARGET_HOST on "
   date "+%Y/%m/%d %T"
-  test -d $RSYNC_BACKUP_HOME/$1/user1 && test -d $RSYNC_BACKUP_HOME/$2/user1 && rsync -av --delete $RSYNC_BACKUP_HOME/$1/user1 $RSYNC_BACKUP_HOME/$2/
-  test -d $RSYNC_BACKUP_HOME/$1/user2 && test -d $RSYNC_BACKUP_HOME/$2/user2 && rsync -av --delete $RSYNC_BACKUP_HOME/$1/user2 $RSYNC_BACKUP_HOME/$2/
-  test -d $RSYNC_BACKUP_HOME/$1/user3 && test -d $RSYNC_BACKUP_HOME/$2/user3 && rsync -av --delete $RSYNC_BACKUP_HOME/$1/user3 $RSYNC_BACKUP_HOME/$2/
-  test -d $RSYNC_BACKUP_HOME/$1/largefiles && test -d $RSYNC_BACKUP_HOME/$2/largefiles && rsync -av --delete $RSYNC_BACKUP_HOME/$1/largefiles $RSYNC_BACKUP_HOME/$2/
+  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE && rsync -avz --delete -e ssh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE $TARGET_USER@$TARGET_HOST:$RSYNC_TARGET_HOME/$RSYNC_TARGET_MOUNTPOUNT/
 }
 
-# rsync func_portable
-rsync_disk2disk_portable() {
-  echo -n "* Executing rsync (for portable) $1 -> $2 on "
+rsync_disk2ssh_1() {
+  echo -n "* Executing rsync_disk2ssh_1 $RSYNC_BACKUP_DEVICE -> $RSYNC_TARGET_DEVICE of $TARGET_HOST on "
   date "+%Y/%m/%d %T"
-  test -d $RSYNC_BACKUP_HOME/$1/user1 && test -d $RSYNC_BACKUP_HOME/$2/user1 && rsync -av --delete $RSYNC_BACKUP_HOME/$1/user1 $RSYNC_BACKUP_HOME/$2/
-  test -d $RSYNC_BACKUP_HOME/$1/user2 && test -d $RSYNC_BACKUP_HOME/$2/user2 && rsync -av --delete $RSYNC_BACKUP_HOME/$1/user2 $RSYNC_BACKUP_HOME/$2/
-  test -d $RSYNC_BACKUP_HOME/$1/user3 && test -d $RSYNC_BACKUP_HOME/$2/user3 && rsync -av --delete $RSYNC_BACKUP_HOME/$1/user3 $RSYNC_BACKUP_HOME/$2/
-  test -d $RSYNC_BACKUP_HOME/$1/largefiles/iso && test -d $RSYNC_BACKUP_HOME/$2/largefiles/iso && rsync -av --delete $RSYNC_BACKUP_HOME/$1/largefiles/iso $RSYNC_BACKUP_HOME/$2/largefiles/
-  test -d $RSYNC_BACKUP_HOME/$1/largefiles/VMwareImages && test -d $RSYNC_BACKUP_HOME/$2/largefiles/VMwareImages && rsync -av --delete $RSYNC_BACKUP_HOME/$1/largefiles/VMwareImages $RSYNC_BACKUP_HOME/$2/largefiles/
+  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user1 && rsync -avz --delete -e ssh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user1 $TARGET_USER@$TARGET_HOST:$RSYNC_TARGET_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/
+  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user2 && rsync -avz --delete -e ssh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user2 $TARGET_USER@$TARGET_HOST:$RSYNC_TARGET_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/
+  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user3 && rsync -avz --delete -e ssh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user3 $TARGET_USER@$TARGET_HOST:$RSYNC_TARGET_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/
+  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/iso && rsync -avz --delete -e ssh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/iso $TARGET_USER@$TARGET_HOST:$RSYNC_TARGET_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles/
+  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/VMwareImages && rsync -avz --delete -e ssh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/VMwareImages $TARGET_USER@$TARGET_HOST:$RSYNC_TARGET_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles/
 }
 
-# sdb -> sdc
-rsync_disk2disk mnt/sdb mnt/sdc
+rsync_disk2ssh_2() {
+  echo -n "* Executing rsync_disk2ssh_2 $RSYNC_BACKUP_DEVICE -> $RSYNC_TARGET_DEVICE of $TARGET_HOST on "
+  date "+%Y/%m/%d %T"
+  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/Movies && rsync -avz --delete -e ssh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/Movies $TARGET_USER@$TARGET_HOST:$RSYNC_TARGET_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles/
+}
 
-# sdb -> sdd
-rsync_disk2disk mnt/sdb mnt/sdd
+rsync_disk2disk_1() {
+  echo -n "* Executing rsync_disk2disk_1 $RSYNC_BACKUP_DEVICE -> $RSYNC_TARGET_DEVICE on "
+  date "+%Y/%m/%d %T"
+  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user1 && test -d $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/user1 && rsync -av --delete $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user1 $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/
+  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user2 && test -d $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/user2 && rsync -av --delete $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user2 $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/
+  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user3 && test -d $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/user3 && rsync -av --delete $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user3 $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/
+  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/iso && test -d $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles && rsync -av --delete $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/iso $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles/
+  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/VMwareImages && test -d $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles && rsync -av --delete $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/VMwareImages $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles/
+}
 
-# sdb -> sde
-rsync_disk2disk_portable mnt/sdb mnt/sde
+rsync_disk2disk_2() {
+  echo -n "* Executing rsync_disk2disk_2 $RSYNC_BACKUP_DEVICE -> $RSYNC_TARGET_DEVICE on "
+  date "+%Y/%m/%d %T"
+  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/Movies && test -d $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles && rsync -av --delete $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/Movies $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles/
+}
 
-# sdb -> sdf
-rsync_disk2disk mnt/sdb mnt/sdf
+RSYNC_TARGET_DEVICE=sdc
+rsync_disk2disk_1
+
+RSYNC_TARGET_DEVICE=sdb
+TARGET_USER=debian
+TARGET_HOST=
+rsync_disk2ssh_0
 
 # df at end
 df -T

@@ -2,7 +2,7 @@
 
 JOBLOG=/var/log/rsync_backup
 JOBLOG_1=/var/log/rsync_backup.1
-TRIGGER_FILE=/home/ubuntu/mnt/rsync_backup
+TRIGGER_FILE=/home/debian/mnt/rsync_backup
 
 # trigger check
 test -f $TRIGGER_FILE && RSYNC_BACKUP_RUN=run
