@@ -52,7 +52,7 @@ repoorcz_pull() {
 
 anything_get_all() {
     repoorcz_pull git anything-config
-    emacswiki_get anything
+    #emacswiki_get anything
 }
 
 assembla_git_all() {
