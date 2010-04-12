@@ -26,7 +26,7 @@ EXCLUDEFILE=$EXECDIR/clamscan_exclude
 cd /usr/local/src/security/clamav-devel
 git pull
 make clean
-./configure
+./configure --enable-experimental
 make
 make install
 test -f /usr/local/etc/freshclam.conf.base && cp /usr/local/etc/freshclam.conf.base /usr/local/etc/freshclam.conf

@@ -28,7 +28,7 @@ install_clamav() {
     cd install_clamav
     git clone git://git.clamav.net/git/clamav-devel
     cd clamav-devel
-    ./configure
+    ./configure --enable-experimental
     make
     sudo make install
     sudo vim /usr/local/etc/freshclam.conf /usr/local/etc/clamd.conf
