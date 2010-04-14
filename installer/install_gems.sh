@@ -2,6 +2,8 @@
 #
 ########################################################################
 # Install gem packages
+#   When use proxy, try following option.
+#   -r -p http://proxy.hoge.co.jp:8080
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
@@ -18,30 +20,31 @@
 ########################################################################
 
 install_gem() {
+    export GEM=/opt/bin/gem
     export RUBYOPT=rubygems
-    sudo gem update
-    sudo gem install mongrel
-    sudo gem install mongrel_cluster
-    sudo gem install mechanize
-    sudo gem install Selenium
-    sudo gem install vim-ruby
-    sudo gem install postgres-pr
-    sudo gem install mysql
-    sudo gem install BlueCloth
-    sudo gem install RedCloth
-    sudo gem install net-ssh
-    sudo gem install net-sftp
-    sudo gem install coverage
-    sudo gem install zentest
-    sudo gem install capistrano
-    sudo gem install magic_multi_connections
-    sudo gem install redgreen
-    sudo gem install rspec
-    sudo gem install rspec-rails
-    sudo gem install cucumber
-    sudo gem cleanup
-    gem list --local
+    sudo $GEM update $*
+    sudo $GEM install mongrel $*
+    sudo $GEM install mongrel_cluster $*
+    sudo $GEM install mechanize $*
+    sudo $GEM install Selenium $*
+    sudo $GEM install vim-ruby $*
+    sudo $GEM install postgres-pr $*
+    sudo $GEM install mysql $*
+    sudo $GEM install BlueCloth $*
+    sudo $GEM install RedCloth $*
+    sudo $GEM install net-ssh $*
+    sudo $GEM install net-sftp $*
+    sudo $GEM install coverage $*
+    sudo $GEM install zentest $*
+    sudo $GEM install capistrano $*
+    sudo $GEM install magic_multi_connections $*
+    sudo $GEM install redgreen $*
+    sudo $GEM install rspec $*
+    sudo $GEM install rspec-rails $*
+    sudo $GEM install cucumber $*
+    sudo $GEM cleanup
+    $GEM list --local
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
-install_gem
+install_gem $*

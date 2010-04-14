@@ -2,6 +2,8 @@
 #
 ########################################################################
 # Install Ruby on Rails
+#   When use proxy, try following option.
+#   -r -p http://proxy.hoge.co.jp:8080
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
@@ -64,13 +66,13 @@ select_rails_package() {
         ;;
     esac
     extract_rails_zip rails-$RAILS_VER
-    sudo gem install rails -v $RAILS_VER
+    sudo $GEM install rails -v $RAILS_VER $2 $3 $4
 }
 
 install_rails_standalone() {
     test -d /usr/local/src/rails || sudo mkdir -p /usr/local/src/rails
     cd /usr/local/src/rails
-    select_rails_package $1
+    select_rails_package $*
 }
 
 setup_environment() {
@@ -86,8 +88,9 @@ setup_environment() {
 
 install_rails() {
     setup_environment
+    export GEM=/opt/bin/gem
     export RUBYOPT=rubygems
-    install_rails_standalone $1
+    install_rails_standalone $*
     gem list --local
 }
 

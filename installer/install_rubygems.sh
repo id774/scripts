@@ -2,6 +2,8 @@
 #
 ########################################################################
 # Install RubyGems
+#   When use proxy, try following option.
+#   -r -p http://proxy.hoge.co.jp:8080
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
@@ -77,7 +79,7 @@ install_rubygems() {
     sudo chown -R $OWNER /usr/local/src/gems/$RUBY_GEMS_ZIP
     cd ..
     rm -rf install_rubygems
-    sudo gem update --system
+    sudo gem update --system $2 $3 $4
     gem list --local
 }
 
