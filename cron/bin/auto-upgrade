@@ -25,10 +25,10 @@ date "+%Y/%m/%d %T">>$JOBLOG 2>&1
 #aptitude update >> $JOBLOG 2>&1 && aptitude -s -v -y full-upgrade >> $JOBLOG 2>&1
 
 # Debian stable/testing
-#aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && aptitude -y install clamav clamav-freshclam >> $JOBLOG 2>&1 && aptitude autoclean >> $JOBLOG 2>&1
+aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && aptitude -y install clamav clamav-freshclam >> $JOBLOG 2>&1 && aptitude autoclean >> $JOBLOG 2>&1
 
 # Ubuntu Server
-aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && aptitude -y install linux-image-server linux-server gnupg clamav clamav-freshclam >> $JOBLOG 2>&1 && aptitude autoclean >> $JOBLOG 2>&1
+#aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && aptitude -y install linux-image-server linux-server gnupg clamav clamav-freshclam >> $JOBLOG 2>&1 && aptitude autoclean >> $JOBLOG 2>&1
 
 # Ubuntu Desktop
 #aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && aptitude -y install linux-image-generic linux-generic linux-restricted-modules-generic linux-headers linux-headers-generic gnupg clamav clamav-freshclam >> $JOBLOG 2>&1 && aptitude autoclean >> $JOBLOG 2>&1
