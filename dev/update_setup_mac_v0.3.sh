@@ -25,6 +25,9 @@ sudo port -d install emacs-w3m
 $SCRIPTS/installer/install_port_python31.sh install
 $SCRIPTS/installer/install_port_ruby19.sh install
 
+# Termtter
+sudo gem install termtter
+
 # Upgrade all package
 sudo port -d -u upgrade outdated
 

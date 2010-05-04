@@ -83,6 +83,9 @@ $SCRIPTS/installer/install_ruby.sh 187-svn
 $SCRIPTS/installer/install_django.sh 1.1.1
 $SCRIPTS/installer/install_django.sh
 
+# Termtter
+sudo gem install termtter
+
 # cronjob
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
 sudo chmod 700 /root/bin/get_resources.sh

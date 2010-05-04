@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.5 5/4,2010
+#       Add termtter.
 #  v1.4 3/7,2010
 #       Refactoring.
 #  v1.3 8/27,2009
@@ -42,6 +44,7 @@ install_gem() {
     sudo $GEM install rspec $*
     sudo $GEM install rspec-rails $*
     sudo $GEM install cucumber $*
+    sudo $GEM install termtter $*
     sudo $GEM cleanup
     $GEM list --local
 }
