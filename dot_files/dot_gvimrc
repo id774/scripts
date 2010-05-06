@@ -1,6 +1,6 @@
 " vim:set ts=8 sts=2 sw=2 tw=0
 "
-" Last Change: 28-May-2008.
+" Last Change: 06-May-2010.
 " Maintainer:  id774 <idnanashi@gmail.com>
 
 if 1 && filereadable($VIM . '/gvimrc_local.vim')
@@ -29,7 +29,7 @@ colorscheme desert
 if has('win32')
   "set guifont=MS_Gothic:h12:cSHIFTJIS
   "set guifont=MS_Mincho:h12:cSHIFTJIS
-  set guifont=Osakaー等幅:h12
+  set guifont=Osakaー等幅:h10
   set linespace=1
   if has('kaoriya')
     set ambiwidth=auto
@@ -43,8 +43,8 @@ else
   set guifont=Monospace\ 10
 endif
 
-set columns=80
-set lines=25
+set columns=120
+set lines=40
 set cmdheight=1
 set visualbell t_vb=
 
