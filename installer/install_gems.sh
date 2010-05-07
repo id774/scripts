@@ -7,12 +7,14 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.6 5/7,2010
+#       Update to ruby 1.9.
 #  v1.5 5/4,2010
 #       Add termtter.
 #  v1.4 3/7,2010
 #       Refactoring.
 #  v1.3 8/27,2009
-#       Update to rails 2.3.3
+#       Update to rails 2.3.3.
 #  v1.2 1/9,2009
 #       Add rspec-rails.
 #  v1.1 9/16,2008
@@ -22,7 +24,9 @@
 ########################################################################
 
 install_gem() {
-    export GEM=/opt/bin/gem
+    export GEM=/opt/ruby/1.9.1/bin/gem
+    #export GEM=/usr/local/bin/gem
+    #export GEM=/opt/bin/gem
     export RUBYOPT=rubygems
     sudo $GEM update $*
     sudo $GEM install mongrel $*
@@ -43,8 +47,10 @@ install_gem() {
     sudo $GEM install redgreen $*
     sudo $GEM install rspec $*
     sudo $GEM install rspec-rails $*
+    sudo $GEM install gherkin $*
     sudo $GEM install cucumber $*
     sudo $GEM install termtter $*
+    sudo $GEM install msgpack-rpc $*
     sudo $GEM cleanup
     $GEM list --local
 }

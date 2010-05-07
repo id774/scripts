@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.6 5/7,2010
+#       Update to ruby 1.9.
 #  v1.5 3/7,2010
 #       Refactoring.
 #  v1.4 2/25,2010
@@ -34,6 +36,9 @@ setup_environment() {
 
 install_rubygems() {
     setup_environment
+    export GEM=/opt/ruby/1.9.1/bin/gem
+    #export GEM=/usr/local/bin/gem
+    #export GEM=/opt/bin/gem
     export RUBYOPT=
     mkdir install_rubygems
     cd install_rubygems
@@ -79,8 +84,8 @@ install_rubygems() {
     sudo chown -R $OWNER /usr/local/src/gems/$RUBY_GEMS_ZIP
     cd ..
     rm -rf install_rubygems
-    sudo gem update --system $2 $3 $4
-    gem list --local
+    sudo $GEM update --system $2 $3 $4
+    $GEM list --local
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1

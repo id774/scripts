@@ -5,8 +5,10 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.25 5/7,2010
+#       Update to ruby 1.9 as default.
 # v1.24 3/3,2010
-#       Add Debian Developer Tools
+#       Add Debian Developer Tools.
 # v1.23 2/17,2010
 #       Update to ruby 1.8.7-p249, 1.9.1-p378.
 #       Add python install.
@@ -207,6 +209,7 @@ sudo aptitude -y install xdelta
 sudo aptitude -y install alien
 sudo aptitude -y install curl
 sudo aptitude -y install global
+sudo aptitude -y install libxslt-dev libxslt-ruby python-libxslt1
 
 # SCM Client
 sudo aptitude -y install subversion
@@ -275,16 +278,16 @@ $SCRIPTS/installer/install_dotfiles.sh
 # Ruby
 sudo aptitude -y install autoconf byacc bison autoconf-doc automake
 sudo aptitude -y install libopenssl-ruby
-sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
+#sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
 #sudo aptitude -y install ruby1.9 ruby1.9-dev rubygems
 #$SCRIPTS/installer/install_ruby.sh 187-svn
-$SCRIPTS/installer/install_ruby.sh 187-249 /opt/ruby/1.8.7
+#$SCRIPTS/installer/install_ruby.sh 187-249 /opt/ruby/1.8.7
 $SCRIPTS/installer/install_ruby.sh 191-378 /opt/ruby/1.9.1
 $SCRIPTS/config/update-alternatives-ruby.sh
 
 # Python
-$SCRIPTS/installer/install_python.sh 2.6.4 /opt/python/2.6.4
-$SCRIPTS/installer/install_python.sh 3.1.1 /opt/python/3.1.1
+#$SCRIPTS/installer/install_python.sh 2.6.5 /opt/python/2.6.5
+#$SCRIPTS/installer/install_python.sh 3.1.2 /opt/python/3.1.2
 $SCRIPTS/config/update-alternatives-python.sh
 
 # Apache

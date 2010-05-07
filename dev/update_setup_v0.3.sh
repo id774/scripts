@@ -22,6 +22,9 @@ sudo aptitude update
 test -d /opt/sbin || sudo mkdir /opt/sbin
 test -d /opt/bin || sudo mkdir /opt/bin
 
+# Libraries and Programming Tools
+sudo aptitude -y install libxslt-dev libxslt-ruby python-libxslt1
+
 # Debian Developer Tools
 if [ `aptitude search debget | awk '/^i/' | wc -l` = 0 ]; then
     sudo aptitude -y install dpkg-dev lintian debhelper yada equivs cvs-buildpackage dupload fakeroot devscripts debget
@@ -68,23 +71,29 @@ test -d /usr/local/src/ruby/ruby-1.8.7-p248 && sudo rm -rf /usr/local/src/ruby/r
 test -d /usr/local/src/ruby/ruby-1.8.7-p174 && sudo rm -rf /usr/local/src/ruby/ruby-1.8*
 test -d /usr/local/src/ruby/ruby-1.8.7-p72  && sudo rm -rf /usr/local/src/ruby/ruby-1.8*
 # Ruby
-$SCRIPTS/installer/install_ruby.sh 187-svn
+#$SCRIPTS/installer/install_ruby.sh 187-svn
 #$SCRIPTS/installer/install_ruby.sh 187-249 /opt/ruby/1.8.7
-#$SCRIPTS/installer/install_ruby.sh 191-378 /opt/ruby/1.9.1
-#$SCRIPTS/config/update-alternatives-ruby.sh
+$SCRIPTS/installer/install_ruby.sh 191-378 /opt/ruby/1.9.1
+$SCRIPTS/config/update-alternatives-ruby.sh
 
 # Python
 #test -d /usr/local/src/python/Python-* && sudo rm -rf /usr/local/src/python/Python-*
-#$SCRIPTS/installer/install_python.sh 2.6.4 /opt/python/2.6.4
-#$SCRIPTS/installer/install_python.sh 3.1.1 /opt/python/3.1.1
+#$SCRIPTS/installer/install_python.sh 2.6.5 /opt/python/2.6.5
+#$SCRIPTS/installer/install_python.sh 3.1.2 /opt/python/3.1.2
 #$SCRIPTS/config/update-alternatives-python.sh
 
 # Web Application Framework
 $SCRIPTS/installer/install_django.sh 1.1.1
 $SCRIPTS/installer/install_django.sh
 
-# Termtter
-sudo gem install termtter
+# RubyGems
+$SCRIPTS/installer/install_rubygems.sh
+$SCRIPTS/installer/install_gems.sh
+$SCRIPTS/installer/install_rails.sh
+vim-ruby-install.rb
+
+# Passenger
+$SCRIPTS/installer/install_passenger.sh
 
 # cronjob
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
