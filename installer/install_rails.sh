@@ -63,7 +63,7 @@ select_rails_package() {
         wget_rails_zip $RAILS_VER 47183
         ;;
       235-ruby19)
-        sudo $GEM install -v=2.3.5 rails sqlite3-ruby rspec-rails cucumber-rails webrat -v=1.2.3 test-unit database_cleaner
+        sudo $GEM install rails sqlite3-ruby rspec-rails cucumber-rails webrat test-unit database_cleaner
         exit 0
         ;;
       *)
