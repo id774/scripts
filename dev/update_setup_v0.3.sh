@@ -89,7 +89,7 @@ $SCRIPTS/installer/install_django.sh
 # RubyGems
 $SCRIPTS/installer/install_rubygems.sh
 $SCRIPTS/installer/install_gems.sh
-$SCRIPTS/installer/install_rails.sh
+$SCRIPTS/installer/install_rails.sh 235-ruby19
 vim-ruby-install.rb
 
 # Passenger

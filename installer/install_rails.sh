@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 5/8,2010
+#       Add rails 2.3.5 on ruby 1.9.
 #  v1.3 3/7,2010
 #       Refactoring.
 #  v1.2 8/27,2009
@@ -60,6 +62,10 @@ select_rails_package() {
         RAILS_VER=2.2.2
         wget_rails_zip $RAILS_VER 47183
         ;;
+      235-ruby19)
+        sudo $GEM install -v=2.3.5 rails sqlite3-ruby rspec-rails cucumber-rails webrat -v=1.2.3 test-unit database_cleaner
+        exit 0
+        ;;
       *)
         RAILS_VER=2.3.3
         wget_rails_zip $RAILS_VER 60600
@@ -88,7 +94,9 @@ setup_environment() {
 
 install_rails() {
     setup_environment
-    export GEM=/opt/bin/gem
+    export GEM=/opt/ruby/1.9.1/bin/gem
+    #export GEM=/usr/local/bin/gem
+    #export GEM=/opt/bin/gem
     export RUBYOPT=rubygems
     install_rails_standalone $*
     gem list --local

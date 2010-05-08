@@ -25,8 +25,14 @@ sudo port -d install emacs-w3m
 $SCRIPTS/installer/install_port_python31.sh install
 $SCRIPTS/installer/install_port_ruby19.sh install
 
-# Termtter
-sudo gem install termtter
+# RubyGems
+$SCRIPTS/installer/install_rubygems.sh
+$SCRIPTS/installer/install_gems.sh
+$SCRIPTS/installer/install_rails.sh 235-ruby19
+#$SCRIPTS/installer/install_rails.sh 212
+#$SCRIPTS/installer/install_rails.sh 205
+#$SCRIPTS/installer/install_rails.sh 126
+vim-ruby-install.rb
 
 # Upgrade all package
 sudo port -d -u upgrade outdated
