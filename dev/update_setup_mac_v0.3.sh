@@ -26,9 +26,9 @@ $SCRIPTS/installer/install_port_python31.sh install
 $SCRIPTS/installer/install_port_ruby19.sh install
 
 # RubyGems
-$SCRIPTS/installer/install_rubygems.sh
-$SCRIPTS/installer/install_gems.sh
-$SCRIPTS/installer/install_rails.sh 235-ruby19
+$SCRIPTS/installer/install_rubygems.sh 136 /opt/local/bin/gem1.9
+$SCRIPTS/installer/install_gems.sh /opt/local/bin/gem1.9
+$SCRIPTS/installer/install_rails.sh 235-ruby19 /opt/local/bin/gem1.9
 #$SCRIPTS/installer/install_rails.sh 212
 #$SCRIPTS/installer/install_rails.sh 205
 #$SCRIPTS/installer/install_rails.sh 126
