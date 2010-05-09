@@ -73,7 +73,10 @@ make_all_alternatives() {
     update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
 }
 
-remove_alternatives ruby autospec cap capify cdiff cucumber decolor edit_json.rb erb gem gpgen htmldiff irb ldiff mongrel_rails nokogiri oauth prettify_json.rb rackup rails rake rdoc redcloth rg ri selenium spec termtter testrb tt update_rubygems vim-ruby-install.rb
+remove_alternatives ruby autospec cap capify cdiff cucumber decolor \
+edit_json.rb erb gem gpgen htmldiff irb ldiff mongrel_rails nokogiri \
+oauth prettify_json.rb rackup rails rake rdoc redcloth rg ri selenium \
+spec termtter testrb tt update_rubygems vim-ruby-install.rb
 
 make_all_alternatives
 sudo update-alternatives --config ruby

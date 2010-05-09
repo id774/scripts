@@ -2,8 +2,6 @@
 #
 ########################################################################
 # Install Ruby on Rails
-#   When use proxy, try following option.
-#   -r -p http://proxy.hoge.co.jp:8080
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
@@ -63,7 +61,8 @@ select_rails_package() {
         wget_rails_zip $RAILS_VER 47183
         ;;
       235-ruby19)
-        sudo $GEM install rails sqlite3-ruby rspec-rails cucumber-rails webrat test-unit database_cleaner
+        sudo $GEM install rails sqlite3-ruby rspec-rails \
+        cucumber-rails webrat test-unit database_cleaner
         exit 0
         ;;
       *)
@@ -72,7 +71,7 @@ select_rails_package() {
         ;;
     esac
     extract_rails_zip rails-$RAILS_VER
-    sudo $GEM install rails -v $RAILS_VER $2 $3 $4
+    sudo $GEM install rails -v $RAILS_VER $proxy
 }
 
 install_rails_standalone() {
@@ -94,9 +93,10 @@ setup_environment() {
 
 install_rails() {
     setup_environment
-    export GEM=/opt/ruby/1.9.1/bin/gem
-    #export GEM=/usr/local/bin/gem
-    #export GEM=/opt/bin/gem
+    #export proxy=-r -p $http_proxy
+    export proxy=
+    test -n "$2" && export GEM=$2
+    test -n "$2" || export GEM=gem
     export RUBYOPT=rubygems
     install_rails_standalone $*
     gem list --local

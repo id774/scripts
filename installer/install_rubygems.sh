@@ -2,8 +2,6 @@
 #
 ########################################################################
 # Install RubyGems
-#   When use proxy, try following option.
-#   -r -p http://proxy.hoge.co.jp:8080
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
@@ -36,10 +34,11 @@ setup_environment() {
 
 install_rubygems() {
     setup_environment
-    export GEM=/opt/ruby/1.9.1/bin/gem
-    #export GEM=/usr/local/bin/gem
-    #export GEM=/opt/bin/gem
-    export RUBYOPT=
+    #export proxy=-r -p $http_proxy
+    export proxy=
+    test -n "$2" && export GEM=$2
+    test -n "$2" || export GEM=gem
+    export RUBYOPT=rubygems
     mkdir install_rubygems
     cd install_rubygems
 
@@ -80,11 +79,10 @@ install_rubygems() {
     cd ..
     sudo mkdir -p /usr/local/src/gems
     sudo cp -av $RUBY_GEMS_ZIP /usr/local/src/gems
-
     sudo chown -R $OWNER /usr/local/src/gems/$RUBY_GEMS_ZIP
     cd ..
     rm -rf install_rubygems
-    sudo $GEM update --system $2 $3 $4
+    sudo $GEM update --system $proxy
     $GEM list --local
 }
 

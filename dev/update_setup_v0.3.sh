@@ -87,9 +87,9 @@ $SCRIPTS/installer/install_django.sh 1.1.1
 $SCRIPTS/installer/install_django.sh
 
 # RubyGems
-$SCRIPTS/installer/install_rubygems.sh
-$SCRIPTS/installer/install_gems.sh
-$SCRIPTS/installer/install_rails.sh 235-ruby19
+$SCRIPTS/installer/install_rubygems.sh 136 /opt/ruby/1.9.1/bin/gem
+$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.1/bin/gem
+$SCRIPTS/installer/install_rails.sh 235-ruby19 /opt/ruby/1.9.1/bin/gem
 vim-ruby-install.rb
 
 # Passenger

@@ -2,8 +2,6 @@
 #
 ########################################################################
 # Install gem packages
-#   When use proxy, try following option.
-#   -r -p http://proxy.hoge.co.jp:8080
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
@@ -24,33 +22,34 @@
 ########################################################################
 
 install_gem() {
-    export GEM=/opt/ruby/1.9.1/bin/gem
-    #export GEM=/usr/local/bin/gem
-    #export GEM=/opt/bin/gem
+    #export proxy=-r -p $http_proxy
+    export proxy=
+    test -n "$1" && export GEM=$1
+    test -n "$1" || export GEM=gem
     export RUBYOPT=rubygems
-    sudo $GEM update $*
-    sudo $GEM install mongrel $*
-    sudo $GEM install mongrel_cluster $*
-    sudo $GEM install mechanize $*
-    sudo $GEM install Selenium $*
-    sudo $GEM install vim-ruby $*
-    sudo $GEM install postgres-pr $*
-    sudo $GEM install mysql $*
-    sudo $GEM install BlueCloth $*
-    sudo $GEM install RedCloth $*
-    sudo $GEM install net-ssh $*
-    sudo $GEM install net-sftp $*
-    sudo $GEM install coverage $*
-    sudo $GEM install zentest $*
-    sudo $GEM install capistrano $*
-    sudo $GEM install magic_multi_connections $*
-    sudo $GEM install redgreen $*
-    sudo $GEM install rspec $*
-    sudo $GEM install rspec-rails $*
-    sudo $GEM install gherkin $*
-    sudo $GEM install cucumber $*
-    sudo $GEM install termtter $*
-    sudo $GEM install msgpack-rpc $*
+    sudo $GEM update $proxy
+    sudo $GEM install mongrel $proxy
+    sudo $GEM install mongrel_cluster $proxy
+    sudo $GEM install mechanize $proxy
+    sudo $GEM install Selenium $proxy
+    sudo $GEM install vim-ruby $proxy
+    sudo $GEM install postgres-pr $proxy
+    sudo $GEM install mysql $proxy
+    sudo $GEM install BlueCloth $proxy
+    sudo $GEM install RedCloth $proxy
+    sudo $GEM install net-ssh $proxy
+    sudo $GEM install net-sftp $proxy
+    sudo $GEM install coverage $proxy
+    sudo $GEM install zentest $proxy
+    sudo $GEM install capistrano $proxy
+    sudo $GEM install magic_multi_connections $proxy
+    sudo $GEM install redgreen $proxy
+    sudo $GEM install rspec $proxy
+    sudo $GEM install rspec-rails $proxy
+    sudo $GEM install gherkin $proxy
+    sudo $GEM install cucumber $proxy
+    sudo $GEM install termtter $proxy
+    sudo $GEM install msgpack-rpc $proxy
     sudo $GEM cleanup
     $GEM list --local
 }
