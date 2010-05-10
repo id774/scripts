@@ -2,6 +2,9 @@
 #
 ########################################################################
 # Install RubyGems
+#  $1 = gem version (ex. 136)
+#  $2 = gem path (ex. /opt/bin/gem)
+#  $3 $4 $5 = proxy
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
@@ -34,8 +37,6 @@ setup_environment() {
 
 install_rubygems() {
     setup_environment
-    #export proxy=-r -p $http_proxy
-    export proxy=
     test -n "$2" && export GEM=$2
     test -n "$2" || export GEM=gem
     export RUBYOPT=rubygems
@@ -82,7 +83,7 @@ install_rubygems() {
     sudo chown -R $OWNER /usr/local/src/gems/$RUBY_GEMS_ZIP
     cd ..
     rm -rf install_rubygems
-    sudo $GEM update --system $proxy
+    sudo $GEM update --system $3 $4 $5
     $GEM list --local
 }
 

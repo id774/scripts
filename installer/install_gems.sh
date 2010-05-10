@@ -2,6 +2,8 @@
 #
 ########################################################################
 # Install gem packages
+#  $1 = gem path (ex. /opt/bin/gem)
+#  $2 $3 $4 = proxy
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
@@ -22,34 +24,32 @@
 ########################################################################
 
 install_gem() {
-    #export proxy=-r -p $http_proxy
-    export proxy=
     test -n "$1" && export GEM=$1
     test -n "$1" || export GEM=gem
     export RUBYOPT=rubygems
-    sudo $GEM update $proxy
-    sudo $GEM install mongrel $proxy
-    sudo $GEM install mongrel_cluster $proxy
-    sudo $GEM install mechanize $proxy
-    sudo $GEM install Selenium $proxy
-    sudo $GEM install vim-ruby $proxy
-    sudo $GEM install postgres-pr $proxy
-    sudo $GEM install mysql $proxy
-    sudo $GEM install BlueCloth $proxy
-    sudo $GEM install RedCloth $proxy
-    sudo $GEM install net-ssh $proxy
-    sudo $GEM install net-sftp $proxy
-    sudo $GEM install coverage $proxy
-    sudo $GEM install zentest $proxy
-    sudo $GEM install capistrano $proxy
-    sudo $GEM install magic_multi_connections $proxy
-    sudo $GEM install redgreen $proxy
-    sudo $GEM install rspec $proxy
-    sudo $GEM install rspec-rails $proxy
-    sudo $GEM install gherkin $proxy
-    sudo $GEM install cucumber $proxy
-    sudo $GEM install termtter $proxy
-    sudo $GEM install msgpack-rpc $proxy
+    sudo $GEM update $2 $3 $4
+    sudo $GEM install mongrel $2 $3 $4
+    sudo $GEM install mongrel_cluster $2 $3 $4
+    sudo $GEM install mechanize $2 $3 $4
+    sudo $GEM install Selenium $2 $3 $4
+    sudo $GEM install vim-ruby $2 $3 $4
+    sudo $GEM install postgres-pr $2 $3 $4
+    sudo $GEM install mysql $2 $3 $4
+    sudo $GEM install BlueCloth $2 $3 $4
+    sudo $GEM install RedCloth $2 $3 $4
+    sudo $GEM install net-ssh $2 $3 $4
+    sudo $GEM install net-sftp $2 $3 $4
+    sudo $GEM install coverage $2 $3 $4
+    sudo $GEM install zentest $2 $3 $4
+    sudo $GEM install capistrano $2 $3 $4
+    sudo $GEM install magic_multi_connections $2 $3 $4
+    sudo $GEM install redgreen $2 $3 $4
+    sudo $GEM install rspec $2 $3 $4
+    sudo $GEM install rspec-rails $2 $3 $4
+    sudo $GEM install gherkin $2 $3 $4
+    sudo $GEM install cucumber $2 $3 $4
+    sudo $GEM install termtter $2 $3 $4
+    sudo $GEM install msgpack-rpc $2 $3 $4
     sudo $GEM cleanup
     $GEM list --local
 }
