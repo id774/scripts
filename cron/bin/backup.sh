@@ -32,6 +32,7 @@ df -T
 
 # SMART information
 test -b /dev/sda && smartctl -a /dev/sda
+test -b /dev/hda && smartctl -a /dev/hda
 
 # delete old backup directories
 echo -n "* Deleting old backup directories on "
