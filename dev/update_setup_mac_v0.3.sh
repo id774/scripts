@@ -19,6 +19,9 @@ $SCRIPTS/installer/install_django.sh 1.1.1
 sudo port -d selfupdate
 sudo port -d sync
 
+# Termtter
+sudo gem install termtter
+
 # Install new package
 sudo port -d install w3m
 sudo port -d install emacs-w3m
