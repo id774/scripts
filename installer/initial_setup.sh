@@ -400,7 +400,7 @@ $SCRIPTS/installer/install_iptables.sh
 $SCRIPTS/installer/install_trac.sh
 
 # RubyGems
-$SCRIPTS/installer/install_rubygems.sh 136 /opt/ruby/1.9.1/bin/gem
+$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.1/bin/gem
 $SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.1/bin/gem
 $SCRIPTS/installer/install_rails.sh 235-ruby19 /opt/ruby/1.9.1/bin/gem
 #$SCRIPTS/installer/install_rails.sh 212

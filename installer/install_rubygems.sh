@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.7 5/16,2010
+#       Update to 1.3.7.
 #  v1.6 5/7,2010
 #       Update to ruby 1.9.
 #  v1.5 3/7,2010
@@ -68,9 +70,13 @@ install_rubygems() {
         RUBY_GEMS_ZIP=rubygems-1.3.5
         wget http://rubyforge.org/frs/download.php/60719/$RUBY_GEMS_ZIP.zip
         ;;
-      *)
+      136)
         RUBY_GEMS_ZIP=rubygems-1.3.6
         wget http://rubyforge.org/frs/download.php/69366/$RUBY_GEMS_ZIP.zip
+        ;;
+      *)
+        RUBY_GEMS_ZIP=rubygems-1.3.7
+        wget http://rubyforge.org/frs/download.php/70696/$RUBY_GEMS_ZIP.zip
         ;;
     esac
 
