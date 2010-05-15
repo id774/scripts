@@ -76,7 +76,7 @@ install_rubygems() {
         ;;
       *)
         RUBY_GEMS_ZIP=rubygems-1.3.7
-        wget http://rubyforge.org/frs/download.php/70696/$RUBY_GEMS_ZIP.zip
+        wget http://rubyforge.org/frs/download.php/70697/$RUBY_GEMS_ZIP.zip
         ;;
     esac
 
