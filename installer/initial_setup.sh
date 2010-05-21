@@ -457,6 +457,8 @@ sudo aptitude -y install ext2resize
 # Last Setup
 sudo dpkg-reconfigure exim4-config
 sudo vim /etc/anacrontab
+# Disable su
+sudo vim /etc/pam.d/su
 # PermitRootLogin yes->no
 sudo vim /etc/ssh/sshd_config
 # server 130.69.251.23

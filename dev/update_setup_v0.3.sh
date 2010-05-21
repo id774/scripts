@@ -128,6 +128,9 @@ sudo cp -Rv $SCRIPTS/cron/plagger/plugins/customfeed/* $plagger_dir/Plugin/Custo
 sudo aptitude -y purge linux-headers-2.6.26-1-686
 sudo aptitude -y install linux-headers-2.6.26-2-686
 
+# Disable su
+sudo vim /etc/pam.d/su
+
 # Upgrade
 
 # Debian unstable

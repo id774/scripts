@@ -45,10 +45,10 @@ make_all_alternatives() {
     SOURCE=/usr/local/bin
     PRIORITY=100
     update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
-    SOURCE=/opt/python/2.6.4/bin
+    SOURCE=/opt/python/2.6.5/bin
     PRIORITY=120
     update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
-    SOURCE=/opt/python/3.1.1/bin
+    SOURCE=/opt/python/3.1.2/bin
     PRIORITY=150
     SUFFIX=3
     update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
