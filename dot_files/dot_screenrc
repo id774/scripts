@@ -6,9 +6,7 @@ encoding utf-8 utf-8
 defencoding utf-8
 
 escape ^Tt
-bind ^E escape ^Ee
 bind ^Y escape ^Yy
-bind ^A escape ^Aa
 bind -c REGION 2 split
 bind -c REGION 1 only
 bind -c REGION 0 remove
