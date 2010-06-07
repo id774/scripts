@@ -22,7 +22,11 @@ sudo aptitude update
 test -d /opt/sbin || sudo mkdir /opt/sbin
 test -d /opt/bin || sudo mkdir /opt/bin
 
+# SSH, Compiler, Shell etc..
+sudo aptitude -y install lha
+
 # Libraries and Programming Tools
+sudo aptitude -y install sysvconfig
 sudo aptitude -y install libxslt-dev libxslt-ruby python-libxslt1
 
 # Debian Developer Tools

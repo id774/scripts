@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.26 6/7,2010
+#       Add sysvconfig.
 # v1.25 5/7,2010
 #       Update to ruby 1.9 as default.
 # v1.24 3/3,2010
@@ -175,6 +177,7 @@ sudo aptitude -y install build-essential
 sudo aptitude -y install gcc g++ g77
 sudo aptitude -y install p7zip p7zip-full p7zip-rar
 sudo aptitude -y install tar zip gzip unzip bzip2
+sudo aptitude -y install lha
 sudo aptitude -y install lha-sjis
 sudo aptitude -y install zsh
 chsh -s /bin/zsh
@@ -202,6 +205,7 @@ sudo aptitude -y install apt-spy
 sudo aptitude -y install keychain
 sudo aptitude -y install locales
 sudo aptitude -y install anacron
+sudo aptitude -y install sysvconfig
 sudo aptitude -y install mailx
 sudo aptitude -y install linux-source
 sudo aptitude -y install checkinstall
