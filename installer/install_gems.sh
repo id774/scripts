@@ -49,6 +49,7 @@ install_gem() {
     sudo $GEM install gherkin $2 $3 $4
     sudo $GEM install cucumber $2 $3 $4
     sudo $GEM install termtter $2 $3 $4
+    sudo $GEM install nokogiri $2 $3 $4
     sudo $GEM install msgpack-rpc $2 $3 $4
     sudo $GEM cleanup
     $GEM list --local
