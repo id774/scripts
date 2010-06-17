@@ -177,6 +177,11 @@ $IPTABLES -A INPUT -p tcp --dport 123 -j ACCEPT
 # ※PostgreSQLサーバーを公開する場合のみ
 #$IPTABLES -A INPUT -p tcp --dport 5432 -j ACCEPT
 
+# VMware Server
+#$IPTABLES -A INPUT -p tcp --dport 902 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 8222 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 8333 -j ACCEPT
+
 #----------------------------------------------------------#
 # 各種サービスを公開する場合の設定(ここまで)               #
 #----------------------------------------------------------#
