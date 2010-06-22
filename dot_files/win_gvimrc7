@@ -3,7 +3,7 @@
 " An example for a Japanese version gvimrc file.
 " 日本語版のデフォルトGUI設定ファイル(gvimrc)
 "
-" Last Change: 26-May-2009.
+" Last Change: 22-Jun-2010.
 " Maintainer:  id774 <idnanashi@gmail.com>
 "
 " 解説:
@@ -71,9 +71,9 @@ colorscheme desert
 "
 if has('win32')
   " Windows用
-  set guifont=MS_Gothic:h12:cSHIFTJIS
+  "set guifont=MS_Gothic:h12:cSHIFTJIS
   "set guifont=MS_Mincho:h12:cSHIFTJIS
-  "set guifont=Osaka－等幅:h12
+  set guifont=Osaka－等幅:h8
   " 行間隔の設定
   set linespace=1
   " 一部のUCS文字の幅を自動計測して決める
@@ -95,9 +95,9 @@ endif
 " ウインドウに関する設定:
 "
 " ウインドウの幅
-set columns=80
+set columns=120
 " ウインドウの高さ
-set lines=25
+set lines=40
 " コマンドラインの高さ(GUI使用時)
 set cmdheight=1
 " ビープとフラッシュベルを消去する
