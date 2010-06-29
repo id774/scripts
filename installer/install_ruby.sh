@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.11 6/29,2010
+#       Update to ruby 1.8.7-p299.
 # v1.10 3/7,2010
 #       Refactoring.
 #  v1.9 2/20,2010
@@ -135,6 +137,9 @@ install_ruby() {
         ;;
       191-243)
         install_stable 1.9.1-p243 1.9 $2
+        ;;
+      187-299)
+        install_stable 1.8.7-p299 1.8 $2
         ;;
       187-249)
         install_stable 1.8.7-p249 1.8 $2

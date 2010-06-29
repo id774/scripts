@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.27 6/29,2010
+#       Update to ruby 1.8.7-p299.
 # v1.26 6/7,2010
 #       Add sysvconfig.
 # v1.25 5/7,2010
@@ -285,7 +287,7 @@ sudo aptitude -y install libopenssl-ruby
 #sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
 #sudo aptitude -y install ruby1.9 ruby1.9-dev rubygems
 #$SCRIPTS/installer/install_ruby.sh 187-svn
-#$SCRIPTS/installer/install_ruby.sh 187-249 /opt/ruby/1.8.7
+#$SCRIPTS/installer/install_ruby.sh 187-299 /opt/ruby/1.8.7
 $SCRIPTS/installer/install_ruby.sh 191-378 /opt/ruby/1.9.1
 $SCRIPTS/config/update-alternatives-ruby.sh
 
