@@ -284,6 +284,7 @@ $SCRIPTS/installer/install_dotfiles.sh
 # Ruby
 sudo aptitude -y install autoconf byacc bison autoconf-doc automake
 sudo aptitude -y install libopenssl-ruby
+sudo aptitude -y install libreadline-dev
 #sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
 #sudo aptitude -y install ruby1.9 ruby1.9-dev rubygems
 #$SCRIPTS/installer/install_ruby.sh 187-svn

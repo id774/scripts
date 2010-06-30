@@ -1,0 +1,17 @@
+deb     http://jp.archive.ubuntu.com/ubuntu/ lucid main restricted universe multiverse
+deb-src http://jp.archive.ubuntu.com/ubuntu/ lucid main restricted universe multiverse
+deb     http://jp.archive.ubuntu.com/ubuntu/ lucid-updates main restricted universe multiverse
+deb-src http://jp.archive.ubuntu.com/ubuntu/ lucid-updates main restricted universe multiverse
+deb     http://security.ubuntu.com/ubuntu/   lucid-security main restricted universe multiverse
+deb-src http://security.ubuntu.com/ubuntu/   lucid-security main restricted universe multiverse
+#deb     http://jp.archive.ubuntu.com/ubuntu/ lucid-backports main restricted universe multiverse
+#deb-src http://jp.archive.ubuntu.com/ubuntu/ lucid-backports main restricted universe multiverse
+#deb     http://archive.ubuntulinux.jp/ubuntu-ja lucid/
+#deb-src http://archive.ubuntulinux.jp/ubuntu-ja lucid/
+#deb     http://archive.ubuntulinux.jp/ubuntu-ja lucid-ja/
+#deb-src http://archive.ubuntulinux.jp/ubuntu-ja lucid-ja/
+deb     http://ppa.launchpad.net/avassalotti/ubuntu hardy main
+deb-src http://ppa.launchpad.net/avassalotti/ubuntu hardy main
+deb     http://ppa.launchpad.net/chromium-daily/ppa/ubuntu lucid main
+deb-src http://ppa.launchpad.net/chromium-daily/ppa/ubuntu lucid main
+deb     http://download.skype.com/linux/repos/debian/ stable non-free
