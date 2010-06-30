@@ -2,11 +2,13 @@
 #
 ########################################################################
 # Install gem packages
-#  $1 = gem path (ex. /opt/bin/gem)
+#  $1 = ruby path (ex. /opt/bin)
 #  $2 $3 $4 = proxy
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.7 6/30,2010
+#       Refactoring.
 #  v1.6 5/7,2010
 #       Update to ruby 1.9.
 #  v1.5 5/4,2010
@@ -24,7 +26,7 @@
 ########################################################################
 
 install_gem() {
-    test -n "$1" && export GEM=$1
+    test -n "$1" && export GEM=$1/bin/gem
     test -n "$1" || export GEM=gem
     export RUBYOPT=rubygems
     sudo $GEM update $2 $3 $4

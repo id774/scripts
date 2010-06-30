@@ -94,9 +94,9 @@ $SCRIPTS/installer/install_django.sh
 sudo gem install termtter
 
 # RubyGems
-$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.1/bin/gem
-$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.1/bin/gem
-$SCRIPTS/installer/install_rails.sh 235-ruby19 /opt/ruby/1.9.1/bin/gem
+$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.1
+$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.1
+$SCRIPTS/installer/install_rails.sh rails-ruby19 /opt/ruby/1.9.1
 vim-ruby-install.rb
 
 # Passenger

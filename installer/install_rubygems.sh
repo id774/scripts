@@ -2,12 +2,14 @@
 #
 ########################################################################
 # Install RubyGems
-#  $1 = gem version (ex. 136)
-#  $2 = gem path (ex. /opt/bin/gem)
+#  $1 = gem version (ex. 137)
+#  $2 = ruby path (ex. /opt/bin)
 #  $3 $4 $5 = proxy
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.8 6/30,2010
+#       Refactoring.
 #  v1.7 5/16,2010
 #       Update to 1.3.7.
 #  v1.6 5/7,2010
@@ -39,7 +41,7 @@ setup_environment() {
 
 install_rubygems() {
     setup_environment
-    test -n "$2" && export GEM=$2
+    test -n "$2" && export GEM=$2/bin/gem
     test -n "$2" || export GEM=gem
     export RUBYOPT=rubygems
     mkdir install_rubygems

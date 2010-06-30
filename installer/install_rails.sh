@@ -2,12 +2,14 @@
 #
 ########################################################################
 # Install Ruby on Rails
-#  $1 = gem version (ex. 222)
-#  $2 = gem path (ex. /opt/bin/gem)
+#  $1 = rails version (ex. 222)
+#  $2 = ruby path (ex. /opt/bin)
 #  $3 $4 $5 = proxy
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.5 6/30,2010
+#       Refactoring.
 #  v1.4 5/8,2010
 #       Add rails 2.3.5 on ruby 1.9.
 #  v1.3 3/7,2010
@@ -63,7 +65,7 @@ select_rails_package() {
         RAILS_VER=2.2.2
         wget_rails_zip $RAILS_VER 47183
         ;;
-      235-ruby19)
+      rails-ruby19)
         sudo $GEM install rails sqlite3-ruby rspec-rails \
         cucumber-rails webrat test-unit database_cleaner $3 $4 $5
         exit 0
@@ -96,7 +98,7 @@ setup_environment() {
 
 install_rails() {
     setup_environment
-    test -n "$2" && export GEM=$2
+    test -n "$2" && export GEM=$2/bin/gem
     test -n "$2" || export GEM=gem
     export RUBYOPT=rubygems
     install_rails_standalone $*

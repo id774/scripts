@@ -2,9 +2,14 @@
 #
 ########################################################################
 # Install Ruby
+#  $1 = ruby version (ex. 191-378)
+#  $2 = ruby path (ex. /opt/bin)
+#  $3 $4 $5 = proxy
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.12 6/30,2010
+#       Refactoring and fix minor bugs.
 # v1.11 6/29,2010
 #       Update to ruby 1.8.7-p299.
 # v1.10 3/7,2010
@@ -32,6 +37,18 @@
 #       Stable.
 ########################################################################
 
+make_ext_module() {
+  while [ $# -gt 0 ]
+  do
+    cd ext/$1
+    sudo $RUBY extconf.rb
+    sudo make
+    sudo make install
+    cd ../..
+    shift
+  done
+}
+
 make_and_install() {
     sudo autoconf
     test -n "$1" || sudo ./configure
@@ -51,14 +68,7 @@ install_trunk() {
         cd trunk
     fi
     make_and_install $2
-    cd ext/zlib
-    sudo ruby extconf.rb --with-zlib-include=/usr/include -with-zlib-lib=/usr/lib
-    sudo make
-    sudo make install
-    cd ../openssl
-    sudo ruby extconf.rb
-    sudo make
-    sudo make install
+    make_ext_module zlib readline openssl
     sudo chown -R $OWNER /usr/local/src/ruby/trunk
     test -x $SCRIPTS/installer/install_emacs_ruby.sh && \
     $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/trunk/misc
@@ -75,14 +85,7 @@ install_branch() {
         cd $1
     fi
     make_and_install $2
-    cd ext/zlib
-    sudo ruby extconf.rb --with-zlib-include=/usr/include -with-zlib-lib=/usr/lib
-    sudo make
-    sudo make install
-    cd ../openssl
-    sudo ruby extconf.rb
-    sudo make
-    sudo make install
+    make_ext_module zlib readline openssl
     sudo chown -R $OWNER /usr/local/src/ruby/branches/$1
     test -x $SCRIPTS/installer/install_emacs_ruby.sh && \
     $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/branches/$1/misc
@@ -95,15 +98,8 @@ install_stable() {
     unzip ruby-$1.zip
     cd ruby-$1
     make_and_install $3
-    cd ext/zlib
-    ruby extconf.rb --with-zlib-include=/usr/include -with-zlib-lib=/usr/lib
-    make
-    sudo make install
-    cd ../openssl
-    ruby extconf.rb
-    make
-    sudo make install
-    cd ../../..
+    make_ext_module zlib readline openssl
+    cd ..
     test -d /usr/local/src/ruby || sudo mkdir -p /usr/local/src/ruby
     sudo cp $OPTIONS ruby-$1 /usr/local/src/ruby
     sudo chown -R $OWNER /usr/local/src/ruby/ruby-$1
@@ -128,6 +124,9 @@ setup_environment() {
 
 install_ruby() {
     setup_environment
+    test -n "$2" || export RUBY=ruby
+    test -n "$2" || test -x /usr/local/bin/ruby && export RUBY=/usr/local/bin/ruby
+    test -n "$2" && export RUBY=$2/bin/ruby
     case "$1" in
       191-378)
         install_stable 1.9.1-p378 1.9 $2
