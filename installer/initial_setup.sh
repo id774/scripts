@@ -415,7 +415,7 @@ $SCRIPTS/installer/install_rails.sh rails-ruby19 /opt/ruby/1.9.1
 vim-ruby-install.rb
 
 # Passenger
-$SCRIPTS/installer/install_passenger.sh
+$SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.1
 
 # ManPages
 sudo aptitude -y install manpages-ja

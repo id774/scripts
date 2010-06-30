@@ -53,7 +53,8 @@ install_gem() {
     sudo $GEM install termtter $2 $3 $4
     sudo $GEM install nokogiri $2 $3 $4
     sudo $GEM install msgpack-rpc $2 $3 $4
-    sudo $GEM cleanup
+    sudo $GEM uninstall rubytter
+    sudo $GEM install -v 1.2.2 rubytter $2 $3 $4
     $GEM list --local
 }
 
