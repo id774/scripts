@@ -1,9 +1,10 @@
 #!/bin/sh
 
 gitpull() {
+    echo "Pulling $1 $3 $4"
     if [ -d $HOME/local/$1/$3 ]; then
         cd $HOME/local/$1/$3
-        test -n "$1" && git reset --hard
+        test -n "$4" && git reset --hard
         git pull
     else
         cd $HOME/local/$1
@@ -12,9 +13,10 @@ gitpull() {
 }
 
 assembla_git() {
+    echo "Pulling $1 $2 $3"
     if [ -d $HOME/local/$1/$2 ]; then
         cd $HOME/local/$1/$2
-        test -n "$1" && git reset --hard
+        test -n "$3" && git reset --hard
         git pull
     else
         cd $HOME/local/$1
@@ -23,9 +25,10 @@ assembla_git() {
 }
 
 debian_monthly_report() {
+    echo "Pulling $1 $2 $3"
     if [ -d $HOME/local/$1/$2 ]; then
         cd $HOME/local/$1/$2
-        test -n "$1" && git reset --hard
+        test -n "$3" && git reset --hard
         $1 pull
     else
         cd $HOME/local/$1
@@ -36,6 +39,7 @@ debian_monthly_report() {
 }
 
 emacswiki_get() {
+    echo "Pulling $1"
     test -d $HOME/local/$1 || mkdir -p $HOME/local/$1
     cd $HOME/local/$1
     test -f $1.el && rm $1.el
@@ -44,9 +48,10 @@ emacswiki_get() {
 }
 
 repoorcz_pull() {
+    echo "Pulling $1 $2 $3"
     if [ -d $HOME/local/$1/$2 ]; then
         cd $HOME/local/$1/$2
-        test -n "$1" && git reset --hard
+        test -n "$3" && git reset --hard
         $1 pull
     else
         cd $HOME/local/$1
