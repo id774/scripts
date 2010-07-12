@@ -29,9 +29,9 @@ $SCRIPTS/installer/install_port_python31.sh install
 $SCRIPTS/installer/install_port_ruby19.sh install
 
 # RubyGems
-$SCRIPTS/installer/install_rubygems.sh 137 /opt/local
-$SCRIPTS/installer/install_gems.sh /opt/local
-$SCRIPTS/installer/install_rails.sh rails-ruby19 /opt/local
+$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.1
+$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.1
+$SCRIPTS/installer/install_rails.sh rails-ruby19 /opt/ruby/1.9.1
 #$SCRIPTS/installer/install_rails.sh 212
 #$SCRIPTS/installer/install_rails.sh 205
 #$SCRIPTS/installer/install_rails.sh 126
@@ -48,10 +48,10 @@ sudo port -d install wget
 sudo port -d install curl
 sudo port -d install nkf
 sudo port -d install screen
-sudo port -d install ruby
+sudo port -d uninstall ruby
 sudo port -d install zlib
 sudo port -d install openssl
-sudo port -d install rb-rubygems
+sudo port -d uninstall rb-rubygems
 sudo port -d install subversion
 sudo port -d install git-core
 sudo port -d install -f svk

@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 25-May-2010.
+# Last Change: 12-Jul-2010.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_gnu_env() {
@@ -38,7 +38,7 @@ set_darwin_env() {
         alias dir='ls -G'
         alias vdir='ls -G'
     fi
-    export PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/opt/local/sbin:/opt/local/bin:/usr/sbin:/usr/bin:/usr/X11/bin
+    export PATH=/opt/ruby/bin:/opt/python/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/opt/local/sbin:/opt/local/bin:/usr/sbin:/usr/bin:/usr/X11/bin
     export MANPATH=/usr/local/share/man:/usr/share/man:/opt/local/man:/usr/X11/man
     set_java_path /System/Library/Frameworks/JavaVM.framework/Versions/1.5.0/Home
 }

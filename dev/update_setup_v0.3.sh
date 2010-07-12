@@ -92,9 +92,6 @@ $SCRIPTS/config/update-alternatives-ruby.sh
 $SCRIPTS/installer/install_django.sh 1.1.1
 $SCRIPTS/installer/install_django.sh
 
-# Termtter
-sudo gem install termtter
-
 # RubyGems
 $SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.1
 $SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.1

@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.7 7/12,2010
+#       Remove ruby.
 #  v1.6 3/7,2010
 #       Refactoring.
 #  v1.5 2/21,2010
@@ -30,10 +32,8 @@ main() {
     sudo port -d install curl
     sudo port -d install nkf
     sudo port -d install screen
-    sudo port -d install ruby
     sudo port -d install zlib
     sudo port -d install openssl
-    sudo port -d install rb-rubygems
     sudo port -d install subversion
     sudo port -d install git-core
     sudo port -d install -f svk
