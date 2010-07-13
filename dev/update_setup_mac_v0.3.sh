@@ -30,7 +30,7 @@ sudo port -d install wget
 #$SCRIPTS/installer/install_port_ruby19.sh install
 
 # Ruby
-$SCRIPTS/installer/install_ruby.sh 191-378 /opt/ruby/1.9.1
+$SCRIPTS/installer/install_ruby.sh 191-429 /opt/ruby/1.9.1
 
 # RubyGems
 $SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.1

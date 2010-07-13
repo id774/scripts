@@ -2,12 +2,14 @@
 #
 ########################################################################
 # Install Ruby
-#  $1 = ruby version (ex. 191-378)
+#  $1 = ruby version (ex. 191-429)
 #  $2 = ruby path (ex. /opt/bin)
 #  $3 $4 $5 = proxy
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.13 7/14,2010
+#       Update to ruby 1.9.1-p429.
 # v1.12 6/30,2010
 #       Refactoring and fix minor bugs.
 # v1.11 6/29,2010
@@ -128,6 +130,9 @@ install_ruby() {
     test -n "$2" || test -x /usr/local/bin/ruby && export RUBY=/usr/local/bin/ruby
     test -n "$2" && export RUBY=$2/bin/ruby
     case "$1" in
+      191-429)
+        install_stable 1.9.1-p429 1.9 $2
+        ;;
       191-378)
         install_stable 1.9.1-p378 1.9 $2
         ;;
