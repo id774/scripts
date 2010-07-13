@@ -34,9 +34,9 @@ sudo port -d install ruby
 #$SCRIPTS/installer/install_ruby.sh 191-429 /opt/ruby/1.9.1
 
 # RubyGems
-#$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.1
-#$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.1
-#$SCRIPTS/installer/install_rails.sh rails-ruby19 /opt/ruby/1.9.1
+$SCRIPTS/installer/install_rubygems.sh 137 /opt/local
+$SCRIPTS/installer/install_gems.sh /opt/local
+$SCRIPTS/installer/install_rails.sh rails-ruby19 /opt/local
 #$SCRIPTS/installer/install_rails.sh 212
 #$SCRIPTS/installer/install_rails.sh 205
 #$SCRIPTS/installer/install_rails.sh 126
