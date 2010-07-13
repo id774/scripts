@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.8 7/14,2010
+#       Recover ruby 1.8.
 #  v1.7 7/12,2010
 #       Remove ruby.
 #  v1.6 3/7,2010
@@ -51,6 +53,7 @@ main() {
     sudo port -d install smartmontools
     sudo port -d install w3m
     sudo port -d install emacs-w3m
+    sudo port -d install ruby
     # MySQL
     sudo port -d install mysql5 +server
     sudo -u mysql mysql_install_db5

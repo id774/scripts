@@ -26,16 +26,17 @@ sudo gem install termtter
 sudo port -d install w3m
 sudo port -d install emacs-w3m
 sudo port -d install wget
+sudo port -d install ruby
 #$SCRIPTS/installer/install_port_python31.sh install
 #$SCRIPTS/installer/install_port_ruby19.sh install
 
 # Ruby
-$SCRIPTS/installer/install_ruby.sh 191-429 /opt/ruby/1.9.1
+#$SCRIPTS/installer/install_ruby.sh 191-429 /opt/ruby/1.9.1
 
 # RubyGems
-$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.1
-$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.1
-$SCRIPTS/installer/install_rails.sh rails-ruby19 /opt/ruby/1.9.1
+#$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.1
+#$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.1
+#$SCRIPTS/installer/install_rails.sh rails-ruby19 /opt/ruby/1.9.1
 #$SCRIPTS/installer/install_rails.sh 212
 #$SCRIPTS/installer/install_rails.sh 205
 #$SCRIPTS/installer/install_rails.sh 126
