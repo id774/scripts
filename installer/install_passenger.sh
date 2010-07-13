@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 7/14,2010
+#       Fix bug.
 #  v1.2 6/30,2010
 #       Refactoring.
 #  v1.1 3/7,2010
@@ -38,4 +40,4 @@ install_passenger() {
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
-install_passenger
+install_passenger $*
