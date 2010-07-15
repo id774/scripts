@@ -462,6 +462,9 @@ sudo vim /etc/default/smartmontools
 sudo aptitude -y install ext2resize
 
 # Last Setup
+# Add path to root shell and crontab
+sudo vim /etc/profile
+sudo vim /etc/crontab
 sudo dpkg-reconfigure exim4-config
 sudo vim /etc/anacrontab
 # Disable su
