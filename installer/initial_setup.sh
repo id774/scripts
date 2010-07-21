@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.0 7/21,2010
+#       Correspond to Lucid.
 # v1.27 6/29,2010
 #       Update to ruby 1.8.7-p299.
 # v1.26 6/7,2010
@@ -88,29 +90,40 @@ sudo groupadd wheel
 cat /proc/meminfo
 cat /proc/cpuinfo
 
+# tune2fs
+test -b /dev/sda5  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda5
+test -b /dev/sda6  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda6
+test -b /dev/sda7  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda7
+test -b /dev/sda8  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda8
+test -b /dev/sda9  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda9
+test -b /dev/sda10 && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda10
+test -b /dev/mapper/`/bin/hostname`-root && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-root
+test -b /dev/mapper/`/bin/hostname`-tmp  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-tmp
+test -b /dev/mapper/`/bin/hostname`-var  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-var
+test -b /dev/mapper/`/bin/hostname`-opt  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-opt
+test -b /dev/mapper/`/bin/hostname`-usr  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-usr
+test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-home
+
 # Stop Services
 sudo update-rc.d -f cupsys remove
 sudo update-rc.d -f hplip remove
 sudo apt-get remove apt-index-watcher
 
 # chromium-daily
-#sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfbef0d696de1c72ba5a835fe5a9bf3bb4e5e17b5
+sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfbef0d696de1c72ba5a835fe5a9bf3bb4e5e17b5
 
 # APT Update
-DISTRIB_CODENAME=lenny
+DISTRIB_CODENAME=lucid
 SOURCESLIST=sources-$DISTRIB_CODENAME.list
 sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
 sudo vim /etc/apt/sources.list
 sudo aptitude update
 
 # Ubuntu-ja GPG Automatic Import
-#eval `cat /etc/lsb-release`
-#wget -q http://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
+eval `cat /etc/lsb-release`
+wget -q http://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
 #sudo wget http://www.ubuntulinux.jp/sources.list.d/$DISTRIB_CODENAME.list -O /etc/apt/sources.list.d/ubuntu-ja.list
 #sudo aptitude update
-
-# chromium-daily
-#sudo aptitude install chromium-browser
 
 # Make Directory
 sudo mkdir /opt/sbin
@@ -180,7 +193,6 @@ sudo aptitude -y install gcc g++ g77
 sudo aptitude -y install p7zip p7zip-full p7zip-rar
 sudo aptitude -y install tar zip gzip unzip bzip2
 sudo aptitude -y install lha
-sudo aptitude -y install lha-sjis
 sudo aptitude -y install zsh
 chsh -s /bin/zsh
 sudo chsh -s /bin/bash root
@@ -238,20 +250,21 @@ sudo vim /etc/modules
 #sudo smbpasswd -a $USER
 
 # SQLite
-sudo aptitude -y install sqlite
+#sudo aptitude -y install sqlite
 sudo aptitude -y install sqlite3
 
 # PostgreSQL
-sudo aptitude -y install postgresql postgresql-common postgresql-client
+#sudo aptitude -y install postgresql postgresql-common postgresql-client
 #sudo aptitude -y install pgadmin3
 
 # MySQL
-sudo aptitude -y install mysql-server mysql-client
+#sudo aptitude -y install mysql-server mysql-client
 #sudo aptitude -y install mysql-gui-tools-common
-$SCRIPTS/installer/install_mysql.sh
+#$SCRIPTS/installer/install_mysql.sh
 
 # Text Editor
 sudo aptitude -y install texinfo
+sudo aptitude -y install emacs23 emacs23-el
 sudo aptitude -y install emacs-snapshot emacs-snapshot-el
 sudo update-alternatives --config emacs
 sudo aptitude -y install w3m-el-snapshot w3m-img imagemagick
@@ -266,7 +279,7 @@ sudo aptitude -y install ttf-vlgothic ttf-bitstream-vera
 $SCRIPTS/installer/install_dotemacs.sh
 
 # navi2ch
-#$SCRIPTS/installer/install_navi2ch.sh
+$SCRIPTS/installer/install_navi2ch.sh
 
 # paco
 $SCRIPTS/installer/install_paco.sh
@@ -280,93 +293,6 @@ $SCRIPTS/installer/install_dotvim.sh
 
 # Deploy dot_files
 $SCRIPTS/installer/install_dotfiles.sh
-
-# Ruby
-sudo aptitude -y install autoconf byacc bison autoconf-doc automake
-sudo aptitude -y install libopenssl-ruby
-sudo aptitude -y install libreadline-dev
-#sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems
-#sudo aptitude -y install ruby1.9 ruby1.9-dev rubygems
-#$SCRIPTS/installer/install_ruby.sh 187-svn
-#$SCRIPTS/installer/install_ruby.sh 187-299 /opt/ruby/1.8.7
-$SCRIPTS/installer/install_ruby.sh 191-429 /opt/ruby/1.9.1
-$SCRIPTS/config/update-alternatives-ruby.sh
-
-# Python
-#$SCRIPTS/installer/install_python.sh 2.6.5 /opt/python/2.6.5
-#$SCRIPTS/installer/install_python.sh 3.1.2 /opt/python/3.1.2
-$SCRIPTS/config/update-alternatives-python.sh
-
-# Apache
-sudo aptitude -y install apache2
-sudo aptitude -y install apache2-mpm-prefork
-sudo aptitude -y install apache-perl
-
-# Apache Utility
-sudo aptitude -y install apache2-utils
-
-# Python Framework
-vim $SCRIPTS/installer/install_python_framework.sh
-$SCRIPTS/installer/install_python_framework.sh
-
-# Sun Java JDK
-sudo aptitude -y install sun-java6-jdk
-
-# GDM Themes
-#$SCRIPTS/installer/install_gdmthemes.sh
-#$SCRIPTS/installer/install_gdmthemes2.sh
-
-# gthumb
-#sudo aptitude -y install gthumb
-
-# Iceweasel and Icedove (Debian)
-#$SCRIPTS/installer/install_iceweasel.sh
-
-# Mozilla Thunderbird (Ubuntu)
-#sudo aptitude -y install mozilla-thunderbird
-
-# Xfce4(Debian) / Xubuntu(Ubuntu)
-#sudo apt-get install xfce4
-#sudo apt-get install xubuntu-desktop
-#sudo aptitude -y install xfwm4 xfwm4-themes
-#sudo aptitude -y install xfce4-goodies
-#im-switch -c
-#sudo rmmod pcspkr
-#sudo vim /etc/modprobe.d/blacklist
-#$SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
-
-# Ubuntu-ja
-#sudo aptitude -y install ubuntu-desktop-ja
-
-# OpenOffice.org
-#sudo aptitude -y install openoffice.org
-
-# Codec
-#sudo aptitude -y install ubuntu-restricted-extras
-#sudo aptitude -y install xubuntu-restricted-extras
-
-# Icons
-#sudo aptitude -y install ubuntu-artwork xubuntu-artwork human-icon-theme
-#sudo aptitude -y install gnome-themes gnome-themes-extras
-
-# 2ch Browser
-#sudo aptitude -y install ochusha
-#sudo aptitude -y install jd
-
-# Comic Viewer
-#sudo aptitude -y install comix
-
-# CD/DVD Creator
-#sudo aptitude -y install gnomebaker
-
-# P2P
-#sudo aptitude -y install skype
-
-# MSN
-#sudo aptitude -y install amsn
-
-# Wireshark
-#sudo aptitude -y install wireshark
 
 # Optional Libraries
 sudo aptitude -y install migemo
@@ -404,44 +330,12 @@ sudo useradd clamav
 $SCRIPTS/installer/install_iptables.sh
 
 # Trac
-$SCRIPTS/installer/install_trac.sh
-
-# RubyGems
-$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.1
-$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.1
-$SCRIPTS/installer/install_rails.sh rails-ruby19 /opt/ruby/1.9.1
-#$SCRIPTS/installer/install_rails.sh 212
-#$SCRIPTS/installer/install_rails.sh 205
-#$SCRIPTS/installer/install_rails.sh 126
-vim-ruby-install.rb
-
-# Passenger
-$SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.1
+#$SCRIPTS/installer/install_trac.sh
 
 # ManPages
 sudo aptitude -y install manpages-ja
 sudo aptitude -y install manpages-ja-dev
 sudo aptitude -y install xmanpages-ja
-
-# Permissions for /src
-sudo chown -R root:root /usr/src
-sudo chown -R root:root /usr/local/src
-
-# tune2fs
-test -b /dev/sda5  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda5
-test -b /dev/sda6  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda6
-test -b /dev/sda7  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda7
-test -b /dev/sda8  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda8
-test -b /dev/sda9  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda9
-test -b /dev/sda10 && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda10
-test -b /dev/mapper/`/bin/hostname`-root && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-root
-test -b /dev/mapper/`/bin/hostname`-tmp  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-tmp
-test -b /dev/mapper/`/bin/hostname`-var  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-var
-test -b /dev/mapper/`/bin/hostname`-usr  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-usr
-test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-home
-
-# Linux kernel source, headers, kbuild (Debian)
-#sudo aptitude -y install linux-kbuild-2.6.26 linux-headers-2.6.26-2-686 linux-source-2.6.26
 
 # Monitoring Tools
 # sysstat
@@ -458,18 +352,133 @@ sudo aptitude -y install smartmontools
 # start_smartd=yes
 # smartd_opts="--interval=7200"
 sudo vim /etc/default/smartmontools
-# smartmontools
-sudo aptitude -y install ext2resize
+
+# Ruby
+sudo aptitude -y install autoconf byacc bison autoconf-doc automake
+sudo aptitude -y install libopenssl-ruby libreadline-dev
+sudo aptitude -y install ruby ruby1.8 ruby1.8-dev rubygems rubygems1.8
+#sudo aptitude -y install ruby ruby1.9 ruby1.9-dev rubygems rubygems1.9
+#$SCRIPTS/installer/install_ruby.sh 187-svn
+$SCRIPTS/installer/install_ruby.sh 187-299 /opt/ruby/1.8.7
+#$SCRIPTS/installer/install_ruby.sh 191-429 /opt/ruby/1.9.1
+$SCRIPTS/config/update-alternatives-ruby.sh
+
+# RubyGems
+$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.8.7
+$SCRIPTS/installer/install_gems.sh /opt/ruby/1.8.7
+$SCRIPTS/installer/install_rails.sh rails-ruby /opt/ruby/1.8.7
+#$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.1
+#$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.1
+#$SCRIPTS/installer/install_rails.sh rails-ruby /opt/ruby/1.9.1
+#$SCRIPTS/installer/install_rails.sh 212
+#$SCRIPTS/installer/install_rails.sh 205
+#$SCRIPTS/installer/install_rails.sh 126
+vim-ruby-install.rb
+
+# Passenger
+$SCRIPTS/installer/install_passenger.sh /opt/ruby/1.8.7
+#$SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.1
+
+# Python
+#$SCRIPTS/installer/install_python.sh 2.6.5 /opt/python/2.6.5
+#$SCRIPTS/installer/install_python.sh 3.1.2 /opt/python/3.1.2
+#$SCRIPTS/config/update-alternatives-python.sh
+
+# Python Framework
+vim $SCRIPTS/installer/install_python_framework.sh
+$SCRIPTS/installer/install_python_framework.sh
+
+# Apache
+#sudo aptitude -y install apache2
+#sudo aptitude -y install apache2-mpm-prefork
+#sudo aptitude -y install apache-perl
+
+# Apache Utility
+#sudo aptitude -y install apache2-utils
+
+# Sun Java JDK
+#sudo aptitude -y install sun-java6-jdk
+
+# Linux kernel source, headers, kbuild (Debian)
+#sudo aptitude -y install linux-kbuild-2.6.26 linux-headers-2.6.26-2-686 linux-source-2.6.26
+
+# Upgrade
+sudo aptitude update && sudo aptitude -y safe-upgrade && sudo aptitude autoclean
+
+# GDM Themes
+#$SCRIPTS/installer/install_gdmthemes.sh
+#$SCRIPTS/installer/install_gdmthemes2.sh
+
+# Xfce4(Debian) / Xubuntu(Ubuntu)
+#sudo apt-get install xfce4
+#sudo apt-get install xubuntu-desktop
+#sudo aptitude -y install xfwm4 xfwm4-themes
+#sudo aptitude -y install xfce4-goodies
+#im-switch -c
+#sudo rmmod pcspkr
+test -r /etc/modprobe.d/blacklist && sudo vim /etc/modprobe.d/blacklist
+test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.conf
+#$SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
+# xfsuspend
+#which s2ram > /dev/null && which xflock4 > /dev/null && sudo cp $SCRIPTS/xfsuspend.sh /usr/local/sbin/xfsuspend && sudo chown root:root /usr/local/sbin/xfsuspend && sudo chmod 755 /usr/local/sbin/xfsuspend && sudo vim /usr/local/sbin/xfsuspend
+# xfce4 custom themes
+#test -f /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc && sudo cp ~/scripts/etc/themes/xfce-dusk/gtkrc /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc
+
+# Ubuntu-ja
+#sudo aptitude -y install ubuntu-desktop-ja
+
+# OpenOffice.org
+#sudo aptitude -y install openoffice.org
+
+# Codec
+#sudo aptitude -y install ubuntu-restricted-extras
+#sudo aptitude -y install xubuntu-restricted-extras
+
+# Icons
+#sudo aptitude -y install ubuntu-artwork xubuntu-artwork human-icon-theme
+#sudo aptitude -y install gnome-themes gnome-themes-extras
+
+# gthumb
+#sudo aptitude -y install gthumb
+
+# Iceweasel and Icedove (Debian)
+#$SCRIPTS/installer/install_iceweasel.sh
+
+# Mozilla Thunderbird (Ubuntu)
+#sudo aptitude -y install mozilla-thunderbird
+
+# 2ch Browser
+#sudo aptitude -y install ochusha
+#sudo aptitude -y install jd
+
+# Comic Viewer
+#sudo aptitude -y install comix
+
+# CD/DVD Creator
+#sudo aptitude -y install gnomebaker
+
+# P2P
+#sudo aptitude -y install skype
+
+# MSN
+#sudo aptitude -y install amsn
+
+# Wireshark
+#sudo aptitude -y install wireshark
+
+# chromium-daily
+#sudo aptitude install chromium-browser
+
+# Permissions for /src
+sudo chown -R root:root /usr/src
+sudo chown -R root:root /usr/local/src
 
 # Last Setup
-# Add path to root shell and crontab
 sudo vim /etc/profile
 sudo vim /etc/crontab
 sudo dpkg-reconfigure exim4-config
 sudo vim /etc/anacrontab
-# Disable su
 sudo vim /etc/pam.d/su
-# PermitRootLogin yes->no
 sudo vim /etc/ssh/sshd_config
 # server 130.69.251.23
 sudo vim /etc/ntp.conf
@@ -479,19 +488,14 @@ sudo vim /etc/hosts
 # ServerName, charset
 test -f /etc/apache2/apache2.conf && sudo vim /etc/apache2/apache2.conf
 sudo vim /etc/group
-# /var/log/cron.log
-sudo vim /etc/syslog.conf
+test -f /etc/syslog.conf && sudo vim /etc/syslog.conf
 # SYSLOGD="-m 0"
-sudo vim /etc/default/syslogd
-# xfsuspend
-which s2ram > /dev/null && which xflock4 > /dev/null && sudo cp $SCRIPTS/xfsuspend.sh /usr/local/sbin/xfsuspend && sudo chown root:root /usr/local/sbin/xfsuspend && sudo chmod 755 /usr/local/sbin/xfsuspend && sudo vim /usr/local/sbin/xfsuspend
-# xfce4 custom themes
-test -f /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc && sudo cp ~/scripts/etc/themes/xfce-dusk/gtkrc /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc
-# sudoers
+test -f /etc/default/syslogd && sudo vim /etc/default/syslogd
 sudo cp $SCRIPTS/etc/sudoers /etc/sudoers
 sudo vim /etc/sudoers
-# menu.lst
-sudo vim /boot/grub/menu.lst
+# grub
+test -f /boot/grub/menu.lst && sudo vim /boot/grub/menu.lst
+test -f /etc/default/grub && sudo vim /etc/default/grub && sudo update-grub2
 sudo passwd root
 test -f ~/.bash_history && sudo rm ~/.bash_history
 test -f ~/.mysql_history && sudo rm ~/.mysql_history

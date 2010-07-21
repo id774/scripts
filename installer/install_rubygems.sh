@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.9 7/21,2010
+#       Fix bug.
 #  v1.8 6/30,2010
 #       Refactoring.
 #  v1.7 5/16,2010
@@ -43,6 +45,8 @@ install_rubygems() {
     setup_environment
     test -n "$2" && export GEM=$2/bin/gem
     test -n "$2" || export GEM=gem
+    test -n "$2" && export RUBY=$2/bin/ruby
+    test -n "$2" || export RUBY=ruby
     export RUBYOPT=rubygems
     mkdir install_rubygems
     cd install_rubygems
@@ -84,7 +88,7 @@ install_rubygems() {
 
     unzip $RUBY_GEMS_ZIP
     cd $RUBY_GEMS_ZIP
-    sudo ruby setup.rb
+    sudo $RUBY setup.rb
     cd ..
     sudo mkdir -p /usr/local/src/gems
     sudo cp -av $RUBY_GEMS_ZIP /usr/local/src/gems

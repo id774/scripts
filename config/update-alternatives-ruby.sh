@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 7/21,2010
+#       Add ruby 1.8.7.
 #  v1.1 5/7,2010
 #       Update to ruby 1.9 as default.
 #  v1.0 2/21,2010
@@ -65,8 +67,11 @@ make_all_alternatives() {
     PRIORITY=100
     SUFFIX=
     update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
-    SOURCE=/opt/ruby/1.9.1/bin
+    SOURCE=/opt/ruby/1.8.7/bin
     PRIORITY=110
+    update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
+    SOURCE=/opt/ruby/1.9.1/bin
+    PRIORITY=120
     update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
     SOURCE=/opt/ruby/1.9.1-dev/bin
     PRIORITY=150
