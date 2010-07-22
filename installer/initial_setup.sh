@@ -91,6 +91,11 @@ cat /proc/meminfo
 cat /proc/cpuinfo
 
 # tune2fs
+test -b /dev/sda0  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda0
+test -b /dev/sda1  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda1
+test -b /dev/sda2  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda2
+test -b /dev/sda3  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda3
+test -b /dev/sda4  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda4
 test -b /dev/sda5  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda5
 test -b /dev/sda6  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda6
 test -b /dev/sda7  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda7
@@ -112,18 +117,18 @@ sudo apt-get remove apt-index-watcher
 # chromium-daily
 sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfbef0d696de1c72ba5a835fe5a9bf3bb4e5e17b5
 
+# Ubuntu-ja GPG Automatic Import
+eval `cat /etc/lsb-release`
+wget -q http://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
+#sudo wget http://www.ubuntulinux.jp/sources.list.d/$DISTRIB_CODENAME.list -O /etc/apt/sources.list.d/ubuntu-ja.list
+#sudo aptitude update
+
 # APT Update
 DISTRIB_CODENAME=lucid
 SOURCESLIST=sources-$DISTRIB_CODENAME.list
 sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
 sudo vim /etc/apt/sources.list
 sudo aptitude update
-
-# Ubuntu-ja GPG Automatic Import
-eval `cat /etc/lsb-release`
-wget -q http://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
-#sudo wget http://www.ubuntulinux.jp/sources.list.d/$DISTRIB_CODENAME.list -O /etc/apt/sources.list.d/ubuntu-ja.list
-#sudo aptitude update
 
 # Make Directory
 sudo mkdir /opt/sbin
@@ -272,9 +277,6 @@ sudo aptitude -y remove uim-el
 sudo aptitude -y install vim-gui-common vim-runtime colordiff
 sudo aptitude -y install ctags
 
-# Bitstream Vera Sans Mono font(for Emacs)
-sudo aptitude -y install ttf-vlgothic ttf-bitstream-vera
-
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
 
@@ -307,13 +309,6 @@ sudo aptitude -y install ghc
 # exiftool
 sudo aptitude -y install exiftool libimage-exiftool-perl jhead
 
-# Share Documents
-#wget http://big.freett.com/railsinstall2/share-documents.tar.gz
-#sudo tar xzvf share-documents.tar.gz -C /usr/local/share
-#rm share-documents.tar.gz
-#sudo chmod -R 755 /usr/local/share/share-documents
-#ln -s /usr/local/share/share-documents ~/share
-
 # Crypt
 $SCRIPTS/installer/install_des.sh
 $SCRIPTS/installer/install_crypt.sh source
@@ -328,9 +323,6 @@ sudo useradd clamav
 
 # iptables
 $SCRIPTS/installer/install_iptables.sh
-
-# Trac
-#$SCRIPTS/installer/install_trac.sh
 
 # ManPages
 sudo aptitude -y install manpages-ja
@@ -388,6 +380,9 @@ $SCRIPTS/installer/install_passenger.sh /opt/ruby/1.8.7
 vim $SCRIPTS/installer/install_python_framework.sh
 $SCRIPTS/installer/install_python_framework.sh
 
+# Trac
+#$SCRIPTS/installer/install_trac.sh
+
 # Apache
 #sudo aptitude -y install apache2
 #sudo aptitude -y install apache2-mpm-prefork
@@ -404,10 +399,6 @@ $SCRIPTS/installer/install_python_framework.sh
 
 # Upgrade
 sudo aptitude update && sudo aptitude -y safe-upgrade && sudo aptitude autoclean
-
-# GDM Themes
-#$SCRIPTS/installer/install_gdmthemes.sh
-#$SCRIPTS/installer/install_gdmthemes2.sh
 
 # Xfce4(Debian) / Xubuntu(Ubuntu)
 #sudo apt-get install xfce4
@@ -427,8 +418,19 @@ test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.con
 # Ubuntu-ja
 #sudo aptitude -y install ubuntu-desktop-ja
 
-# OpenOffice.org
-#sudo aptitude -y install openoffice.org
+# GDM Themes
+#$SCRIPTS/installer/install_gdmthemes.sh
+#$SCRIPTS/installer/install_gdmthemes2.sh
+
+# Share Documents
+#wget http://big.freett.com/railsinstall2/share-documents.tar.gz
+#sudo tar xzvf share-documents.tar.gz -C /usr/local/share
+#rm share-documents.tar.gz
+#sudo chmod -R 755 /usr/local/share/share-documents
+#ln -s /usr/local/share/share-documents ~/share
+
+# Bitstream Vera Sans Mono font
+#sudo aptitude -y install ttf-vlgothic ttf-bitstream-vera
 
 # Codec
 #sudo aptitude -y install ubuntu-restricted-extras
@@ -438,14 +440,17 @@ test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.con
 #sudo aptitude -y install ubuntu-artwork xubuntu-artwork human-icon-theme
 #sudo aptitude -y install gnome-themes gnome-themes-extras
 
-# gthumb
-#sudo aptitude -y install gthumb
+# OpenOffice.org
+#sudo aptitude -y install openoffice.org
 
 # Iceweasel and Icedove (Debian)
 #$SCRIPTS/installer/install_iceweasel.sh
 
 # Mozilla Thunderbird (Ubuntu)
 #sudo aptitude -y install mozilla-thunderbird
+
+# gthumb
+#sudo aptitude -y install gthumb
 
 # 2ch Browser
 #sudo aptitude -y install ochusha
