@@ -1,5 +1,14 @@
 #!/bin/sh
 
+########################################################################
+# Pulling all repository.
+#
+#  Maintainer: id774 <idnanashi@gmail.com>
+#
+#  v1.0 7/26,2010
+#       Stable.
+########################################################################
+
 gitpull() {
     echo "Pulling $1 $3 $4"
     if [ -d $HOME/local/$1/$3 ]; then
@@ -79,6 +88,8 @@ gitpull_all() {
 }
 
 main() {
+    test -d $HOME/local/github || mkdir -p $HOME/local/github
+    test -d $HOME/local/git || mkdir -p $HOME/local/git
     debian_monthly_report git monthly-report $*
     assembla_git_all $*
     anything_get_all $*
