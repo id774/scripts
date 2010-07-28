@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 7/28,2010
+#       Make database directory if not exist.
 #  v1.2 3/7,2010
 #       Refactoring.
 #  v1.1 10/22,2009
@@ -35,6 +37,8 @@ install_clamav() {
     sudo chmod 700 /usr/local/etc/freshclam.conf
     sudo cp /usr/local/etc/freshclam.conf /usr/local/etc/freshclam.conf.base
     sudo cp /usr/local/etc/clamd.conf /usr/local/etc/clamd.conf.base
+    test -r /usr/local/share/clamav || sudo mkdir -p /usr/local/share/clamav
+    chown clamav:clamav /usr/local/share/clamav
     sudo freshclam
     cd ..
     keep_source
