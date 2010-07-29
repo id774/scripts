@@ -502,6 +502,8 @@ sudo vim /etc/ntp.conf
 sudo vim /etc/fstab
 sudo vim /etc/deluser.conf
 sudo vim /etc/hosts
+#ifconfig | mail -s "[admin-log][`/bin/hostname`] cron started" xxxxxx@gmail.com
+sudo vim /etc/init.d/cron
 # ServerName, charset
 test -f /etc/apache2/apache2.conf && sudo vim /etc/apache2/apache2.conf
 sudo vim /etc/group

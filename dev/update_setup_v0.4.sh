@@ -14,4 +14,6 @@ sudo aptitude update
 
 # Last Setup
 sudo vim /etc/hosts
+#ifconfig | mail -s "[admin-log][`/bin/hostname`] cron started" xxxxxx@gmail.com
+sudo vim /etc/init.d/cron
 
