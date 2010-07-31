@@ -478,13 +478,7 @@ test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.con
 #sudo aptitude install chromium-browser
 
 # Install plagger plugin
-export plagger_dir=$TMP
-test -d /usr/local/share/perl/5.8.8/Plagger && export plagger_dir=/usr/local/share/perl/5.8.8/Plagger
-test -d /usr/local/share/perl/5.10.0/Plagger && export plagger_dir=/usr/local/share/perl/5.10.0/Plagger
-sudo cp -Rv $SCRIPTS/cron/plagger/assets/plugins/* $plagger_dir/assets/plugins/
-sudo cp -Rv $SCRIPTS/cron/plagger/plugins/publish/* $plagger_dir/Plugin/Publish/
-sudo cp -Rv $SCRIPTS/cron/plagger/plugins/filter/* $plagger_dir/Plugin/Filter/
-sudo cp -Rv $SCRIPTS/cron/plagger/plugins/customfeed/* $plagger_dir/Plugin/CustomFeed/
+$SCRIPTS/installer/install_plagger_plugins.sh
 
 # Permissions for /src
 sudo chown -R root:root /usr/src

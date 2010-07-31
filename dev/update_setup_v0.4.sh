@@ -12,6 +12,9 @@ export SCRIPTS=$HOME/scripts
 sudo vim /etc/apt/sources.list
 sudo aptitude update
 
+# Install plagger plugin
+$SCRIPTS/installer/install_plagger_plugins.sh
+
 # Mail to admin when startup
 sudo cp $SCRIPTS/etc/rc.local /etc/rc.local
 sudo cp $SCRIPTS/etc/rc.local.mail_to_admin /etc/rc.local.mail_to_admin
