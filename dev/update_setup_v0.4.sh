@@ -12,6 +12,9 @@ export SCRIPTS=$HOME/scripts
 sudo vim /etc/apt/sources.list
 sudo aptitude update
 
+# Install cronjob
+$SCRIPTS/installer/install_cronjob.sh
+
 # Install plagger plugin
 $SCRIPTS/installer/install_plagger_plugins.sh
 

@@ -6,6 +6,8 @@
 #  Customize & Maintain: id774 <idnanashi@gmail.com>
 #  Copyright (C) 2002 Takeru KOMORIYA <komoriya@paken.org>
 #
+#  v0.5 8/5,2010
+#       Show return code.
 #  v0.4 1/22,2009
 #       SMART information.
 #  v0.3 10/15,2008
@@ -62,5 +64,6 @@ for dir in $BACKUPDIRS
 do
     echo "rsync $OPTS $dir $BACKUPTO"
     rsync $OPTS $dir $BACKUPTO
+    echo "Return code is $?"
 done
 
