@@ -27,9 +27,9 @@ def os_command(options, args, mount_options, device):
     os_exec(cmd, device)
 
 def mount_local(options, args):
-    cmd = 'test -f ~/local/`/bin/hostname`.tc &&\
-           test -d ~/mnt/tc && sudo truecrypt -t -k "" --protect-hidden=no\
-           --fs-options=utf8 ~/local/`/bin/hostname`.tc ~/mnt/tc'
+    cmd = 'test -f ~/local/`/bin/hostname`.tc && ' +\
+          'test -d ~/mnt/tc && sudo truecrypt -t -k "" --protect-hidden=no ' +\
+          '--fs-options=utf8 ~/local/`/bin/hostname`.tc ~/mnt/tc'
     os.system(cmd)
     if options.local:
         pass
