@@ -1,19 +1,35 @@
 #!/usr/bin/env python
+#
+########################################################################
+# TrueCrypt Device Mounter
+#
+#  Maintainer: id774 <idnanashi@gmail.com>
+#
+#  v1.0 8/6,2010
+#       Stable.
+########################################################################
 
 import sys, os
 
-def os_exec(cmd0, cmd1, device):
+def os_exec(cmd, device):
     os.system('dmesg | grep ' + device)
-    os.system(cmd1)
-    os.system(cmd0)
+    os.system(cmd)
 
-def os_command(mount_options, device):
-    cmd1 = 'test -b /dev/' + device + '1 && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' + mount_options + ' /dev/' + device + '1 ~/mnt/' + device 
-    cmd0 = 'test -b /dev/' + device + '1 || ( test -b /dev/' + device + ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' + mount_options + ' /dev/' + device + ' ~/mnt/' + device + ' )'
-    os_exec(cmd0, cmd1, device)
+def os_command(options, args, mount_options, device):
+    if options.partition:
+        cmd = 'test -b /dev/' + device + options.partition +\
+        ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
+        mount_options + ' /dev/' + device + options.partition + ' ~/mnt/' + device 
+    else:
+        cmd = 'test -b /dev/' + device +\
+        ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
+        mount_options + ' /dev/' + device + ' ~/mnt/' + device
+    os_exec(cmd, device)
 
 def mount_local(options, args):
-    cmd = 'test -f ~/local/`/bin/hostname`.tc && test -d ~/mnt/tc && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=utf8 ~/local/`/bin/hostname`.tc ~/mnt/tc'
+    cmd = 'test -f ~/local/`/bin/hostname`.tc &&\
+           test -d ~/mnt/tc && sudo truecrypt -t -k "" --protect-hidden=no\
+           --fs-options=utf8 ~/local/`/bin/hostname`.tc ~/mnt/tc'
     os.system(cmd)
     if options.local:
         pass
@@ -25,7 +41,7 @@ def mount_device(options, args):
     if options.readonly:
         mount_options = 'ro,' + mount_options
 
-    os_command(mount_options, 'sdb')
+    os_command(options, args, mount_options, 'sdb')
     if options.all:
         mount_all(options, args, mount_options)
 
@@ -33,10 +49,10 @@ def mount_all(options, args, mount_options):
     if options.half and not options.readonly:
         mount_options = 'ro,' + mount_options
 
-    os_command(mount_options, 'sdc')
-    os_command(mount_options, 'sdd')
-    os_command(mount_options, 'sde')
-    os_command(mount_options, 'sdf')
+    os_command(options, args, mount_options, 'sdc')
+    os_command(options, args, mount_options, 'sdd')
+    os_command(options, args, mount_options, 'sde')
+    os_command(options, args, mount_options, 'sdf')
 
 def main():
     from optparse import OptionParser
@@ -58,6 +74,8 @@ def main():
                       dest="half",
                       help="mount half readwrite and readonly",
                       action="store_true")
+    parser.add_option("-p", "--partition", dest="partition",
+                      help="partition number")
     (options, args) = parser.parse_args()
     if len(args) == 0:
         mount_local(options, args)
