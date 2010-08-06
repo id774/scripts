@@ -15,6 +15,9 @@ sudo aptitude update
 # Install cronjob
 $SCRIPTS/installer/install_cronjob.sh
 
+# Deploy dot_emacs
+$SCRIPTS/installer/install_dotemacs.sh
+
 # Install plagger plugin
 $SCRIPTS/installer/install_plagger_plugins.sh
 
