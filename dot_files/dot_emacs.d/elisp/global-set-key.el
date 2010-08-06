@@ -151,6 +151,7 @@
 (define-key global-map "\C-c\C-c\C-q" 'query-replace-regexp)
 (define-key global-map "\C-c\C-c\ q" 'query-replace-regexp-eval)
 (global-set-key "\C-x\C-q" 'query-replace)
+(global-set-key "\C-x\ q" 'replace-string)
 
 ;; grep
 (define-key global-map "\C-c\C-c\C-g" 'grep-find)
