@@ -480,18 +480,12 @@ test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.con
 # Install plagger plugin
 $SCRIPTS/installer/install_plagger_plugins.sh
 
+# Mail to admin at startup
+$SCRIPTS/installer/install_rclocal.sh
+
 # Permissions for /src
 sudo chown -R root:root /usr/src
 sudo chown -R root:root /usr/local/src
-
-# Mail to admin when startup
-sudo cp $SCRIPTS/etc/rc.local /etc/rc.local
-sudo cp $SCRIPTS/etc/rc.local.mail_to_admin /etc/rc.local.mail_to_admin
-sudo vim /etc/rc.local.mail_to_admin /etc/rc.local
-sudo chown root:root /etc/rc.local
-sudo chmod 755 /etc/rc.local
-sudo chown root:adm /etc/rc.local.mail_to_admin
-sudo chmod 740 /etc/rc.local.mail_to_admin
 
 # Last Setup
 sudo vim /etc/profile

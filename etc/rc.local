@@ -11,5 +11,6 @@
 #
 # By default this script does nothing.
 
-/etc/rc.local.mail_to_admin
+test -x /etc/rc.local.mail_to_admin && /etc/rc.local.mail_to_admin
+test -x /etc/rc.local.connect_to_emobile && /etc/rc.local.connect_to_emobile
 exit 0

@@ -22,13 +22,7 @@ $SCRIPTS/installer/install_dotemacs.sh
 $SCRIPTS/installer/install_plagger_plugins.sh
 
 # Mail to admin when startup
-sudo cp $SCRIPTS/etc/rc.local /etc/rc.local
-sudo cp $SCRIPTS/etc/rc.local.mail_to_admin /etc/rc.local.mail_to_admin
-sudo vim /etc/rc.local.mail_to_admin /etc/rc.local
-sudo chown root:root /etc/rc.local
-sudo chmod 755 /etc/rc.local
-sudo chown root:adm /etc/rc.local.mail_to_admin
-sudo chmod 740 /etc/rc.local.mail_to_admin
+$SCRIPTS/installer/install_rclocal.sh
 
 # Last Setup
 sudo vim /etc/hosts
