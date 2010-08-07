@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/sh
 #
 # rc.local
 #
@@ -11,6 +11,13 @@
 #
 # By default this script does nothing.
 
-test -x /etc/rc.local.mail_to_admin && /etc/rc.local.mail_to_admin
-test -x /etc/rc.local.connect_to_emobile && /etc/rc.local.connect_to_emobile
+if [ -d /etc/rc.local.d ]; then
+  for i in /etc/rc.local.d/*; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+
 exit 0
