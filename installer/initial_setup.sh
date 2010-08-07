@@ -494,6 +494,9 @@ sudo dpkg-reconfigure exim4-config
 sudo vim /etc/anacrontab
 sudo vim /etc/pam.d/su
 sudo vim /etc/ssh/sshd_config
+# Disable motd
+sudo vim /etc/pam.d/sshd
+sudo vim /etc/pam.d/login
 # server 130.69.251.23
 sudo vim /etc/ntp.conf
 sudo vim /etc/fstab

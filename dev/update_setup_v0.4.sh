@@ -27,4 +27,7 @@ $SCRIPTS/installer/install_rclocal.sh
 # Last Setup
 sudo vim /etc/hosts
 sudo vim /etc/init.d/cron
+# Disable motd
+sudo vim /etc/pam.d/sshd
+sudo vim /etc/pam.d/login
 
