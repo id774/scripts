@@ -68,6 +68,7 @@
                             '(height . 40) ; 起動時のサイズ（縦）
                             )))
         (set-default-font "Bitstream Vera Sans Mono-8")
+        ;;(set-default-font "DejaVu Sans Mono-8") ;; Ubuntu Lucid
         (set-fontset-font (frame-parameter nil 'font)
                           'japanese-jisx0208
                           '("VL ゴシック" . "unicode-bmp"))
