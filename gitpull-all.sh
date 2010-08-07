@@ -19,6 +19,8 @@ gitpull() {
         cd $HOME/local/$1
         git clone git://github.com/$2/$3.git
     fi
+    test -L $HOME/$3 && rm $HOME/$3
+    ln -fs $HOME/local/$1/$3 $HOME/$3
 }
 
 assembla_git() {
@@ -31,6 +33,8 @@ assembla_git() {
         cd $HOME/local/$1
         git clone git://git.assembla.com/$2.git
     fi
+    test -L $HOME/$2 && rm $HOME/$2
+    ln -fs $HOME/local/$1/$2 $HOME/$2
 }
 
 debian_monthly_report() {
@@ -45,6 +49,8 @@ debian_monthly_report() {
         cd monthly-report
     fi
     cp -p git-pre-commit.sh .git/hooks/pre-commit
+    test -L $HOME/$2 && rm $HOME/$2
+    ln -fs $HOME/local/$1/$2 $HOME/$2
 }
 
 emacswiki_get() {
@@ -54,6 +60,8 @@ emacswiki_get() {
     test -f $1.el && rm $1.el
     wget http://www.emacswiki.org/emacs/download/$1.el
     diff $HOME/local/$1/$1.el $HOME/.emacs.d/elisp/3rd-party/$1.el
+    test -L $HOME/$1 && rm $HOME/$1
+    ln -fs $HOME/local/$1/$1 $HOME/$1
 }
 
 repoorcz_pull() {
@@ -66,6 +74,8 @@ repoorcz_pull() {
         cd $HOME/local/$1
         git clone git://repo.or.cz/$2.git
     fi
+    test -L $HOME/$2 && rm $HOME/$2
+    ln -fs $HOME/local/$1/$2 $HOME/$2
 }
 
 anything_get_all() {
