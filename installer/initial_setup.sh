@@ -283,6 +283,10 @@ sudo aptitude -y install vim-gui-common vim-runtime colordiff
 sudo aptitude -y install ctags
 
 # Deploy dot_emacs
+cd ~/local/github
+git clone git://github.com/id774/dot_emacs.git
+cd
+ln -s ~/local/github/dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
 
 # navi2ch

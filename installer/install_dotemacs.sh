@@ -21,9 +21,9 @@ setup_dotemacs() {
     test -d $TARGET && rm -rf $TARGET/
     test -f $HOME/.emacs && rm -f $HOME/.emacs
 
-    cp $OPTIONS $SCRIPTS/dot_files/dot_emacs $HOME/.emacs
+    cp $OPTIONS $HOME/local/github/dot_emacs/dot_emacs $HOME/.emacs
     test -d $TARGET || mkdir -p $TARGET
-    cp $OPTIONS $SCRIPTS/dot_files/dot_emacs.d/* $TARGET/
+    cp $OPTIONS $HOME/local/github/dot_emacs/dot_emacs.d/* $TARGET/
 }
 
 gen_twitter_el() {
@@ -157,5 +157,5 @@ install_dotemacs() {
     byte_compile_cedet
 }
 
-test -d $SCRIPTS/dot_files/dot_emacs.d || exit 1
+test -d $HOME/local/github/dot_emacs || exit 1
 install_dotemacs $*
