@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.5 8/7,2010
+#       Obsolated.
 #  v1.4 3/7,2010
 #       Refactoring.
 #  v1.3 12/23,2009
@@ -28,14 +30,6 @@ set_truecrypt_permission() {
     sudo chown $OWNER /usr/local/src
 }
 
-get_truecrypt_source() {
-    wget http://big.freett.com/railsinstall2/$1
-    sudo tar xzvf $1 -C /usr/local/src/crypt/truecrypt
-    sudo mv $1 /usr/local/src/crypt/truecrypt
-    sudo chmod 644 /usr/local/src/crypt/truecrypt/$1
-    md5.sh /usr/local/src/crypt/truecrypt/$1
-}
-
 setup_truecrypt_rpm() {
     sudo rpm -Uvh $1
     sudo mv $1 /usr/local/src/crypt/truecrypt
@@ -46,34 +40,6 @@ setup_truecrypt_deb() {
     sudo dpkg -i $1
     sudo mv $1 /usr/local/src/crypt/truecrypt
     sudo chmod 644 /usr/local/src/crypt/truecrypt/$1
-}
-
-install_truecrypt_43a() {
-    wget http://page.freett.com/railsinstall2/$1
-    md5.sh $1
-    tar xzvf $1
-    rm $1
-    cd truecrypt-4.3a
-    setup_truecrypt_deb $2
-    cd ..
-    rm -rf truecrypt-4.3a
-}
-
-install_truecrypt_51a() {
-    wget http://big.freett.com/railsinstall2/$1
-    md5.sh $1
-    tar xzvf $1
-    rm $1
-    cd truecrypt-5.1a
-    setup_truecrypt_deb $2
-    cd ..
-    rm -rf truecrypt-5.1a
-}
-
-install_truecrypt_63a() {
-    wget http://big.freett.com/railsinstall2/$1
-    md5.sh $1
-    setup_truecrypt_deb $1
 }
 
 install_truecrypt_rpm() {
@@ -92,33 +58,6 @@ install_truecrypt() {
     mkdir install_truecrypt
     cd install_truecrypt
     case "$1" in
-      4.3a-ubuntu-x64)
-        install_truecrypt_43a truecrypt-4.3a-ubuntu-7.04-x64.tar.gz truecrypt_4.3a-0_amd64.deb
-        ;;
-      4.3a-ubuntu-x86)
-        install_truecrypt_43a truecrypt-4.3a-ubuntu-7.04-x86.tar.gz truecrypt_4.3a-0_i386.deb
-        ;;
-      4.3a-source)
-        get_truecrypt_source truecrypt-4.3a-source-code.tar.gz
-        ;;
-      5.1a-ubuntu-x64)
-        install_truecrypt_51a truecrypt-5.1a-ubuntu-x64.tar.gz truecrypt_5.1a-0_amd64.deb
-        ;;
-      5.1a-ubuntu-x86)
-        install_truecrypt_51a truecrypt-5.1a-ubuntu-x86.tar.gz truecrypt_5.1a-0_i386.deb
-        ;;
-      5.1a-source)
-        get_truecrypt_source truecrypt-5.1a-source-code.tar.gz
-        ;;
-      6.3a-ubuntu-x64)
-        install_truecrypt_63a truecrypt_6.3a-0_amd64.deb
-        ;;
-      6.3a-ubuntu-x86)
-        install_truecrypt_63a truecrypt_6.3a-0_i386.deb
-        ;;
-      6.3a-source)
-        get_truecrypt_source TrueCrypt_6.3a_Source.tar.gz
-        ;;
       i386_deb)
         install_truecrypt_deb truecrypt_$TRUECRYPT_CURRENT_VERSION-0_i386.deb
         ;;
@@ -152,10 +91,10 @@ install_truecrypt() {
 setup_environment() {
     case $OSTYPE in
       *darwin*)
-        OWNER=root:root
+        OWNER=root:wheel
         ;;
       *)
-        OWNER=root:wheel
+        OWNER=root:root
         ;;
     esac
 }

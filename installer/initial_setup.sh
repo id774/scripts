@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.1 8/7,2010
+#       Update to truecrypt 7.
 #  v2.0 7/21,2010
 #       Correspond to Lucid.
 # v1.27 6/29,2010
@@ -314,10 +316,11 @@ sudo aptitude -y install exiftool libimage-exiftool-perl jhead
 
 # Crypt
 $SCRIPTS/installer/install_des.sh
-$SCRIPTS/installer/install_crypt.sh source
-$SCRIPTS/installer/install_crypt.sh win
-$SCRIPTS/installer/install_crypt.sh macosx
-$SCRIPTS/installer/install_crypt.sh i386_deb
+$SCRIPTS/installer/install_truecrypt7.sh src
+$SCRIPTS/installer/install_truecrypt7.sh win
+$SCRIPTS/installer/install_truecrypt7.sh mac
+#$SCRIPTS/installer/install_truecrypt7.sh linux-i386
+#$SCRIPTS/installer/install_truecrypt7.sh linux-amd64
 
 # Security (Anti-Virus)
 sudo aptitude -y install clamav avscan

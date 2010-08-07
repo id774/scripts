@@ -15,6 +15,13 @@ sudo aptitude update
 # Install cronjob
 $SCRIPTS/installer/install_cronjob.sh
 
+# Crypt
+$SCRIPTS/installer/install_truecrypt7.sh src
+$SCRIPTS/installer/install_truecrypt7.sh win
+$SCRIPTS/installer/install_truecrypt7.sh mac
+#$SCRIPTS/installer/install_truecrypt7.sh linux-i386
+$SCRIPTS/installer/install_truecrypt7.sh linux-amd64
+
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
 

@@ -14,10 +14,10 @@
 setup_environment() {
     case $OSTYPE in
       *darwin*)
-        OWNER=root:root
+        OWNER=root:wheel
         ;;
       *)
-        OWNER=root:wheel
+        OWNER=root:root
         ;;
     esac
 }
