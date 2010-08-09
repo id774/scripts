@@ -28,6 +28,7 @@ install_truecrypt() {
             rm -rf usr
         fi
         file /usr/bin/truecrypt
+        set_truecrypt_permission
         ;;
       linux-amd64)
         wget "http://id774.net/truecrypt/truecrypt-$2-linux-console-x64.tar.gz"
@@ -43,23 +44,26 @@ install_truecrypt() {
             rm -rf usr
         fi
         file /usr/bin/truecrypt
+        set_truecrypt_permission
         ;;
       win)
         wget "http://id774.net/truecrypt/TrueCrypt Setup $2.exe"
         sudo mv * /usr/local/src/crypt/truecrypt
+        sudo chown -R $OWNER /usr/local/src/crypt/truecrypt
         ;;
       mac)
         wget "http://id774.net/truecrypt/TrueCrypt $2 Mac OS X.dmg"
         sudo mv * /usr/local/src/crypt/truecrypt
+        sudo chown -R $OWNER /usr/local/src/crypt/truecrypt
         ;;
       src)
         wget "http://id774.net/truecrypt/TrueCrypt $2 Source.tar.gz"
         sudo mv * /usr/local/src/crypt/truecrypt
+        sudo chown -R $OWNER /usr/local/src/crypt/truecrypt
         ;;
     esac
     cd ..
     rm -rf install_truecrypt
-    set_truecrypt_permission
 }
 
 set_truecrypt_permission() {
