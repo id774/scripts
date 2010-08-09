@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.5 8/9,2010
+#       Generate account setting files.
 #  v1.4 3/9,2010
 #       Auto generate twitter elisp.
 #  v1.3 3/7,2010
@@ -27,13 +29,15 @@ setup_dotemacs() {
 }
 
 gen_twitter_el() {
+    cd $TARGET/elisp/3rd-party
     sed s/twitter1/twitter$1/g twitter1-mode.el |\
     sed s/24\)/$2\)/g |\
     sed s/103\)/$3\)/g > twitter$1-mode.el
+    cd $TARGET/elisp
+    cp twitter1-account.el twitter$1-account.el
 }
 
 gen_twitter_els() {
-    cd $TARGET/elisp/3rd-party
     gen_twitter_el 2 23 102
     gen_twitter_el 3 22 101
     gen_twitter_el 4 21  98
