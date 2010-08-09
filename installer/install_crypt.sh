@@ -15,6 +15,7 @@ install_truecrypt() {
     cd install_truecrypt
     case "$1" in
       linux-i386)
+        purge_old_version
         wget "http://id774.net/truecrypt/truecrypt-$2-linux-console-x86.tar.gz"
         sudo cp truecrypt-$2-linux-console-x86.tar.gz /usr/local/src/crypt/truecrypt
         tar xzvf truecrypt-$2-linux-console-x86.tar.gz
@@ -31,6 +32,7 @@ install_truecrypt() {
         set_truecrypt_permission
         ;;
       linux-amd64)
+        purge_old_version
         wget "http://id774.net/truecrypt/truecrypt-$2-linux-console-x64.tar.gz"
         sudo cp truecrypt-$2-linux-console-x64.tar.gz /usr/local/src/crypt/truecrypt
         tar xzvf truecrypt-$2-linux-console-x64.tar.gz
@@ -90,13 +92,12 @@ setup_environment() {
 }
 
 purge_old_version() {
-    if [ `aptitude search truecrypt | awk '/^i/' | wc -l` = 1 ]; then
+    if [ `aptitude search truecrypt | awk '/^i/' | wc -l` != 0 ]; then
         sudo aptitude purge truecrypt
     fi
 }
 
 install_crypt_main() {
-    purge_old_version
     setup_environment
     export TMP=$HOME/.tmp
     install_truecrypt $1 $TRUECRYPT_CURRENT_VERSION
