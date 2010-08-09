@@ -283,6 +283,7 @@ sudo aptitude -y install vim-gui-common vim-runtime colordiff
 sudo aptitude -y install ctags
 
 # Deploy dot_emacs
+test -d ~/local/github || mkdir -p ~/local/github
 cd ~/local/github
 git clone git://github.com/id774/dot_emacs.git
 cd
@@ -320,11 +321,11 @@ sudo aptitude -y install exiftool libimage-exiftool-perl jhead
 
 # Crypt
 $SCRIPTS/installer/install_des.sh
-$SCRIPTS/installer/install_truecrypt7.sh src
-$SCRIPTS/installer/install_truecrypt7.sh win
-$SCRIPTS/installer/install_truecrypt7.sh mac
-#$SCRIPTS/installer/install_truecrypt7.sh linux-i386
-#$SCRIPTS/installer/install_truecrypt7.sh linux-amd64
+$SCRIPTS/installer/install_crypt.sh src
+$SCRIPTS/installer/install_crypt.sh win
+$SCRIPTS/installer/install_crypt.sh mac
+#$SCRIPTS/installer/install_crypt.sh linux-i386
+$SCRIPTS/installer/install_crypt.sh linux-amd64
 
 # Security (Anti-Virus)
 sudo aptitude -y install clamav avscan
@@ -486,6 +487,14 @@ test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.con
 
 # Install plagger plugin
 $SCRIPTS/installer/install_plagger_plugins.sh
+
+# Termtter
+cd ~/local/github
+git clone git://github.com/id774/termtter-plugins.git
+cd
+ln -s ~/local/github/termtter-plugins
+$PRIVATE/installer/install_dottermtter.sh
+$SCRIPTS/installer/install_termtter_plugins.sh
 
 # Mail to admin at startup
 $SCRIPTS/installer/install_rclocal.sh
