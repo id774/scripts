@@ -9,21 +9,21 @@ export SCRIPTS=$HOME/scripts
 #DISTRIB_CODENAME=lucid
 #SOURCESLIST=sources-$DISTRIB_CODENAME.list
 #sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
-sudo vim /etc/apt/sources.list
-sudo aptitude update
+#sudo vim /etc/apt/sources.list
+#sudo aptitude update
 
 # Network
-$SCRIPTS/installer/install_pppconfig.sh
+#$SCRIPTS/installer/install_pppconfig.sh
 
 # Install cronjob
-$SCRIPTS/installer/install_cronjob.sh
+#$SCRIPTS/installer/install_cronjob.sh
 
 # Crypt
 $SCRIPTS/installer/install_crypt.sh src
 $SCRIPTS/installer/install_crypt.sh win
 $SCRIPTS/installer/install_crypt.sh mac
-#$SCRIPTS/installer/install_crypt.sh linux-i386
-$SCRIPTS/installer/install_crypt.sh linux-amd64
+$SCRIPTS/installer/install_crypt.sh linux-i386
+#$SCRIPTS/installer/install_crypt.sh linux-amd64
 
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
@@ -36,7 +36,7 @@ $SCRIPTS/installer/install_termtter_plugins.sh
 $SCRIPTS/installer/install_plagger_plugins.sh
 
 # Mail to admin when startup
-$SCRIPTS/installer/install_rclocal.sh
+#$SCRIPTS/installer/install_rclocal.sh
 
 # Permissions for /src
 sudo chown -R root:root /usr/src

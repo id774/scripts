@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.11 8/9,2010
+#       Refactoring.
 # v1.10 8/5,2010
 #       Show return code.
 #  v1.9 4/11,2010
@@ -47,21 +49,20 @@ test -b /dev/sdd && smartctl -a /dev/sdd
 test -b /dev/sde && smartctl -a /dev/sde
 test -b /dev/sdf && smartctl -a /dev/sdf
 
-# cleanup
-test -x /root/bin/cleanup4mac.sh && /root/bin/cleanup4mac.sh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE
+cleanup() {
+  test -x /root/bin/cleanup4mac.sh && /root/bin/cleanup4mac.sh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE
+}
 
-# svn backup
-test -x /root/bin/svn_hotcopy.sh && /root/bin/svn_hotcopy.sh
+svn_backup() {
+  test -x /root/bin/svn_hotcopy.sh && /root/bin/svn_hotcopy.sh
+  test -f /root/svn_hotcopy/svn_default.tar.gz && test -d $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/svn && cp -v /root/svn_hotcopy/svn_default.tar.gz $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/svn/
+  test -f /root/svn_hotcopy/trac_default.tar.gz && test -d $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/svn && cp -v /root/svn_hotcopy/trac_default.tar.gz $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/svn/
+}
 
-# svn -> sdb
-test -f /root/svn_hotcopy/svn_default.tar.gz && test -d $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/svn && cp -v /root/svn_hotcopy/svn_default.tar.gz $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/svn/
-test -f /root/svn_hotcopy/trac_default.tar.gz && test -d $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/svn && cp -v /root/svn_hotcopy/trac_default.tar.gz $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/svn/
-
-# github backup
-test -x /root/bin/github-arc.sh && /root/bin/github-arc.sh
-
-# github -> sdb
-test -f /root/local/github.tar.gz && test -d $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/git && cp -v /root/local/github.tar.gz $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/git/
+github_backup() {
+  test -x /root/bin/github-arc.sh && /root/bin/github-arc.sh
+  test -f /root/local/github.tar.gz && test -d $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/git && cp -v /root/local/github.tar.gz $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/git/
+}
 
 rsync_disk2ssh_0() {
   echo -n "* Executing rsync_disk2ssh_0 $RSYNC_BACKUP_DEVICE -> $RSYNC_TARGET_DEVICE of $TARGET_HOST on "
@@ -106,13 +107,18 @@ rsync_disk2disk_2() {
   echo "Return code is $?"
 }
 
-RSYNC_TARGET_DEVICE=sdc
-rsync_disk2disk_1
+cleanup
+svn_backup
+github_backup
 
-RSYNC_TARGET_DEVICE=sdb
-TARGET_USER=debian
-TARGET_HOST=
-rsync_disk2ssh_0
+#RSYNC_TARGET_DEVICE=sdc
+#rsync_disk2disk_1
+#rsync_disk2disk_2
+
+#RSYNC_TARGET_DEVICE=sdb
+#TARGET_USER=
+#TARGET_HOST=
+#rsync_disk2ssh_0
 
 # df at end
 df -T
