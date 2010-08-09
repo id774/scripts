@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.6 8/9,2010
+#       Setup github-arc script.
 #  v1.5 4/11,2010
 #       Erase rsync_backup2.
 #  v1.4 1/22,2009
@@ -19,6 +21,8 @@ sudo vim /root/bin/rsync_backup.sh
 sudo chmod 700 /root/bin/rsync_backup.sh
 sudo cp $SCRIPTS/cleanup4mac.sh /root/bin/cleanup4mac.sh
 sudo chmod 700 /root/bin/cleanup4mac.sh
+sudo cp $SCRIPTS/github-arc.sh /root/bin/github-arc.sh
+sudo chmod 700 /root/bin/github-arc.sh
 sudo chown -R root:root /root/bin
 sudo cp $SCRIPTS/cron/bin/rsync_backup /etc/cron.hourly/rsync_backup
 sudo vim /etc/cron.hourly/rsync_backup
