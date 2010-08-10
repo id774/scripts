@@ -290,11 +290,11 @@ cd
 ln -s ~/local/github/dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
 
-# navi2ch
-$SCRIPTS/installer/install_navi2ch.sh
-
 # paco
-$SCRIPTS/installer/install_paco.sh
+#$SCRIPTS/installer/install_paco.sh
+
+# navi2ch
+#$SCRIPTS/installer/install_navi2ch.sh
 
 # Vim (Original Build)
 #$SCRIPTS/installer/install_ncurses.sh
