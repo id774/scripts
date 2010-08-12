@@ -1,9 +1,11 @@
 #!/bin/sh
 #
 # This scripts updates environment from 0.4 to 0.5
+# $1 = i386, or amd64
 ########################################################################
 
 export SCRIPTS=$HOME/scripts
+test -n "$1" || exit 1
 
 # APT Update
 #DISTRIB_CODENAME=lucid
@@ -22,8 +24,7 @@ $SCRIPTS/installer/install_cronjob.sh
 $SCRIPTS/installer/install_crypt.sh src
 $SCRIPTS/installer/install_crypt.sh win
 $SCRIPTS/installer/install_crypt.sh mac
-#$SCRIPTS/installer/install_crypt.sh linux-i386
-#$SCRIPTS/installer/install_crypt.sh linux-amd64
+$SCRIPTS/installer/install_crypt.sh linux-$1
 
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
