@@ -8,8 +8,6 @@
 #  v0.1 8/7,2010
 #       Stable.
 ########################################################################
-TRUECRYPT_CURRENT_VERSION=7.0
-
 install_truecrypt() {
     mkdir install_truecrypt
     cd install_truecrypt
@@ -98,6 +96,8 @@ purge_old_version() {
 }
 
 install_crypt_main() {
+    test -n "$2" && TRUECRYPT_CURRENT_VERSION=$2
+    test -n "$2" || TRUECRYPT_CURRENT_VERSION=7.0
     setup_environment
     export TMP=$HOME/.tmp
     install_truecrypt $1 $TRUECRYPT_CURRENT_VERSION
