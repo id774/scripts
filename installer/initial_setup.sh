@@ -362,8 +362,8 @@ sudo aptitude -y install libopenssl-ruby libreadline-dev
 sudo aptitude -y install ruby ruby1.8 ruby1.8-dev rubygems rubygems1.8
 #sudo aptitude -y install ruby ruby1.9 ruby1.9-dev rubygems rubygems1.9
 #$SCRIPTS/installer/install_ruby.sh 187-svn
-$SCRIPTS/installer/install_ruby.sh 187-299 /opt/ruby/1.8.7
-#$SCRIPTS/installer/install_ruby.sh 191-429 /opt/ruby/1.9.1
+$SCRIPTS/installer/install_ruby.sh 187-302 /opt/ruby/1.8.7
+#$SCRIPTS/installer/install_ruby.sh 191-430 /opt/ruby/1.9.1
 $SCRIPTS/config/update-alternatives-ruby.sh
 
 # RubyGems

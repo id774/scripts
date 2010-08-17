@@ -20,6 +20,9 @@ $SCRIPTS/installer/install_pppconfig.sh
 # Install cronjob
 $SCRIPTS/installer/install_cronjob.sh
 
+# Ruby
+$SCRIPTS/installer/install_ruby.sh 187-302 /opt/ruby/1.8.7
+
 # Crypt
 $SCRIPTS/installer/install_crypt.sh src
 $SCRIPTS/installer/install_crypt.sh win
