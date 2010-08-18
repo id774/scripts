@@ -73,8 +73,14 @@ make_all_alternatives() {
     SOURCE=/opt/ruby/1.9.1/bin
     PRIORITY=120
     update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
+    SOURCE=/opt/ruby/1.9.2/bin
+    PRIORITY=130
+    update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
     SOURCE=/opt/ruby/1.9.1-dev/bin
     PRIORITY=150
+    update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
+    SOURCE=/opt/ruby/1.9.2-dev/bin
+    PRIORITY=160
     update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
 }
 
