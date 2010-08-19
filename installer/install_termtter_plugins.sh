@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 8/19,2010
+#       Update to ruby 1.9.2.
 #  v1.0 7/26,2010
 #       Stable.
 ########################################################################
@@ -16,10 +18,10 @@ update_termtter() {
 }
 
 termtter_updater() {
-    update_termtter /usr/local/lib/ruby/gems/$ruby_version/gems/termtter-$termtter_version/lib/plugins
-    update_termtter /opt/local/lib/ruby/gems/$ruby_version/gems/termtter-$termtter_version/lib/plugins
-    update_termtter /opt/ruby/$ruby_version/lib/ruby/gems/$ruby_version/gems/termtter-$termtter_version/lib/plugins
-    update_termtter /opt/ruby/$ruby_version-dev/lib/ruby/gems/$ruby_version/gems/termtter-$termtter_version/lib/plugins
+    update_termtter /usr/local/lib/ruby/gems/$ruby_lib_version/gems/termtter-$termtter_version/lib/plugins
+    update_termtter /opt/local/lib/ruby/gems/$ruby_lib_version/gems/termtter-$termtter_version/lib/plugins
+    update_termtter /opt/ruby/$ruby_version/lib/ruby/gems/$ruby_lib_version/gems/termtter-$termtter_version/lib/plugins
+    update_termtter /opt/ruby/$ruby_version-dev/lib/ruby/gems/$ruby_lib_version/gems/termtter-$termtter_version/lib/plugins
     update_termtter /opt/ruby/$ruby_version/lib/ruby/gems/$ruby_minor_version/gems/termtter-$termtter_version/lib/plugins
     update_termtter /opt/ruby/$ruby_version-dev/lib/ruby/gems/$ruby_minor_version/gems/termtter-$termtter_version/lib/plugins
     update_termtter /opt/local/lib/ruby/gems/$ruby_version/gems/termtter-$termtter_version/lib/plugins
@@ -27,13 +29,17 @@ termtter_updater() {
 }
 
 update_termtters() {
+    ruby_lib_version=1.8.7
     ruby_minor_version=1.8
     ruby_version=1.8
     termtter_updater
     ruby_version=1.8.7
     termtter_updater
+    ruby_lib_version=1.9.1
     ruby_minor_version=1.9
     ruby_version=1.9.1
+    termtter_updater
+    ruby_version=1.9.2
     termtter_updater
 }
 
