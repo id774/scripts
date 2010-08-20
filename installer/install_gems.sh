@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.9 8/20,2010
+#       Correspond to termtter 1.9.0 on ruby 1.9.2.
 #  v1.8 7/12,2010
 #       Freeze version for termtter 1.8.0.
 #  v1.7 6/30,2010
@@ -32,8 +34,8 @@ install_gem() {
     test -n "$1" || export GEM=gem
     export RUBYOPT=rubygems
     sudo $GEM update $2 $3 $4
-    sudo $GEM install mongrel $2 $3 $4
-    sudo $GEM install mongrel_cluster $2 $3 $4
+    #sudo $GEM install mongrel $2 $3 $4
+    #sudo $GEM install mongrel_cluster $2 $3 $4
     sudo $GEM install mechanize $2 $3 $4
     sudo $GEM install Selenium $2 $3 $4
     sudo $GEM install vim-ruby $2 $3 $4
@@ -52,8 +54,8 @@ install_gem() {
     sudo $GEM install rspec-rails $2 $3 $4
     sudo $GEM install gherkin $2 $3 $4
     sudo $GEM install cucumber $2 $3 $4
-    sudo $GEM install -v 1.2.2 rubytter $2 $3 $4
-    sudo $GEM install -v 1.8.0 termtter $2 $3 $4
+    sudo $GEM install -v 1.4.1 rubytter $2 $3 $4
+    sudo $GEM install -v 1.9.0 termtter $2 $3 $4
     sudo $GEM install nokogiri $2 $3 $4
     sudo $GEM install msgpack-rpc $2 $3 $4
     $GEM list --local

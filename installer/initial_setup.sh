@@ -358,32 +358,26 @@ sudo vim /etc/default/smartmontools
 
 # Ruby
 sudo aptitude -y install autoconf byacc bison autoconf-doc automake
-sudo aptitude -y install libopenssl-ruby libreadline-dev
-sudo aptitude -y install ruby ruby1.8 ruby1.8-dev rubygems rubygems1.8
-#sudo aptitude -y install ruby ruby1.9 ruby1.9-dev rubygems rubygems1.9
-#$SCRIPTS/installer/install_ruby.sh 187-svn
-$SCRIPTS/installer/install_ruby.sh 187-302 /opt/ruby/1.8.7
-#$SCRIPTS/installer/install_ruby.sh 191-430 /opt/ruby/1.9.1
+sudo aptitude -y install libopenssl-ruby libreadline-dev ruby
+#sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems rubygems1.8
+#sudo aptitude -y install ruby1.9 ruby1.9-dev rubygems rubygems1.9
+#$SCRIPTS/installer/install_ruby.sh 187-svn /opt/ruby/1.8.7
+#$SCRIPTS/installer/install_ruby.sh 191-svn /opt/ruby/1.9.1
+$SCRIPTS/installer/install_ruby.sh 192-svn /opt/ruby/1.9.2
 $SCRIPTS/config/update-alternatives-ruby.sh
 
 # RubyGems
-$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.8.7
-$SCRIPTS/installer/install_gems.sh /opt/ruby/1.8.7
-$SCRIPTS/installer/install_rails.sh rails-ruby /opt/ruby/1.8.7
-#$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.1
-#$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.1
-#$SCRIPTS/installer/install_rails.sh rails-ruby /opt/ruby/1.9.1
-#$SCRIPTS/installer/install_rails.sh 212
-#$SCRIPTS/installer/install_rails.sh 205
-#$SCRIPTS/installer/install_rails.sh 126
+#$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.2
+$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.2
+$SCRIPTS/installer/install_rails.sh rails-ruby /opt/ruby/1.9.2
 vim-ruby-install.rb
 
 # Passenger
-$SCRIPTS/installer/install_passenger.sh /opt/ruby/1.8.7
-#$SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.1
+$SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.2
 
 # Python
-#$SCRIPTS/installer/install_python.sh 2.6.5 /opt/python/2.6.5
+#$SCRIPTS/installer/install_python.sh 2.6.6 /opt/python/2.6.6
+#$SCRIPTS/installer/install_python.sh 2.7 /opt/python/2.7
 #$SCRIPTS/installer/install_python.sh 3.1.2 /opt/python/3.1.2
 #$SCRIPTS/config/update-alternatives-python.sh
 

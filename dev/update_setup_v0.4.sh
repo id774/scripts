@@ -21,7 +21,16 @@ $SCRIPTS/installer/install_pppconfig.sh
 $SCRIPTS/installer/install_cronjob.sh
 
 # Ruby
-$SCRIPTS/installer/install_ruby.sh 187-302 /opt/ruby/1.8.7
+$SCRIPTS/installer/install_ruby.sh 192-svn /opt/ruby/1.9.2
+$SCRIPTS/config/update-alternatives-ruby.sh
+
+# RubyGems
+$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.2
+$SCRIPTS/installer/install_rails.sh rails-ruby /opt/ruby/1.9.2
+vim-ruby-install.rb
+
+# Passenger
+$SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.2
 
 # Crypt
 $SCRIPTS/installer/install_crypt.sh src
