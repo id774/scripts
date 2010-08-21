@@ -22,6 +22,7 @@ $SCRIPTS/installer/install_cronjob.sh
 
 # Ruby
 $SCRIPTS/installer/install_ruby.sh 192-svn /opt/ruby/1.9.2
+test -d /usr/local/src/ruby/ruby-1.8.7-p299 && sudo rm -rf /usr/local/src/ruby/ruby*
 $SCRIPTS/config/update-alternatives-ruby.sh
 
 # RubyGems
@@ -31,6 +32,7 @@ vim-ruby-install.rb
 
 # Passenger
 $SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.2
+$SCRIPTS/config/update-alternatives-ruby.sh
 
 # Crypt
 $SCRIPTS/installer/install_crypt.sh src

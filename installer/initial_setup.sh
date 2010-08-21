@@ -374,6 +374,7 @@ vim-ruby-install.rb
 
 # Passenger
 $SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.2
+$SCRIPTS/config/update-alternatives-ruby.sh
 
 # Python
 #$SCRIPTS/installer/install_python.sh 2.6.6 /opt/python/2.6.6
