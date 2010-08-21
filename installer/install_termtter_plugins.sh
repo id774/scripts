@@ -18,8 +18,8 @@ update_termtter() {
 }
 
 termtter_updater() {
-    update_termtter /usr/local/lib/ruby/gems/$ruby_lib_version/gems/termtter-$termtter_version/lib/plugins
-    update_termtter /opt/local/lib/ruby/gems/$ruby_lib_version/gems/termtter-$termtter_version/lib/plugins
+    update_termtter /usr/local/lib/ruby/gems/$ruby_version/gems/termtter-$termtter_version/lib/plugins
+    update_termtter /opt/local/lib/ruby/gems/$ruby_version/gems/termtter-$termtter_version/lib/plugins
     update_termtter /opt/ruby/$ruby_version/lib/ruby/gems/$ruby_lib_version/gems/termtter-$termtter_version/lib/plugins
     update_termtter /opt/ruby/$ruby_version-dev/lib/ruby/gems/$ruby_lib_version/gems/termtter-$termtter_version/lib/plugins
     update_termtter /opt/ruby/$ruby_version/lib/ruby/gems/$ruby_minor_version/gems/termtter-$termtter_version/lib/plugins
