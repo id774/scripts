@@ -311,6 +311,7 @@ sudo aptitude -y install migemo
 sudo aptitude -y install gnuserv
 sudo aptitude -y install mingw32 mingw32-binutils mingw32-runtime
 sudo aptitude -y install libxml2 libxml2-dev
+sudo aptitude -y install libxslt1-dev libxml-dev
 sudo aptitude -y install expat libexpat-dev
 sudo aptitude -y install libssl-dev libio-socket-ssl-perl libnet-ssleay-perl
 sudo aptitude -y install libtemplate-perl libxml-libxml-perl

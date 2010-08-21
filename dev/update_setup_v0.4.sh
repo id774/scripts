@@ -53,6 +53,9 @@ $SCRIPTS/installer/install_plagger_plugins.sh
 # Mail to admin when startup
 $SCRIPTS/installer/install_rclocal.sh
 
+# Optional Libraries
+sudo aptitude -y install libxslt1-dev libxml-dev
+
 # Permissions for /src
 sudo chown -R root:root /usr/src
 sudo chown -R root:root /usr/local/src
