@@ -91,6 +91,8 @@ gitpull_all() {
     gitpull github id774 id774.github.com $*
     gitpull github id774 dot_emacs $*
     gitpull github id774 termtter-plugins $*
+    gitpull github id774 gthumb
+    gitpull github id774 sandbox
     gitpull github jugyo termtter $*
     gitpull github hayamiz twittering-mode $*
     gitpull github miyagawa plagger $*
@@ -102,7 +104,7 @@ main() {
     test -d $HOME/local/github || mkdir -p $HOME/local/github
     test -d $HOME/local/git || mkdir -p $HOME/local/git
     debian_monthly_report git monthly-report $*
-    assembla_git_all $*
+    #assembla_git_all $*
     anything_get_all $*
     gitpull_all $*
 }
