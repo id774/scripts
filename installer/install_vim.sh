@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.5 8/29,2010
+#       Update to 7.2.446.
 #  v1.4 3/7,2010
 #       Refactoring and update to 7.2.385.
 #  v1.3 2/20,2010
@@ -52,8 +54,10 @@ get_source_and_install() {
         curl -O ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.101-200.gz
         gunzip 7.2.101-200.gz
         curl -O ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.201-300.gz
-        gunzip 7.2.101-200.gz
-        curl -O 'ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.[301-385]'
+        gunzip 7.2.201-300.gz
+        curl -O ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.301-400.gz
+        gunzip 7.2.301-400.gz
+        curl -O 'ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.[401-446]'
         cd ../
         build_and_install
         cd ../../
