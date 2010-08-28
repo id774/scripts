@@ -22,7 +22,7 @@ sudo yum -y install build-essential
 sudo yum -y install patch
 sudo yum -y install zsh
 sudo yum -y install screen
-sudo yum -y install nautilus-open-terminal
+sudo yum -y install fuse fuse-devel
 sudo yum -y install httpd
 sudo yum -y install mysql-server
 sudo yum -y install php
@@ -62,6 +62,7 @@ sudo yum -y install wireshark
 sudo yum -y install yumex yum-utils gconf-editor hwbrowser rpm-build
 sudo yum -y install atop fortune-all
 sudo yum -y install emacs* anthy-el
+#sudo yum -y install nautilus-open-terminal
 #sudo yum -y install samba samba-client samba-swat
 #sudo yum -y install kdebase kdeartwork kdegraphics kdemultimedia
 #sudo yum -y install gcc* compat-gcc* compat-glibc* compat-lib*
