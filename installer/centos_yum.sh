@@ -12,75 +12,71 @@
 #  v0.1 8/31,2007
 #       First version.
 ########################################################################
-# Note:
-# 1. First, run this script with root.
-# 2. Next, run other scripts.
-########################################################################
 
-yum -y install openssh-server
-yum -y install ssh
-yum -y install gcc g++ g77
-yum -y install tar zip gzip unzip bzip2
-yum -y install lha-sjis
-yum -y install build-essential
-yum -y install patch
-yum -y install zsh
-yum -y install screen
-yum -y install nautilus-open-terminal
-yum -y install httpd
-yum -y install mysql-server
-yum -y install php
-yum -y install php-mbstring
-yum -y install php-mysql
-yum -y install ruby
-yum -y install openssl openssl-devel
-yum -y install readline readline-devel
-yum -y install ntp
-yum -y install autoconf
-yum -y install automake
-yum -y install subversion
-yum -y install libpng-devel
-yum -y install libXcomposite-devel
-yum -y install xorg-x11-proto-devel
-yum -y install libXfixes-devel
-yum -y install libXext-devel
-yum -y install libXdamage-devel
-yum -y install libXrandr-devel
-yum -y install libXrender-devel
-yum -y install startup-notification-devel
-yum -y install libXinerama-devel
-yum -y install libICE-devel
-yum -y install libSM-devel
-yum -y install glib2-devel
-yum -y install imake
-yum -y install rpm-build
-yum -y install libtool
-yum -y install gettext
-yum -y install gtk2-devel
-yum -y install dbus-devel
-yum -y install librsvg2-devel
-yum -y install libwnck-devel
-yum -y install ctags
-yum -y install vim-X11 vim-runtime vim-common
-yum -y install wireshark
-yum -y install yumex yum-utils gconf-editor hwbrowser rpm-build
-yum -y install atop fortune-all
-yum -y install emacs* anthy-el
-#yum -y install samba samba-client samba-swat
-#yum -y install kdebase kdeartwork kdegraphics kdemultimedia
-#yum -y install gcc* compat-gcc* compat-glibc* compat-lib*
-#yum -y install lapack blas units [octave atlas]
-#yum -y install gnuplot* [grace plplot]
-#yum -y install xfig [inkscape]
-#yum -y install [maxima*] texmacs
-#yum -y install mplayer* vlc gstreamer* xmms xmms-mp3 [ogle*] [amarok]
-#yum -y --enablerepo=atrpms install [w32codec] divx4linux
-#yum -y --enablerepo=flash install flash-plugin
-#yum -y install [xscreensaver*]
-#yum -y install bittorrent*
-#yum -y install cabextract p7zip p7zip-plugins
-#yum -y install thunderbird
-#yum -y install gnubiff
-#yum -y install [gnomebaker]
-#yum -y install k3b
+sudo yum -y install openssh-server
+sudo yum -y install ssh
+sudo yum -y install gcc g++ g77
+sudo yum -y install tar zip gzip unzip bzip2
+sudo yum -y install lha-sjis
+sudo yum -y install build-essential
+sudo yum -y install patch
+sudo yum -y install zsh
+sudo yum -y install screen
+sudo yum -y install nautilus-open-terminal
+sudo yum -y install httpd
+sudo yum -y install mysql-server
+sudo yum -y install php
+sudo yum -y install php-mbstring
+sudo yum -y install php-mysql
+sudo yum -y install ruby
+sudo yum -y install openssl openssl-devel
+sudo yum -y install readline readline-devel
+sudo yum -y install ntp
+sudo yum -y install autoconf
+sudo yum -y install automake
+sudo yum -y install subversion
+sudo yum -y install libpng-devel
+sudo yum -y install libXcomposite-devel
+sudo yum -y install xorg-x11-proto-devel
+sudo yum -y install libXfixes-devel
+sudo yum -y install libXext-devel
+sudo yum -y install libXdamage-devel
+sudo yum -y install libXrandr-devel
+sudo yum -y install libXrender-devel
+sudo yum -y install startup-notification-devel
+sudo yum -y install libXinerama-devel
+sudo yum -y install libICE-devel
+sudo yum -y install libSM-devel
+sudo yum -y install glib2-devel
+sudo yum -y install imake
+sudo yum -y install rpm-build
+sudo yum -y install libtool
+sudo yum -y install gettext
+sudo yum -y install gtk2-devel
+sudo yum -y install dbus-devel
+sudo yum -y install librsvg2-devel
+sudo yum -y install libwnck-devel
+sudo yum -y install ctags
+sudo yum -y install vim-X11 vim-runtime vim-common
+sudo yum -y install wireshark
+sudo yum -y install yumex yum-utils gconf-editor hwbrowser rpm-build
+sudo yum -y install atop fortune-all
+sudo yum -y install emacs* anthy-el
+#sudo yum -y install samba samba-client samba-swat
+#sudo yum -y install kdebase kdeartwork kdegraphics kdemultimedia
+#sudo yum -y install gcc* compat-gcc* compat-glibc* compat-lib*
+#sudo yum -y install lapack blas units [octave atlas]
+#sudo yum -y install gnuplot* [grace plplot]
+#sudo yum -y install xfig [inkscape]
+#sudo yum -y install [maxima*] texmacs
+#sudo yum -y install mplayer* vlc gstreamer* xmms xmms-mp3 [ogle*] [amarok]
+#sudo yum -y --enablerepo=atrpms install [w32codec] divx4linux
+#sudo yum -y --enablerepo=flash install flash-plugin
+#sudo yum -y install [xscreensaver*]
+#sudo yum -y install bittorrent*
+#sudo yum -y install cabextract p7zip p7zip-plugins
+#sudo yum -y install thunderbird
+#sudo yum -y install gnubiff
+#sudo yum -y install [gnomebaker]
+#sudo yum -y install k3b
 
