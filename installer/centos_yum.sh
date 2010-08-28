@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.3 8/29,2010
+#       Various packages added.
 #  v0.2 9/19,2007
 #       Add packages.
 #  v0.1 8/31,2007
@@ -21,6 +23,7 @@ yum -y install gcc g++ g77
 yum -y install tar zip gzip unzip bzip2
 yum -y install lha-sjis
 yum -y install build-essential
+yum -y install patch
 yum -y install zsh
 yum -y install screen
 yum -y install nautilus-open-terminal
@@ -29,6 +32,9 @@ yum -y install mysql-server
 yum -y install php
 yum -y install php-mbstring
 yum -y install php-mysql
+yum -y install ruby
+yum -y install openssl openssl-devel
+yum -y install readline readline-devel
 yum -y install ntp
 yum -y install autoconf
 yum -y install automake
@@ -54,27 +60,27 @@ yum -y install gtk2-devel
 yum -y install dbus-devel
 yum -y install librsvg2-devel
 yum -y install libwnck-devel
-yum -y install thunderbird
-yum -y install samba samba-client samba-swat
-yum -y install vim-X11 vim-runtime
-yum -y install wireshark wireshark-gnome
+yum -y install ctags
+yum -y install vim-X11 vim-runtime vim-common
+yum -y install wireshark
 yum -y install yumex yum-utils gconf-editor hwbrowser rpm-build
 yum -y install atop fortune-all
 yum -y install emacs* anthy-el
-yum -y install kdebase kdeartwork kdegraphics kdemultimedia
-yum -y install gcc* compat-gcc* compat-glibc* compat-lib*
-yum -y install lapack blas units [octave atlas]
-yum -y install gnuplot* [grace plplot]
-yum -y install xfig [inkscape]
-yum -y install [maxima*] texmacs
-yum -y install mplayer* vlc gstreamer* xmms xmms-mp3 [ogle*] [amarok]
-yum -y --enablerepo=atrpms install [w32codec] divx4linux
-yum -y --enablerepo=flash install flash-plugin
-yum -y install [xscreensaver*]
-yum -y install bittorrent*
-yum -y install cabextract p7zip p7zip-plugins
-yum -y install thunderbird
-yum -y install gnubiff
-yum -y install [gnomebaker]
-yum -y install k3b
+#yum -y install samba samba-client samba-swat
+#yum -y install kdebase kdeartwork kdegraphics kdemultimedia
+#yum -y install gcc* compat-gcc* compat-glibc* compat-lib*
+#yum -y install lapack blas units [octave atlas]
+#yum -y install gnuplot* [grace plplot]
+#yum -y install xfig [inkscape]
+#yum -y install [maxima*] texmacs
+#yum -y install mplayer* vlc gstreamer* xmms xmms-mp3 [ogle*] [amarok]
+#yum -y --enablerepo=atrpms install [w32codec] divx4linux
+#yum -y --enablerepo=flash install flash-plugin
+#yum -y install [xscreensaver*]
+#yum -y install bittorrent*
+#yum -y install cabextract p7zip p7zip-plugins
+#yum -y install thunderbird
+#yum -y install gnubiff
+#yum -y install [gnomebaker]
+#yum -y install k3b
 
