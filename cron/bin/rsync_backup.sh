@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.12 8/29,2010
+#       Refactoring.
 # v1.11 8/9,2010
 #       Refactoring.
 # v1.10 8/5,2010
@@ -30,24 +32,13 @@
 #       Stable.
 ########################################################################
 
-RSYNC_BACKUP_HOME=/home/debian
-RSYNC_TARGET_HOME=/home/debian
-RSYNC_BACKUP_MOUNTPOUNT=mnt
-RSYNC_BACKUP_DEVICE=sdb
-RSYNC_TARGET_MOUNTPOUNT=mnt
-RSYNC_TARGET_DEVICE=sdb
-
-truecrypt -t --version
-
-# df at start
-df -T
-
-# SMART information
-test -b /dev/sdb && smartctl -a /dev/sdb
-test -b /dev/sdc && smartctl -a /dev/sdc
-test -b /dev/sdd && smartctl -a /dev/sdd
-test -b /dev/sde && smartctl -a /dev/sde
-test -b /dev/sdf && smartctl -a /dev/sdf
+smart_info() {
+  test -b /dev/sdb && smartctl -a /dev/sdb
+  test -b /dev/sdc && smartctl -a /dev/sdc
+  test -b /dev/sdd && smartctl -a /dev/sdd
+  test -b /dev/sde && smartctl -a /dev/sde
+  test -b /dev/sdf && smartctl -a /dev/sdf
+}
 
 cleanup() {
   test -x /root/bin/cleanup4mac.sh && /root/bin/cleanup4mac.sh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE
@@ -107,19 +98,29 @@ rsync_disk2disk_2() {
   echo "Return code is $?"
 }
 
-cleanup
-svn_backup
-github_backup
+RSYNC_BACKUP_HOME=/home/ubuntu
+RSYNC_TARGET_HOME=/home/ubuntu
+RSYNC_BACKUP_MOUNTPOUNT=mnt
+RSYNC_BACKUP_DEVICE=sdc
+RSYNC_TARGET_MOUNTPOUNT=mnt
+RSYNC_TARGET_DEVICE=sdb
+
+truecrypt -t --version
+df -T
+
+smart_info
+#cleanup
+#svn_backup
+#github_backup
 
 #RSYNC_TARGET_DEVICE=sdc
-#rsync_disk2disk_1
-#rsync_disk2disk_2
+rsync_disk2disk_1
+rsync_disk2disk_2
 
 #RSYNC_TARGET_DEVICE=sdb
 #TARGET_USER=
 #TARGET_HOST=
 #rsync_disk2ssh_0
 
-# df at end
 df -T
 
