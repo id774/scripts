@@ -5,7 +5,7 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.3 3/7,2010
+#  v1.3 8/29,2010
 #       Use my Library version.
 #  v1.2 3/7,2010
 #       Refactoring.
