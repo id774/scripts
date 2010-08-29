@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 3/7,2010
+#       Use my Library version.
 #  v1.2 3/7,2010
 #       Refactoring.
 #  v1.1 2/18,2010
@@ -14,8 +16,6 @@
 ########################################################################
 
 main() {
-    TARGET_PATH=`python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"`
-
     # Development tool and package manager
     sudo aptitude -y install python-dev
     sudo aptitude -y install python-doc
@@ -58,9 +58,8 @@ main() {
 
     # Web crawler and HTML/XML parser
     sudo aptitude -y install python-mechanize
-    wget http://www.crummy.com/software/BeautifulSoup/download/BeautifulSoup.py
-    sudo cp BeautifulSoup.py $TARGET_PATH/BeautifulSoup.py
-    rm BeautifulSoup.py
+    TARGET_PATH=`python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"`
+    sudo cp $SCRIPTS/lib/BeautifulSoup.py $TARGET_PATH/BeautifulSoup.py
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
