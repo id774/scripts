@@ -27,7 +27,7 @@ install_beautifulsoup() {
     cd BeautifulSoup-$BEAUTIFULSOUP_VERSION
     sudo $PYTHON setup.py install
 
-    cd ..
+    cd ../..
     rm -rf install_beautifulsoup
 }
 
