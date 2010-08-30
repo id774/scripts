@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.2 8/30,2010
+#       Add KVM.
 #  v2.1 8/7,2010
 #       Update to truecrypt 7.
 #  v2.0 7/21,2010
@@ -319,6 +321,11 @@ sudo aptitude -y install ghc
 
 # exiftool
 sudo aptitude -y install exiftool libimage-exiftool-perl jhead
+
+# KVM
+sudo aptitude -y install kvm libvirt-bin qemu-kvm
+sudo aptitude -y install python-libvirt
+sudo addgroup libvirtd $USER
 
 # Crypt
 $SCRIPTS/installer/install_des.sh

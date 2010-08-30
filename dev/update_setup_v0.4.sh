@@ -54,7 +54,16 @@ $SCRIPTS/installer/install_plagger_plugins.sh
 $SCRIPTS/installer/install_rclocal.sh
 
 # Optional Libraries
-sudo aptitude -y install libxslt1-dev libxml-dev
+if [ `aptitude search libxslt1-dev | awk '/^i/' | wc -l` = 0 ]; then
+    sudo aptitude -y install libxslt1-dev libxml-dev
+fi
+
+# KVM
+if [ `aptitude search libvirt-kvm | awk '/^i/' | wc -l` = 0 ]; then
+    sudo aptitude -y install kvm libvirt-bin qemu-kvm
+    sudo aptitude -y install python-libvirt
+    sudo addgroup libvirtd $USER
+fi
 
 # Permissions for /src
 sudo chown -R root:root /usr/src
