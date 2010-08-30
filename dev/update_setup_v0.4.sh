@@ -62,7 +62,7 @@ if [ `aptitude search libxslt1-dev | awk '/^i/' | wc -l` = 0 ]; then
 fi
 
 # KVM
-if [ `aptitude search libvirt-kvm | awk '/^i/' | wc -l` = 0 ]; then
+if [ `aptitude search libvirt-bin | awk '/^i/' | wc -l` = 0 ]; then
     sudo aptitude -y install kvm libvirt-bin qemu-kvm
     sudo aptitude -y install python-libvirt
     sudo addgroup libvirtd $USER
