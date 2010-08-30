@@ -28,7 +28,7 @@ install_beautifulsoup() {
     sudo $PYTHON setup.py install
 
     cd ../..
-    rm -rf install_beautifulsoup
+    sudo rm -rf install_beautifulsoup
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
