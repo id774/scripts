@@ -10,10 +10,10 @@
 ########################################################################
 
 setup_environment() {
-    test -n "$1" && export PYTHON=$1
-    test -n "$1" || export PYTHON=python
-    test -n "$2" || BEAUTIFULSOUP_VERSION=3.0.8.1
-    test -n "$2" && BEAUTIFULSOUP_VERSION=$2
+    test -n "$1" || BEAUTIFULSOUP_VERSION=3.0.8.1
+    test -n "$1" && BEAUTIFULSOUP_VERSION=$1
+    test -n "$2" && export PYTHON=$2
+    test -n "$2" || export PYTHON=python
 }
 
 install_beautifulsoup() {
