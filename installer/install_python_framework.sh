@@ -16,6 +16,8 @@
 ########################################################################
 
 main() {
+    TARGET_PATH=`python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"`
+
     # Development tool and package manager
     sudo aptitude -y install python-dev
     sudo aptitude -y install python-doc
@@ -58,8 +60,7 @@ main() {
 
     # Web crawler and HTML/XML parser
     sudo aptitude -y install python-mechanize
-    TARGET_PATH=`python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"`
-    sudo cp $SCRIPTS/lib/BeautifulSoup.py $TARGET_PATH/BeautifulSoup.py
+    $SCRIPTS/installer/install_beautifulsoup.sh
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1

@@ -34,6 +34,9 @@ vim-ruby-install.rb
 $SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.2
 $SCRIPTS/config/update-alternatives-ruby.sh
 
+# Web crawler and HTML/XML parser
+$SCRIPTS/installer/install_beautifulsoup.sh
+
 # Crypt
 $SCRIPTS/installer/install_crypt.sh src
 $SCRIPTS/installer/install_crypt.sh win
