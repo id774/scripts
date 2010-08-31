@@ -10,7 +10,7 @@
 ########################################################################
 
 test -n "$1" && DEFAULT_KEYMAPFILE=$1
-test -n "$1" || DEFAULT_KEYMAPFILE=dot_xmodmaprc_hhkprojp
+test -n "$1" || DEFAULT_KEYMAPFILE=dot_xmodmaprc_hhklite2
 
 case $OSTYPE in
   *darwin*)
@@ -32,6 +32,7 @@ do
   test -d /home/debian         && cp      $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES /home/debian/.$DOT_FILES
   test -d /home/ubuntu         && cp      $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES /home/ubuntu/.$DOT_FILES
   test -d /home/centos         && cp      $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES /home/centos/.$DOT_FILES
+  test -d /home/admin          && cp      $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES /home/admin/.$DOT_FILES
   test -d /etc/skel            && sudo cp $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES /etc/skel/.$DOT_FILES
   test -d /home/plagger        && sudo cp $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES /home/plagger/.$DOT_FILES
   test -d /home/twitter        && sudo cp $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES /home/twitter/.$DOT_FILES

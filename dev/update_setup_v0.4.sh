@@ -43,6 +43,9 @@ $SCRIPTS/installer/install_crypt.sh win
 $SCRIPTS/installer/install_crypt.sh mac
 $SCRIPTS/installer/install_crypt.sh linux-$1
 
+# Deploy dot_files
+$SCRIPTS/installer/install_dotfiles.sh
+
 # Deploy dot_emacs
 $SCRIPTS/installer/install_dotemacs.sh
 
