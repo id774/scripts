@@ -66,9 +66,14 @@ fi
 
 # KVM
 if [ `aptitude search libvirt-bin | awk '/^i/' | wc -l` = 0 ]; then
-    sudo aptitude -y install kvm libvirt-bin qemu-kvm
+    sudo aptitude -y install kvm libvirt-bin
     sudo aptitude -y install python-libvirt
     sudo addgroup libvirtd $USER
+fi
+
+# qemu
+if [ `aptitude search kqemu-source | awk '/^i/' | wc -l` = 0 ]; then
+    sudo aptitude -y install kqemu-source qemu
 fi
 
 # Permissions for /src

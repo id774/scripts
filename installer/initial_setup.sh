@@ -225,7 +225,6 @@ sudo aptitude -y install nasm
 sudo aptitude -y install gauche
 sudo aptitude -y install clisp
 sudo aptitude -y install scheme48 cmuscheme48-el
-sudo aptitude -y install qemu
 sudo aptitude -y install apt-file
 sudo aptitude -y install apt-spy
 sudo aptitude -y install keychain
@@ -323,8 +322,9 @@ sudo aptitude -y install ghc
 sudo aptitude -y install exiftool libimage-exiftool-perl jhead
 
 # KVM
-sudo aptitude -y install kvm libvirt-bin qemu-kvm
+sudo aptitude -y install kvm libvirt-bin
 sudo aptitude -y install python-libvirt
+sudo aptitude -y Install kqemu-source qemu
 sudo addgroup libvirtd $USER
 
 # Crypt
