@@ -324,6 +324,7 @@ sudo aptitude -y install exiftool libimage-exiftool-perl jhead
 # KVM
 sudo aptitude -y install kvm libvirt-bin
 sudo aptitude -y install python-libvirt
+#sudo aptitude -y install virt-manager
 sudo aptitude -y Install kqemu-source qemu
 sudo addgroup libvirtd $USER
 

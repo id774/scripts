@@ -68,6 +68,7 @@ fi
 if [ `aptitude search libvirt-bin | awk '/^i/' | wc -l` = 0 ]; then
     sudo aptitude -y install kvm libvirt-bin
     sudo aptitude -y install python-libvirt
+    #sudo aptitude -y install virt-manager
     sudo addgroup libvirtd $USER
 fi
 
