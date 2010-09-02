@@ -28,7 +28,7 @@ $SCRIPTS/config/update-alternatives-ruby.sh
 # RubyGems
 $SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.2
 $SCRIPTS/installer/install_rails.sh rails-ruby /opt/ruby/1.9.2
-vim-ruby-install.rb
+/opt/ruby/1.9.2/bin/vim-ruby-install.rb
 
 # Passenger
 $SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.2
@@ -58,6 +58,14 @@ $SCRIPTS/installer/install_plagger_plugins.sh
 
 # Mail to admin when startup
 $SCRIPTS/installer/install_rclocal.sh
+
+# Remove Fonts
+if [ `aptitude search xfonts-shinonome | awk '/^i/' | wc -l` != 0 ]; then
+    sudo aptitude -y purge xfonts-shinonome
+fi
+if [ `aptitude search xfonts-mplus | awk '/^i/' | wc -l` != 0 ]; then
+    sudo aptitude -y purge xfonts-mplus
+fi
 
 # Optional Libraries
 if [ `aptitude search libxslt1-dev | awk '/^i/' | wc -l` = 0 ]; then

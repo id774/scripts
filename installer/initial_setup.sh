@@ -216,8 +216,6 @@ sudo aptitude -y install klogd sysklogd
 # Libraries and Programming Tools
 sudo aptitude -y install ntp
 sudo aptitude -y install uim uim-anthy uim-el
-sudo aptitude -y install xfonts-mplus
-sudo aptitude -y install xfonts-shinonome
 sudo aptitude -y install ncftp
 sudo aptitude -y install lynx
 sudo aptitude -y install w3m
@@ -444,7 +442,9 @@ test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.con
 #sudo chmod -R 755 /usr/local/share/share-documents
 #ln -s /usr/local/share/share-documents ~/share
 
-# Bitstream Vera Sans Mono font
+# Fonts
+#sudo aptitude -y install xfonts-mplus
+#sudo aptitude -y install xfonts-shinonome
 #sudo aptitude -y install ttf-vlgothic ttf-bitstream-vera
 
 # Codec
