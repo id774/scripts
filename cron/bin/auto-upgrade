@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.8 9/2,2010
+#       Correspond to CentOS.
 #  v0.7 8/5,2010
 #       Show return code.
 #  v0.6 7/27,2009
@@ -34,6 +36,9 @@ aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && a
 
 # Ubuntu Desktop
 #aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && aptitude -y install linux-image-generic linux-generic linux-restricted-modules-generic linux-headers linux-headers-generic gnupg clamav clamav-freshclam >> $JOBLOG 2>&1 && aptitude autoclean >> $JOBLOG 2>&1
+
+# CentOS
+#yum -y --exclude subversion update >> $JOBLOG 2>&1 && yum clean all >> $JOBLOG 2>&1
 
 # Show return code
 echo "Return code is $?">>$JOBLOG 2>&1
