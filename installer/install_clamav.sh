@@ -38,7 +38,7 @@ install_clamav() {
     sudo cp /usr/local/etc/freshclam.conf /usr/local/etc/freshclam.conf.base
     sudo cp /usr/local/etc/clamd.conf /usr/local/etc/clamd.conf.base
     test -r /usr/local/share/clamav || sudo mkdir -p /usr/local/share/clamav
-    chown clamav:clamav /usr/local/share/clamav
+    sudo chown clamav:clamav /usr/local/share/clamav
     sudo freshclam
     cd ..
     keep_source
