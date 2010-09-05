@@ -210,8 +210,8 @@ chsh -s /bin/zsh
 sudo chsh -s /bin/bash root
 sudo aptitude -y install screen
 
-# sysklogd
-sudo aptitude -y install klogd sysklogd
+# rsyslog
+sudo aptitude -y install rsyslog
 
 # Libraries and Programming Tools
 sudo aptitude -y install ntp
@@ -525,9 +525,6 @@ sudo vim /etc/hosts
 # ServerName, charset
 test -f /etc/apache2/apache2.conf && sudo vim /etc/apache2/apache2.conf
 sudo vim /etc/group
-test -f /etc/syslog.conf && sudo vim /etc/syslog.conf
-# SYSLOGD="-m 0"
-test -f /etc/default/syslogd && sudo vim /etc/default/syslogd
 sudo cp $SCRIPTS/etc/sudoers /etc/sudoers
 sudo vim /etc/sudoers
 # grub
