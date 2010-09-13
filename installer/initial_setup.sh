@@ -116,6 +116,9 @@ test -b /dev/mapper/`/bin/hostname`-opt  && sudo tune2fs -i 0 -c 0 -m 1 /dev/map
 test -b /dev/mapper/`/bin/hostname`-usr  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-usr
 test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-home
 
+# Vim
+sudo aptitude -y install vim
+
 # Stop Services
 sudo update-rc.d -f cupsys remove
 sudo update-rc.d -f hplip remove
@@ -320,19 +323,22 @@ sudo aptitude -y install ghc
 sudo aptitude -y install exiftool libimage-exiftool-perl jhead
 
 # KVM
-sudo aptitude -y install kvm libvirt-bin
-sudo aptitude -y install python-libvirt
-#sudo aptitude -y install virt-manager
-sudo aptitude -y Install kqemu-source qemu
-sudo addgroup libvirtd $USER
+if [ `egrep '^flags.*(vmx|svm)' /proc/cpuinfo | wc -l` != 0 ]; then
+    sudo aptitude -y install kvm libvirt-bin
+    sudo aptitude -y install python-libvirt
+    #sudo aptitude -y install virt-manager
+    sudo aptitude -y Install kqemu-source qemu
+    sudo addgroup $USER libvirtd
+    sudo addgroup $USER kvm
+fi
 
 # Crypt
 $SCRIPTS/installer/install_des.sh
-$SCRIPTS/installer/install_crypt.sh src
-$SCRIPTS/installer/install_crypt.sh win
-$SCRIPTS/installer/install_crypt.sh mac
-#$SCRIPTS/installer/install_crypt.sh linux-i386
-$SCRIPTS/installer/install_crypt.sh linux-amd64
+$SCRIPTS/installer/install_crypt.sh src 7.0a
+$SCRIPTS/installer/install_crypt.sh win 7.0a
+$SCRIPTS/installer/install_crypt.sh mac 7.0a
+#$SCRIPTS/installer/install_crypt.sh linux-i386 7.0a
+$SCRIPTS/installer/install_crypt.sh linux-amd64 7.0a
 
 # Security (Anti-Virus)
 sudo aptitude -y install clamav avscan

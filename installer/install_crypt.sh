@@ -97,7 +97,7 @@ purge_old_version() {
 
 install_crypt_main() {
     test -n "$2" && TRUECRYPT_CURRENT_VERSION=$2
-    test -n "$2" || TRUECRYPT_CURRENT_VERSION=7.0
+    test -n "$2" || TRUECRYPT_CURRENT_VERSION=7.0a
     setup_environment
     export TMP=$HOME/.tmp
     install_truecrypt $1 $TRUECRYPT_CURRENT_VERSION

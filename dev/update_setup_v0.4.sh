@@ -5,6 +5,8 @@
 ########################################################################
 
 export SCRIPTS=$HOME/scripts
+
+# Need i386 or amd64 option
 test -n "$1" || exit 1
 
 # APT Update
@@ -34,14 +36,15 @@ $SCRIPTS/installer/install_rails.sh rails-ruby /opt/ruby/1.9.2
 $SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.2
 $SCRIPTS/config/update-alternatives-ruby.sh
 
-# Web crawler and HTML/XML parser
-$SCRIPTS/installer/install_beautifulsoup.sh
+# Python Framework
+vim $SCRIPTS/installer/install_python_framework.sh
+$SCRIPTS/installer/install_python_framework.sh
 
 # Crypt
-$SCRIPTS/installer/install_crypt.sh src
-$SCRIPTS/installer/install_crypt.sh win
-$SCRIPTS/installer/install_crypt.sh mac
-$SCRIPTS/installer/install_crypt.sh linux-$1
+$SCRIPTS/installer/install_crypt.sh src 7.0a
+$SCRIPTS/installer/install_crypt.sh win 7.0a
+$SCRIPTS/installer/install_crypt.sh mac 7.0a
+$SCRIPTS/installer/install_crypt.sh linux-$1 7.0a
 
 # Deploy dot_files
 $SCRIPTS/installer/install_dotfiles.sh
@@ -59,6 +62,11 @@ $SCRIPTS/installer/install_plagger_plugins.sh
 # Mail to admin when startup
 $SCRIPTS/installer/install_rclocal.sh
 
+# rsyslog
+if [ `aptitude search rsyslog | awk '/^i/' | wc -l` = 0 ]; then
+    sudo aptitude -y install rsyslog
+fi
+
 # Remove Fonts
 if [ `aptitude search xfonts-shinonome | awk '/^i/' | wc -l` != 0 ]; then
     sudo aptitude -y purge xfonts-shinonome
@@ -73,11 +81,14 @@ if [ `aptitude search libxslt1-dev | awk '/^i/' | wc -l` = 0 ]; then
 fi
 
 # KVM
-if [ `aptitude search libvirt-bin | awk '/^i/' | wc -l` = 0 ]; then
-    sudo aptitude -y install kvm libvirt-bin
-    sudo aptitude -y install python-libvirt
-    #sudo aptitude -y install virt-manager
-    sudo addgroup libvirtd $USER
+if [ `egrep '^flags.*(vmx|svm)' /proc/cpuinfo | wc -l` != 0 ]; then
+    if [ `aptitude search libvirt-bin | awk '/^i/' | wc -l` = 0 ]; then
+        sudo aptitude -y install kvm libvirt-bin
+        sudo aptitude -y install python-libvirt
+        #sudo aptitude -y install virt-manager
+        sudo addgroup $USER libvirtd
+        sudo addgroup $USER kvm
+    fi
 fi
 
 # qemu
@@ -95,4 +106,7 @@ sudo vim /etc/init.d/cron
 # Disable motd
 sudo vim /etc/pam.d/sshd
 sudo vim /etc/pam.d/login
+
+# Private settings
+$PRIVATE/batch_configuration.sh
 
