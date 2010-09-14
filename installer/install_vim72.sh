@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 ########################################################################
-# Install Vim
+# Install Vim 7.2
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
