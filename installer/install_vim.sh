@@ -10,6 +10,8 @@
 ########################################################################
 
 setup_environment() {
+    test -n "$2" || SUDO=
+    test -n "$2" && SUDO=sudo
     case $OSTYPE in
       *darwin*)
         OWNER=root:wheel
@@ -38,7 +40,7 @@ build_and_install() {
     test -n "$1" && (test -n "$2" || ./configure --enable-multibyte --enable-xim --enable-fontset --with-features=big --enable-perlinterp --enable-rubyinterp --enable-pythoninterp --prefix=$1)
     test -n "$1" && test -n "$2" && ./configure --enable-multibyte --enable-xim --enable-fontset --with-features=big --enable-perlinterp --enable-rubyinterp --enable-pythoninterp --prefix=$1 --with-local-dir=$2
     make
-    sudo make install
+    $SUDO make install
 }
 
 get_source_and_install() {
@@ -58,7 +60,7 @@ get_source_and_install() {
 }
 
 install_vim() {
-    setup_environment
+    setup_environment $*
     mkdir install_vim
     cd install_vim
     get_source_and_install $*

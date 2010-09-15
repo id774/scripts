@@ -10,6 +10,10 @@
 ########################################################################
 
 setup_environment() {
+    test -n "$1" && ZSH_VERSION=$1
+    test -n "$1" || ZSH_VERSION=4.3.10
+    test -n "$2" || SUDO=
+    test -n "$2" && SUDO=sudo
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR
@@ -34,14 +38,14 @@ make_and_install() {
     test -n "$2" || ./configure --prefix=$HOME/local/zsh/$ZSH_VERSION
     test -n "$2" && ./configure --prefix=$2
     make
-    sudo make install
+    $SUDO make install
     cd ..
 }
 
 get_zsh() {
     mkdir install_zsh
     cd install_zsh
-    wget wget http://www.zsh.org/pub/zsh-$ZSH_VERSION.tar.gz
+    wget http://www.zsh.org/pub/zsh-$ZSH_VERSION.tar.gz
     test -f zsh-$ZSH_VERSION.tar.gz || exit 1
     tar xzvf zsh-$ZSH_VERSION.tar.gz
     test "$2" = "sourceonly" || make_and_install $1 $2
@@ -51,10 +55,8 @@ get_zsh() {
 }
 
 install_zsh() {
-    setup_environment
-    test -n "$1" && ZSH_VERSION=$1
-    test -n "$1" || ZSH_VERSION=4.3.10
-    get_zsh $1 $2
+    setup_environment $*
+    get_zsh $*
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1

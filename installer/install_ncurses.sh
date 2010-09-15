@@ -14,6 +14,8 @@
 setup_environment() {
     test -n "$1" || VERSION=5.7
     test -n "$1" && VERSION=$1
+    test -n "$2" || SUDO=
+    test -n "$2" && SUDO=sudo
 }
 
 save_sources() {
@@ -31,7 +33,7 @@ install_ncurses() {
     test -n "$2" || ./configure --with-shared --with-normal --prefix=$HOME/local/ncurses/$VERSION
     test -n "$2" && ./configure --with-shared --with-normal --prefix=$2
     make
-    sudo make install
+    $SUDO make install
     cd ../
     save_sources
     cd ../

@@ -16,6 +16,8 @@
 ########################################################################
 
 setup_environment() {
+    test -n "$2" || SUDO=
+    test -n "$2" && SUDO=sudo
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR
@@ -40,7 +42,7 @@ make_and_install() {
     test -n "$2" || ./configure
     test -n "$2" && ./configure --prefix $2
     make
-    sudo make install
+    $SUDO make install
     cd ..
 }
 
@@ -57,7 +59,7 @@ get_python() {
 }
 
 install_python() {
-    setup_environment
+    setup_environment $*
     test -n "$1" || exit 1
     get_python $1 $2
 

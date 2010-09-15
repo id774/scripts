@@ -15,7 +15,8 @@
 
 setup_environment() {
     VERSION=5.10.0
-
+    test -n "$1" || SUDO=
+    test -n "$1" && SUDO=sudo
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR
@@ -31,6 +32,7 @@ setup_environment() {
 save_sources() {
     test -d /usr/local/src/perl || sudo mkdir -p /usr/local/src/perl
     sudo cp $OPTIONS perl-$VERSION /usr/local/src/perl
+    sudo chown -R $OWNER /usr/local/src/perl
 }
 
 make_and_install() {
@@ -38,7 +40,7 @@ make_and_install() {
     test -n "$1" || ./Configure
     test -n "$1" && ./Configure -des -Dprefix=$1
     make
-    sudo make install
+    $SUDO make install
     cd ..
 }
 
@@ -55,10 +57,9 @@ get_perl() {
 }
 
 install_perl() {
-    setup_environment
+    setup_environment $*
     test -n "$1" || exit 1
     get_perl $1
-    sudo chown -R $OWNER /usr/local/src/perl
     perl -V
 }
 

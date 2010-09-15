@@ -10,6 +10,12 @@
 ########################################################################
 
 setup_environment() {
+    test -n "$1" && EMACS_VERSION=$1
+    test -n "$1" || EMACS_VERSION=23.2
+    test -n "$2" || ./configure --without-x --prefix=$HOME/local/emacs/$EMACS_VERSION
+    test -n "$2" && ./configure --without-x --prefix=$2
+    test -n "$2" || SUDO=
+    test -n "$2" && SUDO=sudo
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR
@@ -34,7 +40,7 @@ make_and_install() {
     test -n "$2" || ./configure --without-x --prefix=$HOME/local/emacs/$EMACS_VERSION
     test -n "$2" && ./configure --without-x --prefix=$2
     make
-    sudo make install
+    $SUDO make install
     cd ..
 }
 
@@ -51,10 +57,8 @@ get_emacs() {
 }
 
 install_emacs() {
-    setup_environment
-    test -n "$1" && EMACS_VERSION=$1
-    test -n "$1" || EMACS_VERSION=23.2
-    get_emacs $1 $2
+    setup_environment $*
+    get_emacs $*
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
