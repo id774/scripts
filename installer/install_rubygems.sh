@@ -5,9 +5,12 @@
 #  $1 = gem version (ex. 137)
 #  $2 = ruby path (ex. /opt/bin)
 #  $3 $4 $5 = proxy
+#  $6 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.10 9/16,2010
+#       Refactoring.
 #  v1.9 7/21,2010
 #       Fix bug.
 #  v1.8 6/30,2010
@@ -96,7 +99,7 @@ install_rubygems() {
     cd $RUBY_GEMS_ZIP
     sudo $RUBY setup.rb
     cd ..
-    save_sources
+    test -n "$6" || save_sources
     cd ..
     rm -rf install_rubygems
     sudo $GEM update --system $3 $4 $5

@@ -2,9 +2,13 @@
 #
 ########################################################################
 # Install Navi2ch
+#  $1 = version
+#  $2 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.5 9/16,2010
+#       Refactoring.
 #  v0.4 3/7,2010
 #       Refactoring and update to 1.8.3.
 #  v0.3 2/20,2009
@@ -48,14 +52,14 @@ install_navi2ch() {
     make check
     sudo make install
     cd ..
-    save_sources
+    test -n "$2" || save_sources
     cd ..
     rm -rf install_navi2ch
 }
 
 main() {
     setup_environment $*
-    install_navi2ch
+    install_navi2ch $*
     sudo chown -R $OWNER /usr/local/src/emacs
 }
 

@@ -2,6 +2,9 @@
 #
 ########################################################################
 # Install Vim 7.2
+#  $1 = version
+#  $2 = prefix
+#  $3 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
@@ -22,8 +25,8 @@
 ########################################################################
 
 setup_environment() {
-    test -n "$2" || SUDO=
-    test -n "$2" && SUDO=sudo
+    test -n "$3" || SUDO=sudo
+    test -n "$3" && SUDO=
     case $OSTYPE in
       *darwin*)
         OWNER=root:wheel
@@ -74,7 +77,7 @@ get_source_and_install() {
     gunzip 7.2.301-400.gz
     curl -O 'ftp://ftp.vim.org/pub/vim/patches/7.2/7.2.[401-446]'
     cd ../
-    save_sources
+    test -n "$3" || save_sources
     build_and_install $1
     cd ../../
 }

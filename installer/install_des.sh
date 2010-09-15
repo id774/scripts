@@ -2,9 +2,12 @@
 #
 ########################################################################
 # Install Des
+#  $1 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 9/16,2010
+#       Refactoring.
 #  v1.1 3/7,2010
 #       Refactoring.
 #  v1.0 5/21,2009
@@ -38,7 +41,7 @@ install_des() {
     tar xzvf kmdes-ubuntu.tar.gz
     rm kmdes-ubuntu.tar.gz
     cd des
-    save_sources
+    test -n "$1" || save_sources
     make
     sudo make install
     cd ..
@@ -49,7 +52,7 @@ install_des() {
 
 main() {
     which dmsetup > /dev/null || sudo aptitude -y install dmsetup
-    which des > /dev/null || install_des
+    which des > /dev/null || install_des $*
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1

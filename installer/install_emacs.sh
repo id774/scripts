@@ -2,9 +2,14 @@
 #
 ########################################################################
 # Install emacs
+#  $1 = version
+#  $2 = prefix
+#  $3 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 9/16,2010
+#       Refactoring.
 #  v0.1 9/14,2010
 #       First.
 ########################################################################
@@ -14,8 +19,8 @@ setup_environment() {
     test -n "$1" || EMACS_VERSION=23.2
     test -n "$2" || ./configure --without-x --prefix=$HOME/local/emacs/$EMACS_VERSION
     test -n "$2" && ./configure --without-x --prefix=$2
-    test -n "$2" || SUDO=
-    test -n "$2" && SUDO=sudo
+    test -n "$3" || SUDO=sudo
+    test -n "$3" && SUDO=
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR
@@ -51,7 +56,7 @@ get_emacs() {
     test -f emacs-$EMACS_VERSION.tar.bz2 || exit 1
     tar xjvf emacs-$EMACS_VERSION.tar.bz2
     test "$2" = "sourceonly" || make_and_install $1 $2
-    save_sources
+    test -n "$3" || save_sources
     cd ..
     rm -rf install_emacs
 }

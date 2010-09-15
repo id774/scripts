@@ -2,9 +2,14 @@
 #
 ########################################################################
 # Install Python
+#  $1 = version
+#  $2 = prefix
+#  $3 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 9/16,2010
+#       Refactoring.
 #  v1.3 3/7,2010
 #       Refactoring.
 #  v1.2 2/20,2010
@@ -16,8 +21,8 @@
 ########################################################################
 
 setup_environment() {
-    test -n "$2" || SUDO=
-    test -n "$2" && SUDO=sudo
+    test -n "$3" || SUDO=sudo
+    test -n "$3" && SUDO=
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR
@@ -53,7 +58,7 @@ get_python() {
     test -f Python-$1.tar.bz2 || exit 1
     tar xjvf Python-$1.tar.bz2
     test "$2" = "sourceonly" || make_and_install $1 $2
-    save_sources
+    test -n "$3" || save_sources
     cd ..
     rm -rf install_python
 }
@@ -61,7 +66,7 @@ get_python() {
 install_python() {
     setup_environment $*
     test -n "$1" || exit 1
-    get_python $1 $2
+    get_python $*
 
     python -V
 }

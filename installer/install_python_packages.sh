@@ -2,9 +2,13 @@
 #
 ########################################################################
 # Install Python Packages
+#  $1 = version
+#  $2 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.5 9/16,2010
+#       Refactoring.
 #  v0.4 3/7,2010
 #       Refactoring.
 #  v0.3 3/1,2010
@@ -49,7 +53,7 @@ install_python_packages() {
     python setup.py build
     sudo python setup.py install
     cd ..
-    save_sources
+    test -n "$2" || save_sources
     cd ..
     sudo rm -rf install_python_packages
 }

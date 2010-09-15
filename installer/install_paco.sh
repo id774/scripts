@@ -2,9 +2,13 @@
 #
 ########################################################################
 # Install paco
+#  $1 = version
+#  $2 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 9/16,2010
+#       Refactoring.
 #  v1.2 3/7,2010
 #       Refactoring and update to 2.0.7.
 #  v1.1 12/15,2008
@@ -36,7 +40,7 @@ install_paco() {
     sudo make install
     sudo make logme
     cd ..
-    save_sources
+    test -n "$2" || save_sources
     cd ..
     rm -rf install_paco
 }

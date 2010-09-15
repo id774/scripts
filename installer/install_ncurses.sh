@@ -2,9 +2,13 @@
 #
 ########################################################################
 # Install ncurses
+#  $1 = version
+#  $2 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 9/16,2010
+#       Refactoring.
 #  v1.2 3/7,2010
 #       Refactoring.
 #  v1.0 8/15,2008
@@ -14,8 +18,8 @@
 setup_environment() {
     test -n "$1" || VERSION=5.7
     test -n "$1" && VERSION=$1
-    test -n "$2" || SUDO=
-    test -n "$2" && SUDO=sudo
+    test -n "$3" || SUDO=sudo
+    test -n "$3" && SUDO=
 }
 
 save_sources() {
@@ -35,7 +39,7 @@ install_ncurses() {
     make
     $SUDO make install
     cd ../
-    save_sources
+    test -n "$3" || save_sources
     cd ../
     rm -rf install_ncurses
 }

@@ -2,9 +2,14 @@
 #
 ########################################################################
 # Install TrueCrypt 7
+#  $1 = architecture
+#  $2 = version
+#  $3 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 9/16,2010
+#       Refactoring.
 #  v0.1 8/7,2010
 #       Stable.
 ########################################################################
@@ -55,7 +60,7 @@ install_truecrypt() {
       linux-i386)
         purge_old_version
         wget "http://id774.net/truecrypt/truecrypt-$2-linux-console-x86.tar.gz"
-        save_packages truecrypt-$2-linux-console-x86.tar.gz /usr/local/src/crypt/truecrypt
+        test -n "$3" || save_packages truecrypt-$2-linux-console-x86.tar.gz /usr/local/src/crypt/truecrypt
         tar xzvf truecrypt-$2-linux-console-x86.tar.gz
         ./truecrypt-$2-setup-console-x86
         if [ -f $TMP/truecrypt_$2_console_i386.tar.gz ]; then
@@ -72,7 +77,7 @@ install_truecrypt() {
       linux-amd64)
         purge_old_version
         wget "http://id774.net/truecrypt/truecrypt-$2-linux-console-x64.tar.gz"
-        save_packages truecrypt-$2-linux-console-x64.tar.gz /usr/local/src/crypt/truecrypt
+        test -n "$3" || save_packages truecrypt-$2-linux-console-x64.tar.gz /usr/local/src/crypt/truecrypt
         tar xzvf truecrypt-$2-linux-console-x64.tar.gz
         ./truecrypt-$2-setup-console-x64
         if [ -f $TMP/truecrypt_$2_console_amd64.tar.gz ]; then
@@ -106,9 +111,9 @@ install_truecrypt() {
 install_crypt_main() {
     test -n "$2" && TRUECRYPT_CURRENT_VERSION=$2
     test -n "$2" || TRUECRYPT_CURRENT_VERSION=7.0a
-    setup_environment
+    setup_environment $*
     export TMP=$HOME/.tmp
-    install_truecrypt $1 $TRUECRYPT_CURRENT_VERSION
+    install_truecrypt $1 $TRUECRYPT_CURRENT_VERSION $3
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1

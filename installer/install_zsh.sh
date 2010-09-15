@@ -2,9 +2,14 @@
 #
 ########################################################################
 # Install zsh
+#  $1 = version
+#  $2 = prefix
+#  $3 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 9/16,2010
+#       Refactoring.
 #  v0.1 9/14,2010
 #       First.
 ########################################################################
@@ -12,8 +17,8 @@
 setup_environment() {
     test -n "$1" && ZSH_VERSION=$1
     test -n "$1" || ZSH_VERSION=4.3.10
-    test -n "$2" || SUDO=
-    test -n "$2" && SUDO=sudo
+    test -n "$3" || SUDO=sudo
+    test -n "$3" && SUDO=
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR
@@ -49,7 +54,7 @@ get_zsh() {
     test -f zsh-$ZSH_VERSION.tar.gz || exit 1
     tar xzvf zsh-$ZSH_VERSION.tar.gz
     test "$2" = "sourceonly" || make_and_install $1 $2
-    save_sources
+    test -n "$3" || save_sources
     cd ..
     rm -rf install_zsh
 }

@@ -2,9 +2,13 @@
 #
 ########################################################################
 # Install IP Messenger for Linux
+#  $1 = version
+#  $2 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 9/16,2010
+#       Refactoring.
 #  v1.2 3/7,2010
 #       Refactoring and update to 0.9.6.
 #  v1.1 12/15,2008
@@ -40,7 +44,7 @@ install_ipmsg() {
     make
     sudo make install
     cd ..
-    save_sources
+    test -n "$2" || save_sources
     cd ..
     rm -rf install_ipmsg
 }
