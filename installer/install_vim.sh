@@ -35,7 +35,8 @@ build_and_install() {
     cd vim73
     cat ../patches/7.3.* | patch -p0
     test -n "$1" || ./configure --enable-multibyte --enable-xim --enable-fontset --with-features=big --enable-perlinterp --enable-rubyinterp --enable-pythoninterp --prefix=$HOME/local/vim/7.3
-    test -n "$1" && ./configure --enable-multibyte --enable-xim --enable-fontset --with-features=big --enable-perlinterp --enable-rubyinterp --enable-pythoninterp --prefix=$1
+    test -n "$1" && (test -n "$2" || ./configure --enable-multibyte --enable-xim --enable-fontset --with-features=big --enable-perlinterp --enable-rubyinterp --enable-pythoninterp --prefix=$1)
+    test -n "$1" && test -n "$2" && ./configure --enable-multibyte --enable-xim --enable-fontset --with-features=big --enable-perlinterp --enable-rubyinterp --enable-pythoninterp --prefix=$1 --with-local-dir=$2
     make
     sudo make install
 }
@@ -60,10 +61,10 @@ install_vim() {
     setup_environment
     mkdir install_vim
     cd install_vim
-    get_source_and_install $1
+    get_source_and_install $*
     rm -rf install_vim
     vim --version
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
-install_vim
+install_vim $*

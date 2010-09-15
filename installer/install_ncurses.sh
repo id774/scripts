@@ -28,7 +28,8 @@ install_ncurses() {
     wget http://ftp.gnu.org/pub/gnu/ncurses/ncurses-$VERSION.tar.gz
     tar xzvf ncurses-$VERSION.tar.gz
     cd ncurses-$VERSION
-    ./configure --with-shared --with-normal
+    test -n "$2" || ./configure --with-shared --with-normal --prefix=$HOME/local/ncurses/$VERSION
+    test -n "$2" && ./configure --with-shared --with-normal --prefix=$2
     make
     sudo make install
     cd ../
