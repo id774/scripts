@@ -8,6 +8,46 @@
 #  v0.1 8/7,2010
 #       Stable.
 ########################################################################
+
+setup_environment() {
+    which dmsetup > /dev/null || sudo aptitude -y install dmsetup
+    test -d /usr/local/src/crypt/truecrypt || sudo mkdir -p /usr/local/src/crypt/truecrypt
+    test -d $HOME/.tmp || mkdir $HOME/.tmp
+    case $OSTYPE in
+      *darwin*)
+        OWNER=root:wheel
+        ;;
+      *)
+        OWNER=root:root
+        ;;
+    esac
+}
+
+set_truecrypt_permission() {
+    sudo chown -R $OWNER /usr/local/src/crypt/truecrypt
+    sudo chown -R $OWNER /usr/share/truecrypt
+    sudo chown $OWNER /usr/local/src/crypt
+    sudo chown $OWNER /usr/local/src
+    sudo chown $OWNER /usr/bin/truecrypt
+    sudo chown $OWNER /usr/bin/truecrypt-uninstall.sh
+}
+
+save_packages() {
+    sudo cp $1 $2
+    sudo chown $OWNER $2/$1
+}
+
+save_sources() {
+    sudo mv * /usr/local/src/crypt/truecrypt
+    sudo chown -R $OWNER /usr/local/src/crypt/truecrypt
+}
+
+purge_old_version() {
+    if [ `aptitude search truecrypt | awk '/^i/' | wc -l` != 0 ]; then
+        sudo aptitude purge truecrypt
+    fi
+}
+
 install_truecrypt() {
     mkdir install_truecrypt
     cd install_truecrypt
@@ -15,7 +55,7 @@ install_truecrypt() {
       linux-i386)
         purge_old_version
         wget "http://id774.net/truecrypt/truecrypt-$2-linux-console-x86.tar.gz"
-        sudo cp truecrypt-$2-linux-console-x86.tar.gz /usr/local/src/crypt/truecrypt
+        save_packages truecrypt-$2-linux-console-x86.tar.gz /usr/local/src/crypt/truecrypt
         tar xzvf truecrypt-$2-linux-console-x86.tar.gz
         ./truecrypt-$2-setup-console-x86
         if [ -f $TMP/truecrypt_$2_console_i386.tar.gz ]; then
@@ -32,7 +72,7 @@ install_truecrypt() {
       linux-amd64)
         purge_old_version
         wget "http://id774.net/truecrypt/truecrypt-$2-linux-console-x64.tar.gz"
-        sudo cp truecrypt-$2-linux-console-x64.tar.gz /usr/local/src/crypt/truecrypt
+        save_packages truecrypt-$2-linux-console-x64.tar.gz /usr/local/src/crypt/truecrypt
         tar xzvf truecrypt-$2-linux-console-x64.tar.gz
         ./truecrypt-$2-setup-console-x64
         if [ -f $TMP/truecrypt_$2_console_amd64.tar.gz ]; then
@@ -48,51 +88,19 @@ install_truecrypt() {
         ;;
       win)
         wget "http://id774.net/truecrypt/TrueCrypt Setup $2.exe"
-        sudo mv * /usr/local/src/crypt/truecrypt
-        sudo chown -R $OWNER /usr/local/src/crypt/truecrypt
+        save_sources
         ;;
       mac)
         wget "http://id774.net/truecrypt/TrueCrypt $2 Mac OS X.dmg"
-        sudo mv * /usr/local/src/crypt/truecrypt
-        sudo chown -R $OWNER /usr/local/src/crypt/truecrypt
+        save_sources
         ;;
       src)
         wget "http://id774.net/truecrypt/TrueCrypt $2 Source.tar.gz"
-        sudo mv * /usr/local/src/crypt/truecrypt
-        sudo chown -R $OWNER /usr/local/src/crypt/truecrypt
+        save_sources
         ;;
     esac
     cd ..
     rm -rf install_truecrypt
-}
-
-set_truecrypt_permission() {
-    sudo chown -R $OWNER /usr/local/src/crypt/truecrypt
-    sudo chown -R $OWNER /usr/share/truecrypt
-    sudo chown $OWNER /usr/local/src/crypt
-    sudo chown $OWNER /usr/local/src
-    sudo chown $OWNER /usr/bin/truecrypt
-    sudo chown $OWNER /usr/bin/truecrypt-uninstall.sh
-}
-
-setup_environment() {
-    which dmsetup > /dev/null || sudo aptitude -y install dmsetup
-    test -d /usr/local/src/crypt/truecrypt || sudo mkdir -p /usr/local/src/crypt/truecrypt
-    test -d $HOME/.tmp || mkdir $HOME/.tmp
-    case $OSTYPE in
-      *darwin*)
-        OWNER=root:wheel
-        ;;
-      *)
-        OWNER=root:root
-        ;;
-    esac
-}
-
-purge_old_version() {
-    if [ `aptitude search truecrypt | awk '/^i/' | wc -l` != 0 ]; then
-        sudo aptitude purge truecrypt
-    fi
 }
 
 install_crypt_main() {

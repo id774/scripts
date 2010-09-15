@@ -18,12 +18,16 @@ setup_environment() {
     test -n "$1" && PACO_VERSION=$1
 }
 
+save_sources() {
+    sudo mkdir -p /usr/local/src/paco
+    sudo cp -av paco-$PACO_VERSION /usr/local/src/paco/
+    sudo chown -R root:root /usr/local/src/paco
+}
+
 install_paco() {
     setup_environment $*
-
     mkdir install_paco
     cd install_paco
-
     wget http://downloads.sourceforge.net/paco/paco-$PACO_VERSION.tar.gz
     tar xzvf paco-$PACO_VERSION.tar.gz
     cd paco-$PACO_VERSION
@@ -32,10 +36,7 @@ install_paco() {
     sudo make install
     sudo make logme
     cd ..
-    sudo mkdir -p /usr/local/src/paco
-    sudo cp -av paco-$PACO_VERSION /usr/local/src/paco/
-    sudo chown -R root:root /usr/local/src/paco
-
+    save_sources
     cd ..
     rm -rf install_paco
 }

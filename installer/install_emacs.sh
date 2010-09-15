@@ -9,6 +9,26 @@
 #       First.
 ########################################################################
 
+setup_environment() {
+    case $OSTYPE in
+      *darwin*)
+        OPTIONS=-pR
+        OWNER=root:wheel
+        ;;
+      *)
+        OPTIONS=-a
+        OWNER=root:root
+        ;;
+    esac
+}
+
+save_sources() {
+    test -d /usr/local/src/emacs || sudo mkdir -p /usr/local/src/emacs
+    sudo cp $OPTIONS emacs-$EMACS_VERSION /usr/local/src/emacs
+    sudo chown $OWNER /usr/local/src/emacs
+    sudo chown -R $OWNER /usr/local/src/emacs/emacs-$EMACS_VERSION
+}
+
 make_and_install() {
     cd emacs-$EMACS_VERSION
     test -n "$2" || ./configure --without-x --prefix=$HOME/local/emacs/$EMACS_VERSION
@@ -25,25 +45,9 @@ get_emacs() {
     test -f emacs-$EMACS_VERSION.tar.bz2 || exit 1
     tar xjvf emacs-$EMACS_VERSION.tar.bz2
     test "$2" = "sourceonly" || make_and_install $1 $2
-    test -d /usr/local/src/emacs || sudo mkdir -p /usr/local/src/emacs
-    sudo cp $OPTIONS emacs-$EMACS_VERSION /usr/local/src/emacs
-    sudo chown $OWNER /usr/local/src/emacs
-    sudo chown -R $OWNER /usr/local/src/emacs/emacs-$EMACS_VERSION
+    save_sources
     cd ..
     rm -rf install_emacs
-}
-
-setup_environment() {
-    case $OSTYPE in
-      *darwin*)
-        OPTIONS=-pR
-        OWNER=root:wheel
-        ;;
-      *)
-        OPTIONS=-a
-        OWNER=root:root
-        ;;
-    esac
 }
 
 install_emacs() {

@@ -15,23 +15,6 @@
 #       First version.
 ########################################################################
 
-install_navi2ch() {
-    mkdir install_navi2ch
-    cd install_navi2ch
-    wget $SOURCE
-    tar xzvf navi2ch-$VERSION.tar.gz
-    cd navi2ch-$VERSION
-    ./configure
-    make
-    make check
-    sudo make install
-    test -d /usr/local/src/emacs/navi2ch || sudo mkdir -p /usr/local/src/emacs/navi2ch
-    cd ..
-    sudo cp $OPTIONS navi2ch-$VERSION /usr/local/src/emacs/navi2ch
-    cd ..
-    rm -rf install_navi2ch
-}
-
 setup_environment() {
     test -n "$1" || VERSION=1.8.3
     test -n "$1" && VERSION=$1
@@ -47,6 +30,27 @@ setup_environment() {
         OWNER=root:root
         ;;
     esac
+}
+
+save_sources() {
+    test -d /usr/local/src/emacs/navi2ch || sudo mkdir -p /usr/local/src/emacs/navi2ch
+    sudo cp $OPTIONS navi2ch-$VERSION /usr/local/src/emacs/navi2ch
+}
+
+install_navi2ch() {
+    mkdir install_navi2ch
+    cd install_navi2ch
+    wget $SOURCE
+    tar xzvf navi2ch-$VERSION.tar.gz
+    cd navi2ch-$VERSION
+    ./configure
+    make
+    make check
+    sudo make install
+    cd ..
+    save_sources
+    cd ..
+    rm -rf install_navi2ch
 }
 
 main() {

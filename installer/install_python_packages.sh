@@ -30,6 +30,12 @@ setup_environment() {
     esac
 }
 
+save_sources() {
+    test -d /usr/local/src/python/packages || sudo mkdir -p /usr/local/src/python/packages
+    sudo cp $OPTIONS MySQL-python-$VERSION /usr/local/src/python/packages/
+    sudo chown -R $OWNER /usr/local/src/python/packages
+}
+
 install_python_packages() {
     setup_environment $*
     if [ `aptitude search libmysqlclient15-dev | awk '/^i/' | wc -l` = 0 ]; then
@@ -43,9 +49,7 @@ install_python_packages() {
     python setup.py build
     sudo python setup.py install
     cd ..
-    test -d /usr/local/src/python/packages || sudo mkdir -p /usr/local/src/python/packages
-    sudo cp $OPTIONS MySQL-python-$VERSION /usr/local/src/python/packages/
-    sudo chown -R $OWNER /usr/local/src/python/packages
+    save_sources
     cd ..
     sudo rm -rf install_python_packages
 }

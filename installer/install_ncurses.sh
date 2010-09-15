@@ -16,6 +16,11 @@ setup_environment() {
     test -n "$1" && VERSION=$1
 }
 
+save_sources() {
+    test -d /usr/local/src/ncurses || sudo mkdir -p /usr/local/src/ncurses
+    sudo cp -a ncurses-$VERSION /usr/local/src/ncurses
+}
+
 install_ncurses() {
     setup_environment $*
     mkdir install_ncurses
@@ -27,8 +32,7 @@ install_ncurses() {
     make
     sudo make install
     cd ../
-    test -d /usr/local/src/ncurses || sudo mkdir -p /usr/local/src/ncurses
-    sudo cp -a ncurses-$VERSION /usr/local/src/ncurses
+    save_sources
     cd ../
     rm -rf install_ncurses
 }

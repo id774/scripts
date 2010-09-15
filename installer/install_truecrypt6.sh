@@ -22,7 +22,17 @@
 #  v1.0 8/15,2008
 #       Stable.
 ########################################################################
-TRUECRYPT_CURRENT_VERSION=6.3a
+
+setup_environment() {
+    case $OSTYPE in
+      *darwin*)
+        OWNER=root:wheel
+        ;;
+      *)
+        OWNER=root:root
+        ;;
+    esac
+}
 
 set_truecrypt_permission() {
     sudo chown -R $OWNER /usr/local/src/crypt/truecrypt
@@ -88,18 +98,8 @@ install_truecrypt() {
     set_truecrypt_permission
 }
 
-setup_environment() {
-    case $OSTYPE in
-      *darwin*)
-        OWNER=root:wheel
-        ;;
-      *)
-        OWNER=root:root
-        ;;
-    esac
-}
-
 install_crypt_main() {
+    TRUECRYPT_CURRENT_VERSION=6.3a
     setup_environment
     which dmsetup > /dev/null || sudo aptitude -y install dmsetup
     test -d /usr/local/src/crypt/truecrypt || sudo mkdir -p /usr/local/src/crypt/truecrypt

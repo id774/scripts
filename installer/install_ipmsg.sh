@@ -18,6 +18,12 @@ setup_environment() {
     test -n "$1" && VERSION=$1
 }
 
+save_sources() {
+    sudo mkdir -p /usr/local/src/ipmsg
+    sudo cp -av $IPMSG /usr/local/src/ipmsg/
+    sudo chown -R root:root /usr/local/src/ipmsg
+}
+
 install_ipmsg() {
     setup_environment $*
     IPMSG=g2ipmsg-$VERSION
@@ -34,10 +40,7 @@ install_ipmsg() {
     make
     sudo make install
     cd ..
-    sudo mkdir -p /usr/local/src/ipmsg
-    sudo cp -av $IPMSG /usr/local/src/ipmsg/
-    sudo chown -R root:root /usr/local/src/ipmsg
-
+    save_sources
     cd ..
     rm -rf install_ipmsg
 }

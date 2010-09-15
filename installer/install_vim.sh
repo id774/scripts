@@ -9,7 +9,18 @@
 #       Renew to update to vim 7.3.
 ########################################################################
 
-build_and_install() {
+setup_environment() {
+    case $OSTYPE in
+      *darwin*)
+        OWNER=root:wheel
+        ;;
+      *)
+        OWNER=root:root
+        ;;
+    esac
+}
+
+save_sources() {
     test -d /usr/local/src/vim && sudo rm -rf /usr/local/src/vim
     test -d /usr/local/src/vim || sudo mkdir -p /usr/local/src/vim
     sudo cp vim-7.3.tar.bz2 /usr/local/src/vim
@@ -17,6 +28,10 @@ build_and_install() {
     sudo cp vim-7.3-lang.tar.gz /usr/local/src/vim
     sudo cp -a vim73 /usr/local/src/vim
     sudo cp -a patches /usr/local/src/vim
+    sudo chown -R $OWNER /usr/local/src/vim
+}
+
+build_and_install() {
     cd vim73
     cat ../patches/7.3.* | patch -p0
     test -n "$1" || ./configure --enable-multibyte --enable-xim --enable-fontset --with-features=big --enable-perlinterp --enable-rubyinterp --enable-pythoninterp --prefix=$HOME/local/vim/7.3
@@ -36,19 +51,9 @@ get_source_and_install() {
     cd patches
     curl -O 'ftp://ftp.vim.org/pub/vim/patches/7.3/7.3.[001-004]'
     cd ../
+    save_sources
     build_and_install $1
     cd ../../
-}
-
-setup_environment() {
-    case $OSTYPE in
-      *darwin*)
-        OWNER=root:wheel
-        ;;
-      *)
-        OWNER=root:root
-        ;;
-    esac
 }
 
 install_vim() {
@@ -57,7 +62,6 @@ install_vim() {
     cd install_vim
     get_source_and_install $1
     rm -rf install_vim
-    sudo chown -R $OWNER /usr/local/src/vim
     vim --version
 }
 

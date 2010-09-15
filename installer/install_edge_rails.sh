@@ -13,17 +13,6 @@
 #       Stable.
 ########################################################################
 
-update_rails() {
-    cd /usr/local/src/rails/trunk/rails
-    sudo git pull
-}
-
-install_rails() {
-    test -d /usr/local/src/rails/trunk || sudo mkdir -p /usr/local/src/rails/trunk
-    cd /usr/local/src/rails/trunk
-    sudo git clone git://github.com/rails/rails.git
-}
-
 setup_environment() {
     case $OSTYPE in
       *darwin*)
@@ -33,6 +22,17 @@ setup_environment() {
         OWNER=root:root
         ;;
     esac
+}
+
+update_rails() {
+    cd /usr/local/src/rails/trunk/rails
+    sudo git pull
+}
+
+install_rails() {
+    test -d /usr/local/src/rails/trunk || sudo mkdir -p /usr/local/src/rails/trunk
+    cd /usr/local/src/rails/trunk
+    sudo git clone git://github.com/rails/rails.git
 }
 
 install_edge_rails() {

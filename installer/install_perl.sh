@@ -13,6 +13,26 @@
 #       First, only for 5.10.0.
 ########################################################################
 
+setup_environment() {
+    VERSION=5.10.0
+
+    case $OSTYPE in
+      *darwin*)
+        OPTIONS=-pR
+        OWNER=root:wheel
+        ;;
+      *)
+        OPTIONS=-a
+        OWNER=root:root
+        ;;
+    esac
+}
+
+save_sources() {
+    test -d /usr/local/src/perl || sudo mkdir -p /usr/local/src/perl
+    sudo cp $OPTIONS perl-$VERSION /usr/local/src/perl
+}
+
 make_and_install() {
     cd perl-$VERSION
     test -n "$1" || ./Configure
@@ -29,25 +49,9 @@ get_perl() {
     test -f perl-$VERSION.tar.gz || exit 1
     tar xzvf perl-$VERSION.tar.gz
     test "$1" = "sourceonly" || make_and_install $1
-    test -d /usr/local/src/perl || sudo mkdir -p /usr/local/src/perl
-    sudo cp $OPTIONS perl-$VERSION /usr/local/src/perl
+    save_sources
     cd ..
     rm -rf install_perl
-}
-
-setup_environment() {
-    VERSION=5.10.0
-
-    case $OSTYPE in
-      *darwin*)
-        OPTIONS=-pR
-        OWNER=root:wheel
-        ;;
-      *)
-        OPTIONS=-a
-        OWNER=root:root
-        ;;
-    esac
 }
 
 install_perl() {

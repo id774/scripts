@@ -41,6 +41,12 @@ setup_environment() {
     esac
 }
 
+save_sources() {
+    sudo mkdir -p /usr/local/src/gems
+    sudo cp -av $RUBY_GEMS_ZIP /usr/local/src/gems
+    sudo chown -R $OWNER /usr/local/src/gems/$RUBY_GEMS_ZIP
+}
+
 install_rubygems() {
     setup_environment
     test -n "$2" && export GEM=$2/bin/gem
@@ -90,9 +96,7 @@ install_rubygems() {
     cd $RUBY_GEMS_ZIP
     sudo $RUBY setup.rb
     cd ..
-    sudo mkdir -p /usr/local/src/gems
-    sudo cp -av $RUBY_GEMS_ZIP /usr/local/src/gems
-    sudo chown -R $OWNER /usr/local/src/gems/$RUBY_GEMS_ZIP
+    save_sources
     cd ..
     rm -rf install_rubygems
     sudo $GEM update --system $3 $4 $5

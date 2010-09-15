@@ -15,6 +15,17 @@
 #       Stable.
 ########################################################################
 
+setup_environment() {
+    case $OSTYPE in
+      *darwin*)
+        OWNER=root:wheel
+        ;;
+      *)
+        OWNER=root:root
+        ;;
+    esac
+}
+
 install_trunk() {
     if [ -d /usr/local/src/django/trunk ]; then
         cd /usr/local/src/django/trunk
@@ -44,17 +55,6 @@ install_branch() {
         sudo python setup.py install
         sudo chown -R $OWNER /usr/local/src/django/$1
     fi
-}
-
-setup_environment() {
-    case $OSTYPE in
-      *darwin*)
-        OWNER=root:wheel
-        ;;
-      *)
-        OWNER=root:root
-        ;;
-    esac
 }
 
 install_django() {

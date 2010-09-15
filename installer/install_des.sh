@@ -22,6 +22,13 @@ setup_environment() {
     esac
 }
 
+save_sources() {
+    test -d /usr/local/src/crypt/des && sudo rm -rf /usr/local/src/crypt/des
+    sudo mkdir -p /usr/local/src/crypt/des
+    sudo cp * /usr/local/src/crypt/des
+    sudo chown -R $OWNER /usr/local/src/crypt/des
+}
+
 install_des() {
     setup_environment
     mkdir install_des
@@ -31,17 +38,13 @@ install_des() {
     tar xzvf kmdes-ubuntu.tar.gz
     rm kmdes-ubuntu.tar.gz
     cd des
-    test -d /usr/local/src/crypt/des && sudo rm -rf /usr/local/src/crypt/des
-    sudo mkdir -p /usr/local/src/crypt/des
-    sudo cp * /usr/local/src/crypt/des
+    save_sources
     make
     sudo make install
     cd ..
     rm -rf des
     cd ..
     rm -rf install_des
-    sudo chown -R $OWNER /usr/local/src/crypt/des
-    set_des_permission
 }
 
 main() {
