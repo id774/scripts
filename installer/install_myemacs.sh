@@ -37,11 +37,12 @@ make_and_install() {
     test -n "$1" || ./configure --without-x --prefix=$HOME/local/emacs/$EMACS_VERSION
     test -n "$1" && ./configure --without-x --prefix=$1
     make
-    $SUDO make install
+    sudo make install
 }
 
 get_emacs() {
     test -d $HOME/local/github/emacs || exit 1
+    cd $HOME/local/github/emacs
     make_and_install $*
 }
 
