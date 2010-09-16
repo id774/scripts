@@ -32,7 +32,6 @@ gitpull() {
 
 gitpull_all() {
     test -d $HOME/local/github || mkdir -p $HOME/local/github
-    test -d $HOME/local/git || mkdir -p $HOME/local/git
     gitpull github id774-2 emacs
     gitpull github id774-2 emacs-w3m
 }

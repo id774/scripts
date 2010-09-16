@@ -30,7 +30,7 @@ install_emacs_ruby() {
     sudo ln -s $RUBY_MISC/rubydb2x.el $SITE_LISP/rubydb2x.el
     test -L $SITE_LISP/rubydb3x.el && sudo rm $SITE_LISP/rubydb3x.el
     sudo ln -s $RUBY_MISC/rubydb3x.el $SITE_LISP/rubydb3x.el
-    cd $1
+    cd $RUBY_MISC
     test -f ruby-mode.elc && sudo rm ruby-mode.elc
     sudo emacs --batch --eval '(byte-compile-file "ruby-mode.el")'
     test -f ruby-style.elc && sudo rm ruby-style.elc
