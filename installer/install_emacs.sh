@@ -17,8 +17,6 @@
 setup_environment() {
     test -n "$1" && EMACS_VERSION=$1
     test -n "$1" || EMACS_VERSION=23.2
-    test -n "$2" || ./configure --without-x --prefix=$HOME/local/emacs/$EMACS_VERSION
-    test -n "$2" && ./configure --without-x --prefix=$2
     test -n "$3" || SUDO=sudo
     test -n "$3" && SUDO=
     case $OSTYPE in
@@ -55,7 +53,7 @@ get_emacs() {
     wget ftp://ftp.ring.gr.jp/pub/GNU/emacs/emacs-$EMACS_VERSION.tar.bz2
     test -f emacs-$EMACS_VERSION.tar.bz2 || exit 1
     tar xjvf emacs-$EMACS_VERSION.tar.bz2
-    test "$2" = "sourceonly" || make_and_install $1 $2
+    test "$2" = "sourceonly" || make_and_install $*
     test -n "$3" || save_sources
     cd ..
     rm -rf install_emacs
