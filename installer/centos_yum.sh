@@ -62,6 +62,7 @@ sudo yum -y install wireshark
 sudo yum -y install yumex yum-utils gconf-editor hwbrowser rpm-build
 sudo yum -y install atop fortune-all
 sudo yum -y install emacs* anthy-el
+sudo yum -y install w3m
 #sudo yum -y install nautilus-open-terminal
 #sudo yum -y install samba samba-client samba-swat
 #sudo yum -y install kdebase kdeartwork kdegraphics kdemultimedia

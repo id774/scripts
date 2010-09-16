@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 9/16,2010
+#       Refactoring.
 #  v1.1 5/18,2008
 #       Emacs byte compile.
 #  v1.0 4/29,2009
@@ -12,18 +14,22 @@
 ########################################################################
 
 install_emacs_ruby() {
-    test -L $1/ruby-mode.el && sudo rm $1/ruby-mode.el
-    sudo ln -s $2/ruby-mode.el $1/ruby-mode.el
-    test -L $1/ruby-style.el && sudo rm $1/ruby-style.el
-    sudo ln -s $2/ruby-style.el $1/ruby-style.el
-    test -L $1/ruby-electric.el && sudo rm $1/ruby-electric.el
-    sudo ln -s $2/ruby-electric.el $1/ruby-electric.el
-    test -L $1/inf-ruby.el && sudo rm $1/inf-ruby.el
-    sudo ln -s $2/inf-ruby.el $1/inf-ruby.el
-    test -L $1/rubydb2x.el && sudo rm $1/rubydb2x.el
-    sudo ln -s $2/rubydb2x.el $1/rubydb2x.el
-    test -L $1/rubydb3x.el && sudo rm $1/rubydb3x.el
-    sudo ln -s $2/rubydb3x.el $1/rubydb3x.el
+    test -n "$1" || exit 1
+    test -n "$1" && RUBY_MISC=$1
+    test -n "$2" || SITE_LISP=/usr/local/share/emacs/site-lisp
+    test -n "$2" && SITE_LISP=$2
+    test -L $SITE_LISP/ruby-mode.el && sudo rm $SITE_LISP/ruby-mode.el
+    sudo ln -s $RUBY_MISC/ruby-mode.el $SITE_LISP/ruby-mode.el
+    test -L $SITE_LISP/ruby-style.el && sudo rm $SITE_LISP/ruby-style.el
+    sudo ln -s $RUBY_MISC/ruby-style.el $SITE_LISP/ruby-style.el
+    test -L $SITE_LISP/ruby-electric.el && sudo rm $SITE_LISP/ruby-electric.el
+    sudo ln -s $RUBY_MISC/ruby-electric.el $SITE_LISP/ruby-electric.el
+    test -L $SITE_LISP/inf-ruby.el && sudo rm $SITE_LISP/inf-ruby.el
+    sudo ln -s $RUBY_MISC/inf-ruby.el $SITE_LISP/inf-ruby.el
+    test -L $SITE_LISP/rubydb2x.el && sudo rm $SITE_LISP/rubydb2x.el
+    sudo ln -s $RUBY_MISC/rubydb2x.el $SITE_LISP/rubydb2x.el
+    test -L $SITE_LISP/rubydb3x.el && sudo rm $SITE_LISP/rubydb3x.el
+    sudo ln -s $RUBY_MISC/rubydb3x.el $SITE_LISP/rubydb3x.el
     cd $1
     test -f ruby-mode.elc && sudo rm ruby-mode.elc
     sudo emacs --batch --eval '(byte-compile-file "ruby-mode.el")'
@@ -39,4 +45,4 @@ install_emacs_ruby() {
     sudo emacs --batch --eval '(byte-compile-file "rubydb3x.el")'
 }
 
-install_emacs_ruby /usr/local/share/emacs/site-lisp $1
+install_emacs_ruby $1 $2
