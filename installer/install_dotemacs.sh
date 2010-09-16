@@ -123,13 +123,13 @@ byte_compile_cedet() {
 }
 
 byte_compile_jde() {
-    $EMACS --batch -Q -f batch-byte-compile ~/.emacs.d/elisp/3rd-party/jde/lisp/*.el
+    $EMACS --batch -Q -f batch-byte-compile $TARGET/elisp/3rd-party/jde/lisp/*.el
 }
 
 network_connection() {
     setup_rhtml
     setup_rinari
-  }
+}
 
 setup_environment() {
     TARGET=$HOME/.emacs.d
