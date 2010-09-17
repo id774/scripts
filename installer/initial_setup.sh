@@ -428,7 +428,7 @@ sudo aptitude update && sudo aptitude -y safe-upgrade && sudo aptitude autoclean
 #sudo rmmod pcspkr
 test -r /etc/modprobe.d/blacklist && sudo vim /etc/modprobe.d/blacklist
 test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.conf
-#$SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_hhklite2
+#$SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_lucid
 # xfsuspend
 #which s2ram > /dev/null && which xflock4 > /dev/null && sudo cp $SCRIPTS/xfsuspend.sh /usr/local/sbin/xfsuspend && sudo chown root:root /usr/local/sbin/xfsuspend && sudo chmod 755 /usr/local/sbin/xfsuspend && sudo vim /usr/local/sbin/xfsuspend
 # xfce4 custom themes
