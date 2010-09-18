@@ -72,8 +72,8 @@ echo "[grep SSH attack /var/log/messages]"
 grep "SSH attack" /var/log/messages
 echo
 
-echo "[grep Fail /var/log/auth.log]"
-grep "Fail" /var/log/auth.log
+echo "[egrep '(Fail|refuse)' /var/log/auth.log]"
+egrep '(Fail|refuse)' /var/log/auth.log
 echo
 
 echo -n "End of Report at `/bin/hostname` on "

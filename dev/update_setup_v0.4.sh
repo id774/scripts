@@ -96,6 +96,11 @@ if [ `aptitude search kqemu-source | awk '/^i/' | wc -l` = 0 ]; then
     sudo aptitude -y install kqemu-source qemu
 fi
 
+# Server Resource Report Job
+sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
+sudo chmod 700 /root/bin/get_resources.sh
+sudo chown -R root:root /root/bin/get_resources.sh
+
 # Permissions for /src
 sudo chown -R root:root /usr/src
 sudo chown -R root:root /usr/local/src
