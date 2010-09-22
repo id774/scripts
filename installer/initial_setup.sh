@@ -473,6 +473,15 @@ test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.con
 # gthumb
 #sudo aptitude -y install gthumb
 
+# vlc
+#sudo aptitude -y install vlc
+
+# pidgin
+#sudo aptitude -y install pidgin
+
+# pdf
+#sudo aptitude -y install xpdf xpdf-reader
+
 # 2ch Browser
 #sudo aptitude -y install ochusha
 #sudo aptitude -y install jd
