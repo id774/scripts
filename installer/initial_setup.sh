@@ -414,7 +414,7 @@ $SCRIPTS/installer/install_python_framework.sh
 #sudo aptitude -y install sun-java6-jdk
 
 # Linux kernel source, headers, kbuild (Debian)
-#sudo aptitude -y install linux-kbuild-2.6.26 linux-headers-2.6.26-2-686 linux-source-2.6.26
+#sudo aptitude -y install linux-kbuild-2.6.32 linux-headers-2.6.32-5-686 linux-source-2.6.32
 
 # Upgrade
 sudo aptitude update && sudo aptitude -y safe-upgrade && sudo aptitude autoclean
@@ -531,8 +531,6 @@ sudo vim /etc/hosts
 # ServerName, charset
 test -f /etc/apache2/apache2.conf && sudo vim /etc/apache2/apache2.conf
 sudo vim /etc/group
-sudo cp $SCRIPTS/etc/sudoers /etc/sudoers
-sudo vim /etc/sudoers
 # grub
 test -f /boot/grub/menu.lst && sudo vim /boot/grub/menu.lst
 test -f /etc/default/grub && sudo vim /etc/default/grub && sudo update-grub2
@@ -540,4 +538,7 @@ sudo passwd root
 test -f ~/.bash_history && sudo rm ~/.bash_history
 test -f ~/.mysql_history && sudo rm ~/.mysql_history
 test -f ~/.viminfo && sudo rm ~/.viminfo
+# sudoers
+sudo cp $SCRIPTS/etc/sudoers /etc/sudoers
+#sudo vim /etc/sudoers
 
