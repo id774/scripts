@@ -84,7 +84,8 @@ emacs_private_settings() {
 byte_compile_all() {
     cd ~/.emacs.d/elisp/3rd-party
     $EMACS --batch --eval '(byte-compile-file "js2.el")'
-    $EMACS --batch --eval '(byte-compile-file "redo.el")'
+    $EMACS --batch --eval '(byte-compile-file "redo+.el")'
+    $EMACS --batch --eval '(byte-compile-file "viewer.el")'
     $EMACS --batch --eval '(byte-compile-file "ruby-block.el")'
     $EMACS --batch --eval '(byte-compile-file "jaspace.el")'
     $EMACS --batch --eval '(byte-compile-file "actionscript-mode.el")'
@@ -158,7 +159,7 @@ install_dotemacs() {
     emacs_private_settings
     byte_compile_all
     byte_compile_jde
-    byte_compile_cedet
+    #byte_compile_cedet
 }
 
 test -d $HOME/local/github/dot_emacs || exit 1
