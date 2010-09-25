@@ -106,6 +106,7 @@ byte_compile_all() {
     $EMACS --batch --eval '(byte-compile-file "jde-config.el")'
     $EMACS --batch --eval '(byte-compile-file "key-chord-define-global.el")'
     $EMACS --batch --eval '(byte-compile-file "kill-all-buffers.el")'
+    $EMACS --batch --eval '(byte-compile-file "minor-mode-hack.el")'
     $EMACS --batch --eval '(byte-compile-file "new-file-p.el")'
     $EMACS --batch --eval '(byte-compile-file "persistent-scratch.el")'
     $EMACS --batch --eval '(byte-compile-file "physical-line.el")'
