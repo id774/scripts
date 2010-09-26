@@ -25,6 +25,7 @@ sudo yum -y install screen
 sudo yum -y install fuse fuse-devel
 sudo yum -y install httpd
 sudo yum -y install mysql-server
+sudo yum -y install sqlite sqlite-devel
 sudo yum -y install php
 sudo yum -y install php-mbstring
 sudo yum -y install php-mysql
