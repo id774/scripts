@@ -111,6 +111,9 @@ $SCRIPTS/installer/install_vim.sh
 # Deploy dot_vim
 $SCRIPTS/installer/install_dotvim.sh
 
+# SQLite3
+$SCRIPTS/installer/install_sqlite.sh
+
 # Ruby
 $SCRIPTS/installer/install_ruby.sh 192-svn /opt/ruby/1.9.2
 

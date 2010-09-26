@@ -54,6 +54,7 @@ install_gem() {
     sudo $GEM install rspec-rails $2 $3 $4
     sudo $GEM install gherkin $2 $3 $4
     sudo $GEM install cucumber $2 $3 $4
+    sudo $GEM install sqlite3-ruby $2 $3 $4
     sudo $GEM install -v 1.4.1 rubytter $2 $3 $4
     sudo $GEM install -v 1.9.0 termtter $2 $3 $4
     sudo $GEM install nokogiri $2 $3 $4
