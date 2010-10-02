@@ -6,6 +6,8 @@
 #  Customize & Maintain: id774 <idnanashi@gmail.com>
 #  Copyright (C) 2002 Takeru KOMORIYA <komoriya@paken.org>
 #
+#  v0.6 10/3,2010
+#       Show resources.
 #  v0.5 8/5,2010
 #       Show return code.
 #  v0.4 1/22,2009
@@ -22,15 +24,18 @@
 #    tmp/
 #    unused/
 ########################################################################
-BACKUPDIRS="/home/debian /home/ubuntu /etc /boot"
+BACKUPDIRS="/home/ubuntu /etc /boot"
 BACKUPTO="/home/backup"
 EXPIREDAYS=60
 EXECDIR=${0%/*}
 EXCLUDEFILE=$EXECDIR/backup_exclude 
 DATE=`date +%Y%m%d`
 
-# disk capacity report
-df -T
+# Resources
+uname -a
+uptime
+free -t
+df -P -T
 
 # SMART information
 test -b /dev/sda && smartctl -a /dev/sda

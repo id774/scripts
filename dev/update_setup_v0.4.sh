@@ -96,6 +96,10 @@ if [ `aptitude search kqemu-source | awk '/^i/' | wc -l` = 0 ]; then
     sudo aptitude -y install kqemu-source qemu
 fi
 
+# Daily Backup Job
+sudo cp $SCRIPTS/cron/bin/backup.sh /root/bin/backup.sh
+sudo vim /root/bin/backup.sh
+sudo chmod 700 /root/bin/backup.sh
 # Server Resource Report Job
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
 sudo chmod 700 /root/bin/get_resources.sh
