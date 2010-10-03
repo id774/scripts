@@ -53,7 +53,7 @@ echo>>$JOBLOG 2>&1
 # ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
 case "$ADMIN_MAIL_ADDRESS" in
   *@*)
-    cat $JOBLOG | mail -s "[cron-log][`/bin/hostname`] APT Upgrade Log" $ADMIN_MAIL_ADDRESS
+    nkf -w $JOBLOG | mail -s "[cron-log][`/bin/hostname`] APT Upgrade Log" $ADMIN_MAIL_ADDRESS
     ;;
 esac
 

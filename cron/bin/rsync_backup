@@ -22,8 +22,8 @@ case "$RSYNC_BACKUP_RUN" in
     # ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
     case "$ADMIN_MAIL_ADDRESS" in
       *@*)
-        test -r $JOBLOG_1 && cat $JOBLOG_1 $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Rsync Backup Log" $ADMIN_MAIL_ADDRESS
-        test -r $JOBLOG_1 || cat $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Rsync Backup Log" $ADMIN_MAIL_ADDRESS
+        test -r $JOBLOG_1 && nkf -w $JOBLOG_1 $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Rsync Backup Log" $ADMIN_MAIL_ADDRESS
+        test -r $JOBLOG_1 || nkf -w $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Rsync Backup Log" $ADMIN_MAIL_ADDRESS
         ;;
     esac
     ;;

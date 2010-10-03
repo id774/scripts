@@ -15,7 +15,7 @@ echo -n "Diskcopy job started at `/bin/hostname` on ">>$JOBLOG
 date "+%Y/%m/%d %T">>$JOBLOG
 case "$ADMIN_MAIL_ADDRESS" in
   *@*)
-    cat $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Diskcopy Log" $ADMIN_MAIL_ADDRESS
+    nkf -w $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Diskcopy Log" $ADMIN_MAIL_ADDRESS
     ;;
 esac
 
@@ -25,7 +25,7 @@ echo -n "Diskcopy user1 completed at `/bin/hostname` on ">>$JOBLOG
 date "+%Y/%m/%d %T">>$JOBLOG
 case "$ADMIN_MAIL_ADDRESS" in
   *@*)
-    cat $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Diskcopy Log" $ADMIN_MAIL_ADDRESS
+    nkf -w $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Diskcopy Log" $ADMIN_MAIL_ADDRESS
     ;;
 esac
 
@@ -35,7 +35,7 @@ echo -n "Diskcopy user2 completed at `/bin/hostname` on ">>$JOBLOG
 date "+%Y/%m/%d %T">>$JOBLOG
 case "$ADMIN_MAIL_ADDRESS" in
   *@*)
-    cat $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Diskcopy Log" $ADMIN_MAIL_ADDRESS
+    nkf -w $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Diskcopy Log" $ADMIN_MAIL_ADDRESS
     ;;
 esac
 
@@ -45,7 +45,7 @@ echo -n "Diskcopy user3 completed at `/bin/hostname` on ">>$JOBLOG
 date "+%Y/%m/%d %T">>$JOBLOG
 case "$ADMIN_MAIL_ADDRESS" in
   *@*)
-    cat $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Diskcopy Log" $ADMIN_MAIL_ADDRESS
+    nkf -w $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Diskcopy Log" $ADMIN_MAIL_ADDRESS
     ;;
 esac
 
@@ -56,7 +56,7 @@ date "+%Y/%m/%d %T">>$JOBLOG
 df -T>>$JOBLOG
 case "$ADMIN_MAIL_ADDRESS" in
   *@*)
-    cat $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Diskcopy Log" $ADMIN_MAIL_ADDRESS
+    nkf -w $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Diskcopy Log" $ADMIN_MAIL_ADDRESS
     ;;
 esac
 
