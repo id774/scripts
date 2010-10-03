@@ -19,6 +19,9 @@ sudo aptitude update
 # Network
 $SCRIPTS/installer/install_pppconfig.sh
 
+# Libraries and Programming Tools
+sudo aptitude -y install nkf
+
 # Install cronjob
 $SCRIPTS/installer/install_cronjob.sh
 

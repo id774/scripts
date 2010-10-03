@@ -217,6 +217,7 @@ sudo aptitude -y install screen
 sudo aptitude -y install rsyslog
 
 # Libraries and Programming Tools
+sudo aptitude -y install nkf
 sudo aptitude -y install ntp
 sudo aptitude -y install uim uim-anthy uim-el
 sudo aptitude -y install ncftp
