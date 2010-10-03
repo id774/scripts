@@ -20,7 +20,9 @@ sudo aptitude update
 $SCRIPTS/installer/install_pppconfig.sh
 
 # Libraries and Programming Tools
-sudo aptitude -y install nkf
+if [ `aptitude search nkf | awk '/^i/' | wc -l` = 0 ]; then
+    sudo aptitude -y install nkf
+fi
 
 # Install cronjob
 $SCRIPTS/installer/install_cronjob.sh
