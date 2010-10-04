@@ -31,7 +31,7 @@ sudo aptitude -y install ctags
 sudo aptitude -y install ttf-vlgothic ttf-bitstream-vera
 
 # Deploy dot_emacs
-$SCRIPTS/installer/install_dotemacs.sh
+~/local/github/dot_emacs/install_dotemacs.sh
 
 # paco
 $SCRIPTS/installer/install_paco.sh

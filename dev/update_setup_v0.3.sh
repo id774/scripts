@@ -59,7 +59,7 @@ if [ `aptitude search texinfo | awk '/^i/' | wc -l` = 0 ]; then
 fi
 
 # Deploy dot_emacs
-$SCRIPTS/installer/install_dotemacs.sh
+~/local/github/dot_emacs/install_dotemacs.sh
 
 # navi2ch
 #$SCRIPTS/installer/install_navi2ch.sh

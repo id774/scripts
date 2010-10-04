@@ -55,7 +55,7 @@ $SCRIPTS/installer/install_crypt.sh linux-$1 7.0a
 $SCRIPTS/installer/install_dotfiles.sh
 
 # Deploy dot_emacs
-$SCRIPTS/installer/install_dotemacs.sh
+~/local/github/dot_emacs/install_dotemacs.sh
 
 # Termtter
 $PRIVATE/installer/install_dottermtter.sh

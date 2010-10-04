@@ -291,7 +291,7 @@ cd ~/local/github
 git clone git://github.com/id774/dot_emacs.git
 cd
 ln -s ~/local/github/dot_emacs
-$SCRIPTS/installer/install_dotemacs.sh
+~/local/github/dot_emacs/install_dotemacs.sh
 
 # paco
 #$SCRIPTS/installer/install_paco.sh

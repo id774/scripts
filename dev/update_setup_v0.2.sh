@@ -19,7 +19,7 @@ sudo aptitude -y install global
 sudo aptitude -y remove uim-el
 
 # Deploy dot_emacs
-$SCRIPTS/installer/install_dotemacs.sh
+~/local/github/dot_emacs/install_dotemacs.sh
 
 # Uninstall local build vim
 #$SCRIPTS/installer/uninstall_vim.sh

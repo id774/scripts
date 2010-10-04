@@ -9,7 +9,7 @@ export SCRIPTS=$HOME/scripts
 $SCRIPTS/installer/install_dotfiles.sh
 
 # Deploy dot_emacs
-$SCRIPTS/installer/install_dotemacs.sh /usr/bin/emacs
+~/local/github/dot_emacs/install_dotemacs.sh /usr/bin/emacs
 
 # Crypt
 $SCRIPTS/installer/install_crypt.sh mac 7.0a
