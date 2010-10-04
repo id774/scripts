@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.6 10/4,2010
+#       Refactoring.
 #  v1.5 8/9,2010
 #       Generate account setting files.
 #  v1.4 3/9,2010
@@ -23,9 +25,9 @@ setup_dotemacs() {
     test -d $TARGET && rm -rf $TARGET/
     test -f $HOME/.emacs && rm -f $HOME/.emacs
 
-    cp $OPTIONS $HOME/local/github/dot_emacs/dot_emacs $HOME/.emacs
+    cp $OPTIONS $DOT_EMACS/dot_emacs $HOME/.emacs
     test -d $TARGET || mkdir -p $TARGET
-    cp $OPTIONS $HOME/local/github/dot_emacs/dot_emacs.d/* $TARGET/
+    cp $OPTIONS $DOT_EMACS/dot_emacs.d/* $TARGET/
 }
 
 gen_twitter_el() {
@@ -46,24 +48,24 @@ gen_twitter_els() {
 }
 
 setup_rhtml() {
-    if [ -d $HOME/local/github/rhtml ]; then
-        cd $HOME/local/github/rhtml
+    if [ -d $GITHUB/rhtml ]; then
+        cd $GITHUB/rhtml
         git pull
     else
-        cd $HOME/local/github
+        cd $GITHUB
         git clone git://github.com/eschulte/rhtml.git
-        cd $HOME/local/github/rhtml
+        cd $GITHUB/rhtml
     fi
 }
 
 setup_rinari() {
-    if [ -d $HOME/local/github/rinari ]; then
-        cd $HOME/local/github/rinari
+    if [ -d $GITHUB/rinari ]; then
+        cd $GITHUB/rinari
         git pull
     else
-        cd $HOME/local/github
+        cd $GITHUB
         git clone git://github.com/eschulte/rinari.git
-        cd $HOME/local/github/rinari
+        cd $GITHUB/rinari
     fi
     git submodule init
     git submodule update
@@ -98,6 +100,7 @@ byte_compile_all() {
     $EMACS --batch --eval '(byte-compile-file "twitter4-mode.el")'
     $EMACS --batch --eval '(byte-compile-file "twitter5-mode.el")'
     $EMACS --batch --eval '(byte-compile-file "twitter6-mode.el")'
+    $EMACS --batch --eval '(byte-compile-file "zlc.el")'
     cd ~/.emacs.d/elisp
     $EMACS --batch --eval '(byte-compile-file "custom.el")'
     $EMACS --batch --eval '(byte-compile-file "delete-empty-file.el")'
@@ -151,6 +154,7 @@ setup_environment() {
 }
 
 install_dotemacs() {
+    cd
     setup_environment $*
     setup_dotemacs
     gen_twitter_els
@@ -163,5 +167,7 @@ install_dotemacs() {
     #byte_compile_cedet
 }
 
-test -d $HOME/local/github/dot_emacs || exit 1
+GITHUB=$HOME/local/github
+DOT_EMACS=$GITHUB/dot_emacs
+test -d $DOT_EMACS || exit 1
 install_dotemacs $*
