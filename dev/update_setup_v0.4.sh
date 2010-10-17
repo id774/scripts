@@ -110,6 +110,11 @@ sudo chown root:adm /etc/cron.daily/auto-upgrade
 sudo cp $SCRIPTS/cron/bin/backup.sh /root/bin/backup.sh
 sudo vim /root/bin/backup.sh
 sudo chmod 700 /root/bin/backup.sh
+sudo chown root:root /root/bin/backup.sh
+sudo cp $SCRIPTS/cron/etc/backup_exclude /root/bin/backup_exclude
+sudo vim /root/bin/backup_exclude
+sudo chmod 600 /root/bin/backup_exclude
+sudo chown root:root /root/bin/backup_exclude
 sudo cp $SCRIPTS/cron/bin/backup /etc/cron.daily/backup
 sudo vim /etc/cron.daily/backup
 sudo chmod 750 /etc/cron.daily/backup
@@ -117,7 +122,7 @@ sudo chown root:adm /etc/cron.daily/backup
 # Server Resource Report Job
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
 sudo chmod 700 /root/bin/get_resources.sh
-sudo chown -R root:root /root/bin/get_resources.sh
+sudo chown root:root /root/bin/get_resources.sh
 # ClamAV Auto Upgrade Job
 sudo cp $SCRIPTS/cron/bin/clamav_upgrade /etc/cron.weekly/clamav_upgrade
 sudo vim /etc/cron.weekly/clamav_upgrade
