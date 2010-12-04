@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 12/04,2010
+#       Fix copy option on osx.
 #  v0.1 11/16,2010
 #       First.
 ########################################################################
@@ -14,16 +16,18 @@ setup_environment() {
     test -n "$1" || export SBIN=/usr/local/sbin
     case $OSTYPE in
       *darwin*)
+        OPTIONS=-pR
         OWNER=root:wheel
         ;;
       *)
+        OPTIONS=-a
         OWNER=root:root
         ;;
     esac
 }
 
 install_scripts() {
-    sudo cp -av $SCRIPTS/$2 $SBIN/$3
+    sudo cp $OPTIONS $SCRIPTS/$2 $SBIN/$3
     sudo chmod $1 $SBIN/$3
     sudo chown $OWNER $SBIN/$3
 }

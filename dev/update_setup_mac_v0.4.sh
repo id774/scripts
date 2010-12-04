@@ -11,9 +11,6 @@ $SCRIPTS/installer/install_dotfiles.sh
 # Deploy dot_emacs
 ~/local/github/dot_emacs/install_dotemacs.sh /usr/bin/emacs
 
-# Crypt
-$SCRIPTS/installer/install_crypt.sh mac 7.0a
-
 # Termtter
 $PRIVATE/installer/install_dottermtter.sh
 $SCRIPTS/installer/install_termtter_plugins.sh
