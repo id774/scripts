@@ -182,6 +182,22 @@ $IPTABLES -A INPUT -p tcp --dport 123 -j ACCEPT
 #$IPTABLES -A INPUT -p tcp --dport 8222 -j ACCEPT
 #$IPTABLES -A INPUT -p tcp --dport 8333 -j ACCEPT
 
+# Oracle Database
+#$IPTABLES -A INPUT -p tcp --dport 1521 -j ACCEPT
+#$IPTABLES -A INPUT -p udp --dport 1521 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 1630 -j ACCEPT
+#$IPTABLES -A INPUT -p udp --dport 1630 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 1158 -j ACCEPT
+#$IPTABLES -A INPUT -p udp --dport 1158 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 5520 -j ACCEPT
+#$IPTABLES -A INPUT -p udp --dport 5520 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 5540 -j ACCEPT
+#$IPTABLES -A INPUT -p udp --dport 5540 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 3938 -j ACCEPT
+#$IPTABLES -A INPUT -p udp --dport 3938 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 2030 -j ACCEPT
+#$IPTABLES -A INPUT -p udp --dport 2030 -j ACCEPT
+
 #----------------------------------------------------------#
 # 各種サービスを公開する場合の設定(ここまで)               #
 #----------------------------------------------------------#
