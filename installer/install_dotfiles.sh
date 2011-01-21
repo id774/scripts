@@ -38,6 +38,7 @@ do
   test -d /home/twitter        && sudo cp $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES /home/twitter/.$DOT_FILES
   test -d /home/testuser       && sudo cp $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES /home/testuser/.$DOT_FILES
   test -d /var/lib/postgresql  && sudo cp $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES /var/lib/postgresql/.$DOT_FILES
+  test -d /usr/lib/oracle/xe   && sudo cp $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES /usr/lib/oracle/xe/.$DOT_FILES
   test -d /export/home/solaris && sudo cp $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES /export/home/solaris/.$DOT_FILES
 done
 
