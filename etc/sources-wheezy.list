@@ -2,6 +2,4 @@ deb     http://ftp.jp.debian.org/debian/ wheezy main contrib non-free
 deb-src http://ftp.jp.debian.org/debian/ wheezy main contrib non-free
 deb     http://security.debian.org/ wheezy/updates main contrib non-free
 deb-src http://security.debian.org/ wheezy/updates main contrib non-free
-deb     http://ppa.launchpad.net/chromium-daily/ppa/ubuntu lucid main
-deb-src http://ppa.launchpad.net/chromium-daily/ppa/ubuntu lucid main
 deb     http://download.skype.com/linux/repos/debian/ stable non-free
