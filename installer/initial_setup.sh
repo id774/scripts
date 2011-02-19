@@ -391,9 +391,8 @@ $SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.2
 $SCRIPTS/config/update-alternatives-ruby.sh
 
 # Python
-#$SCRIPTS/installer/install_python.sh 2.6.6 /opt/python/2.6.6
-#$SCRIPTS/installer/install_python.sh 2.7 /opt/python/2.7
-#$SCRIPTS/installer/install_python.sh 3.1.2 /opt/python/3.1.2
+#$SCRIPTS/installer/install_python.sh 2.7.1 /opt/python/2.7.1
+#$SCRIPTS/installer/install_python.sh 3.1.3 /opt/python/3.1.3
 #$SCRIPTS/config/update-alternatives-python.sh
 
 # Python Framework
