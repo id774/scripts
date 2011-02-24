@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.10 2/24,2011
+#       Add sinatra.
 #  v1.9 8/20,2010
 #       Correspond to termtter 1.9.0 on ruby 1.9.2.
 #  v1.8 7/12,2010
@@ -59,6 +61,7 @@ install_gem() {
     sudo $GEM install -v 1.9.0 termtter $2 $3 $4
     sudo $GEM install nokogiri $2 $3 $4
     sudo $GEM install msgpack-rpc $2 $3 $4
+    sudo $GEM install sinatra $2 $3 $4
     $GEM list --local
 }
 
