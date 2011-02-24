@@ -99,6 +99,7 @@ gitpull_all() {
     gitpull github miyagawa plagger $*
     gitpull github m2ym auto-complete $*
     gitpull github mooz js2-mode $*
+    gitpull github sinatra sinatra $*
     gitpull github mitsuhiko flask $*
     gitpull github mitsuhiko werkzeug $*
     gitpull github mitsuhiko jinja2 $*
