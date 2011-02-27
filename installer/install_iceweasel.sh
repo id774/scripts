@@ -14,10 +14,10 @@
 ########################################################################
 
 install_iceweasel() {
-    sudo aptitude -y install iceweasel iceweasel-gnome-support iceweasel-l10n-ja
-    sudo aptitude -y install icedove icedove-gnome-support icedove-locale-ja
+    sudo apt-get -y install iceweasel iceweasel-gnome-support iceweasel-l10n-ja
+    sudo apt-get -y install icedove icedove-gnome-support icedove-locale-ja
     sudo update-alternatives --config x-www-browser
-    sudo aptitude purge epiphany-gecko epiphany-extensions epiphany-browser
+    sudo apt-get purge epiphany-gecko epiphany-extensions epiphany-browser
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1

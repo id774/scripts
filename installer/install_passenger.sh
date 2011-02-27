@@ -23,7 +23,7 @@ install_passenger() {
     test -n "$1" && export PASSENGER_INSTALLER=$1/bin/passenger-install-apache2-module
     test -n "$1" || export PASSENGER_INSTALLER=passenger-install-apache2-module
     export RUBYOPT=rubygems
-    sudo aptitude install -y g++ apache2-threaded-dev
+    sudo apt-get install -y g++ apache2-threaded-dev
     sudo touch /etc/apache2/mods-available/passenger.conf
     sudo touch /etc/apache2/mods-available/passenger.load
 

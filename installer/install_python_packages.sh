@@ -42,9 +42,7 @@ save_sources() {
 
 install_python_packages() {
     setup_environment $*
-    if [ `aptitude search libmysqlclient15-dev | awk '/^i/' | wc -l` = 0 ]; then
-        sudo aptitude -y install libmysqlclient15-dev
-    fi
+    sudo apt-get -y install libmysqlclient15-dev
     mkdir install_python_packages
     cd install_python_packages
     wget "http://downloads.sourceforge.net/mysql-python/MySQL-python-$VERSION.tar.gz"

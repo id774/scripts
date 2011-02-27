@@ -15,21 +15,21 @@ test -n "$1" && TRAC_PROJECT_ID=$1
 test -n "$1" || TRAC_PROJECT_ID=default
 
 # Install Package
-sudo aptitude -y install apache2
-sudo aptitude -y install libapache2-mod-python
+sudo apt-get -y install apache2
+sudo apt-get -y install libapache2-mod-python
 sudo update-rc.d -f apache-perl remove
 sudo update-rc.d -f apache2 defaults
-sudo aptitude -y install subversion
-sudo aptitude -y install libapache2-svn 
-sudo aptitude -y install libapache-mod-dav
-sudo aptitude -y install sqlite3
-sudo aptitude -y install sqlite
-sudo aptitude -y install python-sqlite
-sudo aptitude -y install python-pysqlite2
-sudo aptitude -y install python-pysqlite1.1
-sudo aptitude -y install trac
-sudo aptitude -y install trac-ja-resource
-sudo aptitude -y install python-svn
+sudo apt-get -y install subversion
+sudo apt-get -y install libapache2-svn 
+sudo apt-get -y install libapache-mod-dav
+sudo apt-get -y install sqlite3
+sudo apt-get -y install sqlite
+sudo apt-get -y install python-sqlite
+sudo apt-get -y install python-pysqlite2
+sudo apt-get -y install python-pysqlite1.1
+sudo apt-get -y install trac
+sudo apt-get -y install trac-ja-resource
+sudo apt-get -y install python-svn
 
 # Delete Old Repository
 sudo test -d /var/lib/trac/$TRAC_PROJECT_ID && sudo rm -rf /var/lib/trac/$TRAC_PROJECT_ID

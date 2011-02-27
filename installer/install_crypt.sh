@@ -15,7 +15,7 @@
 ########################################################################
 
 setup_environment() {
-    which dmsetup > /dev/null || sudo aptitude -y install dmsetup
+    which dmsetup > /dev/null || sudo apt-get -y install dmsetup
     test -d /usr/local/src/crypt/truecrypt || sudo mkdir -p /usr/local/src/crypt/truecrypt
     test -d $HOME/.tmp || mkdir $HOME/.tmp
     case $OSTYPE in
@@ -48,9 +48,7 @@ save_sources() {
 }
 
 purge_old_version() {
-    if [ `aptitude search truecrypt | awk '/^i/' | wc -l` != 0 ]; then
-        sudo aptitude purge truecrypt
-    fi
+    sudo apt-get purge truecrypt
 }
 
 install_truecrypt() {

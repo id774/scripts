@@ -15,9 +15,7 @@
 
 export SCRIPTS=$HOME/scripts
 
-if [ `aptitude search pppconfig | awk '/^i/' | wc -l` = 0 ]; then
-    sudo aptitude -y install pppconfig
-fi
+sudo apt-get -y install pppconfig
 
 # interfaces
 sudo cp $SCRIPTS/etc/interfaces.static /etc/network/interfaces.static

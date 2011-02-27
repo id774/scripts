@@ -101,7 +101,7 @@ install_truecrypt() {
 install_crypt_main() {
     TRUECRYPT_CURRENT_VERSION=6.3a
     setup_environment
-    which dmsetup > /dev/null || sudo aptitude -y install dmsetup
+    which dmsetup > /dev/null || sudo apt-get -y install dmsetup
     test -d /usr/local/src/crypt/truecrypt || sudo mkdir -p /usr/local/src/crypt/truecrypt
     install_truecrypt $1
 }

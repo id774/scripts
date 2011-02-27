@@ -15,7 +15,7 @@
 #       New.
 ########################################################################
 # Install:
-# 1. sudo aptitude install clamav
+# 1. sudo apt-get install clamav
 # 2. install_clamav.sh
 # 3. Install this script to cron.
 ########################################################################

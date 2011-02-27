@@ -117,7 +117,7 @@ test -b /dev/mapper/`/bin/hostname`-usr  && sudo tune2fs -i 0 -c 0 -m 1 /dev/map
 test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-home
 
 # Vim
-sudo aptitude -y install vim
+sudo apt-get -y install vim
 
 # Stop Services
 sudo update-rc.d -f cupsys remove
@@ -131,14 +131,14 @@ sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfbef0d696de1c72b
 eval `cat /etc/lsb-release`
 wget -q http://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
 #sudo wget http://www.ubuntulinux.jp/sources.list.d/$DISTRIB_CODENAME.list -O /etc/apt/sources.list.d/ubuntu-ja.list
-#sudo aptitude update
+#sudo apt-get update
 
 # APT Update
 DISTRIB_CODENAME=lucid
 SOURCESLIST=sources-$DISTRIB_CODENAME.list
 sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
 sudo vim /etc/apt/sources.list
-sudo aptitude update
+sudo apt-get update
 
 # Make Directory
 sudo mkdir /opt/sbin
@@ -201,89 +201,89 @@ sudo chmod 700 /etc/skel/local
 sudo chmod 750 /home/*
 
 # SSH, Compiler, Shell etc..
-sudo aptitude -y install openssh-server
-sudo aptitude -y install ssh
-sudo aptitude -y install build-essential
-sudo aptitude -y install gcc g++ g77
-sudo aptitude -y install p7zip p7zip-full p7zip-rar
-sudo aptitude -y install tar zip gzip unzip bzip2
-sudo aptitude -y install lha
-sudo aptitude -y install zsh
+sudo apt-get -y install openssh-server
+sudo apt-get -y install ssh
+sudo apt-get -y install build-essential
+sudo apt-get -y install gcc g++ g77
+sudo apt-get -y install p7zip p7zip-full p7zip-rar
+sudo apt-get -y install tar zip gzip unzip bzip2
+sudo apt-get -y install lha
+sudo apt-get -y install zsh
 chsh -s /bin/zsh
 sudo chsh -s /bin/bash root
-sudo aptitude -y install screen
+sudo apt-get -y install screen
 
 # rsyslog
-sudo aptitude -y install rsyslog
+sudo apt-get -y install rsyslog
 
 # Libraries and Programming Tools
-sudo aptitude -y install nkf
-sudo aptitude -y install ntp
-sudo aptitude -y install uim uim-anthy uim-el
-sudo aptitude -y install ncftp
-sudo aptitude -y install lynx
-sudo aptitude -y install w3m
-sudo aptitude -y install nasm
-sudo aptitude -y install gauche
-sudo aptitude -y install clisp
-sudo aptitude -y install scheme48 cmuscheme48-el
-sudo aptitude -y install apt-file
-sudo aptitude -y install apt-spy
-sudo aptitude -y install keychain
-sudo aptitude -y install locales
-sudo aptitude -y install anacron
-sudo aptitude -y install sysvconfig
-sudo aptitude -y install mailx
-sudo aptitude -y install linux-source
-sudo aptitude -y install checkinstall
-sudo aptitude -y install xdelta
-sudo aptitude -y install alien
-sudo aptitude -y install curl
-sudo aptitude -y install global
-sudo aptitude -y install libxslt-dev libxslt-ruby python-libxslt1
+sudo apt-get -y install nkf
+sudo apt-get -y install ntp
+sudo apt-get -y install uim uim-anthy uim-el
+sudo apt-get -y install ncftp
+sudo apt-get -y install lynx
+sudo apt-get -y install w3m
+sudo apt-get -y install nasm
+sudo apt-get -y install gauche
+sudo apt-get -y install clisp
+sudo apt-get -y install scheme48 cmuscheme48-el
+sudo apt-get -y install apt-file
+sudo apt-get -y install apt-spy
+sudo apt-get -y install keychain
+sudo apt-get -y install locales
+sudo apt-get -y install anacron
+sudo apt-get -y install sysvconfig
+sudo apt-get -y install mailx
+sudo apt-get -y install linux-source
+sudo apt-get -y install checkinstall
+sudo apt-get -y install xdelta
+sudo apt-get -y install alien
+sudo apt-get -y install curl
+sudo apt-get -y install global
+sudo apt-get -y install libxslt-dev libxslt-ruby python-libxslt1
 
 # SCM Client
-sudo aptitude -y install subversion
-sudo aptitude -y install git-core git-cvs git-svn git-email
-sudo aptitude -y install svk
+sudo apt-get -y install subversion
+sudo apt-get -y install git-core git-cvs git-svn git-email
+sudo apt-get -y install svk
 
 # Debian Developer Tools
-sudo aptitude -y install dpkg-dev lintian debhelper yada equivs cvs-buildpackage dupload fakeroot devscripts debget
-sudo aptitude -y install apt-listchanges apt-listbugs
+sudo apt-get -y install dpkg-dev lintian debhelper yada equivs cvs-buildpackage dupload fakeroot devscripts debget
+sudo apt-get -y install apt-listchanges apt-listbugs
 sudo vim /etc/apt/apt.conf.d/10apt-listbugs*
 
 # sshfs
-sudo aptitude -y install sshfs
+sudo apt-get -y install sshfs
 sudo vim /etc/modules
 
 # Samba (Not Recommended)
-#sudo aptitude -y install samba smbfs smbclient swat
+#sudo apt-get -y install samba smbfs smbclient swat
 #sudo update-rc.d -f samba remove
 #sudo cp $SCRIPTS/etc/smb.conf /etc/samba/smb.conf
 #sudo smbpasswd -a $USER
 
 # SQLite
-#sudo aptitude -y install sqlite
-sudo aptitude -y install sqlite3
+#sudo apt-get -y install sqlite
+sudo apt-get -y install sqlite3
 
 # PostgreSQL
-#sudo aptitude -y install postgresql postgresql-common postgresql-client
-#sudo aptitude -y install pgadmin3
+#sudo apt-get -y install postgresql postgresql-common postgresql-client
+#sudo apt-get -y install pgadmin3
 
 # MySQL
-#sudo aptitude -y install mysql-server mysql-client
-#sudo aptitude -y install mysql-gui-tools-common
+#sudo apt-get -y install mysql-server mysql-client
+#sudo apt-get -y install mysql-gui-tools-common
 #$SCRIPTS/installer/install_mysql.sh
 
 # Text Editor
-sudo aptitude -y install texinfo
-sudo aptitude -y install emacs23 emacs23-el
-sudo aptitude -y install emacs-snapshot emacs-snapshot-el
+sudo apt-get -y install texinfo
+sudo apt-get -y install emacs23 emacs23-el
+sudo apt-get -y install emacs-snapshot emacs-snapshot-el
 sudo update-alternatives --config emacs
-sudo aptitude -y install w3m-el-snapshot w3m-img imagemagick
-sudo aptitude -y remove uim-el
-sudo aptitude -y install vim-gui-common vim-runtime colordiff
-sudo aptitude -y install ctags
+sudo apt-get -y install w3m-el-snapshot w3m-img imagemagick
+sudo apt-get -y remove uim-el
+sudo apt-get -y install vim-gui-common vim-runtime colordiff
+sudo apt-get -y install ctags
 
 # Deploy dot_emacs
 test -d ~/local/github || mkdir -p ~/local/github
@@ -310,25 +310,25 @@ $SCRIPTS/installer/install_dotvim.sh
 $SCRIPTS/installer/install_dotfiles.sh
 
 # Optional Libraries
-sudo aptitude -y install migemo
-sudo aptitude -y install gnuserv
-sudo aptitude -y install mingw32 mingw32-binutils mingw32-runtime
-sudo aptitude -y install libxml2 libxml2-dev
-sudo aptitude -y install libxslt1-dev libxml-dev
-sudo aptitude -y install expat libexpat-dev
-sudo aptitude -y install libssl-dev libio-socket-ssl-perl libnet-ssleay-perl
-sudo aptitude -y install libtemplate-perl libxml-libxml-perl
-sudo aptitude -y install ghc
+sudo apt-get -y install migemo
+sudo apt-get -y install gnuserv
+sudo apt-get -y install mingw32 mingw32-binutils mingw32-runtime
+sudo apt-get -y install libxml2 libxml2-dev
+sudo apt-get -y install libxslt1-dev libxml-dev
+sudo apt-get -y install expat libexpat-dev
+sudo apt-get -y install libssl-dev libio-socket-ssl-perl libnet-ssleay-perl
+sudo apt-get -y install libtemplate-perl libxml-libxml-perl
+sudo apt-get -y install ghc
 
 # exiftool
-sudo aptitude -y install exiftool libimage-exiftool-perl jhead
+sudo apt-get -y install exiftool libimage-exiftool-perl jhead
 
 # KVM
 if [ `egrep '^flags.*(vmx|svm)' /proc/cpuinfo | wc -l` != 0 ]; then
-    sudo aptitude -y install kvm libvirt-bin
-    sudo aptitude -y install python-libvirt
-    #sudo aptitude -y install virt-manager
-    sudo aptitude -y Install kqemu-source qemu
+    sudo apt-get -y install kvm libvirt-bin
+    sudo apt-get -y install python-libvirt
+    #sudo apt-get -y install virt-manager
+    sudo apt-get -y Install kqemu-source qemu
     sudo addgroup $USER libvirtd
     sudo addgroup $USER kvm
 fi
@@ -342,7 +342,7 @@ $SCRIPTS/installer/install_crypt.sh mac 7.0a
 $SCRIPTS/installer/install_crypt.sh linux-amd64 7.0a
 
 # Security (Anti-Virus)
-sudo aptitude -y install clamav avscan
+sudo apt-get -y install clamav avscan
 sudo useradd clamav
 #$SCRIPTS/installer/install_clamav.sh
 
@@ -350,31 +350,31 @@ sudo useradd clamav
 $SCRIPTS/installer/install_iptables.sh
 
 # ManPages
-sudo aptitude -y install manpages-ja
-sudo aptitude -y install manpages-ja-dev
-sudo aptitude -y install xmanpages-ja
+sudo apt-get -y install manpages-ja
+sudo apt-get -y install manpages-ja-dev
+sudo apt-get -y install xmanpages-ja
 
 # Monitoring Tools
 # sysstat
-sudo aptitude -y install sysstat
+sudo apt-get -y install sysstat
 sudo dpkg-reconfigure sysstat
 # ENABLED="true"
 sudo vim /etc/default/sysstat
 # hddtemp
-sudo aptitude -y install lm-sensors
-sudo aptitude -y install hddtemp
+sudo apt-get -y install lm-sensors
+sudo apt-get -y install hddtemp
 sudo dpkg-reconfigure hddtemp
 # smartmontools
-sudo aptitude -y install smartmontools
+sudo apt-get -y install smartmontools
 # start_smartd=yes
 # smartd_opts="--interval=7200"
 sudo vim /etc/default/smartmontools
 
 # Ruby
-sudo aptitude -y install autoconf byacc bison autoconf-doc automake
-sudo aptitude -y install libopenssl-ruby libreadline-dev ruby
-#sudo aptitude -y install ruby1.8 ruby1.8-dev rubygems rubygems1.8
-#sudo aptitude -y install ruby1.9 ruby1.9-dev rubygems rubygems1.9
+sudo apt-get -y install autoconf byacc bison autoconf-doc automake
+sudo apt-get -y install libopenssl-ruby libreadline-dev ruby
+#sudo apt-get -y install ruby1.8 ruby1.8-dev rubygems rubygems1.8
+#sudo apt-get -y install ruby1.9 ruby1.9-dev rubygems rubygems1.9
 #$SCRIPTS/installer/install_ruby.sh 187-svn /opt/ruby/1.8.7
 #$SCRIPTS/installer/install_ruby.sh 191-svn /opt/ruby/1.9.1
 $SCRIPTS/installer/install_ruby.sh 192-svn /opt/ruby/1.9.2
@@ -403,27 +403,27 @@ $SCRIPTS/installer/install_python_framework.sh
 #$SCRIPTS/installer/install_trac.sh
 
 # Apache
-#sudo aptitude -y install apache2
-#sudo aptitude -y install apache2-mpm-prefork
-#sudo aptitude -y install apache-perl
+#sudo apt-get -y install apache2
+#sudo apt-get -y install apache2-mpm-prefork
+#sudo apt-get -y install apache-perl
 
 # Apache Utility
-#sudo aptitude -y install apache2-utils
+#sudo apt-get -y install apache2-utils
 
 # Sun Java JDK
-#sudo aptitude -y install sun-java6-jdk
+#sudo apt-get -y install sun-java6-jdk
 
 # Linux kernel source, headers, kbuild (Debian)
-#sudo aptitude -y install linux-kbuild-2.6.32 linux-headers-2.6.32-5-686 linux-source-2.6.32
+#sudo apt-get -y install linux-kbuild-2.6.32 linux-headers-2.6.32-5-686 linux-source-2.6.32
 
 # Upgrade
-sudo aptitude update && sudo aptitude -y safe-upgrade && sudo aptitude autoclean
+sudo apt-get update && sudo apt-get -y safe-upgrade && sudo apt-get autoclean
 
 # Xfce4(Debian) / Xubuntu(Ubuntu)
 #sudo apt-get install xfce4
 #sudo apt-get install xubuntu-desktop
-#sudo aptitude -y install xfwm4 xfwm4-themes
-#sudo aptitude -y install xfce4-goodies
+#sudo apt-get -y install xfwm4 xfwm4-themes
+#sudo apt-get -y install xfce4-goodies
 #im-switch -c
 #sudo rmmod pcspkr
 test -r /etc/modprobe.d/blacklist && sudo vim /etc/modprobe.d/blacklist
@@ -435,7 +435,7 @@ test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.con
 #test -f /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc && sudo cp ~/scripts/etc/themes/xfce-dusk/gtkrc /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc
 
 # Ubuntu-ja
-#sudo aptitude -y install ubuntu-desktop-ja
+#sudo apt-get -y install ubuntu-desktop-ja
 
 # GDM Themes
 #$SCRIPTS/installer/install_gdmthemes.sh
@@ -449,60 +449,60 @@ test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.con
 #ln -s /usr/local/share/share-documents ~/share
 
 # Fonts
-#sudo aptitude -y install xfonts-mplus
-#sudo aptitude -y install xfonts-shinonome
-#sudo aptitude -y install ttf-vlgothic ttf-bitstream-vera
+#sudo apt-get -y install xfonts-mplus
+#sudo apt-get -y install xfonts-shinonome
+#sudo apt-get -y install ttf-vlgothic ttf-bitstream-vera
 
 # Codec
-#sudo aptitude -y install ubuntu-restricted-extras
-#sudo aptitude -y install xubuntu-restricted-extras
+#sudo apt-get -y install ubuntu-restricted-extras
+#sudo apt-get -y install xubuntu-restricted-extras
 
 # Icons
-#sudo aptitude -y install ubuntu-artwork xubuntu-artwork human-icon-theme
-#sudo aptitude -y install gnome-themes gnome-themes-extras
+#sudo apt-get -y install ubuntu-artwork xubuntu-artwork human-icon-theme
+#sudo apt-get -y install gnome-themes gnome-themes-extras
 
 # OpenOffice.org
-#sudo aptitude -y install openoffice.org
+#sudo apt-get -y install openoffice.org
 
 # Iceweasel and Icedove (Debian)
 #$SCRIPTS/installer/install_iceweasel.sh
 
 # Mozilla Thunderbird (Ubuntu)
-#sudo aptitude -y install mozilla-thunderbird
+#sudo apt-get -y install mozilla-thunderbird
 
 # gthumb
-#sudo aptitude -y install gthumb
+#sudo apt-get -y install gthumb
 
 # vlc
-#sudo aptitude -y install vlc
+#sudo apt-get -y install vlc
 
 # pidgin
-#sudo aptitude -y install pidgin
+#sudo apt-get -y install pidgin
 
 # pdf
-#sudo aptitude -y install xpdf xpdf-reader
+#sudo apt-get -y install xpdf xpdf-reader
 
 # 2ch Browser
-#sudo aptitude -y install ochusha
-#sudo aptitude -y install jd
+#sudo apt-get -y install ochusha
+#sudo apt-get -y install jd
 
 # Comic Viewer
-#sudo aptitude -y install comix
+#sudo apt-get -y install comix
 
 # CD/DVD Creator
-#sudo aptitude -y install gnomebaker
+#sudo apt-get -y install gnomebaker
 
 # P2P
-#sudo aptitude -y install skype
+#sudo apt-get -y install skype
 
 # MSN
-#sudo aptitude -y install amsn
+#sudo apt-get -y install amsn
 
 # Wireshark
-#sudo aptitude -y install wireshark
+#sudo apt-get -y install wireshark
 
 # chromium-daily
-#sudo aptitude install chromium-browser
+#sudo apt-get install chromium-browser
 
 # Install plagger plugin
 $SCRIPTS/installer/install_plagger_plugins.sh

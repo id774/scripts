@@ -9,12 +9,12 @@
 #       Stable.
 ########################################################################
 
-sudo aptitude -y install libcatalyst-perl
-sudo aptitude -y install libcatalyst-modules-perl
-sudo aptitude -y install libcatalyst-modules-extra-perl
-sudo aptitude -y install libcatalyst-engine-apache-perl
-sudo aptitude -y install libcatalyst-view-tt-perl
-sudo aptitude -y install libcatalyst-model-cdbi-perl
-sudo aptitude -y install libcatalyst-plugin-formvalidato
-sudo aptitude -y install libcatalyst-plugin-session-fast
+sudo apt-get -y install libcatalyst-perl
+sudo apt-get -y install libcatalyst-modules-perl
+sudo apt-get -y install libcatalyst-modules-extra-perl
+sudo apt-get -y install libcatalyst-engine-apache-perl
+sudo apt-get -y install libcatalyst-view-tt-perl
+sudo apt-get -y install libcatalyst-model-cdbi-perl
+sudo apt-get -y install libcatalyst-plugin-formvalidato
+sudo apt-get -y install libcatalyst-plugin-session-fast
 

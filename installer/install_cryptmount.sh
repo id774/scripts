@@ -18,9 +18,7 @@ test -n "$1" || CRYPT_VOLUME_SIZE=10
 test -n "$2" && CRYPT_VOLUME_NAME=$2
 test -n "$2" || CRYPT_VOLUME_NAME=home-ubuntu-crypt
 
-if [ `aptitude search cryptmount | awk '/^i/' | wc -l` = 0 ]; then
-    sudo aptitude -y install cryptmount
-fi
+sudo apt-get -y install cryptmount
 
 sudo cp $SCRIPTS/etc/cmtab /etc/cryptmount/cmtab
 sudo vim /etc/cryptmount/cmtab

@@ -12,12 +12,12 @@
 SVN_PROJECT_ID=sample
 
 # Subversion Install
-sudo aptitude -y install apache2
+sudo apt-get -y install apache2
 sudo update-rc.d -f apache-perl remove
 sudo update-rc.d -f apache2 defaults
-sudo aptitude -y install subversion
-sudo aptitude -y install libapache2-svn
-sudo aptitude -y install libapache-mod-dav
+sudo apt-get -y install subversion
+sudo apt-get -y install libapache2-svn
+sudo apt-get -y install libapache-mod-dav
 
 # Delete Old Repository
 sudo test -d /var/lib/svn/$SVN_PROJECT_ID && sudo rm -rf /var/lib/svn/$SVN_PROJECT_ID

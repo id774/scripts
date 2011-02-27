@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.9 2/27,2011
+#       Switch aptitude to apt-get.
 #  v0.8 9/2,2010
 #       Correspond to CentOS.
 #  v0.7 8/5,2010
@@ -26,16 +28,16 @@ echo -n "*** $0: Job start at `/bin/hostname` on ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1
 
 # Debian unstable (simulate only)
-#aptitude update >> $JOBLOG 2>&1 && aptitude -s -v -y full-upgrade >> $JOBLOG 2>&1
+#apt-get update >> $JOBLOG 2>&1 && apt-get -s -y full-upgrade >> $JOBLOG 2>&1
 
 # Debian stable/testing
-aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && aptitude -y install clamav clamav-freshclam >> $JOBLOG 2>&1 && aptitude autoclean >> $JOBLOG 2>&1
+apt-get update >> $JOBLOG 2>&1 && apt-get -y upgrade >> $JOBLOG 2>&1 && apt-get -y install clamav clamav-freshclam >> $JOBLOG 2>&1 && apt-get autoclean >> $JOBLOG 2>&1
 
 # Ubuntu Server
-#aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && aptitude -y install linux-image-server linux-server gnupg clamav clamav-freshclam >> $JOBLOG 2>&1 && aptitude autoclean >> $JOBLOG 2>&1
+#apt-get update >> $JOBLOG 2>&1 && apt-get -y upgrade >> $JOBLOG 2>&1 && apt-get -y install linux-image-server linux-server gnupg clamav clamav-freshclam >> $JOBLOG 2>&1 && apt-get autoclean >> $JOBLOG 2>&1
 
 # Ubuntu Desktop
-#aptitude update >> $JOBLOG 2>&1 && aptitude -y safe-upgrade >> $JOBLOG 2>&1 && aptitude -y install linux-image-generic linux-generic linux-restricted-modules-generic linux-headers linux-headers-generic gnupg clamav clamav-freshclam >> $JOBLOG 2>&1 && aptitude autoclean >> $JOBLOG 2>&1
+#apt-get update >> $JOBLOG 2>&1 && apt-get -y upgrade >> $JOBLOG 2>&1 && apt-get -y install linux-image-generic linux-generic linux-restricted-modules-generic linux-headers linux-headers-generic gnupg clamav clamav-freshclam >> $JOBLOG 2>&1 && apt-get autoclean >> $JOBLOG 2>&1
 
 # CentOS
 #yum -y --exclude subversion update >> $JOBLOG 2>&1 && yum clean all >> $JOBLOG 2>&1

@@ -19,38 +19,38 @@ main() {
     TARGET_PATH=`python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"`
 
     # Development tool and package manager
-    sudo aptitude -y install python-dev
-    sudo aptitude -y install python-doc
-    sudo aptitude -y install python-docutils
-    sudo aptitude -y install python-setuptools
-    sudo aptitude -y install python-profiler
-    sudo aptitude -y install python-notify
-    sudo aptitude -y install vim-python
-    sudo aptitude -y install readline-common
-    sudo aptitude -y install ipython
+    sudo apt-get -y install python-dev
+    sudo apt-get -y install python-doc
+    sudo apt-get -y install python-docutils
+    sudo apt-get -y install python-setuptools
+    sudo apt-get -y install python-profiler
+    sudo apt-get -y install python-notify
+    sudo apt-get -y install vim-python
+    sudo apt-get -y install readline-common
+    sudo apt-get -y install ipython
 
     # Web Application Framework
     $SCRIPTS/installer/install_django.sh
-    sudo aptitude -y install python-cherrypy
-    sudo aptitude -y install python-twisted
-    sudo aptitude -y install python-nose
+    sudo apt-get -y install python-cherrypy
+    sudo apt-get -y install python-twisted
+    sudo apt-get -y install python-nose
 
     # O/R mapper
-    sudo aptitude -y install python-sqlobject
-    #sudo aptitude -y install python-sqlalchemy
+    sudo apt-get -y install python-sqlobject
+    #sudo apt-get -y install python-sqlalchemy
     sudo easy_install SQLAlchemy
-    #sudo aptitude -y install python-migrate
+    #sudo apt-get -y install python-migrate
 
     # Template
-    sudo aptitude -y install python-kid
-    sudo aptitude -y install python-cheetah
-    sudo aptitude -y install python-genshi
-    sudo aptitude -y install clearsilver-dev
-    sudo aptitude -y install python-clearsilver
+    sudo apt-get -y install python-kid
+    sudo apt-get -y install python-cheetah
+    sudo apt-get -y install python-genshi
+    sudo apt-get -y install clearsilver-dev
+    sudo apt-get -y install python-clearsilver
 
     # RDBMS Binding
-    sudo aptitude -y install python-mysqldb
-    sudo aptitude -y install python-psycopg2
+    sudo apt-get -y install python-mysqldb
+    sudo apt-get -y install python-psycopg2
 
     # JSON
     sudo easy_install simplejson
@@ -59,7 +59,7 @@ main() {
     sudo easy_install python-twitter
 
     # Web crawler and HTML/XML parser
-    sudo aptitude -y install python-mechanize
+    sudo apt-get -y install python-mechanize
     $SCRIPTS/installer/install_beautifulsoup.sh
 }
 

@@ -32,7 +32,7 @@ install_ipmsg() {
     setup_environment $*
     IPMSG=g2ipmsg-$VERSION
 
-    sudo aptitude -y install libgtk2.0-dev libgnomeui-dev libpanelappletmm-2.6-dev
+    sudo apt-get -y install libgtk2.0-dev libgnomeui-dev libpanelappletmm-2.6-dev
 
     mkdir install_ipmsg
     cd install_ipmsg

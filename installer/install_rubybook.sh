@@ -31,9 +31,7 @@ create_html_link() {
 }
 
 install_rubybook() {
-    if [ `aptitude search rubybook | awk '/^i/' | wc -l` = 0 ]; then
-        sudo aptitude -y install rubybook
-    fi
+    sudo apt-get -y install rubybook
 }
 
 main() {

@@ -51,7 +51,7 @@ install_des() {
 }
 
 main() {
-    which dmsetup > /dev/null || sudo aptitude -y install dmsetup
+    which dmsetup > /dev/null || sudo apt-get -y install dmsetup
     which des > /dev/null || install_des $*
 }
 
