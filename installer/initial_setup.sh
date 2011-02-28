@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.3 2/28,2011
+#       Switch aptitude to apt-get.
 #  v2.2 8/30,2010
 #       Add KVM.
 #  v2.1 8/7,2010
@@ -86,13 +88,13 @@
 
 export SCRIPTS=$HOME/scripts
 
-# Groups
-sudo groupadd admin
-sudo groupadd wheel
-
-# Show Memory and CPU
+# Spec
 cat /proc/meminfo
 cat /proc/cpuinfo
+
+# Admin Groups
+sudo groupadd admin
+sudo groupadd wheel
 
 # Network Settings
 $SCRIPTS/installer/install_pppconfig.sh
@@ -116,133 +118,85 @@ test -b /dev/mapper/`/bin/hostname`-opt  && sudo tune2fs -i 0 -c 0 -m 1 /dev/map
 test -b /dev/mapper/`/bin/hostname`-usr  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-usr
 test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-home
 
-# Vim
-sudo apt-get -y install vim
-
 # Stop Services
 sudo update-rc.d -f cupsys remove
 sudo update-rc.d -f hplip remove
 sudo apt-get remove apt-index-watcher
 
-# chromium-daily
-sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfbef0d696de1c72ba5a835fe5a9bf3bb4e5e17b5
+# Vim
+sudo apt-get -y install vim
 
-# Ubuntu-ja GPG Automatic Import
-eval `cat /etc/lsb-release`
-wget -q http://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
+# Http
+sudo apt-get -y install w3m
+sudo apt-get -y install lynx
+sudo apt-get -y install wget
+sudo apt-get -y install curl
+sudo apt-get -y install ncftp
+
+# chromium-daily GPG keys
+#sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfbef0d696de1c72ba5a835fe5a9bf3bb4e5e17b5
+
+# Ubuntu-ja GPG
+#eval `cat /etc/lsb-release`
+#wget -q http://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
 #sudo wget http://www.ubuntulinux.jp/sources.list.d/$DISTRIB_CODENAME.list -O /etc/apt/sources.list.d/ubuntu-ja.list
 #sudo apt-get update
 
 # APT Update
-DISTRIB_CODENAME=lucid
+DISTRIB_CODENAME=squeeze
 SOURCESLIST=sources-$DISTRIB_CODENAME.list
 sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
 sudo vim /etc/apt/sources.list
 sudo apt-get update
 
-# Make Directory
-sudo mkdir /opt/sbin
-sudo mkdir /opt/bin
-mkdir ~/.tmp
-mkdir ~/.screen
-mkdir ~/tmp
-mkdir ~/etc
-mkdir ~/bin
-mkdir ~/arc
-mkdir ~/mnt
-mkdir ~/var
-mkdir ~/local
-chmod 700 ~/.tmp
-chmod 700 ~/.screen
-chmod 700 ~/tmp
-chmod 700 ~/etc
-chmod 700 ~/bin
-chmod 700 ~/arc
-chmod 700 ~/mnt
-chmod 700 ~/var
-chmod 700 ~/local
-sudo mkdir /root/.tmp
-sudo mkdir /root/.screen
-sudo mkdir /root/tmp
-sudo mkdir /root/etc
-sudo mkdir /root/bin
-sudo mkdir /root/arc
-sudo mkdir /root/mnt
-sudo mkdir /root/var
-sudo mkdir /root/local
-sudo chmod 700 /root/.tmp
-sudo chmod 700 /root/.screen
-sudo chmod 700 /root/tmp
-sudo chmod 700 /root/etc
-sudo chmod 700 /root/bin
-sudo chmod 700 /root/arc
-sudo chmod 700 /root/mnt
-sudo chmod 700 /root/var
-sudo chmod 700 /root/local
-sudo chmod 750 /root
-sudo mkdir /etc/skel/.tmp
-sudo mkdir /etc/skel/.screen
-sudo mkdir /etc/skel/tmp
-sudo mkdir /etc/skel/etc
-sudo mkdir /etc/skel/bin
-sudo mkdir /etc/skel/arc
-sudo mkdir /etc/skel/mnt
-sudo mkdir /etc/skel/var
-sudo mkdir /etc/skel/local
-sudo chmod 700 /etc/skel/.tmp
-sudo chmod 700 /etc/skel/.screen
-sudo chmod 700 /etc/skel/tmp
-sudo chmod 700 /etc/skel/etc
-sudo chmod 700 /etc/skel/bin
-sudo chmod 700 /etc/skel/arc
-sudo chmod 700 /etc/skel/mnt
-sudo chmod 700 /etc/skel/var
-sudo chmod 700 /etc/skel/local
+# Home Permission
+sudo mkdir -p /opt/sbin
+sudo mkdir -p /opt/bin
 sudo chmod 750 /home/*
 
-# SSH, Compiler, Shell etc..
-sudo apt-get -y install openssh-server
-sudo apt-get -y install ssh
+# SSH
+sudo apt-get -y install openssh-server ssh
+
+# Compiler
 sudo apt-get -y install build-essential
 sudo apt-get -y install gcc g++ g77
+
+# Archiver
 sudo apt-get -y install p7zip p7zip-full p7zip-rar
 sudo apt-get -y install tar zip gzip unzip bzip2
 sudo apt-get -y install lha
+
+# zsh/screen
 sudo apt-get -y install zsh
 chsh -s /bin/zsh
 sudo chsh -s /bin/bash root
 sudo apt-get -y install screen
 
-# rsyslog
+# System
 sudo apt-get -y install rsyslog
-
-# Libraries and Programming Tools
-sudo apt-get -y install nkf
+sudo apt-get -y install sysvconfig
 sudo apt-get -y install ntp
+sudo apt-get -y install keychain
+sudo apt-get -y install locales
+sudo apt-get -y install nkf
+sudo apt-get -y install mailx
+sudo apt-get -y install xdelta
+sudo apt-get -y install anacron
+sudo apt-get -y install linux-source
+sudo apt-get -y install checkinstall
+sudo apt-get -y install alien
 sudo apt-get -y install uim uim-anthy uim-el
-sudo apt-get -y install ncftp
-sudo apt-get -y install lynx
-sudo apt-get -y install w3m
+sudo apt-get -y install libxslt-dev libxslt-ruby python-libxslt1
+
+# Programming
 sudo apt-get -y install nasm
 sudo apt-get -y install gauche
 sudo apt-get -y install clisp
 sudo apt-get -y install scheme48 cmuscheme48-el
-sudo apt-get -y install apt-file
-sudo apt-get -y install apt-spy
-sudo apt-get -y install keychain
-sudo apt-get -y install locales
-sudo apt-get -y install anacron
-sudo apt-get -y install sysvconfig
-sudo apt-get -y install mailx
-sudo apt-get -y install linux-source
-sudo apt-get -y install checkinstall
-sudo apt-get -y install xdelta
-sudo apt-get -y install alien
-sudo apt-get -y install curl
+sudo apt-get -y install ghc
 sudo apt-get -y install global
-sudo apt-get -y install libxslt-dev libxslt-ruby python-libxslt1
 
-# SCM Client
+# SCM
 sudo apt-get -y install subversion
 sudo apt-get -y install git-core git-cvs git-svn git-email
 sudo apt-get -y install svk
@@ -251,6 +205,40 @@ sudo apt-get -y install svk
 sudo apt-get -y install dpkg-dev lintian debhelper yada equivs cvs-buildpackage dupload fakeroot devscripts debget
 sudo apt-get -y install apt-listchanges apt-listbugs
 sudo vim /etc/apt/apt.conf.d/10apt-listbugs*
+
+# paco
+#$SCRIPTS/installer/install_paco.sh
+
+# Editor
+sudo apt-get -y install texinfo
+sudo apt-get -y install emacs23 emacs23-el
+sudo apt-get -y install emacs-snapshot emacs-snapshot-el
+sudo update-alternatives --config emacs
+sudo apt-get -y install w3m-el-snapshot w3m-img imagemagick
+sudo apt-get -y remove uim-el
+sudo apt-get -y install vim-gui-common vim-runtime colordiff
+sudo apt-get -y install ctags
+
+# navi2ch
+#$SCRIPTS/installer/install_navi2ch.sh
+
+# Vim (Original Build)
+#$SCRIPTS/installer/install_ncurses.sh
+#$SCRIPTS/installer/install_vim.sh
+
+# dot_vim
+$SCRIPTS/installer/install_dotvim.sh
+
+# dot_files
+$SCRIPTS/installer/install_dotfiles.sh
+
+# dot_emacs
+test -d ~/local/github || mkdir -p ~/local/github
+cd ~/local/github
+git clone git://github.com/id774/dot_emacs.git
+cd
+ln -s ~/local/github/dot_emacs
+~/local/github/dot_emacs/install_dotemacs.sh
 
 # sshfs
 sudo apt-get -y install sshfs
@@ -275,40 +263,6 @@ sudo apt-get -y install sqlite3
 #sudo apt-get -y install mysql-gui-tools-common
 #$SCRIPTS/installer/install_mysql.sh
 
-# Text Editor
-sudo apt-get -y install texinfo
-sudo apt-get -y install emacs23 emacs23-el
-sudo apt-get -y install emacs-snapshot emacs-snapshot-el
-sudo update-alternatives --config emacs
-sudo apt-get -y install w3m-el-snapshot w3m-img imagemagick
-sudo apt-get -y remove uim-el
-sudo apt-get -y install vim-gui-common vim-runtime colordiff
-sudo apt-get -y install ctags
-
-# Deploy dot_emacs
-test -d ~/local/github || mkdir -p ~/local/github
-cd ~/local/github
-git clone git://github.com/id774/dot_emacs.git
-cd
-ln -s ~/local/github/dot_emacs
-~/local/github/dot_emacs/install_dotemacs.sh
-
-# paco
-#$SCRIPTS/installer/install_paco.sh
-
-# navi2ch
-#$SCRIPTS/installer/install_navi2ch.sh
-
-# Vim (Original Build)
-#$SCRIPTS/installer/install_ncurses.sh
-#$SCRIPTS/installer/install_vim.sh
-
-# Deploy dot_vim
-$SCRIPTS/installer/install_dotvim.sh
-
-# Deploy dot_files
-$SCRIPTS/installer/install_dotfiles.sh
-
 # Optional Libraries
 sudo apt-get -y install migemo
 sudo apt-get -y install gnuserv
@@ -318,7 +272,6 @@ sudo apt-get -y install libxslt1-dev libxml-dev
 sudo apt-get -y install expat libexpat-dev
 sudo apt-get -y install libssl-dev libio-socket-ssl-perl libnet-ssleay-perl
 sudo apt-get -y install libtemplate-perl libxml-libxml-perl
-sudo apt-get -y install ghc
 
 # exiftool
 sudo apt-get -y install exiftool libimage-exiftool-perl jhead
@@ -349,21 +302,22 @@ sudo useradd clamav
 # iptables
 $SCRIPTS/installer/install_iptables.sh
 
-# ManPages
+# manpages
 sudo apt-get -y install manpages-ja
 sudo apt-get -y install manpages-ja-dev
 sudo apt-get -y install xmanpages-ja
 
-# Monitoring Tools
 # sysstat
 sudo apt-get -y install sysstat
 sudo dpkg-reconfigure sysstat
 # ENABLED="true"
 sudo vim /etc/default/sysstat
+
 # hddtemp
 sudo apt-get -y install lm-sensors
 sudo apt-get -y install hddtemp
 sudo dpkg-reconfigure hddtemp
+
 # smartmontools
 sudo apt-get -y install smartmontools
 # start_smartd=yes
@@ -373,7 +327,7 @@ sudo vim /etc/default/smartmontools
 # Ruby
 sudo apt-get -y install autoconf byacc bison autoconf-doc automake
 sudo apt-get -y install libopenssl-ruby libreadline-dev ruby
-#sudo apt-get -y install ruby1.8 ruby1.8-dev rubygems rubygems1.8
+sudo apt-get -y install ruby1.8 ruby1.8-dev rubygems rubygems1.8
 #sudo apt-get -y install ruby1.9 ruby1.9-dev rubygems rubygems1.9
 #$SCRIPTS/installer/install_ruby.sh 187-svn /opt/ruby/1.8.7
 #$SCRIPTS/installer/install_ruby.sh 191-svn /opt/ruby/1.9.1
@@ -417,9 +371,9 @@ $SCRIPTS/installer/install_python_framework.sh
 #sudo apt-get -y install linux-kbuild-2.6.32 linux-headers-2.6.32-5-686 linux-source-2.6.32
 
 # Upgrade
-sudo apt-get update && sudo apt-get -y safe-upgrade && sudo apt-get autoclean
+sudo apt-get update && sudo apt-get upgrade && sudo apt-get autoclean
 
-# Xfce4(Debian) / Xubuntu(Ubuntu)
+# GUI Desktop Xfce4(Debian) / Xubuntu(Ubuntu)
 #sudo apt-get install xfce4
 #sudo apt-get install xubuntu-desktop
 #sudo apt-get -y install xfwm4 xfwm4-themes
@@ -515,39 +469,47 @@ ln -s ~/local/github/termtter-plugins
 $PRIVATE/installer/install_dottermtter.sh
 $SCRIPTS/installer/install_termtter_plugins.sh
 
-# Mail to admin at startup
+# rc.local
 $SCRIPTS/installer/install_rclocal.sh
 
 # Permissions for /src
 sudo chown -R root:root /usr/src
 sudo chown -R root:root /usr/local/src
 
-# Last Setup
+# ntp server (130.69.251.23)
+sudo vim /etc/ntp.conf
+
+# apache configuration
+test -f /etc/apache2/apache2.conf && sudo vim /etc/apache2/apache2.conf
+
+# change default
 sudo vim /etc/profile
 sudo vim /etc/crontab
-sudo dpkg-reconfigure exim4-config
 sudo vim /etc/anacrontab
 sudo vim /etc/pam.d/su
 sudo vim /etc/ssh/sshd_config
-# Disable motd
 sudo vim /etc/pam.d/sshd
 sudo vim /etc/pam.d/login
-# server 130.69.251.23
-sudo vim /etc/ntp.conf
+sudo dpkg-reconfigure exim4-config
 sudo vim /etc/fstab
 sudo vim /etc/deluser.conf
 sudo vim /etc/hosts
-# ServerName, charset
-test -f /etc/apache2/apache2.conf && sudo vim /etc/apache2/apache2.conf
-sudo vim /etc/group
+
 # grub
 test -f /boot/grub/menu.lst && sudo vim /boot/grub/menu.lst
 test -f /etc/default/grub && sudo vim /etc/default/grub && sudo update-grub2
+
+# edit group
+sudo vim /etc/group
+
+# activate root
 sudo passwd root
+
+# erase history
 test -f ~/.bash_history && sudo rm ~/.bash_history
 test -f ~/.mysql_history && sudo rm ~/.mysql_history
 test -f ~/.viminfo && sudo rm ~/.viminfo
+
 # sudoers
-sudo cp $SCRIPTS/etc/sudoers /etc/sudoers
-#sudo vim /etc/sudoers
+sudo vim /etc/sudoers $SCRIPTS/etc/sudoers
 
