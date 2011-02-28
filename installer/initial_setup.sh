@@ -130,8 +130,8 @@ sudo apt-get -y install vim
 sudo apt-get -y install w3m
 sudo apt-get -y install lynx
 sudo apt-get -y install wget
-sudo apt-get -y install curl
-sudo apt-get -y install ncftp
+#sudo apt-get -y install curl
+#sudo apt-get -y install ncftp
 
 # chromium-daily GPG keys
 #sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfbef0d696de1c72ba5a835fe5a9bf3bb4e5e17b5
@@ -182,7 +182,7 @@ sudo apt-get -y install nkf
 sudo apt-get -y install mailx
 sudo apt-get -y install xdelta
 sudo apt-get -y install anacron
-sudo apt-get -y install linux-source
+sudo apt-get -y install linux-source-2.6
 sudo apt-get -y install checkinstall
 sudo apt-get -y install alien
 sudo apt-get -y install uim uim-anthy uim-el
@@ -291,12 +291,12 @@ $SCRIPTS/installer/install_des.sh
 $SCRIPTS/installer/install_crypt.sh src 7.0a
 $SCRIPTS/installer/install_crypt.sh win 7.0a
 $SCRIPTS/installer/install_crypt.sh mac 7.0a
-#$SCRIPTS/installer/install_crypt.sh linux-i386 7.0a
-$SCRIPTS/installer/install_crypt.sh linux-amd64 7.0a
+$SCRIPTS/installer/install_crypt.sh linux-i386 7.0a
+#$SCRIPTS/installer/install_crypt.sh linux-amd64 7.0a
 
 # Security (Anti-Virus)
-sudo apt-get -y install clamav avscan
-sudo useradd clamav
+#sudo apt-get -y install clamav avscan
+#sudo useradd clamav
 #$SCRIPTS/installer/install_clamav.sh
 
 # iptables
@@ -350,8 +350,8 @@ $SCRIPTS/config/update-alternatives-ruby.sh
 #$SCRIPTS/config/update-alternatives-python.sh
 
 # Python Framework
-vim $SCRIPTS/installer/install_python_framework.sh
-$SCRIPTS/installer/install_python_framework.sh
+#vim $SCRIPTS/installer/install_python_framework.sh
+#$SCRIPTS/installer/install_python_framework.sh
 
 # Trac
 #$SCRIPTS/installer/install_trac.sh
@@ -374,8 +374,8 @@ $SCRIPTS/installer/install_python_framework.sh
 sudo apt-get update && sudo apt-get upgrade && sudo apt-get autoclean
 
 # GUI Desktop Xfce4(Debian) / Xubuntu(Ubuntu)
-#sudo apt-get install xfce4
-#sudo apt-get install xubuntu-desktop
+#sudo apt-get install -y xfce4
+#sudo apt-get install -y xubuntu-desktop
 #sudo apt-get -y install xfwm4 xfwm4-themes
 #sudo apt-get -y install xfce4-goodies
 #im-switch -c
@@ -427,6 +427,9 @@ test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.con
 # gthumb
 #sudo apt-get -y install gthumb
 
+# thunar
+#sudo apt-get -y install thunar
+
 # vlc
 #sudo apt-get -y install vlc
 
@@ -456,10 +459,10 @@ test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.con
 #sudo apt-get -y install wireshark
 
 # chromium-daily
-#sudo apt-get install chromium-browser
+#sudo apt-get -y install chromium-browser
 
 # Install plagger plugin
-$SCRIPTS/installer/install_plagger_plugins.sh
+#$SCRIPTS/installer/install_plagger_plugins.sh
 
 # Termtter
 cd ~/local/github
@@ -479,10 +482,10 @@ sudo chown -R root:root /usr/local/src
 # ntp server (130.69.251.23)
 sudo vim /etc/ntp.conf
 
-# apache configuration
+# Apache Configuration
 test -f /etc/apache2/apache2.conf && sudo vim /etc/apache2/apache2.conf
 
-# change default
+# Change default
 sudo vim /etc/profile
 sudo vim /etc/crontab
 sudo vim /etc/anacrontab
@@ -495,17 +498,18 @@ sudo vim /etc/fstab
 sudo vim /etc/deluser.conf
 sudo vim /etc/hosts
 
-# grub
+# Grub
 test -f /boot/grub/menu.lst && sudo vim /boot/grub/menu.lst
 test -f /etc/default/grub && sudo vim /etc/default/grub && sudo update-grub2
 
-# edit group
+# passwd and group
+sudo vim /etc/passwd
 sudo vim /etc/group
 
-# activate root
+# Activate root
 sudo passwd root
 
-# erase history
+# Erase history
 test -f ~/.bash_history && sudo rm ~/.bash_history
 test -f ~/.mysql_history && sudo rm ~/.mysql_history
 test -f ~/.viminfo && sudo rm ~/.viminfo
