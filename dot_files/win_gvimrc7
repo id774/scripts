@@ -3,7 +3,7 @@
 " An example for a Japanese version gvimrc file.
 " 日本語版のデフォルトGUI設定ファイル(gvimrc)
 "
-" Last Change: 22-Jun-2010.
+" Last Change: 01-Mar-2011.
 " Maintainer:  id774 <idnanashi@gmail.com>
 "
 " 解説:
@@ -192,5 +192,9 @@ highlight clear NonText
 highlight NonText guifg=grey30
 highlight ZenkakuSpace cterm=underline guibg=grey30
 match ZenkakuSpace /　/
+
+" 透過率設定
+gui
+set transparency=192
 
 " Copyright (C) 2008 id774 <idnanashi@gmail.com>

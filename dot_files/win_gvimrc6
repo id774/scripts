@@ -3,7 +3,7 @@
 " An example for a Japanese version gvimrc file.
 " 日本語版のデフォルトGUI設定ファイル(gvimrc)
 "
-" Last Change: 28-May-2008.
+" Last Change: 01-Mar-2011.
 " Maintainer:  id774 <idnanashi@gmail.com>
 "
 " 解説:
@@ -183,5 +183,9 @@ if has('printer')
     "set printfont=MS_Gothic:h12:cSHIFTJIS
   endif
 endif
+
+" 透過率設定
+gui
+set transparency=192
 
 " Copyright (C) 2008 id774 <idnanashi@gmail.com>
