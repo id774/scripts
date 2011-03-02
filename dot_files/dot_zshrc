@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 18-Sep-2010.
+# Last Change: 02-Mar-2011.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_gnu_env() {
@@ -15,13 +15,14 @@ set_gnu_env() {
 
 set_linux_env() {
     export PATH=/opt/sbin:/opt/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/games
-    set_java_path /usr/lib/jvm/java-1.5.0-sun
-    set_java_path /usr/lib/jvm/java-6-sun
+    set_java_path /usr/lib/jvm/java-6-openjdk
+    set_java_path /opt/java/jdk
 }
 
 set_solaris_env() {
     export PATH=/usr/gnu/bin:/usr/bin:/usr/X11/bin:/usr/sbin:/sbin
     set_java_path /usr/java
+    set_java_path /opt/java/jdk
 }
 
 set_darwin_env() {
@@ -46,7 +47,7 @@ set_darwin_env() {
 set_java_path() {
     if [ -d $1 ]; then
         export JAVA_HOME=$1
-        export PATH=$PATH:$JAVA_HOME/bin
+        export PATH=$JAVA_HOME/bin:$PATH
         export CLASSPATH=.:$JAVA_HOME/lib/tools.jar
     fi
 }
@@ -198,7 +199,7 @@ set_basic_options() {
     alias dir='ls -ltr'
     alias la='ls -a'
     alias a='ls -a'
-    alias f='ls'
+    alias f='file'
     alias j='cd'
     alias c='cd'
     alias cl='clear'
