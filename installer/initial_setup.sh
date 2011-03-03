@@ -366,6 +366,7 @@ $SCRIPTS/config/update-alternatives-ruby.sh
 
 # Java JDK
 sudo apt-get -y install openjdk-6-jdk
+#sudo apt-get -y install sun-java6-jdk
 
 # Linux kernel source, headers, kbuild (Debian)
 #sudo apt-get -y install linux-kbuild-2.6.32 linux-headers-2.6.32-5-686 linux-source-2.6.32

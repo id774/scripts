@@ -4,6 +4,8 @@ deb     http://jp.archive.ubuntu.com/ubuntu/ lucid-updates main restricted unive
 deb-src http://jp.archive.ubuntu.com/ubuntu/ lucid-updates main restricted universe multiverse
 deb     http://security.ubuntu.com/ubuntu/   lucid-security main restricted universe multiverse
 deb-src http://security.ubuntu.com/ubuntu/   lucid-security main restricted universe multiverse
+deb     http://archive.canonical.com/        lucid partner
+deb-src http://archive.canonical.com/        lucid partner
 #deb     http://jp.archive.ubuntu.com/ubuntu/ lucid-backports main restricted universe multiverse
 #deb-src http://jp.archive.ubuntu.com/ubuntu/ lucid-backports main restricted universe multiverse
 deb     http://ppa.launchpad.net/chromium-daily/ppa/ubuntu lucid main

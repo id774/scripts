@@ -16,6 +16,7 @@ set_gnu_env() {
 set_linux_env() {
     export PATH=/opt/sbin:/opt/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/usr/bin/X11:/usr/X11R6/bin:/usr/games
     set_java_path /usr/lib/jvm/java-6-openjdk
+    set_java_path /usr/lib/jvm/java-6-sun
     set_java_path /opt/java/jdk
 }
 
