@@ -37,8 +37,8 @@ gitpull_all() {
 }
 
 make_and_install() {
-    test -n "$1" || ./configure --with-ns --prefix=$HOME/local/emacs/$EMACS_VERSION
-    test -n "$1" && ./configure --with-ns --prefix=$1
+    test -n "$1" || ./configure --with-ns --without-x --prefix=$HOME/local/emacs/$EMACS_VERSION
+    test -n "$1" && ./configure --with-ns --without-x --prefix=$1
     make
     $SUDO make install
 }
