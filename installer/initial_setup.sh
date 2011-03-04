@@ -206,6 +206,10 @@ sudo apt-get -y install dpkg-dev lintian debhelper yada equivs cvs-buildpackage 
 sudo apt-get -y install apt-listchanges apt-listbugs
 sudo vim /etc/apt/apt.conf.d/10apt-listbugs*
 
+# Exim4
+sudo apt-get -y install exim4
+sudo dpkg-reconfigure exim4-config
+
 # paco
 #$SCRIPTS/installer/install_paco.sh
 
@@ -494,7 +498,6 @@ sudo vim /etc/pam.d/su
 sudo vim /etc/ssh/sshd_config
 sudo vim /etc/pam.d/sshd
 sudo vim /etc/pam.d/login
-sudo dpkg-reconfigure exim4-config
 sudo vim /etc/fstab
 sudo vim /etc/deluser.conf
 sudo vim /etc/hosts
