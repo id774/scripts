@@ -169,7 +169,7 @@ sudo apt-get -y install lha
 # zsh/screen
 sudo apt-get -y install zsh
 chsh -s /bin/zsh
-sudo chsh -s /bin/bash root
+sudo chsh -s /bin/sh root
 sudo apt-get -y install screen
 
 # System
