@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 3/6,2011
+#       For Squeeze.
 #  v1.3 7/14,2010
 #       Fix bug.
 #  v1.2 6/30,2010
@@ -24,6 +26,7 @@ install_passenger() {
     test -n "$1" || export PASSENGER_INSTALLER=passenger-install-apache2-module
     export RUBYOPT=rubygems
     sudo apt-get install -y g++ apache2-threaded-dev
+    sudo apt-get install -y libcurl4-gnutls-dev
     sudo touch /etc/apache2/mods-available/passenger.conf
     sudo touch /etc/apache2/mods-available/passenger.load
 
