@@ -27,17 +27,8 @@ JOBLOG=/var/log/auto-upgrade.log
 echo -n "*** $0: Job start at `/bin/hostname` on ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1
 
-# Debian unstable (simulate only)
-#apt-get update >> $JOBLOG 2>&1 && apt-get -s -y full-upgrade >> $JOBLOG 2>&1
-
-# Debian stable/testing
-apt-get update >> $JOBLOG 2>&1 && apt-get -y upgrade >> $JOBLOG 2>&1 && apt-get -y install clamav clamav-freshclam >> $JOBLOG 2>&1 && apt-get autoclean >> $JOBLOG 2>&1
-
-# Ubuntu Server
-#apt-get update >> $JOBLOG 2>&1 && apt-get -y upgrade >> $JOBLOG 2>&1 && apt-get -y install linux-image-server linux-server gnupg clamav clamav-freshclam >> $JOBLOG 2>&1 && apt-get autoclean >> $JOBLOG 2>&1
-
-# Ubuntu Desktop
-#apt-get update >> $JOBLOG 2>&1 && apt-get -y upgrade >> $JOBLOG 2>&1 && apt-get -y install linux-image-generic linux-generic linux-restricted-modules-generic linux-headers linux-headers-generic gnupg clamav clamav-freshclam >> $JOBLOG 2>&1 && apt-get autoclean >> $JOBLOG 2>&1
+# Debian/Ubuntu
+apt-get update >> $JOBLOG 2>&1 && apt-get -y upgrade >> $JOBLOG 2>&1 && apt-get autoclean >> $JOBLOG 2>&1 && apt-get autoremove >> $JOBLOG 2>&1
 
 # CentOS
 #yum -y --exclude subversion update >> $JOBLOG 2>&1 && yum clean all >> $JOBLOG 2>&1
