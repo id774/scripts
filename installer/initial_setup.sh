@@ -299,8 +299,7 @@ $SCRIPTS/installer/install_crypt.sh linux-i386 7.0a
 #$SCRIPTS/installer/install_crypt.sh linux-amd64 7.0a
 
 # Security (Anti-Virus)
-#sudo apt-get -y install clamav avscan
-#sudo useradd clamav
+sudo apt-get -y install clamav
 #$SCRIPTS/installer/install_clamav.sh
 
 # iptables
