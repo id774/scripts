@@ -43,6 +43,7 @@ tmpdir		= /tmp
 language	= /usr/share/mysql/english
 skip-external-locking
 default-character-set = utf8
+character-set-server=utf8
 #
 # Instead of skip-networking the default is now to listen only on
 # localhost which is more compatible and is not less secure.
