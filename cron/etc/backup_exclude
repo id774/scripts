@@ -1,6 +1,7 @@
 .tmp/
 .plagger_tmp/
 .screen/
+.cpan/
 .Trash/
 .mozilla/
 .thunderbird/

@@ -24,9 +24,9 @@
 #    tmp/
 #    unused/
 ########################################################################
-BACKUPDIRS="/home/ubuntu /etc /boot"
+BACKUPDIRS="/home/debian /home/tiarra /home/plagger /root /etc /boot"
 BACKUPTO="/home/backup"
-EXPIREDAYS=60
+EXPIREDAYS=10
 EXECDIR=${0%/*}
 EXCLUDEFILE=$EXECDIR/backup_exclude 
 DATE=`date +%Y%m%d`
@@ -71,4 +71,7 @@ do
     rsync $OPTS $dir $BACKUPTO
     echo "Return code is $?"
 done
+
+# mirror to remote
+#test -d /home/backup && rsync -avz --delete -e ssh /home/backup root@xxxxxx:/home/mirror/xxxxxx/
 
