@@ -374,6 +374,9 @@ sudo apt-get -y install openjdk-6-jdk
 # Linux kernel source, headers, kbuild (Debian)
 #sudo apt-get -y install linux-kbuild-2.6.32 linux-headers-2.6.32-5-686 linux-source-2.6.32
 
+# sysadmin scripts
+$SCRIPTS/installer/setup_sysadmin_scripts.sh
+
 # Upgrade
 sudo apt-get update && sudo apt-get upgrade && sudo apt-get autoclean
 

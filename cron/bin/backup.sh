@@ -6,6 +6,8 @@
 #  Customize & Maintain: id774 <idnanashi@gmail.com>
 #  Copyright (C) 2002 Takeru KOMORIYA <komoriya@paken.org>
 #
+#  v0.7 3/7,2011
+#       Remote backup, mysqldump.
 #  v0.6 10/3,2010
 #       Show resources.
 #  v0.5 8/5,2010
@@ -24,12 +26,14 @@
 #    tmp/
 #    unused/
 ########################################################################
-BACKUPDIRS="/home/debian /home/tiarra /home/plagger /root /etc /boot"
+BACKUPDIRS="/home/debian /home/tiarra /home/plagger /var/lib/rails /var/www/html /root /etc /boot"
 BACKUPTO="/home/backup"
 EXPIREDAYS=10
 EXECDIR=${0%/*}
 EXCLUDEFILE=$EXECDIR/backup_exclude 
 DATE=`date +%Y%m%d`
+#REMOTE_HOST=
+#MYSQL_TABLE=
 
 # Resources
 uname -a
@@ -72,6 +76,9 @@ do
     echo "Return code is $?"
 done
 
+# mysqldump
+#mysqldump --add-drop-table --add-locks --password=xxxx -u $MYSQL_TABLE $MYSQL_TABLE > $BACKUPTO/mysqldump/$MYSQL_TABLE.sql
+
 # mirror to remote
-#test -d /home/backup && rsync -avz --delete -e ssh /home/backup root@xxxxxx:/home/mirror/xxxxxx/
+#test -d $BACKUPTO && ping -c 1 -i 3 $REMOTE_HOST > /dev/null 2>&1 && rsync -avz --delete -e ssh $BACKUPTO root@$REMOTE_HOST:$BACKUPTO/$REMOTE_HOST/
 

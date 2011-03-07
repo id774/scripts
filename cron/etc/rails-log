@@ -1,0 +1,13 @@
+/var/log/kr.log {
+  weekly
+  missingok
+  create 0640 www-data adm
+  rotate 26
+}
+
+/var/log/redmine.log {
+  weekly
+  missingok
+  create 0640 www-data adm
+  rotate 26
+}
