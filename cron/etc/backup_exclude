@@ -2,6 +2,7 @@
 .plagger_tmp/
 .screen/
 .cpan/
+.gem/
 .Trash/
 .mozilla/
 .thunderbird/

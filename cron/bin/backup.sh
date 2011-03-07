@@ -32,8 +32,6 @@ EXPIREDAYS=10
 EXECDIR=${0%/*}
 EXCLUDEFILE=$EXECDIR/backup_exclude 
 DATE=`date +%Y%m%d`
-#REMOTE_HOST=
-#MYSQL_TABLE=
 
 # Resources
 uname -a
@@ -76,9 +74,18 @@ do
     echo "Return code is $?"
 done
 
-# mysqldump
-#mysqldump --add-drop-table --add-locks --password=xxxx -u $MYSQL_TABLE $MYSQL_TABLE > $BACKUPTO/mysqldump/$MYSQL_TABLE.sql
+mysql_dump() {
+    mysqldump --add-drop-table --add-locks --password=$2 -u $1 \
+        $1 > $BACKUPTO/mysqldump/$1.sql
+}
 
-# mirror to remote
-#test -d $BACKUPTO && ping -c 1 -i 3 $REMOTE_HOST > /dev/null 2>&1 && rsync -avz --delete -e ssh $BACKUPTO root@$REMOTE_HOST:$BACKUPTO/$REMOTE_HOST/
+mysql_dump MYSQL_TABLE PASSWORD
+
+mirror_to_remote() {
+    if [ -d $BACKUPTO ]; then
+        ping -c 1 -i 3 $1 > /dev/null 2>&1 && rsync -avz --delete -e ssh $BACKUPTO root@$1:$2
+    fi
+}
+
+mirror_to_remote REMOTE_HOST REMOTE_TO
 
