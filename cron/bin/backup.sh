@@ -5,7 +5,7 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.8 3/8,2011
+#  v1.0 3/8,2011
 #       Refactoring.
 #  v0.7 3/7,2011
 #       Remote backup, mysqldump.
@@ -73,7 +73,7 @@ exec_rsync() {
     while [ $# -gt 0 ]
     do
         echo "rsync $OPTS $1 $BACKUPTO"
-        #rsync $OPTS $1 $BACKUPTO
+        rsync $OPTS $1 $BACKUPTO
         echo "Return code is $?"
         shift
     done
