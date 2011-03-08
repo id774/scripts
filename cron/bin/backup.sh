@@ -3,9 +3,10 @@
 ########################################################################
 # Daily Backup Script
 #
-#  Customize & Maintain: id774 <idnanashi@gmail.com>
-#  Copyright (C) 2002 Takeru KOMORIYA <komoriya@paken.org>
+#  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.8 3/8,2011
+#       Refactoring.
 #  v0.7 3/7,2011
 #       Remote backup, mysqldump.
 #  v0.6 10/3,2010
@@ -26,66 +27,97 @@
 #    tmp/
 #    unused/
 ########################################################################
-BACKUPDIRS="/home/debian /home/tiarra /home/plagger /var/lib/rails /var/www/html /root /etc /boot"
-BACKUPTO="/home/backup"
-EXPIREDAYS=10
-EXECDIR=${0%/*}
-EXCLUDEFILE=$EXECDIR/backup_exclude 
-DATE=`date +%Y%m%d`
 
-# Resources
-uname -a
-uptime
-free -t
-df -P -T
+setup_environment() {
+    BACKUPDIRS="/home/debian /home/tiarra /home/plagger /var/lib/rails /var/www/html /root /etc /boot"
+    BACKUPTO="/home/backup"
+    EXPIREDAYS=10
+    EXECDIR=${0%/*}
+    EXCLUDEFILE=$EXECDIR/backup_exclude 
+    DATE=`date +%Y%m%d`
+}
 
-# SMART information
-test -b /dev/sda && smartctl -a /dev/sda
-test -b /dev/hda && smartctl -a /dev/hda
+get_resources() {
+    uname -a
+    uptime
+    free -t
+    df -P -T
+    test -b /dev/sda && smartctl -a /dev/sda
+    test -b /dev/hda && smartctl -a /dev/hda
+}
 
-# delete old backup directories
-echo -n "* Deleting old backup directories on "
-date "+%Y/%m/%d %T"
-
-for DIR in `ls $BACKUPTO | grep "_backup_"`
-do
-    BDATE=`echo $DIR | sed "s/_backup_//"`
+purge_expire_dir() {
+    BDATE=`echo $1 | sed "s/_backup_//"`
     EXPIREDATE=`date +%Y%m%d -d "$EXPIREDAYS days ago"`
     if [ $BDATE -le $EXPIREDATE ]
     then
-        echo "deleting $BACKUPTO/$DIR"
+        echo "deleting $BACKUPTO/$1"
         rm -rf $BACKUPTO/$DIR
     fi
-done
+}
 
-# rsync options
-OPTS="--force --delete-excluded --delete --backup --backup-dir=$BACKUPTO/_backup_$DATE -av"
-if [ -f $EXCLUDEFILE ]; then
-    OPTS="$OPTS --exclude-from=$EXCLUDEFILE"
-fi
+purge_expires() {
+    echo -n "* Deleting old backup directories on "
+    date "+%Y/%m/%d %T"
+    purge_expire_dir `ls $BACKUPTO | grep "_backup_"`
+}
 
-# execute backup
-echo -n "* Executing backup with rsync on "
-date "+%Y/%m/%d %T"
-for dir in $BACKUPDIRS
-do
-    echo "rsync $OPTS $dir $BACKUPTO"
-    rsync $OPTS $dir $BACKUPTO
-    echo "Return code is $?"
-done
+rsync_options() {
+    OPTS="--force --delete-excluded --delete --backup --backup-dir=$BACKUPTO/_backup_$DATE -av"
+    if [ -f $EXCLUDEFILE ]; then
+        OPTS="$OPTS --exclude-from=$EXCLUDEFILE"
+    fi
+}
 
-mysql_dump() {
+exec_rsync() {
+    while [ $# -gt 0 ]
+    do
+        echo "rsync $OPTS $1 $BACKUPTO"
+        #rsync $OPTS $1 $BACKUPTO
+        echo "Return code is $?"
+        shift
+    done
+}
+
+run_rsync() {
+    rsync_options
+    echo -n "* Executing backup with rsync on "
+    date "+%Y/%m/%d %T"
+    exec_rsync $BACKUPDIRS
+}
+
+get_mysqldump() {
+    echo -n "mysqldump $1"
     mysqldump --add-drop-table --add-locks --password=$2 -u $1 \
         $1 > $BACKUPTO/mysqldump/$1.sql
 }
 
-mysql_dump MYSQL_TABLE PASSWORD
+dump_mysql() {
+    echo -n "* Executing mysqldump on "
+    date "+%Y/%m/%d %T"
+    #get_mysqldump MYSQL_TABLE PASSWORD
+}
 
 mirror_to_remote() {
     if [ -d $BACKUPTO ]; then
+        echo -n "rsync -avz --delete -e ssh $BACKUPTO root@$1:$2"
         ping -c 1 -i 3 $1 > /dev/null 2>&1 && rsync -avz --delete -e ssh $BACKUPTO root@$1:$2
     fi
 }
 
-mirror_to_remote REMOTE_HOST REMOTE_TO
+backup_to_remote() {
+    echo -n "* Executing backup to remote on "
+    date "+%Y/%m/%d %T"
+    #mirror_to_remote REMOTE_HOST REMOTE_TO
+}
 
+main() {
+    setup_environment
+    get_resources
+    purge_expires
+    run_rsync
+    #dump_mysql
+    #backup_to_remote
+}
+
+main
