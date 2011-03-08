@@ -1,16 +1,26 @@
 keycode 66 = Control_L
 keycode 37 = Control_L
+keycode 105 = Control_L
 clear lock
 add lock = Caps_Lock
 clear control
 add control = Control_L Control_R
-keycode 49 = Zenkaku_Hankaku Kanji
-keycode 9 = Escape
+keycode 49 = Escape
+keycode 9 = Zenkaku_Hankaku Kanji
+keycode 102 = Escape
+keycode 100 = Return
+keycode 101 = Down
+keycode 151 = Up
+keycode 117 = Up
+keycode 133 = Up
+keycode 111 = Up
+keycode 116 = Down
+keycode 112 = Prior
+keycode 117 = Next
+keycode 97 = backslash underscore
+keycode 98 = Up
 keycode 37 = Escape
-keycode 113 = Return
-keycode 109 = Escape
-keycode 47 = colon semicolon
-keycode 21 = plus equal
-keycode 234 = underscore
-keycode 233 = asciitilde bar
 keycode 36 = Return
+keycode 108 = Return
+keycode 166 = underscore
+keycode 167 = asciitilde
