@@ -87,7 +87,7 @@ run_rsync() {
 }
 
 get_mysqldump() {
-    echo -n "mysqldump $1"
+    echo "mysqldump $1"
     mysqldump --add-drop-table --add-locks --password=$2 -u $1 \
         $1 > $BACKUPTO/mysqldump/$1.sql
 }
@@ -100,7 +100,7 @@ dump_mysql() {
 
 mirror_to_remote() {
     if [ -d $BACKUPTO ]; then
-        echo -n "rsync -avz --delete -e ssh $BACKUPTO root@$1:$2"
+        echo "rsync -avz --delete -e ssh $BACKUPTO root@$1:$2"
         ping -c 1 -i 3 $1 > /dev/null 2>&1 && rsync -avz --delete -e ssh $BACKUPTO root@$1:$2
     fi
 }
