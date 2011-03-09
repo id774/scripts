@@ -52,7 +52,7 @@ purge_expire_dir() {
     if [ $BDATE -le $EXPIREDATE ]
     then
         echo "deleting $BACKUPTO/$1"
-        rm -rf $BACKUPTO/$DIR
+        rm -rf $BACKUPTO/$1
     fi
 }
 
