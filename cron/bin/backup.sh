@@ -47,13 +47,17 @@ get_resources() {
 }
 
 purge_expire_dir() {
-    BDATE=`echo $1 | sed "s/_backup_//"`
-    EXPIREDATE=`date +%Y%m%d -d "$EXPIREDAYS days ago"`
-    if [ $BDATE -le $EXPIREDATE ]
-    then
-        echo "deleting $BACKUPTO/$1"
-        rm -rf $BACKUPTO/$1
-    fi
+    while [ $# -gt 0 ]
+    do
+        BDATE=`echo $1 | sed "s/_backup_//"`
+        EXPIREDATE=`date +%Y%m%d -d "$EXPIREDAYS days ago"`
+        if [ $BDATE -le $EXPIREDATE ]
+        then
+            echo "deleting $BACKUPTO/$1"
+            rm -rf $BACKUPTO/$1
+        fi
+        shift
+    done
 }
 
 purge_expires() {
