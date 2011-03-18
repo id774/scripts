@@ -216,8 +216,8 @@ sudo dpkg-reconfigure exim4-config
 # Editor
 sudo apt-get -y install texinfo
 sudo apt-get -y install emacs23 emacs23-el
-sudo apt-get -y install emacs-snapshot emacs-snapshot-el
-sudo update-alternatives --config emacs
+$SCRIPTS/installer/install_emacs.sh 23.3 /opt/emacs/23.3
+sudo ln -fs /opt/emacs/23.3/bin/emacs /opt/bin/emacs
 sudo apt-get -y install w3m-el-snapshot w3m-img imagemagick
 sudo apt-get -y remove uim-el
 sudo apt-get -y install vim-gui-common vim-runtime colordiff
@@ -242,7 +242,7 @@ cd ~/local/github
 git clone git://github.com/id774/dot_emacs.git
 cd
 ln -s ~/local/github/dot_emacs
-~/local/github/dot_emacs/install_dotemacs.sh
+~/local/github/dot_emacs/install_dotemacs.sh /opt/bin/emacs
 
 # sshfs
 sudo apt-get -y install sshfs
