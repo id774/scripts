@@ -44,10 +44,13 @@ save_sources() {
 }
 
 adding_patches() {
+    mkdir patches
+    cd patches
     wget http://cloud.github.com/downloads/typester/emacs/feature-fullscreen.patch
-    patch -p < feature-fullscreen.patch
     wget http://cloud.github.com/downloads/typester/emacs/fix-shiftmodifier-with-ime.patch
-    patch -p1 < fix-shiftmodifier-with-ime.patch
+    cd ..
+    patch -p1 < patches/feature-fullscreen.patch
+    patch -p1 < patches/fix-shiftmodifier-with-ime.patch
 }
 
 make_and_install() {
