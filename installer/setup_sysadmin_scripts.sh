@@ -39,7 +39,7 @@ setup_sysadmin_scripts() {
     install_scripts 755 copydir.py copydir
     install_scripts 755 get_resources.sh get_resources
     install_scripts 755 tcmount.py tcmount
-    install_scripts 755 raphro.rb raphro
+    install_scripts 755 namecalc.rb namecalc
     install_scripts 755 waitlock.rb waitlock
 }
 
