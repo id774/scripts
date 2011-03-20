@@ -63,27 +63,6 @@ sudo cp $SCRIPTS/cron/etc/resources-log /etc/logrotate.d/resources
 sudo chmod 644 /etc/logrotate.d/resources
 sudo chown root:root /etc/logrotate.d/resources
 
-# ClamAV Auto Upgrade Job
-sudo cp $SCRIPTS/cron/bin/clamav_upgrade.sh /root/bin/clamav_upgrade.sh
-sudo chmod 700 /root/bin/clamav_upgrade.sh
-sudo cp $SCRIPTS/cron/etc/clamscan_exclude /root/bin/clamscan_exclude
-sudo vim /root/bin/clamscan_exclude
-sudo chmod 600 /root/bin/clamscan_exclude
-sudo chown -R root:root /root/bin
-sudo cp $SCRIPTS/cron/bin/clamav_upgrade /etc/cron.weekly/clamav_upgrade
-sudo vim /etc/cron.weekly/clamav_upgrade
-sudo chmod 750 /etc/cron.weekly/clamav_upgrade
-sudo chown root:adm /etc/cron.weekly/clamav_upgrade
-sudo touch /var/log/clamav_upgrade
-sudo chmod 640 /var/log/clamav_upgrade
-sudo chown root:adm /var/log/clamav_upgrade
-sudo touch /var/log/clamscan.log
-sudo chmod 640 /var/log/clamscan.log
-sudo chown root:adm /var/log/clamscan.log
-sudo cp $SCRIPTS/cron/etc/clamav_upgrade-log /etc/logrotate.d/clamav_upgrade
-sudo chmod 644 /etc/logrotate.d/clamav_upgrade
-sudo chown root:root /etc/logrotate.d/clamav_upgrade
-
 # Edit crontab
 sudo vim /etc/crontab $SCRIPTS/cron/plagger/crontab
 
