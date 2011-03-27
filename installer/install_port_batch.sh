@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.9 3/28,2011
+#       Remove mysql.
 #  v1.8 7/14,2010
 #       Recover ruby 1.8.
 #  v1.7 7/12,2010
@@ -55,14 +57,14 @@ main() {
     sudo port -d install emacs-w3m
     sudo port -d install ruby
     # MySQL
-    sudo port -d install mysql5 +server
-    sudo -u mysql mysql_install_db5
-    sudo cp /opt/local/share/mysql5/mysql/my-small.cnf /opt/local/etc/mysql5/my.cnf
-    sudo vim /opt/local/etc/mysql5/my.cnf
-    sudo launchctl load -w /Library/LaunchDaemons/org.macports.mysql5.plist
-    sudo /opt/local/share/mysql5/mysql/mysql.server start
-    mysql5 -u root -p
-    sudo port -d install rb-dbi +dbd_mysql
+    #sudo port -d install mysql5 +server
+    #sudo -u mysql mysql_install_db5
+    #sudo cp /opt/local/share/mysql5/mysql/my-small.cnf /opt/local/etc/mysql5/my.cnf
+    #sudo vim /opt/local/etc/mysql5/my.cnf
+    #sudo launchctl load -w /Library/LaunchDaemons/org.macports.mysql5.plist
+    #sudo /opt/local/share/mysql5/mysql/mysql.server start
+    #mysql5 -u root -p
+    #sudo port -d install rb-dbi +dbd_mysql
     # PostgreSQL
     #sudo port -d install postgresql83
     #sudo port -d install postgresql83-server
