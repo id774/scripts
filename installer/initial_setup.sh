@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.4 3/28,2011
+#       Remove building ruby 1.9 from default.
 #  v2.3 2/28,2011
 #       Switch aptitude to apt-get.
 #  v2.2 8/30,2010
@@ -334,18 +336,18 @@ sudo apt-get -y install ruby1.8 ruby1.8-dev rubygems rubygems1.8
 #sudo apt-get -y install ruby1.9 ruby1.9-dev rubygems rubygems1.9
 #$SCRIPTS/installer/install_ruby.sh 187-svn /opt/ruby/1.8.7
 #$SCRIPTS/installer/install_ruby.sh 191-svn /opt/ruby/1.9.1
-$SCRIPTS/installer/install_ruby.sh 192-svn /opt/ruby/1.9.2
+#$SCRIPTS/installer/install_ruby.sh 192-svn /opt/ruby/1.9.2
 $SCRIPTS/config/update-alternatives-ruby.sh
 
 # RubyGems
 #$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.2
-$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.2
-$SCRIPTS/installer/install_rails.sh rails-ruby /opt/ruby/1.9.2
-/opt/ruby/1.9.2/bin/vim-ruby-install.rb
+#$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.2
+#$SCRIPTS/installer/install_rails.sh rails-ruby /opt/ruby/1.9.2
+#/opt/ruby/1.9.2/bin/vim-ruby-install.rb
 
 # Passenger
-$SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.2
-$SCRIPTS/config/update-alternatives-ruby.sh
+#$SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.2
+#$SCRIPTS/config/update-alternatives-ruby.sh
 
 # Python
 #$SCRIPTS/installer/install_python.sh 2.7.1 /opt/python/2.7.1
@@ -477,7 +479,7 @@ git clone git://github.com/id774/termtter-plugins.git
 cd
 ln -s ~/local/github/termtter-plugins
 #$PRIVATE/installer/install_dottermtter.sh
-$SCRIPTS/installer/install_termtter_plugins.sh
+#$SCRIPTS/installer/install_termtter_plugins.sh
 
 # rc.local
 $SCRIPTS/installer/install_rclocal.sh
