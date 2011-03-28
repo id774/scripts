@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.7 3/28,2011
+#       Latest rails as default.
 #  v1.6 7/21,2010
 #       Fix bug.
 #  v1.5 6/30,2010
@@ -67,14 +69,14 @@ select_rails_package() {
         RAILS_VER=2.2.2
         wget_rails_zip $RAILS_VER 47183
         ;;
-      rails-ruby)
-        sudo $GEM install rails sqlite3-ruby rspec-rails \
-        cucumber-rails webrat test-unit database_cleaner $3 $4 $5
-        exit 0
-        ;;
-      *)
+      233)
         RAILS_VER=2.3.3
         wget_rails_zip $RAILS_VER 60600
+        ;;
+      *)
+        sudo $GEM install rails sqlite3-ruby rspec-rails \
+        cucumber-rails webrat test-unit database_cleaner $3 $4 $5
+        exit $?
         ;;
     esac
     extract_rails_zip rails-$RAILS_VER
