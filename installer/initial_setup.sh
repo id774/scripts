@@ -218,7 +218,9 @@ sudo dpkg-reconfigure exim4-config
 # Editor
 sudo apt-get -y install texinfo
 sudo apt-get -y install emacs23 emacs23-el
+sudo apt-get -y install mew
 #$SCRIPTS/installer/install_emacs.sh 23.3 /opt/emacs/23.3
+#$SCRIPTS/installer/install_emacs_w3m.sh 23.3 /opt/emacs/23.3
 #sudo ln -fs /opt/emacs/23.3/bin/emacs /opt/bin/emacs
 sudo apt-get -y install w3m-el-snapshot w3m-img imagemagick
 sudo apt-get -y remove uim-el
@@ -245,6 +247,7 @@ git clone git://github.com/id774/dot_emacs.git
 cd
 ln -s ~/local/github/dot_emacs
 ~/local/github/dot_emacs/install_dotemacs.sh
+#$SCRIPTS/installer/install_mew.sh /opt/emacs/23.3/bin/emacs
 
 # sshfs
 sudo apt-get -y install sshfs

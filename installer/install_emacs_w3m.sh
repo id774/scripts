@@ -1,19 +1,17 @@
 #!/bin/sh
 #
 ########################################################################
-# Install emacs
+# Install emacs-w3m
 #  $1 = prefix
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.2 3/29,2011
-#       Split emacs-w3m.
-#  v0.1 9/16,2010
+#  v0.1 3/29,2011
 #       First.
 ########################################################################
 
 setup_environment() {
-    EMACS_VERSION=23.2
+    EMACS_VERSION=23.3
     test -n "$2" || SUDO=sudo
     test -n "$2" && SUDO=
 }
@@ -33,26 +31,26 @@ gitpull() {
 
 gitpull_all() {
     test -d $HOME/local/github || mkdir -p $HOME/local/github
-    gitpull github id774-2 emacs
+    gitpull github id774-2 emacs-w3m
 }
 
-make_and_install() {
-    test -n "$1" || ./configure --with-ns --without-x --prefix=$HOME/local/emacs/$EMACS_VERSION
-    test -n "$1" && ./configure --with-ns --without-x --prefix=$1
+make_and_install_emacsw3m() {
+    test -n "$1" || ./configure --with-emacs=$HOME/local/emacs/$EMACS_VERSION/bin/emacs
+    test -n "$1" && ./configure --with-emacs=$1/bin/emacs
     make
     $SUDO make install
 }
 
-install_emacs() {
-    test -d $HOME/local/github/emacs || exit 1
-    cd $HOME/local/github/emacs
-    make_and_install $*
+install_emacs_w3m() {
+    test -d $HOME/local/github/emacs-w3m || exit 1
+    cd $HOME/local/github/emacs-w3m
+    make_and_install_emacsw3m $*
 }
 
 main() {
     setup_environment $*
     gitpull_all
-    install_emacs $*
+    install_emacs_w3m $*
 }
 
 ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1

@@ -25,6 +25,9 @@ $SCRIPTS/installer/install_dottoprc.sh
 # Java JDK
 sudo apt-get -y install openjdk-6-jdk
 
+# Mew
+sudo apt-get -y install mew
+
 # Deploy dot_files
 $SCRIPTS/installer/install_dotfiles.sh
 ~/local/github/dot_emacs/install_dotemacs.sh
