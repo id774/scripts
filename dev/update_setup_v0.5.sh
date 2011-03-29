@@ -26,7 +26,7 @@ $SCRIPTS/installer/install_dottoprc.sh
 sudo apt-get -y install openjdk-6-jdk
 
 # Mew
-sudo apt-get -y install mew
+sudo apt-get -y install mew ca-certificates
 
 # Deploy dot_files
 $SCRIPTS/installer/install_dotfiles.sh
