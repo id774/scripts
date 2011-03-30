@@ -15,7 +15,7 @@ DISTRIB_CODENAME=lucid
 SOURCESLIST=sources-$DISTRIB_CODENAME.list
 sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
 sudo vim /etc/apt/sources.list
-sudo aptitude update
+sudo apt-get update
 
 sudo chsh -s /bin/sh root
 $SCRIPTS/installer/install_mysql.sh
@@ -26,7 +26,7 @@ $SCRIPTS/installer/install_dottoprc.sh
 sudo apt-get -y install openjdk-6-jdk
 
 # Mew
-sudo apt-get -y install mew ca-certificates
+sudo apt-get -y install mew stunnel ca-certificates
 
 # Deploy dot_files
 $SCRIPTS/installer/install_dotfiles.sh

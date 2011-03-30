@@ -218,7 +218,7 @@ sudo dpkg-reconfigure exim4-config
 # Editor
 sudo apt-get -y install texinfo
 sudo apt-get -y install emacs23 emacs23-el
-sudo apt-get -y install mew ca-certificates
+sudo apt-get -y install mew stunnel ca-certificates
 #$SCRIPTS/installer/install_emacs.sh 23.3 /opt/emacs/23.3
 #$SCRIPTS/installer/install_emacs_w3m.sh 23.3 /opt/emacs/23.3
 #sudo ln -fs /opt/emacs/23.3/bin/emacs /opt/bin/emacs
