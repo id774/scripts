@@ -94,6 +94,7 @@ gitpull_all() {
     gitpull github id774 gthumb
     gitpull github id774 sandbox
     gitpull github id774 batch_framework
+    gitpull github id774 intraweb-template
     gitpull github jugyo termtter $*
     gitpull github hayamiz twittering-mode $*
     gitpull github miyagawa plagger $*
