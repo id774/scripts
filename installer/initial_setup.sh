@@ -497,6 +497,9 @@ sudo vim /etc/ntp.conf
 # Apache Configuration
 test -f /etc/apache2/apache2.conf && sudo vim /etc/apache2/apache2.conf
 
+# udev patches
+$SCRIPTS/dev/fix_udev_persistent-rules.sh
+
 # Change default
 sudo vim /etc/profile
 sudo vim /etc/crontab
