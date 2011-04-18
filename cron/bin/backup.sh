@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 4/18,2011
+#       SVN dump.
 #  v1.0 3/8,2011
 #       Refactoring.
 #  v0.7 3/7,2011
@@ -103,6 +105,20 @@ dump_mysql() {
     #get_mysqldump MYSQL_TABLE PASSWORD
 }
 
+get_svndump() {
+    echo "svndump $1"
+    svnadmin dump $2 > $BACKUPTO/svndump/$1.dump \
+        && zip $BACKUPTO/svndump/$1.zip $BACKUPTO/svndump/$1.dump \
+        && rm $BACKUPTO/svndump/$1.dump
+    echo "Return code is $?"
+}
+
+dump_svn() {
+    echo -n "* Executing svndump on "
+    date "+%Y/%m/%d %T"
+    #get_svndump repo_id repo_path
+}
+
 mirror_to_remote() {
     if [ -d $BACKUPTO ]; then
         echo "rsync -avz --delete -e ssh $BACKUPTO root@$1:$2"
@@ -123,6 +139,7 @@ main() {
     purge_expires
     run_rsync
     #dump_mysql
+    #dump_svn
     #backup_to_remote
 }
 
