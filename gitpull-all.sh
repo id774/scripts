@@ -11,7 +11,7 @@
 
 gitpull() {
     echo "Pulling $1 $3 $4"
-    if [ -d $HOME/local/$1/$3 ]; then
+    if [ -e $HOME/local/$1/$3 ]; then
         cd $HOME/local/$1/$3
         test -n "$4" && git reset --hard
         git pull
