@@ -53,5 +53,5 @@ main() {
     install_emacs_w3m $*
 }
 
-ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+ping -c 1 id774.net > /dev/null 2>&1 || exit 1
 main $*

@@ -48,5 +48,5 @@ gitpull_all() {
 
 test -n "$2" || exit 2
 setup_environment $*
-ping -c 1 google.com > /dev/null 2>&1 || exit 1
+ping -c 1 id774.net > /dev/null 2>&1 || exit 1
 gitpull_all $*

@@ -44,5 +44,5 @@ install_ncurses() {
     rm -rf install_ncurses
 }
 
-ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+ping -c 1 id774.net > /dev/null 2>&1 || exit 1
 install_ncurses $*

@@ -56,5 +56,5 @@ install_python_packages() {
     sudo rm -rf install_python_packages
 }
 
-ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+ping -c 1 id774.net > /dev/null 2>&1 || exit 1
 install_python_packages $*

@@ -53,6 +53,6 @@ install_mew() {
     sudo chown -R $USER:$USER $HOME/.emacs.d/elisp/3rd-party
 }
 
-ping -c 1 -i 3 google.com > /dev/null 2>&1 || exit 1
+ping -c 1 id774.net > /dev/null 2>&1 || exit 1
 test -n "$1" || exit 1
 install_mew $*
