@@ -91,10 +91,10 @@ $IPTABLES -A INPUT -d 224.0.0.1 -j DROP
 $IPTABLES -A INPUT -p tcp --dport 113 -j REJECT --reject-with tcp-reset
 
 # (Ubuntu/Debian系のみ)
-# 180秒以内に5回以上のssh接続を試みたIPアドレスをシャットアウトする
+# 600秒以内に10回以上のssh接続を試みたIPアドレスをシャットアウトする
 $IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name ssh_attack
-$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 180 --hitcount 5 --rttl --name ssh_attack -j LOG --log-prefix 'SSH attack: '
-$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 180 --hitcount 5 --rttl --name ssh_attack -j DROP
+$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name ssh_attack -j LOG --log-prefix 'SSH attack: '
+$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name ssh_attack -j DROP
 
 #----------------------------------------------------------#
 # 各種サービスを公開する場合の設定(ここから)               #
@@ -197,6 +197,21 @@ $IPTABLES -A INPUT -p tcp --dport 123 -j ACCEPT
 #$IPTABLES -A INPUT -p udp --dport 3938 -j ACCEPT
 #$IPTABLES -A INPUT -p tcp --dport 2030 -j ACCEPT
 #$IPTABLES -A INPUT -p udp --dport 2030 -j ACCEPT
+
+# For Test
+#$IPTABLES -A INPUT -p tcp --dport 1099 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 1100 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 1101 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 1102 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 1103 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 1104 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 3000 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 3001 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 3002 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 3003 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 4567 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 9090 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 9999 -j ACCEPT
 
 #----------------------------------------------------------#
 # 各種サービスを公開する場合の設定(ここまで)               #
