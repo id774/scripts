@@ -1,6 +1,4 @@
 #!/usr/bin/env ruby
-$:.unshift File.join(ENV['SCRIPTS'], 'lib') unless ENV['SCRIPTS'] == nil
-$:.unshift File.join(File.dirname(__FILE__), 'lib')
 
 class ExecOnWin
   def run(mount, share, ipaddr, user, pass)
@@ -16,7 +14,7 @@ end
 
 class ExecOnPosix
   def run(mount, share, ipaddr, user, pass)
-    if system("ping -c 1 -i 3 #{ipaddr} > /dev/null")
+    if system("ping -c 1 #{ipaddr} > /dev/null")
       puts `sudo smbmount //#{ipaddr}/#{share} #{mount} -o rw,uid=#{user},username=#{user},password=#{pass},iocharset=utf8`
     else
       puts "#{ipaddr} ping timeout."

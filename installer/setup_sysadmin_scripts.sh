@@ -42,6 +42,7 @@ setup_scripts() {
     install_scripts 755 tcmount.py tcmount
     install_scripts 755 namecalc.rb namecalc
     install_scripts 755 waitlock.rb waitlock
+    install_scripts 755 swapext.py swapext
 }
 
 setup_debian_scripts() {
