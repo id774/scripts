@@ -16,3 +16,14 @@ class ApacheCalculater(object):
                 ipHitListing[ip] = ipHitListing.get(ip, 0) + 1
         return ipHitListing
 
+    @classmethod
+    def clientCachePercentage(cls, log):
+        contents = open(log, "r")
+        totalRequests = 0
+        cachedRequests = 0
+        for line in contents:
+            totalRequests += 1
+            if line.split(" ")[8] == "304":
+                cachedRequests += 1
+        return float(100*cachedRequests)/totalRequests
+
