@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 4/27,2011
+#       Compress mysqldump.
 #  v1.1 4/18,2011
 #       SVN dump.
 #  v1.0 3/8,2011
@@ -33,7 +35,7 @@
 setup_environment() {
     BACKUPDIRS="/home/debian /home/tiarra /home/plagger /var/lib/rails /var/www/html /root /etc /boot"
     BACKUPTO="/home/backup"
-    EXPIREDAYS=10
+    EXPIREDAYS=5
     EXECDIR=${0%/*}
     EXCLUDEFILE=$EXECDIR/backup_exclude 
     DATE=`date +%Y%m%d`
@@ -94,15 +96,17 @@ run_rsync() {
 
 get_mysqldump() {
     echo "mysqldump $1"
-    mysqldump --add-drop-table --add-locks --password=$2 -u $1 \
-        $1 > $BACKUPTO/mysqldump/$1.sql
+    mysqldump --add-drop-table --add-locks --password=$3 -u $2 \
+        $1 > $BACKUPTO/mysqldump/$1.sql \
+        && zip $BACKUPTO/mysqldump/$1.zip $BACKUPTO/mysqldump/$1.sql \
+        && rm $BACKUPTO/mysqldump/$1.sql
     echo "Return code is $?"
 }
 
 dump_mysql() {
     echo -n "* Executing mysqldump on "
     date "+%Y/%m/%d %T"
-    #get_mysqldump MYSQL_TABLE PASSWORD
+    #get_mysqldump MYSQL_TABLE USERNAME PASSWORD
 }
 
 get_svndump() {
