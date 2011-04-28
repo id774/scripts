@@ -13,3 +13,7 @@ tags
 *.pyc
 *.class
 .svn
+*.svn-base
+*.log
+*.bak
+*.tmp
