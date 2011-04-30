@@ -23,17 +23,17 @@ class << NameCalc
 
   def sum_up_base_array(base_array, calc_array)
     i = 1
-    base_array.each{|e|
-    if (i <= base_array.length)
-      $stdout.printf(" %s", e)
-      n = e.to_i + base_array[i].to_i
-      if n >= 10
-        n = n - 10
+    base_array.each do |e|
+      if (i <= base_array.length)
+        $stdout.printf(" %s", e)
+        n = e.to_i + base_array[i].to_i
+        if n >= 10
+          n = n - 10
+        end
+        calc_array << n
+        i += 1
       end
-      calc_array << n
-      i += 1
     end
-    }
     calc_array
   end
 
