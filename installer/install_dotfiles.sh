@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 5/3,2011
+#       Include .toprc.
 #  v1.0 3/2,2010
 #       Refactoring.
 ########################################################################
@@ -21,7 +23,7 @@ case $OSTYPE in
     ;;
 esac
 
-for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore
+for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore toprc
 do
   test -d /var/root            && sudo cp $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES /var/root/.$DOT_FILES
   test -d /Users/mac           && sudo cp $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES /Users/mac/.$DOT_FILES

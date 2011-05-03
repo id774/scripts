@@ -20,7 +20,6 @@ sudo apt-get update
 sudo chsh -s /bin/sh root
 $SCRIPTS/installer/install_mysql.sh
 sudo apt-get install -y libcurl4-gnutls-dev
-$SCRIPTS/installer/install_dottoprc.sh
 
 # Java JDK
 sudo apt-get -y install openjdk-6-jdk
