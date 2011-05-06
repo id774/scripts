@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 17-Mar-2011.
+# Last Change: 06-May-2011.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_gnu_env() {
@@ -27,9 +27,10 @@ set_solaris_env() {
 }
 
 set_darwin_env() {
-    alias cp='cp -vi'
+    alias cp='rsync -avz'
     alias finder='open .'
     alias gvim='open -a Vim'
+    alias top='top -o cpu'
     alias fx='open -a Firefox'
     alias tb='open -a Thunderbird'
     if [ -f /usr/local/bin/fcd.sh ]; then
