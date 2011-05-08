@@ -27,7 +27,7 @@ remove_github_repo() {
 
 pull_from_gitbare() {
     remove_github_repo $2
-    echo "Pulling $1 $2 $3"
+    echo "Pulling $1 $2 $5"
     if [ -e $HOME/local/$1/$2 ]; then
         cd $HOME/local/$1/$2
         test -n "$5" && git reset --hard
