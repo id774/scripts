@@ -9,6 +9,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.11 5/9,2011
+#       Update to 1.8.1.
 # v1.10 9/16,2010
 #       Refactoring.
 #  v1.9 7/21,2010
@@ -50,6 +52,11 @@ save_sources() {
     sudo chown -R $OWNER /usr/local/src/gems/$RUBY_GEMS_ZIP
 }
 
+get_rubygems() {
+    RUBY_GEMS_ZIP=rubygems-$1
+    wget http://rubyforge.org/frs/download.php/$2/$RUBY_GEMS_ZIP.zip
+}
+
 install_rubygems() {
     setup_environment
     test -n "$2" && export GEM=$2/bin/gem
@@ -62,36 +69,46 @@ install_rubygems() {
 
     case "$1" in
       094)
-        RUBY_GEMS_ZIP=rubygems-0.9.4
-        wget http://rubyforge.org/frs/download.php/20990/$RUBY_GEMS_ZIP.zip
+        get_rubygems 0.9.4 20990
         ;;
       111)
-        RUBY_GEMS_ZIP=rubygems-1.1.1
-        wget http://rubyforge.org/frs/download.php/35284/$RUBY_GEMS_ZIP.zip
+        get_rubygems 1.1.1 35284
         ;;
       120)
-        RUBY_GEMS_ZIP=rubygems-1.2.0
-        wget http://rubyforge.org/frs/download.php/38647/$RUBY_GEMS_ZIP.zip
+        get_rubygems 1.2.0 38647
         ;;
       131)
-        RUBY_GEMS_ZIP=rubygems-1.3.1
-        wget http://rubyforge.org/frs/download.php/45906/$RUBY_GEMS_ZIP.zip
+        get_rubygems 1.3.1 45906
         ;;
       133)
-        RUBY_GEMS_ZIP=rubygems-1.3.3
-        wget http://rubyforge.org/frs/download.php/56228/$RUBY_GEMS_ZIP.zip
+        get_rubygems 1.3.3 56228
+        ;;
+      134)
+        get_rubygems 1.3.4 57644
         ;;
       135)
-        RUBY_GEMS_ZIP=rubygems-1.3.5
-        wget http://rubyforge.org/frs/download.php/60719/$RUBY_GEMS_ZIP.zip
+        get_rubygems 1.3.5 60719
         ;;
       136)
-        RUBY_GEMS_ZIP=rubygems-1.3.6
-        wget http://rubyforge.org/frs/download.php/69366/$RUBY_GEMS_ZIP.zip
+        get_rubygems 1.3.6 69366
+        ;;
+      137)
+        get_rubygems 1.3.7 70697
+        ;;
+      142)
+        get_rubygems 1.4.2 73833
+        ;;
+      153)
+        get_rubygems 1.5.3 74344
+        ;;
+      162)
+        get_rubygems 1.6.2 74446
+        ;;
+      172)
+        get_rubygems 1.7.2 74618
         ;;
       *)
-        RUBY_GEMS_ZIP=rubygems-1.3.7
-        wget http://rubyforge.org/frs/download.php/70697/$RUBY_GEMS_ZIP.zip
+        get_rubygems 1.8.1 74817
         ;;
     esac
 
