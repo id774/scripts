@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.8 5/9,2011
+#       Update to 3.0.x.
 #  v1.7 3/28,2011
 #       Latest rails as default.
 #  v1.6 7/21,2010
@@ -74,7 +76,9 @@ select_rails_package() {
         wget_rails_zip $RAILS_VER 60600
         ;;
       *)
-        sudo $GEM install rails sqlite3-ruby rspec-rails \
+        sudo $GEM install -v "< 3.1" rails $3 $4 $5
+        sudo $GEM install -v "< 0.3" mysql2 $3 $4 $5
+        sudo $GEM install sqlite3-ruby rspec-rails \
         cucumber-rails webrat test-unit database_cleaner $3 $4 $5
         exit $?
         ;;

@@ -345,7 +345,7 @@ $SCRIPTS/config/update-alternatives-ruby.sh
 # RubyGems
 #$SCRIPTS/installer/install_rubygems.sh 137 /opt/ruby/1.9.2
 #$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.2
-#$SCRIPTS/installer/install_rails.sh rails-ruby /opt/ruby/1.9.2
+#$SCRIPTS/installer/install_rails.sh 300 /opt/ruby/1.9.2
 #/opt/ruby/1.9.2/bin/vim-ruby-install.rb
 
 # Passenger
