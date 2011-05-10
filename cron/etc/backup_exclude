@@ -3,6 +3,7 @@
 .screen/
 .cpan/
 .gem/
+.bundler/
 .Trash/
 .mozilla/
 .thunderbird/
