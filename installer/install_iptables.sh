@@ -9,7 +9,7 @@
 #       Stable.
 ########################################################################
 
-sudo cp $SCRIPTS/etc/iptables /etc/network/if-pre-up.d/iptables
+sudo cp $SCRIPTS/etc/iptables-deb /etc/network/if-pre-up.d/iptables
 sudo chmod 700 /etc/network/if-pre-up.d/iptables
 sudo chown root:root /etc/network/if-pre-up.d/iptables
 sudo vim /etc/network/if-pre-up.d/iptables
