@@ -91,10 +91,18 @@ $IPTABLES -A INPUT -d 224.0.0.1 -j DROP
 $IPTABLES -A INPUT -p tcp --dport 113 -j REJECT --reject-with tcp-reset
 
 # (Ubuntu/Debian系のみ)
-# 600秒以内に10回以上のssh接続を試みたIPアドレスをシャットアウトする
-$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name ssh_attack
-$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name ssh_attack -j LOG --log-prefix 'SSH attack: '
-$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name ssh_attack -j DROP
+# 同一ポートに一定回数以上の認証を試みたIPアドレスをシャットアウトする
+$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH
+$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH -j LOG --log-prefix 'SSH attack: '
+$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH -j DROP
+
+$IPTABLES -A INPUT -p tcp --dport 3306 -m state --state NEW -m recent --set --name MYSQL
+$IPTABLES -A INPUT -p tcp --dport 3306 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name MYSQL -j LOG --log-prefix 'MYSQL attack: '
+$IPTABLES -A INPUT -p tcp --dport 3306 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name MYSQL -j DROP
+
+$IPTABLES -A INPUT -p tcp --dport 5432 -m state --state NEW -m recent --set --name POSTGRES
+$IPTABLES -A INPUT -p tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES -j LOG --log-prefix 'POSTGRES attack: '
+$IPTABLES -A INPUT -p tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES -j DROP
 
 #----------------------------------------------------------#
 # 各種サービスを公開する場合の設定(ここから)               #
