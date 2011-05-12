@@ -68,8 +68,8 @@ echo "[ps axl --sort -vsize | head -20]"
 ps axl --sort -vsize | head -20
 echo
 
-echo "[grep SSH attack /var/log/messages]"
-grep "SSH attack" /var/log/messages
+echo "[grep attack /var/log/messages]"
+grep " attack" /var/log/messages
 echo
 
 echo "[egrep '(Fail|refuse)' /var/log/auth.log]"
