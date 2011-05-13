@@ -21,6 +21,9 @@ sudo chsh -s /bin/sh root
 $SCRIPTS/installer/install_mysql.sh
 sudo apt-get install -y libcurl4-gnutls-dev
 
+# iptables
+$SCRIPTS/installer/install_iptables.sh
+
 # RubyGems
 $SCRIPTS/installer/install_rubygems.sh latest /opt/ruby/1.9.2
 $SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.2
