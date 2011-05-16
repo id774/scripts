@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ -d /etc/cron.regular.d ]; then
+  for i in /etc/cron.regular.d/*; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+
+exit 0
