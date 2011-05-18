@@ -268,9 +268,7 @@ sudo apt-get -y install sqlite3
 #sudo apt-get -y install pgadmin3
 
 # MySQL
-#sudo apt-get -y install mysql-server mysql-client
-#sudo apt-get -y install mysql-gui-tools-common
-#$SCRIPTS/installer/install_mysql.sh
+$SCRIPTS/installer/install_mysql.py install -g -c
 
 # Optional Libraries
 sudo apt-get -y install migemo

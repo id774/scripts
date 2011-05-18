@@ -18,7 +18,7 @@ sudo vim /etc/apt/sources.list
 sudo apt-get update
 
 sudo chsh -s /bin/sh root
-$SCRIPTS/installer/install_mysql.sh
+$SCRIPTS/installer/install_mysql.py -c
 sudo apt-get install -y libcurl4-gnutls-dev
 
 # iptables
