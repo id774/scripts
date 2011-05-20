@@ -264,11 +264,10 @@ sudo vim /etc/modules
 sudo apt-get -y install sqlite3
 
 # PostgreSQL
-#sudo apt-get -y install postgresql postgresql-common postgresql-client
-#sudo apt-get -y install pgadmin3
+$SCRIPTS/installer/install_mysql.py install
 
 # MySQL
-$SCRIPTS/installer/install_mysql.py install -g -c
+$SCRIPTS/installer/install_mysql.py install -c
 
 # Optional Libraries
 sudo apt-get -y install migemo

@@ -5,7 +5,7 @@
 #  usage: install_mysql.py install -g -c
 #
 #  install = install MySQL
-#  -g = install with GUI Common Tools
+#  -g = install with GUI Tools
 #  -c = overwrite MySQL Configuration File
 #
 #  v0.1 5/18,2011
@@ -48,7 +48,7 @@ def main():
     usage = "usage: %prog [install]"
     parser = OptionParser(usage)
     parser.add_option("-g", "--gui-tools",
-                      help="install with GUI Common Tools",
+                      help="install with GUI Tools",
                       action="store_true", dest="with_gui_tools")
     parser.add_option("-c", "--configurations",
                       help="overwrite MySQL Configuration File",
