@@ -267,7 +267,7 @@ sudo vim /etc/modules
 sudo apt-get -y install sqlite3
 
 # PostgreSQL
-$SCRIPTS/installer/install_mysql.py install
+$SCRIPTS/installer/install_postgres.py install
 
 # MySQL
 $SCRIPTS/installer/install_mysql.py install -c
