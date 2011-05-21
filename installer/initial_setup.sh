@@ -240,6 +240,9 @@ $SCRIPTS/installer/install_dotvim.sh
 # dot_files
 $SCRIPTS/installer/install_dotfiles.sh
 
+# dot_zsh
+$SCRIPTS/installer/install_dotzsh.sh
+
 # dot_emacs
 test -d ~/local/github || mkdir -p ~/local/github
 cd ~/local/github
