@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 06-May-2011.
+# Last Change: 20-May-2011.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_gnu_env() {
@@ -306,7 +306,13 @@ set_extended_options() {
     show_window_title
 }
 
-set_local_settings() {
+load_plugins() {
+    if [ -d ~/.zsh/plugins ]; then
+        source ~/.zsh/plugins/*
+    fi
+}
+
+load_local_settings() {
     if [ -f ~/.zshrc_local ]; then
         . ~/.zshrc_local
     fi
@@ -329,7 +335,8 @@ call_exec_screen() {
 zshrc_main() {
     set_standard_options
     set_extended_options
-    set_local_settings
+    load_plugins
+    load_local_settings
     call_exec_screen
 }
 
