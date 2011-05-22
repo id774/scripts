@@ -19,6 +19,8 @@ bindkey -M emacs '^?' backward-delete-char-incr
 bindkey -M emacs '^i' expand-or-complete-prefix-incr
 
 unsetopt automenu
+compdef -d ssh
+compdef -d sshfs
 compdef -d scp
 compdef -d rsync
 compdef -d tar
