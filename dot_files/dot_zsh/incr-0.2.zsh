@@ -20,6 +20,7 @@ bindkey -M emacs '^i' expand-or-complete-prefix-incr
 
 unsetopt automenu
 compdef -d scp
+compdef -d rsync
 compdef -d tar
 compdef -d make
 compdef -d java
