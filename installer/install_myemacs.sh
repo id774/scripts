@@ -3,6 +3,7 @@
 ########################################################################
 # Install emacs
 #  $1 = prefix
+#  $2 = nosudo
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
