@@ -33,7 +33,7 @@ setup_environment() {
 }
 
 set_permission() {
-    $SUDO chown $OWNER -R $TARGET
+    $SUDO chown -R $OWNER $TARGET
 }
 
 zsh_compile() {
