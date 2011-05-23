@@ -1,6 +1,9 @@
 # Incremental completion for zsh
 # by y.fujii <y-fujii at mimosa-pudica.net>, public domain
-
+#
+# incr-0.2.zsh
+# Last Change: 23-May-2011.
+# Maintainer:  id774 <idnanashi@gmail.com>
 
 autoload -U compinit
 zle -N self-insert self-insert-incr
