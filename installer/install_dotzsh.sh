@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 #
 ########################################################################
 # Install dot_zsh
@@ -36,10 +36,24 @@ set_permission() {
     $SUDO chown $OWNER -R $TARGET
 }
 
+zsh_compile() {
+    zsh -c 'zcompile $SCRIPTS/dot_files/dot_zsh/templates/base.zsh'
+    zsh -c 'zcompile $SCRIPTS/dot_files/dot_zsh/templates/screen.zsh'
+    zsh -c 'zcompile $SCRIPTS/dot_files/dot_zsh/plugins/incr.zsh'
+}
+
+zsh_cleanup() {
+    rm -f $SCRIPTS/dot_files/dot_zsh/templates/base.zsh.zwc
+    rm -f $SCRIPTS/dot_files/dot_zsh/templates/screen.zsh.zwc
+    rm -f $SCRIPTS/dot_files/dot_zsh/plugins/incr.zsh.zwc
+}
+
 install_dotzsh() {
     setup_environment $*
     test -d $TARGET || $SUDO mkdir -p $TARGET
+    zsh_compile
     $SUDO cp $OPTIONS $SCRIPTS/dot_files/dot_zsh/* $TARGET/
+    zsh_cleanup
     test -n "$2" || set_permission
 }
 
