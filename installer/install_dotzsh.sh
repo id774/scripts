@@ -37,14 +37,22 @@ set_permission() {
 }
 
 zsh_compile() {
-    zsh -c 'zcompile $SCRIPTS/dot_files/dot_zsh/templates/base.zsh'
-    zsh -c 'zcompile $SCRIPTS/dot_files/dot_zsh/templates/screen.zsh'
+    zsh -c 'zcompile $SCRIPTS/dot_files/dot_zsh/lib/load.zsh'
+    zsh -c 'zcompile $SCRIPTS/dot_files/dot_zsh/lib/base.zsh'
+    zsh -c 'zcompile $SCRIPTS/dot_files/dot_zsh/lib/screen.zsh'
+    zsh -c 'zcompile $SCRIPTS/dot_files/dot_zsh/plugins/cryptfs.zsh'
+    zsh -c 'zcompile $SCRIPTS/dot_files/dot_zsh/plugins/proxy.zsh'
+    zsh -c 'zcompile $SCRIPTS/dot_files/dot_zsh/plugins/java.zsh'
     zsh -c 'zcompile $SCRIPTS/dot_files/dot_zsh/plugins/incr.zsh'
 }
 
 zsh_cleanup() {
-    rm -f $SCRIPTS/dot_files/dot_zsh/templates/base.zsh.zwc
-    rm -f $SCRIPTS/dot_files/dot_zsh/templates/screen.zsh.zwc
+    rm -f $SCRIPTS/dot_files/dot_zsh/lib/load.zsh.zwc
+    rm -f $SCRIPTS/dot_files/dot_zsh/lib/base.zsh.zwc
+    rm -f $SCRIPTS/dot_files/dot_zsh/lib/screen.zsh.zwc
+    rm -f $SCRIPTS/dot_files/dot_zsh/plugins/cryptfs.zsh.zwc
+    rm -f $SCRIPTS/dot_files/dot_zsh/plugins/proxy.zsh.zwc
+    rm -f $SCRIPTS/dot_files/dot_zsh/plugins/java.zsh.zwc
     rm -f $SCRIPTS/dot_files/dot_zsh/plugins/incr.zsh.zwc
 }
 

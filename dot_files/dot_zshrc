@@ -1,6 +1,6 @@
 # .zshrc
 #
-# Last Change: 23-May-2011.
+# Last Change: 24-May-2011.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 show_window_title() {
@@ -47,12 +47,12 @@ show_window_title() {
 }
 
 main() {
-    if [ -f ~/.zsh/templates/base.zsh ]; then
-        source ~/.zsh/templates/base.zsh
-    elif [ -f /etc/zsh/templates/base.zsh ]; then
-        source /etc/zsh/templates/base.zsh
+    show_window_title
+    if [ -f $HOME/.zsh/lib/load.zsh ]; then
+        source $HOME/.zsh/lib/load.zsh
+    elif [ -f /etc/zsh/lib/load.zsh ]; then
+        source /etc/zsh/lib/load.zsh
     fi
 }
 
-show_window_title
 main

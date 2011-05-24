@@ -1,5 +1,5 @@
 # base.zsh
-# Last Change: 23-May-2011.
+# Last Change: 24-May-2011.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 set_gnu_env() {
@@ -243,48 +243,14 @@ set_private_path() {
     fi
 }
 
-mount_cryptfs() {
-    test -d $HOME/crypt/bin && test -d $HOME/bin || cryptmount home-$USER-crypt
-}
-
-set_standard_options() {
+base_main() {
     set_basic_options
     set_terminal_options
     set_os_env
-    test -r $HOME/local/crypt.fs && mount_cryptfs
     set_tmp_path $HOME/.tmp
     set_private_path $HOME/private/scripts
     set_scripts_path $HOME/scripts
     test -d $HOME/bin && export PATH=$HOME/bin:$PATH
 }
 
-load_local_settings() {
-    if [ -f ~/.zshrc_local ]; then
-        source ~/.zshrc_local
-    fi
-}
-
-load_plugins() {
-    if [ -d ~/.zsh/plugins ]; then
-        source ~/.zsh/plugins/*
-    elif [ -d /etc/zsh/plugins ]; then
-        source /etc/zsh/plugins/*
-    fi
-}
-
-call_screen() {
-    if [ -f ~/.zsh/templates/screen.zsh ]; then
-        source ~/.zsh/templates/screen.zsh
-    elif [ -f /etc/zsh/templates/screen.zsh ]; then
-        source /etc/zsh/templates/screen.zsh
-    fi
-}
-
-zshrc_main() {
-    set_standard_options
-    load_local_settings
-    load_plugins
-    call_screen
-}
-
-zshrc_main
+base_main
