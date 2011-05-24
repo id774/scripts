@@ -12,10 +12,16 @@ call_screen() {
 
 load_plugins() {
     if [ -d /etc/zsh/plugins ]; then
-        source /etc/zsh/plugins/*
+        for PLUGIN in /etc/zsh/plugins/*.zsh
+        do
+            source $PLUGIN
+        done
     fi
     if [ -d $HOME/.zsh/plugins ]; then
-        source $HOME/.zsh/plugins/*
+        for PLUGIN in $HOME/.zsh/plugins/*.zsh
+        do
+            source $PLUGIN
+        done
     fi
 }
 
