@@ -43,11 +43,10 @@ sudo apt-get -y install openjdk-6-jdk
 sudo apt-get -y install mew stunnel ca-certificates
 
 # Deploy dot_files
-$SCRIPTS/installer/install_dotfiles.sh
-$SCRIPTS/installer/install_dotzsh.sh
-$SCRIPTS/installer/install_dotvim.sh
-
 ~/local/github/dot_emacs/install_dotemacs.sh
+~/local/github/dot_zsh/install_dotzsh.sh
+$SCRIPTS/installer/install_dotfiles.sh
+$SCRIPTS/installer/install_dotvim.sh
 
 # Termtter
 $PRIVATE/installer/install_dottermtter.sh

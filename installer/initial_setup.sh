@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.5 5/24,2011
+#       For zsh framework.
 #  v2.4 3/28,2011
 #       Remove building ruby 1.9 from default.
 #  v2.3 2/28,2011
@@ -237,11 +239,13 @@ sudo apt-get -y install ctags
 # dot_vim
 $SCRIPTS/installer/install_dotvim.sh
 
-# dot_files
-$SCRIPTS/installer/install_dotfiles.sh
-
 # dot_zsh
-$SCRIPTS/installer/install_dotzsh.sh
+test -d ~/local/github || mkdir -p ~/local/github
+cd ~/local/github
+git clone git://github.com/id774/dot_zsh.git
+cd
+ln -s ~/local/github/dot_zsh
+~/local/github/dot_zsh/install_dotzsh.sh
 
 # dot_emacs
 test -d ~/local/github || mkdir -p ~/local/github
@@ -251,6 +255,9 @@ cd
 ln -s ~/local/github/dot_emacs
 ~/local/github/dot_emacs/install_dotemacs.sh
 #$SCRIPTS/installer/install_mew.sh /opt/emacs/23.3/bin/emacs
+
+# dot_files
+$SCRIPTS/installer/install_dotfiles.sh
 
 # sshfs
 sudo apt-get -y install sshfs
