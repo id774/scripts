@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.4 5/27,2011
+#       Debian only scripts was moved.
 #  v0.3 3/25,2011
 #       Install dpkg-hold for Debian.
 #  v0.2 12/04,2010
@@ -38,8 +40,6 @@ setup_scripts() {
     install_scripts 755 chmodtree.py chmodtree
     install_scripts 755 cltmp.sh cltmp
     install_scripts 755 copydir.py copydir
-    install_scripts 755 get_resources.sh get_resources
-    install_scripts 755 tcmount.py tcmount
     install_scripts 755 namecalc.rb namecalc
     install_scripts 755 waitlock.rb waitlock
     install_scripts 755 swapext.py swapext
@@ -47,6 +47,8 @@ setup_scripts() {
 
 setup_debian_scripts() {
     install_scripts 755 dpkg-hold.sh dpkg-hold
+    install_scripts 755 get_resources.sh get_resources
+    install_scripts 755 tcmount.py tcmount
 }
 
 setup_sysadmin_scripts() {
