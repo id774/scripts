@@ -94,6 +94,7 @@ bulk_deploy() {
       /etc/skel \
       /home/plagger \
       /home/twitter \
+      /home/tiarra \
       /home/skrud \
       /home/testuser \
       /var/lib/postgresql \
