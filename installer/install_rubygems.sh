@@ -9,6 +9,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.13 5/31,2011
+#       Fix specify the version problem.
 # v1.12 5/13,2011
 #       Update to 1.8.2.
 # v1.11 5/9,2011
@@ -121,7 +123,6 @@ install_rubygems() {
     test -n "$6" || save_sources
     cd ..
     rm -rf install_rubygems
-    sudo $GEM update --system $3 $4 $5
     $GEM list --local
 }
 
