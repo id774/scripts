@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.12 6/2,2011
+#       Fix specify the version problem.
 # v1.11 5/16,2011
 #       Add log4r.
 # v1.10 2/24,2011
@@ -37,7 +39,6 @@ install_gem() {
     test -n "$1" && export GEM=$1/bin/gem
     test -n "$1" || export GEM=gem
     export RUBYOPT=rubygems
-    sudo $GEM update $2 $3 $4
     #sudo $GEM install mongrel $2 $3 $4
     #sudo $GEM install mongrel_cluster $2 $3 $4
     sudo $GEM install mechanize $2 $3 $4
