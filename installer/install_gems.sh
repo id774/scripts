@@ -66,6 +66,7 @@ install_gem() {
     sudo $GEM install msgpack-rpc $2 $3 $4
     sudo $GEM install log4r $2 $3 $4
     sudo $GEM install sinatra $2 $3 $4
+    sudo $GEM install -v 0.4.2 i18n $2 $3 $4
     $GEM list --local
 }
 
