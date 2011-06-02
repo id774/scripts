@@ -99,12 +99,6 @@ install_rubygems() {
       137)
         get_rubygems 1.3.7 70697
         ;;
-      142)
-        get_rubygems 1.4.2 73833
-        ;;
-      153)
-        get_rubygems 1.5.3 74344
-        ;;
       162)
         get_rubygems 1.6.2 74446
         ;;

@@ -25,7 +25,7 @@ sudo apt-get install -y libcurl4-gnutls-dev
 $SCRIPTS/installer/install_iptables.sh
 
 # RubyGems
-$SCRIPTS/installer/install_rubygems.sh latest /opt/ruby/1.9.2
+$SCRIPTS/installer/install_rubygems.sh 162 /opt/ruby/1.9.2
 $SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.2
 $SCRIPTS/installer/install_rails.sh 300 /opt/ruby/1.9.2
 /opt/ruby/1.9.2/bin/vim-ruby-install.rb
@@ -33,8 +33,6 @@ $SCRIPTS/installer/install_rails.sh 300 /opt/ruby/1.9.2
 # Passenger
 $SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.2
 $SCRIPTS/config/update-alternatives-ruby.sh
-
-sudo /opt/ruby/1.9.2/bin/gem cleanup
 
 # Java JDK
 sudo apt-get -y install openjdk-6-jdk

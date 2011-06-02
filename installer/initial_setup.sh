@@ -350,7 +350,7 @@ sudo apt-get -y install ruby1.8 ruby1.8-dev rubygems rubygems1.8
 $SCRIPTS/config/update-alternatives-ruby.sh
 
 # RubyGems
-#$SCRIPTS/installer/install_rubygems.sh latest /opt/ruby/1.9.2
+#$SCRIPTS/installer/install_rubygems.sh 162 /opt/ruby/1.9.2
 #$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.2
 #$SCRIPTS/installer/install_rails.sh 300 /opt/ruby/1.9.2
 #/opt/ruby/1.9.2/bin/vim-ruby-install.rb
