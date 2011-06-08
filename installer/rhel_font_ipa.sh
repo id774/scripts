@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 ########################################################################
-# Install IPA font for CentOS 5
+# Install IPA font for RHEL
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #

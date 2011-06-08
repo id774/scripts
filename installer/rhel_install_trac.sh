@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 ########################################################################
-# Install Trac and Subversion Server for CentOS 5
+# Install Trac and Subversion Server for RHEL
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #

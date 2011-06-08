@@ -1,10 +1,12 @@
 #!/bin/sh
 #
 ########################################################################
-# Yum Install Script for CentOS 5
+# Yum Install Script for RHEL
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.4 6/8,2011
+#       Update to RHEL 6.
 #  v0.3 8/29,2010
 #       Various packages added.
 #  v0.2 9/19,2007
@@ -13,18 +15,22 @@
 #       First version.
 ########################################################################
 
+sudo yum -y install yum-fastestmirror
+sudo yum -y install git git-all
 sudo yum -y install openssh-server
 sudo yum -y install ssh
-sudo yum -y install gcc g++ g77
+sudo yum -y install gcc g++ g77 gcc-c++
 sudo yum -y install tar zip gzip unzip bzip2
 sudo yum -y install lha-sjis
 sudo yum -y install build-essential
 sudo yum -y install patch
 sudo yum -y install zsh
 sudo yum -y install screen
+sudo yum -y install curl-devel
+sudo yum -y install zlib-devel
 sudo yum -y install fuse fuse-devel
 sudo yum -y install httpd
-sudo yum -y install mysql-server
+sudo yum -y install mysql mysql-server mysql-devel
 sudo yum -y install sqlite sqlite-devel
 sudo yum -y install php
 sudo yum -y install php-mbstring
@@ -64,6 +70,9 @@ sudo yum -y install yumex yum-utils gconf-editor hwbrowser rpm-build
 sudo yum -y install atop fortune-all
 sudo yum -y install emacs* anthy-el
 sudo yum -y install w3m
+sudo yum -y install httpd-devel
+sudo yum -y install apr-devel
+sudo yum -y install apr-util-devel
 #sudo yum -y install nautilus-open-terminal
 #sudo yum -y install samba samba-client samba-swat
 #sudo yum -y install kdebase kdeartwork kdegraphics kdemultimedia
