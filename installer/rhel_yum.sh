@@ -20,6 +20,7 @@ sudo yum -y install git git-all
 sudo yum -y install openssh-server
 sudo yum -y install ssh
 sudo yum -y install gcc g++ g77 gcc-c++
+sudo yum -y install bison
 sudo yum -y install tar zip gzip unzip bzip2
 sudo yum -y install lha-sjis
 sudo yum -y install build-essential
