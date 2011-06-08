@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 6/8,2011
+#       Fix typo.
 #  v0.1 9/26,2010
 #       First.
 ########################################################################
@@ -26,7 +28,7 @@ install_sqlite() {
     setup_environment $*
     mkdir install_sqlite
     cd install_sqlite
-    wget wget http://www.sqlite.org/sqlite-$VERSION.tar.gz
+    wget http://www.sqlite.org/sqlite-$VERSION.tar.gz
     tar xzvf sqlite-$VERSION.tar.gz
     cd sqlite-$VERSION
     ./configure --disable-tcl
