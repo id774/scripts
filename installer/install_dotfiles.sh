@@ -90,6 +90,7 @@ bulk_deploy() {
       /home/debian \
       /home/ubuntu \
       /home/centos \
+      /home/sl \
       /home/admin \
       /etc/skel \
       /home/plagger \
