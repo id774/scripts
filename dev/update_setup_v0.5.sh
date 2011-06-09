@@ -7,20 +7,6 @@
 export SCRIPTS=$HOME/scripts
 export PRIVATE=$HOME/private/scripts
 
-# Need i386 or amd64 option
-test -n "$1" || exit 1
-
-# APT Update
-DISTRIB_CODENAME=lucid
-SOURCESLIST=sources-$DISTRIB_CODENAME.list
-sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
-sudo vim /etc/apt/sources.list
-sudo apt-get update
-
-sudo chsh -s /bin/sh root
-$SCRIPTS/installer/install_mysql.py -c
-sudo apt-get install -y libcurl4-gnutls-dev
-
 # iptables
 $SCRIPTS/installer/install_iptables.sh
 
@@ -50,20 +36,10 @@ $SCRIPTS/installer/install_dotvim.sh
 $PRIVATE/installer/install_dottermtter.sh
 $SCRIPTS/installer/install_termtter_plugins.sh
 
-# cronjob
-$SCRIPTS/installer/install_cronjob.sh
-
 # Permissions for /src
 sudo chown -R root:root /usr/src
 sudo chown -R root:root /usr/local/src
 
 # sysadmin scripts
 $SCRIPTS/installer/setup_sysadmin_scripts.sh
-
-# GnuPG
-test -d $HOME/.gnupg || $PRIVATE/installer/install_dotgnupg.sh
-
-# hosts
-cp ~/private/secure/dot_ssh/known_hosts ~/.ssh/known_hosts
-sudo vim /etc/hosts $PRIVATE/etc/hosts
 
