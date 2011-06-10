@@ -97,15 +97,10 @@ gitpull_all() {
     gitpull github id774 batch_framework
     gitpull github id774 intraweb-template
     gitpull github jugyo termtter $*
-    gitpull github hayamiz twittering-mode $*
     gitpull github miyagawa plagger $*
     gitpull github m2ym auto-complete $*
     gitpull github mooz js2-mode $*
     gitpull github genki rub $*
-    gitpull github sinatra sinatra $*
-    gitpull github mitsuhiko flask $*
-    gitpull github mitsuhiko werkzeug $*
-    gitpull github mitsuhiko jinja2 $*
 }
 
 main() {
