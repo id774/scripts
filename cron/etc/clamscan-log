@@ -1,11 +1,11 @@
-/var/log/clamav_upgrade {
+/var/log/clamav/clamav.log {
   weekly
   missingok
   create 0640 root adm
   rotate 26
 }
 
-/var/log/clamscan.log {
+/var/log/clamav/clamscan.log {
   weekly
   missingok
   create 0640 root adm

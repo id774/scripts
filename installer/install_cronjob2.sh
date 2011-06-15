@@ -36,5 +36,7 @@ sudo chmod 644 /etc/logrotate.d/rsync_backup
 sudo chown root:root /etc/logrotate.d/rsync_backup
 
 # Edit crontab
-sudo vim /etc/crontab $SCRIPTS/cron/plagger/crontab
+# 50 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday
+# 55 6  * * 6   root cd / && run-parts --report /etc/cron.weekend
+sudo vim /etc/crontab
 
