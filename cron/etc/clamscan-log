@@ -1,5 +1,7 @@
 /var/log/clamav/clamav.log {
   weekly
+  compress
+  delaycompress
   missingok
   create 0640 clamav adm
   rotate 26
@@ -7,6 +9,8 @@
 
 /var/log/clamav/clamscan.log {
   weekly
+  compress
+  delaycompress
   missingok
   create 0640 clamav adm
   rotate 26

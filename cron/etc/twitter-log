@@ -1,5 +1,7 @@
 /var/log/twitter.log {
   daily
+  compress
+  delaycompress
   missingok
   create 0640 plagger adm
   rotate 1024
