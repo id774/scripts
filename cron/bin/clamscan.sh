@@ -17,7 +17,7 @@
 #       New.
 ########################################################################
 TARGETDIRS="/"
-LOGFILE=/var/log/clamav.log
+LOGFILE=/var/log/clamav/clamav.log
 EXECDIR=${0%/*}
 EXCLUDEFILE=$EXECDIR/clamscan_exclude 
 

@@ -1,7 +1,7 @@
 #!/bin/sh
 
-JOBLOG=/var/log/clamscan.log
-SCANLOG=/var/log/clamav.log
+JOBLOG=/var/log/clamav/clamscan.log
+SCANLOG=/var/log/clamav/clamav.log
 
 echo -n "*** $0: Job start at `/bin/hostname` on ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1
