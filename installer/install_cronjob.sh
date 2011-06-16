@@ -15,6 +15,9 @@
 #       Stable.
 ########################################################################
 
+test -d /etc/cron.weekday || sudo mkdir /etc/cron.weekday
+test -d /etc/cron.weekend || sudo mkdir /etc/cron.weekend
+
 # Daily Backup Job
 sudo cp $SCRIPTS/cron/bin/backup.sh /root/bin/backup.sh
 sudo vim /root/bin/backup.sh
@@ -66,5 +69,5 @@ sudo chown root:root /etc/logrotate.d/resources
 # Edit crontab
 # 50 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday
 # 55 6  * * 6   root cd / && run-parts --report /etc/cron.weekend
-sudo vim /etc/crontab
+sudo vim /etc/crontab $SCRIPTS/installer/install_cronjob.sh
 

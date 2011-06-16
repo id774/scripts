@@ -1,17 +1,13 @@
-deb     http://jp.archive.ubuntu.com/ubuntu/ hardy main restricted universe multiverse
-deb-src http://jp.archive.ubuntu.com/ubuntu/ hardy main restricted universe multiverse
-deb     http://jp.archive.ubuntu.com/ubuntu/ hardy-updates main restricted universe multiverse
-deb-src http://jp.archive.ubuntu.com/ubuntu/ hardy-updates main restricted universe multiverse
-deb     http://security.ubuntu.com/ubuntu/   hardy-security main restricted universe multiverse
-deb-src http://security.ubuntu.com/ubuntu/   hardy-security main restricted universe multiverse
-#deb     http://jp.archive.ubuntu.com/ubuntu/ hardy-backports main restricted universe multiverse
-#deb-src http://jp.archive.ubuntu.com/ubuntu/ hardy-backports main restricted universe multiverse
-#deb     http://archive.ubuntulinux.jp/ubuntu-ja hardy/
-#deb-src http://archive.ubuntulinux.jp/ubuntu-ja hardy/
-#deb     http://archive.ubuntulinux.jp/ubuntu-ja hardy-ja/
-#deb-src http://archive.ubuntulinux.jp/ubuntu-ja hardy-ja/
-deb     http://ppa.launchpad.net/avassalotti/ubuntu hardy main
-deb-src http://ppa.launchpad.net/avassalotti/ubuntu hardy main
+deb     http://jp.archive.ubuntu.com/ubuntu/ hardy main restricted #universe multiverse
+deb-src http://jp.archive.ubuntu.com/ubuntu/ hardy main restricted #universe multiverse
+deb     http://jp.archive.ubuntu.com/ubuntu/ hardy-updates main restricted #universe multiverse
+deb-src http://jp.archive.ubuntu.com/ubuntu/ hardy-updates main restricted #universe multiverse
+deb     http://security.ubuntu.com/ubuntu/   hardy-security main restricted #universe multiverse
+deb-src http://security.ubuntu.com/ubuntu/   hardy-security main restricted #universe multiverse
+#deb     http://jp.archive.ubuntu.com/ubuntu/ hardy-backports main restricted #universe multiverse
+#deb-src http://jp.archive.ubuntu.com/ubuntu/ hardy-backports main restricted #universe multiverse
+#deb     http://ppa.launchpad.net/avassalotti/ubuntu hardy main
+#deb-src http://ppa.launchpad.net/avassalotti/ubuntu hardy main
 #deb     http://ppa.launchpad.net/chromium-daily/ppa/ubuntu hardy main
 #deb-src http://ppa.launchpad.net/chromium-daily/ppa/ubuntu hardy main
 #deb     http://download.skype.com/linux/repos/debian/ stable non-free

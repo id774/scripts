@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v3.0 6/16,2011
+#       Fork from Initial Setup Script, cut off debian apt.
 #  v2.5 5/24,2011
 #       For zsh framework.
 #  v2.4 3/28,2011
@@ -96,13 +98,6 @@ export SCRIPTS=$HOME/scripts
 cat /proc/meminfo
 cat /proc/cpuinfo
 
-# Admin Groups
-sudo groupadd admin
-sudo groupadd wheel
-
-# Network Settings
-$SCRIPTS/installer/install_pppconfig.sh
-
 # tune2fs
 test -b /dev/sda0  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda0
 test -b /dev/sda1  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda1
@@ -122,23 +117,17 @@ test -b /dev/mapper/`/bin/hostname`-opt  && sudo tune2fs -i 0 -c 0 -m 1 /dev/map
 test -b /dev/mapper/`/bin/hostname`-usr  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-usr
 test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-home
 
-# Stop Services
-sudo update-rc.d -f cupsys remove
-sudo update-rc.d -f hplip remove
-sudo apt-get remove apt-index-watcher
+# Admin Groups
+sudo groupadd admin
+sudo groupadd wheel
 
-# Vim
-sudo apt-get -y install vim
-
-# Http
-sudo apt-get -y install w3m
-sudo apt-get -y install lynx
-sudo apt-get -y install wget
-#sudo apt-get -y install curl
-#sudo apt-get -y install ncftp
-
-# chromium-daily GPG keys
-#sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfbef0d696de1c72ba5a835fe5a9bf3bb4e5e17b5
+# APT Update
+DISTRIB_CODENAME=squeeze
+test -f /etc/lsb-release && DISTRIB_CODENAME=lucid
+SOURCESLIST=sources-$DISTRIB_CODENAME.list
+sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
+sudo vim /etc/apt/sources.list
+sudo apt-get update
 
 # Ubuntu-ja GPG
 #eval `cat /etc/lsb-release`
@@ -146,93 +135,48 @@ sudo apt-get -y install wget
 #sudo wget http://www.ubuntulinux.jp/sources.list.d/$DISTRIB_CODENAME.list -O /etc/apt/sources.list.d/ubuntu-ja.list
 #sudo apt-get update
 
-# APT Update
-DISTRIB_CODENAME=squeeze
-SOURCESLIST=sources-$DISTRIB_CODENAME.list
-sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
-sudo vim /etc/apt/sources.list
-sudo apt-get update
+# chromium-daily GPG keys
+#sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfbef0d696de1c72ba5a835fe5a9bf3bb4e5e17b5
+
+# apt packages
+$SCRIPTS/installer/debian_apt.sh
+
+# Network Settings
+$SCRIPTS/installer/install_pppconfig.sh
+
+# Stop Services
+sudo update-rc.d -f cupsys remove
+sudo update-rc.d -f hplip remove
+sudo apt-get remove apt-index-watcher
 
 # Home Permission
 sudo mkdir -p /opt/sbin
 sudo mkdir -p /opt/bin
 sudo chmod 750 /home/*
 
-# SSH
-sudo apt-get -y install openssh-server ssh
-
-# Compiler
-sudo apt-get -y install build-essential
-sudo apt-get -y install gcc g++ g77
-
-# Archiver
-sudo apt-get -y install p7zip p7zip-full p7zip-rar
-sudo apt-get -y install tar zip gzip unzip bzip2
-sudo apt-get -y install lha
-
 # zsh/screen
 sudo apt-get -y install zsh
 chsh -s /bin/zsh
 sudo chsh -s /bin/sh root
-sudo apt-get -y install screen
-
-# System
-sudo apt-get -y install rsyslog
-sudo apt-get -y install sysvconfig
-sudo apt-get -y install ntp
-sudo apt-get -y install keychain
-sudo apt-get -y install locales
-sudo apt-get -y install nkf
-sudo apt-get -y install mailx
-sudo apt-get -y install xdelta
-sudo apt-get -y install anacron
-sudo apt-get -y install linux-source-2.6
-sudo apt-get -y install checkinstall
-sudo apt-get -y install alien
-sudo apt-get -y install uim uim-anthy uim-el
-sudo apt-get -y install libxslt-dev libxslt-ruby python-libxslt1
-
-# Programming
-sudo apt-get -y install nasm
-sudo apt-get -y install gauche
-sudo apt-get -y install clisp
-sudo apt-get -y install scheme48 cmuscheme48-el
-sudo apt-get -y install ghc
-sudo apt-get -y install global
-
-# SCM
-sudo apt-get -y install subversion
-sudo apt-get -y install git-core git-cvs git-svn git-email
-sudo apt-get -y install svk
 
 # Debian Developer Tools
-sudo apt-get -y install dpkg-dev lintian debhelper yada equivs cvs-buildpackage dupload fakeroot devscripts debget
-sudo apt-get -y install apt-listchanges apt-listbugs
 sudo vim /etc/apt/apt.conf.d/10apt-listbugs*
 
 # Exim4
-sudo apt-get -y install exim4
 sudo dpkg-reconfigure exim4-config
 
 # paco
 #$SCRIPTS/installer/install_paco.sh
 
 # Editor
-sudo apt-get -y install texinfo
-sudo apt-get -y install emacs23 emacs23-el
-sudo apt-get -y install mew stunnel ca-certificates
 #$SCRIPTS/installer/install_emacs.sh 23.3 /opt/emacs/23.3
 #$SCRIPTS/installer/install_emacs_w3m.sh 23.3 /opt/emacs/23.3
 #sudo ln -fs /opt/emacs/23.3/bin/emacs /opt/bin/emacs
-sudo apt-get -y install w3m-el-snapshot w3m-img imagemagick
-sudo apt-get -y remove uim-el
-sudo apt-get -y install vim-gui-common vim-runtime colordiff
-sudo apt-get -y install ctags
 
 # navi2ch
 #$SCRIPTS/installer/install_navi2ch.sh
 
-# Vim (Original Build)
+# Vim
 #$SCRIPTS/installer/install_ncurses.sh
 #$SCRIPTS/installer/install_vim.sh
 
@@ -260,18 +204,12 @@ ln -s ~/local/github/dot_emacs
 $SCRIPTS/installer/install_dotfiles.sh
 
 # sshfs
-sudo apt-get -y install sshfs
 sudo vim /etc/modules
 
 # Samba (Not Recommended)
-#sudo apt-get -y install samba smbfs smbclient swat
 #sudo update-rc.d -f samba remove
 #sudo cp $SCRIPTS/etc/smb.conf /etc/samba/smb.conf
 #sudo smbpasswd -a $USER
-
-# SQLite
-#sudo apt-get -y install sqlite
-sudo apt-get -y install sqlite3
 
 # PostgreSQL
 $SCRIPTS/installer/install_postgres.py install
@@ -279,28 +217,11 @@ $SCRIPTS/installer/install_postgres.py install
 # MySQL
 $SCRIPTS/installer/install_mysql.py install -c
 
-# Optional Libraries
-sudo apt-get -y install migemo
-sudo apt-get -y install gnuserv
-sudo apt-get -y install mingw32 mingw32-binutils mingw32-runtime
-sudo apt-get -y install libxml2 libxml2-dev
-sudo apt-get -y install libxslt1-dev libxml-dev
-sudo apt-get -y install expat libexpat-dev
-sudo apt-get -y install libssl-dev libio-socket-ssl-perl libnet-ssleay-perl
-sudo apt-get -y install libtemplate-perl libxml-libxml-perl
-
-# exiftool
-sudo apt-get -y install exiftool libimage-exiftool-perl jhead
-
 # KVM
-if [ `egrep '^flags.*(vmx|svm)' /proc/cpuinfo | wc -l` != 0 ]; then
-    sudo apt-get -y install kvm libvirt-bin
-    sudo apt-get -y install python-libvirt
-    #sudo apt-get -y install virt-manager
-    sudo apt-get -y Install kqemu-source qemu
-    sudo addgroup $USER libvirtd
-    sudo addgroup $USER kvm
-fi
+#if [ `egrep '^flags.*(vmx|svm)' /proc/cpuinfo | wc -l` != 0 ]; then
+#    sudo addgroup $USER libvirtd
+#    sudo addgroup $USER kvm
+#fi
 
 # Crypt
 $SCRIPTS/installer/install_des.sh
@@ -310,44 +231,27 @@ $SCRIPTS/installer/install_crypt.sh mac 7.0a
 $SCRIPTS/installer/install_crypt.sh linux-i386 7.0a
 #$SCRIPTS/installer/install_crypt.sh linux-amd64 7.0a
 
-# Security (Anti-Virus)
-sudo apt-get -y install clamav
-#$SCRIPTS/installer/install_clamav.sh
-
 # iptables
 $SCRIPTS/installer/install_iptables.sh
 
-# manpages
-sudo apt-get -y install manpages-ja
-sudo apt-get -y install manpages-ja-dev
-sudo apt-get -y install xmanpages-ja
-
 # sysstat
-sudo apt-get -y install sysstat
 sudo dpkg-reconfigure sysstat
 # ENABLED="true"
 sudo vim /etc/default/sysstat
 
 # hddtemp
-sudo apt-get -y install lm-sensors
-sudo apt-get -y install hddtemp
 sudo dpkg-reconfigure hddtemp
 
 # smartmontools
-sudo apt-get -y install smartmontools
 # start_smartd=yes
 # smartd_opts="--interval=7200"
 sudo vim /etc/default/smartmontools
 
 # Ruby
-sudo apt-get -y install autoconf byacc bison autoconf-doc automake
-sudo apt-get -y install libopenssl-ruby libreadline-dev ruby
-sudo apt-get -y install ruby1.8 ruby1.8-dev rubygems rubygems1.8
-#sudo apt-get -y install ruby1.9 ruby1.9-dev rubygems rubygems1.9
 #$SCRIPTS/installer/install_ruby.sh 187-svn /opt/ruby/1.8.7
 #$SCRIPTS/installer/install_ruby.sh 191-svn /opt/ruby/1.9.1
 #$SCRIPTS/installer/install_ruby.sh 192-svn /opt/ruby/1.9.2
-$SCRIPTS/config/update-alternatives-ruby.sh
+#$SCRIPTS/config/update-alternatives-ruby.sh
 
 # RubyGems
 #$SCRIPTS/installer/install_rubygems.sh 162 /opt/ruby/1.9.2
@@ -371,32 +275,10 @@ $SCRIPTS/config/update-alternatives-ruby.sh
 # Trac
 #$SCRIPTS/installer/install_trac.sh
 
-# Apache
-#sudo apt-get -y install apache2
-#sudo apt-get -y install apache2-mpm-prefork
-#sudo apt-get -y install apache-perl
-
-# Apache Utility
-#sudo apt-get -y install apache2-utils
-
-# Java JDK
-sudo apt-get -y install openjdk-6-jdk
-#sudo apt-get -y install sun-java6-jdk
-
-# Linux kernel source, headers, kbuild (Debian)
-#sudo apt-get -y install linux-kbuild-2.6.32 linux-headers-2.6.32-5-686 linux-source-2.6.32
-
 # sysadmin scripts
 $SCRIPTS/installer/setup_sysadmin_scripts.sh
 
-# Upgrade
-sudo apt-get update && sudo apt-get upgrade && sudo apt-get autoclean
-
 # GUI Desktop Xfce4(Debian) / Xubuntu(Ubuntu)
-#sudo apt-get install -y xfce4
-#sudo apt-get install -y xubuntu-desktop
-#sudo apt-get -y install xfwm4 xfwm4-themes
-#sudo apt-get -y install xfce4-goodies
 #im-switch -c
 #sudo rmmod pcspkr
 test -r /etc/modprobe.d/blacklist && sudo vim /etc/modprobe.d/blacklist
@@ -406,9 +288,6 @@ test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.con
 #which s2ram > /dev/null && which xflock4 > /dev/null && sudo cp $SCRIPTS/xfsuspend.sh /usr/local/sbin/xfsuspend && sudo chown root:root /usr/local/sbin/xfsuspend && sudo chmod 755 /usr/local/sbin/xfsuspend && sudo vim /usr/local/sbin/xfsuspend
 # xfce4 custom themes
 #test -f /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc && sudo cp ~/scripts/etc/themes/xfce-dusk/gtkrc /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc
-
-# Ubuntu-ja
-#sudo apt-get -y install ubuntu-desktop-ja
 
 # GDM Themes
 #$SCRIPTS/installer/install_gdmthemes.sh
@@ -421,64 +300,8 @@ test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.con
 #sudo chmod -R 755 /usr/local/share/share-documents
 #ln -s /usr/local/share/share-documents ~/share
 
-# Fonts
-#sudo apt-get -y install xfonts-mplus
-#sudo apt-get -y install xfonts-shinonome
-#sudo apt-get -y install ttf-vlgothic ttf-bitstream-vera
-
-# Codec
-#sudo apt-get -y install ubuntu-restricted-extras
-#sudo apt-get -y install xubuntu-restricted-extras
-
-# Icons
-#sudo apt-get -y install ubuntu-artwork xubuntu-artwork human-icon-theme
-#sudo apt-get -y install gnome-themes gnome-themes-extras
-
-# OpenOffice.org
-#sudo apt-get -y install openoffice.org
-
 # Iceweasel and Icedove (Debian)
 #$SCRIPTS/installer/install_iceweasel.sh
-
-# Mozilla Thunderbird (Ubuntu)
-#sudo apt-get -y install mozilla-thunderbird
-
-# gthumb
-#sudo apt-get -y install gthumb
-
-# thunar
-#sudo apt-get -y install thunar
-
-# vlc
-#sudo apt-get -y install vlc
-
-# pidgin
-#sudo apt-get -y install pidgin
-
-# pdf
-#sudo apt-get -y install xpdf xpdf-reader
-
-# 2ch Browser
-#sudo apt-get -y install ochusha
-#sudo apt-get -y install jd
-
-# Comic Viewer
-#sudo apt-get -y install comix
-
-# CD/DVD Creator
-#sudo apt-get -y install gnomebaker
-
-# P2P
-#sudo apt-get -y install skype
-
-# MSN
-#sudo apt-get -y install amsn
-
-# Wireshark
-#sudo apt-get -y install wireshark
-
-# chromium-daily
-#sudo apt-get -y install chromium-browser
 
 # Install plagger plugin
 #$SCRIPTS/installer/install_plagger_plugins.sh

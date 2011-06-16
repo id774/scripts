@@ -1,7 +1,3 @@
 deb     http://ftp.jp.debian.org/debian/ sid main contrib non-free
 deb-src http://ftp.jp.debian.org/debian/ sid main contrib non-free
-deb     http://ppa.launchpad.net/avassalotti/ubuntu karmic main
-deb-src http://ppa.launchpad.net/avassalotti/ubuntu karmic main
-#deb     http://ppa.launchpad.net/chromium-daily/ppa/ubuntu karmic main
-#deb-src http://ppa.launchpad.net/chromium-daily/ppa/ubuntu karmic main
-deb     http://download.skype.com/linux/repos/debian/ stable non-free
+#deb     http://download.skype.com/linux/repos/debian/ stable non-free

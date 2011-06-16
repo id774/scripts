@@ -108,6 +108,13 @@ $SCRIPTS/installer/install_dotfiles.sh
 #sudo chmod -R 755 /usr/local/share/share-documents
 #ln -s /usr/local/share/share-documents ~/share
 
+# Crypt
+$SCRIPTS/installer/install_des.sh
+$SCRIPTS/installer/install_crypt.sh src 7.0a
+$SCRIPTS/installer/install_crypt.sh win 7.0a
+$SCRIPTS/installer/install_crypt.sh mac 7.0a
+$SCRIPTS/installer/install_crypt.sh linux-i386 7.0a
+#$SCRIPTS/installer/install_crypt.sh linux-amd64 7.0a
 # sysadmin scripts
 $SCRIPTS/installer/setup_sysadmin_scripts.sh
 
