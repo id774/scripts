@@ -34,7 +34,7 @@ sudo chown clamav:adm /var/log/clamav/clamscan.log
 sudo touch /var/log/clamav/clamav.log
 sudo chmod 640 /var/log/clamav/clamav.log
 sudo chown clamav:adm /var/log/clamav/clamav.log
-sudo cp $SCRIPTS/cron/etc/clamscan-log /etc/logrotate.d/clamscan
+sudo cp $SCRIPTS/cron/etc/clamscan /etc/logrotate.d/clamscan
 sudo chmod 644 /etc/logrotate.d/clamscan
 sudo chown root:root /etc/logrotate.d/clamscan
 
