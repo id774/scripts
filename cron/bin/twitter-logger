@@ -1,7 +1,7 @@
 #!/bin/sh
 
-JOBLOG=/var/log/twitter-update.log
-TWITTER_LOG=/var/log/twitter.log
+JOBLOG=/var/log/sysadmin/twitter-update.log
+TWITTER_LOG=/var/log/sysadmin/twitter.log
 
 test -x /home/plagger/bin/twitter-client.py && /home/plagger/bin/twitter-client.py -u xxxxxxxx -b /home/plagger/.plagger_tmp/banlist -t /home/plagger/.plagger_tmp/last_id>$JOBLOG
 cat $JOBLOG>>$TWITTER_LOG

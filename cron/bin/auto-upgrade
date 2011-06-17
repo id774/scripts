@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 6/17,2011
+#       Move log directory.
 #  v1.0 4/27,2011
 #       Confirm connect to network.
 #  v0.9 2/27,2011
@@ -26,7 +28,7 @@
 ########################################################################
 
 setup_environment() {
-    JOBLOG=/var/log/auto-upgrade.log
+    JOBLOG=/var/log/sysadmin/auto-upgrade.log
     # ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
 }
 
