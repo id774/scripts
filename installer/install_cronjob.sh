@@ -15,8 +15,12 @@
 #       Stable.
 ########################################################################
 
+# Make Directory
 test -d /etc/cron.weekday || sudo mkdir /etc/cron.weekday
 test -d /etc/cron.weekend || sudo mkdir /etc/cron.weekend
+test -d /var/log/sysadmin || sudo mkdir /var/log/sysadmin
+sudo chmod 750 /var/log/sysadmin
+sudo chown root:adm /var/log/sysadmin
 
 # Daily Backup Job
 sudo cp $SCRIPTS/cron/bin/backup.sh /root/bin/backup.sh
@@ -33,10 +37,10 @@ sudo cp $SCRIPTS/cron/bin/backup /etc/cron.daily/backup
 sudo vim /etc/cron.daily/backup
 sudo chmod 750 /etc/cron.daily/backup
 sudo chown root:adm /etc/cron.daily/backup
-sudo touch /var/log/backup
-sudo chmod 640 /var/log/backup
-sudo chown root:adm /var/log/backup
-sudo cp $SCRIPTS/cron/etc/backup-log /etc/logrotate.d/backup
+sudo touch /var/log/sysadmin/backup.log
+sudo chmod 640 /var/log/sysadmin/backup.log
+sudo chown root:adm /var/log/sysadmin/backup.log
+sudo cp $SCRIPTS/cron/etc/logrotate.d/backup /etc/logrotate.d/backup
 sudo chmod 644 /etc/logrotate.d/backup
 sudo chown root:root /etc/logrotate.d/backup
 
@@ -45,10 +49,10 @@ sudo cp $SCRIPTS/cron/bin/auto-upgrade /etc/cron.daily/auto-upgrade
 sudo vim /etc/cron.daily/auto-upgrade
 sudo chmod 750 /etc/cron.daily/auto-upgrade
 sudo chown root:adm /etc/cron.daily/auto-upgrade
-sudo touch /var/log/auto-upgrade.log
-sudo chmod 640 /var/log/auto-upgrade.log
-sudo chown root:adm /var/log/auto-upgrade.log
-sudo cp $SCRIPTS/cron/etc/auto-upgrade-log /etc/logrotate.d/auto-upgrade
+sudo touch /var/log/sysadmin/auto-upgrade.log
+sudo chmod 640 /var/log/sysadmin/auto-upgrade.log
+sudo chown root:adm /var/log/sysadmin/auto-upgrade.log
+sudo cp $SCRIPTS/cron/etc/logrotate.d/auto-upgrade /etc/logrotate.d/auto-upgrade
 sudo chmod 644 /etc/logrotate.d/auto-upgrade
 sudo chown root:root /etc/logrotate.d/auto-upgrade
 
@@ -59,12 +63,22 @@ sudo chown -R root:root /root/bin
 sudo cp $SCRIPTS/cron/bin/get_resources /etc/cron.hourly/get_resources
 sudo chmod 750 /etc/cron.hourly/get_resources
 sudo chown root:adm /etc/cron.hourly/get_resources
-sudo touch /var/log/resources.log
-sudo chmod 640 /var/log/resources.log
-sudo chown root:adm /var/log/resources.log
-sudo cp $SCRIPTS/cron/etc/resources-log /etc/logrotate.d/resources
+sudo touch /var/log/sysadmin/resources.log
+sudo chmod 640 /var/log/sysadmin/resources.log
+sudo chown root:adm /var/log/sysadmin/resources.log
+sudo cp $SCRIPTS/cron/etc/logrotate.d/resources /etc/logrotate.d/resources
 sudo chmod 644 /etc/logrotate.d/resources
 sudo chown root:root /etc/logrotate.d/resources
+
+# Archive Old Logs
+if [ -f /var/log/auto-upgrade.log ]; then
+    test -d /var/log/sysadmin/archive || sudo mkdir /var/log/sysadmin/archive
+    sudo chmod 750 /var/log/sysadmin/archive
+    sudo chown root:adm /var/log/sysadmin/archive
+    test -f /var/log/auto-upgrade.log || sudo mv /var/log/auto-upgrade.log* /var/log/sysadmin/archive/
+    test -f /var/log/backup || sudo mv /var/log/backup* /var/log/sysadmin/archive/
+    test -f /var/log/resources.log || sudo mv /var/log/resources.log* /var/log/sysadmin/archive/
+fi
 
 # Edit crontab
 # 50 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday

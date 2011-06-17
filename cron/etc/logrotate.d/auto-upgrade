@@ -1,8 +1,8 @@
-/var/log/clone_git2svn.log {
+/var/log/sysadmin/auto-upgrade.log {
   daily
   compress
   delaycompress
   missingok
   create 0640 root adm
-  rotate 10
+  rotate 90
 }

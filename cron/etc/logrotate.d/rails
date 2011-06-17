@@ -1,4 +1,4 @@
-/var/log/kr.log {
+/var/log/rails/kr.log {
   weekly
   compress
   delaycompress
@@ -7,7 +7,7 @@
   rotate 26
 }
 
-/var/log/redmine.log {
+/var/log/rails/redmine.log {
   weekly
   compress
   delaycompress

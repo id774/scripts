@@ -1,8 +1,8 @@
-/var/log/backup {
+/var/log/sysadmin/rsync_backup {
   daily
   compress
   delaycompress
   missingok
   create 0640 root adm
-  rotate 30
+  rotate 90
 }

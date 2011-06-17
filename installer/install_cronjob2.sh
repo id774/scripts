@@ -15,6 +15,13 @@
 #       Split.
 ########################################################################
 
+# Make Directory
+test -d /etc/cron.weekday || sudo mkdir /etc/cron.weekday
+test -d /etc/cron.weekend || sudo mkdir /etc/cron.weekend
+test -d /var/log/sysadmin || sudo mkdir /var/log/sysadmin
+sudo chmod 750 /var/log/sysadmin
+sudo chown root:adm /var/log/sysadmin
+
 # Rsync Backup Job
 sudo cp $SCRIPTS/cron/bin/rsync_backup.sh /root/bin/rsync_backup.sh
 sudo vim /root/bin/rsync_backup.sh
@@ -31,9 +38,17 @@ sudo chown root:adm /etc/cron.hourly/rsync_backup
 sudo touch /var/log/rsync_backup
 sudo chmod 640 /var/log/rsync_backup
 sudo chown root:adm /var/log/rsync_backup
-sudo cp $SCRIPTS/cron/etc/rsync_backup-log /etc/logrotate.d/rsync_backup
+sudo cp $SCRIPTS/cron/etc/logrotate.d/rsync_backup /etc/logrotate.d/rsync_backup
 sudo chmod 644 /etc/logrotate.d/rsync_backup
 sudo chown root:root /etc/logrotate.d/rsync_backup
+
+# Archive Old Logs
+if [ -f /var/log/rsync_backup.log ]; then
+    test -d /var/log/sysadmin/archive || sudo mkdir /var/log/sysadmin/archive
+    sudo chmod 750 /var/log/sysadmin/archive
+    sudo chown root:adm /var/log/sysadmin/archive
+    test -f /var/log/rsync_backup || sudo mv /var/log/rsync_backup.log* /var/log/sysadmin/archive/
+fi
 
 # Edit crontab
 # 50 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday

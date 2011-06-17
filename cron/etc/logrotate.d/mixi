@@ -1,4 +1,4 @@
-/var/log/mixi.log {
+/var/log/sysadmin/mixi.log {
   weekly
   compress
   delaycompress

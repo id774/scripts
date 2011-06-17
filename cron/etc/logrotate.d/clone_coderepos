@@ -1,4 +1,4 @@
-/var/log/clone_coderepos.log {
+/var/log/sysadmin/clone_coderepos.log {
   daily
   compress
   delaycompress
