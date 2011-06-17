@@ -26,13 +26,14 @@ sudo chown root:adm /var/log/sysadmin
 sudo cp $SCRIPTS/cron/bin/backup.sh /root/bin/backup.sh
 sudo vim /root/bin/backup.sh
 sudo chmod 700 /root/bin/backup.sh
+sudo chown root:root /root/bin/backup.sh
 sudo cp $SCRIPTS/cron/etc/backup_exclude /root/bin/backup_exclude
 sudo vim /root/bin/backup_exclude
 sudo chmod 600 /root/bin/backup_exclude
-sudo chown -R root:root /root/bin
+sudo chown root:root /root/bin/backup_exclude
 sudo test -d /home/backup || sudo mkdir /home/backup
 sudo chmod 750 /home/backup
-sudo chown -R root:admin /home/backup
+sudo chown root:admin /home/backup
 sudo cp $SCRIPTS/cron/bin/backup /etc/cron.daily/backup
 sudo vim /etc/cron.daily/backup
 sudo chmod 750 /etc/cron.daily/backup
@@ -59,7 +60,7 @@ sudo chown root:root /etc/logrotate.d/auto-upgrade
 # Server Resource Report Job
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
 sudo chmod 700 /root/bin/get_resources.sh
-sudo chown -R root:root /root/bin
+sudo chown root:root /root/bin/get_resources.sh
 sudo cp $SCRIPTS/cron/bin/get_resources /etc/cron.hourly/get_resources
 sudo chmod 750 /etc/cron.hourly/get_resources
 sudo chown root:adm /etc/cron.hourly/get_resources
