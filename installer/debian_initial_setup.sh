@@ -155,7 +155,6 @@ sudo mkdir -p /opt/bin
 sudo chmod 750 /home/*
 
 # zsh/screen
-sudo apt-get -y install zsh
 chsh -s /bin/zsh
 sudo chsh -s /bin/sh root
 
