@@ -47,7 +47,7 @@ if [ -f /var/log/rsync_backup.log ]; then
     test -d /var/log/sysadmin/archive || sudo mkdir /var/log/sysadmin/archive
     sudo chmod 750 /var/log/sysadmin/archive
     sudo chown root:adm /var/log/sysadmin/archive
-    test -f /var/log/rsync_backup || sudo mv /var/log/rsync_backup.log* /var/log/sysadmin/archive/
+    test -f /var/log/rsync_backup && sudo mv /var/log/rsync_backup.log* /var/log/sysadmin/archive/
 fi
 
 # Edit crontab

@@ -57,7 +57,7 @@ if [ -f /var/log/clamav.log ]; then
     test -d /var/log/sysadmin/archive || sudo mkdir /var/log/sysadmin/archive
     sudo chmod 750 /var/log/sysadmin/archive
     sudo chown root:adm /var/log/sysadmin/archive
-    test -f /var/log/clamav.log* || sudo mv /var/log/clamav.log* /var/log/sysadmin/archive/
+    test -f /var/log/clamav.log* && sudo mv /var/log/clamav.log* /var/log/sysadmin/archive/
 fi
 
 # Edit crontab
