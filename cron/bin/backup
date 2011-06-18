@@ -1,6 +1,6 @@
 #!/bin/sh
 
-JOBLOG=/var/log/sysadmin/backup
+JOBLOG=/var/log/sysadmin/backup.log
 
 echo -n "*** $0: Job start at `/bin/hostname` on ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1
