@@ -35,7 +35,7 @@
 setup_environment() {
     BACKUPDIRS="/home/debian /home/tiarra /home/plagger /var/lib/rails /var/www/html /root /etc /boot"
     BACKUPTO="/home/backup"
-    EXPIREDAYS=5
+    EXPIREDAYS=3
     EXECDIR=${0%/*}
     EXCLUDEFILE=$EXECDIR/backup_exclude 
     DATE=`date +%Y%m%d`
