@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 6/22,2011
+#       Version added to installation target.
 #  v0.1 6/16,2011
 #       First.
 ########################################################################
@@ -32,7 +34,7 @@ install_resin() {
     wget http://www.caucho.com/download/$RESIN.zip
     unzip $RESIN.zip
     cd $RESIN
-    ./configure --prefix=/opt/resin
+    ./configure --prefix=/opt/resin/$VERSION
     make
     sudo make install
     cd ..
