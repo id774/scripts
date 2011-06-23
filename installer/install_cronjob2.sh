@@ -36,8 +36,8 @@ sudo vim /etc/cron.hourly/rsync_backup
 sudo chmod 750 /etc/cron.hourly/rsync_backup
 sudo chown root:adm /etc/cron.hourly/rsync_backup
 sudo touch /var/log/rsync_backup
-sudo chmod 640 /var/log/rsync_backup
-sudo chown root:adm /var/log/rsync_backup
+sudo chmod 640 /var/log/sysadmin/rsync_backup
+sudo chown root:adm /var/log/sysadmin/rsync_backup
 sudo cp $SCRIPTS/cron/etc/logrotate.d/rsync_backup /etc/logrotate.d/rsync_backup
 sudo chmod 644 /etc/logrotate.d/rsync_backup
 sudo chown root:root /etc/logrotate.d/rsync_backup
