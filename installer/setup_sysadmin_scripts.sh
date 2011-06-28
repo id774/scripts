@@ -2,9 +2,13 @@
 #
 ########################################################################
 # Install System Administration Scripts
+#  $1 = install path (ex. /usr/local/sbin)
+#  $2 = uninstall
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.5 6/28,2011
+#       Uninstall enabled, RHEL scripts.
 #  v0.4 5/27,2011
 #       Debian only scripts was moved.
 #  v0.3 3/25,2011
@@ -16,8 +20,8 @@
 ########################################################################
 
 setup_environment() {
-    test -n "$1" && export SBIN=$1
-    test -n "$1" || export SBIN=/usr/local/sbin
+    test -n "$1" && SBIN=$1
+    test -n "$1" || SBIN=/usr/local/sbin
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR
@@ -28,6 +32,27 @@ setup_environment() {
         OWNER=root:root
         ;;
     esac
+}
+
+uninstall_scripts() {
+    while [ $# -gt 0 ]
+    do
+        test -f $SBIN/$1 && sudo rm -vf $SBIN/$1
+        shift
+    done 
+}
+
+uninstall_sysadmin_scripts() {
+    uninstall_scripts \
+        chmodtree \
+        cltmp \
+        copydir \
+        namecalc \
+        waitlock \
+        swapext \
+        get_resources \
+        tcmount \
+        dpkg-hold
 }
 
 install_scripts() {
@@ -45,18 +70,27 @@ setup_scripts() {
     install_scripts 755 swapext.py swapext
 }
 
+setup_rhel_scripts() {
+    install_scripts 755 get_resources.sh get_resources
+    install_scripts 755 tcmount.py tcmount
+}
+
 setup_debian_scripts() {
     install_scripts 755 dpkg-hold.sh dpkg-hold
     install_scripts 755 get_resources.sh get_resources
     install_scripts 755 tcmount.py tcmount
 }
 
+install_sysadmin_scripts() {
+    setup_scripts
+    test -f /etc/debian_version && setup_debian_scripts
+    test -f /etc/redhat-release && setup_rhel_scripts
+}
+
 setup_sysadmin_scripts() {
     setup_environment $*
-    setup_scripts
-    if [ -f /etc/debian_version ]; then
-        setup_debian_scripts
-    fi
+    test -n "$2" && uninstall_sysadmin_scripts
+    test -n "$2" || install_sysadmin_scripts
 }
 
 test -n "$SCRIPTS" || exit 1
