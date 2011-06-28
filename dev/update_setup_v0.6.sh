@@ -33,3 +33,4 @@ $SCRIPTS/installer/install_cronjob.sh
 # sysadmin scripts
 $SCRIPTS/installer/setup_sysadmin_scripts.sh
 
+sudo rm -f /etc/zsh/plugins/incr.zsh*
