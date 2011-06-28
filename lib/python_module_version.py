@@ -65,3 +65,39 @@ class PythonModuleVersion:
         except ImportError:
             return 'TurboGears ImportError'
 
+    def ipython_version(self):
+        try:
+            import IPython
+            return 'ipython', IPython.__version__
+        except ImportError:
+            return 'ipython ImportError'
+
+    def babel_version(self):
+        try:
+            import babel
+            return 'babel', babel.__version__
+        except ImportError:
+            return 'babel ImportError'
+
+    def pygments_version(self):
+        try:
+            import pygments
+            return 'pygments', pygments.__version__
+        except ImportError:
+            return 'pygments ImportError'
+
+    def docutils_version(self):
+        try:
+            import docutils
+            return 'docutils', docutils.__version__
+        except ImportError:
+            return 'docutils ImportError'
+
+    def textile_version(self):
+        try:
+            import uuid
+            import textile
+            return 'textile', textile.functions.uuid.__version__
+        except ImportError:
+            return 'textile ImportError'
+

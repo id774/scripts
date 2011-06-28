@@ -36,13 +36,24 @@ def show_version():
     print(m.sqlalchemy_version())
     print(m.migrate_version())
     print(m.turbogears_version())
+    print(m.ipython_version())
+    print(m.babel_version())
+    print(m.pygments_version())
+    print(m.docutils_version())
+    print(m.textile_version())
 
 def module_install():
     import os
-    os.system('easy_install mechanize')
-    os.system('easy_install nose')
-    os.system('easy_install -Z SQLAlchemy')
-    os.system('easy_install migrate')
+    os.system('sudo easy_install mechanize')
+    os.system('sudo easy_install nose')
+    os.system('sudo easy_install -Z SQLAlchemy')
+    os.system('sudo easy_install migrate')
+    os.system('sudo easy_install IPython')
+    os.system('sudo easy_install Babel')
+    os.system('sudo easy_install Pygments')
+    os.system('sudo easy_install docutils')
+    os.system('sudo easy_install uuid')
+    os.system('sudo easy_install textile')
 
 def main():
     from optparse import OptionParser

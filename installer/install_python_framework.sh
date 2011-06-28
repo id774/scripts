@@ -18,6 +18,9 @@
 main() {
     TARGET_PATH=`python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"`
 
+    # etc
+    $SCRIPTS/show_version.py -i
+
     # Development tool and package manager
     sudo apt-get -y install python-dev
     sudo apt-get -y install python-doc
