@@ -72,6 +72,13 @@ class PythonModuleVersion:
         except ImportError:
             return 'ipython ImportError'
 
+    def genshi_version(self):
+        try:
+            import genshi
+            return 'genshi', genshi.__version__
+        except ImportError:
+            return 'genshi ImportError'
+
     def babel_version(self):
         try:
             import babel

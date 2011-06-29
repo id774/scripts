@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 6/29,2011
+#       Add some packages.
 #  v1.0 8/15,2008
 #       Stable.
 ########################################################################
@@ -37,6 +39,7 @@ def show_version():
     print(m.migrate_version())
     print(m.turbogears_version())
     print(m.ipython_version())
+    print(m.genshi_version())
     print(m.babel_version())
     print(m.pygments_version())
     print(m.docutils_version())
@@ -49,6 +52,7 @@ def module_install():
     os.system('sudo easy_install -Z SQLAlchemy')
     os.system('sudo easy_install migrate')
     os.system('sudo easy_install IPython')
+    os.system('sudo easy_install Genshi')
     os.system('sudo easy_install Babel')
     os.system('sudo easy_install Pygments')
     os.system('sudo easy_install docutils')
