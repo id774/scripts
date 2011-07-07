@@ -108,3 +108,10 @@ class PythonModuleVersion:
         except ImportError:
             return 'textile ImportError'
 
+    def webpy_version(self):
+        try:
+            import web
+            return 'web.py', web.__version__
+        except ImportError:
+            return 'web.py ImportError'
+

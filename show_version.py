@@ -44,6 +44,7 @@ def show_version():
     print(m.pygments_version())
     print(m.docutils_version())
     print(m.textile_version())
+    print(m.webpy_version())
 
 def module_install():
     import os
@@ -58,6 +59,7 @@ def module_install():
     os.system('sudo easy_install docutils')
     os.system('sudo easy_install uuid')
     os.system('sudo easy_install textile')
+    os.system('sudo easy_install web.py')
 
 def main():
     from optparse import OptionParser
