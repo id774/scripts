@@ -106,7 +106,7 @@ gitpull_all() {
 main() {
     test -d $HOME/local/github || mkdir -p $HOME/local/github
     test -d $HOME/local/git || mkdir -p $HOME/local/git
-    debian_monthly_report git monthly-report $*
+    #debian_monthly_report git monthly-report $*
     #assembla_git_all $*
     anything_get_all $*
     gitpull_all $*
