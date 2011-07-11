@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v3.1 7/11,2011
+#       Packed off ruby and frameworks.
 #  v3.0 6/16,2011
 #       Fork from Initial Setup Script, cut off debian apt.
 #  v2.5 5/24,2011
@@ -247,20 +249,7 @@ sudo dpkg-reconfigure hddtemp
 sudo vim /etc/default/smartmontools
 
 # Ruby
-#$SCRIPTS/installer/install_ruby.sh 187-svn /opt/ruby/1.8.7
-#$SCRIPTS/installer/install_ruby.sh 191-svn /opt/ruby/1.9.1
-#$SCRIPTS/installer/install_ruby.sh 192-svn /opt/ruby/1.9.2
-#$SCRIPTS/config/update-alternatives-ruby.sh
-
-# RubyGems
-#$SCRIPTS/installer/install_rubygems.sh 162 /opt/ruby/1.9.2
-#$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.2
-#$SCRIPTS/installer/install_rails.sh 300 /opt/ruby/1.9.2
-#/opt/ruby/1.9.2/bin/vim-ruby-install.rb
-
-# Passenger
-#$SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.2
-#$SCRIPTS/config/update-alternatives-ruby.sh
+#$SCRIPTS/installer/install_ruby_and_rails.sh
 
 # Python
 #$SCRIPTS/installer/install_python.sh 2.7.1 /opt/python/2.7.1
@@ -276,6 +265,17 @@ sudo vim /etc/default/smartmontools
 
 # sysadmin scripts
 $SCRIPTS/installer/setup_sysadmin_scripts.sh
+
+# web page
+test -d ~/local/github || mkdir -p ~/local/github
+cd ~/local/github
+git clone git://github.com/id774/intraweb-template.git
+cd
+ln -s ~/local/github/intraweb-template
+~/local/github/intraweb-template/install_intraweb.sh
+
+# SSL
+$SCRIPTS/installer/install_apache2ssl.sh
 
 # GUI Desktop Xfce4(Debian) / Xubuntu(Ubuntu)
 #im-switch -c
@@ -340,6 +340,9 @@ sudo vim /etc/pam.d/login
 sudo vim /etc/fstab
 sudo vim /etc/deluser.conf
 sudo vim /etc/hosts
+
+# Munin
+$SCRIPTS/installer/install_munin.sh
 
 # Grub
 test -f /boot/grub/menu.lst && sudo vim /boot/grub/menu.lst

@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 7/11,2011
+#       Packed off ruby and frameworks.
 #  v1.2 6/8,2011
 #       Update to RHEL 6.
 #  v1.1 8/29,2010
@@ -88,12 +90,7 @@ $SCRIPTS/installer/install_dotfiles.sh
 #$SCRIPTS/installer/install_sqlite.sh
 
 # Ruby
-#$SCRIPTS/installer/install_ruby.sh 192-svn /opt/ruby/1.9.2
-
-# RubyGems
-#$SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.2
-#$SCRIPTS/installer/install_rails.sh rails-ruby /opt/ruby/1.9.2
-#/opt/ruby/1.9.2/bin/vim-ruby-install.rb
+#$SCRIPTS/installer/install_ruby_and_rails.sh
 
 # Samba
 #wget http://bookmark.at-ninja.jp/bookmark/smb.conf
@@ -115,8 +112,17 @@ $SCRIPTS/installer/install_crypt.sh win 7.0a
 $SCRIPTS/installer/install_crypt.sh mac 7.0a
 $SCRIPTS/installer/install_crypt.sh linux-i386 7.0a
 #$SCRIPTS/installer/install_crypt.sh linux-amd64 7.0a
+
 # sysadmin scripts
 $SCRIPTS/installer/setup_sysadmin_scripts.sh
+
+# web page
+test -d ~/local/github || mkdir -p ~/local/github
+cd ~/local/github
+git clone git://github.com/id774/intraweb-template.git
+cd
+ln -s ~/local/github/intraweb-template
+~/local/github/intraweb-template/install_intraweb.sh
 
 # rc.local
 $SCRIPTS/installer/install_rclocal.sh
