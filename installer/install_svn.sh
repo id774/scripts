@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 7/21,2011
+#       Remove svn user.
 #  v1.0 8/15,2008
 #       Stable.
 ########################################################################
@@ -33,7 +35,7 @@ sudo vim /etc/apache2/mods-enabled/dav_svn.conf
 #  SVNPath /var/lib/svn/$SVN_PROJECT_ID/repos
 #  AuthType Basic
 #  AuthName "Subversion Repository"
-#  AuthUserFile /var/lib/trac/$SVN_PROJECT_ID/.htpasswd
+#  AuthUserFile /etc/apache2/.htpasswd
 #  <LimitExcept GET PROPFIND OPTIONS REPORT>
 #    Require valid-user
 #  </LimitExcept> 
@@ -42,13 +44,8 @@ sudo vim /etc/apache2/mods-enabled/dav_svn.conf
 # Import Dump
 test -f ~/$SVN_PROJECT_ID.dump && sudo svnadmin load /var/lib/svn/$SVN_PROJECT_ID/repos < ~/$SVN_PROJECT_ID.dump
 
-# Access Control
-sudo htpasswd -c /var/lib/svn/$SVN_PROJECT_ID/.htpasswd admin
-
 # Permission
-sudo useradd svn
-sudo chsh -s /bin/false svn
-sudo chown -R svn:svn /var/lib/svn
+sudo chown -R www-data:www-data /var/lib/svn
 sudo chmod -R 770 /var/lib/svn
 
 # Apache2 Reload
