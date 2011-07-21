@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.17 7/21,2011
+#       Update to ruby 1.9.2-p290, ruby 1.8.7-p352.
 # v1.16 2/19,2011
 #       Update to ruby 1.9.2-p180, ruby 1.9.1-p431, ruby 1.8.7-p334.
 # v1.15 12/27,2010
@@ -135,6 +137,9 @@ setup_environment() {
 install_ruby() {
     setup_environment
     case "$1" in
+      192-290)
+        install_stable 1.9.2-p290 1.9 $2
+        ;;
       192-180)
         install_stable 1.9.2-p180 1.9 $2
         ;;
@@ -161,6 +166,9 @@ install_ruby() {
         ;;
       191-243)
         install_stable 1.9.1-p243 1.9 $2
+        ;;
+      187-352)
+        install_stable 1.8.7-p352 1.8 $2
         ;;
       187-334)
         install_stable 1.8.7-p334 1.8 $2
