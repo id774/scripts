@@ -5,8 +5,6 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.3 7/4,2011
-#       Add remote sync function.
 #  v1.2 4/27,2011
 #       Compress mysqldump.
 #  v1.1 4/18,2011
@@ -133,31 +131,10 @@ mirror_to_remote() {
     fi
 }
 
-remote_to_remote() {
-    echo "rsync -avz /root/mnt/$1/home/backup /root/mnt/$2/home/remote/$1/"
-    test -d /root/mnt/$1 || mkdir -p /root/mnt/$1
-    test -d /root/mnt/$2 || mkdir -p /root/mnt/$2
-    sshfs root@$1:/ /root/mnt/$1
-    sshfs root@$2:/ /root/mnt/$2
-    rsync -avz /root/mnt/$1/home/backup /root/mnt/$2/home/remote/$1/
-    echo "Return code is $?"
-    umount /root/mnt/$1
-    umount /root/mnt/$2
-}
-
-remote_sync() {
-    echo -n "* Executing remote sync on "
-    date "+%Y/%m/%d %T"
-    ping -c 1 -i 3 $1 > /dev/null 2>&1 && \
-        ping -c 1 -i 3 $2 > /dev/null 2>&1 && \
-            remote_to_remote $1 $2
-}
-
 backup_to_remote() {
     echo -n "* Executing backup to remote on "
     date "+%Y/%m/%d %T"
     #mirror_to_remote REMOTE_HOST REMOTE_TO
-    #remote_sync SOURCE_HOST TARGET_HOST
 }
 
 main() {
