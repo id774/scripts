@@ -14,7 +14,9 @@ class ApacheCalculater(object):
             ip = line.split(" ", 1)[0]
             if 6 < len(ip) <= 15:
                 ipHitListing[ip] = ipHitListing.get(ip, 0) + 1
-        return ipHitListing
+        return sorted(ipHitListing.items(),
+                reverse=True,
+                key=lambda x:x[1])
 
     @classmethod
     def clientCachePercentage(cls, log):
