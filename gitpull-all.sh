@@ -99,6 +99,7 @@ gitpull_all() {
     gitpull github jugyo termtter $*
     gitpull github miyagawa plagger $*
     gitpull github m2ym auto-complete $*
+    gitpull github othree html5.vim $*
     gitpull github mooz js2-mode $*
     gitpull github genki rub $*
 }
