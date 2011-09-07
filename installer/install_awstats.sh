@@ -18,7 +18,9 @@ sudo vim /etc/apache2/sites-available/default*
 sudo vim /etc/logrotate.d/apache2
 sudo chmod 440 /var/log/apache2/*
 sudo chown www-data:adm /var/log/apache2/*
+sudo chmod 550 /var/log/apache2
+sudo chown www-data:adm /var/log/apache2
 
 # Restart
 sudo /etc/init.d/apache2 restart
-sudo /usr/lib/cgi-bin/awstats.pl -config=awstats -update
+sudo -u www-data /usr/lib/cgi-bin/awstats.pl -config=awstats -update
