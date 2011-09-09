@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v3.2 9/9,2011
+#       Remove truecrypt version number.
 #  v3.1 7/11,2011
 #       Packed off ruby and frameworks.
 #  v3.0 6/16,2011
@@ -226,11 +228,11 @@ $SCRIPTS/installer/install_mysql.py install -c
 
 # Crypt
 $SCRIPTS/installer/install_des.sh
-$SCRIPTS/installer/install_crypt.sh src 7.0a
-$SCRIPTS/installer/install_crypt.sh win 7.0a
-$SCRIPTS/installer/install_crypt.sh mac 7.0a
-$SCRIPTS/installer/install_crypt.sh linux-i386 7.0a
-#$SCRIPTS/installer/install_crypt.sh linux-amd64 7.0a
+$SCRIPTS/installer/install_crypt.sh src
+$SCRIPTS/installer/install_crypt.sh win
+$SCRIPTS/installer/install_crypt.sh mac
+$SCRIPTS/installer/install_crypt.sh linux-i386
+#$SCRIPTS/installer/install_crypt.sh linux-amd64
 
 # iptables
 $SCRIPTS/installer/install_iptables.sh

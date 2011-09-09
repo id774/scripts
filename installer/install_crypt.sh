@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.3 9/9,2011
+#       Update to 7.1.
 #  v0.2 9/16,2010
 #       Refactoring.
 #  v0.1 8/7,2010
@@ -108,7 +110,7 @@ install_truecrypt() {
 
 install_crypt_main() {
     test -n "$2" && TRUECRYPT_CURRENT_VERSION=$2
-    test -n "$2" || TRUECRYPT_CURRENT_VERSION=7.0a
+    test -n "$2" || TRUECRYPT_CURRENT_VERSION=7.1
     setup_environment $*
     export TMP=$HOME/.tmp
     install_truecrypt $1 $TRUECRYPT_CURRENT_VERSION $3
