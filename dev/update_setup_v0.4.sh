@@ -46,10 +46,10 @@ vim $SCRIPTS/installer/install_python_framework.sh
 $SCRIPTS/installer/install_python_framework.sh
 
 # Crypt
-$SCRIPTS/installer/install_crypt.sh src 7.0a
-$SCRIPTS/installer/install_crypt.sh win 7.0a
-$SCRIPTS/installer/install_crypt.sh mac 7.0a
-$SCRIPTS/installer/install_crypt.sh linux-$1 7.0a
+$SCRIPTS/installer/install_crypt.sh src
+$SCRIPTS/installer/install_crypt.sh win
+$SCRIPTS/installer/install_crypt.sh mac
+$SCRIPTS/installer/install_crypt.sh linux-$1
 
 # Deploy dot_files
 $SCRIPTS/installer/install_dotfiles.sh

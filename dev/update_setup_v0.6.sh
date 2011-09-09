@@ -6,6 +6,9 @@
 export SCRIPTS=$HOME/scripts
 export PRIVATE=$HOME/private/scripts
 
+# Need i386 or amd64 option
+test -n "$1" || exit 1
+
 # APT Update
 DISTRIB_CODENAME=squeeze
 test -f /etc/lsb-release && DISTRIB_CODENAME=lucid
@@ -13,6 +16,13 @@ SOURCESLIST=sources-$DISTRIB_CODENAME.list
 sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
 sudo vim /etc/apt/sources.list
 sudo apt-get update
+
+# Crypt
+$SCRIPTS/installer/install_des.sh
+$SCRIPTS/installer/install_crypt.sh src
+$SCRIPTS/installer/install_crypt.sh win
+$SCRIPTS/installer/install_crypt.sh mac
+$SCRIPTS/installer/install_crypt.sh linux-$1
 
 # iptables
 $SCRIPTS/installer/install_iptables.sh
