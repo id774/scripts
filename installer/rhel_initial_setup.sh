@@ -107,11 +107,11 @@ $SCRIPTS/installer/install_dotfiles.sh
 
 # Crypt
 $SCRIPTS/installer/install_des.sh
-$SCRIPTS/installer/install_crypt.sh src 7.1
-$SCRIPTS/installer/install_crypt.sh win 7.1
-$SCRIPTS/installer/install_crypt.sh mac 7.1
-$SCRIPTS/installer/install_crypt.sh linux-i386 7.1
-#$SCRIPTS/installer/install_crypt.sh linux-amd64 7.1
+$SCRIPTS/installer/install_crypt.sh src 7.0a
+$SCRIPTS/installer/install_crypt.sh win 7.0a
+$SCRIPTS/installer/install_crypt.sh mac 7.0a
+$SCRIPTS/installer/install_crypt.sh linux-i386 7.0a
+#$SCRIPTS/installer/install_crypt.sh linux-amd64 7.0a
 
 # sysadmin scripts
 $SCRIPTS/installer/setup_sysadmin_scripts.sh

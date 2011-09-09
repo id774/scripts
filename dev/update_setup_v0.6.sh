@@ -33,10 +33,4 @@ $SCRIPTS/installer/install_cronjob.sh
 # sysadmin scripts
 $SCRIPTS/installer/setup_sysadmin_scripts.sh
 
-# Crypt
-$SCRIPTS/installer/install_crypt.sh src 7.1
-$SCRIPTS/installer/install_crypt.sh win 7.1
-$SCRIPTS/installer/install_crypt.sh mac 7.1
-$SCRIPTS/installer/install_crypt.sh linux-$1 7.1
-
 sudo rm -f /etc/zsh/plugins/incr.zsh*
