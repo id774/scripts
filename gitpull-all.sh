@@ -98,6 +98,8 @@ gitpull_all() {
     gitpull github id774 intraweb-template
     gitpull github jugyo termtter $*
     gitpull github miyagawa plagger $*
+    gitpull github eschulte rhtml $*
+    gitpull github eschulte rinari $*
     gitpull github m2ym auto-complete $*
     gitpull github rooney zencoding $*
     gitpull github othree html5.vim $*
