@@ -101,6 +101,8 @@ gitpull_all() {
     gitpull github m2ym auto-complete $*
     gitpull github othree html5.vim $*
     gitpull github tpope vim-haml $*
+    gitpull github hober html5-el $*
+    gitpull github antonj scss-mode $*
     gitpull github mooz js2-mode $*
     gitpull github genki rub $*
 }
