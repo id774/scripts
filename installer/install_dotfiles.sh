@@ -66,6 +66,7 @@ mkdir_skelton() {
         sudo chmod 750 $1/.emacs.d/tmp
         sudo chmod 750 $1/.emacs.d/tramp-auto-save
         sudo chmod 750 $1/.emacs.d/auto-save-list
+        sudo touch $1/.emacs.d/anything/anything-c-adaptive-history
         test -d /etc/emacs.d/elisp && sudo ln -fs /etc/emacs.d/elisp $1/.emacs.d/elisp
     fi
 }
