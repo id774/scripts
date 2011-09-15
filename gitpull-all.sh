@@ -102,11 +102,12 @@ gitpull_all() {
     gitpull github eschulte rinari $*
     gitpull github m2ym auto-complete $*
     gitpull github rooney zencoding $*
-    gitpull github othree html5.vim $*
-    gitpull github tpope vim-haml $*
     gitpull github hober html5-el $*
     gitpull github antonj scss-mode $*
+    gitpull github defunkt coffee-mode $*
     gitpull github mooz js2-mode $*
+    gitpull github othree html5.vim $*
+    gitpull github tpope vim-haml $*
     gitpull github genki rub $*
 }
 
