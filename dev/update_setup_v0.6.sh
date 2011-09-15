@@ -33,6 +33,9 @@ $SCRIPTS/installer/install_iptables.sh
 $SCRIPTS/installer/install_dotfiles.sh
 $SCRIPTS/installer/install_dotvim.sh
 
+# CoffeeScript
+$SCRIPTS/installer/install_coffeescript.sh
+
 # Termtter
 $PRIVATE/installer/install_dottermtter.sh
 $SCRIPTS/installer/install_termtter_plugins.sh

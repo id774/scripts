@@ -94,6 +94,9 @@ $SCRIPTS/installer/install_dotfiles.sh
 # Ruby
 #$SCRIPTS/installer/install_ruby_and_rails.sh
 
+# CoffeeScript
+#$SCRIPTS/installer/install_coffeescript.sh
+
 # Samba
 #wget http://bookmark.at-ninja.jp/bookmark/smb.conf
 #sudo cp smb.conf /etc/samba/smb.conf

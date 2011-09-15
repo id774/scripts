@@ -253,6 +253,9 @@ sudo vim /etc/default/smartmontools
 # Ruby
 #$SCRIPTS/installer/install_ruby_and_rails.sh
 
+# CoffeeScript
+#$SCRIPTS/installer/install_coffeescript.sh
+
 # Python
 #$SCRIPTS/installer/install_python.sh 2.7.1 /opt/python/2.7.1
 #$SCRIPTS/installer/install_python.sh 3.1.3 /opt/python/3.1.3
