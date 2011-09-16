@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 9/16,2011
+#       Purge old kernels on RHEL.
 #  v1.1 6/17,2011
 #       Move log directory.
 #  v1.0 4/27,2011
@@ -39,6 +41,8 @@ update_debian_or_ubuntu() {
 
 update_redhat_or_centos() {
     yum -y --exclude subversion update >> $JOBLOG 2>&1 && yum clean all >> $JOBLOG 2>&1
+    echo "Return code is $?">>$JOBLOG 2>&1
+    package-cleanup -y --oldkernels >> $JOBLOG 2>&1 
     echo "Return code is $?">>$JOBLOG 2>&1
 }
 
