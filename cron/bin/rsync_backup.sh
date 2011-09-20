@@ -90,10 +90,6 @@ rsync_disk2ssh_1() {
     rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user3 \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
-  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/iso && \
-    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/iso \
-    $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
-  echo "Return code is $?"
   test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/VMwareImages && \
     rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/VMwareImages \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
@@ -103,6 +99,10 @@ rsync_disk2ssh_1() {
 rsync_disk2ssh_2() {
   echo -n "* Executing rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST on "
   date "+%Y/%m/%d %T"
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/iso && \
+    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/iso \
+    $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
+  echo "Return code is $?"
   test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/Movies && \
     rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/Movies \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
@@ -149,29 +149,32 @@ rsync_disk2disk_2() {
   echo "Return code is $?"
 }
 
-B_HOME=/home/ubuntu
-T_HOME=/home/ubuntu
-B_MOUNT=mnt
-B_DEVICE=sdc
-T_MOUNT=mnt
-T_DEVICE=sdb
+operation() {
+  B_HOME=/home/ubuntu
+  T_HOME=/home/ubuntu
+  B_MOUNT=mnt
+  B_DEVICE=sdc
+  T_MOUNT=mnt
+  T_DEVICE=sdb
 
-truecrypt -t --version
-df -T
+  truecrypt -t --version
+  df -T
 
-smart_info
-#cleanup
-#svn_backup
-#github_backup
+  smart_info
+  #cleanup
+  #svn_backup
+  #github_backup
 
-#T_DEVICE=sdc
-rsync_disk2disk_1
-rsync_disk2disk_2
+  #T_DEVICE=sdc
+  rsync_disk2disk_1
+  rsync_disk2disk_2
 
-#T_DEVICE=sdb
-#T_USER=
-#T_HOST=
-#rsync_disk2ssh_0
+  #T_DEVICE=sdb
+  #T_USER=
+  #T_HOST=
+  #rsync_disk2ssh_0
 
-df -T
+  df -T
+}
 
+operation
