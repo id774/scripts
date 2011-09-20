@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.13 9/20,2011
+#       Refactoring. Move iso. Strict error code.
 # v1.12 8/29,2010
 #       Refactoring.
 # v1.11 8/9,2010
@@ -41,69 +43,118 @@ smart_info() {
 }
 
 cleanup() {
-  test -x /root/bin/cleanup4mac.sh && /root/bin/cleanup4mac.sh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE
+  test -x /root/bin/cleanup4mac.sh && \
+    /root/bin/cleanup4mac.sh $B_HOME/$B_MOUNT/$B_DEVICE
 }
 
 svn_backup() {
-  test -x /root/bin/svn_hotcopy.sh && /root/bin/svn_hotcopy.sh
-  test -f /root/svn_hotcopy/svn_default.tar.gz && test -d $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/svn && cp -v /root/svn_hotcopy/svn_default.tar.gz $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/svn/
-  test -f /root/svn_hotcopy/trac_default.tar.gz && test -d $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/svn && cp -v /root/svn_hotcopy/trac_default.tar.gz $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/svn/
+  test -x /root/bin/svn_hotcopy.sh && \
+    /root/bin/svn_hotcopy.sh
+  test -f /root/svn_hotcopy/svn_default.tar.gz && \
+    test -d $B_HOME/mnt/sdb/user2/arc/svn && \
+    cp -v /root/svn_hotcopy/svn_default.tar.gz $B_HOME/mnt/sdb/user2/arc/svn/
+  test -f /root/svn_hotcopy/trac_default.tar.gz && \
+    test -d $B_HOME/mnt/sdb/user2/arc/svn && \
+    cp -v /root/svn_hotcopy/trac_default.tar.gz $B_HOME/mnt/sdb/user2/arc/svn/
 }
 
 github_backup() {
-  test -x /root/bin/github-arc.sh && /root/bin/github-arc.sh
-  test -f /root/local/github.tar.gz && test -d $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/git && cp -v /root/local/github.tar.gz $RSYNC_BACKUP_HOME/mnt/sdb/user2/arc/git/
+  test -x /root/bin/github-arc.sh && \
+    /root/bin/github-arc.sh
+  test -f /root/local/github.tar.gz && \
+    test -d $B_HOME/mnt/sdb/user2/arc/git && \
+    cp -v /root/local/github.tar.gz $B_HOME/mnt/sdb/user2/arc/git/
 }
 
 rsync_disk2ssh_0() {
-  echo -n "* Executing rsync_disk2ssh_0 $RSYNC_BACKUP_DEVICE -> $RSYNC_TARGET_DEVICE of $TARGET_HOST on "
+  echo -n "* Executing rsync_disk2ssh_0 $B_DEVICE -> $T_DEVICE of $T_HOST on "
   date "+%Y/%m/%d %T"
-  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE && rsync -avz --delete -e ssh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE $TARGET_USER@$TARGET_HOST:$RSYNC_TARGET_HOME/$RSYNC_TARGET_MOUNTPOUNT/
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE && \
+    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE \
+    $T_USER@$T_HOST:$T_HOME/$T_MOUNT/
   echo "Return code is $?"
 }
 
 rsync_disk2ssh_1() {
-  echo -n "* Executing rsync_disk2ssh_1 $RSYNC_BACKUP_DEVICE -> $RSYNC_TARGET_DEVICE of $TARGET_HOST on "
+  echo -n "* Executing rsync_disk2ssh_1 $B_DEVICE -> $T_DEVICE of $T_HOST on "
   date "+%Y/%m/%d %T"
-  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user1 && rsync -avz --delete -e ssh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user1 $TARGET_USER@$TARGET_HOST:$RSYNC_TARGET_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/
-  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user2 && rsync -avz --delete -e ssh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user2 $TARGET_USER@$TARGET_HOST:$RSYNC_TARGET_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/
-  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user3 && rsync -avz --delete -e ssh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user3 $TARGET_USER@$TARGET_HOST:$RSYNC_TARGET_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/
-  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/iso && rsync -avz --delete -e ssh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/iso $TARGET_USER@$TARGET_HOST:$RSYNC_TARGET_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles/
-  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/VMwareImages && rsync -avz --delete -e ssh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/VMwareImages $TARGET_USER@$TARGET_HOST:$RSYNC_TARGET_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles/
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/user1 && \
+    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user1 \
+    $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
+  echo "Return code is $?"
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/user2 && \
+    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user2 \
+    $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
+  echo "Return code is $?"
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/user3 && \
+    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user3 \
+    $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
+  echo "Return code is $?"
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/iso && \
+    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/iso \
+    $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
+  echo "Return code is $?"
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/VMwareImages && \
+    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/VMwareImages \
+    $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
   echo "Return code is $?"
 }
 
 rsync_disk2ssh_2() {
-  echo -n "* Executing rsync_disk2ssh_2 $RSYNC_BACKUP_DEVICE -> $RSYNC_TARGET_DEVICE of $TARGET_HOST on "
+  echo -n "* Executing rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST on "
   date "+%Y/%m/%d %T"
-  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/Movies && rsync -avz --delete -e ssh $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/Movies $TARGET_USER@$TARGET_HOST:$RSYNC_TARGET_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles/
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/Movies && \
+    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/Movies \
+    $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
   echo "Return code is $?"
 }
 
 rsync_disk2disk_1() {
-  echo -n "* Executing rsync_disk2disk_1 $RSYNC_BACKUP_DEVICE -> $RSYNC_TARGET_DEVICE on "
+  echo -n "* Executing rsync_disk2disk_1 $B_DEVICE -> $T_DEVICE on "
   date "+%Y/%m/%d %T"
-  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user1 && test -d $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/user1 && rsync -av --delete $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user1 $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/
-  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user2 && test -d $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/user2 && rsync -av --delete $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user2 $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/
-  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user3 && test -d $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/user3 && rsync -av --delete $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/user3 $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/
-  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/iso && test -d $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles && rsync -av --delete $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/iso $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles/
-  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/VMwareImages && test -d $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles && rsync -av --delete $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/VMwareImages $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles/
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/user1 && \
+    test -d $T_HOME/$T_MOUNT/$T_DEVICE/user1 && \
+    rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/user1 \
+    $T_HOME/$T_MOUNT/$T_DEVICE/
+  echo "Return code is $?"
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/user2 && \
+    test -d $T_HOME/$T_MOUNT/$T_DEVICE/user2 && \
+    rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/user2 \
+    $T_HOME/$T_MOUNT/$T_DEVICE/
+  echo "Return code is $?"
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/user3 && \
+    test -d $T_HOME/$T_MOUNT/$T_DEVICE/user3 && \
+    rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/user3 \
+    $T_HOME/$T_MOUNT/$T_DEVICE/
+  echo "Return code is $?"
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/VMwareImages && \
+    test -d $T_HOME/$T_MOUNT/$T_DEVICE/largefiles && \
+    rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/VMwareImages \
+    $T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
   echo "Return code is $?"
 }
 
 rsync_disk2disk_2() {
-  echo -n "* Executing rsync_disk2disk_2 $RSYNC_BACKUP_DEVICE -> $RSYNC_TARGET_DEVICE on "
+  echo -n "* Executing rsync_disk2disk_2 $B_DEVICE -> $T_DEVICE on "
   date "+%Y/%m/%d %T"
-  test -d $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/Movies && test -d $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles && rsync -av --delete $RSYNC_BACKUP_HOME/$RSYNC_BACKUP_MOUNTPOUNT/$RSYNC_BACKUP_DEVICE/largefiles/Movies $RSYNC_BACKUP_HOME/$RSYNC_TARGET_MOUNTPOUNT/$RSYNC_TARGET_DEVICE/largefiles/
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/iso && \
+    test -d $T_HOME/$T_MOUNT/$T_DEVICE/largefiles && \
+    rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/iso \
+    $T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
+  echo "Return code is $?"
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/Movies && \
+    test -d $T_HOME/$T_MOUNT/$T_DEVICE/largefiles && \
+    rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/Movies \
+    $T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
   echo "Return code is $?"
 }
 
-RSYNC_BACKUP_HOME=/home/ubuntu
-RSYNC_TARGET_HOME=/home/ubuntu
-RSYNC_BACKUP_MOUNTPOUNT=mnt
-RSYNC_BACKUP_DEVICE=sdc
-RSYNC_TARGET_MOUNTPOUNT=mnt
-RSYNC_TARGET_DEVICE=sdb
+B_HOME=/home/ubuntu
+T_HOME=/home/ubuntu
+B_MOUNT=mnt
+B_DEVICE=sdc
+T_MOUNT=mnt
+T_DEVICE=sdb
 
 truecrypt -t --version
 df -T
@@ -113,13 +164,13 @@ smart_info
 #svn_backup
 #github_backup
 
-#RSYNC_TARGET_DEVICE=sdc
+#T_DEVICE=sdc
 rsync_disk2disk_1
 rsync_disk2disk_2
 
-#RSYNC_TARGET_DEVICE=sdb
-#TARGET_USER=
-#TARGET_HOST=
+#T_DEVICE=sdb
+#T_USER=
+#T_HOST=
 #rsync_disk2ssh_0
 
 df -T
