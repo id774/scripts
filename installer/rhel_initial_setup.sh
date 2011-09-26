@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 #
 ########################################################################
 # Initial Setup Script for RHEL
@@ -36,6 +36,12 @@ operation() {
 
     # Installers
     $SCRIPTS/installer/rhel_installers.sh
+
+    # GUI Desktop
+    #$SCRIPTS/installer/rhel_desktop.sh
 }
+
+# redhat?
+test -f /etc/redhat-release || exit 1
 
 operation

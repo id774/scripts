@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 #
 ########################################################################
 # Environment for RHEL
@@ -21,24 +21,27 @@ setup_group_and_passwd() {
 }
 
 clear_udev() {
-    vi /etc/udev/rules.d/70-persistent-net.rules
+    sudo rm /etc/udev/rules.d/70-persistent-net.rules
 }
 
-show_hw_info
+operation() {
+    show_hw_info
 
-# Network
-$SCRIPTS/installer/rhel_network.sh
+    # Network
+    $SCRIPTS/installer/rhel_network.sh
 
-clear_udev
+    clear_udev
 
-# tune2fs
-$SCRIPTS/installer/setup_tune2fs.sh
+    # tune2fs
+    $SCRIPTS/installer/setup_tune2fs.sh
 
-# Upgrade
-sudo yum -y update
+    # Upgrade
+    sudo yum -y update
 
-setup_group_and_passwd
+    setup_group_and_passwd
 
-# Setup sudoers
-sudo vi /etc/sudoers $SCRIPTS/etc/sudoers
+    # Setup sudoers
+    sudo vi /etc/sudoers $SCRIPTS/etc/sudoers
+}
 
+operation

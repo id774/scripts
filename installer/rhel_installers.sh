@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 #
 ########################################################################
 # Batch Installers for RHEL
@@ -11,7 +11,7 @@
 
 build_vim() {
     $SCRIPTS/installer/install_ncurses.sh
-    vim $SCRIPTS/installer/install_vim.sh
+    vi $SCRIPTS/installer/install_vim.sh
     $SCRIPTS/installer/install_vim.sh
 }
 

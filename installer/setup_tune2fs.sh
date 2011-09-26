@@ -22,6 +22,19 @@ setup_tune2fs() {
     test -b /dev/sda9  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda9
     test -b /dev/sda10 && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda10
 
+    test -b /dev/mapper/`/bin/hostname`-root && \
+      sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-root
+    test -b /dev/mapper/`/bin/hostname`-tmp  && \
+      sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-tmp
+    test -b /dev/mapper/`/bin/hostname`-var  && \
+      sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-var
+    test -b /dev/mapper/`/bin/hostname`-opt  && \
+      sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-opt
+    test -b /dev/mapper/`/bin/hostname`-usr  && \
+      sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-usr
+    test -b /dev/mapper/`/bin/hostname`-home && \
+      sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-home
+
     test -b /dev/mapper/lv_`/bin/hostname`-root && \
       sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/lv_`/bin/hostname`-root
     test -b /dev/mapper/lv_`/bin/hostname`-tmp  && \
