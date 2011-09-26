@@ -13,13 +13,13 @@
 test -f /etc/redhat-release || exit 1
 
 # eth0
-sudo vim /etc/sysconfig/network-scripts/ifcfg-eth0
+sudo vi /etc/sysconfig/network-scripts/ifcfg-eth0
 
 # hostname
-sudo vim /etc/sysconfig/network
+sudo vi /etc/sysconfig/network
 
 # dns
-sudo vim /etc/resolv.conf
+sudo vi /etc/resolv.conf
 
 # service restart
 sudo service network restart
