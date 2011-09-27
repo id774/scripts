@@ -9,10 +9,8 @@
 #       First version.
 ########################################################################
 
-build_vim() {
-    $SCRIPTS/installer/install_ncurses.sh
-    vi $SCRIPTS/installer/install_vim.sh
-    $SCRIPTS/installer/install_vim.sh
+install_iptables() {
+    $SCRIPTS/installer/install_iptables.sh rhel
 }
 
 install_dot_vim() {
@@ -112,6 +110,11 @@ change_default() {
     sudo vi /etc/hosts
 }
 
+chkconfig() {
+    sudo chkconfig ip6tables off
+    sudo chkconfig --level 2345 httpd on
+}
+
 permission_for_src() {
     sudo chown -R root:root /usr/src
     sudo chown -R root:root /usr/local/src
@@ -124,7 +127,7 @@ erase_history() {
 }
 
 operation() {
-    #build_vim
+    install_iptables
     #install_dot_vim
     #install_dot_zsh
     #install_dot_emacs
@@ -141,6 +144,7 @@ operation() {
     #setup_rc_local
     #add_blacklist
     #change_default
+    chkconfig
     #permission_for_src
     #erase_history
 }

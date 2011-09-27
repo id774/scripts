@@ -90,7 +90,6 @@ $IPTABLES -A INPUT -d 224.0.0.1 -j DROP
 # ※メールサーバ等のレスポンス低下防止
 $IPTABLES -A INPUT -p tcp --dport 113 -j REJECT --reject-with tcp-reset
 
-# (Ubuntu/Debian系のみ)
 # 同一ポートに一定回数以上の認証を試みたIPアドレスをシャットアウトする
 $IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH
 $IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH -j LOG --log-prefix 'SSH attack: '

@@ -18,10 +18,14 @@ sudo yum -y install subversion mod_dav_svn
 sudo mkdir -p /var/lib/svn/$SVN_PROJECT_ID
 sudo svnadmin create /var/lib/svn/$SVN_PROJECT_ID/repos
 
+# Permission
 sudo chown -R apache. /var/lib/svn
 sudo chmod 770 /var/lib/svn
-sudo htpasswd -c /etc/httpd/conf/.htpasswd admin
+#sudo htpasswd -c /etc/httpd/conf/.htpasswd admin
 
+# Configuration
+sudo vi /etc/httpd/conf/httpd.conf
+sudo vi /etc/httpd/conf.d/subversion.conf
 
+# Restart
 sudo /etc/rc.d/init.d/httpd restart
-

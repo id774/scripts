@@ -1,7 +1,7 @@
 *filter
 :INPUT DROP [0:0]
 :FORWARD DROP [0:0]
-:OUTPUT ACCEPT [91:9119]
+:OUTPUT ACCEPT [0:0]
 :LOG_PINGDEATH - [0:0]
 -A INPUT -i lo -j ACCEPT 
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT 
@@ -30,7 +30,6 @@
 -A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT 
 -A INPUT -p tcp -m tcp --dport 5432 -j ACCEPT 
 -A INPUT -p tcp -m tcp --dport 9418 -j ACCEPT 
--A INPUT -p tcp -m tcp --dport 45332 -j ACCEPT 
 -A INPUT -p tcp -m tcp --dport 1099 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 1100 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 1101 -j ACCEPT

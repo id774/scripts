@@ -35,6 +35,9 @@ operation() {
     # tune2fs
     $SCRIPTS/installer/setup_tune2fs.sh
 
+    # SELinux
+    sudo vi /etc/sysconfig/selinux
+
     # Upgrade
     sudo yum -y update
 

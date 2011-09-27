@@ -72,7 +72,7 @@
 #sudo yum -y install libwnck-devel
 
 #sudo yum -y install ctags
-#sudo yum -y install vim-X11 vim-runtime vim-common
+#sudo yum -y install vim-enhanced
 #sudo yum -y install wireshark
 #sudo yum -y install yumex yum-utils gconf-editor hwbrowser rpm-build
 #sudo yum -y install atop fortune-all
