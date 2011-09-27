@@ -49,6 +49,10 @@ install_sqlite() {
     $SCRIPTS/installer/install_sqlite.sh
 }
 
+install_svn() {
+    $SCRIPTS/installer/install_rhel_svn.sh
+}
+
 install_ruby_and_rails() {
     $SCRIPTS/installer/install_ruby_and_rails.sh
 }
@@ -127,6 +131,7 @@ operation() {
     #install_mew
     #install_dotfiles
     #install_sqlite
+    #install_svn
     #install_ruby_and_rails
     #install_coffeescript
     #install_samba
