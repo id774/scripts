@@ -11,7 +11,7 @@
 #       Stable.
 ########################################################################
 
-SVN_PROJECT_ID=sample
+SVN_PROJECT_ID=project
 
 # Subversion Install
 sudo apt-get -y install apache2
@@ -21,12 +21,9 @@ sudo apt-get -y install subversion
 sudo apt-get -y install libapache2-svn
 sudo apt-get -y install libapache-mod-dav
 
-# Delete Old Repository
-sudo test -d /var/lib/svn/$SVN_PROJECT_ID && sudo rm -rf /var/lib/svn/$SVN_PROJECT_ID
-
 # Make Repository
-sudo mkdir -p /var/lib/svn/$SVN_PROJECT_ID
-sudo svnadmin create /var/lib/svn/$SVN_PROJECT_ID/repos
+sudo mkdir -p /var/lib/svn
+sudo svnadmin create /var/lib/svn/$SVN_PROJECT_ID
 
 # Configuration
 sudo vim /etc/apache2/mods-enabled/dav_svn.conf
@@ -41,13 +38,9 @@ sudo vim /etc/apache2/mods-enabled/dav_svn.conf
 #  </LimitExcept> 
 #</Location>
 
-# Import Dump
-test -f ~/$SVN_PROJECT_ID.dump && sudo svnadmin load /var/lib/svn/$SVN_PROJECT_ID/repos < ~/$SVN_PROJECT_ID.dump
-
 # Permission
 sudo chown -R www-data:www-data /var/lib/svn
 sudo chmod -R 770 /var/lib/svn
 
 # Apache2 Reload
 sudo /etc/init.d/apache2 reload
-
