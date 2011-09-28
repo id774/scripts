@@ -1,15 +1,20 @@
 #!/bin/sh
 #
 ########################################################################
-# Bulk Apt Install Script for Debian/Ubuntu
+# Bulk Apt Install Script for Debian
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.1 6/16,2007
+#  v0.2 9/28,2011
+#       Cut off desktop suite.
+#  v0.1 6/16,2011
 #       Forked from Initial Setup Script.
 ########################################################################
 
 export SCRIPTS=$HOME/scripts
+
+# Upgrade
+sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get autoclean && sudo apt-get -y autoremove
 
 # Vim
 sudo apt-get -y install vim
@@ -48,7 +53,7 @@ sudo apt-get -y install nkf
 sudo apt-get -y install mailx
 sudo apt-get -y install xdelta
 sudo apt-get -y install anacron
-sudo apt-get -y install linux-source
+#sudo apt-get -y install linux-source
 sudo apt-get -y install checkinstall
 sudo apt-get -y install alien
 sudo apt-get -y install uim uim-anthy uim-el
@@ -64,8 +69,8 @@ sudo apt-get -y install global
 
 # SCM
 sudo apt-get -y install subversion
-sudo apt-get -y install git-core git-cvs git-svn git-email
-sudo apt-get -y install svk
+sudo apt-get -y install git-core git-all
+#sudo apt-get -y install svk
 
 # Debian Developer Tools
 sudo apt-get -y install dpkg-dev lintian debhelper yada equivs cvs-buildpackage dupload fakeroot devscripts debget
@@ -152,72 +157,4 @@ sudo apt-get -y install openjdk-6-jdk
 
 # Linux kernel source, headers, kbuild (Debian)
 #sudo apt-get -y install linux-kbuild-2.6.32 linux-headers linux-source
-
-# GUI Desktop Xfce4(Debian) / Xubuntu(Ubuntu)
-#sudo apt-get -y install xfce4
-#sudo apt-get -y install xubuntu-desktop
-#sudo apt-get -y install xfwm4 xfwm4-themes
-#sudo apt-get -y install xfce4-goodies
-
-# Ubuntu-ja
-#sudo apt-get -y install ubuntu-desktop-ja
-
-# Fonts
-#sudo apt-get -y install xfonts-mplus
-#sudo apt-get -y install xfonts-shinonome
-#sudo apt-get -y install ttf-vlgothic ttf-bitstream-vera
-
-# Codec
-#sudo apt-get -y install ubuntu-restricted-extras
-#sudo apt-get -y install xubuntu-restricted-extras
-
-# Icons
-#sudo apt-get -y install ubuntu-artwork xubuntu-artwork human-icon-theme
-#sudo apt-get -y install gnome-themes gnome-themes-extras
-
-# OpenOffice.org
-#sudo apt-get -y install openoffice.org
-
-# Mozilla Thunderbird (Ubuntu)
-#sudo apt-get -y install mozilla-thunderbird
-
-# gthumb
-#sudo apt-get -y install gthumb
-
-# thunar
-#sudo apt-get -y install thunar
-
-# vlc
-#sudo apt-get -y install vlc
-
-# pidgin
-#sudo apt-get -y install pidgin
-
-# pdf
-#sudo apt-get -y install xpdf xpdf-reader
-
-# 2ch Browser
-#sudo apt-get -y install ochusha
-#sudo apt-get -y install jd
-
-# Comic Viewer
-#sudo apt-get -y install comix
-
-# CD/DVD Creator
-#sudo apt-get -y install gnomebaker
-
-# P2P
-#sudo apt-get -y install skype
-
-# MSN
-#sudo apt-get -y install amsn
-
-# Wireshark
-#sudo apt-get -y install wireshark
-
-# chromium-daily
-#sudo apt-get -y install chromium-browser
-
-# Upgrade
-sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get autoclean && sudo apt-get -y autoremove
 

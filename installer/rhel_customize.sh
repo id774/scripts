@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 ########################################################################
-# Batch Installers for RHEL
+# Batch Custom Installers for RHEL
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
@@ -43,6 +43,21 @@ install_dot_files() {
     $SCRIPTS/installer/install_dotfiles.sh
 }
 
+install_truecrypt() {
+    $SCRIPTS/installer/install_des.sh
+    #$SCRIPTS/installer/install_crypt.sh src
+    #$SCRIPTS/installer/install_crypt.sh win
+    #$SCRIPTS/installer/install_crypt.sh mac
+    $SCRIPTS/installer/install_crypt.sh $1
+}
+
+configure_samba() {
+    wget http://bookmark.at-ninja.jp/bookmark/smb.conf
+    sudo cp smb.conf /etc/samba/smb.conf
+    rm smb.conf
+    sudo smbpasswd -a $USER
+}
+
 install_sqlite() {
     $SCRIPTS/installer/install_sqlite.sh
 }
@@ -57,21 +72,6 @@ install_ruby_and_rails() {
 
 install_coffeescript() {
     $SCRIPTS/installer/install_coffeescript.sh
-}
-
-install_samba() {
-    wget http://bookmark.at-ninja.jp/bookmark/smb.conf
-    sudo cp smb.conf /etc/samba/smb.conf
-    rm smb.conf
-    sudo smbpasswd -a $USER
-}
-
-install_truecrypt() {
-    $SCRIPTS/installer/install_des.sh
-    #$SCRIPTS/installer/install_crypt.sh src
-    #$SCRIPTS/installer/install_crypt.sh win
-    #$SCRIPTS/installer/install_crypt.sh mac
-    $SCRIPTS/installer/install_crypt.sh linux-$1
 }
 
 setup_sysadmin_scripts() {
@@ -115,6 +115,13 @@ chkconfig() {
     sudo chkconfig --level 2345 httpd on
 }
 
+setup_group_and_passwd() {
+    sudo vi /etc/group
+    sudo vi /etc/passwd
+    sudo passwd root
+    sudo vi /etc/sudoers $SCRIPTS/etc/sudoers
+}
+
 permission_for_src() {
     sudo chown -R root:root /usr/src
     sudo chown -R root:root /usr/local/src
@@ -133,18 +140,19 @@ operation() {
     #install_dot_emacs
     #install_mew
     #install_dotfiles
+    #install_truecrypt linux-amd64
+    #configure_samba
     #install_sqlite
     #install_svn
     #install_ruby_and_rails
     #install_coffeescript
-    #install_samba
-    #install_truecrypt amd64
     #setup_sysadmin_scripts
     #setup_web
     #setup_rc_local
     #add_blacklist
     #change_default
     chkconfig
+    setup_group_and_passwd
     #permission_for_src
     #erase_history
 }

@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v4.0 9/28,2011
+#       Reconstruction.
 #  v3.2 9/9,2011
 #       Remove truecrypt version number.
 #  v3.1 7/11,2011
@@ -98,273 +100,24 @@
 
 export SCRIPTS=$HOME/scripts
 
-# Spec
-cat /proc/meminfo
-cat /proc/cpuinfo
+operation() {
+    # Environment
+    $SCRIPTS/installer/debian_env.sh
 
-# tune2fs
-test -b /dev/sda0  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda0
-test -b /dev/sda1  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda1
-test -b /dev/sda2  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda2
-test -b /dev/sda3  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda3
-test -b /dev/sda4  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda4
-test -b /dev/sda5  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda5
-test -b /dev/sda6  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda6
-test -b /dev/sda7  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda7
-test -b /dev/sda8  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda8
-test -b /dev/sda9  && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda9
-test -b /dev/sda10 && sudo tune2fs -i 0 -c 0 -m 1 /dev/sda10
-test -b /dev/mapper/`/bin/hostname`-root && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-root
-test -b /dev/mapper/`/bin/hostname`-tmp  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-tmp
-test -b /dev/mapper/`/bin/hostname`-var  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-var
-test -b /dev/mapper/`/bin/hostname`-opt  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-opt
-test -b /dev/mapper/`/bin/hostname`-usr  && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-usr
-test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 -m 1 /dev/mapper/`/bin/hostname`-home
+    # Packages
+    $SCRIPTS/installer/debian_apt.sh
 
-# Admin Groups
-sudo groupadd admin
-sudo groupadd wheel
+    # Customize
+    $SCRIPTS/installer/debian_customize.sh
 
-# APT Update
-DISTRIB_CODENAME=squeeze
-test -f /etc/lsb-release && DISTRIB_CODENAME=lucid
-SOURCESLIST=sources-$DISTRIB_CODENAME.list
-sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
-sudo vim /etc/apt/sources.list
-sudo apt-get update
+    # Desktop Packages
+    #$SCRIPTS/installer/debian_desktop_apt.sh
 
-# Ubuntu-ja GPG
-#eval `cat /etc/lsb-release`
-#wget -q http://www.ubuntulinux.jp/ubuntu-ja-archive-keyring.gpg -O- | sudo apt-key add -
-#sudo wget http://www.ubuntulinux.jp/sources.list.d/$DISTRIB_CODENAME.list -O /etc/apt/sources.list.d/ubuntu-ja.list
-#sudo apt-get update
+    # Desktop Customize
+    #$SCRIPTS/installer/debian_desktop_customize.sh
+}
 
-# chromium-daily GPG keys
-#sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 0xfbef0d696de1c72ba5a835fe5a9bf3bb4e5e17b5
+# debian?
+test -f /etc/debian_version || exit 1
 
-# apt packages
-$SCRIPTS/installer/debian_apt.sh
-
-# Network Settings
-$SCRIPTS/installer/install_pppconfig.sh
-
-# Stop Services
-sudo update-rc.d -f cupsys remove
-sudo update-rc.d -f hplip remove
-sudo apt-get remove apt-index-watcher
-
-# Home Permission
-sudo mkdir -p /opt/sbin
-sudo mkdir -p /opt/bin
-sudo chmod 750 /home/*
-
-# zsh/screen
-chsh -s /bin/zsh
-sudo chsh -s /bin/sh root
-
-# Debian Developer Tools
-sudo vim /etc/apt/apt.conf.d/10apt-listbugs*
-
-# Exim4
-sudo dpkg-reconfigure exim4-config
-
-# paco
-#$SCRIPTS/installer/install_paco.sh
-
-# Editor
-#$SCRIPTS/installer/install_emacs.sh 23.3 /opt/emacs/23.3
-#$SCRIPTS/installer/install_emacs_w3m.sh 23.3 /opt/emacs/23.3
-#sudo ln -fs /opt/emacs/23.3/bin/emacs /opt/bin/emacs
-
-# navi2ch
-#$SCRIPTS/installer/install_navi2ch.sh
-
-# Vim
-#$SCRIPTS/installer/install_ncurses.sh
-#$SCRIPTS/installer/install_vim.sh
-
-# dot_vim
-$SCRIPTS/installer/install_dotvim.sh
-
-# dot_zsh
-test -d ~/local/github || mkdir -p ~/local/github
-cd ~/local/github
-git clone git://github.com/id774/dot_zsh.git
-cd
-ln -s ~/local/github/dot_zsh
-~/local/github/dot_zsh/install_dotzsh.sh
-
-# dot_emacs
-test -d ~/local/github || mkdir -p ~/local/github
-cd ~/local/github
-git clone git://github.com/id774/dot_emacs.git
-cd
-ln -s ~/local/github/dot_emacs
-~/local/github/dot_emacs/install_dotemacs.sh
-#$SCRIPTS/installer/install_mew.sh /opt/emacs/23.3/bin/emacs
-
-# dot_files
-$SCRIPTS/installer/install_dotfiles.sh
-
-# sshfs
-sudo vim /etc/modules
-
-# Samba (Not Recommended)
-#sudo update-rc.d -f samba remove
-#sudo cp $SCRIPTS/etc/smb.conf /etc/samba/smb.conf
-#sudo smbpasswd -a $USER
-
-# PostgreSQL
-$SCRIPTS/installer/install_postgres.py install
-
-# MySQL
-$SCRIPTS/installer/install_mysql.py install -c
-
-# KVM
-#if [ `egrep '^flags.*(vmx|svm)' /proc/cpuinfo | wc -l` != 0 ]; then
-#    sudo addgroup $USER libvirtd
-#    sudo addgroup $USER kvm
-#fi
-
-# Crypt
-$SCRIPTS/installer/install_des.sh
-$SCRIPTS/installer/install_crypt.sh src
-$SCRIPTS/installer/install_crypt.sh win
-$SCRIPTS/installer/install_crypt.sh mac
-$SCRIPTS/installer/install_crypt.sh linux-i386
-#$SCRIPTS/installer/install_crypt.sh linux-amd64
-
-# iptables
-$SCRIPTS/installer/install_iptables.sh
-
-# sysstat
-sudo dpkg-reconfigure sysstat
-# ENABLED="true"
-sudo vim /etc/default/sysstat
-
-# hddtemp
-sudo dpkg-reconfigure hddtemp
-
-# smartmontools
-# start_smartd=yes
-# smartd_opts="--interval=7200"
-sudo vim /etc/default/smartmontools
-
-# Ruby
-#$SCRIPTS/installer/install_ruby_and_rails.sh
-
-# CoffeeScript
-#$SCRIPTS/installer/install_coffeescript.sh
-
-# Python
-#$SCRIPTS/installer/install_python.sh 2.7.1 /opt/python/2.7.1
-#$SCRIPTS/installer/install_python.sh 3.1.3 /opt/python/3.1.3
-#$SCRIPTS/config/update-alternatives-python.sh
-
-# Python Framework
-#vim $SCRIPTS/installer/install_python_framework.sh
-#$SCRIPTS/installer/install_python_framework.sh
-
-# Trac
-#$SCRIPTS/installer/install_trac.sh
-
-# sysadmin scripts
-$SCRIPTS/installer/setup_sysadmin_scripts.sh
-
-# web page
-test -d ~/local/github || mkdir -p ~/local/github
-cd ~/local/github
-git clone git://github.com/id774/intraweb-template.git
-cd
-ln -s ~/local/github/intraweb-template
-~/local/github/intraweb-template/install_intraweb.sh
-
-# SSL
-$SCRIPTS/installer/install_apache2ssl.sh
-
-# GUI Desktop Xfce4(Debian) / Xubuntu(Ubuntu)
-#im-switch -c
-#sudo rmmod pcspkr
-test -r /etc/modprobe.d/blacklist && sudo vim /etc/modprobe.d/blacklist
-test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.conf
-#$SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_lucid
-# xfsuspend
-#which s2ram > /dev/null && which xflock4 > /dev/null && sudo cp $SCRIPTS/xfsuspend.sh /usr/local/sbin/xfsuspend && sudo chown root:root /usr/local/sbin/xfsuspend && sudo chmod 755 /usr/local/sbin/xfsuspend && sudo vim /usr/local/sbin/xfsuspend
-# xfce4 custom themes
-#test -f /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc && sudo cp ~/scripts/etc/themes/xfce-dusk/gtkrc /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc
-
-# GDM Themes
-#$SCRIPTS/installer/install_gdmthemes.sh
-#$SCRIPTS/installer/install_gdmthemes2.sh
-
-# Share Documents
-#wget http://big.freett.com/railsinstall2/share-documents.tar.gz
-#sudo tar xzvf share-documents.tar.gz -C /usr/local/share
-#rm share-documents.tar.gz
-#sudo chmod -R 755 /usr/local/share/share-documents
-#ln -s /usr/local/share/share-documents ~/share
-
-# Iceweasel and Icedove (Debian)
-#$SCRIPTS/installer/install_iceweasel.sh
-
-# Install plagger plugin
-#$SCRIPTS/installer/install_plagger_plugins.sh
-
-# Termtter
-cd ~/local/github
-git clone git://github.com/id774/termtter-plugins.git
-cd
-ln -s ~/local/github/termtter-plugins
-#$PRIVATE/installer/install_dottermtter.sh
-#$SCRIPTS/installer/install_termtter_plugins.sh
-
-# rc.local
-$SCRIPTS/installer/install_rclocal.sh
-
-# Permissions for /src
-sudo chown -R root:root /usr/src
-sudo chown -R root:root /usr/local/src
-
-# ntp server (130.69.251.23)
-sudo vim /etc/ntp.conf
-
-# Apache Configuration
-test -f /etc/apache2/apache2.conf && sudo vim /etc/apache2/apache2.conf
-
-# udev patches
-$SCRIPTS/dev/fix_udev_persistent-rules.sh
-
-# Change default
-sudo vim /etc/profile
-sudo vim /etc/crontab
-sudo vim /etc/anacrontab
-sudo vim /etc/pam.d/su
-sudo vim /etc/ssh/sshd_config
-sudo vim /etc/pam.d/sshd
-sudo vim /etc/pam.d/login
-sudo vim /etc/fstab
-sudo vim /etc/deluser.conf
-sudo vim /etc/hosts
-
-# Munin
-$SCRIPTS/installer/install_munin.sh
-
-# Grub
-test -f /boot/grub/menu.lst && sudo vim /boot/grub/menu.lst
-test -f /etc/default/grub && sudo vim /etc/default/grub && sudo update-grub2
-
-# passwd and group
-sudo vim /etc/passwd
-sudo vim /etc/group
-
-# Activate root
-sudo passwd root
-
-# Erase history
-test -f ~/.bash_history && sudo rm ~/.bash_history
-test -f ~/.mysql_history && sudo rm ~/.mysql_history
-test -f ~/.viminfo && sudo rm ~/.viminfo
-
-# sudoers
-sudo vim /etc/sudoers $SCRIPTS/etc/sudoers
-
+operation

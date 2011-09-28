@@ -1,10 +1,12 @@
 #!/bin/sh
 #
 ########################################################################
-# Install Subversion Server
+# Install Subversion Server for Debian
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 9/28,2011
+#       Fix svn path.
 #  v1.1 7/21,2011
 #       Remove svn user.
 #  v1.0 8/15,2008

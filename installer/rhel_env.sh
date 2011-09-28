@@ -14,23 +14,16 @@ show_hw_info() {
     cat /proc/cpuinfo
 }
 
-setup_group_and_passwd() {
-    sudo vi /etc/group
-    sudo vi /etc/passwd
-    sudo passwd root
-}
-
 clear_udev() {
     sudo rm /etc/udev/rules.d/70-persistent-net.rules
 }
 
 operation() {
     show_hw_info
+    clear_udev
 
     # Network
     $SCRIPTS/installer/rhel_network.sh
-
-    clear_udev
 
     # tune2fs
     $SCRIPTS/installer/setup_tune2fs.sh
@@ -40,11 +33,6 @@ operation() {
 
     # Upgrade
     sudo yum -y update
-
-    setup_group_and_passwd
-
-    # Setup sudoers
-    sudo vi /etc/sudoers $SCRIPTS/etc/sudoers
 }
 
 operation
