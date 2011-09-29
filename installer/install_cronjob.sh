@@ -24,18 +24,18 @@ sudo chown root:adm /var/log/sysadmin
 
 # Daily Backup Job
 sudo cp $SCRIPTS/cron/bin/backup.sh /root/bin/backup.sh
-sudo vim /root/bin/backup.sh
+sudo vi /root/bin/backup.sh
 sudo chmod 700 /root/bin/backup.sh
 sudo chown root:root /root/bin/backup.sh
 sudo cp $SCRIPTS/cron/etc/backup_exclude /root/bin/backup_exclude
-sudo vim /root/bin/backup_exclude
+sudo vi /root/bin/backup_exclude
 sudo chmod 600 /root/bin/backup_exclude
 sudo chown root:root /root/bin/backup_exclude
 sudo test -d /home/backup || sudo mkdir /home/backup
 sudo chmod 750 /home/backup
 sudo chown root:admin /home/backup
 sudo cp $SCRIPTS/cron/bin/backup /etc/cron.daily/backup
-sudo vim /etc/cron.daily/backup
+sudo vi /etc/cron.daily/backup
 sudo chmod 750 /etc/cron.daily/backup
 sudo chown root:adm /etc/cron.daily/backup
 sudo touch /var/log/sysadmin/backup.log
@@ -47,7 +47,7 @@ sudo chown root:root /etc/logrotate.d/backup
 
 # Auto Upgrade Job
 sudo cp $SCRIPTS/cron/bin/auto-upgrade /etc/cron.daily/auto-upgrade
-sudo vim /etc/cron.daily/auto-upgrade
+sudo vi /etc/cron.daily/auto-upgrade
 sudo chmod 750 /etc/cron.daily/auto-upgrade
 sudo chown root:adm /etc/cron.daily/auto-upgrade
 sudo touch /var/log/sysadmin/auto-upgrade.log
@@ -84,5 +84,5 @@ fi
 # Edit crontab
 # 50 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday
 # 55 6  * * 6   root cd / && run-parts --report /etc/cron.weekend
-sudo vim /etc/crontab $SCRIPTS/installer/install_cronjob.sh
+sudo vi /etc/crontab $SCRIPTS/installer/install_cronjob.sh
 

@@ -12,7 +12,7 @@ export SCRIPTS=$HOME/scripts
 #DISTRIB_CODENAME=lenny
 #SOURCESLIST=sources-$DISTRIB_CODENAME.list
 #sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
-sudo vim /etc/apt/sources.list
+sudo vi /etc/apt/sources.list
 sudo aptitude update
 
 # chromium-daily
@@ -36,13 +36,13 @@ fi
 if [ `aptitude search apt-listbugs | awk '/^i/' | wc -l` = 0 ]; then
     sudo aptitude -y install apt-listchanges apt-listbugs
 fi
-sudo vim /etc/apt/apt.conf.d/10apt-listbugs*
+sudo vi /etc/apt/apt.conf.d/10apt-listbugs*
 
 # sysklogd
 if [ `aptitude search sysklogd | awk '/^i/' | wc -l` = 0 ]; then
     sudo aptitude -y install klogd sysklogd
-    sudo vim /etc/syslog.conf
-    sudo vim /etc/default/syslogd
+    sudo vi /etc/syslog.conf
+    sudo vi /etc/default/syslogd
 fi
 
 # Libraries and Programming Tools
@@ -105,12 +105,12 @@ $SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.1
 sudo cp $SCRIPTS/get_resources.sh /root/bin/get_resources.sh
 sudo chmod 700 /root/bin/get_resources.sh
 sudo cp $SCRIPTS/cron/etc/backup_exclude /root/bin/backup_exclude
-sudo vim /root/bin/backup_exclude
+sudo vi /root/bin/backup_exclude
 sudo chmod 600 /root/bin/backup_exclude
 sudo cp $SCRIPTS/cron/bin/clamav_upgrade.sh /root/bin/clamav_upgrade.sh
 sudo chmod 700 /root/bin/clamav_upgrade.sh
 sudo cp $SCRIPTS/cron/etc/clamscan_exclude /root/bin/clamscan_exclude
-sudo vim /root/bin/clamscan_exclude
+sudo vi /root/bin/clamscan_exclude
 sudo chmod 600 /root/bin/clamscan_exclude
 sudo chown -R root:root /root/bin
 test -f /etc/cron.monthly/clamav_upgrade && sudo mv -v /etc/cron.monthly/clamav_upgrade /etc/cron.weekly/
@@ -126,11 +126,11 @@ sudo aptitude -y purge linux-headers-2.6.26-1-686
 sudo aptitude -y install linux-headers-2.6.26-2-686
 
 # Add path to root shell and crontab
-sudo vim /etc/profile
-sudo vim /etc/crontab
+sudo vi /etc/profile
+sudo vi /etc/crontab
 
 # Disable su
-sudo vim /etc/pam.d/su
+sudo vi /etc/pam.d/su
 
 # Upgrade
 

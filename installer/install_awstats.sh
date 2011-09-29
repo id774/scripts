@@ -13,9 +13,9 @@
 sudo apt-get install awstats
 
 # Configure
-sudo vim /etc/awstats/awstats.conf*
-sudo vim /etc/apache2/sites-available/default*
-sudo vim /etc/logrotate.d/apache2
+sudo vi /etc/awstats/awstats.conf*
+sudo vi /etc/apache2/sites-available/default*
+sudo vi /etc/logrotate.d/apache2
 sudo chmod 440 /var/log/apache2/*
 sudo chown www-data:adm /var/log/apache2/*
 sudo chmod 550 /var/log/apache2

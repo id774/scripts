@@ -9,7 +9,7 @@ export SCRIPTS=$HOME/scripts
 #DISTRIB_CODENAME=lenny
 #SOURCESLIST=sources-$DISTRIB_CODENAME.list
 #sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
-sudo vim /etc/apt/sources.list
+sudo vi /etc/apt/sources.list
 sudo aptitude update
 
 # Libraries and Programming Tools
@@ -65,12 +65,12 @@ test -b /dev/mapper/`/bin/hostname`-home && sudo tune2fs -i 0 -c 0 -m 1 /dev/map
 
 # Last Setup
 # xfsuspend
-which s2ram > /dev/null && which xflock4 > /dev/null && sudo cp $SCRIPTS/xfsuspend.sh /usr/local/sbin/xfsuspend && sudo chown root:root /usr/local/sbin/xfsuspend && sudo chmod 755 /usr/local/sbin/xfsuspend && sudo vim /usr/local/sbin/xfsuspend
+which s2ram > /dev/null && which xflock4 > /dev/null && sudo cp $SCRIPTS/xfsuspend.sh /usr/local/sbin/xfsuspend && sudo chown root:root /usr/local/sbin/xfsuspend && sudo chmod 755 /usr/local/sbin/xfsuspend && sudo vi /usr/local/sbin/xfsuspend
 # xfce4 custom themes
 test -f /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc && sudo cp ~/scripts/etc/themes/xfce-dusk/gtkrc /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc
 # sudoers
 sudo cp $SCRIPTS/etc/sudoers /etc/sudoers
-sudo vim /etc/sudoers
+sudo vi /etc/sudoers
 
 # Renew logrotate settings
 test -f /etc/logrotate.d/backup          && sudo cp -v $SCRIPTS/cron/etc/backup-log          /etc/logrotate.d/backup
@@ -97,10 +97,10 @@ sudo chown -R root:root /root/bin
 sudo cp $SCRIPTS/cron/bin/clamav_upgrade.sh /root/bin/clamav_upgrade.sh
 sudo chmod 700 /root/bin/clamav_upgrade.sh
 sudo cp $SCRIPTS/cron/bin/auto-upgrade /etc/cron.daily/auto-upgrade
-sudo vim /etc/cron.daily/auto-upgrade
+sudo vi /etc/cron.daily/auto-upgrade
 sudo chmod 750 /etc/cron.daily/auto-upgrade
 sudo cp $SCRIPTS/cron/etc/clamscan_exclude /root/bin/clamscan_exclude
-sudo vim /root/bin/clamscan_exclude
+sudo vi /root/bin/clamscan_exclude
 sudo chmod 600 /root/bin/clamscan_exclude
 sudo chown -R root:root /root/bin
 

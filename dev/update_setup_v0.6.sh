@@ -14,7 +14,7 @@ DISTRIB_CODENAME=squeeze
 test -f /etc/lsb-release && DISTRIB_CODENAME=lucid
 SOURCESLIST=sources-$DISTRIB_CODENAME.list
 sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
-sudo vim /etc/apt/sources.list
+sudo vi /etc/apt/sources.list
 sudo apt-get update
 
 # Crypt

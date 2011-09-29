@@ -9,7 +9,7 @@ sudo chsh -s /bin/bash root
 #DISTRIB_CODENAME=lenny
 #SOURCESLIST=sources-$DISTRIB_CODENAME.list
 #sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
-sudo vim /etc/apt/sources.list
+sudo vi /etc/apt/sources.list
 sudo aptitude update
 
 # Ubuntu-ja GPG Automatic Import (Ubuntu Server)
@@ -81,7 +81,7 @@ sudo chown -R root:root /usr/local/src
 sudo aptitude -y install sysstat
 sudo dpkg-reconfigure sysstat
 # ENABLED="true"
-sudo vim /etc/default/sysstat
+sudo vi /etc/default/sysstat
 # hddtemp
 sudo aptitude -y install lm-sensors
 sudo aptitude -y install hddtemp
@@ -90,7 +90,7 @@ sudo dpkg-reconfigure hddtemp
 sudo aptitude -y install smartmontools
 # start_smartd=yes
 # smartd_opts="--interval=7200"
-sudo vim /etc/default/smartmontools
+sudo vi /etc/default/smartmontools
 # smartmontools
 sudo aptitude -y install ext2resize
 

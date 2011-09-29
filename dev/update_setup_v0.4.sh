@@ -13,7 +13,7 @@ test -n "$1" || exit 1
 #DISTRIB_CODENAME=lucid
 #SOURCESLIST=sources-$DISTRIB_CODENAME.list
 #sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
-sudo vim /etc/apt/sources.list
+sudo vi /etc/apt/sources.list
 sudo aptitude update
 
 # Network
@@ -103,20 +103,20 @@ fi
 
 # Auto Upgrade Job
 sudo cp $SCRIPTS/cron/bin/auto-upgrade /etc/cron.daily/auto-upgrade
-sudo vim /etc/cron.daily/auto-upgrade
+sudo vi /etc/cron.daily/auto-upgrade
 sudo chmod 750 /etc/cron.daily/auto-upgrade
 sudo chown root:adm /etc/cron.daily/auto-upgrade
 # Daily Backup Job
 sudo cp $SCRIPTS/cron/bin/backup.sh /root/bin/backup.sh
-sudo vim /root/bin/backup.sh
+sudo vi /root/bin/backup.sh
 sudo chmod 700 /root/bin/backup.sh
 sudo chown root:root /root/bin/backup.sh
 sudo cp $SCRIPTS/cron/etc/backup_exclude /root/bin/backup_exclude
-sudo vim /root/bin/backup_exclude
+sudo vi /root/bin/backup_exclude
 sudo chmod 600 /root/bin/backup_exclude
 sudo chown root:root /root/bin/backup_exclude
 sudo cp $SCRIPTS/cron/bin/backup /etc/cron.daily/backup
-sudo vim /etc/cron.daily/backup
+sudo vi /etc/cron.daily/backup
 sudo chmod 750 /etc/cron.daily/backup
 sudo chown root:adm /etc/cron.daily/backup
 # Server Resource Report Job
@@ -125,7 +125,7 @@ sudo chmod 700 /root/bin/get_resources.sh
 sudo chown root:root /root/bin/get_resources.sh
 # ClamAV Auto Upgrade Job
 sudo cp $SCRIPTS/cron/bin/clamav_upgrade /etc/cron.weekly/clamav_upgrade
-sudo vim /etc/cron.weekly/clamav_upgrade
+sudo vi /etc/cron.weekly/clamav_upgrade
 sudo chmod 750 /etc/cron.weekly/clamav_upgrade
 sudo chown root:adm /etc/cron.weekly/clamav_upgrade
 
@@ -134,11 +134,11 @@ sudo chown -R root:root /usr/src
 sudo chown -R root:root /usr/local/src
 
 # Last Setup
-sudo vim /etc/hosts
-sudo vim /etc/init.d/cron
+sudo vi /etc/hosts
+sudo vi /etc/init.d/cron
 # Disable motd
-sudo vim /etc/pam.d/sshd
-sudo vim /etc/pam.d/login
+sudo vi /etc/pam.d/sshd
+sudo vi /etc/pam.d/login
 
 # Private settings
 $PRIVATE/batch_configuration.sh

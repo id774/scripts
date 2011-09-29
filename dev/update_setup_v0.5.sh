@@ -14,7 +14,7 @@ test -n "$1" || exit 1
 DISTRIB_CODENAME=lucid
 SOURCESLIST=sources-$DISTRIB_CODENAME.list
 sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
-sudo vim /etc/apt/sources.list
+sudo vi /etc/apt/sources.list
 sudo apt-get update
 
 sudo chsh -s /bin/sh root
@@ -65,5 +65,5 @@ test -d $HOME/.gnupg || $PRIVATE/installer/install_dotgnupg.sh
 
 # hosts
 cp ~/private/secure/dot_ssh/known_hosts ~/.ssh/known_hosts
-sudo vim /etc/hosts $PRIVATE/etc/hosts
+sudo vi /etc/hosts $PRIVATE/etc/hosts
 

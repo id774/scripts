@@ -21,7 +21,7 @@ setup_environment() {
 }
 
 apache_settings() {
-    sudo vim /etc/apache2/sites-available/default
+    sudo vi /etc/apache2/sites-available/default
     sudo /etc/init.d/apache2 restart
 }
 

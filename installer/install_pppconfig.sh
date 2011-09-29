@@ -19,9 +19,9 @@ sudo apt-get -y install pppconfig
 
 # interfaces
 sudo cp $SCRIPTS/etc/interfaces.static /etc/network/interfaces.static
-sudo vim /etc/network/interfaces.static
+sudo vi /etc/network/interfaces.static
 sudo cp $SCRIPTS/etc/interfaces.dhcp /etc/network/interfaces.dhcp
-sudo vim /etc/network/interfaces.dhcp
+sudo vi /etc/network/interfaces.dhcp
 sudo cp /etc/network/interfaces.static /etc/network/interfaces
 
 # emobile

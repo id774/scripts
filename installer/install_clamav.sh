@@ -33,7 +33,7 @@ install_clamav() {
     ./configure --enable-experimental
     make
     sudo make install
-    sudo vim /usr/local/etc/freshclam.conf /usr/local/etc/clamd.conf
+    sudo vi /usr/local/etc/freshclam.conf /usr/local/etc/clamd.conf
     sudo chmod 700 /usr/local/etc/freshclam.conf
     sudo cp /usr/local/etc/freshclam.conf /usr/local/etc/freshclam.conf.base
     sudo cp /usr/local/etc/clamd.conf /usr/local/etc/clamd.conf.base

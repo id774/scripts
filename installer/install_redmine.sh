@@ -24,7 +24,7 @@ cd /opt/rails
 sudo svn co svn://rubyforge.org/var/svn/redmine/trunk redmine
 cd /opt/rails/redmine
 sudo cp config/database.yml.example config/database.yml
-sudo vim config/database.yml
+sudo vi config/database.yml
 #production:
 #  adapter: mysql
 #  database: redmine
@@ -45,7 +45,7 @@ sudo rake db:migrate RAILS_ENV=$RAILS_ENV
 sudo rake load_default_data RAILS_ENV=$RAILS_ENV
 
 # Setup Environment
-sudo vim config/environment.rb
+sudo vi config/environment.rb
 
 # Subversion Install
 sudo apt-get -y install apache2
@@ -60,7 +60,7 @@ sudo mkdir -p /var/lib/svn
 sudo svnadmin create /var/lib/svn/$SVN_PROJECT_ID
 
 # Configuration
-sudo vim /etc/apache2/mods-enabled/dav_svn.conf
+sudo vi /etc/apache2/mods-enabled/dav_svn.conf
 #<Location /svn/$SVN_PROJECT_ID>
 #  DAV svn
 #  SVNPath /var/lib/svn/$SVN_PROJECT_ID/repos

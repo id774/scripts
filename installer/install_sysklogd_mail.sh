@@ -12,5 +12,5 @@
 sudo cp $SCRIPTS/etc/sysklogd /etc/init.d/sysklogd
 sudo chmod 750 /etc/init.d/sysklogd
 sudo chown root:adm /etc/init.d/sysklogd
-sudo vim /etc/init.d/sysklogd
+sudo vi /etc/init.d/sysklogd
 

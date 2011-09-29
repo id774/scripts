@@ -21,7 +21,7 @@ test -n "$2" || CRYPT_VOLUME_NAME=home-ubuntu-crypt
 sudo apt-get -y install cryptmount
 
 sudo cp $SCRIPTS/etc/cmtab /etc/cryptmount/cmtab
-sudo vim /etc/cryptmount/cmtab
+sudo vi /etc/cryptmount/cmtab
 
 mkdir $HOME/local
 dd if=/dev/zero of=$HOME/local/crypt.fs bs=1M count=$CRYPT_VOLUME_SIZE

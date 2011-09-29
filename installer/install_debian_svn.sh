@@ -28,7 +28,7 @@ sudo mkdir -p /var/lib/svn
 sudo svnadmin create /var/lib/svn/$SVN_PROJECT_ID
 
 # Configuration
-sudo vim /etc/apache2/mods-enabled/dav_svn.conf
+sudo vi /etc/apache2/mods-enabled/dav_svn.conf
 #<Location /svn/$SVN_PROJECT_ID>
 #  DAV svn
 #  SVNPath /var/lib/svn/$SVN_PROJECT_ID/repos

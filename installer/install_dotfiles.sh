@@ -119,12 +119,12 @@ install_dotfiles() {
         test -f $HOME/etc/config.local/dot_xmodmaprc && \
           sudo cp $OPTIONS $HOME/etc/config.local/dot_xmodmaprc \
           /etc/xdg/xfce4/xmodmaprc
-        sudo vim /etc/xdg/xfce4/xmodmaprc /etc/xdg/xfce4/xinitrc
+        sudo vi /etc/xdg/xfce4/xmodmaprc /etc/xdg/xfce4/xinitrc
     fi
 
     test -f $HOME/etc/config.local/dot_gitconfig && \
       cp $OPTIONS $HOME/etc/config.local/dot_gitconfig $HOME/.gitconfig
-    vim $HOME/.gitconfig
+    vi $HOME/.gitconfig
 
     test -f $HOME/.tmp/.gitconfig.bak && rm $HOME/.tmp/.gitconfig.bak
     test -f $HOME/.viminfo && sudo chown $USER $HOME/.viminfo

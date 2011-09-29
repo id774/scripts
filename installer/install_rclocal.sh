@@ -30,4 +30,4 @@ sudo chmod 755 /etc/rc.local.d/*
 
 sudo chown root:adm /etc/rc.local.d/mail_to_admin
 sudo chmod 740 /etc/rc.local.d/mail_to_admin
-sudo vim /etc/rc.local.d/mail_to_admin
+sudo vi /etc/rc.local.d/mail_to_admin

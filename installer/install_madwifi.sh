@@ -31,7 +31,7 @@ install_trunk() {
     sudo make
     sudo make install
     sudo modinfo ath_pci
-    sudo vim /etc/modules # add line "ath_pci"
+    sudo vi /etc/modules # add line "ath_pci"
     sudo chown -R $OWNER /usr/local/src/network
 }
 
