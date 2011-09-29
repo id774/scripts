@@ -157,7 +157,7 @@ operation() {
     #install_coffeescript
     #setup_sysadmin_scripts
     #setup_web
-    #setup_rc_local
+    setup_rc_local
     #add_blacklist
     #change_default
     chkconfig

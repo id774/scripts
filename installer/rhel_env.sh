@@ -14,13 +14,15 @@ show_hw_info() {
     cat /proc/cpuinfo
 }
 
-clear_udev() {
-    sudo rm /etc/udev/rules.d/70-persistent-net.rules
+flash_udev_net_rules() {
+    test -f /etc/udev/rules.d/70-persistent-net.rules && \
+      sudo mv -f /etc/udev/rules.d/70-persistent-net.rules \
+      /etc/udev/rules.d/70-persistent-net.rules.old
 }
 
 operation() {
     show_hw_info
-    clear_udev
+    flash_udev_net_rules
 
     # Network
     $SCRIPTS/installer/rhel_network.sh

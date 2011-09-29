@@ -19,8 +19,10 @@ create_admin_group() {
     sudo groupadd wheel
 }
 
-clear_udev() {
-    sudo rm /etc/udev/rules.d/70-persistent-net.rules
+flash_udev_net_rules() {
+    test -f /etc/udev/rules.d/70-persistent-net.rules && \
+      sudo mv -f /etc/udev/rules.d/70-persistent-net.rules \
+      /etc/udev/rules.d/70-persistent-net.rules.old
 }
 
 setup_apt_source() {
@@ -62,7 +64,7 @@ home_permission() {
 operation() {
     show_hw_info
     create_admin_group
-    clear_udev
+    flash_udev_net_rules
 
     # tune2fs
     $SCRIPTS/installer/setup_tune2fs.sh
