@@ -54,10 +54,9 @@ sudo apt-get -y install mailx
 sudo apt-get -y install xdelta
 sudo apt-get -y install anacron
 #sudo apt-get -y install linux-source
-sudo apt-get -y install checkinstall
-sudo apt-get -y install alien
-sudo apt-get -y install uim uim-anthy uim-el
-sudo apt-get -y install libxslt-dev libxslt-ruby python-libxslt1
+#sudo apt-get -y install checkinstall
+#sudo apt-get -y install alien
+sudo apt-get -y install uim
 
 # Programming
 sudo apt-get -y install nasm
@@ -84,7 +83,6 @@ sudo apt-get -y install texinfo
 sudo apt-get -y install emacs23 emacs23-el
 sudo apt-get -y install mew stunnel ca-certificates
 sudo apt-get -y install w3m-el-snapshot w3m-img imagemagick
-sudo apt-get -y remove uim-el
 sudo apt-get -y install vim-gui-common vim-runtime colordiff
 sudo apt-get -y install ctags
 
@@ -104,6 +102,7 @@ sudo apt-get -y install gnuserv
 sudo apt-get -y install mingw32 mingw32-binutils mingw32-runtime
 sudo apt-get -y install libxml2 libxml2-dev
 sudo apt-get -y install libxslt1-dev libxml-dev
+sudo apt-get -y install libxslt-ruby python-libxslt1
 sudo apt-get -y install expat libexpat-dev
 sudo apt-get -y install libssl-dev libio-socket-ssl-perl libnet-ssleay-perl
 sudo apt-get -y install libtemplate-perl libxml-libxml-perl
