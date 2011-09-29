@@ -18,6 +18,7 @@
 ########################################################################
 
 #sudo yum -y install yum-fastestmirror
+#sudo yum -y install rsync
 #sudo yum -y install git git-all
 #sudo yum -y install openssh-server
 #sudo yum -y install ssh

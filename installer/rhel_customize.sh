@@ -115,6 +115,15 @@ chkconfig() {
     sudo chkconfig --level 2345 httpd on
 }
 
+setup_grub() {
+    test -f /etc/grub.conf && \
+      sudo vi /etc/grub.conf
+    test -f /boot/grub/menu.lst && \
+      sudo vi /boot/grub/menu.lst
+    test -f /etc/default/grub && \
+      sudo vi /etc/default/grub && sudo update-grub2
+}
+
 setup_group_and_passwd() {
     sudo vi /etc/group
     sudo vi /etc/passwd
@@ -152,6 +161,7 @@ operation() {
     #add_blacklist
     #change_default
     chkconfig
+    setup_grub
     setup_group_and_passwd
     #permission_for_src
     #erase_history
