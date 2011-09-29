@@ -16,9 +16,15 @@ test -r /etc/modprobe.d/blacklist.conf && sudo vim /etc/modprobe.d/blacklist.con
 
 $SCRIPTS/installer/install_dotfiles.sh dot_xmodmaprc_lucid
 
-which s2ram > /dev/null && which xflock4 > /dev/null && sudo cp $SCRIPTS/xfsuspend.sh /usr/local/sbin/xfsuspend && sudo chown root:root /usr/local/sbin/xfsuspend && sudo chmod 755 /usr/local/sbin/xfsuspend && sudo vim /usr/local/sbin/xfsuspend
+which s2ram > /dev/null && which xflock4 > /dev/null && \
+  sudo cp $SCRIPTS/xfsuspend.sh /usr/local/sbin/xfsuspend && \
+  sudo chown root:root /usr/local/sbin/xfsuspend && \
+  sudo chmod 755 /usr/local/sbin/xfsuspend && \
+  sudo vim /usr/local/sbin/xfsuspend
 
-test -f /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc && sudo cp ~/scripts/etc/themes/xfce-dusk/gtkrc /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc
+test -f /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc && \
+  sudo cp $HOME/scripts/etc/themes/xfce-dusk/gtkrc \
+  /usr/share/themes/Xfce-dusk/gtk-2.0/gtkrc
 
 # GDM Themes
 $SCRIPTS/installer/install_gdmthemes.sh

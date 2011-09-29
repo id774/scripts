@@ -56,8 +56,8 @@ sudo apt-get -y install libapache2-svn
 sudo apt-get -y install libapache-mod-dav
 
 # Make Repository
-sudo mkdir -p /var/lib/svn/$SVN_PROJECT_ID
-sudo svnadmin create /var/lib/svn/$SVN_PROJECT_ID/repos
+sudo mkdir -p /var/lib/svn
+sudo svnadmin create /var/lib/svn/$SVN_PROJECT_ID
 
 # Configuration
 sudo vim /etc/apache2/mods-enabled/dav_svn.conf
@@ -71,12 +71,6 @@ sudo vim /etc/apache2/mods-enabled/dav_svn.conf
 #    Require valid-user
 #  </LimitExcept> 
 #</Location>
-
-# Import Dump
-test -f ~/$SVN_PROJECT_ID.dump && sudo svnadmin load /var/lib/svn/$SVN_PROJECT_ID/repos < ~/$SVN_PROJECT_ID.dump
-
-# Access Control
-sudo htpasswd -c /var/lib/svn/$SVN_PROJECT_ID/.htpasswd admin
 
 # Mongrel Cluster
 cd /opt/rails/redmine

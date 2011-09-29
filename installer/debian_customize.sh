@@ -54,21 +54,21 @@ install_dot_vim() {
 }
 
 install_dot_zsh() {
-    test -d ~/local/github || mkdir -p ~/local/github
-    cd ~/local/github
+    test -d $HOME/local/github || mkdir -p $HOME/local/github
+    cd $HOME/local/github
     git clone git://github.com/id774/dot_zsh.git
     cd
-    ln -s ~/local/github/dot_zsh
-    ~/local/github/dot_zsh/install_dotzsh.sh
+    ln -s $HOME/local/github/dot_zsh
+    $HOME/local/github/dot_zsh/install_dotzsh.sh
 }
 
 install_dot_emacs() {
-    test -d ~/local/github || mkdir -p ~/local/github
-    cd ~/local/github
+    test -d $HOME/local/github || mkdir -p $HOME/local/github
+    cd $HOME/local/github
     git clone git://github.com/id774/dot_emacs.git
     cd
-    ln -s ~/local/github/dot_emacs
-    ~/local/github/dot_emacs/install_dotemacs.sh
+    ln -s $HOME/local/github/dot_emacs
+    $HOME/local/github/dot_emacs/install_dotemacs.sh
 }
 
 install_mew() {
@@ -155,12 +155,12 @@ setup_sysadmin_scripts() {
 }
 
 setup_web() {
-    test -d ~/local/github || mkdir -p ~/local/github
-    cd ~/local/github
+    test -d $HOME/local/github || mkdir -p $HOME/local/github
+    cd $HOME/local/github
     git clone git://github.com/id774/intraweb-template.git
     cd
-    ln -s ~/local/github/intraweb-template
-    ~/local/github/intraweb-template/install_intraweb.sh
+    ln -s $HOME/local/github/intraweb-template
+    $HOME/local/github/intraweb-template/install_intraweb.sh
 }
 
 setup_rc_local() {
@@ -179,10 +179,10 @@ install_apache2ssl() {
 }
 
 install_termtter_plugins() {
-    cd ~/local/github
+    cd $HOME/local/github
     git clone git://github.com/id774/termtter-plugins.git
     cd
-    ln -s ~/local/github/termtter-plugins
+    ln -s $HOME/local/github/termtter-plugins
     $PRIVATE/installer/install_dottermtter.sh
     $SCRIPTS/installer/install_termtter_plugins.sh
 }
@@ -204,7 +204,7 @@ get_share_documents() {
     sudo tar xzvf share-documents.tar.gz -C /usr/local/share
     rm share-documents.tar.gz
     sudo chmod -R 755 /usr/local/share/share-documents
-    ln -s /usr/local/share/share-documents ~/share
+    ln -s /usr/local/share/share-documents $HOME/share
 }
 
 change_default() {
@@ -241,9 +241,9 @@ permission_for_src() {
 }
 
 erase_history() {
-    test -f ~/.bash_history && sudo rm ~/.bash_history
-    test -f ~/.mysql_history && sudo rm ~/.mysql_history
-    test -f ~/.viminfo && sudo rm ~/.viminfo
+    test -f $HOME/.bash_history && sudo rm $HOME/.bash_history
+    test -f $HOME/.mysql_history && sudo rm $HOME/.mysql_history
+    test -f $HOME/.viminfo && sudo rm $HOME/.viminfo
 }
 
 operation() {

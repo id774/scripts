@@ -110,24 +110,24 @@ install_dotfiles() {
     setup_environment
     bulk_deploy
 
-    test -f ~/.zshrc.zwc && rm -f ~/.zshrc.zwc
+    test -f $HOME/.zshrc.zwc && rm -f $HOME/.zshrc.zwc
     cd
-    zsh -c 'zcompile ~/.zshrc'
+    zsh -c 'zcompile $HOME/.zshrc'
 
     if [ -d /etc/xdg/xfce4 ]; then
         sudo cp $SCRIPTS/dot_files/$DEFAULT_KEYMAPFILE /etc/xdg/xfce4/xmodmaprc
-        test -f ~/etc/config.local/dot_xmodmaprc && \
-          sudo cp $OPTIONS ~/etc/config.local/dot_xmodmaprc \
+        test -f $HOME/etc/config.local/dot_xmodmaprc && \
+          sudo cp $OPTIONS $HOME/etc/config.local/dot_xmodmaprc \
           /etc/xdg/xfce4/xmodmaprc
         sudo vim /etc/xdg/xfce4/xmodmaprc /etc/xdg/xfce4/xinitrc
     fi
 
-    test -f ~/etc/config.local/dot_gitconfig && \
-      cp $OPTIONS ~/etc/config.local/dot_gitconfig ~/.gitconfig
-    vim ~/.gitconfig
+    test -f $HOME/etc/config.local/dot_gitconfig && \
+      cp $OPTIONS $HOME/etc/config.local/dot_gitconfig $HOME/.gitconfig
+    vim $HOME/.gitconfig
 
-    test -f ~/.tmp/.gitconfig.bak && rm ~/.tmp/.gitconfig.bak
-    test -f ~/.viminfo && sudo chown $USER ~/.viminfo
+    test -f $HOME/.tmp/.gitconfig.bak && rm $HOME/.tmp/.gitconfig.bak
+    test -f $HOME/.viminfo && sudo chown $USER $HOME/.viminfo
 }
 
 install_dotfiles $*
