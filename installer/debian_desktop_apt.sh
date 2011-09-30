@@ -33,6 +33,9 @@ test -f /etc/lsb-release && sudo apt-get -y install xubuntu-restricted-extras
 test -f /etc/lsb-release && sudo apt-get -y install ubuntu-artwork xubuntu-artwork human-icon-theme
 sudo apt-get -y install gnome-themes gnome-themes-extras
 
+# uim
+sudo apt-get -y install uim
+
 # OpenOffice.org
 sudo apt-get -y install openoffice.org
 

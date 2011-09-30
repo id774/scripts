@@ -19,14 +19,17 @@ sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get autoclean && sudo
 # Vim
 sudo apt-get -y install vim
 
-# Http
+# http client
 sudo apt-get -y install w3m
 sudo apt-get -y install lynx
 sudo apt-get -y install wget
 #sudo apt-get -y install curl
 #sudo apt-get -y install ncftp
 
-# SSH
+# ssh
+sudo apt-get -y install openssh-server ssh
+
+# rsync
 sudo apt-get -y install openssh-server ssh
 
 # Compiler
@@ -56,7 +59,6 @@ sudo apt-get -y install anacron
 #sudo apt-get -y install linux-source
 #sudo apt-get -y install checkinstall
 #sudo apt-get -y install alien
-sudo apt-get -y install uim
 
 # Programming
 sudo apt-get -y install nasm
@@ -73,7 +75,7 @@ sudo apt-get -y install git-core git-all
 
 # Debian Developer Tools
 sudo apt-get -y install dpkg-dev lintian debhelper yada equivs cvs-buildpackage dupload fakeroot devscripts debget
-sudo apt-get -y install apt-listchanges apt-listbugs
+#sudo apt-get -y install apt-listchanges apt-listbugs
 
 # Exim4
 sudo apt-get -y install exim4
@@ -83,7 +85,7 @@ sudo apt-get -y install texinfo
 sudo apt-get -y install emacs23 emacs23-el
 sudo apt-get -y install mew stunnel ca-certificates
 sudo apt-get -y install w3m-el-snapshot w3m-img imagemagick
-sudo apt-get -y install vim-gui-common vim-runtime colordiff
+sudo apt-get -y install vim vim-runtime colordiff
 sudo apt-get -y install ctags
 
 # sshfs

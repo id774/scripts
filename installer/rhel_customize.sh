@@ -44,7 +44,7 @@ install_dot_files() {
 }
 
 install_truecrypt() {
-    $SCRIPTS/installer/install_des.sh
+    #$SCRIPTS/installer/install_des.sh
     #$SCRIPTS/installer/install_crypt.sh src
     #$SCRIPTS/installer/install_crypt.sh win
     #$SCRIPTS/installer/install_crypt.sh mac

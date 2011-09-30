@@ -6,6 +6,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 9/30,2011
+#       Rename tar filename.
 #  v1.2 9/16,2010
 #       Refactoring.
 #  v1.1 3/7,2010
@@ -36,10 +38,10 @@ install_des() {
     setup_environment
     mkdir install_des
     cd install_des
-    wget http://id774.net/archive/kmdes-ubuntu.tar.gz
-    md5.sh kmdes-ubuntu.tar.gz
-    tar xzvf kmdes-ubuntu.tar.gz
-    rm kmdes-ubuntu.tar.gz
+    wget http://id774.net/archive/kmdes.tar.gz
+    md5.sh kmdes.tar.gz
+    tar xzvf kmdes.tar.gz
+    rm kmdes.tar.gz
     cd des
     test -n "$1" || save_sources
     make
