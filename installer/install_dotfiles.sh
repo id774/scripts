@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 9/30,2011
+#       Fix permission and Refactoring.
 #  v1.2 5/24,2011
 #       Add emacs, Refactoring.
 #  v1.1 5/3,2011
@@ -36,74 +38,103 @@ deploy_dotfile() {
 }
 
 mkdir_skelton() {
-    if [ -d $1 ]; then
-        sudo test -d $1/.tmp  || sudo mkdir $1/.tmp
-        sudo test -d $1/tmp   || sudo mkdir $1/tmp
-        sudo test -d $1/mnt   || sudo mkdir $1/mnt
-        sudo test -d $1/local || sudo mkdir $1/local
-        sudo test -d $1/var   || sudo mkdir $1/var
-        sudo test -d $1/etc   || sudo mkdir $1/etc
-        sudo test -d $1/bin   || sudo mkdir $1/bin
-        sudo test -d $1/arc   || sudo mkdir $1/arc
-        sudo chmod 700 $1/.tmp
-        sudo chmod 700 $1/tmp
-        sudo chmod 700 $1/mnt
-        sudo chmod 700 $1/local
-        sudo chmod 700 $1/var
-        sudo chmod 750 $1/etc
-        sudo chmod 750 $1/bin
-        sudo chmod 750 $1/arc
-        sudo test -d $1/.emacs.d && sudo rm -rf $1/.emacs.d
-        sudo mkdir $1/.emacs.d
-        sudo test -d $1/.emacs.d/anything || sudo mkdir $1/.emacs.d/anything
-        sudo test -d $1/.emacs.d/backups || sudo mkdir $1/.emacs.d/backups
-        sudo test -d $1/.emacs.d/tmp || sudo mkdir $1/.emacs.d/tmp
-        sudo test -d $1/.emacs.d/tramp-auto-save || sudo mkdir $1/.emacs.d/tramp-auto-save
-        sudo test -d $1/.emacs.d/auto-save-list || sudo mkdir $1/.emacs.d/auto-save-list
-        sudo chmod 750 $1/.emacs.d
-        sudo chmod 750 $1/.emacs.d/anything
-        sudo chmod 750 $1/.emacs.d/backups
-        sudo chmod 750 $1/.emacs.d/tmp
-        sudo chmod 750 $1/.emacs.d/tramp-auto-save
-        sudo chmod 750 $1/.emacs.d/auto-save-list
-        sudo touch $1/.emacs.d/anything/anything-c-adaptive-history
-        test -d /etc/emacs.d/elisp && sudo ln -fs /etc/emacs.d/elisp $1/.emacs.d/elisp
-    fi
+    sudo test -d $1/.tmp  || sudo mkdir $1/.tmp
+    sudo test -d $1/tmp   || sudo mkdir $1/tmp
+    sudo test -d $1/mnt   || sudo mkdir $1/mnt
+    sudo test -d $1/local || sudo mkdir $1/local
+    sudo test -d $1/var   || sudo mkdir $1/var
+    sudo test -d $1/etc   || sudo mkdir $1/etc
+    sudo test -d $1/bin   || sudo mkdir $1/bin
+    sudo test -d $1/arc   || sudo mkdir $1/arc
+    sudo chmod 700 $1/.tmp
+    sudo chmod 700 $1/tmp
+    sudo chmod 700 $1/mnt
+    sudo chmod 700 $1/local
+    sudo chmod 700 $1/var
+    sudo chmod 750 $1/etc
+    sudo chmod 750 $1/bin
+    sudo chmod 750 $1/arc
+    sudo test -d $1/.emacs.d && sudo rm -rf $1/.emacs.d
+    sudo mkdir $1/.emacs.d
+    sudo test -d $1/.emacs.d/anything || sudo mkdir $1/.emacs.d/anything
+    sudo test -d $1/.emacs.d/backups || sudo mkdir $1/.emacs.d/backups
+    sudo test -d $1/.emacs.d/tmp || sudo mkdir $1/.emacs.d/tmp
+    sudo test -d $1/.emacs.d/tramp-auto-save || sudo mkdir $1/.emacs.d/tramp-auto-save
+    sudo test -d $1/.emacs.d/auto-save-list || sudo mkdir $1/.emacs.d/auto-save-list
+    sudo chmod 750 $1/.emacs.d
+    sudo chmod 750 $1/.emacs.d/anything
+    sudo chmod 750 $1/.emacs.d/backups
+    sudo chmod 750 $1/.emacs.d/tmp
+    sudo chmod 750 $1/.emacs.d/tramp-auto-save
+    sudo chmod 750 $1/.emacs.d/auto-save-list
+    sudo touch $1/.emacs.d/anything/anything-c-adaptive-history
+    test -d /etc/emacs.d/elisp && sudo ln -fs /etc/emacs.d/elisp $1/.emacs.d/elisp
 }
 
 deploy_dotfiles() {
+    deploy_dotfile $1
+    mkdir_skelton $1
+}
+
+deploy_dotfiles_to_others() {
+    test -d $1 && \
+      deploy_dotfile $1
+    test -d $1 && \
+      sudo chown -R $2 $1
+    shift
+}
+
+deploy_dotfiles_to_mac() {
     while [ $# -gt 0 ]
     do
-        deploy_dotfile $1
-        mkdir_skelton $1
+        test -d /Users/$1 && \
+          deploy_dotfile /Users/$1
+        test -d /Users/$1 && \
+          sudo chown -R $1 /Users/$1
+        shift
+    done 
+}
+
+deploy_dotfiles_to_linux() {
+    while [ $# -gt 0 ]
+    do
+        test -d /home/$1 && \
+          deploy_dotfile /home/$1
+        test -d /home/$1 && \
+          sudo chown -R $1:$1 /home/$1
         shift
     done 
 }
 
 bulk_deploy() {
-    deploy_dotfiles \
-      /var/root \
-      /Users/mac \
-      /Users/apple \
-      /Users/skrud \
-      /Users/demo \
-      /Users/work \
-      /root \
-      /home/debian \
-      /home/ubuntu \
-      /home/redhat \
-      /home/centos \
-      /home/sl \
-      /home/admin \
-      /etc/skel \
-      /home/plagger \
-      /home/twitter \
-      /home/tiarra \
-      /home/skrud \
-      /home/testuser \
-      /var/lib/postgresql \
-      /usr/lib/oracle/xe \
-      /export/home/solaris
+    test -d /home && \
+      sudo chmod 750 /home/*
+    test -d /Users && \
+      sudo chmod 700 /Users/*
+    deploy_dotfiles_to_linux \
+      debian \
+      ubuntu \
+      redhat \
+      centos \
+      sl \
+      admin \
+      plagger \
+      twitter \
+      tiarra \
+      skrud \
+      testuser
+    deploy_dotfiles_to_mac \
+      mac \
+      apple \
+      skrud \
+      demo \
+      work \
+      testuser
+    deploy_dotfiles_to_others /var/root root
+    deploy_dotfiles_to_others /root root
+    deploy_dotfiles_to_others /var/lib/postgresql postgres
+    deploy_dotfiles_to_others /usr/lib/oracle/xe oracle
+    deploy_dotfiles_to_others /export/home/solaris solaris
 }
 
 install_dotfiles() {
