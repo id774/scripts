@@ -139,7 +139,7 @@ sudo apt-get -y install smartmontools
 # Ruby
 sudo apt-get -y install autoconf byacc bison automake
 #sudo apt-get -y install autoconf-doc # non-free
-sudo apt-get -y install libopenssl-ruby libreadline-dev ruby
+sudo apt-get -y install libopenssl-ruby libreadline-dev zlib1g-dev ruby
 sudo apt-get -y install ruby1.8 ruby1.8-dev rubygems rubygems1.8
 
 # Apache
