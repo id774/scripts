@@ -35,7 +35,7 @@ operation() {
     $SCRIPTS/installer/rhel_yum.sh
 
     # Customize
-    $SCRIPTS/installer/rhel_customize.sh
+    $SCRIPTS/installer/rhel_batch_installers.sh
 
     # GUI Desktop
     #$SCRIPTS/installer/rhel_desktop.sh

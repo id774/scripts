@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 ########################################################################
-# Batch Custom Installers for Debian Desktop
+# Batch Installers for Debian Desktop
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #

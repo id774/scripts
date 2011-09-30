@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 ########################################################################
-# Batch Custom Installers for RHEL
+# Batch Installers for RHEL
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #

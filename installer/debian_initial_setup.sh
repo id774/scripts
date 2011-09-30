@@ -108,13 +108,13 @@ operation() {
     $SCRIPTS/installer/debian_apt.sh
 
     # Customize
-    $SCRIPTS/installer/debian_customize.sh
+    $SCRIPTS/installer/debian_batch_installers.sh
 
     # Desktop Packages
     #$SCRIPTS/installer/debian_desktop_apt.sh
 
     # Desktop Customize
-    #$SCRIPTS/installer/debian_desktop_customize.sh
+    #$SCRIPTS/installer/debian_desktop_installers.sh
 }
 
 # debian?
