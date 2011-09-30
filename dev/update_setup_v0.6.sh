@@ -61,5 +61,4 @@ operation() {
     remove_incr_zsh
 }
 
-
 operation $*
