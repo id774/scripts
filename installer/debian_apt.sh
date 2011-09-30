@@ -30,7 +30,7 @@ sudo apt-get -y install wget
 sudo apt-get -y install openssh-server ssh
 
 # rsync
-sudo apt-get -y install openssh-server ssh
+sudo apt-get -y install rsync
 
 # Compiler
 sudo apt-get -y install build-essential

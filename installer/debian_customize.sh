@@ -200,7 +200,7 @@ install_munin() {
 }
 
 get_share_documents() {
-    wget http://big.freett.com/railsinstall2/share-documents.tar.gz
+    wget http://id774.net/archive/share-documents.tar.gz
     sudo tar xzvf share-documents.tar.gz -C /usr/local/share
     rm share-documents.tar.gz
     sudo chmod -R 755 /usr/local/share/share-documents
