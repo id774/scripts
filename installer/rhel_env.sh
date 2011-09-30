@@ -37,4 +37,4 @@ operation() {
     sudo yum -y update
 }
 
-operation
+operation $*

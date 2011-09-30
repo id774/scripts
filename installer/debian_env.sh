@@ -80,4 +80,4 @@ operation() {
     home_permission
 }
 
-operation
+operation $*

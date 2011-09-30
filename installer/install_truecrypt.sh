@@ -57,7 +57,7 @@ install_truecrypt() {
     mkdir install_truecrypt
     cd install_truecrypt
     case "$1" in
-      linux-i386)
+      linux-i386 | linux-i686)
         purge_old_version
         wget "http://id774.net/truecrypt/truecrypt-$2-linux-console-x86.tar.gz"
         test -n "$3" || save_packages truecrypt-$2-linux-console-x86.tar.gz /usr/local/src/crypt/truecrypt
@@ -74,7 +74,7 @@ install_truecrypt() {
         file /usr/bin/truecrypt
         set_truecrypt_permission
         ;;
-      linux-amd64)
+      linux-amd64 | linux-x86_64)
         purge_old_version
         wget "http://id774.net/truecrypt/truecrypt-$2-linux-console-x64.tar.gz"
         test -n "$3" || save_packages truecrypt-$2-linux-console-x64.tar.gz /usr/local/src/crypt/truecrypt

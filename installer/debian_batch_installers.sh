@@ -261,7 +261,7 @@ operation() {
     install_dot_emacs
     #install_mew
     install_dotfiles
-    install_truecrypt linux-amd64
+    install_truecrypt linux-`uname -m`
     #install_sqlite
     #install_svn
     sshfs_modules
@@ -293,4 +293,4 @@ operation() {
     erase_history
 }
 
-operation
+operation $*

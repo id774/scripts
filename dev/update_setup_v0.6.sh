@@ -50,7 +50,7 @@ remove_incr_zsh() {
 operation() {
     export SCRIPTS=$HOME/scripts
     export PRIVATE=$HOME/private/scripts
-    install_truecrypt
+    install_truecrypt linux-`uname -m`
     install_iptables
     deploy_dotfiles
     install_coffeescript
@@ -61,7 +61,5 @@ operation() {
     remove_incr_zsh
 }
 
-# Need i386 or amd64 option
-test -n "$1" || exit 1
 
-operation
+operation $*

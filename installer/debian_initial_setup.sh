@@ -120,4 +120,4 @@ operation() {
 # debian?
 test -f /etc/debian_version || exit 1
 
-operation
+operation $*

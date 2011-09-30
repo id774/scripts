@@ -44,4 +44,4 @@ operation() {
 # redhat?
 test -f /etc/redhat-release || exit 1
 
-operation
+operation $*
