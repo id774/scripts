@@ -18,7 +18,6 @@ install_iptables() {
 deploy_dotfiles() {
     $HOME/local/github/dot_emacs/install_dotemacs.sh
     $HOME/local/github/dot_zsh/install_dotzsh.sh
-    $SCRIPTS/installer/install_dotfiles.sh
     $SCRIPTS/installer/install_dotvim.sh
 }
 
@@ -47,6 +46,10 @@ remove_incr_zsh() {
     sudo rm -f /etc/zsh/plugins/incr.zsh*
 }
 
+install_dot_files() {
+    $SCRIPTS/installer/install_dotfiles.sh
+}
+
 operation() {
     export SCRIPTS=$HOME/scripts
     export PRIVATE=$HOME/private/scripts
@@ -58,6 +61,7 @@ operation() {
     install_cronjob
     setup_web
     setup_sysadmin_scripts
+    install_dot_files
     remove_incr_zsh
 }
 
