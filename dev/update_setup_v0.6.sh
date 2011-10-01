@@ -4,11 +4,11 @@
 ########################################################################
 
 install_truecrypt() {
-    $SCRIPTS/installer/install_des.sh
-    $SCRIPTS/installer/install_crypt.sh src
-    $SCRIPTS/installer/install_crypt.sh win
-    $SCRIPTS/installer/install_crypt.sh mac
-    $SCRIPTS/installer/install_crypt.sh $1
+    #$SCRIPTS/installer/install_des.sh
+    $SCRIPTS/installer/install_truecrypt.sh src
+    $SCRIPTS/installer/install_truecrypt.sh win
+    $SCRIPTS/installer/install_truecrypt.sh mac
+    $SCRIPTS/installer/install_truecrypt.sh $1
 }
 
 install_iptables() {
@@ -62,7 +62,7 @@ operation() {
     setup_web
     setup_sysadmin_scripts
     install_dot_files
-    remove_incr_zsh
+    #remove_incr_zsh
 }
 
 operation $*
