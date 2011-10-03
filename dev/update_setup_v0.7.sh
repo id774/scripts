@@ -15,16 +15,17 @@ smart_apt() {
 
 
 increase_debian_packages() {
-    smart_apt digitools
-    smart_apt ctags global
-    smart_apt libxslt1-dev libxslt-ruby python-libxslt1
-    smart_apt dpkg-dev lintian debhelper yada equivs cvs-buildpackage \
-      dupload fakeroot devscripts debget
-    smart_apt apt-listchanges apt-listbugs
-    smart_apt nkf clisp
-    smart_apt libcurl4-gnutls-dev
-    smart_apt openjdk-6-jdk
-    smart_apt mew stunnel ca-certificates
+    smart_apt \
+      digitools \
+      ctags global \
+      libxslt1-dev libxslt-ruby python-libxslt1 \
+      dpkg-dev lintian debhelper yada equivs cvs-buildpackage \
+      dupload fakeroot devscripts debget \
+      apt-listchanges apt-listbugs \
+      nkf clisp \
+      libcurl4-gnutls-dev \
+      openjdk-6-jdk \
+      mew stunnel ca-certificates
 }
 
 operation() {
