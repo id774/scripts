@@ -54,6 +54,7 @@ sudo apt-get -y install keychain
 sudo apt-get -y install locales
 sudo apt-get -y install nkf
 sudo apt-get -y install mailx
+sudo apt-get -y install digitools
 sudo apt-get -y install xdelta
 sudo apt-get -y install anacron
 #sudo apt-get -y install linux-source
