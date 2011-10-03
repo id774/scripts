@@ -48,7 +48,6 @@ sudo apt-get -y install screen
 
 # System
 sudo apt-get -y install rsyslog
-sudo apt-get -y install sysvconfig
 sudo apt-get -y install ntp
 sudo apt-get -y install keychain
 sudo apt-get -y install locales
