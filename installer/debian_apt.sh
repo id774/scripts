@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.3 10/3,2011
+#       Implement smart_apt function.
 #  v0.2 9/28,2011
 #       Cut off desktop suite.
 #  v0.1 6/16,2011
@@ -13,149 +15,194 @@
 
 export SCRIPTS=$HOME/scripts
 
-# Upgrade
-sudo apt-get update && sudo apt-get -y upgrade && sudo apt-get autoclean && sudo apt-get -y autoremove
+smart_apt() {
+    while [ $# -gt 0 ]
+    do
+        if [ `aptitude search $1 | awk '/^i/' | wc -l` = 0 ]; then
+            sudo apt-get -y install $1
+        fi
+        shift
+    done 
+}
 
-# Vim
-sudo apt-get -y install vim
+apt_upgrade() {
+    sudo apt-get update && \
+      sudo apt-get -y upgrade && \
+      sudo apt-get autoclean && \
+      sudo apt-get -y autoremove
+}
 
-# http client
-sudo apt-get -y install w3m
-sudo apt-get -y install lynx
-sudo apt-get -y install wget
-#sudo apt-get -y install curl
-#sudo apt-get -y install ncftp
+basic_packages() {
+    smart_apt \
+      vim \
+      w3m \
+      lynx \
+      wget \
+      openssh-server ssh \
+      rsync \
+      build-essential \
+      gcc g++ \
+      tar zip gzip unzip bzip2 \
+      p7zip p7zip-full \
+      zsh \
+      screen
+#      curl \
+#      ncftp \
+#      p7zip-rar \
+#      lha \
+}
 
-# ssh
-sudo apt-get -y install openssh-server ssh
+system_packages() {
+    smart_apt \
+      rsyslog \
+      ntp \
+      keychain \
+      locales \
+      nkf \
+      mailx \
+      digitools \
+      xdelta \
+      sshfs \
+      exim4 \
+      sysstat \
+      anacron \
+      clamav \
+      manpages-ja \
+      manpages-ja-dev \
+      xmanpages-ja \
+      lm-sensors \
+      hddtemp \
+      smartmontools
+#      linux-source \
+#      checkinstall \
+#      alien \
+}
 
-# rsync
-sudo apt-get -y install rsync
+debian_developer_tools() {
+    smart_apt \
+      dpkg-dev \
+      lintian \
+      debhelper \
+      yada \
+      equivs \
+      cvs-buildpackage \
+      dupload \
+      fakeroot \
+      devscripts \
+      debget
+#      apt-listchanges apt-listbugs \
+}
 
-# Compiler
-sudo apt-get -y install build-essential
-sudo apt-get -y install gcc g++ g77
+editor_packages() {
+    smart_apt \
+      texinfo \
+      emacs23 emacs23-el \
+      mew stunnel ca-certificates \
+      w3m-el-snapshot w3m-img imagemagick \
+      vim vim-runtime colordiff \
+      ctags
+}
 
-# Archiver
-sudo apt-get -y install tar zip gzip unzip bzip2
-sudo apt-get -y install p7zip p7zip-full
-#sudo apt-get -y install p7zip-rar # non-free
-#sudo apt-get -y install lha # non-free
+exif_tools() {
+    smart_apt \
+      exiftool libimage-exiftool-perl jhead
+}
 
-# zsh/screen
-sudo apt-get -y install zsh
-sudo apt-get -y install screen
+kvm() {
+    if [ `egrep '^flags.*(vmx|svm)' /proc/cpuinfo | wc -l` != 0 ]; then
+        smart_apt \
+          kvm libvirt-bin \
+          python-libvirt \
+          kqemu-source qemu
+#          virt-manager \
+    fi
+}
 
-# System
-sudo apt-get -y install rsyslog
-sudo apt-get -y install ntp
-sudo apt-get -y install keychain
-sudo apt-get -y install locales
-sudo apt-get -y install nkf
-sudo apt-get -y install mailx
-sudo apt-get -y install digitools
-sudo apt-get -y install xdelta
-sudo apt-get -y install anacron
-#sudo apt-get -y install linux-source
-#sudo apt-get -y install checkinstall
-#sudo apt-get -y install alien
+lang_packages() {
+    smart_apt \
+      nasm \
+      gauche \
+      clisp \
+      scheme48 cmuscheme48-el \
+      ghc \
+      global
+}
 
-# Programming
-sudo apt-get -y install nasm
-sudo apt-get -y install gauche
-sudo apt-get -y install clisp
-sudo apt-get -y install scheme48 cmuscheme48-el
-sudo apt-get -y install ghc
-sudo apt-get -y install global
+scm_packages() {
+    smart_apt \
+      subversion \
+      git-core git-all
+#      svk \
+}
 
-# SCM
-sudo apt-get -y install subversion
-sudo apt-get -y install git-core git-all
-#sudo apt-get -y install svk
+samba_packages() {
+    smart_apt \
+      samba smbfs smbclient swat
+}
 
-# Debian Developer Tools
-sudo apt-get -y install dpkg-dev lintian debhelper yada equivs cvs-buildpackage dupload fakeroot devscripts debget
-#sudo apt-get -y install apt-listchanges apt-listbugs
+sqlite_packages() {
+    smart_apt \
+      sqlite3
+#      sqlite \
+}
 
-# Exim4
-sudo apt-get -y install exim4
+optional_packages() {
+    smart_apt \
+      gnuserv \
+      mingw32 mingw32-binutils mingw32-runtime \
+      libxml2 libxml2-dev \
+      libxslt1-dev libxml-dev \
+      libxslt-ruby python-libxslt1 \
+      expat libexpat-dev \
+      libssl-dev libio-socket-ssl-perl libnet-ssleay-perl \
+      libtemplate-perl libxml-libxml-perl \
+      migemo
+}
 
-# Editor
-sudo apt-get -y install texinfo
-sudo apt-get -y install emacs23 emacs23-el
-sudo apt-get -y install mew stunnel ca-certificates
-sudo apt-get -y install w3m-el-snapshot w3m-img imagemagick
-sudo apt-get -y install vim vim-runtime colordiff
-sudo apt-get -y install ctags
+ruby_lang() {
+    smart_apt \
+      autoconf byacc bison automake \
+      libopenssl-ruby libreadline-dev zlib1g-dev ruby \
+      ruby1.8 ruby1.8-dev rubygems rubygems1.8
+#      autoconf-doc \
+}
 
-# sshfs
-sudo apt-get -y install sshfs
+apache_packages() {
+    smart_apt \
+      apache2 \
+      apache2-mpm-prefork \
+      apache2-utils
+}
 
-# Samba (Not Recommended)
-#sudo apt-get -y install samba smbfs smbclient swat
+java_packages() {
+    smart_apt \
+      openjdk-6-jdk \
+#      sun-java6-jdk
+}
 
-# SQLite
-#sudo apt-get -y install sqlite
-sudo apt-get -y install sqlite3
+increase_debian_packages() {
+    sudo apt-get -y install aptitude
+    basic_packages
+    system_packages
+    debian_developer_tools
+    editor_packages
+    exif_tools
+    #kvm
+    lang_packages
+    scm_packages
+    #samba_packages
+    sqlite_packages
+    optional_packages
+    ruby_lang
+    apache_packages
+    java_packages
+}
 
-# Optional Libraries
-sudo apt-get -y install migemo
-sudo apt-get -y install gnuserv
-sudo apt-get -y install mingw32 mingw32-binutils mingw32-runtime
-sudo apt-get -y install libxml2 libxml2-dev
-sudo apt-get -y install libxslt1-dev libxml-dev
-sudo apt-get -y install libxslt-ruby python-libxslt1
-sudo apt-get -y install expat libexpat-dev
-sudo apt-get -y install libssl-dev libio-socket-ssl-perl libnet-ssleay-perl
-sudo apt-get -y install libtemplate-perl libxml-libxml-perl
+operation() {
+    export SCRIPTS=$HOME/scripts
+    export PRIVATE=$HOME/private/scripts
+    apt_upgrade
+    increase_debian_packages
+}
 
-# exiftool
-sudo apt-get -y install exiftool libimage-exiftool-perl jhead
-
-# KVM
-#if [ `egrep '^flags.*(vmx|svm)' /proc/cpuinfo | wc -l` != 0 ]; then
-#    sudo apt-get -y install kvm libvirt-bin
-#    sudo apt-get -y install python-libvirt
-#    #sudo apt-get -y install virt-manager
-#    sudo apt-get -y Install kqemu-source qemu
-#fi
-
-# Security (Anti-Virus)
-sudo apt-get -y install clamav
-
-# manpages
-sudo apt-get -y install manpages-ja
-sudo apt-get -y install manpages-ja-dev
-sudo apt-get -y install xmanpages-ja
-
-# sysstat
-sudo apt-get -y install sysstat
-
-# hddtemp
-sudo apt-get -y install lm-sensors
-sudo apt-get -y install hddtemp
-
-# smartmontools
-sudo apt-get -y install smartmontools
-
-# Ruby
-sudo apt-get -y install autoconf byacc bison automake
-#sudo apt-get -y install autoconf-doc # non-free
-sudo apt-get -y install libopenssl-ruby libreadline-dev zlib1g-dev ruby
-sudo apt-get -y install ruby1.8 ruby1.8-dev rubygems rubygems1.8
-
-# Apache
-#sudo apt-get -y install apache2
-#sudo apt-get -y install apache2-mpm-prefork
-#sudo apt-get -y install apache-perl
-
-# Apache Utility
-#sudo apt-get -y install apache2-utils
-
-# Java JDK
-sudo apt-get -y install openjdk-6-jdk
-#sudo apt-get -y install sun-java6-jdk
-
-# Linux kernel source, headers, kbuild (Debian)
-#sudo apt-get -y install linux-kbuild-2.6.32 linux-headers linux-source
-
+operation $*

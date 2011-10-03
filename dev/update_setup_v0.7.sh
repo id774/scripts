@@ -13,7 +13,6 @@ smart_apt() {
     done 
 }
 
-
 increase_debian_packages() {
     smart_apt \
       digitools \
