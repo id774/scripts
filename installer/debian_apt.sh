@@ -103,7 +103,7 @@ editor_packages() {
 
 exif_tools() {
     smart_apt \
-      exiftool libimage-exiftool-perl jhead
+      exif libimage-exiftool-perl jhead
 }
 
 kvm() {

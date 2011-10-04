@@ -25,7 +25,7 @@ desktop_envirionment() {
     #test -f /etc/lsb-release && smart_apt ubuntu-desktop-ja
     smart_apt \
       xfwm4 xfwm4-themes \
-      xfce4-goodies
+      xfce4-goodies \
       gnome-themes gnome-themes-extras
 }
 
@@ -48,10 +48,11 @@ icon_packages() {
 }
 
 optional_packages() {
+    test -f /etc/lsb-release && smart_apt mozilla-thunderbird
+    test -f /etc/lsb-release || smart_apt icedove
     smart_apt \
       uim \
       openoffice.org \
-      mozilla-thunderbird \
       gthumb \
       thunar \
       vlc \
@@ -76,7 +77,6 @@ increase_debian_packages() {
 operation() {
     export SCRIPTS=$HOME/scripts
     export PRIVATE=$HOME/private/scripts
-    apt_upgrade
     increase_debian_packages
 }
 
