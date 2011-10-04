@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 10/4,2011
+#       Refactoring.
 #  v1.3 9/30,2011
 #       Fix permission and Refactoring.
 #  v1.2 5/24,2011
@@ -77,20 +79,20 @@ deploy_dotfiles() {
 }
 
 deploy_dotfiles_to_others() {
-    test -d $1 && \
-      deploy_dotfile $1
-    test -d $1 && \
-      sudo chown -R $2 $1
+    if [ -d $1 ]; then
+        deploy_dotfile $1
+        sudo chown -R $2 $1
+    fi
     shift
 }
 
 deploy_dotfiles_to_mac() {
     while [ $# -gt 0 ]
     do
-        test -d /Users/$1 && \
-          deploy_dotfile /Users/$1
-        test -d /Users/$1 && \
-          sudo chown -R $1 /Users/$1
+        if [ -d /Users/$1 ]; then
+            deploy_dotfile /Users/$1
+            sudo chown -R $1 /Users/$1
+        fi
         shift
     done 
 }
@@ -98,10 +100,10 @@ deploy_dotfiles_to_mac() {
 deploy_dotfiles_to_linux() {
     while [ $# -gt 0 ]
     do
-        test -d /home/$1 && \
-          deploy_dotfile /home/$1
-        test -d /home/$1 && \
-          sudo chown -R $1:$1 /home/$1
+        if [ -d /home/$1 ]; then
+            deploy_dotfile /home/$1
+            sudo chown -R $1:$1 /home/$1
+        fi
         shift
     done 
 }
