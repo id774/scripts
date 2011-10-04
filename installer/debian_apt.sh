@@ -13,8 +13,6 @@
 #       Forked from Initial Setup Script.
 ########################################################################
 
-export SCRIPTS=$HOME/scripts
-
 smart_apt() {
     while [ $# -gt 0 ]
     do

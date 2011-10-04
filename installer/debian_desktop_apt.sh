@@ -9,73 +9,75 @@
 #       Forked from Initial Setup Script.
 ########################################################################
 
-export SCRIPTS=$HOME/scripts
+smart_apt() {
+    while [ $# -gt 0 ]
+    do
+        if [ `aptitude search $1 | awk '/^i/' | wc -l` = 0 ]; then
+            sudo apt-get -y install $1
+        fi
+        shift
+    done 
+}
 
-# GUI Desktop Xfce4(Debian) / Xubuntu(Ubuntu)
-test -f /etc/lsb-release && sudo apt-get -y install xubuntu-desktop
-test -f /etc/lsb-release || sudo apt-get -y install xfce4
-sudo apt-get -y install xfwm4 xfwm4-themes
-sudo apt-get -y install xfce4-goodies
+desktop_envirionment() {
+    test -f /etc/lsb-release && smart_apt xubuntu-desktop
+    test -f /etc/lsb-release || smart_apt xfce4
+    #test -f /etc/lsb-release && smart_apt ubuntu-desktop-ja
+    smart_apt \
+      xfwm4 xfwm4-themes \
+      xfce4-goodies
+      gnome-themes gnome-themes-extras
+}
 
-# Ubuntu-ja
-test -f /etc/lsb-release && sudo apt-get -y install ubuntu-desktop-ja
+fonts_packages() {
+    smart_apt \
+      xfonts-mplus \
+      xfonts-shinonome \
+      ttf-vlgothic ttf-bitstream-vera
+}
 
-# Fonts
-sudo apt-get -y install xfonts-mplus
-sudo apt-get -y install xfonts-shinonome
-sudo apt-get -y install ttf-vlgothic ttf-bitstream-vera
+codec_packages() {
+    smart_apt \
+      ubuntu-restricted-extras \
+      xubuntu-restricted-extras
+}
 
-# Codec
-test -f /etc/lsb-release && sudo apt-get -y install ubuntu-restricted-extras
-test -f /etc/lsb-release && sudo apt-get -y install xubuntu-restricted-extras
+icon_packages() {
+    smart_apt \
+      ubuntu-artwork xubuntu-artwork human-icon-theme
+}
 
-# Icons
-test -f /etc/lsb-release && sudo apt-get -y install ubuntu-artwork xubuntu-artwork human-icon-theme
-sudo apt-get -y install gnome-themes gnome-themes-extras
+optional_packages() {
+    smart_apt \
+      uim \
+      openoffice.org \
+      mozilla-thunderbird \
+      gthumb \
+      thunar \
+      vlc \
+      pidgin \
+      xpdf xpdf-reader \
+      comix \
+      gnomebaker \
+      skype \
+      amsn \
+      wireshark
+      chromium-browser
+}
 
-# uim
-sudo apt-get -y install uim
+increase_debian_packages() {
+    desktop_envirionment
+    fonts_packages
+    test -f /etc/lsb-release && codec_packages
+    test -f /etc/lsb-release && icon_packages
+    optional_packages
+}
 
-# OpenOffice.org
-sudo apt-get -y install openoffice.org
+operation() {
+    export SCRIPTS=$HOME/scripts
+    export PRIVATE=$HOME/private/scripts
+    apt_upgrade
+    increase_debian_packages
+}
 
-# Mozilla Thunderbird (Ubuntu)
-sudo apt-get -y install mozilla-thunderbird
-
-# gthumb
-sudo apt-get -y install gthumb
-
-# thunar
-sudo apt-get -y install thunar
-
-# vlc
-sudo apt-get -y install vlc
-
-# pidgin
-sudo apt-get -y install pidgin
-
-# pdf
-sudo apt-get -y install xpdf xpdf-reader
-
-# 2ch Browser
-sudo apt-get -y install ochusha
-sudo apt-get -y install jd
-
-# Comic Viewer
-sudo apt-get -y install comix
-
-# CD/DVD Creator
-sudo apt-get -y install gnomebaker
-
-# P2P
-sudo apt-get -y install skype
-
-# MSN
-sudo apt-get -y install amsn
-
-# Wireshark
-sudo apt-get -y install wireshark
-
-# chromium-daily
-sudo apt-get -y install chromium-browser
-
+operation $*
