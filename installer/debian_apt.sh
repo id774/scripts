@@ -174,8 +174,15 @@ apache_packages() {
 
 java_packages() {
     smart_apt \
-      openjdk-6-jdk \
+      openjdk-6-jdk
 #      sun-java6-jdk
+}
+
+xvfb_packages() {
+    smart_apt \
+      xvfb \
+      fluxbox \
+      x11vnc
 }
 
 increase_debian_packages() {
@@ -194,6 +201,7 @@ increase_debian_packages() {
     ruby_lang
     apache_packages
     java_packages
+    #xvfb_packages
 }
 
 operation() {
