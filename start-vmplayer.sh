@@ -1,13 +1,14 @@
 #!/bin/sh
 #
 ########################################################################
-# Starting Xvfb, fluxbox, x11vnc startup script
+# VMware Player startup script
 #
 # Note:
 #  This needs following packages  
 #    - xvfb
 #    - fluxbox (non-free)
 #    - x11vnc (non-free)
+#    - vmplayer (non-free)
 #
 #  Start with the privileges of the user.
 #
@@ -30,7 +31,8 @@ test -n "$1" && export DISPLAY=$1
 test -n "$1" || export DISPLAY=:99
 
 start_xvfb() {
-    Xvfb $DISPLAY -screen 0 1024x768x24 2>&1 >> $TMP/xvfb.log &
+    sudo Xvfb $DISPLAY -screen 0 1024x768x24 2>&1 >> $TMP/xvfb.log &
+    sudo chown $USER $TMP/xvfb.log
 }
 
 start_fluxbox() {
@@ -45,14 +47,22 @@ start_xvfb_and_fluxbox() {
 
 start_vnc() {
     x11vnc -display $DISPLAY -loop -bg -nopw -listen localhost -xkb 2>&1 >> $TMP/vnc.log &
+    sleep 10
+}
+
+start_vmplayer() {
+    vmplayer 2>&1 >> $TMP/vmplayer.log &
+    sleep 10
 }
 
 start_daemon() {
     start_xvfb_and_fluxbox
     start_vnc
+    start_vmplayer
 }
 
 which Xvfb > /dev/null && \
   which fluxbox > /dev/null && \
   which x11vnc > /dev/null && \
+  which vmplayer > /dev/null && \
   start_daemon
