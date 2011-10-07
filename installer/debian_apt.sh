@@ -116,6 +116,13 @@ kvm() {
     fi
 }
 
+xvfb_packages() {
+    smart_apt \
+      xvfb \
+      fluxbox \
+      x11vnc
+}
+
 lang_packages() {
     smart_apt \
       nasm \
@@ -178,13 +185,6 @@ java_packages() {
 #      sun-java6-jdk
 }
 
-xvfb_packages() {
-    smart_apt \
-      xvfb \
-      fluxbox \
-      x11vnc
-}
-
 increase_debian_packages() {
     sudo apt-get -y install aptitude
     basic_packages
@@ -193,6 +193,7 @@ increase_debian_packages() {
     editor_packages
     exif_tools
     #kvm
+    #xvfb_packages
     lang_packages
     scm_packages
     #samba_packages
@@ -201,12 +202,11 @@ increase_debian_packages() {
     ruby_lang
     apache_packages
     java_packages
-    #xvfb_packages
 }
 
 operation() {
-    export SCRIPTS=$HOME/scripts
-    export PRIVATE=$HOME/private/scripts
+    test -n "$SCRIPTS" || export SCRIPTS=~/scripts
+    test -n "$PRIVATE" || export PRIVATE=~/private/scripts
     apt_upgrade
     increase_debian_packages
 }

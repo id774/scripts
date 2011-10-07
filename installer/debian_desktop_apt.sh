@@ -75,8 +75,8 @@ increase_debian_packages() {
 }
 
 operation() {
-    export SCRIPTS=$HOME/scripts
-    export PRIVATE=$HOME/private/scripts
+    test -n "$SCRIPTS" || export SCRIPTS=~/scripts
+    test -n "$PRIVATE" || export PRIVATE=~/private/scripts
     increase_debian_packages
 }
 

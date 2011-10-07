@@ -25,7 +25,8 @@
 #       First version.
 ########################################################################
 
-export SCRIPTS=$HOME/scripts
+test -n "$SCRIPTS" || export SCRIPTS=~/scripts
+test -n "$PRIVATE" || export PRIVATE=~/private/scripts
 
 operation() {
     # Environment

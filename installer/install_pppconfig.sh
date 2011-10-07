@@ -13,7 +13,8 @@
 #       Stable.
 ########################################################################
 
-export SCRIPTS=$HOME/scripts
+test -n "$SCRIPTS" || export SCRIPTS=~/scripts
+test -n "$PRIVATE" || export PRIVATE=~/private/scripts
 
 sudo apt-get -y install pppconfig
 
