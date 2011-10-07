@@ -53,13 +53,8 @@ decrease_debian_packages() {
     sudo aptitude -y purge rubygems rubygems1.8
 }
 
-install_backported_kernel() {
-    VERSION=$1
-    KERNEL=$2
-    KERNEL_VER=$VERSION-$KERNEL
-    IMAGE=linux-image-$KERNEL_VER
-    HEADER=linux-headers-$KERNEL_VER
-    sudo apt-get install -y $IMAGE $HEADER
+install_kernel() {
+    $SCRIPTS/installer/install_linux_image.sh $1 $2
 }
 
 operation() {
@@ -74,7 +69,7 @@ operation() {
     install_termtter_plugins
     remove_incr_zsh
     decrease_debian_packages
-    test -f /etc/lsb-release && install_backported_kernel 2.6.38-11 server
+    test -f /etc/lsb-release && install_kernel $1 $2
 }
 
 operation $*
