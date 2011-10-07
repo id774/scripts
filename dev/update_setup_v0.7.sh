@@ -53,6 +53,17 @@ decrease_debian_packages() {
     sudo aptitude -y purge rubygems rubygems1.8
 }
 
+remove_obsolete_jobs() {
+    test -f /etc/cron.daily/backup && \
+      sudo vim /etc/cron.daily/backup
+    test -f /etc/cron.weekly/backup && \
+      sudo vim /etc/cron.weekly/backup
+    test -f /etc/cron.weekday/backup && \
+      sudo vim /etc/cron.weekday/backup
+    test -f /etc/cron.weekend/backup && \
+      sudo vim /etc/cron.weekend/backup
+}
+
 install_kernel() {
     $SCRIPTS/installer/install_linux_image.sh $1 $2
 }
@@ -69,6 +80,7 @@ operation() {
     install_termtter_plugins
     remove_incr_zsh
     decrease_debian_packages
+    remove_obsolete_jobs
     test -f /etc/lsb-release && install_kernel $1 $2
 }
 
