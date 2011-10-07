@@ -49,6 +49,10 @@ remove_incr_zsh() {
     sudo rm -f /etc/zsh/plugins/incr.zsh*
 }
 
+decrease_debian_packages() {
+    sudo aptitude -y purge rubygems rubygems1.8
+}
+
 install_backported_kernel() {
     VERSION=$1
     KERNEL=$2
@@ -69,6 +73,7 @@ operation() {
     install_private_iptables
     install_termtter_plugins
     remove_incr_zsh
+    decrease_debian_packages
     test -f /etc/lsb-release && install_backported_kernel 2.6.38-11 server
 }
 

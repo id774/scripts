@@ -168,7 +168,7 @@ ruby_lang() {
     smart_apt \
       autoconf byacc bison automake \
       libopenssl-ruby libreadline-dev zlib1g-dev ruby \
-      ruby1.8 ruby1.8-dev rubygems rubygems1.8
+      ruby1.8 ruby1.8-dev
 #      autoconf-doc \
 }
 
