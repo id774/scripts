@@ -53,15 +53,25 @@ decrease_debian_packages() {
     sudo aptitude -y purge rubygems rubygems1.8
 }
 
+edit_cronjob() {
+    test -f /etc/cron.hourly/$1 && \
+      sudo vim /etc/cron.hourly/$1
+    test -f /etc/cron.daily/$1 && \
+      sudo vim /etc/cron.daily/$1
+    test -f /etc/cron.weekly/$1 && \
+      sudo vim /etc/cron.weekly/$1
+    test -f /etc/cron.weekday/$1 && \
+      sudo vim /etc/cron.weekday/$1
+    test -f /etc/cron.weekend/$1 && \
+      sudo vim /etc/cron.weekend/$1
+    test -f /etc/cron.monthly/$1 && \
+      sudo vim /etc/cron.monthly/$1
+}
+
 remove_obsolete_jobs() {
-    test -f /etc/cron.daily/backup && \
-      sudo vim /etc/cron.daily/backup
-    test -f /etc/cron.weekly/backup && \
-      sudo vim /etc/cron.weekly/backup
-    test -f /etc/cron.weekday/backup && \
-      sudo vim /etc/cron.weekday/backup
-    test -f /etc/cron.weekend/backup && \
-      sudo vim /etc/cron.weekend/backup
+    edit_cronjob backup
+    edit_cronjob clamscan
+    edit_cronjob get_resources
 }
 
 install_kernel() {

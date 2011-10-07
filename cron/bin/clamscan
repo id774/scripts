@@ -6,7 +6,7 @@ SCANLOG=/var/log/clamav/clamav.log
 echo -n "*** $0: Job start at `/bin/hostname` on ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1
 
-test -x $SVN && test -x /root/bin/clamscan.sh && /root/bin/clamscan.sh>>$JOBLOG 2>&1;
+test -x $SVN && test -x /root/bin/clamscan.sh && /root/bin/clamscan.sh>>$JOBLOG 2>&1
 
 echo -n "*** $0: End of Job at `/bin/hostname` on ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1
