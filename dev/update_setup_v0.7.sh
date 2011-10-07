@@ -78,6 +78,10 @@ install_kernel() {
     $SCRIPTS/installer/install_linux_image.sh $1 $2
 }
 
+install_dot_files() {
+    $SCRIPTS/installer/install_dotfiles.sh
+}
+
 operation() {
     test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
     test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
@@ -92,6 +96,7 @@ operation() {
     decrease_debian_packages
     remove_obsolete_jobs
     test -f /etc/lsb-release && install_kernel $1 $2
+    install_dot_files
 }
 
 operation $*
