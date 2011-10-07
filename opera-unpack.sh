@@ -1,16 +1,16 @@
 #!/bin/sh
 
-test -f ~/arc/opera.tar.gz || exit 1
+test -f $HOME/arc/opera.tar.gz || exit 1
 cd
 
 case $OSTYPE in
   *darwin*)
-    rm -rf  "~/Library/Preferences/Opera Preferences"
+    rm -rf  "$HOME/Library/Preferences/Opera Preferences"
     ;;
   *)
-    rm -rf ~/.opera
+    rm -rf $HOME/.opera
     ;;
 esac
 
-tar xzvf ~/arc/opera.tar.gz
+tar xzvf $HOME/arc/opera.tar.gz
 

@@ -14,51 +14,51 @@
 # 3. Next, run this scripts, For encrypt your home directory.
 ########################################################################
 
-test -f ~/local/`/bin/hostname`.tc || exit 1
-test -L ~/.tmp && exit 1
-test -d ~/crypt || exit 1
+test -f $HOME/local/`/bin/hostname`.tc || exit 1
+test -L $HOME/.tmp && exit 1
+test -d $HOME/crypt || exit 1
 
 sudo test -d /home/backup && sudo rm -rf /home/backup
 sudo mkdir /home/backup
 sudo chmod 750 /home/backup
 sudo chown -R root:admin /home/backup
 
-mv ~/.tmp          ~/crypt/
-ln -s ~/crypt/.tmp          ~/.tmp
-mv ~/.screen       ~/crypt/
-ln -s ~/crypt/.screen       ~/.screen
-mv ~/tmp           ~/crypt/
-ln -s ~/crypt/tmp           ~/tmp
-mv ~/etc           ~/crypt/
-ln -s ~/crypt/etc           ~/etc
-mv ~/bin           ~/crypt/
-ln -s ~/crypt/bin           ~/bin
-mv ~/arc           ~/crypt/
-ln -s ~/crypt/arc           ~/arc
-mv ~/var           ~/crypt/
-ln -s ~/crypt/var           ~/var
+mv $HOME/.tmp          $HOME/crypt/
+ln -s $HOME/crypt/.tmp          $HOME/.tmp
+mv $HOME/.screen       $HOME/crypt/
+ln -s $HOME/crypt/.screen       $HOME/.screen
+mv $HOME/tmp           $HOME/crypt/
+ln -s $HOME/crypt/tmp           $HOME/tmp
+mv $HOME/etc           $HOME/crypt/
+ln -s $HOME/crypt/etc           $HOME/etc
+mv $HOME/bin           $HOME/crypt/
+ln -s $HOME/crypt/bin           $HOME/bin
+mv $HOME/arc           $HOME/crypt/
+ln -s $HOME/crypt/arc           $HOME/arc
+mv $HOME/var           $HOME/crypt/
+ln -s $HOME/crypt/var           $HOME/var
 
-test -d ~/.thunderbird || exit 0
+test -d $HOME/.thunderbird || exit 0
 # Thunderbird
-mv ~/.thunderbird  ~/crypt/.thunderbird
-ln -s ~/crypt/.thunderbird  ~/.thunderbird
+mv $HOME/.thunderbird  $HOME/crypt/.thunderbird
+ln -s $HOME/crypt/.thunderbird  $HOME/.thunderbird
 # Firefox
-mv ~/.mozilla      ~/crypt/.mozilla
-ln -s ~/crypt/.mozilla      ~/.mozilla
+mv $HOME/.mozilla      $HOME/crypt/.mozilla
+ln -s $HOME/crypt/.mozilla      $HOME/.mozilla
 # Skype
-mv ~/.Skype        ~/crypt/
-ln -s ~/crypt/.Skype        ~/.Skype
+mv $HOME/.Skype        $HOME/crypt/
+ln -s $HOME/crypt/.Skype        $HOME/.Skype
 # MSN Messenger
-mv ~/.amsn         ~/crypt/
-ln -s ~/crypt/.amsn         ~/.amsn
-mv ~/amsn_received ~/crypt/
-ln -s ~/crypt/amsn_received ~/amsn_received
+mv $HOME/.amsn         $HOME/crypt/
+ln -s $HOME/crypt/.amsn         $HOME/.amsn
+mv $HOME/amsn_received $HOME/crypt/
+ln -s $HOME/crypt/amsn_received $HOME/amsn_received
 # IRC
-mv ~/.purple       ~/crypt/
-ln -s ~/crypt/.purple       ~/.purple
+mv $HOME/.purple       $HOME/crypt/
+ln -s $HOME/crypt/.purple       $HOME/.purple
 # 2ch
-mv ~/.jd           ~/crypt/.jd
-ln -s ~/crypt/.jd           ~/.jd
-mv ~/.ochusha      ~/crypt/.ochusha
-ln -s ~/crypt/.ochusha      ~/.ochusha
+mv $HOME/.jd           $HOME/crypt/.jd
+ln -s $HOME/crypt/.jd           $HOME/.jd
+mv $HOME/.ochusha      $HOME/crypt/.ochusha
+ln -s $HOME/crypt/.ochusha      $HOME/.ochusha
 

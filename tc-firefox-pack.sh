@@ -1,7 +1,7 @@
 #!/bin/sh
 
-test -d ~/crypt/arc || exit 1
-test -f ~/crypt/arc/firefox.tar.gz && rm ~/crypt/arc/firefox.tar.gz
+test -d $HOME/crypt/arc || exit 1
+test -f $HOME/crypt/arc/firefox.tar.gz && rm $HOME/crypt/arc/firefox.tar.gz
 cd
 
 case $OSTYPE in
@@ -9,10 +9,10 @@ case $OSTYPE in
     exit 1
     ;;
   *)
-    cd ~/crypt
-    tar czvf ~/crypt/arc/firefox.tar.gz .mozilla
+    cd $HOME/crypt
+    tar czvf $HOME/crypt/arc/firefox.tar.gz .mozilla
     ;;
 esac
 
-chmod 600 ~/arc/firefox.tar.gz
+chmod 600 $HOME/arc/firefox.tar.gz
 

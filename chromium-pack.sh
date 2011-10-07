@@ -1,9 +1,9 @@
 #!/bin/sh
 
-test -d ~/arc || exit 1
-test -f ~/arc/chromium.tar.gz && rm ~/arc/chromium.tar.gz
+test -d $HOME/arc || exit 1
+test -f $HOME/arc/chromium.tar.gz && rm $HOME/arc/chromium.tar.gz
 cd
 
-tar czvf ~/arc/chromium.tar.gz .config/chromium
-chmod 600 ~/arc/chromium.tar.gz
+tar czvf $HOME/arc/chromium.tar.gz .config/chromium
+chmod 600 $HOME/arc/chromium.tar.gz
 

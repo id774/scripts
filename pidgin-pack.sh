@@ -1,8 +1,8 @@
 #!/bin/sh
 
-test -d ~/arc || exit 1
-test -f ~/arc/pidgin.tar.gz && rm ~/arc/pidgin.tar.gz
+test -d $HOME/arc || exit 1
+test -f $HOME/arc/pidgin.tar.gz && rm $HOME/arc/pidgin.tar.gz
 cd
-tar czvf ~/arc/pidgin.tar.gz .purple
-chmod 600 ~/arc/pidgin.tar.gz
+tar czvf $HOME/arc/pidgin.tar.gz .purple
+chmod 600 $HOME/arc/pidgin.tar.gz
 

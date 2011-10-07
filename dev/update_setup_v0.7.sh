@@ -3,8 +3,8 @@
 # This scripts updates environment from 0.7 to 0.8
 ########################################################################
 
-test -n "$SCRIPTS" || export SCRIPTS=~/scripts
-test -n "$PRIVATE" || export PRIVATE=~/private/scripts
+test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
+test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
 
 smart_apt() {
     while [ $# -gt 0 ]
@@ -79,8 +79,8 @@ install_kernel() {
 }
 
 operation() {
-    test -n "$SCRIPTS" || export SCRIPTS=~/scripts
-    test -n "$PRIVATE" || export PRIVATE=~/private/scripts
+    test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
+    test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
     test -f /etc/lsb-release && DISTRIB_CODENAME=lucid
     test -f /etc/lsb-release || DISTRIB_CODENAME=squeeze
     setup_apt_source

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-test -f ~/crypt/arc/thunderbird.tar.gz || exit 1
+test -f $HOME/crypt/arc/thunderbird.tar.gz || exit 1
 cd
 
 case $OSTYPE in
@@ -8,10 +8,10 @@ case $OSTYPE in
     exit 1
     ;;
   *)
-    test -d .thunderbird && rm -rf ~/crypt/.thunderbird
-    test -d .mozilla-thunderbird && rm -rf ~/crypt/.mozilla-thunderbird
+    test -d .thunderbird && rm -rf $HOME/crypt/.thunderbird
+    test -d .mozilla-thunderbird && rm -rf $HOME/crypt/.mozilla-thunderbird
     ;;
 esac
 
-tar xzvf ~/crypt/arc/thunderbird.tar.gz -C ~/crypt
+tar xzvf $HOME/crypt/arc/thunderbird.tar.gz -C $HOME/crypt
 

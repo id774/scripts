@@ -1,11 +1,11 @@
 #!/bin/sh
 
-JOBLOG=~/diskcopy.log
-FILELIST=~/filelist.log
+JOBLOG=$HOME/diskcopy.log
+FILELIST=$HOME/filelist.log
 test -n "$1" && SOURCE_DRV=$1
-test -n "$1" || SOURCE_DRV=~/mnt/sdc
+test -n "$1" || SOURCE_DRV=$HOME/mnt/sdc
 test -n "$2" && TARGET_DRV=$2
-test -n "$2" || TARGET_DRV=~/mnt/sdb
+test -n "$2" || TARGET_DRV=$HOME/mnt/sdb
 test -n "$3" && ADMIN_MAIL_ADDRESS=$3
 test -n "$3" || ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
 

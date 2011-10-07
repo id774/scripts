@@ -25,7 +25,7 @@
 #       First version.
 ########################################################################
 
-test -n "$TMP" || export TMP=~/.tmp
+test -n "$TMP" || export TMP=$HOME/.tmp
 test -n "$1" && export DISPLAY=$1
 test -n "$1" || export DISPLAY=:99
 

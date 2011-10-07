@@ -1,16 +1,16 @@
 #!/bin/sh
 
-test -f ~/arc/skype.tar.gz || exit 1
+test -f $HOME/arc/skype.tar.gz || exit 1
 cd
 
 case $OSTYPE in
   *darwin*)
-    rm -rf  "~/Library/Application Support/Skype"
+    rm -rf  "$HOME/Library/Application Support/Skype"
     ;;
   *)
-    rm -rf ~/.Skype
+    rm -rf $HOME/.Skype
     ;;
 esac
 
-tar xzvf ~/arc/skype.tar.gz
+tar xzvf $HOME/arc/skype.tar.gz
 

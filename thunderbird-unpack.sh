@@ -1,17 +1,17 @@
 #!/bin/sh
 
-test -f ~/arc/thunderbird.tar.gz || exit 1
+test -f $HOME/arc/thunderbird.tar.gz || exit 1
 cd
 
 case $OSTYPE in
   *darwin*)
-    rm -rf  "~/Library/Thunderbird"
+    rm -rf  "$HOME/Library/Thunderbird"
     ;;
   *)
-    test -d .thunderbird && rm -rf ~/.thunderbird
-    test -d .mozilla-thunderbird && rm -rf ~/.mozilla-thunderbird
+    test -d .thunderbird && rm -rf $HOME/.thunderbird
+    test -d .mozilla-thunderbird && rm -rf $HOME/.mozilla-thunderbird
     ;;
 esac
 
-tar xzvf ~/arc/thunderbird.tar.gz
+tar xzvf $HOME/arc/thunderbird.tar.gz
 

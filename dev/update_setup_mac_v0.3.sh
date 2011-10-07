@@ -6,7 +6,7 @@
 export SCRIPTS=$HOME/scripts
 
 # Deploy dot_emacs
-~/local/github/dot_emacs/install_dotemacs.sh /usr/bin/emacs
+$HOME/local/github/dot_emacs/install_dotemacs.sh /usr/bin/emacs
 
 # Deploy dot_files
 $SCRIPTS/installer/install_dotfiles.sh

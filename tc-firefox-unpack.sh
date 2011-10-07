@@ -1,6 +1,6 @@
 #!/bin/sh
 
-test -f ~/crypt/arc/firefox.tar.gz || exit 1
+test -f $HOME/crypt/arc/firefox.tar.gz || exit 1
 cd
 
 case $OSTYPE in
@@ -8,9 +8,9 @@ case $OSTYPE in
     exit 1
     ;;
   *)
-    rm -rf ~/crypt/.mozilla
+    rm -rf $HOME/crypt/.mozilla
     ;;
 esac
 
-tar xzvf ~/crypt/arc/firefox.tar.gz -C ~/crypt
+tar xzvf $HOME/crypt/arc/firefox.tar.gz -C $HOME/crypt
 

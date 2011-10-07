@@ -9,8 +9,8 @@
 #       First.
 ########################################################################
 
-test -n "$SCRIPTS" || export SCRIPTS=~/scripts
-test -n "$PRIVATE" || export PRIVATE=~/private/scripts
+test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
+test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
 
 # Ruby
 #$SCRIPTS/installer/install_ruby.sh 187-svn /opt/ruby/1.8.7

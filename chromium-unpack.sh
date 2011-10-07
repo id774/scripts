@@ -1,8 +1,8 @@
 #!/bin/sh
 
-test -f ~/arc/chromium.tar.gz || exit 1
+test -f $HOME/arc/chromium.tar.gz || exit 1
 cd
-rm -rf ~/.chromium
+rm -rf $HOME/.chromium
 
-tar xzvf ~/arc/chromium.tar.gz
+tar xzvf $HOME/arc/chromium.tar.gz
 

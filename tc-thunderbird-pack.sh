@@ -1,7 +1,7 @@
 #!/bin/sh
 
-test -d ~/crypt/arc || exit 1
-test -f ~/crypt/arc/thunderbird.tar.gz && rm ~/crypt/arc/thunderbird.tar.gz
+test -d $HOME/crypt/arc || exit 1
+test -f $HOME/crypt/arc/thunderbird.tar.gz && rm $HOME/crypt/arc/thunderbird.tar.gz
 cd
 
 case $OSTYPE in
@@ -9,11 +9,11 @@ case $OSTYPE in
     exit 1
     ;;
   *)
-    cd ~/crypt
-    test -d .thunderbird && tar czvf ~/crypt/arc/thunderbird.tar.gz .thunderbird
-    test -d .mozilla-thunderbird && tar czvf ~/crypt/arc/thunderbird.tar.gz .mozilla-thunderbird
+    cd $HOME/crypt
+    test -d .thunderbird && tar czvf $HOME/crypt/arc/thunderbird.tar.gz .thunderbird
+    test -d .mozilla-thunderbird && tar czvf $HOME/crypt/arc/thunderbird.tar.gz .mozilla-thunderbird
     ;;
 esac
 
-chmod 600 ~/arc/thunderbird.tar.gz
+chmod 600 $HOME/arc/thunderbird.tar.gz
  

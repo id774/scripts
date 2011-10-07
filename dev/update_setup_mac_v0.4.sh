@@ -9,7 +9,7 @@ export SCRIPTS=$HOME/scripts
 $SCRIPTS/installer/install_dotfiles.sh
 
 # Deploy dot_emacs
-~/local/github/dot_emacs/install_dotemacs.sh /usr/bin/emacs
+$HOME/local/github/dot_emacs/install_dotemacs.sh /usr/bin/emacs
 
 # Termtter
 $PRIVATE/installer/install_dottermtter.sh

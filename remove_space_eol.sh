@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # ex)
-# $ find ./app ./lib ./config ./db -type f -name "*" -exec ~/scripts/remove_space_eol.sh {} \;
+# $ find ./app ./lib ./config ./db -type f -name "*" -exec $HOME/scripts/remove_space_eol.sh {} \;
 
 while [ $# -gt 0 ]
 do

@@ -1,18 +1,18 @@
 #!/bin/sh
 
-test -d ~/arc || exit 1
-test -f ~/arc/thunderbird.tar.gz && rm ~/arc/thunderbird.tar.gz
+test -d $HOME/arc || exit 1
+test -f $HOME/arc/thunderbird.tar.gz && rm $HOME/arc/thunderbird.tar.gz
 cd
 
 case $OSTYPE in
   *darwin*)
-    tar czvf ~/arc/thunderbird.tar.gz "Library/Thunderbird"
+    tar czvf $HOME/arc/thunderbird.tar.gz "Library/Thunderbird"
     ;;
   *)
-    test -d .thunderbird && tar czvf ~/arc/thunderbird.tar.gz .thunderbird
-    test -d .mozilla-thunderbird && tar czvf ~/arc/thunderbird.tar.gz .mozilla-thunderbird
+    test -d .thunderbird && tar czvf $HOME/arc/thunderbird.tar.gz .thunderbird
+    test -d .mozilla-thunderbird && tar czvf $HOME/arc/thunderbird.tar.gz .mozilla-thunderbird
     ;;
 esac
 
-chmod 600 ~/arc/thunderbird.tar.gz
+chmod 600 $HOME/arc/thunderbird.tar.gz
 

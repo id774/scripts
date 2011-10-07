@@ -1,16 +1,16 @@
 #!/bin/sh
 
-test -f ~/arc/firefox.tar.gz || exit 1
+test -f $HOME/arc/firefox.tar.gz || exit 1
 cd
 
 case $OSTYPE in
   *darwin*)
-    rm -rf  "~/Library/Application Support/Firefox"
+    rm -rf  "$HOME/Library/Application Support/Firefox"
     ;;
   *)
-    rm -rf ~/.mozilla
+    rm -rf $HOME/.mozilla
     ;;
 esac
 
-tar xzvf ~/arc/firefox.tar.gz
+tar xzvf $HOME/arc/firefox.tar.gz
 

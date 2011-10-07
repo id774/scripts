@@ -1,8 +1,8 @@
 #!/bin/sh
 
-test -f ~/arc/netbeans-config.tar.gz || exit 1
+test -f $HOME/arc/netbeans-config.tar.gz || exit 1
 cd
-rm -rf ~/.netbeans
+rm -rf $HOME/.netbeans
 
-tar xzvf ~/arc/netbeans-config.tar.gz
+tar xzvf $HOME/arc/netbeans-config.tar.gz
 
