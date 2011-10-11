@@ -62,7 +62,8 @@ optional_packages() {
       gnomebaker \
       skype \
       amsn \
-      wireshark
+      wireshark \
+      xtightvncviewer \
       chromium-browser
 }
 
