@@ -3,5 +3,6 @@
   name = id774
 [core]
   excludesfile = /home/debian/.gitignore
+  quotepath = false
 [alias]
   graph = log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %s\" --all --date=short 
