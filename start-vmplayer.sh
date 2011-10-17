@@ -32,17 +32,12 @@ test -n "$1" || export DISPLAY=:99
 
 start_xvfb() {
     sudo Xvfb $DISPLAY -screen 0 1024x768x24 2>&1 >> $TMP/xvfb.log &
-    sudo chown $USER $TMP/xvfb.log
+    sleep 10
 }
 
 start_fluxbox() {
     fluxbox 2>&1 >> $TMP/window-manager.log &
-}
-
-start_xvfb_and_fluxbox() {
-    start_xvfb
-    sleep 10
-    start_fluxbox
+    sleep 5
 }
 
 start_vnc() {
@@ -56,7 +51,8 @@ start_vmplayer() {
 }
 
 start_daemon() {
-    start_xvfb_and_fluxbox
+    start_xvfb
+    start_fluxbox
     start_vnc
     start_vmplayer
 }
