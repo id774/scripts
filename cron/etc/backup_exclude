@@ -1,5 +1,5 @@
 .tmp/
-.plagger_tmp/
+.plagger/
 .screen/
 .cpan/
 .gem/
