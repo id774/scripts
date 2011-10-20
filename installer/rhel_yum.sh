@@ -21,6 +21,7 @@
 #sudo yum -y install rsync
 #sudo yum -y install git git-all
 #sudo yum -y install openssh-server
+#sudo yum -y install openssh-client
 #sudo yum -y install ssh
 #sudo yum -y install gcc g++ g77 gcc-c++
 #sudo yum -y install bison
