@@ -25,15 +25,19 @@ remove_cronjob() {
 }
 
 remove_obsolete_jobs() {
-    edit_cronjob auto-upgrade
-    edit_cronjob backup
+    remove_cronjob auto-upgrade
+    remove_cronjob backup
 }
 
 remove_logs() {
-    sudo rm -f /var/log/sysadmin/backup.log*
-    sudo rm -v /etc/logrotate.d/backup
-    sudo rm -f /var/log/sysadmin/auto-upgrade.log*
-    sudo rm -v /etc/logrotate.d/auto-upgrade
+    test -f /var/log/sysadmin/backup.log && \
+      sudo rm -f /var/log/sysadmin/backup.log*
+    test -f /etc/logrotate.d/backup && \
+      sudo rm -v /etc/logrotate.d/backup
+    test -f /var/log/sysadmin/auto-upgrade.log && \
+      sudo rm -f /var/log/sysadmin/auto-upgrade.log*
+    test -f /etc/logrotate.d/auto-upgrade && \
+      sudo rm -f /etc/logrotate.d/auto-upgrade
 }
 
 sudo rm -v /root/bin/backup.sh
