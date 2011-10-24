@@ -40,7 +40,13 @@ remove_logs() {
       sudo rm -f /etc/logrotate.d/auto-upgrade
 }
 
-sudo rm -v /root/bin/backup.sh
-sudo rm -v /root/bin/backup_exclude
-remove_logs
-remove_obsolete_jobs
+main() {
+    test -f /root/bin/backup.sh && \
+      sudo rm -v /root/bin/backup.sh
+    test -f /root/bin/backup_exclude && \
+      sudo rm -v /root/bin/backup_exclude
+    remove_logs
+    remove_obsolete_jobs
+}
+
+main
