@@ -59,6 +59,7 @@ system_packages() {
       nkf \
       mailx \
       digitools \
+      dnsutils \
       xdelta \
       sshfs \
       exim4 \
