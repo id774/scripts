@@ -41,9 +41,9 @@ remove_logs() {
 }
 
 main() {
-    test -f /root/bin/backup.sh && \
+    sudo test -f /root/bin/backup.sh && \
       sudo rm -v /root/bin/backup.sh
-    test -f /root/bin/backup_exclude && \
+    sudo test -f /root/bin/backup_exclude && \
       sudo rm -v /root/bin/backup_exclude
     remove_logs
     remove_obsolete_jobs
