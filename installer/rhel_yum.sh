@@ -65,6 +65,7 @@
 #sudo yum -y install glib2-devel
 #sudo yum -y install imake
 
+#sudo yum -y install yum-utils
 #sudo yum -y install rpm-build
 #sudo yum -y install libtool
 #sudo yum -y install gettext
