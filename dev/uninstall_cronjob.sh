@@ -37,7 +37,7 @@ remove_logs() {
     test -f /var/log/sysadmin/auto-upgrade.log && \
       sudo rm -f /var/log/sysadmin/auto-upgrade.log*
     test -f /etc/logrotate.d/auto-upgrade && \
-      sudo rm -f /etc/logrotate.d/auto-upgrade
+      sudo rm -v /etc/logrotate.d/auto-upgrade
 }
 
 main() {
