@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.18 10/31,2011
+#       Update to ruby 1.9.3-p0.
 # v1.17 7/21,2011
 #       Update to ruby 1.9.2-p290, ruby 1.8.7-p352.
 # v1.16 2/19,2011
@@ -137,6 +139,9 @@ setup_environment() {
 install_ruby() {
     setup_environment
     case "$1" in
+      193-0)
+        install_stable 1.9.3-p0 1.9 $2
+        ;;
       192-290)
         install_stable 1.9.2-p290 1.9 $2
         ;;
@@ -202,6 +207,9 @@ install_ruby() {
         ;;
       18-svn)
         install_branch ruby_1_8 $2
+        ;;
+      193-svn)
+        install_branch ruby_1_9_3 $2
         ;;
       192-svn)
         install_branch ruby_1_9_2 $2
