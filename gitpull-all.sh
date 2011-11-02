@@ -93,6 +93,7 @@ gitpull_all() {
     gitpull github id774 dot_emacs $*
     gitpull github id774 termtter-plugins $*
     gitpull github id774 deferred-sync
+    gitpull github id774 instant-deployer
     gitpull github id774 gthumb
     gitpull github id774 sandbox
     gitpull github id774 batch_framework
