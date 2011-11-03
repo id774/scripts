@@ -34,7 +34,7 @@ pull_from_gitbare() {
         git pull
     else
         cd $HOME/local/$1
-        git clone ssh://$GITBARE_USER@$GITBARE_HOST/~$GITBARE_USER/git-bare/$2.git
+        git clone ssh://$GITBARE_USER@$GITBARE_HOST/var/lib/git/$2.git
     fi
     chmod 700 $HOME/local/$1/$2
     test -L $HOME/$2 && rm $HOME/$2
@@ -44,6 +44,7 @@ pull_from_gitbare() {
 gitpull_all() {
     pull_from_gitbare git private $*
     pull_from_gitbare git development $*
+    pull_from_gitbare git data $*
 }
 
 test -n "$2" || exit 2
