@@ -46,7 +46,8 @@ start_vnc() {
 }
 
 start_vmplayer() {
-    vmplayer 2>&1 >> $TMP/vmplayer.log &
+    vmplayer 2>&1 >> $TMP/vmplayer1.log &
+    vmplayer 2>&1 >> $TMP/vmplayer2.log &
     sleep 10
 }
 
