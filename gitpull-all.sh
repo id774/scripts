@@ -88,7 +88,6 @@ assembla_git_all() {
 }
 
 gitpull_all() {
-    gitpull github id774 id774.github.com $*
     gitpull github id774 dot_zsh $*
     gitpull github id774 dot_emacs $*
     gitpull github id774 termtter-plugins $*
