@@ -68,8 +68,8 @@ edit_cronjob() {
       sudo vim /etc/cron.monthly/$1
 }
 
-remove_obsolete_jobs() {
-    edit_cronjob backup
+edit_cronjobs() {
+    edit_cronjob deferred-sync
     edit_cronjob clamscan
     edit_cronjob get_resources
 }
@@ -82,6 +82,10 @@ install_dot_files() {
     $SCRIPTS/installer/install_dotfiles.sh
 }
 
+install_deferred_sync() {
+    $PRIVATE/installer/install_deferred-sync.sh
+}
+
 operation() {
     test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
     test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
@@ -90,13 +94,14 @@ operation() {
     setup_apt_source
     increase_debian_packages
     xvfb_packages
-    install_private_iptables
+    #install_private_iptables
     install_termtter_plugins
     remove_incr_zsh
-    decrease_debian_packages
-    remove_obsolete_jobs
+    #decrease_debian_packages
+    edit_cronjobs
     test -f /etc/lsb-release && install_kernel $1 $2
     install_dot_files
+    install_deferred_sync
 }
 
 operation $*
