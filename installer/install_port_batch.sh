@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.10 11/13,2011
+#       Add proctools.
 #  v1.9 3/28,2011
 #       Remove mysql.
 #  v1.8 7/14,2010
@@ -32,6 +34,7 @@ main() {
     sudo port -d install libiconv +enable_cp932fix
     sudo port -d install coreutils
     sudo port -d install findutils
+    sudo port -d install proctools
     sudo port -d install wget
     sudo port -d install curl
     sudo port -d install nkf
