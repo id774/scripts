@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.14 11/14,2011
+#       Backup git bare on vps.
 # v1.13 9/20,2011
 #       Refactoring. Move iso. Strict error code.
 # v1.12 8/29,2010
@@ -56,6 +58,15 @@ svn_backup() {
   test -f /root/svn_hotcopy/trac_default.tar.gz && \
     test -d $B_HOME/mnt/sdb/user2/arc/svn && \
     cp -v /root/svn_hotcopy/trac_default.tar.gz $B_HOME/mnt/sdb/user2/arc/svn/
+}
+
+git_backup() {
+  test -f /root/local/git.tar.gz && rm /root/local/git.tar.gz
+  rsync -avz --delete $1@$2:/var/lib/git /root/local/
+  cd /root/local
+  tar czvf git.tar.gz git/
+  cp -v /root/local/git.tar.gz $B_HOME/mnt/sdb/user2/arc/git/
+  cd
 }
 
 github_backup() {
@@ -163,6 +174,7 @@ operation() {
   smart_info
   #cleanup
   #svn_backup
+  #git_backup debian harpuia
   #github_backup
 
   #T_DEVICE=sdc
