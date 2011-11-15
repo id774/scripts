@@ -2,9 +2,13 @@
 #
 ########################################################################
 # Install Emacs Ruby
+#  $1 = ruby misc path (ex. /usr/local/src/ruby/ruby-1.9.2-p290/misc)
+#  $2 = site list path (ex. ~/.emacs.d/elisp/3rd-party/ruby-mode)
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 11/15,2011
+#       Show usage.
 #  v1.3 9/13,2011
 #       Renew target path and change symlink to filecopy.
 #  v1.2 9/16,2010
@@ -16,6 +20,7 @@
 ########################################################################
 
 install_emacs_ruby() {
+    test -n "$1" || echo "Usage: $0 [ruby-misc] [site-lisp]"
     test -n "$1" || exit 1
     test -n "$1" && RUBY_MISC=$1
     test -n "$2" || SITE_LISP=$HOME/.emacs.d/elisp/3rd-party/ruby-mode
