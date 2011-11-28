@@ -47,6 +47,7 @@ update_alternatives() {
       --slave   $1/rails rails $2/rails$4\
       --slave   $1/rake rake $2/rake$4\
       --slave   $1/rdoc rdoc $2/rdoc$4\
+      --slave   $1/bundle bundle $2/bundle$4\
       --slave   $1/redcloth redcloth $2/redcloth$4\
       --slave   $1/rg rg $2/rg$4\
       --slave   $1/ri ri $2/ri$4\
