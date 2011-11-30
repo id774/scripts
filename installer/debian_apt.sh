@@ -137,6 +137,7 @@ lang_packages() {
 scm_packages() {
     smart_apt \
       subversion \
+      mercurial \
       git-core git-all
 #      svk \
 }
