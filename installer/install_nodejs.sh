@@ -6,6 +6,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 12/1,2011
+#       Add npm.
 #  v0.1 11/22,2011
 #       First.
 ########################################################################
@@ -20,6 +22,10 @@ save_sources() {
     sudo mkdir -p /usr/local/src/node.js
     sudo cp -av $NODE /usr/local/src/node.js
     sudo chown -R root:root /usr/local/src/node.js
+}
+
+install_npm() {
+    sudo sh -c 'curl http://npmjs.org/install.sh | sh'
 }
 
 install_node() {

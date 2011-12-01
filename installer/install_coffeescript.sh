@@ -3,9 +3,12 @@
 ########################################################################
 # Install CoffeeScript
 #  $1 = prefix
+#  $2 = nosudo
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 12/1,2011
+#       Add npm.
 #  v0.1 9/15,2011
 #       First.
 ########################################################################
@@ -47,6 +50,10 @@ install_node() {
     make_and_install_node $*
 }
 
+install_npm() {
+    $SUDO sh -c 'curl http://npmjs.org/install.sh | sh'
+}
+
 make_and_install_coffee() {
     test -n "$1" || ./configure
     test -n "$1" && ./configure $1
@@ -62,6 +69,7 @@ main() {
     setup_environment $*
     gitpull_all
     install_node $*
+    test -n "$2" || install_npm $*
     install_coffee $*
 }
 
