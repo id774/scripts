@@ -40,6 +40,16 @@ install_private_iptables() {
     sudo /etc/init.d/networking restart
 }
 
+deploy_dotfiles() {
+    $HOME/local/github/dot_emacs/install_dotemacs.sh
+    $HOME/local/github/dot_zsh/install_dotzsh.sh
+    $SCRIPTS/installer/install_dotvim.sh
+}
+
+install_coffeescript() {
+    $SCRIPTS/installer/install_coffeescript.sh
+}
+
 install_termtter_plugins() {
     $PRIVATE/installer/install_dottermtter.sh
     $SCRIPTS/installer/install_termtter_plugins.sh
@@ -95,6 +105,8 @@ operation() {
     increase_debian_packages
     xvfb_packages
     #install_private_iptables
+    deploy_dotfiles
+    install_coffeescript
     install_termtter_plugins
     remove_incr_zsh
     #decrease_debian_packages
