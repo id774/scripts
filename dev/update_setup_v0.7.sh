@@ -46,6 +46,10 @@ deploy_dotfiles() {
     $SCRIPTS/installer/install_dotvim.sh
 }
 
+remove_incr_zsh() {
+    sudo rm -f /etc/zsh/plugins/incr.zsh*
+}
+
 install_coffeescript() {
     $SCRIPTS/installer/install_coffeescript.sh
 }
@@ -53,10 +57,6 @@ install_coffeescript() {
 install_termtter_plugins() {
     $PRIVATE/installer/install_dottermtter.sh
     $SCRIPTS/installer/install_termtter_plugins.sh
-}
-
-remove_incr_zsh() {
-    sudo rm -f /etc/zsh/plugins/incr.zsh*
 }
 
 decrease_debian_packages() {
@@ -84,10 +84,6 @@ edit_cronjobs() {
     edit_cronjob get_resources
 }
 
-install_kernel() {
-    $SCRIPTS/installer/install_linux_image.sh $1 $2
-}
-
 install_dot_files() {
     $SCRIPTS/installer/install_dotfiles.sh
 }
@@ -106,14 +102,13 @@ operation() {
     xvfb_packages
     #install_private_iptables
     deploy_dotfiles
+    remove_incr_zsh
     install_coffeescript
     install_termtter_plugins
-    remove_incr_zsh
     #decrease_debian_packages
-    edit_cronjobs
-    test -f /etc/lsb-release && install_kernel $1 $2
+    #edit_cronjobs
     install_dot_files
-    install_deferred_sync
+    #install_deferred_sync
 }
 
 operation $*
