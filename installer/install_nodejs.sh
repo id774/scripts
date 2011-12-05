@@ -44,6 +44,7 @@ install_node() {
     test -n "$2" || save_sources
     cd ..
     rm -rf install_node
+    install_npm $*
 }
 
 ping -c 1 id774.net > /dev/null 2>&1 || exit 1

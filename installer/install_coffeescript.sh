@@ -55,8 +55,6 @@ install_npm() {
 }
 
 make_and_install_coffee() {
-    test -n "$1" || ./configure
-    test -n "$1" && ./configure $1
     $SUDO bin/cake install
 }
 install_coffee() {
