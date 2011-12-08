@@ -1,2 +1,2 @@
 (byte-recompile-directory "~/.emacs.d/elisp")
-(load "~/.emacs.d/elisp/startup")
+(load "~/.emacs.d/elisp/init")
