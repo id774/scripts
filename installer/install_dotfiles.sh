@@ -35,6 +35,22 @@ setup_environment() {
     esac
 }
 
+mkdir_if_not_exist() {
+    while [ $# -gt 0 ]
+    do
+        sudo test -d $1 || sudo mkdir $1
+        shift
+    done 
+}
+
+emacs_batch_byte_compile() {
+    while [ $# -gt 0 ]
+    do
+        sudo emacs --batch -Q -f batch-byte-compile $1
+        shift
+    done 
+}
+
 deploy_dotfile() {
     for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore toprc emacs
     do
@@ -43,21 +59,22 @@ deploy_dotfile() {
 }
 
 setup_dotemacs() {
-    sudo test -d $1/.emacs.d || sudo mkdir $1/.emacs.d
-    sudo test -d $1/.emacs.d/site-lisp || sudo mkdir $1/.emacs.d/site-lisp
-    sudo test -d $1/.emacs.d/anything || sudo mkdir $1/.emacs.d/anything
-    sudo test -d $1/.emacs.d/backups || sudo mkdir $1/.emacs.d/backups
-    sudo test -d $1/.emacs.d/tmp || sudo mkdir $1/.emacs.d/tmp
-    sudo test -d $1/.emacs.d/tramp-auto-save || sudo mkdir $1/.emacs.d/tramp-auto-save
-    sudo test -d $1/.emacs.d/auto-save-list || sudo mkdir $1/.emacs.d/auto-save-list
+    mkdir_if_not_exist \
+      $1/.emacs.d \
+      $1/.emacs.d/site-lisp \
+      $1/.emacs.d/anything \
+      $1/.emacs.d/backups \
+      $1/.emacs.d/tmp \
+      $1/.emacs.d/tramp-auto-save \
+      $1/.emacs.d/auto-save-list
     sudo chmod 750 $1/.emacs.d
     sudo chmod 750 $1/.emacs.d/site-lisp
     test -f $DOT_EMACS/emacs.d/site-lisp/loader.el && \
       sudo cp $DOT_EMACS/emacs.d/site-lisp/loader.el $1/.emacs.d/site-lisp/ && \
-      sudo emacs --batch -Q -f batch-byte-compile $1/.emacs.d/site-lisp/loader.el
+      emacs_batch_byte_compile $1/.emacs.d/site-lisp/loader.el
     test -f $DOT_EMACS/emacs.d/site-lisp/auto-install.el && \
       sudo cp $DOT_EMACS/emacs.d/site-lisp/auto-install.el $1/.emacs.d/site-lisp/ && \
-      sudo emacs --batch -Q -f batch-byte-compile $1/.emacs.d/site-lisp/auto-install.el
+      emacs_batch_byte_compile $1/.emacs.d/site-lisp/auto-install.el
     sudo chmod 750 $1/.emacs.d/anything
     sudo chmod 750 $1/.emacs.d/backups
     sudo chmod 750 $1/.emacs.d/tmp
@@ -68,14 +85,15 @@ setup_dotemacs() {
 }
 
 mkdir_skelton() {
-    sudo test -d $1/.tmp  || sudo mkdir $1/.tmp
-    sudo test -d $1/tmp   || sudo mkdir $1/tmp
-    sudo test -d $1/mnt   || sudo mkdir $1/mnt
-    sudo test -d $1/local || sudo mkdir $1/local
-    sudo test -d $1/var   || sudo mkdir $1/var
-    sudo test -d $1/etc   || sudo mkdir $1/etc
-    sudo test -d $1/bin   || sudo mkdir $1/bin
-    sudo test -d $1/arc   || sudo mkdir $1/arc
+    mkdir_if_not_exist \
+      $1/.tmp \
+      $1/tmp \
+      $1/mnt \
+      $1/local \
+      $1/var \
+      $1/etc \
+      $1/bin \
+      $1/arc
     sudo chmod 700 $1/.tmp
     sudo chmod 700 $1/tmp
     sudo chmod 700 $1/mnt
