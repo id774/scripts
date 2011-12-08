@@ -53,11 +53,11 @@ setup_dotemacs() {
     sudo chmod 750 $1/.emacs.d
     sudo chmod 750 $1/.emacs.d/site-lisp
     test -f $DOT_EMACS/emacs.d/site-lisp/loader.el && \
-      sudo cp $DOT_EMACS/emacs.d/site-lisp/loader.el $1/.emacs.d/site-lisp/
+      sudo cp $DOT_EMACS/emacs.d/site-lisp/loader.el $1/.emacs.d/site-lisp/ && \
+      sudo emacs --batch -Q -f batch-byte-compile $1/.emacs.d/site-lisp/loader.el
     test -f $DOT_EMACS/emacs.d/site-lisp/auto-install.el && \
-      sudo cp $DOT_EMACS/emacs.d/site-lisp/auto-install.el $1/.emacs.d/site-lisp/
-    sudo emacs --batch -Q -f batch-byte-compile $1/.emacs.d/site-lisp/loader.el
-    sudo emacs --batch -Q -f batch-byte-compile $1/.emacs.d/site-lisp/auto-install.el
+      sudo cp $DOT_EMACS/emacs.d/site-lisp/auto-install.el $1/.emacs.d/site-lisp/ && \
+      sudo emacs --batch -Q -f batch-byte-compile $1/.emacs.d/site-lisp/auto-install.el
     sudo chmod 750 $1/.emacs.d/anything
     sudo chmod 750 $1/.emacs.d/backups
     sudo chmod 750 $1/.emacs.d/tmp
