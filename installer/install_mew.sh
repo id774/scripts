@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 12/8,2011
+#       The deployment files owned by root.
 #  v0.1 3/29,2011
 #       First.
 ########################################################################
@@ -50,7 +52,6 @@ install_mew() {
     test -n "$2" || save_sources $*
     cd ..
     rm -rf install_mew
-    sudo chown -R $USER:$USER $HOME/.emacs.d/elisp/3rd-party
 }
 
 ping -c 1 id774.net > /dev/null 2>&1 || exit 1
