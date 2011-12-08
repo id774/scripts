@@ -51,6 +51,7 @@ remove_incr_zsh() {
 }
 
 install_coffeescript() {
+    $SCRIPTS/installer/install_nodejs.sh
     $SCRIPTS/installer/install_coffeescript.sh
 }
 
@@ -99,7 +100,7 @@ operation() {
     test -f /etc/lsb-release || DISTRIB_CODENAME=squeeze
     setup_apt_source
     increase_debian_packages
-    xvfb_packages
+    #xvfb_packages
     #install_private_iptables
     deploy_dotfiles
     remove_incr_zsh

@@ -6,6 +6,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.3 12/8,2011
+#       Update to v0.6.5.
 #  v0.2 12/1,2011
 #       Add npm.
 #  v0.1 11/22,2011
@@ -13,7 +15,7 @@
 ########################################################################
 
 setup_environment() {
-    test -n "$1" || VERSION=0.6.2
+    test -n "$1" || VERSION=0.6.5
     test -n "$1" && VERSION=$1
     NODE=node-v$VERSION
 }
@@ -34,7 +36,7 @@ install_node() {
     mkdir install_node
     cd install_node
 
-    wget http://nodejs.org/dist/$NODE.tar.gz
+    wget http://nodejs.org/dist/v$VERSION/$NODE.tar.gz
     tar xzvf $NODE.tar.gz
     cd $NODE
     ./configure
