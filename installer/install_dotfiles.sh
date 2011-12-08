@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.5 12/8,2011
+#       Corresponding site-lisp.
 #  v1.4 10/4,2011
 #       Refactoring.
 #  v1.3 9/30,2011
@@ -19,6 +21,7 @@
 
 setup_environment() {
     SCRIPTS=$HOME/scripts
+    DOT_EMACS=$HOME/dot_emacs
     test -n "$1" && DEFAULT_KEYMAPFILE=$1
     test -n "$1" || DEFAULT_KEYMAPFILE=dot_xmodmaprc_hhklite2
 
@@ -39,6 +42,31 @@ deploy_dotfile() {
     done
 }
 
+setup_dotemacs() {
+    sudo test -d $1/.emacs.d || sudo mkdir $1/.emacs.d
+    sudo test -d $1/.emacs.d/site-lisp || sudo mkdir $1/.emacs.d/site-lisp
+    sudo test -d $1/.emacs.d/anything || sudo mkdir $1/.emacs.d/anything
+    sudo test -d $1/.emacs.d/backups || sudo mkdir $1/.emacs.d/backups
+    sudo test -d $1/.emacs.d/tmp || sudo mkdir $1/.emacs.d/tmp
+    sudo test -d $1/.emacs.d/tramp-auto-save || sudo mkdir $1/.emacs.d/tramp-auto-save
+    sudo test -d $1/.emacs.d/auto-save-list || sudo mkdir $1/.emacs.d/auto-save-list
+    sudo chmod 750 $1/.emacs.d
+    sudo chmod 750 $1/.emacs.d/site-lisp
+    test -f $DOT_EMACS/emacs.d/site-lisp/loader.el && \
+      sudo cp $DOT_EMACS/emacs.d/site-lisp/loader.el $1/.emacs.d/site-lisp/
+    test -f $DOT_EMACS/emacs.d/site-lisp/auto-install.el && \
+      sudo cp $DOT_EMACS/emacs.d/site-lisp/auto-install.el $1/.emacs.d/site-lisp/
+    sudo emacs --batch -Q -f batch-byte-compile $1/.emacs.d/site-lisp/loader.el
+    sudo emacs --batch -Q -f batch-byte-compile $1/.emacs.d/site-lisp/auto-install.el
+    sudo chmod 750 $1/.emacs.d/anything
+    sudo chmod 750 $1/.emacs.d/backups
+    sudo chmod 750 $1/.emacs.d/tmp
+    sudo chmod 750 $1/.emacs.d/tramp-auto-save
+    sudo chmod 750 $1/.emacs.d/auto-save-list
+    sudo touch $1/.emacs.d/anything/anything-c-adaptive-history
+    test -d /etc/emacs.d/elisp && sudo ln -fs /etc/emacs.d/elisp $1/.emacs.d/elisp
+}
+
 mkdir_skelton() {
     sudo test -d $1/.tmp  || sudo mkdir $1/.tmp
     sudo test -d $1/tmp   || sudo mkdir $1/tmp
@@ -56,21 +84,7 @@ mkdir_skelton() {
     sudo chmod 750 $1/etc
     sudo chmod 750 $1/bin
     sudo chmod 750 $1/arc
-    sudo test -d $1/.emacs.d && sudo rm -rf $1/.emacs.d
-    sudo mkdir $1/.emacs.d
-    sudo test -d $1/.emacs.d/anything || sudo mkdir $1/.emacs.d/anything
-    sudo test -d $1/.emacs.d/backups || sudo mkdir $1/.emacs.d/backups
-    sudo test -d $1/.emacs.d/tmp || sudo mkdir $1/.emacs.d/tmp
-    sudo test -d $1/.emacs.d/tramp-auto-save || sudo mkdir $1/.emacs.d/tramp-auto-save
-    sudo test -d $1/.emacs.d/auto-save-list || sudo mkdir $1/.emacs.d/auto-save-list
-    sudo chmod 750 $1/.emacs.d
-    sudo chmod 750 $1/.emacs.d/anything
-    sudo chmod 750 $1/.emacs.d/backups
-    sudo chmod 750 $1/.emacs.d/tmp
-    sudo chmod 750 $1/.emacs.d/tramp-auto-save
-    sudo chmod 750 $1/.emacs.d/auto-save-list
-    sudo touch $1/.emacs.d/anything/anything-c-adaptive-history
-    test -d /etc/emacs.d/elisp && sudo ln -fs /etc/emacs.d/elisp $1/.emacs.d/elisp
+    which emacs > /dev/null && setup_dotemacs $1
 }
 
 deploy_dotfiles() {
@@ -80,17 +94,16 @@ deploy_dotfiles() {
 
 deploy_dotfiles_to_others() {
     if [ -d $1 ]; then
-        deploy_dotfile $1
+        deploy_dotfiles $1
         sudo chown -R $2 $1
     fi
-    shift
 }
 
 deploy_dotfiles_to_mac() {
     while [ $# -gt 0 ]
     do
         if [ -d /Users/$1 ]; then
-            deploy_dotfile /Users/$1
+            deploy_dotfiles /Users/$1
             sudo chown -R $1 /Users/$1
         fi
         shift
@@ -101,7 +114,7 @@ deploy_dotfiles_to_linux() {
     while [ $# -gt 0 ]
     do
         if [ -d /home/$1 ]; then
-            deploy_dotfile /home/$1
+            deploy_dotfiles /home/$1
             sudo chown -R $1:$1 /home/$1
         fi
         shift
