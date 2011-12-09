@@ -57,6 +57,7 @@ install_npm() {
 make_and_install_coffee() {
     $SUDO bin/cake install
 }
+
 install_coffee() {
     test -d $HOME/local/github/coffee-script || exit 1
     cd $HOME/local/github/coffee-script
