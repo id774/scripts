@@ -105,6 +105,8 @@ gitpull_all() {
     gitpull github m2ym auto-complete $*
     gitpull github rooney zencoding $*
     gitpull github hober html5-el $*
+    gitpull github nex3 haml-mode $*
+    gitpull github nex3 sass-mode $*
     gitpull github antonj scss-mode $*
     gitpull github defunkt coffee-mode $*
     gitpull github mooz js2-mode $*
