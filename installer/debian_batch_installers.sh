@@ -49,6 +49,23 @@ install_iptables() {
     $SCRIPTS/installer/install_iptables.sh debian
 }
 
+install_ruby_and_rails() {
+    $SCRIPTS/installer/install_ruby_and_rails.sh
+}
+
+install_coffeescript() {
+    $SCRIPTS/installer/install_coffeescript.sh
+}
+
+install_python() {
+    $SCRIPTS/installer/install_python.sh $1 /opt/python/$1
+    $SCRIPTS/config/update-alternatives-python.sh
+}
+
+install_python_framework() {
+    $SCRIPTS/installer/install_python_framework.sh
+}
+
 install_dot_vim() {
     $SCRIPTS/installer/install_dotvim.sh
 }
@@ -131,23 +148,6 @@ configure_hddtemp() {
 
 configure_smartmontools() {
     sudo vi /etc/default/smartmontools
-}
-
-install_ruby_and_rails() {
-    $SCRIPTS/installer/install_ruby_and_rails.sh
-}
-
-install_coffeescript() {
-    $SCRIPTS/installer/install_coffeescript.sh
-}
-
-install_python() {
-    $SCRIPTS/installer/install_python.sh $1 /opt/python/$1
-    $SCRIPTS/config/update-alternatives-python.sh
-}
-
-install_python_framework() {
-    $SCRIPTS/installer/install_python_framework.sh
 }
 
 setup_sysadmin_scripts() {
@@ -256,6 +256,10 @@ operation() {
     #install_navi2ch
     #build_vim
     install_iptables
+    #install_ruby_and_rails
+    #install_coffeescript
+    #install_python
+    #install_python_framework
     install_dot_vim
     install_dot_zsh
     install_dot_emacs
@@ -272,10 +276,6 @@ operation() {
     configure_sysstat
     configure_hddtemp
     configure_smartmontools
-    #install_ruby_and_rails
-    #install_coffeescript
-    #install_python
-    #install_python_framework
     setup_sysadmin_scripts
     #setup_web
     setup_rc_local

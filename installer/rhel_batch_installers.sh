@@ -13,6 +13,14 @@ install_iptables() {
     $SCRIPTS/installer/install_iptables.sh rhel
 }
 
+install_ruby_and_rails() {
+    $SCRIPTS/installer/install_ruby_and_rails.sh
+}
+
+install_coffeescript() {
+    $SCRIPTS/installer/install_coffeescript.sh
+}
+
 install_dot_vim() {
     $SCRIPTS/installer/install_dotvim.sh
 }
@@ -64,14 +72,6 @@ install_sqlite() {
 
 install_svn() {
     $SCRIPTS/installer/install_rhel_svn.sh
-}
-
-install_ruby_and_rails() {
-    $SCRIPTS/installer/install_ruby_and_rails.sh
-}
-
-install_coffeescript() {
-    $SCRIPTS/installer/install_coffeescript.sh
 }
 
 setup_sysadmin_scripts() {
@@ -144,6 +144,8 @@ erase_history() {
 
 operation() {
     install_iptables
+    #install_ruby_and_rails
+    #install_coffeescript
     #install_dot_vim
     #install_dot_zsh
     #install_dot_emacs
@@ -153,8 +155,6 @@ operation() {
     #configure_samba
     #install_sqlite
     #install_svn
-    #install_ruby_and_rails
-    #install_coffeescript
     #setup_sysadmin_scripts
     #setup_web
     setup_rc_local

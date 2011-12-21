@@ -40,16 +40,6 @@ install_private_iptables() {
     sudo /etc/init.d/networking restart
 }
 
-deploy_dotfiles() {
-    $HOME/local/github/dot_emacs/install_dotemacs.sh
-    $HOME/local/github/dot_zsh/install_dotzsh.sh
-    $SCRIPTS/installer/install_dotvim.sh
-}
-
-remove_incr_zsh() {
-    sudo rm -f /etc/zsh/plugins/incr.zsh*
-}
-
 install_ruby_and_rails() {
     $SCRIPTS/installer/install_ruby_and_rails.sh
 }
@@ -62,6 +52,16 @@ install_coffeescript() {
 install_termtter_plugins() {
     $PRIVATE/installer/install_dottermtter.sh
     $SCRIPTS/installer/install_termtter_plugins.sh
+}
+
+deploy_dotfiles() {
+    $HOME/local/github/dot_emacs/install_dotemacs.sh
+    $HOME/local/github/dot_zsh/install_dotzsh.sh
+    $SCRIPTS/installer/install_dotvim.sh
+}
+
+remove_incr_zsh() {
+    sudo rm -f /etc/zsh/plugins/incr.zsh*
 }
 
 decrease_debian_packages() {
@@ -119,11 +119,11 @@ operation() {
     increase_debian_packages
     #xvfb_packages
     #install_private_iptables
-    deploy_dotfiles
-    remove_incr_zsh
     install_ruby_and_rails
     install_coffeescript
     install_termtter_plugins
+    deploy_dotfiles
+    remove_incr_zsh
     #decrease_debian_packages
     #edit_cronjobs
     install_dot_files
