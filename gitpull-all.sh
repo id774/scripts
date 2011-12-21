@@ -111,6 +111,7 @@ gitpull_all() {
     gitpull github defunkt coffee-mode $*
     gitpull github mooz js2-mode $*
     gitpull github othree html5.vim $*
+    gitpull github kchmck vim-coffee-script $*
     gitpull github tpope vim-haml $*
     gitpull github genki rub $*
 }
