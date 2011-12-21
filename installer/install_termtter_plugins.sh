@@ -5,7 +5,7 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.2 12/21,2010
+#  v1.2 12/21,2011
 #       Update to ruby 1.9.3, termtter 1.10.0.
 #  v1.1 8/19,2010
 #       Update to ruby 1.9.2.
