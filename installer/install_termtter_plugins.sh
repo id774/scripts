@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 12/21,2010
+#       Update to ruby 1.9.3, termtter 1.10.0.
 #  v1.1 8/19,2010
 #       Update to ruby 1.9.2.
 #  v1.0 7/26,2010
@@ -41,12 +43,16 @@ update_termtters() {
     termtter_updater
     ruby_version=1.9.2
     termtter_updater
+    ruby_version=1.9.3
+    termtter_updater
 }
 
 termtters_updater() {
     termtter_version=1.8.0
     update_termtters
     termtter_version=1.9.0
+    update_termtters
+    termtter_version=1.10.0
     update_termtters
 }
 

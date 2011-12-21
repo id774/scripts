@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.14 12/21,2011
+#       Add Guard::CoffeeScript.
 # v1.13 6/28,2011
 #       Added some gems.
 # v1.12 6/2,2011
@@ -53,33 +55,34 @@ install_gem() {
     sudo $GEM install net-ssh $2 $3 $4
     sudo $GEM install net-sftp $2 $3 $4
     sudo $GEM install coverage $2 $3 $4
-    sudo $GEM install capistrano $2 $3 $4
-    sudo $GEM install magic_multi_connections $2 $3 $4
-    sudo $GEM install redgreen $2 $3 $4
+    #sudo $GEM install capistrano $2 $3 $4
+    #sudo $GEM install magic_multi_connections $2 $3 $4
+    #sudo $GEM install redgreen $2 $3 $4
     sudo $GEM install rspec $2 $3 $4
     sudo $GEM install rspec-rails $2 $3 $4
-    sudo $GEM install gherkin $2 $3 $4
+    #sudo $GEM install gherkin $2 $3 $4
     sudo $GEM install cucumber $2 $3 $4
     sudo $GEM install sqlite3-ruby $2 $3 $4
-    sudo $GEM install -v 1.4.1 rubytter $2 $3 $4
-    sudo $GEM install -v 1.9.0 termtter $2 $3 $4
+    sudo $GEM install -v 1.4.2 rubytter $2 $3 $4
+    sudo $GEM install -v 1.10.0 termtter $2 $3 $4
     sudo $GEM install term-ansicolor $2 $3 $4
     sudo $GEM install nokogiri $2 $3 $4
-    sudo $GEM install webrat $2 $3 $4
-    sudo $GEM install diff-lcs $2 $3 $4
-    sudo $GEM install sanitize $2 $3 $4
-    sudo $GEM install msgpack-rpc $2 $3 $4
-    sudo $GEM install feed-normalizer $2 $3 $4
-    sudo $GEM install will_pagenate $2 $3 $4
-    sudo $GEM install gettext_rails $2 $3 $4
-    sudo $GEM install gettext_activerecord $2 $3 $4
-    sudo $GEM install sanitize $2 $3 $4
-    sudo $GEM install webrat $2 $3 $4
-    sudo $GEM install searchlogic $2 $3 $4
-    sudo $GEM install fastercsv $2 $3 $4
+    #sudo $GEM install webrat $2 $3 $4
+    #sudo $GEM install diff-lcs $2 $3 $4
+    #sudo $GEM install sanitize $2 $3 $4
+    #sudo $GEM install msgpack-rpc $2 $3 $4
+    #sudo $GEM install feed-normalizer $2 $3 $4
+    #sudo $GEM install will_pagenate $2 $3 $4
+    #sudo $GEM install gettext_rails $2 $3 $4
+    #sudo $GEM install gettext_activerecord $2 $3 $4
+    #sudo $GEM install sanitize $2 $3 $4
+    #sudo $GEM install webrat $2 $3 $4
+    #sudo $GEM install searchlogic $2 $3 $4
+    #sudo $GEM install fastercsv $2 $3 $4
     sudo $GEM install log4r $2 $3 $4
     sudo $GEM install json $2 $3 $4
-    sudo $GEM install sinatra $2 $3 $4
+    #sudo $GEM install sinatra $2 $3 $4
+    sudo $GEM install guard-coffeescript $2 $3 $4
     sudo $GEM install -v 0.4.2 i18n $2 $3 $4
     $GEM list --local
 }
