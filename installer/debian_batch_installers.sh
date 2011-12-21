@@ -59,7 +59,7 @@ install_coffeescript() {
 
 install_python() {
     $SCRIPTS/installer/install_python.sh $1 /opt/python/$1
-    $SCRIPTS/config/update-alternatives-python.sh
+    #$SCRIPTS/config/update-alternatives-python.sh
 }
 
 install_python_framework() {

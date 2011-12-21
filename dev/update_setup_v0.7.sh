@@ -97,6 +97,27 @@ install_deferred_sync() {
     $PRIVATE/installer/install_deferred-sync.sh
 }
 
+remove_alternatives() {
+    while [ $# -gt 0 ]
+    do
+        sudo update-alternatives --remove-all $1
+        shift
+    done
+}
+
+remove_ruby_alternatives() {
+    remove_alternatives ruby autospec cap capify cdiff cucumber decolor \
+      edit_json.rb erb gem gpgen htmldiff irb ldiff mongrel_rails nokogiri \
+      oauth prettify_json.rb rackup rails rake rdoc redcloth rg ri selenium \
+      spec termtter testrb tt update_rubygems vim-ruby-install.rb
+}
+
+remove_python_alternatives() {
+    remove_alternatives python python-config pydoc idle ipython \
+      easy_install py_compilefiles pygettext pygmentize pycolor pycentral \
+      pysupport-parseversions pysupport-movemodules 2to3 django
+}
+
 purge_old_modules() {
     test -d /opt/ruby/1.9.2 && \
       sudo rm -rf /opt/ruby/1.9.2
@@ -128,6 +149,8 @@ operation() {
     #edit_cronjobs
     install_dot_files
     #install_deferred_sync
+    remove_ruby_alternatives
+    remove_python_alternatives
     purge_old_modules
 }
 

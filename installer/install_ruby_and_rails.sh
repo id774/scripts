@@ -17,7 +17,7 @@ test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
 #$SCRIPTS/installer/install_ruby.sh 191-svn /opt/ruby/1.9.1
 #$SCRIPTS/installer/install_ruby.sh 192-svn /opt/ruby/1.9.2
 $SCRIPTS/installer/install_ruby.sh 193-svn /opt/ruby/1.9.3
-$SCRIPTS/config/update-alternatives-ruby.sh
+#$SCRIPTS/config/update-alternatives-ruby.sh
 
 # RubyGems
 #$SCRIPTS/installer/install_rubygems.sh 162 /opt/ruby/1.9.3
@@ -27,5 +27,5 @@ $SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.3
 
 # Passenger
 $SCRIPTS/installer/install_passenger.sh /opt/ruby/1.9.3
-$SCRIPTS/config/update-alternatives-ruby.sh
+#$SCRIPTS/config/update-alternatives-ruby.sh
 
