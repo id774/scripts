@@ -50,6 +50,10 @@ remove_incr_zsh() {
     sudo rm -f /etc/zsh/plugins/incr.zsh*
 }
 
+install_ruby_and_rails() {
+    $SCRIPTS/installer/install_ruby_and_rails.sh
+}
+
 install_coffeescript() {
     $SCRIPTS/installer/install_nodejs.sh
     $SCRIPTS/installer/install_coffeescript.sh
@@ -104,6 +108,7 @@ operation() {
     #install_private_iptables
     deploy_dotfiles
     remove_incr_zsh
+    install_ruby_and_rails
     install_coffeescript
     install_termtter_plugins
     #decrease_debian_packages

@@ -43,6 +43,16 @@ install_gem() {
     test -n "$1" && export GEM=$1/bin/gem
     test -n "$1" || export GEM=gem
     export RUBYOPT=rubygems
+    sudo $GEM install rails $2 $3 $4
+    sudo $GEM install sqlite3 $2 $3 $4
+    sudo $GEM install sass-rails $2 $3 $4
+    sudo $GEM install coffee-rails $2 $3 $4
+    sudo $GEM install jquery-rails $2 $3 $4
+    sudo $GEM install haml-rails $2 $3 $4
+    sudo $GEM install uglifier $2 $3 $4
+    sudo $GEM install devise $2 $3 $4
+    sudo $GEM install kaminari $2 $3 $4
+    sudo $GEM install i18n_generators $2 $3 $4
     #sudo $GEM install mongrel $2 $3 $4
     #sudo $GEM install mongrel_cluster $2 $3 $4
     sudo $GEM install mechanize $2 $3 $4

@@ -20,9 +20,9 @@ $SCRIPTS/installer/install_ruby.sh 193-svn /opt/ruby/1.9.3
 $SCRIPTS/config/update-alternatives-ruby.sh
 
 # RubyGems
-$SCRIPTS/installer/install_rubygems.sh 162 /opt/ruby/1.9.3
+#$SCRIPTS/installer/install_rubygems.sh 162 /opt/ruby/1.9.3
 $SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.3
-$SCRIPTS/installer/install_rails.sh 300 /opt/ruby/1.9.3
+#$SCRIPTS/installer/install_rails.sh 300 /opt/ruby/1.9.3
 /opt/ruby/1.9.3/bin/vim-ruby-install.rb
 
 # Passenger
