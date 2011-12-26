@@ -184,7 +184,6 @@ apache_packages() {
 java_packages() {
     smart_apt \
       openjdk-6-jdk
-#      sun-java6-jdk
 }
 
 increase_debian_packages() {
