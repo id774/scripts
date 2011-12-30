@@ -140,8 +140,8 @@ operation() {
     increase_debian_packages
     #xvfb_packages
     #install_private_iptables
-    install_ruby_and_rails
-    install_coffeescript
+    #install_ruby_and_rails
+    #install_coffeescript
     install_termtter_plugins
     deploy_dotfiles
     remove_incr_zsh
@@ -151,7 +151,7 @@ operation() {
     #install_deferred_sync
     remove_ruby_alternatives
     remove_python_alternatives
-    purge_old_modules
+    #purge_old_modules
 }
 
 operation $*
