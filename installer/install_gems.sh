@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.15 1/6,2012
+#       Add backbone-rails.
 # v1.14 12/21,2011
 #       Add Guard::CoffeeScript.
 # v1.13 6/28,2011
@@ -49,6 +51,7 @@ install_gem() {
     sudo $GEM install coffee-rails $2 $3 $4
     sudo $GEM install jquery-rails $2 $3 $4
     sudo $GEM install haml-rails $2 $3 $4
+    sudo $GEM install backbone-rails $2 $3 $4
     sudo $GEM install uglifier $2 $3 $4
     sudo $GEM install devise $2 $3 $4
     sudo $GEM install kaminari $2 $3 $4
