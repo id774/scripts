@@ -1,6 +1,6 @@
 " vim:set ts=8 sts=2 sw=2 tw=0
 "
-" Last Change: 5-Mar-2009.
+" Last Change: 9-Jan-2012.
 " Maintainer:  id774 <idnanashi@gmail.com>
 
 if &encoding !=# 'utf-8'
@@ -231,6 +231,11 @@ set statusline+=\ %{strftime('%c')}
 set statusline+=%4l,%2c
 set statusline+=%3p%%
 set statusline+=%<
+
+" Netrw default settings
+let g:netrw_liststyle = 3
+let g:netrw_altv = 1
+let g:netrw_alto = 1
 
 set hlsearch
 nmap <Esc><Esc> :nohlsearch<CR><Esc>
