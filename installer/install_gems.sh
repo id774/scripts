@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.16 1/10,2012
+#       Add turn, minitest.
 # v1.15 1/6,2012
 #       Add backbone-rails.
 # v1.14 12/21,2011
@@ -56,6 +58,8 @@ install_gem() {
     sudo $GEM install devise $2 $3 $4
     sudo $GEM install kaminari $2 $3 $4
     sudo $GEM install i18n_generators $2 $3 $4
+    sudo $GEM install turn $2 $3 $4
+    sudo $GEM install minitest $2 $3 $4
     #sudo $GEM install mongrel $2 $3 $4
     #sudo $GEM install mongrel_cluster $2 $3 $4
     sudo $GEM install mechanize $2 $3 $4
