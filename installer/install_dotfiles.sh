@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.6 1/11,2012
+#       Add line for Jenkins user.
 #  v1.5 12/8,2011
 #       Corresponding site-lisp.
 #  v1.4 10/4,2011
@@ -168,6 +170,7 @@ bulk_deploy() {
     deploy_dotfiles_to_others /var/lib/postgresql postgres
     deploy_dotfiles_to_others /usr/lib/oracle/xe oracle
     deploy_dotfiles_to_others /export/home/solaris solaris
+    deploy_dotfiles_to_others /var/lib/jenkins jenkins
 }
 
 install_dotfiles() {
