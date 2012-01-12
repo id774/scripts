@@ -100,6 +100,7 @@ gitpull_all() {
     gitpull github jugyo termtter $*
     gitpull github miyagawa plagger $*
     gitpull github twitter bootstrap $*
+    gitpull github gabetax twitter-bootstrap-kaminari-views $*
     gitpull github eschulte rhtml $*
     gitpull github eschulte rinari $*
     gitpull github m2ym auto-complete $*
