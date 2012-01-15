@@ -45,6 +45,7 @@ gitpull_all() {
     pull_from_gitbare git private $*
     pull_from_gitbare git development $*
     pull_from_gitbare git data $*
+    pull_from_gitbare git twitter_viewer $*
 }
 
 test -n "$2" || exit 2
