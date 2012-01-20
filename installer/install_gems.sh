@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.17 1/20,2012
+#       Add rb-fsevent.
 # v1.16 1/10,2012
 #       Add turn, minitest.
 # v1.15 1/6,2012
@@ -100,6 +102,7 @@ install_gem() {
     sudo $GEM install json $2 $3 $4
     #sudo $GEM install sinatra $2 $3 $4
     sudo $GEM install guard-coffeescript $2 $3 $4
+    sudo $GEM install rb-fsevent $2 $3 $4
     sudo $GEM install -v 0.4.2 i18n $2 $3 $4
     $GEM list --local
 }
