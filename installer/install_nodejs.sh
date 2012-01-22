@@ -6,6 +6,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.4 1/22,2012
+#       Update default version to v0.6.6.
 #  v0.3 12/8,2011
 #       Update to v0.6.5.
 #  v0.2 12/1,2011
@@ -15,7 +17,7 @@
 ########################################################################
 
 setup_environment() {
-    test -n "$1" || VERSION=0.6.5
+    test -n "$1" || VERSION=0.6.6
     test -n "$1" && VERSION=$1
     NODE=node-v$VERSION
 }
