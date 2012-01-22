@@ -112,6 +112,8 @@ gitpull_all() {
     gitpull github antonj scss-mode $*
     gitpull github defunkt coffee-mode $*
     gitpull github mooz js2-mode $*
+    gitpull github mooz shadow.el $*
+    gitpull github ujihisa shadow.vim $*
     gitpull github othree html5.vim $*
     gitpull github kchmck vim-coffee-script $*
     gitpull github tpope vim-haml $*
