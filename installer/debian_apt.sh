@@ -59,6 +59,8 @@ system_packages() {
       locales \
       nkf \
       mailx \
+      mutt \
+      sharutils \
       digitools \
       dnsutils \
       xdelta \
