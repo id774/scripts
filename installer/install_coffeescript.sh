@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.3 1/23,2012
+#       Install coffee only.
 #  v0.2 12/1,2011
 #       Add npm.
 #  v0.1 9/15,2011
@@ -33,25 +35,7 @@ gitpull() {
 
 gitpull_all() {
     test -d $HOME/local/github || mkdir -p $HOME/local/github
-    gitpull github joyent node
     gitpull github jashkenas coffee-script
-}
-
-make_and_install_node() {
-    test -n "$1" || ./configure
-    test -n "$1" && ./configure $1
-    make
-    $SUDO make install
-}
-
-install_node() {
-    test -d $HOME/local/github/node || exit 1
-    cd $HOME/local/github/node
-    make_and_install_node $*
-}
-
-install_npm() {
-    $SUDO sh -c 'curl http://npmjs.org/install.sh | sh'
 }
 
 make_and_install_coffee() {
@@ -67,9 +51,8 @@ install_coffee() {
 main() {
     setup_environment $*
     gitpull_all
-    install_node $*
-    test -n "$2" || install_npm $*
     install_coffee $*
+    coffee -v
 }
 
 ping -c 1 id774.net > /dev/null 2>&1 || exit 1
