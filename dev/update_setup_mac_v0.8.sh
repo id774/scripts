@@ -3,37 +3,6 @@
 # This scripts updates environment from 0.8 to 0.9
 ########################################################################
 
-test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
-test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
-
-smart_apt() {
-    while [ $# -gt 0 ]
-    do
-        if [ `aptitude search $1 | awk '/^i/' | wc -l` = 0 ]; then
-            sudo apt-get -y install $1
-        fi
-        shift
-    done 
-}
-
-setup_apt_source() {
-    SOURCESLIST=sources-$DISTRIB_CODENAME.list
-    sudo cp $PRIVATE/etc/$SOURCESLIST /etc/apt/sources.list
-    sudo vi /etc/apt/sources.list
-    sudo apt-get update
-}
-
-increase_debian_packages() {
-    $SCRIPTS/installer/debian_apt.sh
-}
-
-xvfb_packages() {
-    smart_apt \
-      xvfb \
-      fluxbox \
-      x11vnc
-}
-
 install_ruby_and_rails() {
     $SCRIPTS/installer/install_ruby_and_rails.sh
 }
@@ -81,13 +50,6 @@ purge_old_modules() {
 }
 
 operation() {
-    test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
-    test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
-    test -f /etc/lsb-release && DISTRIB_CODENAME=lucid
-    test -f /etc/lsb-release || DISTRIB_CODENAME=squeeze
-    setup_apt_source
-    increase_debian_packages
-    #xvfb_packages
     install_ruby_and_rails
     install_nodejs_and_coffeescript
     install_termtter_plugins
