@@ -2,7 +2,7 @@
 #
 ########################################################################
 # Install gem packages
-#  $1 = ruby path (ex. /opt/bin)
+#  $1 = ruby path (ex. /usr/local)
 #  $2 $3 $4 = proxy
 #
 #  Maintainer: id774 <idnanashi@gmail.com>

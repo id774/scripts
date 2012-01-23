@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 1/23,2012
+#       Reconstruction CoffeeScript Environment.
 #  v0.1 9/28,2011
 #       First version.
 ########################################################################
@@ -53,8 +55,10 @@ install_ruby_and_rails() {
     $SCRIPTS/installer/install_ruby_and_rails.sh
 }
 
-install_coffeescript() {
+install_nodejs_and_coffeescript() {
+    $SCRIPTS/installer/install_nodejs.sh
     $SCRIPTS/installer/install_coffeescript.sh
+    $SCRIPTS/installer/install_npm.sh
 }
 
 install_python() {
@@ -257,7 +261,7 @@ operation() {
     #build_vim
     install_iptables
     #install_ruby_and_rails
-    #install_coffeescript
+    #install_nodejs_and_coffeescript
     #install_python
     #install_python_framework
     install_dot_vim
