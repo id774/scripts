@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.18 1/24,2012
+#       Clean up and use latest gem.
 # v1.17 1/20,2012
 #       Add rb-fsevent.
 # v1.16 1/10,2012
@@ -49,21 +51,20 @@ install_gem() {
     test -n "$1" && export GEM=$1/bin/gem
     test -n "$1" || export GEM=gem
     export RUBYOPT=rubygems
+    sudo $GEM update --system $2 $3 $4
     sudo $GEM install rake $2 $3 $4
     sudo $GEM install bundle $2 $3 $4
-    #sudo $GEM install rails $2 $3 $4
+    sudo $GEM install rails $2 $3 $4
     sudo $GEM install sqlite3 $2 $3 $4
-    sudo $GEM install -v 3.2.0 activemodel $2 $3 $4
-    sudo $GEM install -v 3.2.0 activerecord $2 $3 $4
-    #sudo $GEM install sass-rails $2 $3 $4
-    #sudo $GEM install coffee-rails $2 $3 $4
-    #sudo $GEM install jquery-rails $2 $3 $4
-    #sudo $GEM install haml-rails $2 $3 $4
+    sudo $GEM install sass-rails $2 $3 $4
+    sudo $GEM install coffee-rails $2 $3 $4
+    sudo $GEM install jquery-rails $2 $3 $4
+    sudo $GEM install haml-rails $2 $3 $4
     #sudo $GEM install backbone-rails $2 $3 $4
-    #sudo $GEM install uglifier $2 $3 $4
-    #sudo $GEM install devise $2 $3 $4
-    #sudo $GEM install kaminari $2 $3 $4
-    #sudo $GEM install i18n_generators $2 $3 $4
+    sudo $GEM install uglifier $2 $3 $4
+    sudo $GEM install devise $2 $3 $4
+    sudo $GEM install kaminari $2 $3 $4
+    sudo $GEM install i18n_generators $2 $3 $4
     #sudo $GEM install turn $2 $3 $4
     #sudo $GEM install minitest $2 $3 $4
     #sudo $GEM install mongrel $2 $3 $4
