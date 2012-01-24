@@ -71,7 +71,6 @@ install_gem() {
     #sudo $GEM install mongrel_cluster $2 $3 $4
     #sudo $GEM install mechanize $2 $3 $4
     #sudo $GEM install Selenium $2 $3 $4
-    sudo $GEM install vim-ruby $2 $3 $4
     #sudo $GEM install postgres-pr $2 $3 $4
     #sudo $GEM install mysql $2 $3 $4
     #sudo $GEM install BlueCloth $2 $3 $4
