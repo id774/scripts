@@ -30,6 +30,7 @@ purge_old_modules() {
 install_ruby() {
     $SCRIPTS/installer/install_ruby.sh 193-0 /opt/ruby/1.9.3
     $SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.3
+    $SCRIPTS/installer/install_termtter_plugins.sh
     /opt/ruby/1.9.3/bin/vim-ruby-install.rb
 }
 

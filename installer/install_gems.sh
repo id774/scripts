@@ -52,7 +52,9 @@ install_gem() {
     sudo $GEM install rake $2 $3 $4
     sudo $GEM install bundle $2 $3 $4
     #sudo $GEM install rails $2 $3 $4
-    #sudo $GEM install sqlite3 $2 $3 $4
+    sudo $GEM install sqlite3 $2 $3 $4
+    sudo $GEM install -v 3.2.0 activemodel $2 $3 $4
+    sudo $GEM install -v 3.2.0 activerecord $2 $3 $4
     #sudo $GEM install sass-rails $2 $3 $4
     #sudo $GEM install coffee-rails $2 $3 $4
     #sudo $GEM install jquery-rails $2 $3 $4
@@ -87,7 +89,7 @@ install_gem() {
     sudo $GEM install -v 1.4.2 rubytter $2 $3 $4
     sudo $GEM install -v 1.10.0 termtter $2 $3 $4
     #sudo $GEM install term-ansicolor $2 $3 $4
-    #sudo $GEM install nokogiri $2 $3 $4
+    sudo $GEM install nokogiri $2 $3 $4
     #sudo $GEM install webrat $2 $3 $4
     #sudo $GEM install diff-lcs $2 $3 $4
     #sudo $GEM install sanitize $2 $3 $4
