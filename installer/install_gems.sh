@@ -49,43 +49,45 @@ install_gem() {
     test -n "$1" && export GEM=$1/bin/gem
     test -n "$1" || export GEM=gem
     export RUBYOPT=rubygems
-    sudo $GEM install rails $2 $3 $4
-    sudo $GEM install sqlite3 $2 $3 $4
-    sudo $GEM install sass-rails $2 $3 $4
-    sudo $GEM install coffee-rails $2 $3 $4
-    sudo $GEM install jquery-rails $2 $3 $4
-    sudo $GEM install haml-rails $2 $3 $4
-    sudo $GEM install backbone-rails $2 $3 $4
-    sudo $GEM install uglifier $2 $3 $4
-    sudo $GEM install devise $2 $3 $4
-    sudo $GEM install kaminari $2 $3 $4
-    sudo $GEM install i18n_generators $2 $3 $4
-    sudo $GEM install turn $2 $3 $4
-    sudo $GEM install minitest $2 $3 $4
+    sudo $GEM install rake $2 $3 $4
+    sudo $GEM install bundle $2 $3 $4
+    #sudo $GEM install rails $2 $3 $4
+    #sudo $GEM install sqlite3 $2 $3 $4
+    #sudo $GEM install sass-rails $2 $3 $4
+    #sudo $GEM install coffee-rails $2 $3 $4
+    #sudo $GEM install jquery-rails $2 $3 $4
+    #sudo $GEM install haml-rails $2 $3 $4
+    #sudo $GEM install backbone-rails $2 $3 $4
+    #sudo $GEM install uglifier $2 $3 $4
+    #sudo $GEM install devise $2 $3 $4
+    #sudo $GEM install kaminari $2 $3 $4
+    #sudo $GEM install i18n_generators $2 $3 $4
+    #sudo $GEM install turn $2 $3 $4
+    #sudo $GEM install minitest $2 $3 $4
     #sudo $GEM install mongrel $2 $3 $4
     #sudo $GEM install mongrel_cluster $2 $3 $4
-    sudo $GEM install mechanize $2 $3 $4
-    sudo $GEM install Selenium $2 $3 $4
+    #sudo $GEM install mechanize $2 $3 $4
+    #sudo $GEM install Selenium $2 $3 $4
     sudo $GEM install vim-ruby $2 $3 $4
-    sudo $GEM install postgres-pr $2 $3 $4
-    sudo $GEM install mysql $2 $3 $4
-    sudo $GEM install BlueCloth $2 $3 $4
-    sudo $GEM install RedCloth $2 $3 $4
-    sudo $GEM install net-ssh $2 $3 $4
-    sudo $GEM install net-sftp $2 $3 $4
-    sudo $GEM install coverage $2 $3 $4
+    #sudo $GEM install postgres-pr $2 $3 $4
+    #sudo $GEM install mysql $2 $3 $4
+    #sudo $GEM install BlueCloth $2 $3 $4
+    #sudo $GEM install RedCloth $2 $3 $4
+    #sudo $GEM install net-ssh $2 $3 $4
+    #sudo $GEM install net-sftp $2 $3 $4
+    #sudo $GEM install coverage $2 $3 $4
     #sudo $GEM install capistrano $2 $3 $4
     #sudo $GEM install magic_multi_connections $2 $3 $4
     #sudo $GEM install redgreen $2 $3 $4
-    sudo $GEM install rspec $2 $3 $4
-    sudo $GEM install rspec-rails $2 $3 $4
+    #sudo $GEM install rspec $2 $3 $4
+    #sudo $GEM install rspec-rails $2 $3 $4
     #sudo $GEM install gherkin $2 $3 $4
-    sudo $GEM install cucumber $2 $3 $4
-    sudo $GEM install sqlite3-ruby $2 $3 $4
+    #sudo $GEM install cucumber $2 $3 $4
+    #sudo $GEM install sqlite3-ruby $2 $3 $4
     sudo $GEM install -v 1.4.2 rubytter $2 $3 $4
     sudo $GEM install -v 1.10.0 termtter $2 $3 $4
-    sudo $GEM install term-ansicolor $2 $3 $4
-    sudo $GEM install nokogiri $2 $3 $4
+    #sudo $GEM install term-ansicolor $2 $3 $4
+    #sudo $GEM install nokogiri $2 $3 $4
     #sudo $GEM install webrat $2 $3 $4
     #sudo $GEM install diff-lcs $2 $3 $4
     #sudo $GEM install sanitize $2 $3 $4
@@ -98,12 +100,12 @@ install_gem() {
     #sudo $GEM install webrat $2 $3 $4
     #sudo $GEM install searchlogic $2 $3 $4
     #sudo $GEM install fastercsv $2 $3 $4
-    sudo $GEM install log4r $2 $3 $4
-    sudo $GEM install json $2 $3 $4
+    #sudo $GEM install log4r $2 $3 $4
+    #sudo $GEM install json $2 $3 $4
     #sudo $GEM install sinatra $2 $3 $4
-    sudo $GEM install guard-coffeescript $2 $3 $4
-    sudo $GEM install rb-fsevent $2 $3 $4
-    sudo $GEM install -v 0.4.2 i18n $2 $3 $4
+    #sudo $GEM install guard-coffeescript $2 $3 $4
+    #sudo $GEM install rb-fsevent $2 $3 $4
+    #sudo $GEM install -v 0.4.2 i18n $2 $3 $4
     $GEM list --local
 }
 
