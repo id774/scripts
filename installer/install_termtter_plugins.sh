@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 1/24,2012
+#       It run if only git repo exist.
 #  v1.2 12/21,2011
 #       Update to ruby 1.9.3, termtter 1.10.0.
 #  v1.1 8/19,2010
@@ -56,4 +58,4 @@ termtters_updater() {
     update_termtters
 }
 
-termtters_updater
+test -d $HOME/local/github/termtter-plugins && termtters_updater

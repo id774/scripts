@@ -44,15 +44,11 @@ install_nodejs_and_coffeescript() {
     $SCRIPTS/installer/install_npm.sh
 }
 
-install_termtter_plugins() {
-    $PRIVATE/installer/install_dottermtter.sh
-    $SCRIPTS/installer/install_termtter_plugins.sh
-}
-
 deploy_dotfiles() {
     $HOME/local/github/dot_emacs/install_dotemacs.sh
     $HOME/local/github/dot_zsh/install_dotzsh.sh
     $SCRIPTS/installer/install_dotvim.sh
+    $PRIVATE/installer/install_dottermtter.sh
 }
 
 remove_incr_zsh() {
@@ -90,7 +86,6 @@ operation() {
     #xvfb_packages
     install_ruby_and_rails
     install_nodejs_and_coffeescript
-    install_termtter_plugins
     deploy_dotfiles
     remove_incr_zsh
     install_dot_files
