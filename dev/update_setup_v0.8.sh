@@ -59,23 +59,6 @@ install_dot_files() {
     $SCRIPTS/installer/install_dotfiles.sh
 }
 
-purge_old_modules() {
-    test -d /opt/ruby/1.9.2 && \
-      sudo rm -rf /opt/ruby/1.9.2
-    test -d /usr/local/src/ruby/ruby-1.9.2-p290 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-1.9.2-p290
-    test -d /usr/local/src/ruby/ruby-1.9.3-p0 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p0
-    test -d /usr/local/src/ruby/branches/ruby_1_9_2 && \
-      sudo rm -rf /usr/local/src/ruby/branches/ruby_1_9_2
-    test -d /usr/local/src/node.js/node-v0.6.2 && \
-      sudo rm -rf /usr/local/src/node.js/node-v0.6.2
-    test -d /usr/local/src/node.js/node-v0.6.5 && \
-      sudo rm -rf /usr/local/src/node.js/node-v0.6.5
-    test -d /usr/local/src/node.js/node-v0.6.6 && \
-      sudo rm -rf /usr/local/src/node.js/node-v0.6.6
-}
-
 operation() {
     test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
     test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
@@ -89,7 +72,6 @@ operation() {
     deploy_dotfiles
     remove_incr_zsh
     install_dot_files
-    purge_old_modules
 }
 
 operation $*
