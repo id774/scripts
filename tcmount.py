@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 1/26,2012
+#       Refactoring, and for legacy device.
 #  v1.0 8/6,2010
 #       Stable.
 ########################################################################
@@ -12,7 +14,7 @@
 import sys, os
 
 def os_exec(cmd, device):
-    os.system('dmesg | grep ' + device)
+    os.system('sudo dmesg | grep ' + device)
     os.system(cmd)
 
 def os_command(options, args, mount_options, device):
@@ -26,15 +28,24 @@ def os_command(options, args, mount_options, device):
         mount_options + ' /dev/' + device + ' ~/mnt/' + device
     os_exec(cmd, device)
 
-def mount_local(options, args):
-    cmd = 'test -f ~/local/`/bin/hostname`.tc && ' +\
-          'test -d ~/mnt/tc && sudo truecrypt -t -k "" --protect-hidden=no ' +\
-          '--fs-options=utf8 ~/local/`/bin/hostname`.tc ~/mnt/tc'
-    os.system(cmd)
+def tcmount(options, args):
+    mount_local('`/bin/hostname`')
+    mount_legacy()
     if options.local:
         pass
     else:
         mount_device(options, args)
+
+def mount_legacy():
+    mount_local('pc98a')
+    mount_local('pc98b')
+
+def mount_local(device):
+    cmd = 'test -f ~/local/' + device + '.tc && ' +\
+          'test -d ~/mnt/' + device +\
+          ' && sudo truecrypt -t -k "" --protect-hidden=no ' +\
+          '--fs-options=utf8 ~/local/' + device + '.tc ~/mnt/' + device
+    os.system(cmd)
 
 def mount_device(options, args):
     mount_options = 'utf8'
@@ -78,7 +89,7 @@ def main():
                       help="partition number")
     (options, args) = parser.parse_args()
     if len(args) == 0:
-        mount_local(options, args)
+        tcmount(options, args)
     else:
         parser.print_help()
 
