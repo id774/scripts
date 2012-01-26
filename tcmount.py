@@ -30,7 +30,8 @@ def os_command(options, args, mount_options, device):
 
 def tcmount(options, args):
     mount_local('`/bin/hostname`')
-    mount_legacy()
+    if options.legacy or options.all:
+        mount_legacy()
     if options.local:
         pass
     else:
@@ -80,6 +81,10 @@ def main():
     parser.add_option("-l", "--local",
                       dest="local",
                       help="mount local file only",
+                      action="store_true")
+    parser.add_option("-g", "--legacy",
+                      dest="legacy",
+                      help="mount legacy device",
                       action="store_true")
     parser.add_option("-f", "--half",
                       dest="half",
