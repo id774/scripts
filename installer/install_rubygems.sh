@@ -9,6 +9,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.14 2/2,2012
+#       Add 1.5.2 and 1.5.3.
 # v1.13 5/31,2011
 #       Fix specify the version problem.
 # v1.12 5/13,2011
@@ -98,6 +100,12 @@ install_rubygems() {
         ;;
       137)
         get_rubygems 1.3.7 70697
+        ;;
+      153)
+        get_rubygems 1.5.3 74344
+        ;;
+      152)
+        get_rubygems 1.5.2 74235
         ;;
       162)
         get_rubygems 1.6.2 74446
