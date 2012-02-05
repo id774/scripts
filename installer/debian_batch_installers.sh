@@ -178,10 +178,6 @@ add_blacklist() {
       sudo vi /etc/modprobe.d/blacklist.conf
 }
 
-install_apache2ssl() {
-    $SCRIPTS/installer/install_apache2ssl.sh
-}
-
 install_termtter_plugins() {
     cd $HOME/local/github
     git clone git://github.com/id774/termtter-plugins.git
@@ -284,7 +280,6 @@ operation() {
     #setup_web
     setup_rc_local
     add_blacklist
-    install_apache2ssl
     #install_termtter_plugins
     #install_plagger_plugins
     setup_ntp
