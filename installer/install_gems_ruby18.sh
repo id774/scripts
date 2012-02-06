@@ -21,7 +21,7 @@ install_gem() {
     sudo $GEM install -v 2.8.1 mysql $2 $3 $4
     sudo $GEM install -v 3.0.11 passenger $2 $3 $4
     sudo $GEM install -v 1.1.1 rack $2 $3 $4
-    sudo $GEM install -v 0.9.2 rake $2 $3 $4
+    sudo $GEM install -v 0.8.7 rake $2 $3 $4
     sudo $GEM install -v 0.9.7 coderay $2 $3 $4
     sudo $GEM install -v 0.8.2 rubytree $2 $3 $4
     sudo $GEM install sqlite3-ruby $2 $3 $4
