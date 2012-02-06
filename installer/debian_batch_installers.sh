@@ -131,7 +131,7 @@ install_postgres() {
 }
 
 install_mysql() {
-    $SCRIPTS/installer/install_mysql.py install -c
+    $SCRIPTS/installer/install_mysql.py install
 }
 
 install_kvm() {
@@ -277,7 +277,7 @@ operation() {
     configure_hddtemp
     configure_smartmontools
     setup_sysadmin_scripts
-    #setup_web
+    setup_web
     setup_rc_local
     add_blacklist
     #install_termtter_plugins
