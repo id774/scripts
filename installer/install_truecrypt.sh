@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.4 2/8,2012
+#       Update to 7.1a.
 #  v0.3 9/9,2011
 #       Update to 7.1.
 #  v0.2 9/16,2010
@@ -49,16 +51,11 @@ save_sources() {
     sudo chown -R $OWNER /usr/local/src/crypt/truecrypt
 }
 
-purge_old_version() {
-    sudo apt-get purge truecrypt
-}
-
 install_truecrypt() {
     mkdir install_truecrypt
     cd install_truecrypt
     case "$1" in
       linux-i386 | linux-i686)
-        purge_old_version
         wget "http://id774.net/truecrypt/truecrypt-$2-linux-console-x86.tar.gz"
         test -n "$3" || save_packages truecrypt-$2-linux-console-x86.tar.gz /usr/local/src/crypt/truecrypt
         tar xzvf truecrypt-$2-linux-console-x86.tar.gz
@@ -75,7 +72,6 @@ install_truecrypt() {
         set_truecrypt_permission
         ;;
       linux-amd64 | linux-x86_64)
-        purge_old_version
         wget "http://id774.net/truecrypt/truecrypt-$2-linux-console-x64.tar.gz"
         test -n "$3" || save_packages truecrypt-$2-linux-console-x64.tar.gz /usr/local/src/crypt/truecrypt
         tar xzvf truecrypt-$2-linux-console-x64.tar.gz
@@ -110,7 +106,7 @@ install_truecrypt() {
 
 install_crypt_main() {
     test -n "$2" && TRUECRYPT_CURRENT_VERSION=$2
-    test -n "$2" || TRUECRYPT_CURRENT_VERSION=7.1
+    test -n "$2" || TRUECRYPT_CURRENT_VERSION=7.1a
     setup_environment $*
     export TMP=$HOME/.tmp
     install_truecrypt $1 $TRUECRYPT_CURRENT_VERSION $3
