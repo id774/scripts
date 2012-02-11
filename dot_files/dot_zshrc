@@ -1,10 +1,12 @@
 # .zshrc
-# Last Change: 25-May-2011.
+# Last Change: 11-Feb-2012.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 main() {
     if [ -f $HOME/.zsh/lib/load.zsh ]; then
         source $HOME/.zsh/lib/load.zsh
+    elif [ -f /usr/local/etc/zsh/lib/load.zsh ]; then
+        source /usr/local/etc/zsh/lib/load.zsh
     elif [ -f /etc/zsh/lib/load.zsh ]; then
         source /etc/zsh/lib/load.zsh
     fi
