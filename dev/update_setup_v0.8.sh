@@ -66,6 +66,15 @@ install_dot_files() {
     $SCRIPTS/installer/install_dotfiles.sh
 }
 
+purge_old_modules() {
+    test -d /etc/emacs.d
+      sudo rm -rf /etc/emacs.d
+    test -d /etc/zsh/lib
+      sudo rm -rf /etc/zsh/lib
+    test -d /etc/zsh/plugins
+      sudo rm -rf /etc/zsh/plugins
+}
+
 operation() {
     test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
     test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
@@ -80,6 +89,7 @@ operation() {
     deploy_dotfiles
     remove_incr_zsh
     install_dot_files
+    purge_old_modules
 }
 
 operation $*

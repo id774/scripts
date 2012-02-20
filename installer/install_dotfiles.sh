@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.7 2/20,2012
+#       Change default emacs lisp directory to /usr/local/etc/emacs.d.
 #  v1.6 1/11,2012
 #       Add line for Jenkins user.
 #  v1.5 12/8,2011
@@ -83,7 +85,8 @@ setup_dotemacs() {
     sudo chmod 750 $1/.emacs.d/tramp-auto-save
     sudo chmod 750 $1/.emacs.d/auto-save-list
     sudo touch $1/.emacs.d/anything/anything-c-adaptive-history
-    test -d /etc/emacs.d/elisp && sudo ln -fs /etc/emacs.d/elisp $1/.emacs.d/elisp
+    test -d /usr/local/etc/emacs.d/elisp && \
+      sudo ln -fs /usr/local/etc/emacs.d/elisp $1/.emacs.d/elisp
 }
 
 mkdir_skelton() {
