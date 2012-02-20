@@ -34,6 +34,13 @@ xvfb_packages() {
       x11vnc
 }
 
+install_truecrypt() {
+    $SCRIPTS/installer/install_truecrypt.sh src
+    $SCRIPTS/installer/install_truecrypt.sh win
+    $SCRIPTS/installer/install_truecrypt.sh mac
+    $SCRIPTS/installer/install_truecrypt.sh $1
+}
+
 install_ruby_and_rails() {
     $SCRIPTS/installer/install_ruby_and_rails.sh
 }
@@ -67,6 +74,7 @@ operation() {
     setup_apt_source
     increase_debian_packages
     #xvfb_packages
+    install_truecrypt linux-`uname -m`
     install_ruby_and_rails
     install_nodejs_and_coffeescript
     deploy_dotfiles
