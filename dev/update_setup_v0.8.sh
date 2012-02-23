@@ -59,7 +59,7 @@ deploy_dotfiles() {
 }
 
 remove_incr_zsh() {
-    sudo rm -f /etc/zsh/plugins/incr.zsh*
+    sudo rm -f /usr/local/etc/zsh/plugins/incr.zsh*
 }
 
 install_dot_files() {
@@ -87,7 +87,7 @@ operation() {
     install_ruby_and_rails
     install_nodejs_and_coffeescript
     deploy_dotfiles
-    remove_incr_zsh
+    #remove_incr_zsh
     install_dot_files
     purge_old_modules
 }
