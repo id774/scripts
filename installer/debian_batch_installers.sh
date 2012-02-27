@@ -195,6 +195,10 @@ setup_ntp() {
     sudo vi /etc/ntp.conf
 }
 
+setup_fail2ban() {
+    sudo vi /etc/fail2ban/jail.conf
+}
+
 install_munin() {
     $SCRIPTS/installer/install_munin.sh
 }
@@ -283,6 +287,7 @@ operation() {
     #install_termtter_plugins
     #install_plagger_plugins
     setup_ntp
+    setup_fail2ban
     #install_munin
     #get_share_documents
     change_default

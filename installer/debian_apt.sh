@@ -56,6 +56,7 @@ system_packages() {
       rsyslog \
       ntp \
       keychain \
+      fail2ban \
       locales \
       nkf \
       mailx \
