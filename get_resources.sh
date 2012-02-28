@@ -76,6 +76,10 @@ echo "[egrep '(Fail|refuse)' /var/log/auth.log]"
 egrep '(Fail|refuse)' /var/log/auth.log
 echo
 
+echo "[grep WARNING /var/log/fail2ban.log]"
+grep "WARNING" /var/log/fail2ban.log
+echo
+
 echo -n "End of Report at `/bin/hostname` on "
 date "+%Y/%m/%d %T"
 echo
