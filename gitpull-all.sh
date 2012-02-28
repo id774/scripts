@@ -94,6 +94,7 @@ gitpull_all() {
     gitpull github id774 deferred-sync
     gitpull github id774 instant-deployer
     gitpull github id774 twitter_viewer
+    gitpull github id774 blog_viewer
     gitpull github id774 gthumb
     gitpull github id774 sandbox
     gitpull github id774 batch_framework
