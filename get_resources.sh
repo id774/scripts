@@ -68,6 +68,10 @@ echo "[ps axl --sort -vsize | head -20]"
 ps axl --sort -vsize | head -20
 echo
 
+echo "[grep Accepted /var/log/auth.log]"
+grep "Accepted" /var/log/auth.log
+echo
+
 echo "[grep attack /var/log/messages]"
 grep " attack" /var/log/messages
 echo
