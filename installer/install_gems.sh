@@ -83,8 +83,10 @@ install_gem() {
     #sudo $GEM install capistrano $2 $3 $4
     #sudo $GEM install magic_multi_connections $2 $3 $4
     #sudo $GEM install redgreen $2 $3 $4
-    #sudo $GEM install rspec $2 $3 $4
+    sudo $GEM install rspec $2 $3 $4
     #sudo $GEM install rspec-rails $2 $3 $4
+    sudo $GEM install simplecov $2 $3 $4
+    sudo $GEM install simplecov-rcov $2 $3 $4
     #sudo $GEM install gherkin $2 $3 $4
     #sudo $GEM install cucumber $2 $3 $4
     #sudo $GEM install sqlite3-ruby $2 $3 $4
@@ -112,6 +114,10 @@ install_gem() {
     #sudo $GEM install -v 0.4.2 i18n $2 $3 $4
     sudo $GEM install execjs $2 $3 $4
     sudo $GEM install therubyracer $2 $3 $4
+    sudo $GEM install feedbag $2 $3 $4
+    sudo $GEM install hashie $2 $3 $4
+    sudo $GEM install gcalapi $2 $3 $4
+    sudo $GEM install xml-simple $2 $3 $4
     $GEM list --local
 }
 
