@@ -159,14 +159,16 @@ bulk_deploy() {
       plagger \
       twitter \
       tiarra \
-      skrud \
+      sklud \
+      urd \
       testuser
     deploy_dotfiles_to_mac \
       mac \
       apple \
-      skrud \
       demo \
       work \
+      sklud \
+      urd \
       testuser
     deploy_dotfiles_to_others /var/root root
     deploy_dotfiles_to_others /root root
