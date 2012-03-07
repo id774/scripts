@@ -55,7 +55,7 @@ install_gem() {
     export RUBYOPT=rubygems
     sudo $GEM update --system $2 $3 $4
     sudo $GEM install rake $2 $3 $4
-    sudo $GEM install bundle $2 $3 $4
+    sudo $GEM install bundler $2 $3 $4
     sudo $GEM install rails $2 $3 $4
     sudo $GEM install sqlite3 $2 $3 $4
     sudo $GEM install sass-rails $2 $3 $4
@@ -67,6 +67,7 @@ install_gem() {
     sudo $GEM install devise $2 $3 $4
     sudo $GEM install kaminari $2 $3 $4
     sudo $GEM install i18n_generators $2 $3 $4
+    sudo $GEM install jeweler $2 $3 $4
     #sudo $GEM install turn $2 $3 $4
     #sudo $GEM install minitest $2 $3 $4
     #sudo $GEM install mongrel $2 $3 $4
