@@ -70,6 +70,7 @@ system_packages() {
       sysstat \
       anacron \
       clamav \
+      vrms \
       manpages-ja \
       manpages-ja-dev \
       xmanpages-ja \
