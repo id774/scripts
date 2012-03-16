@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.20 3/16,2012
+#       Add automatic.
 # v1.19 1/25,2012
 #       Included v8 engine.
 # v1.18 1/24,2012
@@ -115,10 +117,11 @@ install_gem() {
     #sudo $GEM install -v 0.4.2 i18n $2 $3 $4
     sudo $GEM install execjs $2 $3 $4
     sudo $GEM install therubyracer $2 $3 $4
-    sudo $GEM install feedbag $2 $3 $4
-    sudo $GEM install hashie $2 $3 $4
-    sudo $GEM install gcalapi $2 $3 $4
-    sudo $GEM install xml-simple $2 $3 $4
+    #sudo $GEM install feedbag $2 $3 $4
+    #sudo $GEM install hashie $2 $3 $4
+    #sudo $GEM install gcalapi $2 $3 $4
+    #sudo $GEM install xml-simple $2 $3 $4
+    sudo $GEM install automatic $2 $3 $4
     $GEM list --local
 }
 
