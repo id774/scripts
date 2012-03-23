@@ -1,6 +1,6 @@
 " vim:set ts=8 sts=2 sw=2 tw=0
 "
-" Last Change: 9-Jan-2012.
+" Last Change: 23-Mar-2012.
 " Maintainer:  id774 <idnanashi@gmail.com>
 
 if &encoding !=# 'utf-8'
@@ -153,6 +153,10 @@ autocmd FileType python :set fileencoding=utf-8
 autocmd FileType python :set tabstop=4
 autocmd FileType python :set softtabstop=4
 autocmd FileType python :set shiftwidth=4
+
+if 1 && !filereadable($VIMRUNTIME . '/less.vim')
+  au BufNewFile,BufRead *.less setf less
+endif
 
 :cnoremap <C-A>		<Home>
 :cnoremap <C-B>		<Left>
