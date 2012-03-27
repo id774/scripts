@@ -91,15 +91,16 @@ gitpull_all() {
     gitpull github id774 dot_zsh $*
     gitpull github id774 dot_emacs $*
     gitpull github id774 termtter-plugins $*
-    gitpull github id774 deferred-sync
-    gitpull github id774 instant-deployer
-    gitpull github id774 twitter_viewer
-    gitpull github id774 blog_viewer
-    gitpull github id774 gthumb
-    gitpull github id774 sandbox
-    gitpull github id774 batch_framework
-    gitpull github id774 intraweb-template
-    gitpull github id774 automaticruby
+    gitpull github id774 deferred-sync $*
+    gitpull github id774 instant-deployer $*
+    gitpull github id774 twitter_viewer $*
+    gitpull github id774 blog_viewer $*
+    gitpull github id774 repo_manager $*
+    gitpull github id774 gthumb $*
+    gitpull github id774 sandbox $*
+    gitpull github id774 batch_framework $*
+    gitpull github id774 intraweb-template $*
+    gitpull github id774 automaticruby $*
     gitpull github jugyo termtter $*
     gitpull github miyagawa plagger $*
     gitpull github twitter bootstrap $*
