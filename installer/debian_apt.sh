@@ -68,6 +68,7 @@ system_packages() {
       sshfs \
       exim4 \
       sysstat \
+      dstat \
       anacron \
       clamav \
       vrms \

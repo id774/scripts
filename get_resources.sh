@@ -68,6 +68,10 @@ echo "[ps axl --sort -vsize | head -20]"
 ps axl --sort -vsize | head -20
 echo
 
+echo "[netstat -tan | grep ':80 ' | awk '{print $6}' | sort | uniq -c]"
+netstat -tan | grep ':80 ' | awk '{print $6}' | sort | uniq -c
+echo
+
 echo "[grep Accepted /var/log/auth.log]"
 grep "Accepted" /var/log/auth.log
 echo

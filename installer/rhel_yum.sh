@@ -64,6 +64,8 @@
 #sudo yum -y install libSM-devel
 #sudo yum -y install glib2-devel
 #sudo yum -y install imake
+#sudo yum -y install sysstat
+#sudo yum -y install dstat
 
 #sudo yum -y install yum-utils
 #sudo yum -y install rpm-build
