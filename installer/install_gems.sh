@@ -94,7 +94,7 @@ install_gem() {
     #sudo $GEM install cucumber $2 $3 $4
     #sudo $GEM install sqlite3-ruby $2 $3 $4
     sudo $GEM install -v 1.4.2 rubytter $2 $3 $4
-    sudo $GEM install -v 1.10.0 termtter $2 $3 $4
+    sudo $GEM install -v 1.11.0 termtter $2 $3 $4
     #sudo $GEM install term-ansicolor $2 $3 $4
     sudo $GEM install nokogiri $2 $3 $4
     #sudo $GEM install webrat $2 $3 $4

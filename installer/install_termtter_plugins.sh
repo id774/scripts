@@ -58,6 +58,8 @@ termtters_updater() {
     update_termtters
     termtter_version=1.10.0
     update_termtters
+    termtter_version=1.11.0
+    update_termtters
 }
 
 test -d $HOME/local/github/termtter-plugins && termtters_updater
