@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 4/2,2012
+#       Directory moved to lib/plugins.
 #  v1.3 1/24,2012
 #       It run if only git repo exist.
 #  v1.2 12/21,2011
@@ -17,7 +19,7 @@
 
 update_termtter() {
     if [ -d $1 ]; then
-        sudo cp -Rv $HOME/local/github/termtter-plugins/* $1/
+        sudo cp -Rv $HOME/local/github/termtter-plugins/lib/plugins/* $1/
     fi
 }
 
