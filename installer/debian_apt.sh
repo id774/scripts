@@ -104,6 +104,7 @@ editor_packages() {
       emacs23 emacs23-el \
       mew stunnel ca-certificates \
       w3m-el-snapshot w3m-img imagemagick \
+      libmagick9-dev \
       vim vim-runtime colordiff \
       ctags
 }
@@ -137,7 +138,8 @@ lang_packages() {
       clisp \
       scheme48 cmuscheme48-el \
       ghc \
-      global
+      global \
+      graphviz
 }
 
 scm_packages() {
