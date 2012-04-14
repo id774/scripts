@@ -156,6 +156,7 @@ bulk_deploy() {
       centos \
       sl \
       admin \
+      git \
       plagger \
       twitter \
       tiarra \
