@@ -134,12 +134,12 @@ xvfb_packages() {
 lang_packages() {
     smart_apt \
       nasm \
-      gauche \
-      clisp \
+      gauche gauche-dev \
+      clisp clisp-dev \
       scheme48 cmuscheme48-el \
       ghc \
       global \
-      graphviz
+      graphviz graphviz-dev
 }
 
 scm_packages() {
