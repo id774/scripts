@@ -157,8 +157,9 @@ samba_packages() {
 
 sqlite_packages() {
     smart_apt \
-      sqlite3
-#      sqlite \
+      sqlite3 \
+      libsqlite3-0 \
+      libsqlite3-dev
 }
 
 optional_packages() {
@@ -179,7 +180,7 @@ ruby_lang() {
       autoconf byacc bison automake \
       libopenssl-ruby libreadline-dev zlib1g-dev ruby \
       ruby1.8 ruby1.8-dev
-#      autoconf-doc \
+      # autoconf-doc
 }
 
 apache_packages() {
