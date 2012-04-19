@@ -183,6 +183,13 @@ ruby_lang() {
       # autoconf-doc
 }
 
+nodejs_lang() {
+    smart_apt \
+      nodejs \
+      npm \
+      coffeescript
+}
+
 apache_packages() {
     smart_apt \
       apache2 \
@@ -210,6 +217,7 @@ increase_debian_packages() {
     sqlite_packages
     optional_packages
     ruby_lang
+    #nodejs_lang
     apache_packages
     java_packages
 }
