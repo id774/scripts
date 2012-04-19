@@ -71,6 +71,7 @@ system_packages() {
       dstat \
       anacron \
       clamav \
+      chkrootkit \
       vrms \
       manpages-ja \
       manpages-ja-dev \
