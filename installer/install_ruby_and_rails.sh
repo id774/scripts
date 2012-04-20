@@ -21,6 +21,8 @@ purge_old_modules() {
       sudo rm -rf /opt/ruby/1.9.2
     test -d /opt/ruby/1.9.3 && \
       sudo rm -rf /opt/ruby/1.9.3
+    test -d /usr/local/src/ruby/ruby-1.9.3-p125 && \
+      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p125
     test -d /usr/local/src/ruby/ruby-1.9.3-p0 && \
       sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p0
     test -d /usr/local/src/ruby/ruby-1.9.2-p290 && \
@@ -33,7 +35,7 @@ purge_old_modules() {
 
 install_ruby() {
     $SCRIPTS/installer/install_libyaml.sh
-    $SCRIPTS/installer/install_ruby.sh 193-125 /opt/ruby/1.9.3
+    $SCRIPTS/installer/install_ruby.sh 193-194 /opt/ruby/1.9.3
     $SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.3
     $SCRIPTS/installer/install_termtter_plugins.sh
 }
