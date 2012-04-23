@@ -19,6 +19,7 @@ install_npm() {
     sudo $NPM install ejs -g
     sudo $NPM install less -g
     sudo $NPM install uglify-js -g
+    sudo $NPM install coffeelint -g
 }
 
 ping -c 1 id774.net > /dev/null 2>&1 || exit 1
