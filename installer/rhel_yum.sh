@@ -45,6 +45,8 @@
 #sudo yum -y install php-mbstring
 #sudo yum -y install php-mysql
 #sudo yum -y install ruby
+#sudo yum -y install ruby-devel libxml2 libxml2-devel libxslt libxslt-devel
+#sudo yum -y install rubygem-nokogiri
 #sudo yum -y install openssl openssl-devel
 #sudo yum -y install readline readline-devel
 #sudo yum -y install ntp

@@ -168,7 +168,7 @@ optional_packages() {
       gnuserv \
       mingw32 mingw32-binutils mingw32-runtime \
       libxml2 libxml2-dev \
-      libxslt1-dev libxml-dev \
+      libxslt-dev libxslt1-dev libxml-dev \
       libxslt-ruby python-libxslt1 \
       expat libexpat-dev \
       libssl-dev libio-socket-ssl-perl libnet-ssleay-perl \
@@ -180,7 +180,8 @@ ruby_lang() {
     smart_apt \
       autoconf byacc bison automake \
       libopenssl-ruby libreadline-dev zlib1g-dev ruby \
-      ruby1.8 ruby1.8-dev
+      ruby1.8-dev ruby1.8 ri1.8 rdoc1.8 irb1.8 \
+      libreadline-ruby1.8 libruby1.8 libopenssl-ruby
       # autoconf-doc
 }
 
