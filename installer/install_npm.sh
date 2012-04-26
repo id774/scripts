@@ -16,6 +16,7 @@ install_npm() {
     sudo $NPM install js2coffee -g
     sudo $NPM install mysql -g
     sudo $NPM install express -g
+    sudo $NPM install jade -g
     sudo $NPM install ejs -g
     sudo $NPM install less -g
     sudo $NPM install uglify-js -g
