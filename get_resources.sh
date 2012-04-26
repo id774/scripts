@@ -60,8 +60,8 @@ echo "[lsmod]"
 lsmod
 echo
 
-echo "[ps -H auxwww]"
-ps -H auxwww
+echo "[ps -H auxZwww]"
+ps -H auxZwww
 echo
 
 echo "[ps axl --sort -vsize | head -20]"
