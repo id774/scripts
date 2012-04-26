@@ -1,6 +1,6 @@
 " vim:set ts=8 sts=2 sw=2 tw=0
 "
-" Last Change: 23-Mar-2012.
+" Last Change: 27-Apr-2012.
 " Maintainer:  id774 <idnanashi@gmail.com>
 
 if &encoding !=# 'utf-8'
@@ -194,6 +194,8 @@ nmap <C-X><C-H>  :bdelete!<CR>
 nmap <C-X><C-K>  :close<CR>
 nmap <C-X><C-G>  :TlistToggle<CR>
 imap <C-K>  <ESC>"*pa
+nnoremap <C-X> <nop>
+nnoremap <C-A> <Home>
 nnoremap <C-S-J> <C-W>k<C-E><C-W><C-W>
 
 :set browsedir=buffer
@@ -272,4 +274,4 @@ if exists('&ambiwidth')
   set ambiwidth=double
 endif
 
-" Copyright (C) 2008-2009 id774 <idnanashi@gmail.com>
+" Copyright (C) 2008-2012 id774 <idnanashi@gmail.com>
