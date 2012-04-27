@@ -77,6 +77,7 @@
 #sudo yum -y install dbus-devel
 #sudo yum -y install librsvg2-devel
 #sudo yum -y install libwnck-devel
+#sudo yum -y install policycoreutils-python
 
 #sudo yum -y install ctags
 #sudo yum -y install vim-enhanced
