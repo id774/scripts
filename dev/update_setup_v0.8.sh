@@ -76,14 +76,6 @@ purge_old_modules() {
 }
 
 operation() {
-    test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
-    test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
-    test -f /etc/lsb-release && DISTRIB_CODENAME=lucid
-    test -f /etc/lsb-release || DISTRIB_CODENAME=squeeze
-    setup_apt_source
-    increase_debian_packages
-    #xvfb_packages
-    install_truecrypt linux-`uname -m`
     install_ruby_and_rails
     install_nodejs_and_coffeescript
     deploy_dotfiles

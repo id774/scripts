@@ -59,32 +59,8 @@ install_truecrypt() {
     $SCRIPTS/installer/install_truecrypt.sh $1
 }
 
-configure_samba() {
-    wget http://bookmark.at-ninja.jp/bookmark/smb.conf
-    sudo cp smb.conf /etc/samba/smb.conf
-    rm smb.conf
-    sudo smbpasswd -a $USER
-}
-
-install_sqlite() {
-    $SCRIPTS/installer/install_sqlite.sh
-}
-
-install_svn() {
-    $SCRIPTS/installer/install_rhel_svn.sh
-}
-
 setup_sysadmin_scripts() {
     $SCRIPTS/installer/setup_sysadmin_scripts.sh
-}
-
-setup_web() {
-    test -d $HOME/local/github || mkdir -p $HOME/local/github
-    cd $HOME/local/github
-    git clone git://github.com/id774/intraweb-template.git
-    cd
-    ln -s $HOME/local/github/intraweb-template
-    $HOME/local/github/intraweb-template/install_intraweb.sh
 }
 
 setup_rc_local() {
@@ -146,17 +122,13 @@ operation() {
     install_iptables
     #install_ruby_and_rails
     #install_coffeescript
-    #install_dot_vim
-    #install_dot_zsh
+    install_dot_vim
+    install_dot_zsh
     #install_dot_emacs
     #install_mew
     #install_dotfiles
     #install_truecrypt linux-`uname -m`
-    #configure_samba
-    #install_sqlite
-    #install_svn
     #setup_sysadmin_scripts
-    #setup_web
     setup_rc_local
     #add_blacklist
     #change_default

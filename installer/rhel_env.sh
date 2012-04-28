@@ -22,7 +22,7 @@ flash_udev_net_rules() {
 
 operation() {
     show_hw_info
-    flash_udev_net_rules
+    #flash_udev_net_rules
 
     # Network
     $SCRIPTS/installer/rhel_network.sh
