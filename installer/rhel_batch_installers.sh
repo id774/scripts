@@ -43,17 +43,13 @@ install_dot_emacs() {
     $HOME/local/github/dot_emacs/install_dotemacs.sh
 }
 
-install_mew() {
-    $SCRIPTS/installer/install_mew.sh /opt/emacs/23.3/bin/emacs
-}
-
 install_dot_files() {
     $SCRIPTS/installer/install_dotfiles.sh
 }
 
 install_truecrypt() {
-    #$SCRIPTS/installer/install_des.sh
-    #$SCRIPTS/installer/install_truecrypt.sh src
+    $SCRIPTS/installer/install_des.sh
+    $SCRIPTS/installer/install_truecrypt.sh src
     #$SCRIPTS/installer/install_truecrypt.sh win
     #$SCRIPTS/installer/install_truecrypt.sh mac
     $SCRIPTS/installer/install_truecrypt.sh $1
@@ -65,13 +61,6 @@ setup_sysadmin_scripts() {
 
 setup_rc_local() {
     $SCRIPTS/installer/install_rclocal.sh
-}
-
-add_blacklist() {
-    test -r /etc/modprobe.d/blacklist && \
-      sudo vi /etc/modprobe.d/blacklist
-    test -r /etc/modprobe.d/blacklist.conf && \
-      sudo vi /etc/modprobe.d/blacklist.conf
 }
 
 change_default() {
@@ -125,18 +114,16 @@ operation() {
     install_dot_vim
     install_dot_zsh
     #install_dot_emacs
-    #install_mew
-    #install_dotfiles
-    #install_truecrypt linux-`uname -m`
-    #setup_sysadmin_scripts
+    install_dotfiles
+    install_truecrypt linux-`uname -m`
+    setup_sysadmin_scripts
     setup_rc_local
-    #add_blacklist
-    #change_default
+    change_default
     chkconfig
     setup_grub
     setup_group_and_passwd
-    #permission_for_src
-    #erase_history
+    permission_for_src
+    erase_history
 }
 
 operation $*
