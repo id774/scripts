@@ -63,6 +63,12 @@ setup_rc_local() {
     $SCRIPTS/installer/install_rclocal.sh
 }
 
+setup_web() {
+    sudo rm /etc/httpd/conf.d/welcome.conf
+    sudo touch /var/www/html/index.html
+    sudo vim /etc/httpd/conf/httpd.conf
+}
+
 change_default() {
     sudo vi /etc/profile
     sudo vi /etc/crontab
@@ -118,6 +124,7 @@ operation() {
     install_truecrypt linux-`uname -m`
     setup_sysadmin_scripts
     setup_rc_local
+    setup_web
     change_default
     chkconfig
     setup_grub
