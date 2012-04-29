@@ -30,10 +30,6 @@ install_termtter_plugins() {
     $SCRIPTS/installer/install_termtter_plugins.sh
 }
 
-install_cronjob() {
-    $SCRIPTS/installer/install_cronjob.sh
-}
-
 setup_web() {
     $HOME/local/github/intraweb-template/install_intraweb.sh
 }
@@ -58,7 +54,6 @@ operation() {
     deploy_dotfiles
     install_coffeescript
     install_termtter_plugins
-    install_cronjob
     setup_web
     setup_sysadmin_scripts
     install_dot_files

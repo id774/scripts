@@ -63,5 +63,5 @@ fi
 # Edit crontab
 # 50 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday
 # 55 6  * * 6   root cd / && run-parts --report /etc/cron.weekend
-sudo vi /etc/crontab $SCRIPTS/installer/install_cronjob3.sh
+sudo vi /etc/crontab $SCRIPTS/installer/install_clamscan.sh
 
