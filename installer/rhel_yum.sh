@@ -29,6 +29,7 @@ sudo yum -y install tar zip gzip unzip bzip2
 sudo yum -y install lha-sjis
 sudo yum -y install build-essential
 sudo yum -y install patch
+sudo yum -y install nasm
 sudo yum -y install zsh
 sudo yum -y install screen
 
@@ -67,10 +68,14 @@ sudo yum -y install ctags
 sudo yum -y install vim-enhanced
 sudo yum -y install atop fortune-all
 sudo yum -y install emacs* anthy-el
+sudo yum -y install nkf
 sudo yum -y install w3m
+sudo yum -y install lynx
+sudo yum -y install scons
 sudo yum -y install httpd-devel
 sudo yum -y install apr-devel
 sudo yum -y install apr-util-devel
+sudo yum -y install graphviz graphviz-devel
 
 #sudo yum -y install mysql mysql-server mysql-devel
 #sudo yum -y install subversion mod_dav_svn
