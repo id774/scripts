@@ -64,6 +64,7 @@ system_packages() {
       sharutils \
       digitools \
       dnsutils \
+      ethtool \
       xdelta \
       sshfs \
       exim4 \
