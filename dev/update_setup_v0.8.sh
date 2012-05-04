@@ -36,8 +36,8 @@ xvfb_packages() {
 
 install_truecrypt() {
     $SCRIPTS/installer/install_truecrypt.sh src
-    $SCRIPTS/installer/install_truecrypt.sh win
-    $SCRIPTS/installer/install_truecrypt.sh mac
+    #$SCRIPTS/installer/install_truecrypt.sh win
+    #$SCRIPTS/installer/install_truecrypt.sh mac
     $SCRIPTS/installer/install_truecrypt.sh $1
 }
 
@@ -58,10 +58,6 @@ deploy_dotfiles() {
     $PRIVATE/installer/install_dottermtter.sh
 }
 
-remove_incr_zsh() {
-    sudo rm -f /usr/local/etc/zsh/plugins/incr.zsh*
-}
-
 install_dot_files() {
     $SCRIPTS/installer/install_dotfiles.sh
 }
@@ -79,7 +75,6 @@ operation() {
     install_ruby_and_rails
     install_nodejs_and_coffeescript
     deploy_dotfiles
-    #remove_incr_zsh
     install_dot_files
     purge_old_modules
 }
