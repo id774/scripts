@@ -18,7 +18,7 @@ smart_apt() {
 
 setup_apt_source() {
     SOURCESLIST=sources-$DISTRIB_CODENAME.list
-    sudo cp $PRIVATE/etc/$SOURCESLIST /etc/apt/sources.list
+    sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
     sudo vi /etc/apt/sources.list
     sudo apt-get update
 }
