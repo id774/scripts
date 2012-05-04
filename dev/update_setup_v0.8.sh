@@ -58,6 +58,11 @@ deploy_dotfiles() {
     $PRIVATE/installer/install_dottermtter.sh
 }
 
+install_cronjob() {
+    $SCRIPTS/installer/install_get_resources.sh
+    $HOME/deferred-sync/installer/install.sh
+}
+
 install_dot_files() {
     $SCRIPTS/installer/install_dotfiles.sh
 }
@@ -75,6 +80,7 @@ operation() {
     install_ruby_and_rails
     install_nodejs_and_coffeescript
     deploy_dotfiles
+    install_cronjob
     install_dot_files
     purge_old_modules
 }
