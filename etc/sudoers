@@ -16,7 +16,7 @@ Cmnd_Alias SUSPEND = /usr/local/sbin/xfsuspend
 
 Defaults	!lecture,tty_tickets,!fqdn
 Defaults  timestamp_timeout = 30
-Defaults  passprompt = "[sudo] password for %u: "
+Defaults  passprompt = "[sudo] Enter %u's password for run as %U@%h: "
 
 # User privilege specification
 root	ALL=(ALL) ALL
