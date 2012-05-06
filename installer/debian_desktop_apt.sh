@@ -33,7 +33,8 @@ fonts_packages() {
     smart_apt \
       xfonts-mplus \
       xfonts-shinonome \
-      ttf-vlgothic ttf-bitstream-vera
+      ttf-vlgothic ttf-bitstream-vera \
+      fonts-ipafont
 }
 
 input_method() {
@@ -44,7 +45,8 @@ input_method() {
 codec_packages() {
     smart_apt \
       ubuntu-restricted-extras \
-      xubuntu-restricted-extras
+      xubuntu-restricted-extras \
+      gstreamer0.10-ffmpeg
 }
 
 icon_packages() {
@@ -53,7 +55,7 @@ icon_packages() {
 }
 
 optional_packages() {
-    test -f /etc/lsb-release && smart_apt mozilla-thunderbird
+    test -f /etc/lsb-release && smart_apt thunderbird
     test -f /etc/lsb-release || smart_apt icedove
     smart_apt \
       uim \
