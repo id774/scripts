@@ -36,6 +36,11 @@ fonts_packages() {
       ttf-vlgothic ttf-bitstream-vera
 }
 
+input_method() {
+    smart_apt \
+      anthy ibus-anthy uim-anthy
+}
+
 codec_packages() {
     smart_apt \
       ubuntu-restricted-extras \
@@ -70,6 +75,7 @@ optional_packages() {
 increase_debian_packages() {
     desktop_envirionment
     fonts_packages
+    input_method
     test -f /etc/lsb-release && codec_packages
     test -f /etc/lsb-release && icon_packages
     optional_packages
