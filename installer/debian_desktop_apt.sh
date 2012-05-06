@@ -42,16 +42,27 @@ input_method() {
       anthy ibus-anthy uim-anthy
 }
 
+package_manager() {
+    smart_apt \
+      synaptic \
+      gdebi
+}
+
 codec_packages() {
     smart_apt \
-      ubuntu-restricted-extras \
-      xubuntu-restricted-extras \
       gstreamer0.10-ffmpeg
 }
 
 icon_packages() {
     smart_apt \
       ubuntu-artwork xubuntu-artwork human-icon-theme
+}
+
+gconf_packages() {
+    smart_apt \
+      gconf-editor \
+      dconf-tools \
+      gnome-tweak-tool
 }
 
 optional_packages() {
@@ -64,9 +75,8 @@ optional_packages() {
       thunar \
       vlc \
       pidgin \
-      xpdf xpdf-reader \
+      xpdf \
       comix \
-      gnomebaker \
       skype \
       amsn \
       wireshark \
@@ -78,8 +88,10 @@ increase_debian_packages() {
     desktop_envirionment
     fonts_packages
     input_method
+    test -f /etc/lsb-release && package_manager
     test -f /etc/lsb-release && codec_packages
     test -f /etc/lsb-release && icon_packages
+    gconf_packages
     optional_packages
 }
 
