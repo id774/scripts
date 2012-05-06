@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.4 5/7,2012
+#       Correspond to Ubuntu Precise.
 #  v0.3 4/16,2012
 #       Shape up unnecessary functions.
 #  v0.2 1/23,2012
@@ -115,6 +117,11 @@ change_default() {
     sudo vi /etc/hosts
 }
 
+customize_for_ubuntu() {
+    sudo vim /etc/resolvconf/resolv.conf.d/base /etc/resolv.conf
+    sudo ln -fs /var/log/syslog /var/log/messages
+}
+
 setup_grub() {
     test -f /etc/grub.conf && \
       sudo vi /etc/grub.conf
@@ -161,6 +168,7 @@ operation() {
     setup_ntp
     setup_fail2ban
     change_default
+    test -f /etc/lsb-release && customize_for_ubuntu
     setup_grub
     setup_group_and_passwd
     permission_for_src

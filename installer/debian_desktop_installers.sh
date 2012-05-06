@@ -14,6 +14,4 @@
 sudo vim /etc/lightdm/lightdm.conf
 # allow-guest=false
 
-sudo vim /etc/resolvconf/resolv.conf.d/base /etc/resolv.conf
-
-sudo ln -fs /var/log/syslog /var/log/messages
+sudo restart lightdm
