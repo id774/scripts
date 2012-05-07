@@ -26,6 +26,6 @@ root    ALL=(ALL) ALL
 # it further down)
 #%sudo ALL=(ALL) ALL
 %admin ALL=(ALL) ALL
-%admin ALL=(root) NOPASSWD: ADMIN, NETWORK, SUSPEND
+%admin ALL=(root) NOPASSWD: ADMIN, NETWORK
 #
 #includedir /etc/sudoers.d
