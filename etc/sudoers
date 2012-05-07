@@ -7,7 +7,7 @@
 
 Defaults    env_reset
 Defaults    !lecture,tty_tickets,!fqdn
-Defaults    timestamp_timeout = 180
+Defaults    timestamp_timeout = 60
 Defaults    passprompt = "[sudo] Enter %u's password to run as %U@%h: "
 
 # Host alias specification
@@ -21,11 +21,11 @@ Cmnd_Alias NETWORK = /etc/init.d/networking
 # User privilege specification
 root    ALL=(ALL) ALL
 
-# Uncomment to allow members of group sudo to not need a password
+# Allow members of group sudo to execute any command
 # (Note that later entries override this, so you might need to move
 # it further down)
-# %sudo ALL=NOPASSWD: ALL
-
-# Members of the admin group may gain root privileges
+#%sudo ALL=(ALL) ALL
 %admin ALL=(ALL) ALL
-#%admin ALL=(root) NOPASSWD: ADMIN, NETWORK
+%admin ALL=(root) NOPASSWD: ADMIN, NETWORK, SUSPEND
+#
+#includedir /etc/sudoers.d
