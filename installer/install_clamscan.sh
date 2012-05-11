@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 ########################################################################
-# cronJob Setup Script 3
+# clamscan setup script
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #

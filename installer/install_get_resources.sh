@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 ########################################################################
-# cronJob Setup Script
+# Server Resource Report Setup Script
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
