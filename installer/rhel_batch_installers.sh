@@ -66,7 +66,7 @@ setup_rc_local() {
 setup_web() {
     sudo rm /etc/httpd/conf.d/welcome.conf
     sudo touch /var/www/html/index.html
-    sudo vim /etc/httpd/conf/httpd.conf
+    sudo vi /etc/httpd/conf/httpd.conf
 }
 
 change_default() {

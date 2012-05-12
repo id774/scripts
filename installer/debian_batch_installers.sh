@@ -118,7 +118,7 @@ change_default() {
 }
 
 customize_for_ubuntu() {
-    sudo vim /etc/resolvconf/resolv.conf.d/base /etc/resolv.conf
+    sudo vi /etc/resolvconf/resolv.conf.d/base /etc/resolv.conf
     sudo ln -fs /var/log/syslog /var/log/messages
 }
 
@@ -163,7 +163,7 @@ operation() {
     configure_hddtemp
     configure_smartmontools
     setup_sysadmin_scripts
-    setup_web
+    #setup_web
     setup_rc_local
     setup_ntp
     setup_fail2ban
