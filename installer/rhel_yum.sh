@@ -77,6 +77,9 @@ sudo yum -y install apr-devel
 sudo yum -y install apr-util-devel
 sudo yum -y install graphviz graphviz-devel
 
+sudo yum -y install chkrootkit
+sudo yum -y install clamav
+
 #sudo yum -y install mysql mysql-server mysql-devel
 #sudo yum -y install subversion mod_dav_svn
 #sudo yum -y install libpng-devel
