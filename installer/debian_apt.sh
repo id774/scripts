@@ -96,7 +96,9 @@ debian_developer_tools() {
       dupload \
       fakeroot \
       devscripts \
-      debget
+      debget \
+      dh-make \
+      libgtk2.0-dev
 #      apt-listchanges apt-listbugs \
 }
 
