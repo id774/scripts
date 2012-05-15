@@ -1,0 +1,4 @@
+#!/bin/sh
+
+chkrootkit > /var/log/chkrootkit/chkrootkit.log
+grep "INFECTED" /var/log/chkrootkit/chkrootkit.log | mail -s "chkrootkit log" root

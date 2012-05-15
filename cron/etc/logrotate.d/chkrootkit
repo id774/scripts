@@ -1,0 +1,8 @@
+/var/log/chkrootkit/chkrootkit.log {
+  dairy
+  compress
+  delaycompress
+  missingok
+  create 0640 root adm
+  rotate 30
+}
