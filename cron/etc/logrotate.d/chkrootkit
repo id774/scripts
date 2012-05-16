@@ -1,5 +1,5 @@
 /var/log/chkrootkit/chkrootkit.log {
-  dairy
+  daily
   compress
   delaycompress
   missingok
