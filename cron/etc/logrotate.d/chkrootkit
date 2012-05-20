@@ -1,8 +1,8 @@
 /var/log/chkrootkit/chkrootkit.log {
-  weekly
+  daily
   compress
   delaycompress
   missingok
   create 0640 root adm
-  rotate 26
+  rotate 30
 }
