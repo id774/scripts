@@ -1,4 +1,20 @@
 #!/bin/sh
 
-chkrootkit > /var/log/chkrootkit/chkrootkit.log
-grep "INFECTED" /var/log/chkrootkit/chkrootkit.log | mail -s "chkrootkit log" root
+JOBLOG=/var/log/chkrootkit/chkrootkit.log
+
+echo -n "*** $0: Job start at `/bin/hostname` on ">>$JOBLOG 2>&1
+date "+%Y/%m/%d %T">>$JOBLOG 2>&1
+
+chkrootkit>>$JOBLOG 2>&1
+
+echo -n "*** $0: End of Job at `/bin/hostname` on ">>$JOBLOG 2>&1
+date "+%Y/%m/%d %T">>$JOBLOG 2>&1
+echo>>$JOBLOG 2>&1
+
+# ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
+case "$ADMIN_MAIL_ADDRESS" in
+  *@*)
+    grep "INFECTED" $JOBLOG && (nkf -w $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Infected rootkit" $ADMIN_MAIL_ADDRESS)
+    ;;
+esac
+

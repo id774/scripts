@@ -10,9 +10,10 @@
 ########################################################################
 
 # job
-sudo cp $SCRIPTS/cron/bin/chkrootkit /etc/cron.daily/chkrootkit
-sudo chmod 750 /etc/cron.daily/chkrootkit
-sudo chown root:adm /etc/cron.daily/chkrootkit
+sudo cp $SCRIPTS/cron/bin/chkrootkit /etc/cron.weekly/chkrootkit
+sudo chmod 750 /etc/cron.weekly/chkrootkit
+sudo chown root:adm /etc/cron.weekly/chkrootkit
+sudo vi /etc/cron.weekly/chkrootkit
 # logdir
 test -d /var/log/chkrootkit || sudo mkdir /var/log/chkrootkit
 sudo chmod 750 /var/log/chkrootkit
