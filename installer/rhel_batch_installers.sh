@@ -79,6 +79,7 @@ change_default() {
     sudo vi /etc/pam.d/login
     sudo vi /etc/fstab
     sudo vi /etc/hosts
+    $SCRIPTS/securetty.sh
 }
 
 chkconfig() {

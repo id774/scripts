@@ -115,6 +115,7 @@ change_default() {
     sudo vi /etc/motd
     sudo vi /etc/fstab
     sudo vi /etc/hosts
+    $SCRIPTS/securetty.sh
 }
 
 customize_for_ubuntu() {
