@@ -88,6 +88,7 @@ install_gem() {
     #sudo $GEM install redgreen $2 $3 $4
     sudo $GEM install rspec $2 $3 $4
     #sudo $GEM install rspec-rails $2 $3 $4
+    sudo $GEM install flexmock $2 $3 $4
     sudo $GEM install simplecov $2 $3 $4
     sudo $GEM install simplecov-rcov $2 $3 $4
     #sudo $GEM install gherkin $2 $3 $4
