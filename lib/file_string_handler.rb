@@ -27,4 +27,14 @@ class FileStringHandler
       f.truncate(f.tell)
     }
   end
+
+  def self.deleteString(file,str)
+    out = ""
+    IO.foreach(file) do |line|
+      out << line unless line.include?(str)
+    end
+    open(file,"w") do |f|
+      f.write out
+    end
+  end
 end
