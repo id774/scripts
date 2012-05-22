@@ -29,3 +29,4 @@ case "$RSYNC_BACKUP_RUN" in
     ;;
 esac
 
+exit 0

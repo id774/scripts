@@ -18,3 +18,4 @@ case "$ADMIN_MAIL_ADDRESS" in
     ;;
 esac
 
+exit 0
