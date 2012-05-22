@@ -141,6 +141,7 @@ lang_packages() {
       gauche gauche-dev \
       clisp clisp-dev \
       scheme48 cmuscheme48-el \
+      gnu-smalltalk \
       ghc \
       global \
       graphviz graphviz-dev
