@@ -1,4 +1,4 @@
-class FileStringHandler
+module FileStringHandler
   def self.appendString(file,str)
     if File.exist?(file)
       f = open(file,'a')
