@@ -12,12 +12,12 @@ class Test_FileString < Test::Unit::TestCase
     @testfile = Tempfile::new("test.txt")
   end
 
-  def test_appendString
+  def test_append
     src      = 'hoge'
     expect   = "hoge\n"
 
     3.times do
-      CommonUtil::FileString.appendString(@testfile, src)
+      CommonUtil::FileString.append(@testfile, src)
     end
 
     open(@testfile) { |file|
@@ -27,15 +27,15 @@ class Test_FileString < Test::Unit::TestCase
     }
   end
 
-  def test_replaceString
+  def test_replace
     src      = 'hoge'
     try      = 'fuga'
     expect   = "fuga\n"
 
     3.times do
-      CommonUtil::FileString.appendString(@testfile, src)
+      CommonUtil::FileString.append(@testfile, src)
     end
-    CommonUtil::FileString.replaceString(@testfile, src, try)
+    CommonUtil::FileString.replace(@testfile, src, try)
 
     open(@testfile) { |file|
       while line = file.gets
@@ -51,13 +51,13 @@ class Test_FileString < Test::Unit::TestCase
     expect   = "fuga\n"
 
     3.times do
-      CommonUtil::FileString.appendString(@testfile, src)
+      CommonUtil::FileString.append(@testfile, src)
     end
-    CommonUtil::FileString.replaceString(@testfile, src, replace)
+    CommonUtil::FileString.replace(@testfile, src, replace)
     2.times do
-      CommonUtil::FileString.appendString(@testfile, src)
+      CommonUtil::FileString.append(@testfile, src)
     end
-    CommonUtil::FileString.deleteString(@testfile, erase)
+    CommonUtil::FileString.delete(@testfile, erase)
 
     open(@testfile) { |file|
       while line = file.gets

@@ -1,6 +1,6 @@
 module CommonUtil
   module FileString
-    def self.appendString(file, str)
+    def self.append(file, str)
       if File.exist?(file)
         f = open(file, 'a')
       else
@@ -21,7 +21,7 @@ module CommonUtil
       f.puts body
     end
 
-    def self.replaceString(file, src, out)
+    def self.replace(file, src, out)
       open(file,"r+") { |f|
         f.flock(File::LOCK_EX)
         replaceFile(f,src,out)
@@ -29,7 +29,7 @@ module CommonUtil
       }
     end
 
-    def self.deleteString(file, str)
+    def self.delete(file, str)
       out = ""
       IO.foreach(file) { |line|
         out << line unless line.include?(str)
