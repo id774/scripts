@@ -1,11 +1,9 @@
 #!/usr/bin/env ruby
-$:.unshift File.join(ENV['SCRIPTS'], 'lib') unless ENV['SCRIPTS'] == nil
-$:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
 require 'rubygems'
 require 'test/unit'
 require 'tempfile'
-require 'file_string'
+require 'sysadmin'
 
 class Test_FileString < Test::Unit::TestCase
   def setup
@@ -17,7 +15,7 @@ class Test_FileString < Test::Unit::TestCase
     expect   = "hoge\n"
 
     3.times do
-      CommonUtil::FileString.append(@testfile, src)
+      Sysadmin::FileString.append(@testfile, src)
     end
 
     open(@testfile) { |file|
@@ -33,9 +31,9 @@ class Test_FileString < Test::Unit::TestCase
     expect   = "fuga\n"
 
     3.times do
-      CommonUtil::FileString.append(@testfile, src)
+      Sysadmin::FileString.append(@testfile, src)
     end
-    CommonUtil::FileString.replace(@testfile, src, try)
+    Sysadmin::FileString.replace(@testfile, src, try)
 
     open(@testfile) { |file|
       while line = file.gets
@@ -51,13 +49,13 @@ class Test_FileString < Test::Unit::TestCase
     expect   = "fuga\n"
 
     3.times do
-      CommonUtil::FileString.append(@testfile, src)
+      Sysadmin::FileString.append(@testfile, src)
     end
-    CommonUtil::FileString.replace(@testfile, src, replace)
+    Sysadmin::FileString.replace(@testfile, src, replace)
     2.times do
-      CommonUtil::FileString.append(@testfile, src)
+      Sysadmin::FileString.append(@testfile, src)
     end
-    CommonUtil::FileString.delete(@testfile, erase)
+    Sysadmin::FileString.delete(@testfile, erase)
 
     open(@testfile) { |file|
       while line = file.gets
