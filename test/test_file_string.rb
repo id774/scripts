@@ -5,9 +5,9 @@ $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 require 'rubygems'
 require 'test/unit'
 require 'tempfile'
-require 'file_string_handler'
+require 'file_string'
 
-class Test_FileStringHandler < Test::Unit::TestCase
+class Test_FileString < Test::Unit::TestCase
   def setup
     @testfile = Tempfile::new("test.txt")
   end
@@ -17,7 +17,7 @@ class Test_FileStringHandler < Test::Unit::TestCase
     expect   = "hoge\n"
 
     3.times do
-      FileStringHandler.appendString(@testfile, src)
+      CommonUtil::FileString.appendString(@testfile, src)
     end
 
     open(@testfile) { |file|
@@ -33,9 +33,9 @@ class Test_FileStringHandler < Test::Unit::TestCase
     expect   = "fuga\n"
 
     3.times do
-      FileStringHandler.appendString(@testfile, src)
+      CommonUtil::FileString.appendString(@testfile, src)
     end
-    FileStringHandler.replaceString(@testfile, src, try)
+    CommonUtil::FileString.replaceString(@testfile, src, try)
 
     open(@testfile) { |file|
       while line = file.gets
@@ -51,13 +51,13 @@ class Test_FileStringHandler < Test::Unit::TestCase
     expect   = "fuga\n"
 
     3.times do
-      FileStringHandler.appendString(@testfile, src)
+      CommonUtil::FileString.appendString(@testfile, src)
     end
-    FileStringHandler.replaceString(@testfile, src, replace)
+    CommonUtil::FileString.replaceString(@testfile, src, replace)
     2.times do
-      FileStringHandler.appendString(@testfile, src)
+      CommonUtil::FileString.appendString(@testfile, src)
     end
-    FileStringHandler.deleteString(@testfile, erase)
+    CommonUtil::FileString.deleteString(@testfile, erase)
 
     open(@testfile) { |file|
       while line = file.gets
