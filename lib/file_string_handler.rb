@@ -10,7 +10,7 @@ module FileStringHandler
     f.close
   end
 
-  def self.replaceString(f,src,out)
+  def self.replaceFile(f,src,out)
     f.rewind
     body = f.read
     body = body.gsub(src) { |tmp|
@@ -20,10 +20,10 @@ module FileStringHandler
     f.puts body
   end
 
-  def self.replaceFile(file,src,out)
+  def self.replaceString(file,src,out)
     open(file,"r+") { |f|
       f.flock(File::LOCK_EX)
-      replaceString(f,src,out)
+      replaceFile(f,src,out)
       f.truncate(f.tell)
     }
   end
