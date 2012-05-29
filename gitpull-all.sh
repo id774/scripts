@@ -97,7 +97,6 @@ gitpull_all() {
     gitpull github id774 twitter_viewer $*
     gitpull github id774 blog_viewer $*
     gitpull github id774 repo_manager $*
-    gitpull github id774 gthumb $*
     gitpull github id774 sandbox $*
     gitpull github id774 batch_framework $*
     gitpull github id774 intraweb-template $*
