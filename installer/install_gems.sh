@@ -67,9 +67,11 @@ install_gem() {
     #sudo $GEM install backbone-rails $2 $3 $4
     sudo $GEM install uglifier $2 $3 $4
     sudo $GEM install devise $2 $3 $4
-    sudo $GEM install kaminari $2 $3 $4
+    #sudo $GEM install kaminari $2 $3 $4
     sudo $GEM install i18n_generators $2 $3 $4
     sudo $GEM install jeweler $2 $3 $4
+    sudo $GEM install will_paginate $2 $3 $4
+    sudo $GEM install meta_search $2 $3 $4
     #sudo $GEM install turn $2 $3 $4
     #sudo $GEM install minitest $2 $3 $4
     #sudo $GEM install mongrel $2 $3 $4
