@@ -19,7 +19,7 @@
 
 setup_environment() {
     test -n "$1" && EMACS_VERSION=$1
-    test -n "$1" || EMACS_VERSION=23.3
+    test -n "$1" || EMACS_VERSION=24.1
     test -n "$3" && BUILD_OPTIONS=$3
     test -n "$3" || BUILD_OPTIONS=--with-ns
     test -n "$4" || SUDO=sudo
