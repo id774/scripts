@@ -44,7 +44,7 @@ mkdir_if_not_exist() {
     do
         sudo test -d $1 || sudo mkdir $1
         shift
-    done 
+    done
 }
 
 emacs_batch_byte_compile() {
@@ -52,7 +52,7 @@ emacs_batch_byte_compile() {
     do
         sudo emacs --batch -Q -f batch-byte-compile $1
         shift
-    done 
+    done
 }
 
 deploy_dotfile() {
@@ -130,7 +130,7 @@ deploy_dotfiles_to_mac() {
             sudo chown -R $1 /Users/$1
         fi
         shift
-    done 
+    done
 }
 
 deploy_dotfiles_to_linux() {
@@ -141,7 +141,7 @@ deploy_dotfiles_to_linux() {
             sudo chown -R $1:$1 /home/$1
         fi
         shift
-    done 
+    done
 }
 
 bulk_deploy() {

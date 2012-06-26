@@ -13,7 +13,7 @@ smart_apt() {
             sudo apt-get -y install $1
         fi
         shift
-    done 
+    done
 }
 
 setup_apt_source() {

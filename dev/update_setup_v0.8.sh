@@ -13,7 +13,7 @@ smart_apt() {
             sudo apt-get -y install $1
         fi
         shift
-    done 
+    done
 }
 
 setup_apt_source() {
@@ -32,13 +32,6 @@ xvfb_packages() {
       xvfb \
       fluxbox \
       x11vnc
-}
-
-install_truecrypt() {
-    $SCRIPTS/installer/install_truecrypt.sh src
-    #$SCRIPTS/installer/install_truecrypt.sh win
-    #$SCRIPTS/installer/install_truecrypt.sh mac
-    $SCRIPTS/installer/install_truecrypt.sh $1
 }
 
 install_ruby_and_rails() {
@@ -60,7 +53,12 @@ deploy_dotfiles() {
 
 install_cronjob() {
     $SCRIPTS/installer/install_get_resources.sh
+    $SCRIPTS/installer/install_chkrootkit.sh
     $HOME/deferred-sync/installer/install.sh
+}
+
+secure_settings() {
+    $SCRIPTS/securetty.sh
 }
 
 install_dot_files() {
@@ -81,6 +79,7 @@ operation() {
     install_nodejs_and_coffeescript
     deploy_dotfiles
     install_cronjob
+    secure_settings
     install_dot_files
     purge_old_modules
 }

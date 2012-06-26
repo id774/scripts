@@ -39,7 +39,7 @@ uninstall_scripts() {
     do
         test -f $SBIN/$1 && sudo rm -vf $SBIN/$1
         shift
-    done 
+    done
 }
 
 uninstall_sysadmin_scripts() {
