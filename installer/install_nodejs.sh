@@ -6,24 +6,14 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.7 5/4,2012
-#       Update default version to v0.7.8.
-#  v0.6 2/20,2012
-#       Update default version to v0.7.4.
-#  v0.5 1/23,2012
-#       Update default version to v0.6.8.
-#  v0.4 1/22,2012
-#       Update default version to v0.6.6.
-#  v0.3 12/8,2011
-#       Update to v0.6.5.
-#  v0.2 12/1,2011
-#       Add npm.
+#  v1.0 6/26,2012
+#       Stable.
 #  v0.1 11/22,2011
 #       First.
 ########################################################################
 
 setup_environment() {
-    test -n "$1" || VERSION=0.7.8
+    test -n "$1" || VERSION=0.8.0
     test -n "$1" && VERSION=$1
     NODE=node-v$VERSION
 }
