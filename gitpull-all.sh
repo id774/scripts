@@ -101,6 +101,7 @@ gitpull_all() {
     gitpull github id774 batch_framework $*
     gitpull github id774 intraweb-template $*
     gitpull github id774 automaticruby $*
+    gitpull github id774 heartbeat-id774net $*
     gitpull github termtter termtter $*
     gitpull github miyagawa plagger $*
     gitpull github twitter bootstrap $*
