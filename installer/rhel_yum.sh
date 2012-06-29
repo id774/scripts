@@ -59,6 +59,7 @@ sudo yum -y install ruby-devel libxml2 libxml2-devel libxslt libxslt-devel
 sudo yum -y install rubygem-nokogiri
 sudo yum -y install openssl openssl-devel
 sudo yum -y install readline readline-devel
+sudo yum -y install shunit2
 sudo yum -y install ntp
 
 sudo yum -y install sysstat

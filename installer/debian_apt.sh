@@ -144,7 +144,8 @@ lang_packages() {
       gnu-smalltalk \
       ghc \
       global \
-      graphviz graphviz-dev
+      graphviz graphviz-dev \
+      shunit2
 }
 
 scm_packages() {
