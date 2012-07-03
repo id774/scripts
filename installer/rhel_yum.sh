@@ -78,6 +78,7 @@ sudo yum -y install apr-devel
 sudo yum -y install apr-util-devel
 sudo yum -y install graphviz graphviz-devel
 
+sudo yum -y install nmap
 sudo yum -y install chkrootkit
 sudo yum -y install clamav
 

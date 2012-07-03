@@ -73,6 +73,8 @@ system_packages() {
       anacron \
       clamav \
       chkrootkit \
+      nmap \
+      tcpdump \
       vrms \
       manpages-ja \
       manpages-ja-dev \
