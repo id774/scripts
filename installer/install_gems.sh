@@ -126,6 +126,8 @@ install_gem() {
     #sudo $GEM install xml-simple $2 $3 $4
     sudo $GEM install sysadmin $2 $3 $4
     sudo $GEM install automatic $2 $3 $4
+    #sudo $GEM install hadoop-papyrus $2 $3 $4
+    #sudo $GEM install jruby-on-hadoop $2 $3 $4
     $GEM list --local
 }
 
