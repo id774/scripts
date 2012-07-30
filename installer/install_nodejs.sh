@@ -3,6 +3,7 @@
 ########################################################################
 # Install Node.js
 #  $1 = version
+#  $2 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
