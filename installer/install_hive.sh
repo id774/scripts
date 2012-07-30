@@ -3,7 +3,6 @@
 ########################################################################
 # Install Hive
 #  $1 = version
-#  $2 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
@@ -27,13 +26,6 @@ setup_environment() {
     esac
 }
 
-save_sources() {
-    test -d /usr/local/src/hadoop/hive && sudo rm -rf /usr/local/src/hadoop/hive
-    sudo mkdir -p /usr/local/src/hadoop/hive
-    sudo cp $OPTIONS $HIVE /usr/local/src/hadoop/hive
-    sudo chown -R $OWNER /usr/local/src/hadoop/hive
-}
-
 install_hive() {
     setup_environment $*
     mkdir install_hive
@@ -45,7 +37,6 @@ install_hive() {
     test -d /opt/hive || sudo mkdir -p /opt/hive
     sudo cp $OPTIONS $HIVE /opt/hive/$VERSION
     sudo chown -R $OWNER /opt/hive/$VERSION
-    test -n "$2" || save_sources
     cd ..
     rm -rf install_hive
 }
