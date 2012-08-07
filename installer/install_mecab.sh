@@ -46,7 +46,7 @@ install_mecab() {
     wget http://mecab.googlecode.com/files/mecab-$MECAB_VERSION.tar.gz
     tar xzvf mecab-$MECAB_VERSION.tar.gz
     cd mecab-$MECAB_VERSION
-    ./configure
+    ./configure --enable-utf8-only
     make
     sudo make install
     cd ..
