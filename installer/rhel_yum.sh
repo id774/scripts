@@ -24,6 +24,7 @@ sudo yum -y install openssh-server
 sudo yum -y install openssh-client
 sudo yum -y install ssh
 sudo yum -y install gcc g++ g77 gcc-c++
+sudo yum -y install gdb cgdb
 sudo yum -y install bison
 sudo yum -y install tar zip gzip unzip bzip2
 sudo yum -y install lha-sjis

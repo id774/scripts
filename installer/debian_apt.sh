@@ -40,6 +40,7 @@ basic_packages() {
       rsync \
       build-essential \
       gcc g++ \
+      gdb cgdb \
       scons \
       tar zip gzip unzip bzip2 \
       p7zip p7zip-full \
