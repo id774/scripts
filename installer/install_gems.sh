@@ -56,6 +56,7 @@ install_gem() {
     test -n "$1" || export GEM=gem
     export RUBYOPT=rubygems
     sudo $GEM update --system $2 $3 $4
+    sudo $GEM install pry $2 $3 $4
     sudo $GEM install rake $2 $3 $4
     sudo $GEM install bundler $2 $3 $4
     sudo $GEM install rails $2 $3 $4
