@@ -98,6 +98,7 @@ gitpull_all() {
     gitpull github id774 blog_viewer $*
     gitpull github id774 repo_manager $*
     gitpull github id774 sandbox $*
+    gitpull github id774 rurima $*
     gitpull github id774 batch_framework $*
     gitpull github id774 intraweb-template $*
     gitpull github id774 automaticruby $*
