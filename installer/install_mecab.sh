@@ -33,6 +33,7 @@ save_sources() {
     sudo mkdir -p /usr/local/src/mecab
     sudo cp $OPTIONS mecab-$MECAB_VERSION /usr/local/src/mecab
     sudo cp $OPTIONS mecab-ruby-$MECAB_VERSION /usr/local/src/mecab
+    sudo cp $OPTIONS mecab-python-$MECAB_VERSION /usr/local/src/mecab
     sudo cp $OPTIONS mecab-ipadic-$IPADIC_VERSION /usr/local/src/mecab
     sudo chown -R root:root /usr/local/src/mecab
 }
@@ -56,6 +57,12 @@ install_mecab() {
     ruby extconf.rb
     make
     sudo make install
+    cd ..
+    wget http://mecab.googlecode.com/files/mecab-python-$MECAB_VERSION.tar.gz
+    tar xzvf mecab-python-$MECAB_VERSION.tar.gz
+    cd mecab-python-$MECAB_VERSION
+    python setup.py build
+    sudo python setup.py install
     cd ..
     wget http://mecab.googlecode.com/files/mecab-ipadic-$IPADIC_VERSION.tar.gz
     tar xzvf mecab-ipadic-$IPADIC_VERSION.tar.gz
