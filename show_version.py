@@ -60,6 +60,8 @@ def module_install():
     os.system('sudo easy_install uuid')
     os.system('sudo easy_install textile')
     os.system('sudo easy_install web.py')
+    os.system('sudo easy_install -U distribute')
+    os.system('sudo easy_install nltk')
 
 def main():
     from optparse import OptionParser
