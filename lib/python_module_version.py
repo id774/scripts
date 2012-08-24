@@ -115,3 +115,17 @@ class PythonModuleVersion:
         except ImportError:
             return 'web.py ImportError'
 
+    def nltk_version(self):
+        try:
+            import nltk
+            return 'nltk', nltk.__version__
+        except ImportError:
+            return 'nltk ImportError'
+
+    def MeCab_version(self):
+        try:
+            import MeCab
+            return 'MeCab', MeCab.VERSION
+        except ImportError:
+            return 'MeCab ImportError'
+

@@ -45,6 +45,8 @@ def show_version():
     print(m.docutils_version())
     print(m.textile_version())
     print(m.webpy_version())
+    print(m.nltk_version())
+    print(m.MeCab_version())
 
 def module_install():
     import os
