@@ -140,7 +140,6 @@ xvfb_packages() {
 
 lang_packages() {
     smart_apt \
-      python-pkg-resources \
       nasm \
       gauche gauche-dev \
       clisp clisp-dev \

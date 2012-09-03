@@ -18,19 +18,20 @@
 main() {
     TARGET_PATH=`python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"`
 
-    # etc
-    $SCRIPTS/show_version.py -i
-
     # Development tool and package manager
     sudo apt-get -y install python-dev
     sudo apt-get -y install python-doc
     sudo apt-get -y install python-docutils
     sudo apt-get -y install python-setuptools
+    sudo apt-get -y install python-pkg-resources
     sudo apt-get -y install python-profiler
     sudo apt-get -y install python-notify
     sudo apt-get -y install vim-python
     sudo apt-get -y install readline-common
     sudo apt-get -y install ipython
+
+    # etc
+    $SCRIPTS/show_version.py -i
 
     # Web Application Framework
     $SCRIPTS/installer/install_django.sh
