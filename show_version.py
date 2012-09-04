@@ -63,7 +63,9 @@ def module_install():
     os.system('sudo easy_install textile')
     os.system('sudo easy_install web.py')
     os.system('sudo easy_install -U distribute')
-    os.system('sudo easy_install nltk')
+    os.system('sudo easy_install pip')
+    os.system('sudo pip install -U numpy')
+    os.system('sudo pip install -U pyyaml nltk')
 
 def main():
     from optparse import OptionParser
