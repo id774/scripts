@@ -40,6 +40,7 @@ main() {
     sudo apt-get -y install python-nose
 
     # O/R mapper
+    sudo apt-get -y install pysqlite
     sudo apt-get -y install python-sqlobject
     #sudo apt-get -y install python-sqlalchemy
     sudo easy_install SQLAlchemy
