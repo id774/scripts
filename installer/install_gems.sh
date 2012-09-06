@@ -73,6 +73,7 @@ install_gem() {
     sudo $GEM install jeweler $2 $3 $4
     sudo $GEM install will_paginate $2 $3 $4
     sudo $GEM install meta_search $2 $3 $4
+    sudo $GEM install enumerable-lazy $2 $3 $4
     #sudo $GEM install turn $2 $3 $4
     #sudo $GEM install minitest $2 $3 $4
     #sudo $GEM install mongrel $2 $3 $4
