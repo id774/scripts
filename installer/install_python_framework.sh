@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 9/7,2012
+#       Isolate debian packages.
 #  v1.3 8/29,2010
 #       Use my Library version.
 #  v1.2 3/7,2010
@@ -15,10 +17,7 @@
 #       Stable.
 ########################################################################
 
-main() {
-    TARGET_PATH=`python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"`
-
-    # Development tool and package manager
+install_debian_packages() {
     sudo apt-get -y install python-dev
     sudo apt-get -y install python-doc
     sudo apt-get -y install python-docutils
@@ -30,32 +29,41 @@ main() {
     sudo apt-get -y install readline-common
     sudo apt-get -y install ipython
 
-    # etc
-    $SCRIPTS/show_version.py -i
-
-    # Web Application Framework
-    $SCRIPTS/installer/install_django.sh
     sudo apt-get -y install python-cherrypy
     sudo apt-get -y install python-twisted
     sudo apt-get -y install python-nose
 
-    # O/R mapper
     sudo apt-get -y install pysqlite
     sudo apt-get -y install python-sqlobject
-    #sudo apt-get -y install python-sqlalchemy
-    sudo easy_install SQLAlchemy
-    #sudo apt-get -y install python-migrate
+    sudo apt-get -y install python-migrate
 
-    # Template
     sudo apt-get -y install python-kid
     sudo apt-get -y install python-cheetah
     sudo apt-get -y install python-genshi
     sudo apt-get -y install clearsilver-dev
     sudo apt-get -y install python-clearsilver
 
-    # RDBMS Binding
     sudo apt-get -y install python-mysqldb
     sudo apt-get -y install python-psycopg2
+
+    sudo apt-get -y install python-mechanize
+}
+
+main() {
+    TARGET_PATH=`python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()"`
+
+    if [ -f /etc/debian_version ]; then
+        install_debian_packages
+    fi
+
+    # etc
+    $SCRIPTS/show_version.py -i
+
+    # Web Application Framework
+    $SCRIPTS/installer/install_django.sh
+
+    # O/R mapper
+    sudo easy_install SQLAlchemy
 
     # JSON
     sudo easy_install simplejson
@@ -64,7 +72,6 @@ main() {
     sudo easy_install python-twitter
 
     # Web crawler and HTML/XML parser
-    sudo apt-get -y install python-mechanize
     $SCRIPTS/installer/install_beautifulsoup.sh
 }
 
