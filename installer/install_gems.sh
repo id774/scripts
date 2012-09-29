@@ -126,6 +126,7 @@ install_gem() {
     #sudo $GEM install hashie $2 $3 $4
     #sudo $GEM install gcalapi $2 $3 $4
     #sudo $GEM install xml-simple $2 $3 $4
+    sudo $GEM install prawn $2 $3 $4
     sudo $GEM install sysadmin $2 $3 $4
     sudo $GEM install automatic $2 $3 $4
     #sudo $GEM install hadoop-papyrus $2 $3 $4
