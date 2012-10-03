@@ -67,7 +67,7 @@ install_gem() {
     sudo $GEM install haml-rails $2 $3 $4
     #sudo $GEM install backbone-rails $2 $3 $4
     sudo $GEM install uglifier $2 $3 $4
-    sudo $GEM install devise $2 $3 $4
+    sudo $GEM install devise '-v < 2' $2 $3 $4
     #sudo $GEM install kaminari $2 $3 $4
     sudo $GEM install i18n_generators $2 $3 $4
     sudo $GEM install jeweler $2 $3 $4
@@ -81,7 +81,7 @@ install_gem() {
     #sudo $GEM install mechanize $2 $3 $4
     #sudo $GEM install Selenium $2 $3 $4
     #sudo $GEM install postgres-pr $2 $3 $4
-    #sudo $GEM install mysql $2 $3 $4
+    sudo $GEM install mysql2 $2 $3 $4
     #sudo $GEM install BlueCloth $2 $3 $4
     #sudo $GEM install RedCloth $2 $3 $4
     #sudo $GEM install net-ssh $2 $3 $4
@@ -91,7 +91,7 @@ install_gem() {
     #sudo $GEM install magic_multi_connections $2 $3 $4
     #sudo $GEM install redgreen $2 $3 $4
     sudo $GEM install rspec $2 $3 $4
-    #sudo $GEM install rspec-rails $2 $3 $4
+    sudo $GEM install rspec-rails $2 $3 $4
     sudo $GEM install flexmock $2 $3 $4
     sudo $GEM install simplecov $2 $3 $4
     sudo $GEM install simplecov-rcov $2 $3 $4
@@ -107,7 +107,7 @@ install_gem() {
     #sudo $GEM install sanitize $2 $3 $4
     #sudo $GEM install msgpack-rpc $2 $3 $4
     #sudo $GEM install feed-normalizer $2 $3 $4
-    #sudo $GEM install will_pagenate $2 $3 $4
+    sudo $GEM install will_pagenate $2 $3 $4
     #sudo $GEM install gettext_rails $2 $3 $4
     #sudo $GEM install gettext_activerecord $2 $3 $4
     #sudo $GEM install sanitize $2 $3 $4
