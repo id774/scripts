@@ -111,7 +111,7 @@ editor_packages() {
       emacs23 emacs23-el \
       mew stunnel ca-certificates \
       w3m-el-snapshot w3m-img imagemagick \
-      libmagick9-dev \
+      libmagick9-dev libmagickwand-dev \
       vim vim-runtime colordiff \
       ctags
 }
