@@ -17,26 +17,26 @@ def lineno_zip(src)
     a.each do |f|
       tempfile = Tempfile::new(f.name)
       tempfile.print(f.read)
-      puts "#{lineno(tempfile.path)} #{f.name}"
+      puts "#{lineno(tempfile.path)}\t#{f.name}"
     end
   end
 end
 
-def run(subdir=false)
-  subdir = true unless ARGV[1].nil?
+def wc(subdir=true)
+  subdir = false unless ARGV[1].nil?
   Dir.filelist(ARGV[0], subdir).each {|f|
     if f =~ /\.zip\Z/
       lineno_zip(f)
     else
-      puts "#{lineno(f)} #{f}"
+      puts "#{lineno(f)}\t#{f}"
     end
   }
-  puts "#{@total} Total"
+  puts "#{@total}\t#{ARGV[0]}\t[Total]"
 end
 
 if __FILE__ == $0
   unless ARGV[0].nil?
-    run
+    wc
   else
     puts "Syntax: wc4zip zipdir"
   end
