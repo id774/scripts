@@ -149,6 +149,7 @@ lang_packages() {
       ghc \
       global \
       graphviz graphviz-dev \
+      gsl-bin libgsl-ruby libnarray-ruby \
       shunit2
 }
 
