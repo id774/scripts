@@ -45,6 +45,9 @@ gitpull_all() {
     pull_from_gitbare git private $*
     pull_from_gitbare git development $*
     pull_from_gitbare git data $*
+    pull_from_gitbare git id774-net $*
+    pull_from_gitbare git kabbala $*
+    pull_from_gitbare git goodstory $*
 }
 
 test -n "$2" || exit 2
