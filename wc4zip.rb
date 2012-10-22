@@ -1,23 +1,31 @@
-#!/opt/ruby/1.9.3/bin/ruby
+#!/usr/bin/env ruby
 
 require 'zipruby'
 require 'tempfile'
 require 'sysadmin'
 
-@total = 0
+@total_lines = 0
+@total_size = 0
 
-def lineno(path)
+def get_linesize(path)
   line = open(path).each{}.lineno
-  @total += line
+  @total_lines += line
   return line
 end
 
-def lineno_zip(src)
+def get_filesize(path)
+  size = File.size(path)
+  @total_size += size
+  return size
+end
+
+def unzip(src)
   Zip::Archive.open(src) do |a|
     a.each do |f|
       tempfile = Tempfile::new(f.name)
       tempfile.print(f.read)
-      puts "#{lineno(tempfile.path)}\t#{f.name}"
+      puts "#{get_linesize(tempfile.path)}\t#{get_filesize(tempfile.path)}\t#{f.name}"
+      tempfile.close
     end
   end
 end
@@ -26,12 +34,12 @@ def wc(subdir=true)
   subdir = false unless ARGV[1].nil?
   Dir.filelist(ARGV[0], subdir).each {|f|
     if f =~ /\.zip\Z/
-      lineno_zip(f)
+      unzip(f)
     else
-      puts "#{lineno(f)}\t#{f}"
+      puts "#{get_linesize(f)}\t#{get_filesize(f)}\t#{f}"
     end
   }
-  puts "#{@total}\t#{ARGV[0]}\t[Total]"
+  puts "#{@total_lines}\t#{@total_size}\t#{ARGV[0]}\t[Total]"
 end
 
 if __FILE__ == $0
