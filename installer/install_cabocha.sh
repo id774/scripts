@@ -56,6 +56,15 @@ install_cabocha() {
     ./configure --with-charset=UTF8 --with-posset=IPA
     make
     sudo make install
+    cd python
+    python setup.py build_ext
+    sudo python setup.py install
+    cd ..
+    cd ruby
+    ruby extconf.rb
+    make
+    sudo make install
+    cd ..
     cd ..
 
     test -n "$2" || save_sources
