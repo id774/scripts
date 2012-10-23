@@ -45,7 +45,7 @@ install_cabocha() {
     wget http://crfpp.googlecode.com/files/CRF%2B%2B-$CRF_VERSION.tar.gz
     tar xzvf "CRF++-$CRF_VERSION.tar.gz"
     cd "CRF++-$CRF_VERSION"
-    ./configure
+    ./configure --with-charset=UTF8 --with-posset=IPA
     make
     sudo make install
     cd ..
