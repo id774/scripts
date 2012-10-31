@@ -14,7 +14,7 @@
 ########################################################################
 
 setup_environment() {
-    VERSION=6.4
+    VERSION=6.5
     case $OSTYPE in
       *darwin*)
         OWNER=root:wheel

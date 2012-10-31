@@ -23,6 +23,8 @@ purge_old_modules() {
       sudo rm -rf /opt/ruby/1.9.2
     test -d /opt/ruby/1.9.3 && \
       sudo rm -rf /opt/ruby/1.9.3
+    test -d /usr/local/src/ruby/ruby-1.9.3-p194 && \
+      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p194
     test -d /usr/local/src/ruby/ruby-1.9.3-p125 && \
       sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p125
     test -d /usr/local/src/ruby/ruby-1.9.3-p0 && \

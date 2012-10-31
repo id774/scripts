@@ -18,7 +18,7 @@
 ########################################################################
 
 setup_environment() {
-    test -n "$1" || PACO_VERSION=2.0.7
+    test -n "$1" || PACO_VERSION=2.0.9
     test -n "$1" && PACO_VERSION=$1
 }
 

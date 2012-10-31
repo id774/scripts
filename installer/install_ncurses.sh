@@ -16,7 +16,7 @@
 ########################################################################
 
 setup_environment() {
-    test -n "$1" || VERSION=5.7
+    test -n "$1" || VERSION=5.9
     test -n "$1" && VERSION=$1
     test -n "$3" || SUDO=sudo
     test -n "$3" && SUDO=

@@ -20,7 +20,7 @@
 ########################################################################
 
 setup_environment() {
-    test -n "$1" || VERSION=1.8.3
+    test -n "$1" || VERSION=1.8.4
     test -n "$1" && VERSION=$1
     SOURCE="http://downloads.sourceforge.net/navi2ch/navi2ch-$VERSION.tar.gz"
 

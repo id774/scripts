@@ -14,7 +14,7 @@
 ########################################################################
 
 setup_environment() {
-    test -n "$1" || VERSION=0.8.0
+    test -n "$1" || VERSION=0.8.14
     test -n "$1" && VERSION=$1
     NODE=node-v$VERSION
 }
