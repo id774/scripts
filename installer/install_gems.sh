@@ -78,7 +78,6 @@ install_gem() {
     sudo $GEM install sanitize $2 $3 $4
     sudo $GEM install msgpack-rpc $2 $3 $4
     sudo $GEM install feed-normalizer $2 $3 $4
-    sudo $GEM install will_pagenate $2 $3 $4
     sudo $GEM install gettext_rails $2 $3 $4
     sudo $GEM install gettext_activerecord $2 $3 $4
     sudo $GEM install searchlogic $2 $3 $4
