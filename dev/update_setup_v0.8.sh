@@ -78,7 +78,7 @@ operation() {
     install_ruby_and_rails
     install_nodejs_and_coffeescript
     deploy_dotfiles
-    install_cronjob
+    # install_cronjob
     secure_settings
     install_dot_files
     purge_old_modules
