@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.21 10/31,2012
+#       Update to ruby 1.9.3-p286.
 # v1.20 4/20,2012
 #       Update to ruby 1.9.3-p194.
 # v1.19 2/19,2012
@@ -143,6 +145,9 @@ setup_environment() {
 install_ruby() {
     setup_environment
     case "$1" in
+      193-286)
+        install_stable 1.9.3-p286 1.9 $2
+        ;;
       193-194)
         install_stable 1.9.3-p194 1.9 $2
         ;;

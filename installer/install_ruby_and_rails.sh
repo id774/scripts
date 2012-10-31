@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.4 10/31,2012
+#       Update to ruby 1.9.3-p286.
 #  v0.3 2/19,2012
 #       Update to ruby 1.9.3-p125.
 #  v0.2 1/24,2012
@@ -34,7 +36,7 @@ purge_old_modules() {
 }
 
 install_ruby() {
-    $SCRIPTS/installer/install_ruby.sh 193-194 /opt/ruby/1.9.3
+    $SCRIPTS/installer/install_ruby.sh 193-286 /opt/ruby/1.9.3
     $SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.3
     $SCRIPTS/installer/install_termtter_plugins.sh
 }
