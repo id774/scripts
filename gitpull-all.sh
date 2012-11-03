@@ -125,6 +125,7 @@ gitpull_all() {
     gitpull github kchmck vim-coffee-script $*
     gitpull github tpope vim-haml $*
     gitpull github genki rub $*
+    gitpull github kentaro triglav $*
 }
 
 main() {
