@@ -145,6 +145,9 @@ setup_environment() {
 install_ruby() {
     setup_environment
     case "$1" in
+      193-327)
+        install_stable 1.9.3-p327 1.9 $2
+        ;;
       193-286)
         install_stable 1.9.3-p286 1.9 $2
         ;;
