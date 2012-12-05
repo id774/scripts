@@ -71,6 +71,8 @@ install_gem() {
     sudo $GEM install sqlite3-ruby $2 $3 $4
     sudo $GEM install -v 1.4.2 rubytter $2 $3 $4
     sudo $GEM install -v 1.11.0 termtter $2 $3 $4
+    sudo $GEM install userstream $2 $3 $4
+    sudo $GEM install webtail $2 $3 $4
     sudo $GEM install zipruby $2 $3 $4
     sudo $GEM install oauth $2 $3 $4
     sudo $GEM install webrat $2 $3 $4
