@@ -13,6 +13,14 @@
 setup_environment() {
     test -n "$1" || VERSION=3.0.4
     test -n "$1" && VERSION=$1
+    case $OSTYPE in
+      *darwin*)
+        OWNER=root:wheel
+        ;;
+      *)
+        OWNER=root:root
+        ;;
+    esac
 }
 
 install_maven() {
@@ -26,6 +34,7 @@ install_maven() {
     test -d /opt/maven/$VERSION && sudo rm -rf /opt/maven/$VERSION
     sudo mkdir -p /opt/maven/$VERSION
     sudo mv apache-maven-$VERSION/* /opt/maven/$VERSION
+    sudo chown -R $OWNER /opt/maven/$VERSION
 
     cd ..
     rm -rf install_maven
