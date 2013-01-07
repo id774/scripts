@@ -4,7 +4,7 @@ md5_universal() {
     if [ -x $SCRIPTS/md5dir.py ]; then
         $SCRIPTS/md5dir.py $*
     elif [ -x $SCRIPTS/md5dir.rb ]; then
-        $SCRIPTS/md5dir.rb $*
+        $SCRIPTS/md5.rb $*
     else
         case $OSTYPE in
           *darwin*)
