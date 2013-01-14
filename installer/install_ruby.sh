@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.24 1/15,2013
+#       Add --with-opt-dir option.
 # v1.23 1/7,2013
 #       Update to ruby 1.9.3-p362.
 # v1.22 11/12,2012
@@ -72,8 +74,8 @@ make_ext_module() {
 
 make_and_install() {
     sudo autoconf
-    test -n "$1" || sudo ./configure
-    test -n "$1" && sudo ./configure --prefix $1
+    test -n "$1" || sudo ./configure --with-opt-dir=/usr/local
+    test -n "$1" && sudo ./configure --prefix $1 --with-opt-dir=/usr/local
     sudo make
     sudo make install
 }
