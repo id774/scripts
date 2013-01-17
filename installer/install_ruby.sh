@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.25 1/17,2013
+#       Update to ruby 1.9.3-p374.
 # v1.24 1/15,2013
 #       Add --with-opt-dir option.
 # v1.23 1/7,2013
@@ -151,6 +153,9 @@ setup_environment() {
 install_ruby() {
     setup_environment
     case "$1" in
+      193-374)
+        install_stable 1.9.3-p374 1.9 $2
+        ;;
       193-362)
         install_stable 1.9.3-p362 1.9 $2
         ;;
