@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.7 1/17,2013
+#       Update to ruby 1.9.3-p374.
 #  v0.6 1/7,2013
 #       Update to ruby 1.9.3-p362.
 #  v0.5 11/12,2012
@@ -27,6 +29,8 @@ purge_old_modules() {
       sudo rm -rf /opt/ruby/1.9.2
     test -d /opt/ruby/1.9.3 && \
       sudo rm -rf /opt/ruby/1.9.3
+    test -d /usr/local/src/ruby/ruby-1.9.3-p362 && \
+      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p362
     test -d /usr/local/src/ruby/ruby-1.9.3-p327 && \
       sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p327
     test -d /usr/local/src/ruby/ruby-1.9.3-p286 && \
@@ -46,7 +50,7 @@ purge_old_modules() {
 }
 
 install_ruby() {
-    $SCRIPTS/installer/install_ruby.sh 193-362 /opt/ruby/1.9.3
+    $SCRIPTS/installer/install_ruby.sh 193-374 /opt/ruby/1.9.3
     $SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.3
     $SCRIPTS/installer/install_termtter_plugins.sh
 }
