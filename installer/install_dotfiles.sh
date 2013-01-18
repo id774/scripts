@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.8 1/18,2013
+#       Delete unnecessary symlinks.
 #  v1.7 2/20,2012
 #       Change default emacs lisp directory to /usr/local/etc/emacs.d.
 #  v1.6 1/11,2012
@@ -87,6 +89,8 @@ setup_dotemacs() {
     sudo touch $1/.emacs.d/anything/anything-c-adaptive-history
     test -d /usr/local/etc/emacs.d/elisp && \
       sudo ln -fs /usr/local/etc/emacs.d/elisp $1/.emacs.d/elisp
+    test -L /usr/local/etc/emacs.d/elisp/elisp && \
+      sudo rm /usr/local/etc/emacs.d/elisp/elisp
 }
 
 mkdir_skelton() {
