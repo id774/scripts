@@ -4,10 +4,14 @@
 # Install Mecab
 #  $1 = mecab version
 #  $2 = ipadic version
-#  $3 = not save to src
+#  $3 = naistdic version
+#  $4 = naistdic version
+#  $5 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 1/28,2013
+#       Add NAIST dic.
 #  v0.1 8/7,2012
 #       First.
 ########################################################################
@@ -17,6 +21,10 @@ setup_environment() {
     test -n "$1" && MECAB_VERSION=$1
     test -n "$2" || IPADIC_VERSION=2.7.0-20070801
     test -n "$2" && IPADIC_VERSION=$2
+    test -n "$3" || NAISTDIC_VERSION=0.6.3b-20111013
+    test -n "$3" && NAISTDIC_VERSION=$3
+    test -n "$4" || NAISTDIC_NUM=53500
+    test -n "$4" && NAISTDIC_NUM=$4
     case $OSTYPE in
       *darwin*)
         OWNER=root:wheel
@@ -35,6 +43,7 @@ save_sources() {
     sudo cp $OPTIONS mecab-ruby-$MECAB_VERSION /usr/local/src/mecab
     sudo cp $OPTIONS mecab-python-$MECAB_VERSION /usr/local/src/mecab
     sudo cp $OPTIONS mecab-ipadic-$IPADIC_VERSION /usr/local/src/mecab
+    sudo cp $OPTIONS mecab-naist-jdic-$NAISTDIC_VERSION /usr/local/src/mecab
     sudo chown -R root:root /usr/local/src/mecab
 }
 
@@ -71,8 +80,15 @@ install_mecab() {
     make
     sudo make install
     cd ..
+    wget "http://sourceforge.jp/frs/redir.php?m=iij&f=%2Fnaist-jdic%2F$NAISTDIC_NUM%2Fmecab-naist-jdic-$NAISTDIC_VERSION.tar.gz" -O naistdic.tar.gz
+    tar xzvf naistdic.tar.gz
+    cd mecab-naist-jdic-$NAISTDIC_VERSION
+    ./configure --with-charset=utf8
+    make
+    sudo make install
+    cd ..
 
-    test -n "$2" || save_sources
+    test -n "$5" || save_sources
     cd ..
     rm -rf install_mecab
 }
