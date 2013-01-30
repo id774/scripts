@@ -105,6 +105,7 @@ gitpull_all() {
     gitpull github id774 intraweb-template $*
     gitpull github id774 automaticruby $*
     gitpull github id774 heartbeat-id774net $*
+    gitpull github id774 hadoop-streaming-with-ruby $*
     gitpull github id774 rurima $*
     gitpull github id774 okura $*
     gitpull github sandal rbp $*
