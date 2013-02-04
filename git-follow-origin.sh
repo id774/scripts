@@ -15,12 +15,16 @@ git_merge() {
 }
 
 main() {
-    test -d $HOME/local/github || mkdir -p $HOME/local/github
-    test -d $HOME/local/git || mkdir -p $HOME/local/git
-    git_merge $*
+    if [ -n "$2" ]; then
+        setup_environment $*
+        ping -c 1 id774.net > /dev/null 2>&1 || exit 1
+        test -d $HOME/local/github || mkdir -p $HOME/local/github
+        test -d $HOME/local/git || mkdir -p $HOME/local/git
+        git_merge $*
+    else
+        echo "usage: git-follow-origin <user> <repo>"
+        exit 1
+    fi
 }
 
-test -n "$2" || echo "usage: git-follow-origin <user> <repo>" && exit 1
-setup_environment $*
-ping -c 1 id774.net > /dev/null 2>&1 || exit 1
-git_merge $*
+main $*
