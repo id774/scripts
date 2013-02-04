@@ -1,16 +1,5 @@
 #!/bin/sh
 
-########################################################################
-# Following origin master
-#  $1 = user
-#  $2 = host
-#
-#  Maintainer: id774 <idnanashi@gmail.com>
-#
-#  v0.1 2/4,2013
-#       First.
-########################################################################
-
 setup_environment() {
     GITBARE_USER=$1
     GITBARE_HOST=$2
@@ -31,7 +20,7 @@ main() {
     git_merge $*
 }
 
-test -n "$2" || exit 1
+test -n "$2" || echo "usage: git-follow-origin <user> <repo>" && exit 1
 setup_environment $*
 ping -c 1 id774.net > /dev/null 2>&1 || exit 1
 git_merge $*

@@ -50,6 +50,7 @@ uninstall_sysadmin_scripts() {
         namecalc \
         waitlock \
         swapext \
+        git-follow-origin \
         get_resources \
         tcmount \
         dpkg-hold
@@ -68,6 +69,7 @@ setup_scripts() {
     install_scripts 755 namecalc.rb namecalc
     install_scripts 755 waitlock.rb waitlock
     install_scripts 755 swapext.py swapext
+    install_scripts 755 git-follow-origin.sh git-follow-origin
 }
 
 setup_rhel_scripts() {
