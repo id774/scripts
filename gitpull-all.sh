@@ -107,8 +107,8 @@ gitpull_all() {
     gitpull github id774 heartbeat-id774net $*
     gitpull github id774 hadoop-streaming-with-ruby $*
     gitpull github id774 rurima $*
-    gitpull github id774 termtter $*
     gitpull github id774 okura $*
+    gitpull github termtter termtter $*
     gitpull github sandal rbp $*
     gitpull github termtter termtter $*
     gitpull github miyagawa plagger $*
