@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.9 2/5,2013
+#       Add gemrc.
 #  v1.8 1/18,2013
 #       Delete unnecessary symlinks.
 #  v1.7 2/20,2012
@@ -58,7 +60,7 @@ emacs_batch_byte_compile() {
 }
 
 deploy_dotfile() {
-    for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore toprc emacs
+    for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore toprc gemrc emacs
     do
         test -d $1 && sudo cp $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES $1/.$DOT_FILES
     done
