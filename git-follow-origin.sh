@@ -11,9 +11,7 @@ git_merge() {
 
 main() {
     if [ -n "$2" ]; then
-        ping -c 1 id774.net > /dev/null 2>&1 || exit 1
-        test -d $HOME/local/github || mkdir -p $HOME/local/github
-        test -d $HOME/local/git || mkdir -p $HOME/local/git
+        ping -c 1 github.com > /dev/null 2>&1 || exit 1
         git_merge $*
     else
         echo "usage: git-follow-origin <user> <repo>"
