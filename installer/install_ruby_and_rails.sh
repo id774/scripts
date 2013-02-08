@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.9 2/9,2013
+#       Update to ruby 2.0.
 #  v0.8 2/8,2013
 #       Update to ruby 1.9.3-p385.
 #  v0.7 1/17,2013
@@ -29,8 +31,6 @@ test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
 purge_old_modules() {
     test -d /opt/ruby/1.9.2 && \
       sudo rm -rf /opt/ruby/1.9.2
-    test -d /opt/ruby/1.9.3 && \
-      sudo rm -rf /opt/ruby/1.9.3
     test -d /usr/local/src/ruby/ruby-1.9.3-p374 && \
       sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p374
     test -d /usr/local/src/ruby/ruby-1.9.3-p362 && \
@@ -54,8 +54,8 @@ purge_old_modules() {
 }
 
 install_ruby() {
-    $SCRIPTS/installer/install_ruby.sh 193-385 /opt/ruby/1.9.3
-    $SCRIPTS/installer/install_gems.sh /opt/ruby/1.9.3
+    $SCRIPTS/installer/install_ruby.sh 20-svn /opt/ruby/2.0
+    $SCRIPTS/installer/install_gems.sh /opt/ruby/2.0
     $SCRIPTS/installer/install_termtter_plugins.sh
 }
 
