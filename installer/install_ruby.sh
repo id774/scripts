@@ -155,6 +155,9 @@ setup_environment() {
 install_ruby() {
     setup_environment
     case "$1" in
+      20-svn)
+        install_branch ruby_2_0_0 $2
+        ;;
       193-385)
         install_stable 1.9.3-p385 1.9 $2
         ;;
