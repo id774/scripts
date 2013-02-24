@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.28 2/24,2013
+#       Add ruby 2.0 stable.
 # v1.27 2/9,2013
 #       Update to ruby 2.0.
 # v1.26 2/8,2013
@@ -157,8 +159,8 @@ setup_environment() {
 install_ruby() {
     setup_environment
     case "$1" in
-      20-svn)
-        install_branch ruby_2_0_0 $2
+      200-0)
+        install_stable 2.0.0-p0 2.0 $2
         ;;
       193-385)
         install_stable 1.9.3-p385 1.9 $2
@@ -246,6 +248,9 @@ install_ruby() {
         ;;
       186-287)
         install_stable 1.8.6-p287 1.8 $2
+        ;;
+      20-svn)
+        install_branch ruby_2_0_0 $2
         ;;
       18-svn)
         install_branch ruby_1_8 $2
