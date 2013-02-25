@@ -9,6 +9,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.15 2/25,2013
+#       Update to 1.8.25.
 # v1.14 2/2,2012
 #       Add 1.5.2 and 1.5.3.
 # v1.13 5/31,2011
@@ -113,8 +115,11 @@ install_rubygems() {
       172)
         get_rubygems 1.7.2 74618
         ;;
-      *)
+      182)
         get_rubygems 1.8.2 74848
+        ;;
+      *)
+        get_rubygems 1.8.25 76728
         ;;
     esac
 
