@@ -112,6 +112,7 @@ install_gem() {
     sudo $GEM install wukong $2 $3 $4
     #sudo $GEM install hadoop-papyrus $2 $3 $4
     #sudo $GEM install jruby-on-hadoop $2 $3 $4
+    sudo $GEM install fluentd $2 $3 $4
     sudo $GEM install passenger $2 $3 $4
     $GEM list --local
 }
