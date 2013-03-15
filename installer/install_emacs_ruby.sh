@@ -2,11 +2,13 @@
 #
 ########################################################################
 # Install Emacs Ruby
-#  $1 = ruby misc path (ex. /usr/local/src/ruby/ruby-1.9.2-p290/misc)
+#  $1 = ruby misc path (ex. /usr/local/src/ruby/ruby-1.9.3-p385/misc)
 #  $2 = site list path (ex. ~/.emacs.d/elisp/3rd-party/ruby-mode)
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.5 3/15,2013
+#       Fix permissions, refactoring.
 #  v1.4 11/15,2011
 #       Show usage.
 #  v1.3 9/13,2011
@@ -19,12 +21,24 @@
 #       Stable.
 ########################################################################
 
-install_emacs_ruby() {
+setup_environment() {
     test -n "$1" || echo "Usage: $0 [ruby-misc] [site-lisp]"
     test -n "$1" || exit 1
     test -n "$1" && RUBY_MISC=$1
     test -n "$2" || SITE_LISP=$HOME/.emacs.d/elisp/3rd-party/ruby-mode
     test -n "$2" && SITE_LISP=$2
+    case $OSTYPE in
+      *darwin*)
+        OWNER=root:wheel
+        ;;
+      *)
+        OWNER=root:root
+        ;;
+    esac
+}
+
+install_emacs_ruby() {
+    setup_environment $*
     test -f $SITE_LISP/ruby-mode.el && sudo rm $SITE_LISP/ruby-mode.el
     sudo cp $RUBY_MISC/ruby-mode.el $SITE_LISP/ruby-mode.el
     test -f $SITE_LISP/ruby-style.el && sudo rm $SITE_LISP/ruby-style.el
@@ -52,6 +66,7 @@ install_emacs_ruby() {
     sudo emacs --batch --eval '(byte-compile-file "rubydb2x.el")'
     test -f rubydb3x.elc && sudo rm rubydb3x.elc
     sudo emacs --batch --eval '(byte-compile-file "rubydb3x.el")'
+    sudo chown -R $OWNER $SITE_LISP
 }
 
-install_emacs_ruby $1 $2
+install_emacs_ruby $*
