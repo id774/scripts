@@ -13,7 +13,7 @@ test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
 test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
 
 install_emacs() {
-    VERSION=23.4
+    VERSION=24.3
     $SCRIPTS/installer/install_emacs.sh $VERSION /opt/emacs/$VERSION
     $SCRIPTS/installer/install_emacs_w3m.sh /opt/emacs/$VERSION
     $SCRIPTS/installer/install_mew.sh /opt/emacs/$VERSION/bin/emacs

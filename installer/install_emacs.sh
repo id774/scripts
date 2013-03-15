@@ -9,6 +9,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.4 3/15,2013
+#       Update to Emacs 24.3, Change install source path.
 #  v0.3 3/17,2011
 #       Emacs 23.3.
 #  v0.2 9/16,2010
@@ -19,7 +21,7 @@
 
 setup_environment() {
     test -n "$1" && EMACS_VERSION=$1
-    test -n "$1" || EMACS_VERSION=24.1
+    test -n "$1" || EMACS_VERSION=24.3
     test -n "$3" && BUILD_OPTIONS=$3
     test -n "$3" || BUILD_OPTIONS=--with-ns
     test -n "$4" || SUDO=sudo
@@ -66,9 +68,9 @@ make_and_install() {
 get_emacs() {
     mkdir install_emacs
     cd install_emacs
-    wget ftp://ftp.ring.gr.jp/pub/GNU/emacs/emacs-$EMACS_VERSION.tar.bz2
-    test -f emacs-$EMACS_VERSION.tar.bz2 || exit 1
-    tar xjvf emacs-$EMACS_VERSION.tar.bz2
+    wget http://ftpmirror.gnu.org/emacs/emacs-$EMACS_VERSION.tar.gz
+    test -f emacs-$EMACS_VERSION.tar.gz || exit 1
+    tar xzvf emacs-$EMACS_VERSION.tar.gz
     test "$2" = "sourceonly" || make_and_install $*
     test -n "$4" || save_sources
     cd ..

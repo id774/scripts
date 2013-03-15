@@ -8,7 +8,7 @@
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
 #  v1.5 3/15,2013
-#       Fix permissions, refactoring.
+#       Refactoring.
 #  v1.4 11/15,2011
 #       Show usage.
 #  v1.3 9/13,2011
@@ -27,14 +27,6 @@ setup_environment() {
     test -n "$1" && RUBY_MISC=$1
     test -n "$2" || SITE_LISP=$HOME/.emacs.d/elisp/3rd-party/ruby-mode
     test -n "$2" && SITE_LISP=$2
-    case $OSTYPE in
-      *darwin*)
-        OWNER=root:wheel
-        ;;
-      *)
-        OWNER=root:root
-        ;;
-    esac
 }
 
 install_emacs_ruby() {
@@ -66,7 +58,6 @@ install_emacs_ruby() {
     sudo emacs --batch --eval '(byte-compile-file "rubydb2x.el")'
     test -f rubydb3x.elc && sudo rm rubydb3x.elc
     sudo emacs --batch --eval '(byte-compile-file "rubydb3x.el")'
-    sudo chown -R $OWNER $SITE_LISP
 }
 
 install_emacs_ruby $*
