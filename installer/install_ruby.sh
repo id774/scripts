@@ -162,6 +162,9 @@ install_ruby() {
       200-0)
         install_stable 2.0.0-p0 2.0 $2
         ;;
+      193-392)
+        install_stable 1.9.3-p392 1.9 $2
+        ;;
       193-385)
         install_stable 1.9.3-p385 1.9 $2
         ;;
