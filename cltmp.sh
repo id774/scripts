@@ -2,6 +2,7 @@
 
 rm -rf ~/tmp/*
 rm -rf ~/.tmp/*
+rm -f ~/hardcopy.*
 test -f ~/.emacs.d/%backup%\~ && rm ~/.emacs.d/%backup%\~
 test -f ~/%backup%\~ && rm ~/%backup%\~
 rm -rf ~/.emacs.d/tmp/*
