@@ -28,4 +28,5 @@ autodetach on
 
 log off
 logfile "$TMP/screen-%Y%m%d-%n.log"
+hardcopydir "$TMP"
 deflog on
