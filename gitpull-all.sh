@@ -116,7 +116,9 @@ gitpull_all() {
     gitpull github twitter bootstrap $*
     gitpull github eschulte rhtml $*
     gitpull github eschulte rinari $*
-    gitpull github m2ym auto-complete $*
+    gitpull github auto-complete auto-complete $*
+    gitpull github auto-complete popup-el $*
+    gitpull github auto-complete fuzzy-el $*
     gitpull github rooney zencoding $*
     gitpull github hober html5-el $*
     gitpull github nex3 haml-mode $*
