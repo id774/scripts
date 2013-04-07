@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 4/7,2013
+#       Add meteor.
 #  v1.0 6/26,2012
 #       Stable.
 #  v0.1 11/22,2011
@@ -29,6 +31,10 @@ install_npm() {
     sudo sh -c 'curl http://npmjs.org/install.sh | sh'
 }
 
+install_meteor() {
+    sudo sh -c 'curl http://install.meteor.com | sh'
+}
+
 install_node() {
     setup_environment $*
 
@@ -46,6 +52,7 @@ install_node() {
     cd ..
     rm -rf install_node
     install_npm $*
+    install_meteor $*
 }
 
 ping -c 1 id774.net > /dev/null 2>&1 || exit 1
