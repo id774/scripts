@@ -69,8 +69,8 @@ install_gem() {
     sudo $GEM install gherkin $2 $3 $4
     sudo $GEM install cucumber $2 $3 $4
     sudo $GEM install sqlite3-ruby $2 $3 $4
-    sudo $GEM install -v 1.4.2 rubytter $2 $3 $4
-    sudo $GEM install -v 1.11.0 termtter $2 $3 $4
+    sudo $GEM install -v 1.5.1 rubytter $2 $3 $4
+    sudo $GEM install -v 2.1.1 termtter $2 $3 $4
     sudo $GEM install userstream $2 $3 $4
     sudo $GEM install webtail $2 $3 $4
     sudo $GEM install zipruby $2 $3 $4
