@@ -14,12 +14,6 @@ class << NameCalc
     /[0-5]/ =~ str
   end
 
-  def print_header(header_count)
-    header_count.times do
-      $stdout.printf(" ")
-    end
-  end
-
   def split_array(parse_string)
     base_array = Array.new
     split_char = parse_string.scan(/.{1,1}/m)
@@ -31,6 +25,12 @@ class << NameCalc
       i += 1
     end
     base_array
+  end
+
+  def print_header(header_count)
+    header_count.times do
+      $stdout.printf(" ")
+    end
   end
 
   def cross_sum(base_array, calc_array)
@@ -93,7 +93,7 @@ def main
 end
 
 def author
-  "id774 <774@id774.net>"
+  "id774 <http://id774.net>"
 end
 
 def version
