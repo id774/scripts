@@ -39,7 +39,7 @@ fonts_packages() {
 
 input_method() {
     smart_apt \
-      anthy ibus-anthy uim-anthy
+      anthy
 }
 
 package_manager() {
