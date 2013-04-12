@@ -109,9 +109,9 @@ gitpull_all() {
     gitpull github id774 rurima $*
     gitpull github id774 okura $*
     gitpull github termtter termtter $*
+    gitpull github jugyo rubytter $*
     gitpull github fluent fluentd $*
     gitpull github sandal rbp $*
-    gitpull github termtter termtter $*
     gitpull github miyagawa plagger $*
     gitpull github twitter bootstrap $*
     gitpull github eschulte rhtml $*
