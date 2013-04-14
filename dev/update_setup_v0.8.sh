@@ -79,7 +79,7 @@ operation() {
     install_nodejs_and_coffeescript
     deploy_dotfiles
     # install_cronjob
-    secure_settings
+    #secure_settings
     install_dot_files
     purge_old_modules
 }

@@ -3,6 +3,7 @@
 rm -rf ~/tmp/*
 rm -rf ~/.tmp/*
 rm -f ~/hardcopy.*
+rm -f ~/wget-log*
 test -f ~/.emacs.d/%backup%\~ && rm ~/.emacs.d/%backup%\~
 test -f ~/%backup%\~ && rm ~/%backup%\~
 rm -rf ~/.emacs.d/tmp/*
