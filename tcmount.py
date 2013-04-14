@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 4/14,2013
+#       Implement file mount function.
 #  v1.1 1/26,2012
 #       Refactoring, and for legacy device.
 #  v1.0 8/6,2010
@@ -17,25 +19,46 @@ def os_exec(cmd, device):
     os.system('sudo dmesg | grep ' + device)
     os.system(cmd)
 
-def os_command(options, args, mount_options, device):
+def mount_drive(options, args, mount_options, device):
     if options.partition:
         cmd = 'test -b /dev/' + device + options.partition +\
         ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
-        mount_options + ' /dev/' + device + options.partition + ' ~/mnt/' + device 
+        mount_options + ' /dev/' + device + options.partition + ' ~/mnt/' + device
     else:
         cmd = 'test -b /dev/' + device +\
         ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
         mount_options + ' /dev/' + device + ' ~/mnt/' + device
     os_exec(cmd, device)
 
-def tcmount(options, args):
-    mount_local('`/bin/hostname`')
-    if options.legacy or options.all:
-        mount_legacy()
-    if options.local:
-        pass
-    else:
-        mount_device(options, args)
+def mount_file(options, args, mount_options, device, mount_point, filename):
+    cmd = 'test -f /mnt/' + device + '/' + filename +\
+    ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
+    mount_options + ' /mnt/' + device + '/' + filename + ' ~/mnt/' + mount_point
+    os_exec(cmd, device)
+
+def partition(options, args, mount_options, device):
+    mount_drive(options, args, mount_options, device)
+    mount_file(options, args, mount_options, device, device + '1', 'data1')
+    mount_file(options, args, mount_options, device, device + '2', 'data2')
+
+def mount_device(options, args):
+    mount_options = 'utf8'
+    if options.readonly:
+        mount_options = 'ro,' + mount_options
+
+    partition(options, args, mount_options, 'sdb')
+
+    if options.all:
+        mount_all(options, args, mount_options)
+
+def mount_all(options, args, mount_options):
+    if options.half and not options.readonly:
+        mount_options = 'ro,' + mount_options
+
+    partition(options, args, mount_options, 'sdc')
+    partition(options, args, mount_options, 'sdd')
+    partition(options, args, mount_options, 'sde')
+    partition(options, args, mount_options, 'sdf')
 
 def mount_legacy():
     mount_local('pc98a')
@@ -48,23 +71,14 @@ def mount_local(device):
           '--fs-options=utf8 ~/local/' + device + '.tc ~/mnt/' + device
     os.system(cmd)
 
-def mount_device(options, args):
-    mount_options = 'utf8'
-    if options.readonly:
-        mount_options = 'ro,' + mount_options
-
-    os_command(options, args, mount_options, 'sdb')
-    if options.all:
-        mount_all(options, args, mount_options)
-
-def mount_all(options, args, mount_options):
-    if options.half and not options.readonly:
-        mount_options = 'ro,' + mount_options
-
-    os_command(options, args, mount_options, 'sdc')
-    os_command(options, args, mount_options, 'sdd')
-    os_command(options, args, mount_options, 'sde')
-    os_command(options, args, mount_options, 'sdf')
+def tcmount(options, args):
+    mount_local('`/bin/hostname`')
+    if options.legacy or options.all:
+        mount_legacy()
+    if options.local:
+        pass
+    else:
+        mount_device(options, args)
 
 def main():
     from optparse import OptionParser
