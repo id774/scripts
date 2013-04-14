@@ -16,7 +16,7 @@
 import sys, os
 
 def os_exec(cmd, device):
-    os.system('sudo dmesg | grep ' + device)
+    os.system('dmesg | grep ' + device)
     os.system(cmd)
 
 def mount_drive(options, args, mount_options, device):
