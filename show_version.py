@@ -45,6 +45,8 @@ def show_version():
     print(m.docutils_version())
     print(m.textile_version())
     print(m.webpy_version())
+    print(m.bottle_version())
+    print(m.cherrypy_version())
     print(m.nltk_version())
     print(m.MeCab_version())
 
@@ -62,6 +64,8 @@ def module_install():
     os.system('sudo easy_install uuid')
     os.system('sudo easy_install textile')
     os.system('sudo easy_install web.py')
+    os.system('sudo easy install -U bottle')
+    os.system('sudo easy_install -U cherrypy')
     os.system('sudo easy_install -U distribute')
     os.system('sudo easy_install pip')
     os.system('sudo pip install -U numpy')

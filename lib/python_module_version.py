@@ -115,6 +115,20 @@ class PythonModuleVersion:
         except ImportError:
             return 'web.py ImportError'
 
+    def bottle_version(self):
+        try:
+            import bottle
+            return 'bottle', bottle.__version__
+        except ImportError:
+            return 'bottle ImportError'
+
+    def cherrypy_version(self):
+        try:
+            import cherrypy
+            return 'cherrypy', cherrypy.__version__
+        except ImportError:
+            return 'cherrypy ImportError'
+
     def nltk_version(self):
         try:
             import nltk
