@@ -63,6 +63,7 @@ install_gem() {
     sudo $GEM install flexmock $2 $3 $4
     sudo $GEM install simplecov $2 $3 $4
     sudo $GEM install simplecov-rcov $2 $3 $4
+    sudo $GEM install sequel $2 $3 $4
     sudo $GEM install thrift $2 $3 $4
     sudo $GEM install json $2 $3 $4
     sudo $GEM install rdoc $2 $3 $4
