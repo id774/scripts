@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.15 4/18,2013
+#       Directories re-construction.
 # v1.14 11/14,2011
 #       Backup git bare on vps.
 # v1.13 9/20,2011
@@ -101,22 +103,14 @@ rsync_disk2ssh_1() {
     rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user3 \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
-  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/VMwareImages && \
-    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/VMwareImages \
-    $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
-  echo "Return code is $?"
 }
 
 rsync_disk2ssh_2() {
   echo -n "* Executing rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST on "
   date "+%Y/%m/%d %T"
-  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/iso && \
-    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/iso \
-    $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
-  echo "Return code is $?"
-  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/Movies && \
-    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/Movies \
-    $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles && \
+    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles \
+    $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
 }
 
@@ -138,25 +132,15 @@ rsync_disk2disk_1() {
     rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/user3 \
     $T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
-  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/VMwareImages && \
-    test -d $T_HOME/$T_MOUNT/$T_DEVICE/largefiles && \
-    rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/VMwareImages \
-    $T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
-  echo "Return code is $?"
 }
 
 rsync_disk2disk_2() {
   echo -n "* Executing rsync_disk2disk_2 $B_DEVICE -> $T_DEVICE on "
   date "+%Y/%m/%d %T"
-  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/iso && \
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles && \
     test -d $T_HOME/$T_MOUNT/$T_DEVICE/largefiles && \
-    rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/iso \
-    $T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
-  echo "Return code is $?"
-  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/Movies && \
-    test -d $T_HOME/$T_MOUNT/$T_DEVICE/largefiles && \
-    rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/largefiles/Movies \
-    $T_HOME/$T_MOUNT/$T_DEVICE/largefiles/
+    rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/largefiles \
+    $T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
 }
 
