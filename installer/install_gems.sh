@@ -93,6 +93,7 @@ install_gem() {
     sudo $GEM install tzinfo $2 $3 $4
     sudo $GEM install guard-coffeescript $2 $3 $4
     sudo $GEM install rb-fsevent $2 $3 $4
+    sudo $GEM install iconv $2 $3 $4
     sudo $GEM install -v 0.4.2 i18n $2 $3 $4
     sudo $GEM install execjs $2 $3 $4
     sudo $GEM install therubyracer $2 $3 $4
