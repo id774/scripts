@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.1 4/21,2013
+#       --no-ri --no-rdoc option as default.
 #  v2.0 10/31,2012
 #       Add some gems.
 #  v1.0 8/15,2008
@@ -18,105 +20,105 @@ install_gem() {
     test -n "$1" || export GEM=gem
     export RUBYOPT=rubygems
     sudo $GEM update --system $2 $3 $4
-    sudo $GEM install pry $2 $3 $4
-    sudo $GEM install rake $2 $3 $4
-    sudo $GEM install bundler $2 $3 $4
-    sudo $GEM install minitest $2 $3 $4
-    sudo $GEM install rails $2 $3 $4
-    sudo $GEM install sqlite3 $2 $3 $4
-    sudo $GEM install sass $2 $3 $4
-    sudo $GEM install sass-rails $2 $3 $4
-    sudo $GEM install coffee-script $2 $3 $4
-    sudo $GEM install coffee-rails $2 $3 $4
-    sudo $GEM install jquery-rails $2 $3 $4
-    sudo $GEM install haml $2 $3 $4
-    sudo $GEM install haml-rails $2 $3 $4
-    sudo $GEM install dalli $2 $3 $4
-    sudo $GEM install backbone-rails $2 $3 $4
-    sudo $GEM install uglifier $2 $3 $4
-    sudo $GEM install devise '-v < 2' $2 $3 $4
-    sudo $GEM install kaminari $2 $3 $4
-    sudo $GEM install i18n_generators $2 $3 $4
-    sudo $GEM install jeweler $2 $3 $4
-    sudo $GEM install will_paginate $2 $3 $4
-    sudo $GEM install meta_search $2 $3 $4
-    sudo $GEM install enumerable-lazy $2 $3 $4
-    sudo $GEM install term-ansicolor $2 $3 $4
-    sudo $GEM install turn $2 $3 $4
-    sudo $GEM install hpricot $2 $3 $4
-    sudo $GEM install mechanize $2 $3 $4
-    sudo $GEM install nokogiri $2 $3 $4
-    sudo $GEM install Selenium $2 $3 $4
-    sudo $GEM install pg $2 $3 $4
-    sudo $GEM install postgres $2 $3 $4
-    sudo $GEM install mysql2 $2 $3 $4
-    sudo $GEM install BlueCloth $2 $3 $4
-    sudo $GEM install RedCloth $2 $3 $4
-    sudo $GEM install net-ssh $2 $3 $4
-    sudo $GEM install net-sftp $2 $3 $4
-    sudo $GEM install coverage $2 $3 $4
-    sudo $GEM install capistrano $2 $3 $4
-    sudo $GEM install redgreen $2 $3 $4
-    sudo $GEM install minitest $2 $3 $4
-    sudo $GEM install rspec $2 $3 $4
-    sudo $GEM install rspec-rails $2 $3 $4
-    sudo $GEM install flexmock $2 $3 $4
-    sudo $GEM install simplecov $2 $3 $4
-    sudo $GEM install simplecov-rcov $2 $3 $4
-    sudo $GEM install sequel $2 $3 $4
-    sudo $GEM install thrift $2 $3 $4
-    sudo $GEM install json $2 $3 $4
-    sudo $GEM install rdoc $2 $3 $4
-    sudo $GEM install gherkin $2 $3 $4
-    sudo $GEM install cucumber $2 $3 $4
-    sudo $GEM install sqlite3-ruby $2 $3 $4
-    sudo $GEM install -v 1.5.1 rubytter $2 $3 $4
-    sudo $GEM install -v 2.1.1 termtter $2 $3 $4
-    sudo $GEM install userstream $2 $3 $4
-    sudo $GEM install webtail $2 $3 $4
-    sudo $GEM install zipruby $2 $3 $4
-    sudo $GEM install oauth $2 $3 $4
-    sudo $GEM install webrat $2 $3 $4
-    sudo $GEM install diff-lcs $2 $3 $4
-    sudo $GEM install sanitize $2 $3 $4
-    sudo $GEM install msgpack $2 $3 $4
-    sudo $GEM install msgpack-rpc $2 $3 $4
-    sudo $GEM install feed-normalizer $2 $3 $4
-    sudo $GEM install gettext_rails $2 $3 $4
-    sudo $GEM install gettext_activerecord $2 $3 $4
-    sudo $GEM install searchlogic $2 $3 $4
-    sudo $GEM install fastercsv $2 $3 $4
-    sudo $GEM install log4r $2 $3 $4
-    sudo $GEM install sinatra $2 $3 $4
-    sudo $GEM install rubytree $2 $3 $4
-    sudo $GEM install shoulda $2 $3 $4
-    sudo $GEM install tzinfo $2 $3 $4
-    sudo $GEM install guard-coffeescript $2 $3 $4
-    sudo $GEM install rb-fsevent $2 $3 $4
-    sudo $GEM install iconv $2 $3 $4
-    sudo $GEM install -v 0.4.2 i18n $2 $3 $4
-    sudo $GEM install execjs $2 $3 $4
-    sudo $GEM install therubyracer $2 $3 $4
-    sudo $GEM install feedbag $2 $3 $4
-    sudo $GEM install hashie $2 $3 $4
-    sudo $GEM install gcalapi $2 $3 $4
-    sudo $GEM install xml-simple $2 $3 $4
-    sudo $GEM install prawn $2 $3 $4
-    sudo $GEM install gnuplot $2 $3 $4
-    sudo $GEM install ai4r $2 $3 $4
-    sudo $GEM install kmeans $2 $3 $4
-    sudo $GEM install sysadmin $2 $3 $4
-    sudo $GEM install automatic $2 $3 $4
-    sudo $GEM install rubypython $2 $3 $4
-    sudo $GEM install narray $2 $3 $4
-    sudo $GEM install gsl $2 $3 $4
-    sudo $GEM install rmagick $2 $3 $4
-    sudo $GEM install wukong $2 $3 $4
-    sudo $GEM install woothee $2 $3 $4
-    #sudo $GEM install hadoop-papyrus $2 $3 $4
-    #sudo $GEM install jruby-on-hadoop $2 $3 $4
-    sudo $GEM install fluentd $2 $3 $4
-    sudo $GEM install passenger $2 $3 $4
+    sudo $GEM install pry --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install rake --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install bundler --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install minitest --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install sqlite3 --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install sass --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install sass-rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install coffee-script --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install coffee-rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install jquery-rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install haml --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install haml-rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install dalli --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install backbone-rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install uglifier --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install devise '-v < 2' --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install kaminari --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install i18n_generators --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install jeweler --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install will_paginate --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install meta_search --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install enumerable-lazy --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install term-ansicolor --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install turn --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install hpricot --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install mechanize --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install nokogiri --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install Selenium --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install pg --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install postgres --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install mysql2 --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install BlueCloth --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install RedCloth --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install net-ssh --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install net-sftp --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install coverage --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install capistrano --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install redgreen --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install minitest --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install rspec --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install rspec-rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install flexmock --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install simplecov --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install simplecov-rcov --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install sequel --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install thrift --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install json --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install rdoc --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install gherkin --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install cucumber --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install sqlite3-ruby --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v 1.5.1 rubytter --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v 2.1.1 termtter --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install userstream --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install webtail --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install zipruby --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install oauth --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install webrat --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install diff-lcs --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install sanitize --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install msgpack --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install msgpack-rpc --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install feed-normalizer --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install gettext_rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install gettext_activerecord --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install searchlogic --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install fastercsv --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install log4r --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install sinatra --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install rubytree --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install shoulda --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install tzinfo --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install guard-coffeescript --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install rb-fsevent --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install iconv --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v 0.4.2 i18n --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install execjs --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install therubyracer --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install feedbag --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install hashie --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install gcalapi --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install xml-simple --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install prawn --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install gnuplot --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install ai4r --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install kmeans --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install sysadmin --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install automatic --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install rubypython --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install narray --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install gsl --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install rmagick --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install wukong --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install woothee --no-ri --no-rdoc $2 $3 $4
+    #sudo $GEM install hadoop-papyrus --no-ri --no-rdoc $2 $3 $4
+    #sudo $GEM install jruby-on-hadoop --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install fluentd --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install passenger --no-ri --no-rdoc $2 $3 $4
     $GEM list --local
 }
 
