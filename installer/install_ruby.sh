@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.29 4/23,2013
+#       Support for ruby 1.8.7-p371.
 # v1.28 2/24,2013
 #       Add ruby 2.0 stable.
 # v1.27 2/9,2013
@@ -218,6 +220,9 @@ install_ruby() {
         ;;
       191-243)
         install_stable 1.9.1-p243 1.9 $2
+        ;;
+      187-371)
+        install_stable 1.8.7-p371 1.8 $2
         ;;
       187-352)
         install_stable 1.8.7-p352 1.8 $2
