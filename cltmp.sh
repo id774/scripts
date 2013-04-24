@@ -1,13 +1,14 @@
 #!/bin/sh
 
-rm -rf ~/tmp/*
-rm -rf ~/.tmp/*
-rm -f ~/hardcopy.*
-rm -f ~/wget-log*
-test -f ~/.emacs.d/%backup%\~ && rm ~/.emacs.d/%backup%\~
-test -f ~/%backup%\~ && rm ~/%backup%\~
-rm -rf ~/.emacs.d/tmp/*
-rm -rf ~/.emacs.d/backups/*
-rm -rf ~/.emacs.d/auto-save-list/.saves*
-rm -rf ~/.emacs.d/tramp-auto-save/*
+rm -vrf ~/tmp/*
+rm -vrf ~/.tmp/*
+rm -vf ~/hardcopy.*
+rm -vf ~/wget-log*
+rm -vf ~/.emacs.d/%backup%\~
+rm -vf ~/%backup%\~
+rm -vrf ~/.emacs.d/tmp/*
+rm -vrf ~/.emacs.d/backups/*
+rm -vrf ~/.emacs.d/auto-save-list/.saves*
+rm -vrf ~/.emacs.d/tramp-auto-save/*
+echo "cltmp (20130424) done."
 
