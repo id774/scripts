@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.10 4/24,2013
+#       Add user ec2-user.
 #  v1.9 2/5,2013
 #       Add gemrc.
 #  v1.8 1/18,2013
@@ -162,20 +164,17 @@ bulk_deploy() {
       centos \
       sl \
       admin \
+      ec2-user \
       git \
       plagger \
       twitter \
       tiarra \
-      sklud \
-      urd \
       testuser
     deploy_dotfiles_to_mac \
       mac \
       apple \
       demo \
       work \
-      sklud \
-      urd \
       testuser
     deploy_dotfiles_to_others /var/root root
     deploy_dotfiles_to_others /root root
