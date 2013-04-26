@@ -53,7 +53,8 @@ uninstall_sysadmin_scripts() {
         git-follow-origin \
         get_resources \
         tcmount \
-        dpkg-hold
+        dpkg-hold \
+        port-upgrade
 }
 
 install_scripts() {
@@ -72,6 +73,10 @@ setup_scripts() {
     install_scripts 755 git-follow-origin.sh git-follow-origin
 }
 
+setup_darwin_scripts() {
+    install_scripts 755 port-upgrade.sh port-upgrade
+}
+
 setup_rhel_scripts() {
     install_scripts 755 get_resources.sh get_resources
     install_scripts 755 tcmount.py tcmount
@@ -87,6 +92,11 @@ install_sysadmin_scripts() {
     setup_scripts
     test -f /etc/debian_version && setup_debian_scripts
     test -f /etc/redhat-release && setup_rhel_scripts
+    case $OSTYPE in
+      *darwin*)
+        setup_darwin_scripts
+        ;;
+    esac
 }
 
 setup_sysadmin_scripts() {
