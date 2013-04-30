@@ -119,6 +119,7 @@ gitpull_all() {
     gitpull github auto-complete auto-complete $*
     gitpull github auto-complete popup-el $*
     gitpull github auto-complete fuzzy-el $*
+    gitpull github kiwanami emacs-deferred
     gitpull github rooney zencoding $*
     gitpull github hober html5-el $*
     gitpull github nex3 haml-mode $*
