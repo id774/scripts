@@ -27,6 +27,7 @@ install_npm() {
     sudo $NPM install commander -g
     sudo $NPM install sequelize -g
     sudo $NPM install sqlite3 -g
+    sudo $NPM install aws-sdk -g
     #sudo $NPM install hiredis redis -g
 }
 
