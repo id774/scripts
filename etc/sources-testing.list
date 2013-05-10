@@ -1,5 +1,5 @@
-deb     http://ftp.jp.debian.org/debian/ squeeze main #contrib non-free
-deb-src http://ftp.jp.debian.org/debian/ squeeze main #contrib non-free
-deb     http://security.debian.org/ squeeze/updates main #contrib non-free
-deb-src http://security.debian.org/ squeeze/updates main #contrib non-free
+deb     http://ftp.jp.debian.org/debian/ jessie main #contrib non-free
+deb-src http://ftp.jp.debian.org/debian/ jessie main #contrib non-free
+deb     http://security.debian.org/ jessie/updates main #contrib non-free
+deb-src http://security.debian.org/ jessie/updates main #contrib non-free
 #deb     http://download.skype.com/linux/repos/debian/ stable non-free
