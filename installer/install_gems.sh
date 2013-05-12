@@ -102,6 +102,7 @@ install_gem() {
     sudo $GEM install hashie --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install gcalapi --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install xml-simple --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install weather_hacker --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install prawn --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install gnuplot --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install ai4r --no-ri --no-rdoc $2 $3 $4
