@@ -46,6 +46,7 @@ sudo yum -y install policycoreutils-python
 
 sudo yum -y install autoconf
 sudo yum -y install automake
+sudo yum -y install wget
 sudo yum -y install curl-devel
 sudo yum -y install zlib-devel
 sudo yum -y install fuse fuse-devel
