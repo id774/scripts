@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.30 5/19,2013
+#       Update to ruby 2.0.0-p195, ruby 1.9.3-p429.
 # v1.29 4/23,2013
 #       Support for ruby 1.8.7-p371.
 # v1.28 2/24,2013
@@ -161,8 +163,14 @@ setup_environment() {
 install_ruby() {
     setup_environment
     case "$1" in
+      200-195)
+        install_stable 2.0.0-p195 2.0 $2
+        ;;
       200-0)
         install_stable 2.0.0-p0 2.0 $2
+        ;;
+      193-429)
+        install_stable 1.9.3-p429 1.9 $2
         ;;
       193-392)
         install_stable 1.9.3-p392 1.9 $2
