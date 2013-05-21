@@ -183,7 +183,8 @@ optional_packages() {
       expat libexpat-dev \
       libssl-dev libio-socket-ssl-perl libnet-ssleay-perl \
       libtemplate-perl libxml-libxml-perl \
-      migemo
+      migemo \
+      libcurl4-openssl-dev apache2-threaded-dev libapr1-dev libaprutil1-dev
 }
 
 ruby_lang() {
@@ -191,8 +192,7 @@ ruby_lang() {
       autoconf byacc bison automake \
       libopenssl-ruby libreadline-dev zlib1g-dev ruby \
       ruby1.8-dev ruby1.8 ri1.8 rdoc1.8 irb1.8 \
-      libreadline-ruby1.8 libruby1.8 libopenssl-ruby \
-      libcurl4-openssl-dev
+      libreadline-ruby1.8 libruby1.8 libopenssl-ruby
       # autoconf-doc
 }
 
