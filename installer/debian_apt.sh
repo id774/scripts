@@ -149,6 +149,7 @@ lang_packages() {
       ghc \
       global \
       graphviz graphviz-dev \
+      memcached \
       gsl-bin libgsl0-dev libgsl-ruby libnarray-ruby \
       shunit2
 }
