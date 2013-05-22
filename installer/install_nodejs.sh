@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 5/22,2013
+#       Moved npmjs.org.
 #  v1.1 4/7,2013
 #       Add meteor.
 #  v1.0 6/26,2012
@@ -28,7 +30,7 @@ save_sources() {
 }
 
 install_npm() {
-    sudo sh -c 'curl http://npmjs.org/install.sh | sh'
+    sudo sh -c 'curl https://npmjs.org/install.sh | sh'
 }
 
 install_meteor() {
