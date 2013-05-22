@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.11 5/22,2013
+#       Change permission of local to 750.
 # v1.10 4/24,2013
 #       Add user ec2-user.
 #  v1.9 2/5,2013
@@ -110,11 +112,11 @@ mkdir_skelton() {
     sudo chmod 700 $1/.tmp
     sudo chmod 700 $1/tmp
     sudo chmod 700 $1/mnt
-    sudo chmod 700 $1/local
     sudo chmod 700 $1/var
     sudo chmod 750 $1/etc
     sudo chmod 750 $1/bin
     sudo chmod 750 $1/arc
+    sudo chmod 750 $1/local
     which emacs > /dev/null && setup_dotemacs $1
 }
 
