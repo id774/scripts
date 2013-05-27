@@ -148,6 +148,7 @@ lang_packages() {
       r-base r-base-dev \
       ghc \
       global \
+      markdown \
       graphviz graphviz-dev \
       memcached \
       gsl-bin libgsl0-dev libgsl-ruby libnarray-ruby \
