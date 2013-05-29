@@ -124,6 +124,10 @@ install_gem() {
     sudo $GEM install fluent-logger-ruby --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluent-plugin-sqlite3 --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluent-plugin-s3 --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install fluent-plugin-parser --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install fluent-plugin-rewrite-tag-filter --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install fluent-plugin-flowcounter --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install fluent-plugin-growthforecast --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluent-plugin-datacounter --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluent-plugin-twitter --no-ri --no-rdoc $2 $3 $4
     $GEM list --local
