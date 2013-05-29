@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.16 5/29,2013
+#       Fix device definition bugs.
 # v1.15 4/18,2013
 #       Directories re-construction.
 # v1.14 11/14,2011
@@ -55,11 +57,11 @@ svn_backup() {
   test -x /root/bin/svn_hotcopy.sh && \
     /root/bin/svn_hotcopy.sh
   test -f /root/svn_hotcopy/svn_default.tar.gz && \
-    test -d $B_HOME/mnt/sdb/user2/arc/svn && \
-    cp -v /root/svn_hotcopy/svn_default.tar.gz $B_HOME/mnt/sdb/user2/arc/svn/
+    test -d $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/svn && \
+    cp -v /root/svn_hotcopy/svn_default.tar.gz $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/svn/
   test -f /root/svn_hotcopy/trac_default.tar.gz && \
-    test -d $B_HOME/mnt/sdb/user2/arc/svn && \
-    cp -v /root/svn_hotcopy/trac_default.tar.gz $B_HOME/mnt/sdb/user2/arc/svn/
+    test -d $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/svn && \
+    cp -v /root/svn_hotcopy/trac_default.tar.gz $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/svn/
 }
 
 git_backup() {
@@ -67,7 +69,7 @@ git_backup() {
   rsync -avz --delete $1@$2:/var/lib/git /root/local/
   cd /root/local
   tar czvf git.tar.gz git/
-  cp -v /root/local/git.tar.gz $B_HOME/mnt/sdb/user2/arc/git/
+  cp -v /root/local/git.tar.gz $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/
   cd
 }
 
@@ -75,8 +77,8 @@ github_backup() {
   test -x /root/bin/github-arc.sh && \
     /root/bin/github-arc.sh
   test -f /root/local/github.tar.gz && \
-    test -d $B_HOME/mnt/sdb/user2/arc/git && \
-    cp -v /root/local/github.tar.gz $B_HOME/mnt/sdb/user2/arc/git/
+    test -d $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git && \
+    cp -v /root/local/github.tar.gz $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/
 }
 
 rsync_disk2ssh_0() {
