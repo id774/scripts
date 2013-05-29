@@ -122,6 +122,10 @@ install_gem() {
     sudo $GEM install passenger --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluentd --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluent-logger-ruby --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install fluent-plugin-sqlite3 --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install fluent-plugin-s3 --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install fluent-plugin-datacounter --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install fluent-plugin-twitter --no-ri --no-rdoc $2 $3 $4
     $GEM list --local
 }
 
