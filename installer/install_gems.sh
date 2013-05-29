@@ -119,8 +119,9 @@ install_gem() {
     sudo $GEM install woothee --no-ri --no-rdoc $2 $3 $4
     #sudo $GEM install hadoop-papyrus --no-ri --no-rdoc $2 $3 $4
     #sudo $GEM install jruby-on-hadoop --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install fluentd --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install passenger --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install fluentd --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install fluent-logger-ruby --no-ri --no-rdoc $2 $3 $4
     $GEM list --local
 }
 
