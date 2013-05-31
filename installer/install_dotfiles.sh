@@ -168,6 +168,8 @@ bulk_deploy() {
       admin \
       ec2-user \
       git \
+      automatic \
+      fluent \
       plagger \
       twitter \
       tiarra \
