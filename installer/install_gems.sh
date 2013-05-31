@@ -56,6 +56,7 @@ install_gem() {
     sudo $GEM install BlueCloth --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install RedCloth --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install net-ssh --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install net-scp --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install net-sftp --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install coverage --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install capistrano --no-ri --no-rdoc $2 $3 $4
