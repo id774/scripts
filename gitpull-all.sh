@@ -90,6 +90,9 @@ assembla_git_all() {
 gitpull_all() {
     gitpull github id774 dot_zsh $*
     gitpull github id774 dot_emacs $*
+    gitpull github id774 automaticruby $*
+    gitpull github id774 automaticruby-plugins $*
+    gitpull github id774 termtter $*
     gitpull github id774 termtter-plugins $*
     gitpull github id774 deferred-sync $*
     gitpull github id774 sysadmin $*
@@ -103,12 +106,10 @@ gitpull_all() {
     gitpull github id774 rurima $*
     gitpull github id774 batch_framework $*
     gitpull github id774 intraweb-template $*
-    gitpull github id774 automaticruby $*
     gitpull github id774 heartbeat-id774net $*
     gitpull github id774 hadoop-streaming-with-ruby $*
     gitpull github id774 rurima $*
     gitpull github id774 okura $*
-    gitpull github termtter termtter $*
     gitpull github jugyo rubytter $*
     gitpull github fluent fluentd $*
     gitpull github sandal rbp $*
