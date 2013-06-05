@@ -110,6 +110,9 @@ gitpull_all() {
     gitpull github id774 hadoop-streaming-with-ruby $*
     gitpull github id774 rurima $*
     gitpull github id774 okura $*
+    gitpull github id774 fluent-plugin-example $*
+    gitpull github id774 fluent-plugin-termtter-db $*
+    gitpull github id774 fluent-plugin-chatter-admin $*
     gitpull github jugyo rubytter $*
     gitpull github fluent fluentd $*
     gitpull github sandal rbp $*
