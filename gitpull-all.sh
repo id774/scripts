@@ -113,11 +113,13 @@ gitpull_all() {
     gitpull github id774 fluent-plugin-example $*
     gitpull github id774 fluent-plugin-termtter-db $*
     gitpull github id774 fluent-plugin-chatter-admin $*
+    gitpull github id774 fluent-plugin-chatter-api $*
     gitpull github jugyo rubytter $*
     gitpull github fluent fluentd $*
     gitpull github sandal rbp $*
     gitpull github miyagawa plagger $*
     gitpull github twitter bootstrap $*
+    gitpull github emacs-helm helm $*
     gitpull github eschulte rhtml $*
     gitpull github eschulte rinari $*
     gitpull github auto-complete auto-complete $*
