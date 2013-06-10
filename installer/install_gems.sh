@@ -43,6 +43,7 @@ install_gem() {
     sudo $GEM install jeweler --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install will_paginate --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install meta_search --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install rinku --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install enumerable-lazy --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install term-ansicolor --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install turn --no-ri --no-rdoc $2 $3 $4
