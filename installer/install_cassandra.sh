@@ -50,6 +50,7 @@ install_cassandra() {
 
     cd /opt/cassandra
     test -L current || sudo ln -s $VERSION current
+    sudo chown -h $OWNER current
 
     test -n "$2" || mkdir_lib_and_log
 }
