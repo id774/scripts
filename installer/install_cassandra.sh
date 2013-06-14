@@ -26,9 +26,9 @@ setup_environment() {
 
 mkdir_lib_and_log() {
     test -d /var/lib/cassandra || sudo mkdir /var/lib/cassandra
-    sudo chown -R $USER:$USER /var/lib/cassandra
+    sudo chown -R $OWNER /var/lib/cassandra
     test -d /var/log/cassandra || sudo mkdir /var/log/cassandra
-    sudo chown -R $USER:$USER /var/log/cassandra
+    sudo chown -R $OWNER /var/log/cassandra
 }
 
 install_cassandra() {
