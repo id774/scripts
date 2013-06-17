@@ -187,6 +187,9 @@ $IPTABLES -A INPUT -p tcp --dport 123 -j ACCEPT
 # Cassandra
 #$IPTABLES -A INPUT -p tcp --dport 9160 -j ACCEPT
 
+# Mongo
+#$IPTABLES -A INPUT -p tcp --dport 27017 -j ACCEPT
+
 # Git
 #$IPTABLES -A INPUT -p tcp --dport 9418 -j ACCEPT
 
