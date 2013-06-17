@@ -150,7 +150,6 @@ lang_packages() {
       global \
       markdown \
       graphviz graphviz-dev \
-      memcached \
       gsl-bin libgsl0-dev libgsl-ruby libnarray-ruby \
       shunit2
 }
@@ -161,6 +160,12 @@ scm_packages() {
       mercurial \
       git-core git-all
 #      svk \
+}
+
+db_packages() {
+    smart_apt \
+      memcached \
+      mongo
 }
 
 samba_packages() {
@@ -228,6 +233,7 @@ increase_debian_packages() {
     #xvfb_packages
     lang_packages
     scm_packages
+    db_packages
     #samba_packages
     sqlite_packages
     optional_packages
