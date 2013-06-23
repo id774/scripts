@@ -75,7 +75,7 @@ install_gem() {
     sudo $GEM install simplecov-rcov --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sequel --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install thrift --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install json --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v 1.7.7 json --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rdoc --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install gherkin --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install cucumber --no-ri --no-rdoc $2 $3 $4
