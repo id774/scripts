@@ -1,3 +1,6 @@
+#!/usr/bin/env ruby
+# -*- coding: utf-8 -*-
+#
 # ndkn.rb - Nandoku ruby
 # Author: Sora Harakami
 # Licence: Public Licence
