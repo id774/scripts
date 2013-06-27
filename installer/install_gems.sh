@@ -22,10 +22,10 @@ install_gem() {
     sudo $GEM update --system $2 $3 $4
     sudo $GEM install pry --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rake --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v 1.3.5 bundler --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v 3.0.4 builder --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 1.3.5" bundler --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 3.2.0" builder --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install minitest --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v 4.0.0 rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 4.0.0" rails --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sqlite3 --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sass --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sass-rails --no-ri --no-rdoc $2 $3 $4
@@ -56,9 +56,9 @@ install_gem() {
     sudo $GEM install postgres --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install mysql2 --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install cassandra --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v 1.8.6 bson --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v 1.8.6 bson_ext --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v 1.8.6 mongo --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "= 1.8.6" bson --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "= 1.8.6" bson_ext --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "= 1.8.6" mongo --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install BlueCloth --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install RedCloth --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install net-ssh --no-ri --no-rdoc $2 $3 $4
@@ -75,12 +75,13 @@ install_gem() {
     sudo $GEM install simplecov-rcov --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sequel --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install thrift --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v 1.7.7 json --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 1.7.7" json --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rdoc --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install gherkin --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install cucumber --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sqlite3-ruby --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install termtter --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 1.5.1" rubytter --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 2.2.1" termtter --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install userstream --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install webtail --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install zipruby --no-ri --no-rdoc $2 $3 $4
@@ -88,7 +89,7 @@ install_gem() {
     sudo $GEM install webrat --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install diff-lcs --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sanitize --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v 0.5.5 msgpack --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 0.5.5" msgpack --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install msgpack-rpc --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install feed-normalizer --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install gettext_rails --no-ri --no-rdoc $2 $3 $4
@@ -103,7 +104,7 @@ install_gem() {
     sudo $GEM install guard-coffeescript --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rb-fsevent --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install iconv --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v 0.4.2 i18n --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "= 0.4.2" i18n --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install execjs --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install therubyracer --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install feedbag --no-ri --no-rdoc $2 $3 $4
@@ -128,7 +129,7 @@ install_gem() {
     #sudo $GEM install hadoop-papyrus --no-ri --no-rdoc $2 $3 $4
     #sudo $GEM install jruby-on-hadoop --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install passenger --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v 0.10.35 fluentd --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 0.10.35" fluentd --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluent-logger-ruby --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluent-plugin-sqlite3 --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluent-plugin-s3 --no-ri --no-rdoc $2 $3 $4
