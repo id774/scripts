@@ -20,6 +20,7 @@ install_gem() {
     test -n "$1" || export GEM=gem
     export RUBYOPT=rubygems
     sudo $GEM update --system $2 $3 $4
+    sudo $GEM install rb-readline --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install pry --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rake --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 1.3.5" bundler --no-ri --no-rdoc $2 $3 $4
