@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.32 7/5,2013
+#       Update to ruby 2.0.0-p247.
 # v1.31 6/28,2013
 #       Update to ruby 1.9.3-p448, ruby 1.8.7-p374.
 # v1.30 5/19,2013
