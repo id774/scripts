@@ -54,7 +54,7 @@ purge_old_modules() {
 }
 
 install_ruby() {
-    $SCRIPTS/installer/install_ruby.sh 200-195 /opt/ruby/2.0
+    $SCRIPTS/installer/install_ruby.sh 200-247 /opt/ruby/2.0
     $SCRIPTS/installer/install_gems.sh /opt/ruby/2.0
 }
 

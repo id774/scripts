@@ -165,6 +165,9 @@ setup_environment() {
 install_ruby() {
     setup_environment
     case "$1" in
+      200-247)
+        install_stable 2.0.0-p247 2.0 $2
+        ;;
       200-195)
         install_stable 2.0.0-p195 2.0 $2
         ;;
