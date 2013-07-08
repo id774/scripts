@@ -32,6 +32,10 @@ rmdir_if_exist(){
     test -d $1 && sudo rm -rf $1
 }
 
+rm_if_exist_symlink(){
+    test -L $1 && sudo rm -f $1
+}
+
 set_permission() {
     sudo chown -R $1:$1 /data/db
     sudo chown -R $1:$1 /opt/mongo/$VERSION
@@ -41,6 +45,12 @@ set_permission() {
 create_user() {
     sudo useradd -m $1
     sudo chsh -s /bin/zsh $1
+}
+
+create_symlink() {
+    cd /opt/mongo
+    rm_if_exist_symlink current
+    sudo ln -fs $VERSION current
 }
 
 deploy_mongodb() {
