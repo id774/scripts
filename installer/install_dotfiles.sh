@@ -170,6 +170,7 @@ bulk_deploy() {
       git \
       automatic \
       fluent \
+      mongo \
       plagger \
       twitter \
       tiarra \
