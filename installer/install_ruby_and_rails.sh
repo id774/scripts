@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.0 7/8,2013
+#       Cut out purge process.
 #  v0.9 2/9,2013
 #       Update to ruby 2.0.
 #  v0.8 2/8,2013
@@ -28,41 +30,6 @@
 test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
 test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
 
-purge_old_modules() {
-    test -d /opt/ruby/1.9.2 && \
-      sudo rm -rf /opt/ruby/1.9.2
-    test -d /usr/local/src/ruby/ruby-2.0.0-p195 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-2.0.0-p195
-    test -d /usr/local/src/ruby/ruby-2.0.0-p0 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-2.0.0-p0
-    test -d /usr/local/src/ruby/ruby-1.9.3-p429 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p429
-    test -d /usr/local/src/ruby/ruby-1.9.3-p392 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p392
-    test -d /usr/local/src/ruby/ruby-1.9.3-p385 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p385
-    test -d /usr/local/src/ruby/ruby-1.9.3-p374 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p374
-    test -d /usr/local/src/ruby/ruby-1.9.3-p362 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p362
-    test -d /usr/local/src/ruby/ruby-1.9.3-p327 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p327
-    test -d /usr/local/src/ruby/ruby-1.9.3-p286 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p286
-    test -d /usr/local/src/ruby/ruby-1.9.3-p194 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p194
-    test -d /usr/local/src/ruby/ruby-1.9.3-p125 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p125
-    test -d /usr/local/src/ruby/ruby-1.9.3-p0 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p0
-    test -d /usr/local/src/ruby/ruby-1.9.2-p290 && \
-      sudo rm -rf /usr/local/src/ruby/ruby-1.9.2-p290
-    test -d /usr/local/src/ruby/branches/ruby_1_9_2 && \
-      sudo rm -rf /usr/local/src/ruby/branches/ruby_1_9_2
-    test -d /usr/local/src/ruby/branches/ruby_1_9_3 && \
-      sudo rm -rf /usr/local/src/ruby/branches/ruby_1_9_3
-}
-
 install_ruby() {
     $SCRIPTS/installer/install_ruby.sh 200-247 /opt/ruby/2.0
     $SCRIPTS/installer/install_gems.sh /opt/ruby/2.0
@@ -71,7 +38,7 @@ install_ruby() {
 operation() {
     test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
     test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
-    purge_old_modules
+    $SCRIPTS/installer/purge_obsolete_sources.sh
     install_ruby
 }
 
