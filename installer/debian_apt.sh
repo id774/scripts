@@ -164,8 +164,7 @@ scm_packages() {
 
 db_packages() {
     smart_apt \
-      memcached \
-      mongo
+      memcached
 }
 
 samba_packages() {
