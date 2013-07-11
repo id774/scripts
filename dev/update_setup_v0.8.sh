@@ -54,7 +54,6 @@ deploy_dotfiles() {
 install_cronjob() {
     $SCRIPTS/installer/install_get_resources.sh
     $SCRIPTS/installer/install_chkrootkit.sh
-    $HOME/deferred-sync/installer/install.sh
 }
 
 secure_settings() {
@@ -63,6 +62,10 @@ secure_settings() {
 
 install_dot_files() {
     $SCRIPTS/installer/install_dotfiles.sh
+}
+
+install_deferredsync() {
+    $HOME/deferred-sync/install.sh
 }
 
 purge_old_modules() {
@@ -78,9 +81,10 @@ operation() {
     install_ruby_and_rails
     install_nodejs_and_coffeescript
     deploy_dotfiles
-    # install_cronjob
-    #secure_settings
+     install_cronjob
+    secure_settings
     install_dot_files
+    install_deferredsync
     purge_old_modules
 }
 
