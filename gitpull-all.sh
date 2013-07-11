@@ -91,7 +91,6 @@ gitpull_all() {
     gitpull github id774 dot_zsh $*
     gitpull github id774 dot_emacs $*
     gitpull github id774 automaticruby $*
-    gitpull github id774 automaticruby-plugins $*
     gitpull github id774 termtter $*
     gitpull github id774 termtter-plugins $*
     gitpull github id774 deferred-sync $*
