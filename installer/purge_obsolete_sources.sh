@@ -9,7 +9,10 @@
 #       First.
 ########################################################################
 
-purge_old_modules() {
+purge_old_sources() {
+    sudo rm -rf /usr/local/src/node.js/node-v0.6.*
+    sudo rm -rf /usr/local/src/node.js/node-v0.7.*
+    sudo rm -rf /usr/local/src/node.js/node-v0.8.*
     test -d /opt/ruby/1.9.2 && \
       sudo rm -rf /opt/ruby/1.9.2
     test -d /usr/local/src/ruby/ruby-2.0.0-p195 && \
@@ -44,4 +47,4 @@ purge_old_modules() {
       sudo rm -rf /usr/local/src/ruby/branches/ruby_1_9_3
 }
 
-purge_old_modules $*
+purge_old_sources $*
