@@ -68,7 +68,7 @@ sudo yum -y install ntp
 sudo yum -y install sysstat
 sudo yum -y install dstat
 
-sudo yum -y install ctags
+sudo yum -y install ctags ctags-etags
 sudo yum -y install vim-enhanced
 sudo yum -y install atop fortune-all
 sudo yum -y install emacs* anthy-el
