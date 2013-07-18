@@ -57,9 +57,9 @@ install_gem() {
     sudo $GEM install postgres --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install mysql2 --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install cassandra --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v "= 1.8.6" bson --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v "= 1.8.6" bson_ext --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v "= 1.8.6" mongo --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 1.9.0" bson --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 1.9.0" bson_ext --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 1.9.0" mongo --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install BlueCloth --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install RedCloth --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install net-ssh --no-ri --no-rdoc $2 $3 $4
