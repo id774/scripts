@@ -18,6 +18,8 @@
 ########################################################################
 
 sudo yum -y install yum-fastestmirror
+sudo yum -y groupinstall "Development Tools"
+sudo yum -y install kernel-devel kernel-headers
 sudo yum -y install rsync
 sudo yum -y install git git-all
 sudo yum -y install openssh-server
