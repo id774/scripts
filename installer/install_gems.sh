@@ -26,7 +26,7 @@ install_gem() {
     sudo $GEM install -v "~> 1.3.5" bundler --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 3.1.0" builder --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install minitest --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v "~> 3.2.0" rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 3" rails --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 4.0.0" rails --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sqlite3 --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sass --no-ri --no-rdoc $2 $3 $4
