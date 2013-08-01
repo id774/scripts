@@ -39,6 +39,7 @@ install_gem() {
     sudo $GEM install dalli --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install backbone-rails --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install uglifier --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install shotgun --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install devise '-v < 2' --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install kaminari --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install i18n_generators --no-ri --no-rdoc $2 $3 $4
