@@ -53,6 +53,7 @@ gitpull_all() {
     pull_from_gitbare git wordpress $*
     pull_from_gitbare git news_cloud $*
     pull_from_gitbare git newscloud-sinatra $*
+    pull_from_gitbare git classify $*
 }
 
 test -n "$2" || exit 2
