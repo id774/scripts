@@ -110,7 +110,7 @@ gitpull_all() {
     gitpull github id774 hadoop-streaming-with-ruby $*
     gitpull github id774 rurima $*
     gitpull github id774 okura $*
-    gitpull github id774-2 sinatra-bootstrap $*
+    gitpull github id774 sinatra-bootstrap $*
     gitpull github jugyo rubytter $*
     gitpull github fluent fluentd $*
     gitpull github sandal rbp $*
