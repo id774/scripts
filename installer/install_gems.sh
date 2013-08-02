@@ -127,6 +127,7 @@ install_gem() {
     sudo $GEM install kmeans --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sysadmin --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install automatic --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install count_by --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rubypython --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install narray --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install gsl --no-ri --no-rdoc $2 $3 $4
