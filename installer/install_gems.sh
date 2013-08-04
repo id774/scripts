@@ -27,7 +27,7 @@ install_gem() {
     sudo $GEM install -v "~> 3.1.0" builder --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install minitest --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 3" rails --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v "~> 4.0.0" rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 4" rails --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sqlite3 --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sass --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sass-rails --no-ri --no-rdoc $2 $3 $4
@@ -42,7 +42,7 @@ install_gem() {
     sudo $GEM install uglifier --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install shotgun --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install devise '-v < 2' --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install kaminari --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install devise '~> 3' --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install i18n_generators --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install jeweler --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install will_paginate --no-ri --no-rdoc $2 $3 $4
@@ -82,6 +82,7 @@ install_gem() {
     sudo $GEM install thrift --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install puppet --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 1.7.7" json --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 1.8.0" json --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rdoc --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install gherkin --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install cucumber --no-ri --no-rdoc $2 $3 $4
