@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 8/7,2013
+#       Speficy source address when git pull.
 #  v1.0 7/26,2010
 #       Stable.
 ########################################################################
@@ -14,7 +16,7 @@ gitpull() {
     if [ -e $HOME/local/$1/$3 ]; then
         cd $HOME/local/$1/$3
         test -n "$4" && git reset --hard
-        git pull
+        git pull git://github.com/$2/$3.git
     else
         cd $HOME/local/$1
         git clone git://github.com/$2/$3.git
@@ -116,7 +118,7 @@ gitpull_all() {
     gitpull github fluent fluentd $*
     gitpull github sandal rbp $*
     gitpull github miyagawa plagger $*
-    gitpull github twitter bootstrap $*
+    gitpull github twbs bootstrap $*
     gitpull github emacs-helm helm $*
     gitpull github eschulte rhtml $*
     gitpull github eschulte rinari $*
