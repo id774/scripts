@@ -58,7 +58,6 @@ install_gem() {
     sudo $GEM install sanitize --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install Selenium --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install pg --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install postgres --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install mysql2 --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install cassandra --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 1.9.0" bson --no-ri --no-rdoc $2 $3 $4
