@@ -31,7 +31,7 @@ install_gem() {
     sudo $GEM install sqlite3 --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sass --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sass-rails --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install compass-rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 2.0.alpha.0" compass-rails --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install coffee-script --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install coffee-rails --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install jquery-rails --no-ri --no-rdoc $2 $3 $4
