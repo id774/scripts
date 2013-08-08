@@ -16,7 +16,7 @@ gitpull() {
     if [ -e $HOME/local/$1/$3 ]; then
         cd $HOME/local/$1/$3
         test -n "$4" && git reset --hard
-        git pull git://github.com/$2/$3.git
+        git pull
     else
         cd $HOME/local/$1
         git clone git://github.com/$2/$3.git
