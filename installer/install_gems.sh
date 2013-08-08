@@ -29,6 +29,7 @@ install_gem() {
     sudo $GEM install -v "~> 3" rails --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 4" rails --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sqlite3 --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install sqlite3-ruby --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sass --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sass-rails --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 2.0.alpha.0" compass-rails --no-ri --no-rdoc $2 $3 $4
@@ -48,7 +49,7 @@ install_gem() {
     sudo $GEM install -v "~> 3.0.0" will_paginate --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install meta_search --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rinku --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install enumerable-lazy --no-ri --no-rdoc $2 $3 $4
+    #sudo $GEM install enumerable-lazy --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install term-ansicolor --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install turn --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install http_configuration --no-ri --no-rdoc $2 $3 $4
@@ -63,8 +64,8 @@ install_gem() {
     sudo $GEM install -v "~> 1.9.0" bson --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 1.9.0" bson_ext --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 1.9.0" mongo --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install BlueCloth --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install RedCloth --no-ri --no-rdoc $2 $3 $4
+    #sudo $GEM install BlueCloth --no-ri --no-rdoc $2 $3 $4
+    #sudo $GEM install RedCloth --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install net-ssh --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install net-scp --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install net-sftp --no-ri --no-rdoc $2 $3 $4
@@ -85,7 +86,6 @@ install_gem() {
     sudo $GEM install rdoc --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install gherkin --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install cucumber --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install sqlite3-ruby --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 1.5.1" rubytter --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 2.2.1" termtter --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install userstream --no-ri --no-rdoc $2 $3 $4
