@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.33 8/11,2013
+#       Remove obsolete ruby 1.8.7.
 # v1.32 7/5,2013
 #       Update to ruby 2.0.0-p247.
 # v1.31 6/28,2013
@@ -241,6 +243,9 @@ install_ruby() {
         ;;
       187-374)
         install_stable 1.8.7-p374 1.8 $2
+        ;;
+      186-420)
+        install_stable 1.8.6-p420 1.8 $2
         ;;
       20-svn)
         install_branch ruby_2_0_0 $2
