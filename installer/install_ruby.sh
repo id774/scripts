@@ -242,42 +242,6 @@ install_ruby() {
       187-374)
         install_stable 1.8.7-p374 1.8 $2
         ;;
-      187-371)
-        install_stable 1.8.7-p371 1.8 $2
-        ;;
-      187-352)
-        install_stable 1.8.7-p352 1.8 $2
-        ;;
-      187-334)
-        install_stable 1.8.7-p334 1.8 $2
-        ;;
-      187-330)
-        install_stable 1.8.7-p330 1.8 $2
-        ;;
-      187-302)
-        install_stable 1.8.7-p302 1.8 $2
-        ;;
-      187-299)
-        install_stable 1.8.7-p299 1.8 $2
-        ;;
-      187-249)
-        install_stable 1.8.7-p249 1.8 $2
-        ;;
-      187-248)
-        install_stable 1.8.7-p248 1.8 $2
-        ;;
-      187-174)
-        install_stable 1.8.7-p174 1.8 $2
-        ;;
-      187-72)
-        install_stable 1.8.7-p72 1.8 $2
-        ;;
-      186-383)
-        install_stable 1.8.6-p383 1.8 $2
-        ;;
-      186-287)
-        install_stable 1.8.6-p287 1.8 $2
-        ;;
       20-svn)
         install_branch ruby_2_0_0 $2
         ;;
