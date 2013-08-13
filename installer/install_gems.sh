@@ -42,6 +42,7 @@ install_gem() {
     sudo $GEM install backbone-rails --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install uglifier --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install shotgun --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install rails-clean-logs --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install devise '-v < 2' --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install devise '~> 3' --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install i18n_generators --no-ri --no-rdoc $2 $3 $4
