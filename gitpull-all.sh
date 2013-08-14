@@ -114,6 +114,7 @@ gitpull_all() {
     gitpull github id774 okura $*
     gitpull github id774 rails4-bootstrap $*
     gitpull github id774 sinatra-bootstrap $*
+    gitpull github id774 sinatra-api-provider $*
     gitpull github jugyo rubytter $*
     gitpull github fluent fluentd $*
     gitpull github sandal rbp $*
