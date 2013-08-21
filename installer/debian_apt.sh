@@ -109,6 +109,7 @@ editor_packages() {
     smart_apt \
       texinfo \
       emacs23 emacs23-el \
+      ess \
       mew stunnel ca-certificates \
       w3m-el-snapshot w3m-img imagemagick \
       libmagick9-dev libmagickwand-dev \
