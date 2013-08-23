@@ -174,6 +174,7 @@ bulk_deploy() {
       plagger \
       twitter \
       tiarra \
+      tablet \
       testuser
     deploy_dotfiles_to_mac \
       mac \
