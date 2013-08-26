@@ -53,7 +53,7 @@ install_gem() {
     #sudo $GEM install enumerable-lazy --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install term-ansicolor --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install turn --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install restclient_with_cert --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install rest-client --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install http_configuration --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install hpricot --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install mechanize --no-ri --no-rdoc $2 $3 $4
