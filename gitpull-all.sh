@@ -115,7 +115,7 @@ gitpull_all() {
     gitpull github id774 rails4-bootstrap $*
     gitpull github id774 sinatra-bootstrap $*
     gitpull github id774 sinatra-api-provider $*
-    gitpull github id774 fluentd-json-reciever $*
+    gitpull github id774 fluentd-json-receiver $*
     gitpull github jugyo rubytter $*
     gitpull github fluent fluentd $*
     gitpull github sandal rbp $*
