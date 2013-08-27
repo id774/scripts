@@ -140,7 +140,7 @@ install_gem() {
     #sudo $GEM install hadoop-papyrus --no-ri --no-rdoc $2 $3 $4
     #sudo $GEM install jruby-on-hadoop --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install passenger --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v "= 0.10.35" fluentd --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 0.10.35" fluentd --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluent-logger --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluent-plugin-sqlite3 --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluent-plugin-s3 --no-ri --no-rdoc $2 $3 $4
