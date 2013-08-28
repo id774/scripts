@@ -160,7 +160,7 @@ operation() {
   smart_info
   #cleanup
   #svn_backup
-  #git_backup debian harpuia
+  #git_backup git git.id774.net
   #github_backup
 
   #T_DEVICE=sdc
