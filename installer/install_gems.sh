@@ -137,6 +137,7 @@ install_gem() {
     sudo $GEM install rmagick --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install wukong --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install woothee --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 0.5.4" webhdfs --no-ri --no-rdoc $2 $3 $4
     #sudo $GEM install hadoop-papyrus --no-ri --no-rdoc $2 $3 $4
     #sudo $GEM install jruby-on-hadoop --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install passenger --no-ri --no-rdoc $2 $3 $4
