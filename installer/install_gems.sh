@@ -152,6 +152,7 @@ install_gem() {
     sudo $GEM install fluent-plugin-growthforecast --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluent-plugin-datacounter --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluent-plugin-twitter --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install aws-sdk --no-ri --no-rdoc $2 $3 $4
     $GEM list --local
 }
 
