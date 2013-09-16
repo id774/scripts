@@ -106,6 +106,7 @@ install_gem() {
     sudo $GEM install sinatra --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 3.0.0" redis --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install redis-server --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install sidekiq -server --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rubytree --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install shoulda --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install tzinfo --no-ri --no-rdoc $2 $3 $4
