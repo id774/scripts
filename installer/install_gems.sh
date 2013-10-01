@@ -22,6 +22,13 @@ install_gem() {
     sudo $GEM update --system $2 $3 $4
     sudo $GEM install rb-readline --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install pry --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install pry-debugger --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install pry-doc --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install pry-rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install pry-coolline --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install hirb --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install hirb-unicode --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install awesome_print --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rake --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 1.3.5" bundler --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 3.1.0" builder --no-ri --no-rdoc $2 $3 $4
