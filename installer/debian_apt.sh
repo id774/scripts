@@ -39,9 +39,14 @@ basic_packages() {
       openssh-server ssh \
       rsync \
       build-essential \
-      gcc g++ \
+      gcc g++ make \
       gdb cgdb \
+      valgrind strace ltrace \
       scons \
+      libcunit1 libcunit1-dev \
+      libgtest0 libgtest-dev \
+      libgoogle-perftools0 libgoogle-perftools-dev \
+      doxygen \
       tar zip gzip unzip bzip2 \
       p7zip p7zip-full \
       zsh \
