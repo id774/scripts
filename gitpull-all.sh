@@ -113,6 +113,7 @@ gitpull_all() {
     gitpull github id774 hadoop-twitter-mapreduce $*
     gitpull github id774 hadoop-twitter-wordvector $*
     gitpull github id774 hadoop-category-map $*
+    gitpull github id774 hadoop-user-clustering $*
     gitpull github id774 rurima $*
     gitpull github id774 okura $*
     gitpull github id774 rails4-bootstrap $*
