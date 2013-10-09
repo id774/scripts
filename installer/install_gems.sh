@@ -163,7 +163,8 @@ install_gem() {
     sudo $GEM install fluent-plugin-datacounter --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install fluent-plugin-twitter --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install aws-sdk --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install rsruby  --no-ri --no-rdoc $2 $3 $4 -- --with-R-include=/usr/share/R/include --with-R-dir=/usr/lib/R
+    test -f /etc/lsb-release && sudo $GEM install rsruby --no-ri --no-rdoc $2 $3 $4 -- --with-R-include=/usr/include/R --with-R-dir=/usr/lib/R
+    test -f /etc/lsb-release || sudo $GEM install rsruby --no-ri --no-rdoc $2 $3 $4 -- --with-R-include=/usr/share/R/include --with-R-dir=/usr/lib/R
     $GEM list --local
 }
 
