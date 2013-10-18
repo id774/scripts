@@ -104,6 +104,7 @@ gitpull_all() {
     gitpull github id774 abuse $*
     gitpull github id774 naivebayes $*
     gitpull github id774 kmeans $*
+    gitpull github id774 recommendation $*
     gitpull github id774 vocabulary $*
     gitpull github id774 sandbox $*
     gitpull github id774 rurima $*
