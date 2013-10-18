@@ -79,6 +79,7 @@ install_gem() {
     sudo $GEM install net-scp --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install net-sftp --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install coverage --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install unicorn --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install capistrano --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install redgreen --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install minitest --no-ri --no-rdoc $2 $3 $4
