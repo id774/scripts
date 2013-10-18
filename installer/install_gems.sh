@@ -54,6 +54,7 @@ install_gem() {
     sudo $GEM install devise '~> 3' --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install i18n_generators --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install jeweler --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install gemcutter --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 3.0.0" will_paginate --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install meta_search --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rinku --no-ri --no-rdoc $2 $3 $4
