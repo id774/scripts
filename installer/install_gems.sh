@@ -138,6 +138,7 @@ install_gem() {
     sudo $GEM install --source http://gems.github.com tomz-liblinear-ruby-swig $2 $3 $4
     sudo $GEM install naivebayes --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install kmeans --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install recommendation --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sysadmin --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install automatic --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install screening --no-ri --no-rdoc $2 $3 $4
