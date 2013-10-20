@@ -147,6 +147,8 @@ install_gem() {
     sudo $GEM install narray --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install gsl --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rmagick --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install graphviz --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install gviz --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install wukong --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install woothee --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 0.5.4" webhdfs --no-ri --no-rdoc $2 $3 $4
