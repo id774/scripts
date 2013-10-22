@@ -151,6 +151,7 @@ lang_packages() {
       clisp clisp-dev \
       scheme48 cmuscheme48-el \
       gnu-smalltalk \
+      scala \
       r-base r-base-dev \
       ghc \
       global \
