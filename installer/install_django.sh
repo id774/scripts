@@ -2,9 +2,15 @@
 #
 ########################################################################
 # Install Django
+#  $1 = django version
+#  $2 = python path
+#  $3 = not save to src
+#  $4 = nosudo
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.0 10/24,2013
+#       Install for stable version.
 #  v1.3 3/7,2010
 #       Refactoring.
 #  v1.2 2/23,2010
@@ -16,51 +22,51 @@
 ########################################################################
 
 setup_environment() {
+    test -n "$1" || DJANGO_VERSION=1.5.4
+    test -n "$1" && DJANGO_VERSION=$1
+    test -n "$2" || DJANGO_MINOR_VERSION=1.5
+    test -n "$2" && DJANGO_MINOR_VERSION=$1
+    test -n "$3" || PYTHON_PATH=/usr/bin/python
+    test -n "$3" && PYTHON_PATH=$2
+    test -n "$5" || SUDO=sudo
+    test -n "$5" && SUDO=
+
     case $OSTYPE in
       *darwin*)
         OWNER=root:wheel
+        OPTIONS=-pR
         ;;
       *)
         OWNER=root:root
+        OPTIONS=-a
         ;;
     esac
 }
 
-install_trunk() {
-    if [ -d /usr/local/src/django/trunk ]; then
-        cd /usr/local/src/django/trunk
-        sudo svn up
-    else
-        test -d /usr/local/src/django || sudo mkdir -p /usr/local/src/django
-        cd /usr/local/src/django
-        sudo svn co http://code.djangoproject.com/svn/django/trunk/
-        cd trunk
-    fi
-    sudo python setup.py install
-    svn info
-    sudo chown -R $OWNER /usr/local/src/django/trunk
+save_sources() {
+    test -d /usr/local/src/django || $SUDO mkdir -p /usr/local/src/django
+    $SUDO cp $OPTIONS Django-$DJANGO_VERSION /usr/local/src/django
+    sudo chown -R $OWNER /usr/local/src/django
 }
 
-install_branch() {
-    if [ -d /usr/local/src/django/$1 ]; then
-        cd /usr/local/src/django/$1
-        svn info
-    else
-        sudo svn co http://svn.ruby-lang.org/repos/ruby/trunk trunk
-        cd trunk
-        test -d /usr/local/src/django || sudo mkdir -p /usr/local/src/django
-        cd /usr/local/src/django
-        sudo svn co http://code.djangoproject.com/svn/django/tags/releases/$1
-        cd $1
-        sudo python setup.py install
-        sudo chown -R $OWNER /usr/local/src/django/$1
-    fi
+install_stable() {
+    mkdir install_django
+    cd install_django
+
+    wget https://www.djangoproject.com/m/releases/$DJANGO_MINOR_VERSION/Django-$DJANGO_VERSION.tar.gz
+    tar xzvf Django-$DJANGO_VERSION.tar.gz
+    cd Django-$DJANGO_VERSION
+    $SUDO $PYTHON_PATH setup.py install
+    cd ..
+
+    test -n "$4" || save_sources
+    cd ..
+    $SUDO rm -rf install_django
 }
 
 install_django() {
     setup_environment
-    test -n "$1" && install_branch $1
-    test -n "$1" || install_trunk
+    install_stable $*
     django-admin.py --version
 }
 
