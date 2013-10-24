@@ -2,10 +2,11 @@
 #
 ########################################################################
 # Install Django
-#  $1 = django version
-#  $2 = python path
-#  $3 = not save to src
-#  $4 = nosudo
+#  $1 = python path
+#  $2 = django version
+#  $3 = django minor version
+#  $4 = not save to src
+#  $5 = nosudo
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
@@ -22,12 +23,12 @@
 ########################################################################
 
 setup_environment() {
-    test -n "$1" || DJANGO_VERSION=1.5.4
-    test -n "$1" && DJANGO_VERSION=$1
-    test -n "$2" || DJANGO_MINOR_VERSION=1.5
-    test -n "$2" && DJANGO_MINOR_VERSION=$1
-    test -n "$3" || PYTHON_PATH=/usr/bin/python
-    test -n "$3" && PYTHON_PATH=$2
+    test -n "$1" || PYTHON_PATH=/usr/bin/python
+    test -n "$1" && PYTHON_PATH=$2
+    test -n "$2" || DJANGO_VERSION=1.5.4
+    test -n "$2" && DJANGO_VERSION=$1
+    test -n "$3" || DJANGO_MINOR_VERSION=1.5
+    test -n "$3" && DJANGO_MINOR_VERSION=$1
     test -n "$5" || SUDO=sudo
     test -n "$5" && SUDO=
 
