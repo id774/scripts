@@ -44,7 +44,7 @@ save_sources() {
     sudo cp $OPTIONS mecab-python-$MECAB_VERSION /usr/local/src/mecab
     sudo cp $OPTIONS mecab-ipadic-$IPADIC_VERSION /usr/local/src/mecab
     sudo cp $OPTIONS mecab-naist-jdic-$NAISTDIC_VERSION /usr/local/src/mecab
-    sudo chown -R root:root /usr/local/src/mecab
+    sudo chown -R $OWNER /usr/local/src/mecab
 }
 
 install_mecab() {
