@@ -143,3 +143,17 @@ class PythonModuleVersion:
         except ImportError:
             return 'MeCab ImportError'
 
+    def numpy_version(self):
+        try:
+            import numpy
+            return 'numpy', numpy.__version__
+        except ImportError:
+            return 'numpy ImportError'
+
+    def scipy_version(self):
+        try:
+            import scipy
+            return 'scipy', scipy.__version__
+        except ImportError:
+            return 'scipy ImportError'
+

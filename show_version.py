@@ -49,6 +49,8 @@ def show_version():
     print(m.cherrypy_version())
     print(m.nltk_version())
     print(m.MeCab_version())
+    print(m.numpy_version())
+    print(m.scipy_version())
 
 def module_install():
     import os
