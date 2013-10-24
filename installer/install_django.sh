@@ -66,7 +66,7 @@ install_stable() {
 }
 
 install_django() {
-    setup_environment
+    setup_environment $*
     install_stable $*
     django-admin.py --version
 }
