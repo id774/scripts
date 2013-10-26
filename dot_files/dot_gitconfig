@@ -5,7 +5,7 @@
   excludesfile = /home/ubuntu/.gitignore
   quotepath = false
 [alias]
-  graph = log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %s\" --all --date=short 
+  graph = log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %s\" --all --date=short
 [github]
   user = id774
 [push]
