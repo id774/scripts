@@ -58,7 +58,6 @@ main() {
     sudo port -d install smartmontools
     sudo port -d install w3m
     sudo port -d install emacs-w3m
-    sudo port -d install ruby
     port installed
 }
 
