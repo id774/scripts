@@ -32,6 +32,7 @@ main() {
     sudo port -d install py33-setuptools
     sudo port -d install py33-ipython
     sudo port -d install py33-py
+    sudo port -d install py33-simplejson
     sudo port -d install py33-pip
     sudo port -d install py33-Pillow
     sudo port -d install py33-numpy
