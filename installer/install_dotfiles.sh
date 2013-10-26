@@ -178,6 +178,7 @@ bulk_deploy() {
     deploy_dotfiles_to_mac \
       mac \
       apple \
+      adm \
       demo \
       work \
       testuser
