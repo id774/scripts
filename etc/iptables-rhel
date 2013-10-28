@@ -27,6 +27,7 @@
 -A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 123 -j ACCEPT
+-A INPUT -p tcp -m udp --dport 123 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 5432 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 9160 -j ACCEPT

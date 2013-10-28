@@ -172,9 +172,9 @@ $IPTABLES -A INPUT -p tcp --dport 443 -j ACCEPT
 #$IPTABLES -A INPUT -p tcp --dport 139 -j ACCEPT
 #$IPTABLES -A INPUT -p tcp --dport 445 -j ACCEPT
 
-# 外部からのTCP123番ポート(NTP)へのアクセスを許可
-# ※NTPサーバーを公開する場合のみ
+# 外部からの123番ポート(NTP)へのアクセスを許可
 $IPTABLES -A INPUT -p tcp --dport 123 -j ACCEPT
+$IPTABLES -A INPUT -p udp --dport 123 -j ACCEPT
 
 # 外部からのTCP3306番ポート(MySQL)へのアクセスを許可
 # ※MySQLサーバーを公開する場合のみ
