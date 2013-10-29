@@ -7,14 +7,16 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 10/29,2013
+#       Update download URL.
 #  v0.1 10/23,2012
 #       First.
 ########################################################################
 
 setup_environment() {
-    test -n "$1" || CABOCHA_VERSION=0.64
+    test -n "$1" || CABOCHA_VERSION=0.66
     test -n "$1" && CABOCHA_VERSION=$1
-    test -n "$2" || CRF_VERSION=0.57
+    test -n "$2" || CRF_VERSION=0.58
     test -n "$2" && CRF_VERSION=$1
     case $OSTYPE in
       *darwin*)
@@ -50,8 +52,8 @@ install_cabocha() {
     sudo make install
     cd ..
 
-    wget http://cabocha.googlecode.com/files/cabocha-$CABOCHA_VERSION.tar.gz
-    tar xzvf cabocha-$CABOCHA_VERSION.tar.gz
+    wget https://cabocha.googlecode.com/files/cabocha-$CABOCHA_VERSION.tar.bz2
+    tar xjvf cabocha-$CABOCHA_VERSION.tar.gz
     cd cabocha-$CABOCHA_VERSION
     ./configure --with-charset=UTF8 --with-posset=IPA
     make
