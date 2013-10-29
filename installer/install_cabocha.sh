@@ -53,7 +53,7 @@ install_cabocha() {
     cd ..
 
     wget https://cabocha.googlecode.com/files/cabocha-$CABOCHA_VERSION.tar.bz2
-    tar xjvf cabocha-$CABOCHA_VERSION.tar.gz
+    tar xjvf cabocha-$CABOCHA_VERSION.tar.bz2
     cd cabocha-$CABOCHA_VERSION
     ./configure --with-charset=UTF8 --with-posset=IPA
     make
