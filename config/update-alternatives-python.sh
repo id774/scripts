@@ -33,7 +33,7 @@ update_alternatives() {
 make_all_alternatives() {
     TARGET=/usr/bin
     SOURCE=/usr/bin
-    PRIORITY=100
+    PRIORITY=120
     SUFFIX=2.7
     update_alternatives $TARGET $SOURCE $PRIORITY $SUFFIX
     SOURCE=/usr/bin
