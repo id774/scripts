@@ -67,6 +67,7 @@ system_packages() {
       nkf \
       mailx \
       mutt \
+      tree \
       sharutils \
       digitools \
       dnsutils \
