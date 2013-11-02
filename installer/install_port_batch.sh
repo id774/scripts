@@ -42,7 +42,6 @@ main() {
     sudo port -d install zlib
     sudo port -d install openssl
     sudo port -d install subversion
-    sudo port -d install git-core
     sudo port -d install -f svk
     sudo port -d install lv
     sudo port -d install chasen
