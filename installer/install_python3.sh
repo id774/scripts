@@ -14,6 +14,7 @@ sudo apt-get -y install python3-nose
 sudo apt-get -y install python3-numpy
 sudo apt-get -y install python3-openssl
 sudo apt-get -y install python3-pip
+sudo apt-get -y install python3-requests
 sudo apt-get -y install python3-scipy
 sudo apt-get -y install python3-urllib3
 sudo apt-get -y install python3-yaml
