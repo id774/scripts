@@ -96,6 +96,7 @@ gitpull_all() {
     gitpull github id774 termtter $*
     gitpull github id774 termtter-plugins $*
     gitpull github id774 deferred-sync $*
+    gitpull github id774 stdout $*
     gitpull github id774 sysadmin $*
     gitpull github id774 instant-deployer $*
     gitpull github id774 twitter_viewer $*
