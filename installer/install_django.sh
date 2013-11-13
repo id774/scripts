@@ -25,9 +25,9 @@
 setup_environment() {
     test -n "$1" || PYTHON_PATH=/usr/bin/python
     test -n "$1" && PYTHON_PATH=$1
-    test -n "$2" || DJANGO_VERSION=1.5.4
+    test -n "$2" || DJANGO_VERSION=1.6
     test -n "$2" && DJANGO_VERSION=$2
-    test -n "$3" || DJANGO_MINOR_VERSION=1.5
+    test -n "$3" || DJANGO_MINOR_VERSION=1.6
     test -n "$3" && DJANGO_MINOR_VERSION=$3
     test -n "$5" || SUDO=sudo
     test -n "$5" && SUDO=
