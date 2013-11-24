@@ -84,7 +84,7 @@ install_gem() {
     sudo $GEM install capistrano --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install redgreen --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install minitest --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install rspec --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 2.14.0" rspec --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rspec-rails --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install flexmock --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install simplecov --no-ri --no-rdoc $2 $3 $4
