@@ -75,6 +75,7 @@ setup_scripts() {
 
 setup_darwin_scripts() {
     install_scripts 755 port-upgrade.sh port-upgrade
+    install_scripts 755 port-cleanup.sh port-cleanup
 }
 
 setup_rhel_scripts() {
