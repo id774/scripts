@@ -17,10 +17,14 @@ purge_old_sources() {
       sudo rm -rf /usr/local/src/node.js/node-v0.10.0
     test -d /opt/ruby/1.9.2 && \
       sudo rm -rf /opt/ruby/1.9.2
+    test -d /usr/local/src/ruby/ruby-2.0.0-p247 && \
+      sudo rm -rf /usr/local/src/ruby/ruby-2.0.0-p247
     test -d /usr/local/src/ruby/ruby-2.0.0-p195 && \
       sudo rm -rf /usr/local/src/ruby/ruby-2.0.0-p195
     test -d /usr/local/src/ruby/ruby-2.0.0-p0 && \
       sudo rm -rf /usr/local/src/ruby/ruby-2.0.0-p0
+    test -d /usr/local/src/ruby/ruby-1.9.3-p448 && \
+      sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p448
     test -d /usr/local/src/ruby/ruby-1.9.3-p429 && \
       sudo rm -rf /usr/local/src/ruby/ruby-1.9.3-p429
     test -d /usr/local/src/ruby/ruby-1.9.3-p392 && \

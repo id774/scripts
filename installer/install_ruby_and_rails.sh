@@ -7,6 +7,8 @@
 #
 #  v1.0 7/8,2013
 #       Cut out purge process.
+#  v0.1 7/11,2011
+#       First.
 ########################################################################
 
 test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
