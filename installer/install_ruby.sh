@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.34 11/26,2013
+#       Update to ruby 2.0.0-p353, 1.9.3-p484.
 # v1.33 8/11,2013
 #       Remove obsolete ruby 1.8.7.
 # v1.32 7/5,2013
@@ -169,6 +171,9 @@ setup_environment() {
 install_ruby() {
     setup_environment
     case "$1" in
+      200-353)
+        install_stable 2.0.0-p353 2.0 $2
+        ;;
       200-247)
         install_stable 2.0.0-p247 2.0 $2
         ;;
@@ -177,6 +182,9 @@ install_ruby() {
         ;;
       200-0)
         install_stable 2.0.0-p0 2.0 $2
+        ;;
+      193-484)
+        install_stable 1.9.3-p484 1.9 $2
         ;;
       193-448)
         install_stable 1.9.3-p448 1.9 $2
