@@ -77,6 +77,7 @@ optional_packages() {
       pidgin \
       xpdf \
       comix \
+      fbreader \
       skype \
       amsn \
       wireshark \
