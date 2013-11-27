@@ -20,12 +20,10 @@ smart_apt() {
 }
 
 desktop_envirionment() {
-    test -f /etc/lsb-release && smart_apt xubuntu-desktop
-    test -f /etc/lsb-release || smart_apt xfce4
-    #test -f /etc/lsb-release && smart_apt ubuntu-desktop-ja
     smart_apt \
       xfwm4 xfwm4-themes \
       xfce4-goodies \
+      xfce4-terminal \
       gnome-themes gnome-themes-extras
 }
 
@@ -35,11 +33,6 @@ fonts_packages() {
       xfonts-shinonome \
       ttf-vlgothic ttf-bitstream-vera \
       fonts-ipafont
-}
-
-input_method() {
-    smart_apt \
-      anthy
 }
 
 package_manager() {
@@ -70,16 +63,17 @@ optional_packages() {
     test -f /etc/lsb-release || smart_apt icedove
     smart_apt \
       uim \
-      openoffice.org \
+      libreoffice \
+      vim-gnome \
       gthumb \
       thunar \
       vlc \
       pidgin \
       xpdf \
+      evince \
       comix \
       fbreader \
       skype \
-      amsn \
       wireshark \
       xtightvncviewer \
       chromium-browser
@@ -88,7 +82,6 @@ optional_packages() {
 increase_debian_packages() {
     desktop_envirionment
     fonts_packages
-    input_method
     test -f /etc/lsb-release && package_manager
     test -f /etc/lsb-release && codec_packages
     test -f /etc/lsb-release && icon_packages
@@ -96,10 +89,10 @@ increase_debian_packages() {
     optional_packages
 }
 
-operation() {
+main() {
     test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
     test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
     increase_debian_packages
 }
 
-operation $*
+main $*
