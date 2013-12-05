@@ -33,8 +33,8 @@ install_gem() {
     sudo $GEM install -v "~> 1.3.5" bundler --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 3.1.0" builder --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install minitest --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v "~> 3.2.15" rails --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v "~> 4.0.1" rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 3.2.16" rails --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 4.0.2" rails --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sqlite3 --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sqlite3-ruby --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sass --no-ri --no-rdoc $2 $3 $4
@@ -55,8 +55,8 @@ install_gem() {
     sudo $GEM install i18n_generators --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install jeweler --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install gemcutter --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install -v "~> 3.0.0" will_paginate --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install meta_search --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install kaminari '~> 0.15.0' --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install kaminari-bootstrap '~> 0.1.3' --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rinku --no-ri --no-rdoc $2 $3 $4
     #sudo $GEM install enumerable-lazy --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install term-ansicolor --no-ri --no-rdoc $2 $3 $4
