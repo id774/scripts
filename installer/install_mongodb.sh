@@ -12,7 +12,7 @@
 
 setup_environment() {
     test -n "$1" && VERSION=$1
-    test -n "$1" || VERSION=2.4.5
+    test -n "$1" || VERSION=2.4.8
     SYSTEM_ID=linux-`uname -m`
     case $OSTYPE in
       *darwin*)
