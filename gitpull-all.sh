@@ -95,6 +95,7 @@ gitpull_all() {
     gitpull github id774 automaticruby $*
     gitpull github id774 termtter $*
     gitpull github id774 termtter-plugins $*
+    gitpull github id774 munin-plugins $*
     gitpull github id774 deferred-sync $*
     gitpull github id774 stdout $*
     gitpull github id774 sysadmin $*
