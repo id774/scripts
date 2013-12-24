@@ -21,6 +21,7 @@ install_gem() {
     export RUBYOPT=rubygems
     sudo $GEM update --system $2 $3 $4
     sudo $GEM install rb-readline --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install debugger --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install pry --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install pry-debugger --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install pry-doc --no-ri --no-rdoc $2 $3 $4
@@ -143,6 +144,7 @@ install_gem() {
     sudo $GEM install sysadmin --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install automatic --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install screening --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install ctoD --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install count_by --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rubypython --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install narray --no-ri --no-rdoc $2 $3 $4
