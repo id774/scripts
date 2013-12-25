@@ -4,6 +4,9 @@
 # 設定開始                              #
 #---------------------------------------#
 
+# specify ssh port number
+SSH_PORT=22
+
 # インタフェース名定義
 LAN=eth0
 
@@ -91,9 +94,9 @@ $IPTABLES -A INPUT -d 224.0.0.1 -j DROP
 $IPTABLES -A INPUT -p tcp --dport 113 -j REJECT --reject-with tcp-reset
 
 # 同一ポートに一定回数以上の認証を試みたIPアドレスをシャットアウトする
-$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH
-$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH -j LOG --log-prefix 'SSH attack: '
-$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH -j DROP
+$IPTABLES -A INPUT -p tcp --dport $SSH_PORT -m state --state NEW -m recent --set --name SSH
+$IPTABLES -A INPUT -p tcp --dport $SSH_PORT -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH -j LOG --log-prefix 'SSH attack: '
+$IPTABLES -A INPUT -p tcp --dport $SSH_PORT -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH -j DROP
 
 $IPTABLES -A INPUT -p tcp --dport 3306 -m state --state NEW -m recent --set --name MYSQL
 $IPTABLES -A INPUT -p tcp --dport 3306 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name MYSQL -j LOG --log-prefix 'MYSQL attack: '
@@ -109,7 +112,7 @@ $IPTABLES -A INPUT -p tcp --dport 5432 -m state --state NEW -m recent --update -
 
 # 外部からのTCP22番ポート(SSH)へのアクセスを許可
 # ※SSHサーバーを公開する場合のみ
-$IPTABLES -A INPUT -p tcp --dport 22 -j ACCEPT
+$IPTABLES -A INPUT -p tcp --dport $SSH_PORT -j ACCEPT
 
 # 外部からのTCP/UDP53番ポート(DNS)へのアクセスを許可
 # ※外部向けDNSサーバーを運用する場合のみ
