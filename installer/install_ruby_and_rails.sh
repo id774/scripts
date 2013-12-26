@@ -15,8 +15,8 @@ test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
 test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
 
 install_ruby() {
-    $SCRIPTS/installer/install_ruby.sh 200-353 /opt/ruby/2.0
-    $SCRIPTS/installer/install_gems.sh /opt/ruby/2.0
+    $SCRIPTS/installer/install_ruby.sh 210-0 /opt/ruby/2.1
+    $SCRIPTS/installer/install_gems.sh /opt/ruby/2.1
 }
 
 operation() {

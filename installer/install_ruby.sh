@@ -260,6 +260,9 @@ install_ruby() {
       186-420)
         install_stable 1.8.6-p420 1.8 $2
         ;;
+      21-svn)
+        install_branch ruby_2_1 $2
+        ;;
       20-svn)
         install_branch ruby_2_0_0 $2
         ;;
