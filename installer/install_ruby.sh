@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.35 12/26,2013
+#       Update to ruby 2.1.0.
 # v1.34 11/26,2013
 #       Update to ruby 2.0.0-p353, 1.9.3-p484.
 # v1.33 8/11,2013
@@ -171,6 +173,9 @@ setup_environment() {
 install_ruby() {
     setup_environment
     case "$1" in
+      210-0)
+        install_stable 2.1.0 2.1 $2
+        ;;
       200-353)
         install_stable 2.0.0-p353 2.0 $2
         ;;
