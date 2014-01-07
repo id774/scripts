@@ -63,7 +63,7 @@ install_truecrypt() {
         if [ -f $TMP/truecrypt_$2_console_i386.tar.gz ]; then
             cd $TMP
             tar xzvf truecrypt_$2_console_i386.tar.gz
-            rm truecrypt_$2_console_i386.tar.gz 
+            rm truecrypt_$2_console_i386.tar.gz
             test -d usr || exit 1
             sudo cp -Rv usr /
             rm -rf usr
@@ -79,7 +79,7 @@ install_truecrypt() {
         if [ -f $TMP/truecrypt_$2_console_amd64.tar.gz ]; then
             cd $TMP
             tar xzvf truecrypt_$2_console_amd64.tar.gz
-            rm truecrypt_$2_console_amd64.tar.gz 
+            rm truecrypt_$2_console_amd64.tar.gz
             test -d usr || exit 1
             sudo cp -Rv usr /
             rm -rf usr
