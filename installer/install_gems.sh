@@ -99,6 +99,7 @@ install_gem() {
     sudo $GEM install rdoc --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install gherkin --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install cucumber --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install capybara --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 1.5.1" rubytter --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install -v "~> 2.2.2" termtter --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install userstream --no-ri --no-rdoc $2 $3 $4
