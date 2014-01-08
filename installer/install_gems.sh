@@ -67,6 +67,7 @@ install_gem() {
     sudo $GEM install hpricot --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install mechanize --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install nokogiri --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install anemone --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install sanitize --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install Selenium --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install pg --no-ri --no-rdoc $2 $3 $4
