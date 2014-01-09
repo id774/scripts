@@ -113,6 +113,7 @@ debian_developer_tools() {
 
 editor_packages() {
     smart_apt \
+      texlive-lang-cjk \
       texinfo \
       emacs23 emacs23-el \
       ess \
