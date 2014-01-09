@@ -20,6 +20,11 @@ flash_udev_net_rules() {
       /etc/udev/rules.d/70-persistent-net.rules.old
 }
 
+selinux_setup() {
+    sudo vi /etc/sysconfig/selinux
+    sudo chkconfig --level 2345 auditd on
+}
+
 operation() {
     show_hw_info
     #flash_udev_net_rules
@@ -31,7 +36,7 @@ operation() {
     $SCRIPTS/installer/setup_tune2fs.sh
 
     # SELinux
-    sudo vi /etc/sysconfig/selinux
+    selinux_setup
 
     # Upgrade
     sudo yum -y update
