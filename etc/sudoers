@@ -7,7 +7,7 @@
 
 Defaults    env_reset
 Defaults    !lecture,tty_tickets,!fqdn
-Defaults    timestamp_timeout = 60
+Defaults    timestamp_timeout = 240
 Defaults    passprompt = "[sudo] <%U@%h> Enter %u's password: "
 
 # Host alias specification
