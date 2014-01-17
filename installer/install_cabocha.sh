@@ -14,7 +14,7 @@
 ########################################################################
 
 setup_environment() {
-    test -n "$1" || CABOCHA_VERSION=0.66
+    test -n "$1" || CABOCHA_VERSION=0.67
     test -n "$1" && CABOCHA_VERSION=$1
     test -n "$2" || CRF_VERSION=0.58
     test -n "$2" && CRF_VERSION=$1
