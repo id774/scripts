@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.3 1/19,2014
+#       Update to zsh 5.0.5, Change source url.
 #  v0.2 9/16,2010
 #       Refactoring.
 #  v0.1 9/14,2010
@@ -16,7 +18,7 @@
 
 setup_environment() {
     test -n "$1" && ZSH_VERSION=$1
-    test -n "$1" || ZSH_VERSION=4.3.10
+    test -n "$1" || ZSH_VERSION=5.0.5
     test -n "$3" || SUDO=sudo
     test -n "$3" && SUDO=
     case $OSTYPE in
@@ -50,7 +52,7 @@ make_and_install() {
 get_zsh() {
     mkdir install_zsh
     cd install_zsh
-    wget http://www.zsh.org/pub/zsh-$ZSH_VERSION.tar.gz
+    wget http://sourceforge.net/projects/zsh/files/zsh/$ZSH_VERSION/zsh-$ZSH_VERSION.tar.gz/download -O zsh-$ZSH_VERSION.tar.gz
     test -f zsh-$ZSH_VERSION.tar.gz || exit 1
     tar xzvf zsh-$ZSH_VERSION.tar.gz
     test "$2" = "sourceonly" || make_and_install $1 $2
