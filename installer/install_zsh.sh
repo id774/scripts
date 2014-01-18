@@ -42,7 +42,8 @@ save_sources() {
 
 make_and_install() {
     cd zsh-$ZSH_VERSION
-    test -n "$2" || ./configure --enable-multibyte --prefix=$HOME/local/zsh/$ZSH_VERSION
+    #test -n "$2" || ./configure --enable-multibyte --prefix=$HOME/local/zsh/$ZSH_VERSION
+    test -n "$2" || ./configure --enable-multibyte --prefix=/usr/local
     test -n "$2" && ./configure --enable-multibyte --prefix=$2
     make
     $SUDO make install
