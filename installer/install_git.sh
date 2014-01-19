@@ -50,7 +50,7 @@ get_git() {
     mkdir install_git
     cd install_git
 
-    wget http://git-core.googlecode.com/files/git-1.8.5.3.tar.gz
+    wget http://git-core.googlecode.com/files/git-$GIT_VERSION.tar.gz
     test -f git-$GIT_VERSION.tar.gz || exit 1
     tar xzvf git-$GIT_VERSION.tar.gz
 
