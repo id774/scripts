@@ -1,17 +1,9 @@
-/var/log/rails/kr.log {
-  weekly
+/var/www/rails/*/log/production.log {
+  su www-data www-data
+  daily
   compress
   delaycompress
   missingok
-  create 0640 www-data adm
-  rotate 26
-}
-
-/var/log/rails/redmine.log {
-  weekly
-  compress
-  delaycompress
-  missingok
-  create 0640 www-data adm
-  rotate 26
+  create 0640 www-data www-data
+  rotate 180
 }
