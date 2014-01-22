@@ -65,7 +65,7 @@ install_gem() {
     sudo $GEM install rest-client --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install http_configuration --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install hpricot --no-ri --no-rdoc $2 $3 $4
-    sudo $GEM install mechanize --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install -v "~> 2.1.1" mechanize --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install nokogiri --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install anemone --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install cosmicrawler --no-ri --no-rdoc $2 $3 $4
