@@ -122,6 +122,7 @@ install_gem() {
     sudo $GEM install sidekiq -server --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rubytree --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install shoulda --no-ri --no-rdoc $2 $3 $4
+    sudo $GEM install request-log-analyzer --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install tzinfo --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install guard-coffeescript --no-ri --no-rdoc $2 $3 $4
     sudo $GEM install rb-fsevent --no-ri --no-rdoc $2 $3 $4
