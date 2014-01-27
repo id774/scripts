@@ -73,7 +73,7 @@ install_cabocha() {
 
     test -n "$2" || save_sources
     cd ..
-    rm -rf install_cabocha
+    sudo rm -rf install_cabocha
 }
 
 ping -c 1 id774.net > /dev/null 2>&1 || exit 1
