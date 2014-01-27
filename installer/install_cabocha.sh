@@ -1,12 +1,14 @@
 #!/bin/sh
 #
 ########################################################################
-# Install Cabocha
+# Install CaboCha
 #  $1 = cabocha version
 #  $2 = CRF version
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.4 1/27,2014
+#       Fix erase process.
 #  v0.3 1/19,2014
 #       Not use https.
 #  v0.2 10/29,2013
