@@ -109,6 +109,7 @@ gitpull_all() {
     gitpull github id774 recommendation $*
     gitpull github id774 vocabulary $*
     gitpull github id774 depression $*
+    gitpull github id774 numerology $*
     gitpull github id774 sandbox $*
     gitpull github id774 rurima $*
     gitpull github id774 batch_framework $*
