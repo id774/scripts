@@ -1,8 +1,0 @@
-/var/log/sysadmin/clone_git2svn.log {
-  daily
-  compress
-  delaycompress
-  missingok
-  create 0640 root adm
-  rotate 10
-}

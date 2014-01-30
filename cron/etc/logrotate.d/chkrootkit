@@ -4,5 +4,5 @@
   delaycompress
   missingok
   create 0640 root adm
-  rotate 30
+  rotate 180
 }

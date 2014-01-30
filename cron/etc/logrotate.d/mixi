@@ -1,8 +1,0 @@
-/var/log/sysadmin/mixi.log {
-  weekly
-  compress
-  delaycompress
-  missingok
-  create 0640 plagger adm
-  rotate 52
-}

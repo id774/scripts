@@ -1,8 +1,0 @@
-/var/log/sysadmin/clone_coderepos.log {
-  daily
-  compress
-  delaycompress
-  missingok
-  create 0640 root adm
-  rotate 10
-}
