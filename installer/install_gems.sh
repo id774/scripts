@@ -23,6 +23,7 @@ install_gem() {
     test -n "$1" || export GEM=gem
     test -n "$2" || SUDO=sudo
     test -n "$2" && SUDO=
+    test "$2" = "sudo" && SUDO=sudo
     export RUBYOPT=rubygems
     $SUDO $GEM update --system $3 $4 $5
     $SUDO $GEM install rb-readline --no-ri --no-rdoc $3 $4 $5
