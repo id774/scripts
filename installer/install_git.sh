@@ -17,6 +17,7 @@ setup_environment() {
     test -n "$1" || GIT_VERSION=1.8.5.3
     test -n "$3" || SUDO=sudo
     test -n "$3" && SUDO=
+    test "$3" = "sudo" && SUDO=sudo
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR

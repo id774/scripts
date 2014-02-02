@@ -31,6 +31,7 @@ setup_environment() {
     test -n "$3" && DJANGO_MINOR_VERSION=$3
     test -n "$5" || SUDO=sudo
     test -n "$5" && SUDO=
+    test "$5" = "sudo" && SUDO=sudo
 
     case $OSTYPE in
       *darwin*)

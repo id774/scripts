@@ -26,6 +26,7 @@ setup_environment() {
     test -n "$3" || BUILD_OPTIONS=--with-ns
     test -n "$4" || SUDO=sudo
     test -n "$4" && SUDO=
+    test "$4" = "sudo" && SUDO=sudo
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR

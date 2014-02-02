@@ -29,6 +29,7 @@
 setup_environment() {
     test -n "$3" || SUDO=sudo
     test -n "$3" && SUDO=
+    test "$3" = "sudo" && SUDO=sudo
     case $OSTYPE in
       *darwin*)
         OWNER=root:wheel

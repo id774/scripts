@@ -18,6 +18,7 @@
 setup_environment() {
     test -n "$2" || SUDO=sudo
     test -n "$2" && SUDO=
+    test "$2" = "sudo" && SUDO=sudo
 }
 
 gitpull() {
