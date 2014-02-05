@@ -1,8 +1,8 @@
-/var/log/sysadmin/resources.log {
+/var/log/fluent/*.log {
   weekly
   compress
   delaycompress
   missingok
-  create 0640 root adm
+  create 0640 fluent adm
   rotate 52
 }

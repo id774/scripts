@@ -1,0 +1,17 @@
+/var/log/automatic/*.log {
+  weekly
+  compress
+  delaycompress
+  missingok
+  create 0640 automatic adm
+  rotate 52
+}
+
+/home/automatic/.automatic/db/*.db {
+  monthly
+  compress
+  delaycompress
+  missingok
+  create 0660 automatic automatic
+  rotate 12
+}

@@ -1,9 +1,9 @@
 /var/www/rails/*/log/production.log {
   su www-data www-data
-  daily
+  weekly
   compress
   delaycompress
   missingok
   create 0660 www-data www-data
-  rotate 180
+  rotate 52
 }

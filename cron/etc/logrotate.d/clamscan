@@ -4,7 +4,7 @@
   delaycompress
   missingok
   create 0640 clamav adm
-  rotate 26
+  rotate 52
 }
 
 /var/log/clamav/clamscan.log {
@@ -13,5 +13,5 @@
   delaycompress
   missingok
   create 0640 clamav adm
-  rotate 26
+  rotate 52
 }
