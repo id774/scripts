@@ -5,7 +5,7 @@
   compress
   delaycompress
   notifempty
-  create 440 www-data adm
+  create 640 www-data adm
   sharedscripts
   postrotate
     /etc/init.d/apache2 reload > /dev/null
