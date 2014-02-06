@@ -156,6 +156,7 @@ lang_packages() {
       scala \
       r-base r-base-dev \
       ghc \
+      cabal-install \
       global \
       markdown \
       graphviz graphviz-dev \
