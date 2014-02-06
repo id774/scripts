@@ -147,6 +147,7 @@ install_gem() {
     $SUDO $GEM install gnuplot --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install ai4r --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install --source http://gems.github.com tomz-liblinear-ruby-swig $3 $4 $5
+    $SUDO $GEM install nimbus --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install naivebayes --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install kmeans --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install recommendation --no-ri --no-rdoc $3 $4 $5
