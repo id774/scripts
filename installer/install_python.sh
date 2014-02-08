@@ -75,13 +75,17 @@ get_easy_install() {
     wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | $SUDO $PREFIX/bin/python
 }
 
+get_pip() {
+    wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py -O - | $SUDO $PREFIX/bin/python
+}
+
 install_python() {
     setup_environment $*
     test -n "$1" || exit 1
     get_python $*
     create_symlink $*
     get_easy_install $*
-
+    get_pip $*
     python -V
 }
 
