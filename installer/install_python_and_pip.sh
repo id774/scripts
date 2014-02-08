@@ -1,26 +1,26 @@
 #!/bin/sh
 #
 ########################################################################
-# Install Ruby and Rails
+# Install Python and pip
+#  $1 = version
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.0 7/8,2013
-#       Cut out purge process.
-#  v0.1 7/11,2011
+#  v0.1 2/9,2014
 #       First.
 ########################################################################
 
-install_ruby() {
-    $SCRIPTS/installer/install_ruby.sh 210-0 /opt/ruby/2.1
-    $SCRIPTS/installer/install_gems.sh /opt/ruby/2.1
+install_python() {
+    $SCRIPTS/installer/install_python.sh 3.3.3 /opt/python/3.3.3
+    $SCRIPTS/installer/install_pip.sh /opt/python/3.3.3
 }
 
 operation() {
+    test -n "$1" || VERSION=3.3.3
+    test -n "$1" && VERSION=$1
     test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
     test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
-    $SCRIPTS/installer/purge_obsolete_sources.sh
-    install_ruby
+    install_python $*
 }
 
 operation $*
