@@ -84,7 +84,7 @@ install_python() {
     test -n "$1" || exit 1
     get_python $*
     create_symlink $*
-    get_easy_install $*
+    # get_easy_install $*
     get_pip $*
     python -V
 }

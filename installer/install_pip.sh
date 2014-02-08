@@ -22,21 +22,22 @@ setup_environment() {
 }
 
 install_libs() {
-    $SUDO $EASY_INSTALL IPython
-    $SUDO $EASY_INSTALL nose
-    $SUDO $EASY_INSTALL simplejson
-    $SUDO $EASY_INSTALL -Z SQLAlchemy
-    $SUDO $EASY_INSTALL Genshi
-    $SUDO $EASY_INSTALL Babel
-    $SUDO $EASY_INSTALL Pygments
-    $SUDO $EASY_INSTALL web.py
-    $SUDO $EASY_INSTALL python-twitter
-    $SUDO $EASY_INSTALL -U bottle
-    $SUDO $EASY_INSTALL -U cherrypy
-    $SUDO $EASY_INSTALL -U distribute
-    $SUDO $EASY_INSTALL pip
-    $SUDO $PIP install -U numpy
-    $SUDO $PIP install -U pyyaml nltk
+    $SUDO $PIP install -U pip
+    $SUDO $PIP install IPython
+    $SUDO $PIP install nose
+    $SUDO $PIP install simplejson
+    $SUDO $PIP install distribute
+    $SUDO $PIP install numpy
+    $SUDO $PIP install scipy
+    $SUDO $PIP install pyyaml nltk
+    $SUDO $PIP install django
+    $SUDO $PIP install SQLAlchemy
+    $SUDO $PIP install Genshi
+    $SUDO $PIP install Babel
+    $SUDO $PIP install Pygments
+    $SUDO $PIP install web.py
+    $SUDO $PIP install bottle
+    $SUDO $PIP install cherrypy
 }
 
 main() {
