@@ -64,10 +64,10 @@ install_cabocha() {
     sudo make install
     cd python
     python setup.py build_ext
-    sudo python setup.py install
+    sudo `which python` setup.py install
     cd ..
     cd ruby
-    ruby extconf.rb
+    `which ruby` extconf.rb
     make
     sudo make install
     cd ..

@@ -60,18 +60,18 @@ install_mecab() {
     make
     sudo make install
     cd ..
-    wget http://mecab.googlecode.com/files/mecab-ruby-$MECAB_VERSION.tar.gz
-    tar xzvf mecab-ruby-$MECAB_VERSION.tar.gz
-    cd mecab-ruby-$MECAB_VERSION
-    ruby extconf.rb
-    make
-    sudo make install
-    cd ..
     wget http://mecab.googlecode.com/files/mecab-python-$MECAB_VERSION.tar.gz
     tar xzvf mecab-python-$MECAB_VERSION.tar.gz
     cd mecab-python-$MECAB_VERSION
     python setup.py build
-    sudo python setup.py install
+    sudo `which python` setup.py install
+    cd ..
+    wget http://mecab.googlecode.com/files/mecab-ruby-$MECAB_VERSION.tar.gz
+    tar xzvf mecab-ruby-$MECAB_VERSION.tar.gz
+    cd mecab-ruby-$MECAB_VERSION
+    `which ruby` extconf.rb
+    make
+    sudo make install
     cd ..
     wget http://mecab.googlecode.com/files/mecab-ipadic-$IPADIC_VERSION.tar.gz
     tar xzvf mecab-ipadic-$IPADIC_VERSION.tar.gz

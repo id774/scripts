@@ -26,10 +26,8 @@ install_libs() {
     $SUDO $PIP install IPython
     $SUDO $PIP install nose
     $SUDO $PIP install simplejson
-    $SUDO $PIP install distribute
     $SUDO $PIP install numpy
     $SUDO $PIP install scipy
-    $SUDO $PIP install pyyaml nltk
     $SUDO $PIP install django
     $SUDO $PIP install SQLAlchemy
     $SUDO $PIP install Genshi
