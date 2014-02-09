@@ -13,25 +13,25 @@
 ########################################################################
 
 setup_environment() {
-    test -n "$1" && export RUBY=$1/bin/ruby
-    test -n "$1" || export RUBY=/usr/local/bin/ruby
+    test -n "$1" && export PYTHON=$1/bin/python
+    test -n "$1" || export PYTHON=/usr/local/bin/python
     test -n "$2" && export TARGET=$2
-    test -n "$2" || export TARGET=/usr/local/src/mecab/mecab-ruby-0.994
+    test -n "$2" || export TARGET=/usr/local/src/mecab/mecab-python-0.994
     test -n "$3" || SUDO=sudo
     test -n "$3" && SUDO=
     test "$3" = "sudo" && SUDO=sudo
 }
 
-source_compile() {
+make_and_install() {
     cd $TARGET
-    $SUDO $RUBY extconf.rb
-    $SUDO make
-    $SUDO sudo make install
+    pwd
+    $SUDO $PYTHON setup.py build
+    $SUDO $PYTHON setup.py install
 }
 
 install_mecab() {
     setup_environment $*
-    source_compile $*
+    make_and_install $*
 }
 
 ping -c 1 id774.net > /dev/null 2>&1 || exit 1
