@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 ########################################################################
-# Install Mecab Ruby Binding
+# Install Mecab Python Binding
 #  $1 = ruby path
 #  $2 = source path
 #  $3 = no sudo
