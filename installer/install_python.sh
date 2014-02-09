@@ -72,11 +72,11 @@ create_symlink() {
 }
 
 get_easy_install() {
-    wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py -O - | $SUDO $PREFIX/bin/python
+    curl -L https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py | $SUDO $PREFIX/bin/python
 }
 
 get_pip() {
-    wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py -O - | $SUDO $PREFIX/bin/python
+    curl -L https://raw.github.com/pypa/pip/master/contrib/get-pip.py | $SUDO $PREFIX/bin/python
 }
 
 install_python() {
