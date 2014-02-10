@@ -111,7 +111,7 @@ install_binding() {
 main() {
     setup_environment $*
     install_mecab $*
-    install_binding $*
+    test -n "$5" || install_binding $*
 }
 
 ping -c 1 id774.net > /dev/null 2>&1 || exit 1
