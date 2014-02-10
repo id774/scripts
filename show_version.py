@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 ########################################################################
-# Show Python module versions
+# Show python modules info and version
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
@@ -13,51 +13,49 @@
 #       Stable.
 ########################################################################
 
-import sys, os
-p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib')
-if not p in sys.path:
-    sys.path.append(p)
-try:
-    p = os.path.join(os.environ['SCRIPTS'], 'lib')
-    if not p in sys.path:
-        sys.path.append(p)
-except KeyError:
-    pass
+import imp
 
-def show_version():
-    import python_module_version
-    m = python_module_version.PythonModuleVersion()
-    m.get_module_version('IPython')
-    m.get_module_version('docutils')
-    m.get_module_version('nose')
-    m.get_module_version('simplejson')
-    m.get_module_version('numpy')
-    m.get_module_version('scipy')
-    m.get_module_version('sklearn')
-    m.get_module_version('matplotlib')
-    m.get_module_version('pandas')
-    m.get_module_version('patsy')
-    m.get_module_version('statsmodels')
-    m.get_module_version('seaborn')
-    m.get_module_version('bokeh')
-    m.get_module_version('twisted')
-    m.get_module_version('flask')
-    m.get_module_version('django')
-    m.get_module_version('sqlalchemy')
-    m.get_module_version('migrate')
-    m.get_module_version('readline')
-    m.get_module_version('pygments')
-    m.get_module_version('babel')
-    m.get_module_version('genshi')
-    m.get_module_version('bottle')
-    m.get_module_version('cherrypy')
-    m.get_module_version('bs4')
-    m.get_module_version('nltk')
-    m.get_module_version('MeCab')
-    m.get_module_version('CaboCha')
+class PythonModuleInfo:
+    def __init__(self):
+        pass
+
+    def get_module_info(self, module_name):
+        try:
+            imp.find_module(module_name)
+            help(module_name)
+        except ImportError:
+            return module_name + ' ImportError'
 
 def main():
-    show_version()
+    m = PythonModuleInfo()
+    m.get_module_info('IPython')
+    m.get_module_info('docutils')
+    m.get_module_info('nose')
+    m.get_module_info('simplejson')
+    m.get_module_info('numpy')
+    m.get_module_info('scipy')
+    m.get_module_info('sklearn')
+    m.get_module_info('matplotlib')
+    m.get_module_info('pandas')
+    m.get_module_info('patsy')
+    m.get_module_info('statsmodels')
+    m.get_module_info('seaborn')
+    m.get_module_info('bokeh')
+    m.get_module_info('twisted')
+    m.get_module_info('flask')
+    m.get_module_info('django')
+    m.get_module_info('sqlalchemy')
+    m.get_module_info('migrate')
+    m.get_module_info('readline')
+    m.get_module_info('pygments')
+    m.get_module_info('babel')
+    m.get_module_info('genshi')
+    m.get_module_info('bottle')
+    m.get_module_info('cherrypy')
+    m.get_module_info('bs4')
+    m.get_module_info('nltk')
+    m.get_module_info('MeCab')
+    m.get_module_info('CaboCha')
 
 if __name__=='__main__':
     main()
