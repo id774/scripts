@@ -24,7 +24,6 @@ setup_environment() {
 
 make_and_install() {
     cd $TARGET
-    pwd
     $SUDO $PYTHON setup.py build
     $SUDO $PYTHON setup.py install
 }
