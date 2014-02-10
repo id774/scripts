@@ -45,6 +45,7 @@ install_libs() {
     $SUDO $PIP install web.py
     $SUDO $PIP install bottle
     $SUDO $PIP install cherrypy
+    $SUDO $PIP install beautifulsoup4
 }
 
 main() {
