@@ -26,7 +26,7 @@ source_compile() {
     cd $TARGET
     $SUDO $RUBY extconf.rb
     $SUDO make
-    $SUDO sudo make install
+    $SUDO make install
 }
 
 install_mecab() {
