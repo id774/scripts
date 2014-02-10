@@ -27,20 +27,7 @@ main() {
     sudo port -d install graphviz-devel
     sudo port -d install gsl
     sudo port -d install gsl-devel
-
     sudo port -d install python33
-    sudo port -d install py33-setuptools
-    sudo port -d install py33-ipython
-    sudo port -d install py33-py
-    sudo port -d install py33-simplejson
-    sudo port -d install py33-pip
-    sudo port -d install py33-Pillow
-    sudo port -d install py33-numpy
-    sudo port -d install py33-scipy
-    sudo port -d install py33-nose
-    sudo port -d install py33-babel
-    sudo port -d install py33-django
-    sudo port -d install py33-psycopg2
     port installed
 }
 
