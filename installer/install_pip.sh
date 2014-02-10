@@ -29,6 +29,7 @@ setup_environment() {
 install_libs() {
     $SUDO $PIP install $PROXY -U pip
     $SUDO $PIP install $PROXY IPython
+    $SUDO $PIP install $PROXY docutils
     $SUDO $PIP install $PROXY nose
     $SUDO $PIP install $PROXY simplejson
     $SUDO $PIP install $PROXY numpy
@@ -46,9 +47,6 @@ install_libs() {
     $SUDO $PIP install $PROXY Pygments
     $SUDO $PIP install $PROXY Babel
     $SUDO $PIP install $PROXY Genshi
-    $SUDO $PIP install $PROXY kid
-    $SUDO $PIP install $PROXY Cheetah
-    $SUDO $PIP install $PROXY clearsilver
     $SUDO $PIP install $PROXY web.py
     $SUDO $PIP install $PROXY bottle
     $SUDO $PIP install $PROXY cherrypy
