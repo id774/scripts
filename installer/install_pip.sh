@@ -28,11 +28,20 @@ install_libs() {
     $SUDO $PIP install simplejson
     $SUDO $PIP install numpy
     $SUDO $PIP install scipy
+    $SUDO $PIP install scikit-learn
+    $SUDO $PIP install matplotlib
+    $SUDO $PIP install twisted
+    $SUDO $PIP install Flask
     $SUDO $PIP install django
     $SUDO $PIP install SQLAlchemy
-    $SUDO $PIP install Genshi
-    $SUDO $PIP install Babel
+    $SUDO $PIP install migrate
+    $SUDO $PIP install readline
     $SUDO $PIP install Pygments
+    $SUDO $PIP install Babel
+    $SUDO $PIP install Genshi
+    $SUDO $PIP install kid
+    $SUDO $PIP install Cheetah
+    $SUDO $PIP install clearsilver
     $SUDO $PIP install web.py
     $SUDO $PIP install bottle
     $SUDO $PIP install cherrypy
