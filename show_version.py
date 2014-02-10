@@ -36,6 +36,7 @@ def show_version():
     m.get_module_version('sklearn')
     m.get_module_version('matplotlib')
     m.get_module_version('pandas')
+    m.get_module_version('patsy')
     m.get_module_version('statsmodels')
     m.get_module_version('twisted')
     m.get_module_version('Flask')

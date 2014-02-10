@@ -37,6 +37,7 @@ install_libs() {
     $SUDO $PIP install $PROXY scikit-learn
     $SUDO $PIP install $PROXY matplotlib
     $SUDO $PIP install $PROXY pandas
+    $SUDO $PIP install $PROXY patsy
     $SUDO $PIP install $PROXY statsmodels
     $SUDO $PIP install $PROXY twisted
     $SUDO $PIP install $PROXY Flask
