@@ -92,11 +92,10 @@ install_mecab() {
     mkdir install_mecab
     cd install_mecab
 
-    install_mecab
-    source_compile
-    ipadic_compile
-    naistdic_compile
-    get_binding
+    source_compile $*
+    ipadic_compile $*
+    naistdic_compile $*
+    get_binding $*
 
     test -n "$5" || save_sources
     cd ..
