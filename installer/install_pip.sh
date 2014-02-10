@@ -4,9 +4,12 @@
 # Install Python Libraries.
 #  $1 = python path (ex. /usr/local)
 #  $2 = no sudo
+#  $3 = proxy
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 2/10,2014
+#       Enable proxy.
 #  v0.1 2/9,2014
 #       First.
 ########################################################################
@@ -19,33 +22,35 @@ setup_environment() {
     test -n "$2" || SUDO=sudo
     test -n "$2" && SUDO=
     test "$2" = "sudo" && SUDO=sudo
+    test -n "$3" || PROXY=
+    test -n "$3" && PROXY="--proxy $3"
 }
 
 install_libs() {
-    $SUDO $PIP install -U pip
-    $SUDO $PIP install IPython
-    $SUDO $PIP install nose
-    $SUDO $PIP install simplejson
-    $SUDO $PIP install numpy
-    $SUDO $PIP install scipy
-    $SUDO $PIP install scikit-learn
-    $SUDO $PIP install matplotlib
-    $SUDO $PIP install twisted
-    $SUDO $PIP install Flask
-    $SUDO $PIP install django
-    $SUDO $PIP install SQLAlchemy
-    $SUDO $PIP install migrate
-    $SUDO $PIP install readline
-    $SUDO $PIP install Pygments
-    $SUDO $PIP install Babel
-    $SUDO $PIP install Genshi
-    $SUDO $PIP install kid
-    $SUDO $PIP install Cheetah
-    $SUDO $PIP install clearsilver
-    $SUDO $PIP install web.py
-    $SUDO $PIP install bottle
-    $SUDO $PIP install cherrypy
-    $SUDO $PIP install beautifulsoup4
+    $SUDO $PIP install $PROXY -U pip
+    $SUDO $PIP install $PROXY IPython
+    $SUDO $PIP install $PROXY nose
+    $SUDO $PIP install $PROXY simplejson
+    $SUDO $PIP install $PROXY numpy
+    $SUDO $PIP install $PROXY scipy
+    $SUDO $PIP install $PROXY scikit-learn
+    $SUDO $PIP install $PROXY matplotlib
+    $SUDO $PIP install $PROXY twisted
+    $SUDO $PIP install $PROXY Flask
+    $SUDO $PIP install $PROXY django
+    $SUDO $PIP install $PROXY SQLAlchemy
+    $SUDO $PIP install $PROXY migrate
+    $SUDO $PIP install $PROXY readline
+    $SUDO $PIP install $PROXY Pygments
+    $SUDO $PIP install $PROXY Babel
+    $SUDO $PIP install $PROXY Genshi
+    $SUDO $PIP install $PROXY kid
+    $SUDO $PIP install $PROXY Cheetah
+    $SUDO $PIP install $PROXY clearsilver
+    $SUDO $PIP install $PROXY web.py
+    $SUDO $PIP install $PROXY bottle
+    $SUDO $PIP install $PROXY cherrypy
+    $SUDO $PIP install $PROXY beautifulsoup4
 }
 
 main() {
