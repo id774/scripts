@@ -27,7 +27,7 @@ class PythonModuleInfo:
             imp.find_module(module_name)
             help(module_name)
         except ImportError:
-            return module_name + ' ImportError'
+            print(module_name + ' was not found.')
 
     def _get_module_version(self, module_name):
         try:
@@ -40,7 +40,7 @@ class PythonModuleInfo:
             else:
                 print(module_name, "unknown version")
         except ImportError:
-            return module_name + ' ImportError'
+            print(module_name + ' was not found.')
 
     def get_info(self, module_name):
         if self.info:
