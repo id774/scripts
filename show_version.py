@@ -39,7 +39,7 @@ def show_version():
     m.get_module_version('patsy')
     m.get_module_version('statsmodels')
     m.get_module_version('twisted')
-    m.get_module_version('Flask')
+    m.get_module_version('flask')
     m.get_module_version('django')
     m.get_module_version('sqlalchemy')
     m.get_module_version('migrate')
