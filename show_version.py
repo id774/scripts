@@ -38,6 +38,8 @@ def show_version():
     m.get_module_version('pandas')
     m.get_module_version('patsy')
     m.get_module_version('statsmodels')
+    m.get_module_version('seaborn')
+    m.get_module_version('bokeh')
     m.get_module_version('twisted')
     m.get_module_version('flask')
     m.get_module_version('django')
