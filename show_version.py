@@ -27,7 +27,7 @@ except KeyError:
 def show_version():
     import python_module_version
     m = python_module_version.PythonModuleVersion()
-    m.get_module_version('ipython')
+    m.get_module_version('IPython')
     m.get_module_version('docutils')
     m.get_module_version('nose')
     m.get_module_version('simplejson')
@@ -46,7 +46,6 @@ def show_version():
     m.get_module_version('pygments')
     m.get_module_version('babel')
     m.get_module_version('genshi')
-    m.get_module_version('webpy')
     m.get_module_version('bottle')
     m.get_module_version('cherrypy')
     m.get_module_version('bs4')

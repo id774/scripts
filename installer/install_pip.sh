@@ -47,7 +47,6 @@ install_libs() {
     $SUDO $PIP install $PROXY Pygments
     $SUDO $PIP install $PROXY Babel
     $SUDO $PIP install $PROXY Genshi
-    $SUDO $PIP install $PROXY web.py
     $SUDO $PIP install $PROXY bottle
     $SUDO $PIP install $PROXY cherrypy
     $SUDO $PIP install $PROXY beautifulsoup4
