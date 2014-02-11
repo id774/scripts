@@ -28,10 +28,12 @@ setup_environment() {
 
 install_libs() {
     $SUDO $PIP install $PROXY -U pip
+    $SUDO $PIP install $PROXY Cython
     $SUDO $PIP install $PROXY IPython
     $SUDO $PIP install $PROXY docutils
     $SUDO $PIP install $PROXY nose
     $SUDO $PIP install $PROXY simplejson
+    $SUDO $PIP install $PROXY msgpack-python
     $SUDO $PIP install $PROXY numpy
     $SUDO $PIP install $PROXY scipy
     $SUDO $PIP install $PROXY scikit-learn
@@ -53,6 +55,7 @@ install_libs() {
     $SUDO $PIP install $PROXY bottle
     $SUDO $PIP install $PROXY cherrypy
     $SUDO $PIP install $PROXY beautifulsoup4
+    $SUDO $PIP install $PROXY requests
 }
 
 main() {

@@ -16,13 +16,13 @@ main() {
     sudo port -d install py33-py
     sudo port -d install py33-pip
     sudo port -d install py33-setuptools
+    sudo port -d install py33-cython
     sudo port -d install py33-ipython
     sudo port -d install py33-docutils
     sudo port -d install py33-nose
     sudo port -d install py33-simplejson
     sudo port -d install py33-msgpack
     sudo port -d install py33-Pillow
-    sudo port -d install py33-cython
     sudo port -d install py33-numpy
     sudo port -d install py33-scipy
     sudo port -d install py33-scikit-learn
