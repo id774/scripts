@@ -2,7 +2,7 @@
 #
 ########################################################################
 # Install Mecab Python Binding
-#  $1 = ruby path
+#  $1 = python path
 #  $2 = source path
 #  $3 = no sudo
 #
