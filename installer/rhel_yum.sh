@@ -62,6 +62,7 @@ sudo yum -y install ruby
 sudo yum -y install ruby-libs ruby-rdoc ruby-ri ruby-irb ruby-devel ruby-cairo-devel
 sudo yum -y install rubygem-nokogiri
 sudo yum -y install libxml2 libxml2-devel libxslt libxslt-devel
+sudo yum -y install openblas-devel
 sudo yum -y install openssl openssl-devel
 sudo yum -y install readline readline-devel
 sudo yum -y install shunit2
