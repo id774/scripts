@@ -63,15 +63,6 @@ install_cabocha() {
     ./configure --with-charset=UTF8 --with-posset=IPA
     make
     sudo make install
-    cd python
-    python setup.py build_ext
-    sudo `which python` setup.py install
-    cd ..
-    cd ruby
-    `which ruby` extconf.rb
-    make
-    sudo make install
-    cd ..
 }
 
 install_crf_and_cabocha() {
