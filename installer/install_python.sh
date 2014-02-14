@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.6 2/14,2014
+#       Change source tarball ext.
 #  v1.5 2/9,2014
 #       Easy install as default, create symlink, bug fix.
 #  v1.4 9/16,2010
@@ -58,9 +60,9 @@ make_and_install() {
 get_python() {
     mkdir install_python
     cd install_python
-    wget http://www.python.org/ftp/python/$1/Python-$1.tar.bz2
-    test -f Python-$1.tar.bz2 || exit 1
-    tar xjvf Python-$1.tar.bz2
+    wget http://www.python.org/ftp/python/$1/Python-$1.tgz
+    test -f Python-$1.tgz || exit 1
+    tar xzvf Python-$1.tgz
     test "$2" = "sourceonly" || make_and_install $*
     test -n "$3" || save_sources $*
     cd ..
