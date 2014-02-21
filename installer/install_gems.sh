@@ -101,7 +101,7 @@ install_gem() {
     $SUDO $GEM install sequel --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install thrift --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install puppet --no-ri --no-rdoc $3 $4 $5
-    $SUDO $GEM install -v "~> 1.8.0" json --no-ri --no-rdoc $3 $4 $5
+    $SUDO $GEM install -v "~> 1.7.7" json --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install rdoc --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install gherkin --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install cucumber --no-ri --no-rdoc $3 $4 $5
