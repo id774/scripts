@@ -153,8 +153,6 @@ gitpull_all() {
     gitpull github othree html5.vim $*
     gitpull github kchmck vim-coffee-script $*
     gitpull github tpope vim-haml $*
-    gitpull github genki rub $*
-    gitpull github kentaro triglav $*
 }
 
 main() {
