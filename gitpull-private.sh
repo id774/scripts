@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.1 3/2,2014
+#       Specify default gituser and githost.
 #  v2.0 4/15,2011
 #       Repositories are moved from github to my server.
 #  v1.0 7/26,2010
@@ -14,8 +16,10 @@
 ########################################################################
 
 setup_environment() {
-    GITBARE_USER=$1
-    GITBARE_HOST=$2
+    test -n "$1" || GITBARE_USER=git
+    test -n "$1" && GITBARE_USER=$1
+    test -n "$2" || GITBARE_HOST=git.id774.net
+    test -n "$2" && GITBARE_HOST=$2
 }
 
 remove_github_repo() {
@@ -56,7 +60,6 @@ gitpull_all() {
     pull_from_gitbare git classify $*
 }
 
-test -n "$2" || exit 2
 setup_environment $*
 ping -c 1 id774.net > /dev/null 2>&1 || exit 1
 gitpull_all $*
