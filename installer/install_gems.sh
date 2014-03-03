@@ -129,6 +129,7 @@ install_gem() {
     $SUDO $GEM install rubytree --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install shoulda --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install request-log-analyzer --no-ri --no-rdoc $3 $4 $5
+    $SUDO $GEM install apache-loggen --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install tzinfo --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install guard-coffeescript --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install rb-fsevent --no-ri --no-rdoc $3 $4 $5
