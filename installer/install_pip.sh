@@ -56,6 +56,7 @@ install_libs() {
     $SUDO $PIP install $PROXY cherrypy
     $SUDO $PIP install $PROXY beautifulsoup4
     $SUDO $PIP install $PROXY requests
+    $SUDO $PIP install $PROXY jinja2 tornado pyzmq
 }
 
 main() {
