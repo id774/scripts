@@ -30,14 +30,19 @@ main() {
     sudo port -d install py33-pandas
     sudo port -d install py33-patsy
     sudo port -d install py33-statsmodels
+    sudo port -d install py33-sympy
     sudo port -d install py33-django
     sudo port -d install py33-sqlalchemy
     sudo port -d install py33-readline
     sudo port -d install py33-babel
     sudo port -d install py33-genshi
     sudo port -d install py33-beautifulsoup4
+    sudo port -d install py33-lxml
     sudo port -d install py33-requests
     sudo port -d install py33-nltk3
+    sudo port -d install py33-jinja2
+    sudo port -d install py33-tornado
+    sudo port -d install py33-zmq
     port installed
 }
 
