@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.7 3/12,2014
+#       Create symlink for ipython3.
 #  v1.6 2/14,2014
 #       Change source tarball ext.
 #  v1.5 2/9,2014
@@ -71,6 +73,7 @@ get_python() {
 
 create_symlink() {
     test -x $PREFIX/bin/python3 && test -x $PREFIX/bin/python || $SUDO ln -s $PREFIX/bin/python3 $PREFIX/bin/python
+    test -x $PREFIX/bin/ipython3 && test -x $PREFIX/bin/ipython || $SUDO ln -s $PREFIX/bin/ipython3 $PREFIX/bin/ipython
 }
 
 get_easy_install() {
