@@ -41,6 +41,7 @@ install_libs() {
     $SUDO $PIP install $PROXY pandas
     $SUDO $PIP install $PROXY patsy
     $SUDO $PIP install $PROXY statsmodels
+    $SUDO $PIP install $PROXY sympy
     $SUDO $PIP install $PROXY seaborn
     $SUDO $PIP install $PROXY bokeh
     $SUDO $PIP install $PROXY twisted
@@ -55,6 +56,7 @@ install_libs() {
     $SUDO $PIP install $PROXY bottle
     $SUDO $PIP install $PROXY cherrypy
     $SUDO $PIP install $PROXY beautifulsoup4
+    $SUDO $PIP install $PROXY lxml
     $SUDO $PIP install $PROXY requests
     $SUDO $PIP install $PROXY jinja2 tornado pyzmq
 }
