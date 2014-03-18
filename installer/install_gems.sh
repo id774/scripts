@@ -72,7 +72,7 @@ install_gem() {
     $SUDO $GEM install http_configuration --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install hpricot --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install -v "~> 2.1.1" mechanize --no-ri --no-rdoc $3 $4 $5
-    $SUDO $GEM install nokogiri --no-ri --no-rdoc $3 $4 $5
+    $SUDO $GEM install -v "~> 1.5.11" nokogiri --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install anemone --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install cosmicrawler --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install sanitize --no-ri --no-rdoc $3 $4 $5
