@@ -74,6 +74,7 @@ get_python() {
 create_symlink() {
     test -x $PREFIX/bin/python3 && test -x $PREFIX/bin/python || $SUDO ln -s $PREFIX/bin/python3 $PREFIX/bin/python
     test -x $PREFIX/bin/ipython3 && test -x $PREFIX/bin/ipython || $SUDO ln -s $PREFIX/bin/ipython3 $PREFIX/bin/ipython
+    test -x $PREFIX/bin/pip3 && test -x $PREFIX/bin/pip || $SUDO ln -s $PREFIX/bin/pip3 $PREFIX/bin/pip
 }
 
 get_easy_install() {
@@ -90,7 +91,7 @@ install_python() {
     get_python $*
     create_symlink $*
     # get_easy_install $*
-    get_pip $*
+    # get_pip $*
     python -V
 }
 
