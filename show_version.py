@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.1 3/19,2014
+#       Show python version.
 #  v2.0 2/11,2014
 #       Simple version listing.
 #       Using -i option for detail info.
@@ -16,6 +18,7 @@
 #       Stable.
 ########################################################################
 
+import sys
 import imp
 
 class PythonModuleInfo:
@@ -57,6 +60,8 @@ def main():
     (options, args) = parser.parse_args()
 
     m = PythonModuleInfo(options)
+    python_version = sys.version
+    print("Python %(python_version)s" %locals())
     m.get_info('IPython')
     m.get_info('cython')
     m.get_info('docutils')
