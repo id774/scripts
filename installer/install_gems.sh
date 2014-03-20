@@ -40,8 +40,8 @@ install_gem() {
     $SUDO $GEM install -v "~> 1.3.5" bundler --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install -v "~> 3.1.0" builder --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install minitest --no-ri --no-rdoc $3 $4 $5
-    $SUDO $GEM install -v "~> 3.2.16" rails --no-ri --no-rdoc $3 $4 $5
-    $SUDO $GEM install -v "~> 4.0.2" rails --no-ri --no-rdoc $3 $4 $5
+    $SUDO $GEM install -v "~> 3.2.17" rails --no-ri --no-rdoc $3 $4 $5
+    $SUDO $GEM install -v "~> 4.0.4" rails --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install sqlite3 --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install sqlite3-ruby --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install sass --no-ri --no-rdoc $3 $4 $5
