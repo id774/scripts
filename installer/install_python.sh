@@ -62,7 +62,7 @@ make_and_install() {
 get_python() {
     mkdir install_python
     cd install_python
-    wget http://www.python.org/ftp/python/$1/Python-$1.tgz
+    curl -L http://www.python.org/ftp/python/$1/Python-$1.tgz -O
     test -f Python-$1.tgz || exit 1
     tar xzvf Python-$1.tgz
     test "$2" = "sourceonly" || make_and_install $*
