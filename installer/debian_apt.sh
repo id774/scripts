@@ -108,13 +108,16 @@ debian_developer_tools() {
       devscripts \
       debget \
       dh-make \
-      libgtk2.0-dev
+      libgtk2.0-dev \
+      apt-file
 #      apt-listchanges apt-listbugs \
 }
 
 editor_packages() {
     smart_apt \
       texlive-lang-cjk \
+      texlive-latex-base \
+      dvipng \
       texinfo \
       emacs23 emacs23-el \
       ess \
