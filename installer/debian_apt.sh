@@ -82,6 +82,7 @@ system_packages() {
       chkrootkit \
       nmap \
       tcpdump \
+      pwgen \
       vrms \
       manpages-ja \
       manpages-ja-dev \
