@@ -12,37 +12,40 @@
 ########################################################################
 
 main() {
-    sudo port -d install python33
-    sudo port -d install py33-py
-    sudo port -d install py33-pip
-    sudo port -d install py33-setuptools
-    sudo port -d install py33-cython
-    sudo port -d install py33-ipython
-    sudo port -d install py33-docutils
-    sudo port -d install py33-nose
-    sudo port -d install py33-simplejson
-    sudo port -d install py33-msgpack
-    sudo port -d install py33-Pillow
-    sudo port -d install py33-numpy
-    sudo port -d install py33-scipy
-    sudo port -d install py33-scikit-learn
-    sudo port -d install py33-matplotlib
-    sudo port -d install py33-pandas
-    sudo port -d install py33-patsy
-    sudo port -d install py33-statsmodels
-    sudo port -d install py33-sympy
-    sudo port -d install py33-django
-    sudo port -d install py33-sqlalchemy
-    sudo port -d install py33-readline
-    sudo port -d install py33-babel
-    sudo port -d install py33-genshi
-    sudo port -d install py33-beautifulsoup4
-    sudo port -d install py33-lxml
-    sudo port -d install py33-requests
-    sudo port -d install py33-nltk3
-    sudo port -d install py33-jinja2
-    sudo port -d install py33-tornado
-    sudo port -d install py33-zmq
+    VERSION=34
+
+    sudo port -d install python$VERSION
+    sudo port -d install py$VERSION-py
+    sudo port -d install py$VERSION-pip
+    sudo port -d install py$VERSION-setuptools
+    sudo port -d install py$VERSION-cython
+    sudo port -d install py$VERSION-ipython
+    sudo port -d install py$VERSION-docutils
+    sudo port -d install py$VERSION-nose
+    sudo port -d install py$VERSION-simplejson
+    sudo port -d install py$VERSION-msgpack
+    sudo port -d install py$VERSION-Pillow
+    sudo port -d install py$VERSION-numpy
+    sudo port -d install py$VERSION-scipy
+    sudo port -d install py$VERSION-scikit-learn
+    sudo port -d install py$VERSION-matplotlib
+    sudo port -d install py$VERSION-pandas
+    sudo port -d install py$VERSION-patsy
+    sudo port -d install py$VERSION-statsmodels
+    sudo port -d install py$VERSION-sympy
+    sudo port -d install py$VERSION-django
+    sudo port -d install py$VERSION-sqlalchemy
+    sudo port -d install py$VERSION-readline
+    sudo port -d install py$VERSION-babel
+    sudo port -d install py$VERSION-genshi
+    sudo port -d install py$VERSION-beautifulsoup4
+    sudo port -d install py$VERSION-lxml
+    sudo port -d install py$VERSION-requests
+    sudo port -d install py$VERSION-nltk3
+    sudo port -d install py$VERSION-jinja2
+    sudo port -d install py$VERSION-tornado
+    sudo port -d install py$VERSION-zmq
+
     port installed
 }
 
