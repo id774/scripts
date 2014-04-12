@@ -27,7 +27,6 @@ main() {
     sudo port -d install graphviz-devel
     sudo port -d install gsl
     sudo port -d install gsl-devel
-    sudo port -d install python33
     port installed
 }
 
