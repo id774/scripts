@@ -54,7 +54,7 @@ main() {
     test -n "$1" && VERSION=$1
 
     test -n "$2" || OPERATION=install
-    test -n "$2" && OPERATION=uninstall
+    test -n "$2" && OPERATION=$2
     install_ports $*
     port installed
 }
