@@ -2,7 +2,7 @@
 #
 ########################################################################
 # Install Python 3 Protocol Buffers
-#  $1 = prefix
+#  $1 = protobuf prefix
 #  $2 = python path
 #  $3 = nosudo
 #
