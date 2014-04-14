@@ -106,6 +106,10 @@ $IPTABLES -A INPUT -p tcp --dport 5432 -m state --state NEW -m recent --set --na
 $IPTABLES -A INPUT -p tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES -j LOG --log-prefix 'POSTGRES attack: '
 $IPTABLES -A INPUT -p tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES -j DROP
 
+# OpenSSL Heartbleed
+$IPTABLES -t filter -A INPUT -p tcp --dport 443  -m u32 --u32 "52=0x18030000:0x1803FFFF" -j LOG --log-prefix "[BLOCKED HEARTBEAT] : "
+$IPTABLES -t filter -A INPUT  -p tcp --dport 443  -m u32 --u32 "52=0x18030000:0x1803FFFF" -j DROP
+
 #----------------------------------------------------------#
 # 各種サービスを公開する場合の設定(ここから)               #
 #----------------------------------------------------------#
