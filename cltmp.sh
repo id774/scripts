@@ -10,8 +10,9 @@ rm -vrf ~/.emacs.d/tmp/*
 rm -vrf ~/.emacs.d/backups/*
 rm -vrf ~/.emacs.d/auto-save-list/.saves*
 rm -vrf ~/.emacs.d/tramp-auto-save/*
-rm -vf ~/Pictures/*
+rm -vf ~/Pictures/*.*g
+rm -vf ~/Pictures/*.*G
 rm -vf ~/Downloads/*
 rm -vf ~/Desktop/*
-echo "cltmp (20140410) done."
+echo "cltmp (20140418) done."
 
