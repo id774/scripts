@@ -16,7 +16,7 @@
 
 setup_environment() {
     test -n "$1" && PREFIX=$1
-    test -n "$1" || PREFIX=/opt/protobuf
+    test -n "$1" || PREFIX=/opt/protobuf/trunk
     test -n "$2" && PYTHON_BIN=$2/bin/python
     test -n "$2" || PYTHON_BIN=python
     test -n "$3" || SUDO=sudo
