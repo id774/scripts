@@ -142,7 +142,6 @@ install_gem() {
     $SUDO $GEM install xml-simple --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install pocket-ruby --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install weather_hacker --no-ri --no-rdoc $3 $4 $5
-    $SUDO $GEM install dotenv --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install when_exe --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install prawn --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install gnuplot --no-ri --no-rdoc $3 $4 $5
