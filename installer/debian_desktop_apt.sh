@@ -31,7 +31,8 @@ fonts_packages() {
     smart_apt \
       xfonts-mplus \
       xfonts-shinonome \
-      ttf-vlgothic ttf-bitstream-vera \
+      ttf-bitstream-vera \
+      fonts-vlgothic \
       fonts-ipafont
 }
 
