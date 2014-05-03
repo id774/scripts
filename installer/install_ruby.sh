@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.37 5/4,2014
+#       Update to ruby 2.0.0-p451, 1.9.3-p545.
 # v1.36 2/25,2014
 #       Update to ruby 2.1.1.
 # v1.35 12/26,2013
@@ -181,6 +183,9 @@ install_ruby() {
       210-0)
         install_stable 2.1.0 2.1 $2
         ;;
+      200-451)
+        install_stable 2.0.0-p451 2.0 $2
+        ;;
       200-353)
         install_stable 2.0.0-p353 2.0 $2
         ;;
@@ -192,6 +197,9 @@ install_ruby() {
         ;;
       200-0)
         install_stable 2.0.0-p0 2.0 $2
+        ;;
+      193-545)
+        install_stable 1.9.3-p545 1.9 $2
         ;;
       193-484)
         install_stable 1.9.3-p484 1.9 $2
