@@ -123,7 +123,6 @@ editor_packages() {
       ess \
       mew stunnel ca-certificates \
       w3m-el-snapshot w3m-img imagemagick \
-      libmagick9-dev libmagickwand-dev \
       graphicsmagick-libmagick-dev-compat \
       vim vim-runtime colordiff \
       ctags
