@@ -77,7 +77,8 @@ optional_packages() {
       skype \
       wireshark \
       xtightvncviewer \
-      chromium-browser
+      chromium-browser \
+      flashplugin-nonfree
 }
 
 increase_debian_packages() {
