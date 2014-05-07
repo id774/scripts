@@ -124,6 +124,7 @@ editor_packages() {
       mew stunnel ca-certificates \
       w3m-el-snapshot w3m-img imagemagick \
       libmagick9-dev libmagickwand-dev \
+      graphicsmagick-libmagick-dev-compat \
       vim vim-runtime colordiff \
       ctags
 }
@@ -211,8 +212,7 @@ ruby_lang() {
     smart_apt \
       autoconf byacc bison automake \
       libopenssl-ruby libreadline-dev zlib1g-dev ruby \
-      ruby1.8-dev ruby1.8 ri1.8 rdoc1.8 irb1.8 \
-      libreadline-ruby1.8 libruby1.8 libopenssl-ruby
+      ruby2.0 ruby2.0-dev libruby2.0 ruby-sqlite3
       # autoconf-doc
 }
 

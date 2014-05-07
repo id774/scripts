@@ -49,7 +49,7 @@ operation() {
     # tune2fs
     $SCRIPTS/installer/setup_tune2fs.sh
 
-    test -f /etc/lsb-release && DISTRIB_CODENAME=precise
+    test -f /etc/lsb-release && DISTRIB_CODENAME=trusty
     test -f /etc/lsb-release || DISTRIB_CODENAME=wheezy
     setup_apt_source
     #chromium_daily_gpg
