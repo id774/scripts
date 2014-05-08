@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 5/8,2014
+#       Specify -u option for mounting with utf8, default is none.
 #  v1.2 4/14,2013
 #       Implement file mount function.
 #  v1.1 1/26,2012
@@ -42,9 +44,11 @@ def partition(options, args, mount_options, device):
     mount_file(options, args, mount_options, device, device + '2', 'data2')
 
 def mount_device(options, args):
-    mount_options = 'utf8'
+    mount_options = ''
+    if options.utf8:
+        mount_options = 'utf8'
     if options.readonly:
-        mount_options = 'ro,' + mount_options
+        mount_options = ",".join(('ro', mount_options))
 
     partition(options, args, mount_options, 'sdb')
 
@@ -53,7 +57,7 @@ def mount_device(options, args):
 
 def mount_all(options, args, mount_options):
     if options.half and not options.readonly:
-        mount_options = 'ro,' + mount_options
+        mount_options = ",".join(('ro', mount_options))
 
     partition(options, args, mount_options, 'sdc')
     partition(options, args, mount_options, 'sdd')
@@ -64,15 +68,18 @@ def mount_legacy():
     mount_local('pc98a')
     mount_local('pc98b')
 
-def mount_local(device):
+def mount_local(device, options):
+    mount_options = ''
+    if options.utf8:
+        mount_options = 'utf8'
     cmd = 'test -f ~/local/' + device + '.tc && ' +\
           'test -d ~/mnt/' + device +\
           ' && sudo truecrypt -t -k "" --protect-hidden=no ' +\
-          '--fs-options=utf8 ~/local/' + device + '.tc ~/mnt/' + device
+          '--fs-options=' + mount_options + ' ~/local/' + device + '.tc ~/mnt/' + device
     os.system(cmd)
 
 def tcmount(options, args):
-    mount_local('`/bin/hostname`')
+    mount_local('`/bin/hostname`', options)
     if options.legacy or options.all:
         mount_legacy()
     if options.local:
@@ -84,6 +91,10 @@ def main():
     from optparse import OptionParser
     usage = "usage: %prog [options]"
     parser = OptionParser(usage)
+    parser.add_option("-u", "--utf8",
+                      dest="utf8",
+                      help="mount filesystem type with utf8",
+                      action="store_true")
     parser.add_option("-r", "--readonly",
                       dest="readonly",
                       help="read only",
