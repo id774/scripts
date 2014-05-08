@@ -65,8 +65,8 @@ def mount_all(options, args, mount_options):
     partition(options, args, mount_options, 'sdf')
 
 def mount_legacy():
-    mount_local('pc98a')
-    mount_local('pc98b')
+    mount_local('pc98a', options)
+    mount_local('pc98b', options)
 
 def mount_local(device, options):
     mount_options = ''
