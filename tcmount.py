@@ -64,7 +64,7 @@ def mount_all(options, args, mount_options):
     partition(options, args, mount_options, 'sde')
     partition(options, args, mount_options, 'sdf')
 
-def mount_legacy():
+def mount_legacy(options, args):
     mount_local('pc98a', options)
     mount_local('pc98b', options)
 
@@ -81,7 +81,7 @@ def mount_local(device, options):
 def tcmount(options, args):
     mount_local('`/bin/hostname`', options)
     if options.legacy or options.all:
-        mount_legacy()
+        mount_legacy(options, args)
     if options.local:
         pass
     else:
