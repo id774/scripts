@@ -7,7 +7,6 @@
 .*~
 *~
 .#*
-.DS_Store
 *.sw[po]
 tags
 *.pyc
@@ -19,3 +18,5 @@ tags
 *.tmp
 *.zip
 *.tar.gz
+.DS_Store
+Thumbs.db

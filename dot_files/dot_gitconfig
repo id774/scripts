@@ -4,9 +4,36 @@
 [core]
   excludesfile = /home/ubuntu/.gitignore
   quotepath = false
-[alias]
-  graph = log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %s\" --all --date=short
 [github]
   user = id774
 [push]
   default = current
+[alias]
+  s = status
+  st = status
+  c = commit -a -v -m
+  ci = commit -v
+  d = diff
+  di = diff
+  b = branch
+  br = branch
+  co = checkout
+  l = log
+  u = pull
+  p = push
+  pu = push
+  cl = config -l
+  cr = config remote.origin.url
+  pl = !git pull && git submodule update --init
+  graph = log --graph --date-order -C -M --pretty=format:\"<%h> %ad [%an] %s\" --all --date=short
+[color]
+  ui = true
+  diff = auto
+  status = auto
+  branch = auto
+  grep = auto
+[color "diff"]
+  meta = white bold
+  frag = green
+  old = red
+  new = cyan
