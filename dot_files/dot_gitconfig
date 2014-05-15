@@ -19,6 +19,7 @@
   br = branch
   co = checkout
   l = log
+  lp = log -p
   u = pull
   p = push
   pu = push
