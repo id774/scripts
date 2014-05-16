@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.12 5/17,2014
+#       Do not change the permissions of Users dir on OS X.
 # v1.11 5/22,2013
 #       Change permission of local to 750.
 # v1.10 4/24,2013
@@ -157,8 +159,6 @@ deploy_dotfiles_to_linux() {
 bulk_deploy() {
     test -d /home && \
       sudo chmod 750 /home/*
-    test -d /Users && \
-      sudo chmod 700 /Users/*
     deploy_dotfiles_to_linux \
       debian \
       ubuntu \
