@@ -13,6 +13,7 @@
   st = status
   c = commit -a -v -m
   ci = commit -v
+  a = add
   d = diff
   di = diff
   b = branch
