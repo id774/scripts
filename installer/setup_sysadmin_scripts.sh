@@ -50,6 +50,7 @@ uninstall_sysadmin_scripts() {
         namecalc \
         waitlock \
         swapext \
+        platex2pdf \
         git-follow-origin \
         get_resources \
         tcmount \
@@ -70,6 +71,7 @@ setup_scripts() {
     install_scripts 755 namecalc.rb namecalc
     install_scripts 755 waitlock.rb waitlock
     install_scripts 755 swapext.py swapext
+    install_scripts 755 platex2pdf.sh platex2pdf
     install_scripts 755 git-follow-origin.sh git-follow-origin
 }
 
