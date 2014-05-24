@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 5/24,2014
+#       Mount with crypt files on home dir.
 #  v1.3 5/8,2014
 #       Specify -u option for mounting with utf8, default is none.
 #  v1.2 4/14,2013
@@ -36,6 +38,10 @@ def mount_file(options, args, mount_options, device, mount_point, filename):
     cmd = 'test -f /mnt/' + device + '/' + filename +\
     ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
     mount_options + ' /mnt/' + device + '/' + filename + ' ~/mnt/' + mount_point
+    os_exec(cmd, device)
+    cmd = 'test -f /home/crypt/' + filename +\
+    ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
+    mount_options + ' /home/crypt/' + filename + ' ~/mnt/' + mount_point
     os_exec(cmd, device)
 
 def partition(options, args, mount_options, device):
