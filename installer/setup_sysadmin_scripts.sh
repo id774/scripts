@@ -1,12 +1,14 @@
-#!/bin/sh
+#!/bin/bash
 #
 ########################################################################
 # Install System Administration Scripts
-#  $1 = install path (ex. /usr/local/sbin)
-#  $2 = uninstall
+#  $1 = uninstall
+#  $2 = install path (ex. /usr/local/sbin)
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.6 5/24,2014
+#       Using bash, switch arguments, show uninstall messages.
 #  v0.5 6/28,2011
 #       Uninstall enabled, RHEL scripts.
 #  v0.4 5/27,2011
@@ -20,8 +22,8 @@
 ########################################################################
 
 setup_environment() {
-    test -n "$1" && SBIN=$1
-    test -n "$1" || SBIN=/usr/local/sbin
+    test -n "$2" && SBIN=$2
+    test -n "$2" || SBIN=/usr/local/sbin
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR
@@ -37,7 +39,7 @@ setup_environment() {
 uninstall_scripts() {
     while [ $# -gt 0 ]
     do
-        test -f $SBIN/$1 && sudo rm -vf $SBIN/$1
+        test -f $SBIN/$1 && echo -n "Removing: " && sudo rm -vf $SBIN/$1
         shift
     done
 }
@@ -104,8 +106,9 @@ install_sysadmin_scripts() {
 
 setup_sysadmin_scripts() {
     setup_environment $*
-    test -n "$2" && uninstall_sysadmin_scripts
-    test -n "$2" || install_sysadmin_scripts
+    test -n "$1" && uninstall_sysadmin_scripts
+    test -n "$1" || install_sysadmin_scripts
+    test "$1" = "install" && install_sysadmin_scripts
 }
 
 test -n "$SCRIPTS" || exit 1
