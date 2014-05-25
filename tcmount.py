@@ -5,8 +5,10 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.4 5/24,2014
+#  v2.0 5/25,2014
+#       Show version on console.
 #       Mount with crypt files on home dir.
+#       File renamed with ext.
 #  v1.3 5/8,2014
 #       Specify -u option for mounting with utf8, default is none.
 #  v1.2 4/14,2013
@@ -46,8 +48,8 @@ def mount_file(options, args, mount_options, device, mount_point, filename):
 
 def partition(options, args, mount_options, device):
     mount_drive(options, args, mount_options, device)
-    mount_file(options, args, mount_options, device, device + '1', 'data1')
-    mount_file(options, args, mount_options, device, device + '2', 'data2')
+    mount_file(options, args, mount_options, device, device + '1', 'data1.tc')
+    mount_file(options, args, mount_options, device, device + '2', 'data2.tc')
 
 def mount_device(options, args):
     mount_options = ''
@@ -94,8 +96,9 @@ def tcmount(options, args):
         mount_device(options, args)
 
 def main():
+    version = "2.0"
     from optparse import OptionParser
-    usage = "usage: %prog [options]"
+    usage = "usage: %prog " + version + " [options]"
     parser = OptionParser(usage)
     parser.add_option("-u", "--utf8",
                       dest="utf8",
@@ -125,6 +128,7 @@ def main():
                       help="partition number")
     (options, args) = parser.parse_args()
     if len(args) == 0:
+        print("tcmount " + version)
         tcmount(options, args)
     else:
         parser.print_help()
