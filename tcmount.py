@@ -98,7 +98,7 @@ def tcmount(options, args):
 def main():
     version = "2.0"
     from optparse import OptionParser
-    usage = "usage: %prog " + version + " [options]"
+    usage = "usage: %prog [options]"
     parser = OptionParser(usage)
     parser.add_option("-u", "--utf8",
                       dest="utf8",
