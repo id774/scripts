@@ -5,10 +5,9 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v2.0 5/25,2014
+#  v2.0 5/26,2014
 #       Show version on console.
 #       Mount with crypt files on home dir.
-#       File renamed with ext.
 #  v1.3 5/8,2014
 #       Specify -u option for mounting with utf8, default is none.
 #  v1.2 4/14,2013
@@ -41,15 +40,11 @@ def mount_file(options, args, mount_options, device, mount_point, filename):
     ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
     mount_options + ' /mnt/' + device + '/' + filename + ' ~/mnt/' + mount_point
     os_exec(cmd, device)
-    cmd = 'test -f /home/crypt/' + filename +\
-    ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
-    mount_options + ' /home/crypt/' + filename + ' ~/mnt/' + mount_point
-    os_exec(cmd, device)
 
 def partition(options, args, mount_options, device):
     mount_drive(options, args, mount_options, device)
-    mount_file(options, args, mount_options, device, device + '1', 'data1.tc')
-    mount_file(options, args, mount_options, device, device + '2', 'data2.tc')
+    mount_file(options, args, mount_options, device, device + '1', 'data1')
+    mount_file(options, args, mount_options, device, device + '2', 'data2')
 
 def mount_device(options, args):
     mount_options = ''
@@ -75,6 +70,8 @@ def mount_all(options, args, mount_options):
 def mount_legacy(options, args):
     mount_local('pc98a', options)
     mount_local('pc98b', options)
+    mount_local('data1', options)
+    mount_local('data2', options)
 
 def mount_local(device, options):
     mount_options = ''
@@ -85,6 +82,10 @@ def mount_local(device, options):
           ' && sudo truecrypt -t -k "" --protect-hidden=no ' +\
           '--fs-options=' + mount_options + ' ~/local/' + device + '.tc ~/mnt/' + device
     os.system(cmd)
+    cmd = 'test -f /home/crypt/' + device +\
+    ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
+    mount_options + ' /home/crypt/' + device + ' ~/mnt/' + device
+    os_exec(cmd, device)
 
 def tcmount(options, args):
     mount_local('`/bin/hostname`', options)
