@@ -85,6 +85,10 @@ change_default() {
 chkconfig() {
     sudo chkconfig ip6tables off
     sudo chkconfig --level 2345 httpd on
+    sudo chkconfig --level 2345 cups off
+    sudo service cups stop
+    sudo chkconfig --level 2345 nfslock off
+    sudo service nfslock stop
 }
 
 setup_grub() {
