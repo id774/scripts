@@ -21,14 +21,14 @@ sudo cp $SCRIPTS/cron/bin/restorecon.sh /root/bin/restorecon.sh
 sudo chmod 700 /root/bin/restorecon.sh
 sudo chown root:root /root/bin/restorecon.sh
 
-sudo cp $SCRIPTS/cron/bin/restorecon /etc/cron.weekend/restorecon
-sudo vi /etc/cron.weekend/restorecon
-sudo chmod 750 /etc/cron.weekend/restorecon
-sudo chown root:adm /etc/cron.weekend/restorecon
+sudo cp $SCRIPTS/cron/bin/restorecon /etc/cron.weekly/restorecon
+sudo vi /etc/cron.weekly/restorecon
+sudo chmod 750 /etc/cron.weekly/restorecon
+sudo chown root:adm /etc/cron.weekly/restorecon
 
 sudo touch /var/log/sysadmin/restorecon.log
 sudo chmod 640 /var/log/sysadmin/restorecon.log
-sudo chown root:adm /var/log/clamav/restorecon.log
+sudo chown root:adm /var/log/sysadmin/restorecon.log
 
 sudo cp $SCRIPTS/cron/etc/logrotate.d/restorecon /etc/logrotate.d/restorecon
 sudo chmod 644 /etc/logrotate.d/restorecon
