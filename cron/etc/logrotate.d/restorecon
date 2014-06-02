@@ -1,0 +1,8 @@
+/var/log/sysadmin/restorecon.log {
+  weekly
+  compress
+  delaycompress
+  missingok
+  create 0640 root adm
+  rotate 52
+}
