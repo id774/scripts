@@ -92,7 +92,7 @@ install_gem() {
     $SUDO $GEM install capistrano --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install redgreen --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install minitest --no-ri --no-rdoc $3 $4 $5
-    $SUDO $GEM install -v "~> 2.14.0" rspec --no-ri --no-rdoc $3 $4 $5
+    $SUDO $GEM install -v "~> 2.14.1" rspec --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install rspec-rails --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install flexmock --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install simplecov --no-ri --no-rdoc $3 $4 $5
@@ -114,7 +114,7 @@ install_gem() {
     $SUDO $GEM install webrat --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install diff-lcs --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install sanitize --no-ri --no-rdoc $3 $4 $5
-    $SUDO $GEM install -v "~> 0.5.5" msgpack --no-ri --no-rdoc $3 $4 $5
+    $SUDO $GEM install -v "~> 0.5.8" msgpack --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install feed-normalizer --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install gettext_rails --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install gettext_activerecord --no-ri --no-rdoc $3 $4 $5
@@ -169,7 +169,7 @@ install_gem() {
     #$SUDO $GEM install hadoop-papyrus --no-ri --no-rdoc $3 $4 $5
     #$SUDO $GEM install jruby-on-hadoop --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install passenger --no-ri --no-rdoc $3 $4 $5
-    $SUDO $GEM install -v "~> 0.10.35" fluentd --no-ri --no-rdoc $3 $4 $5
+    $SUDO $GEM install -v "~> 0.10.48" fluentd --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install fluent-logger --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install fluent-plugin-sqlite3 --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install fluent-plugin-s3 --no-ri --no-rdoc $3 $4 $5
