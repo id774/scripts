@@ -59,6 +59,7 @@ install_libs() {
     $SUDO $PIP install $PROXY lxml
     $SUDO $PIP install $PROXY requests
     $SUDO $PIP install $PROXY jinja2 tornado pyzmq
+    $SUDO $PIP install $PROXY awscli
 }
 
 main() {
