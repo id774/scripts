@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 ########################################################################
 # Install texlive (for Debian 7.0/Ubuntu 14.04 or later)
