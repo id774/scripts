@@ -4,8 +4,9 @@ echo -n "Server Resource Report at `/bin/hostname` on "
 date "+%Y/%m/%d %T"
 echo
 
-echo "[dmesg Linux version]"
+echo "[GNU/Linux version]"
 dmesg | grep "Linux version"
+which lsb_release > /dev/null && lsb_release -a
 echo
 
 echo "[uname -a]"
