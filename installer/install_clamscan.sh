@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.5 6/7,2014
+#       Remove obsolete archive.
 #  v1.4 6/15,2011
 #       Split.
 ########################################################################
@@ -37,28 +39,6 @@ sudo chown clamav:adm /var/log/clamav/clamav.log
 sudo cp $SCRIPTS/cron/etc/logrotate.d/clamscan /etc/logrotate.d/clamscan
 sudo chmod 644 /etc/logrotate.d/clamscan
 sudo chown root:root /etc/logrotate.d/clamscan
-
-# Archive Old Logs
-if [ -f /var/log/clamav_upgrade.log ]; then
-    test -d /var/log/sysadmin/archive || sudo mkdir /var/log/sysadmin/archive
-    sudo chmod 750 /var/log/sysadmin/archive
-    sudo chown root:adm /var/log/sysadmin/archive
-    test -f /var/log/clamav_upgrade.log* || sudo mv /var/log/clamav_upgrade.log* /var/log/sysadmin/archive/
-fi
-
-if [ -f /var/log/clamscan.log ]; then
-    test -d /var/log/sysadmin/archive || sudo mkdir /var/log/sysadmin/archive
-    sudo chmod 750 /var/log/sysadmin/archive
-    sudo chown root:adm /var/log/sysadmin/archive
-    test -f /var/log/clamscan.log* || sudo mv /var/log/clamscan.log* /var/log/sysadmin/archive/
-fi
-
-if [ -f /var/log/clamav.log ]; then
-    test -d /var/log/sysadmin/archive || sudo mkdir /var/log/sysadmin/archive
-    sudo chmod 750 /var/log/sysadmin/archive
-    sudo chown root:adm /var/log/sysadmin/archive
-    test -f /var/log/clamav.log* && sudo mv /var/log/clamav.log* /var/log/sysadmin/archive/
-fi
 
 # Edit crontab
 # 50 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday
