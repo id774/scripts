@@ -182,6 +182,7 @@ install_gem() {
     $SUDO $GEM install fluent-plugin-datacounter --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install fluent-plugin-twitter --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install aws-sdk --no-ri --no-rdoc $3 $4 $5
+    $SUDO $GEM install travis --no-ri --no-rdoc $3 $4 $5
     test -f /etc/debian_version && $SUDO $GEM install rsruby --no-ri --no-rdoc $3 $4 $5 -- --with-R-include=/usr/include/R --with-R-dir=/usr/lib/R
     test -f /etc/redhat-release && $SUDO $GEM install rsruby --no-ri --no-rdoc $3 $4 $5 -- --with-R-include=/usr/share/R/include --with-R-dir=/usr/lib/R
     $GEM list --local
