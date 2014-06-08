@@ -18,7 +18,7 @@ if [ -f /etc/issue ]; then
     if [[ $DIST =~ "Ubuntu" ]]; then
         VER=`echo $ISSUE | awk '{print $2}'`
         if [[ "$VER" =~ ^12\.04 ]]; then
-            echo "It seems that platfrom is Ubuntu 12.04 LTS"
+            echo "It seems that platform is Ubuntu 12.04 LTS"
             echo "Adding texlive backports repository"
             sudo apt-add-repository ppa:texlive-backports/ppa
             sudo apt-get -y update
