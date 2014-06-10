@@ -124,9 +124,10 @@ editor_packages() {
       ess \
       mew stunnel ca-certificates \
       w3m-el-snapshot w3m-img imagemagick \
-      graphicsmagick-libmagick-dev-compat \
+      libmagickcore-dev libmagickwand-dev \
       vim vim-runtime colordiff \
       ctags
+#      graphicsmagick-libmagick-dev-compat \
 }
 
 exif_tools() {
