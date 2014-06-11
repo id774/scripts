@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.11 6/12,2014
+#       Add openblas, scalapack.
 # v1.10 11/13,2011
 #       Add proctools.
 #  v1.9 3/28,2011
@@ -54,6 +56,8 @@ main() {
     sudo port -d install ctags
     sudo port -d install ncurses
     sudo port -d install vim
+    sudo port -d install openblas
+    sudo port -d install scalapack
     sudo port -d install smartmontools
     sudo port -d install w3m
     sudo port -d install emacs-w3m
