@@ -1,5 +1,8 @@
 
+# sudo R --no-save --no-restore < ~/scripts/installer/install_R-libs.R
+
 options(repos="http://cran.ism.ac.jp")
+install.packages('sem')
 install.packages('TTR')
 install.packages('biOps')
 install.packages('igraph')
