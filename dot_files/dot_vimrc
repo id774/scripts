@@ -1,6 +1,6 @@
 " vim:set ts=8 sts=2 sw=2 tw=0
 "
-" Last Change: 27-Apr-2012.
+" Last Change: 16-Jun-2014.
 " Maintainer:  id774 <idnanashi@gmail.com>
 
 if &encoding !=# 'utf-8'
@@ -154,6 +154,10 @@ autocmd FileType python :set tabstop=4
 autocmd FileType python :set softtabstop=4
 autocmd FileType python :set shiftwidth=4
 
+augroup filetypedetect
+  au BufNewFile,BufRead *.pig set filetype=pig syntax=pig
+augroup END 
+
 if 1 && !filereadable($VIMRUNTIME . '/less.vim')
   au BufNewFile,BufRead *.less setf less
 endif
@@ -274,4 +278,4 @@ if exists('&ambiwidth')
   set ambiwidth=double
 endif
 
-" Copyright (C) 2008-2012 id774 <idnanashi@gmail.com>
+" Copyright (C) 2008-2014 id774 <idnanashi@gmail.com>
