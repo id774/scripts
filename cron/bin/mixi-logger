@@ -9,7 +9,7 @@ cat $JOBLOG>>$MIXI_LOG
 # ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
 case "$ADMIN_MAIL_ADDRESS" in
   *@*)
-    nkf -w $JOBLOG | mail -s "[cron-log][`/bin/hostname`] Mixi Logger" $ADMIN_MAIL_ADDRESS
+    nkf -w $JOBLOG | mail -s "[cron][`/bin/hostname`] Mixi Logger" $ADMIN_MAIL_ADDRESS
     ;;
 esac
 

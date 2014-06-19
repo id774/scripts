@@ -3,19 +3,19 @@
 JOBLOG=/var/log/clamav/clamscan.log
 SCANLOG=/var/log/clamav/clamav.log
 
-echo -n "*** $0: Job start at `/bin/hostname` on ">>$JOBLOG 2>&1
+echo -n "*** $0: Job started on `/bin/hostname` at ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1
 
 test -x /root/bin/clamscan.sh && /root/bin/clamscan.sh>>$JOBLOG 2>&1
 
-echo -n "*** $0: End of Job at `/bin/hostname` on ">>$JOBLOG 2>&1
+echo -n "*** $0: Job ended on `/bin/hostname` at ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1
 echo>>$JOBLOG 2>&1
 
 # ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
 case "$ADMIN_MAIL_ADDRESS" in
   *@*)
-    nkf -w $JOBLOG | mail -s "[cron-log][`/bin/hostname`] ClamAV Scan Log" $ADMIN_MAIL_ADDRESS
+    nkf -w $JOBLOG | mail -s "[cron][`/bin/hostname`] ClamAV Scan Log" $ADMIN_MAIL_ADDRESS
     ;;
 esac
 
