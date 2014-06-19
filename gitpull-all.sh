@@ -115,7 +115,7 @@ gitpull_all() {
     gitpull github id774 batch_framework $*
     gitpull github id774 intraweb-template $*
     gitpull github id774 heartbeat-id774net $*
-    gitpull github id774 hadoop-streaming-with-ruby $*
+    gitpull github id774 hadoop-streaming $*
     gitpull github id774 hadoop-twitter-mapreduce $*
     gitpull github id774 hadoop-twitter-wordvector $*
     gitpull github id774 hadoop-category-map $*
