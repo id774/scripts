@@ -93,7 +93,10 @@ install_gem() {
     $SUDO $GEM install redgreen --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install minitest --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install -v "~> 2.14.1" rspec --no-ri --no-rdoc $3 $4 $5
-    $SUDO $GEM install rspec-rails --no-ri --no-rdoc $3 $4 $5
+    $SUDO $GEM install -v "~> 2.14.1" rspec-core --no-ri --no-rdoc $3 $4 $5
+    $SUDO $GEM install -v "~> 2.14.1" rspec-expectations --no-ri --no-rdoc $3 $4 $5
+    $SUDO $GEM install -v "~> 2.14.1" rspec-mocks --no-ri --no-rdoc $3 $4 $5
+    $SUDO $GEM install -v "~> 2.14.1" rspec-rails --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install flexmock --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install simplecov --no-ri --no-rdoc $3 $4 $5
     $SUDO $GEM install simplecov-rcov --no-ri --no-rdoc $3 $4 $5
