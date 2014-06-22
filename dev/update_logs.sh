@@ -5,7 +5,7 @@ test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
 
 update_log() {
     if [ -f $2 ]; then
-        sudo cp ~/scripts/cron/bin/$1 $2
+        sudo cp $HOME/scripts/cron/bin/$1 $2
         sudo chown root:adm $2
         sudo chmod 750 $2
         sudo vim $2
@@ -13,9 +13,15 @@ update_log() {
 }
 
 if [ -f /opt/deferred-sync/bin/run ]; then
-    sudo cp ~/deferred-sync/bin/run /opt/deferred-sync/bin/run
+    sudo cp $HOME/deferred-sync/bin/run /opt/deferred-sync/bin/run
     sudo chown root:root /opt/deferred-sync/bin/run
     sudo chmod 755 /opt/deferred-sync/bin/run
+fi
+
+if [ -f /etc/rc.local.d/mail_to_admin ]; then
+    sudo cp $HOME/scripts/etc/rc.local.d/mail_to_admin /etc/rc.local.d/mail_to_admin
+    sudo chown root:adm /etc/rc.local.d/mail_to_admin
+    sudo chmod 740 /etc/rc.local.d/mail_to_admin
 fi
 
 update_log clamscan /etc/cron.weekend/clamscan
