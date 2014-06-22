@@ -22,6 +22,7 @@ if [ -f /etc/rc.local.d/mail_to_admin ]; then
     sudo cp $HOME/scripts/etc/rc.local.d/mail_to_admin /etc/rc.local.d/mail_to_admin
     sudo chown root:adm /etc/rc.local.d/mail_to_admin
     sudo chmod 740 /etc/rc.local.d/mail_to_admin
+    sudo vim /etc/rc.local.d/mail_to_admin
 fi
 
 update_log clamscan /etc/cron.weekend/clamscan
