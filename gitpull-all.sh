@@ -116,10 +116,6 @@ gitpull_all() {
     gitpull github id774 intraweb-template $*
     gitpull github id774 heartbeat-id774net $*
     gitpull github id774 hadoop-streaming $*
-    gitpull github id774 hadoop-twitter-mapreduce $*
-    gitpull github id774 hadoop-twitter-wordvector $*
-    gitpull github id774 hadoop-category-map $*
-    gitpull github id774 hadoop-user-clustering $*
     gitpull github id774 rurima $*
     gitpull github id774 ctoD $*
     gitpull github id774 okura $*
@@ -133,8 +129,6 @@ gitpull_all() {
     gitpull github jugyo rubytter $*
     gitpull github fluent fluentd $*
     gitpull github sandal rbp $*
-    gitpull github miyagawa plagger $*
-    gitpull github twbs bootstrap $*
     gitpull github emacs-helm helm $*
     gitpull github eschulte rhtml $*
     gitpull github eschulte rinari $*
