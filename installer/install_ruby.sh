@@ -2,13 +2,15 @@
 #
 ########################################################################
 # Install Ruby
-#  $1 = ruby version (ex. 193-448)
+#  $1 = ruby version (ex. 200-481)
 #  $2 = ruby path (ex. /opt/bin)
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.39 6/23,2014
+#       Update to ruby 1.9.3-p547, fix typo.
 # v1.38 5/9,2014
-#       Update to ruby 2.1.2, 2.0.0-p485.
+#       Update to ruby 2.1.2, 2.0.0-p481.
 # v1.37 5/4,2014
 #       Update to ruby 2.0.0-p451, 1.9.3-p545.
 # v1.36 2/25,2014
@@ -206,8 +208,8 @@ install_ruby() {
       200-0)
         install_stable 2.0.0-p0 2.0 $2
         ;;
-      193-545)
-        install_stable 1.9.3-p545 1.9 $2
+      193-547)
+        install_stable 1.9.3-p547 1.9 $2
         ;;
       193-484)
         install_stable 1.9.3-p484 1.9 $2
