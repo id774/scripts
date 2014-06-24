@@ -60,6 +60,7 @@ install_libs() {
     $SUDO $PIP install $PROXY requests
     $SUDO $PIP install $PROXY jinja2 tornado pyzmq
     $SUDO $PIP install $PROXY awscli
+    $SUDO $PIP install $PROXY cchardet
 }
 
 main() {
