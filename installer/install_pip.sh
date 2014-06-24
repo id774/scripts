@@ -61,6 +61,7 @@ install_libs() {
     $SUDO $PIP install $PROXY jinja2 tornado pyzmq
     $SUDO $PIP install $PROXY awscli
     $SUDO $PIP install $PROXY cchardet
+    $SUDO $PIP install $PROXY openpyxl
 }
 
 main() {
