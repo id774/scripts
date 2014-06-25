@@ -100,6 +100,10 @@ setup_ntp() {
     sudo vi /etc/ntp.conf
 }
 
+setup_munin() {
+    $SCRIPTS/installer/install_munin.sh
+}
+
 setup_fail2ban() {
     sudo vi /etc/fail2ban/jail.conf
 }
@@ -167,6 +171,7 @@ operation() {
     #setup_web
     setup_rc_local
     setup_ntp
+    setup_munin
     setup_fail2ban
     change_default
     test -f /etc/lsb-release && customize_for_ubuntu
