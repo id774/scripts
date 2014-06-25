@@ -62,6 +62,7 @@ install_libs() {
     $SUDO $PIP install $PROXY awscli
     $SUDO $PIP install $PROXY cchardet
     $SUDO $PIP install $PROXY openpyxl
+    $SUDO $PIP install $PROXY xlrd
 }
 
 main() {
