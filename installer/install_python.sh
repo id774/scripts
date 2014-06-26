@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.8 6/26,2014
+#       Change address of pip.
 #  v1.7 3/12,2014
 #       Create symlink for ipython3.
 #  v1.6 2/14,2014
@@ -82,7 +84,7 @@ get_easy_install() {
 }
 
 get_pip() {
-    curl -L https://raw.github.com/pypa/pip/master/contrib/get-pip.py | $SUDO $PREFIX/bin/python
+    curl -L https://bootstrap.pypa.io/get-pip.py | $SUDO $PREFIX/bin/python
 }
 
 install_python() {
