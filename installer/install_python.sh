@@ -93,7 +93,7 @@ install_python() {
     get_python $*
     create_symlink $*
     # get_easy_install $*
-    # get_pip $*
+    get_pip $*
     python -V
 }
 
