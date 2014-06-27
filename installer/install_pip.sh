@@ -4,10 +4,11 @@
 # Install Python Libraries.
 #  $1 = python path (ex. /usr/local)
 #  $2 = no sudo
-#  $3 = proxy
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.3 6/27,2014
+#       Auto proxy detection.
 #  v0.2 2/10,2014
 #       Enable proxy.
 #  v0.1 2/9,2014
@@ -22,8 +23,8 @@ setup_environment() {
     test -n "$2" || SUDO=sudo
     test -n "$2" && SUDO=
     test "$2" = "sudo" && SUDO=sudo
-    test -n "$3" || PROXY=
-    test -n "$3" && PROXY="--proxy $3"
+    test -n "$HTTP_PROXY" || PROXY=
+    test -n "$HTTP_PROXY" && PROXY="--proxy $HTTP_PROXY"
 }
 
 install_libs() {
