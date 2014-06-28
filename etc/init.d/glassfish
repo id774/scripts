@@ -1,0 +1,52 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          glassfish
+# Required-Start:    $syslog
+# Required-Stop:     $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start GlassFish Server at boot time
+# Description:       Enable service provided by daemon.
+### END INIT INFO
+PROG="glassfish"
+GLASSFISH_PATH=/opt/glassfish/current/glassfish
+
+start() {
+    echo "starting $PROG: "
+    su glassfish -c "$GLASSFISH_PATH/bin/asadmin start-domain domain1"
+    RETVAL=$?
+    if [ $RETVAL = 0 ]; then
+        logger "$PROG start"
+    else
+        logger "ERROR: $PROG start failed"
+    fi
+ }
+
+stop() {
+    echo "stopping $PROG: "
+    su glassfish -c "$GLASSFISH_PATH/bin/asadmin stop-domain domain1"
+    RETVAL=$?
+    if [ $RETVAL = 0 ]; then
+        logger "$PROG stop"
+    else
+        failure "ERROR: $PROG stop failed"
+    fi
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  restart|reload|force-reload)
+    stop
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  *)
+    echo "Usage: $0 start|stop"
+    exit 3
+    ;;
+esac
+
