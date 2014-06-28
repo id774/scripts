@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo -n "Server Resource Report at `/bin/hostname` on "
+echo -n "Server Resource Report on `/bin/hostname` at "
 date "+%Y/%m/%d %T"
 echo
 
