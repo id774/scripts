@@ -12,6 +12,12 @@ update_log() {
     fi
 }
 
+remove_script() {
+    if [ -f $1 ]; then
+        sudo rm -vf $1
+    fi
+}
+
 if [ -f /opt/deferred-sync/bin/run ]; then
     sudo cp $HOME/deferred-sync/bin/run /opt/deferred-sync/bin/run
     sudo chown root:root /opt/deferred-sync/bin/run
@@ -25,7 +31,7 @@ if [ -f /etc/rc.local.d/mail_to_admin ]; then
     sudo vim /etc/rc.local.d/mail_to_admin
 fi
 
-test -f /etc/cron.daily/chkrootkit && sudo rm -f /etc/cron.daily/chkrootkit
+remove_script /etc/cron.daily/chkrootkit
 update_log clamscan /etc/cron.weekend/clamscan
 update_log chkrootkit /etc/cron.weekly/chkrootkit
 update_log rsync_backup /etc/cron.hourly/rsync_backup
