@@ -25,8 +25,9 @@ if [ -f /etc/rc.local.d/mail_to_admin ]; then
     sudo vim /etc/rc.local.d/mail_to_admin
 fi
 
+test -f /etc/cron.daily/chkrootkit && sudo rm -f /etc/cron.daily/chkrootkit
 update_log clamscan /etc/cron.weekend/clamscan
-update_log chkrootkit /etc/cron.daily/chkrootkit
+update_log chkrootkit /etc/cron.weekly/chkrootkit
 update_log rsync_backup /etc/cron.hourly/rsync_backup
 update_log get_resources /etc/cron.hourly/get_resources
 update_log restorecon /etc/cron.weekly/restorecon
