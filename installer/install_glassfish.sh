@@ -49,11 +49,13 @@ copy_init() {
     $SUDO cp $OPTIONS $SCRIPTS/etc/init.d/glassfish /etc/init.d/
     $SUDO chown $OWNER /etc/init.d/glassfish
     $SUDO chmod 755 /etc/init.d/glassfish
+    $SUDO service glassfish restart
 }
 
 set_admin_passwd() {
     cd $TARGET/$VERSION/glassfish/bin
     $SUDO -u glassfish sh asadmin change-admin-password
+    $SUDO -u glassfish sh asadmin enable-secure-admin
 }
 
 set_permission() {
@@ -68,8 +70,8 @@ set_permission() {
     $SUDO chmod -R +x $TARGET/$VERSION/bin/
     $SUDO chmod -R +x $TARGET/$VERSION/glassfish/bin/
     edit_script
-    copy_init
     set_admin_passwd
+    copy_init
 }
 
 install_glassfish() {
