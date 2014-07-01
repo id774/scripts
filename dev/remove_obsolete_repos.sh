@@ -22,5 +22,4 @@ remove_repo github triglav
 remove_repo github plagger
 remove_repo github bootstrap
 remove_repo git monthly-report
-remove_repo git newscloud-sinatra
 
