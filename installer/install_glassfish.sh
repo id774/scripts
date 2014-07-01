@@ -83,7 +83,7 @@ install_glassfish() {
     mv glassfish4 $VERSION
     test -d $TARGET || $SUDO mkdir $TARGET
     $SUDO cp $OPTIONS $VERSION $TARGET
-    test -n "$SUDO" && test -f /etc/lsb-release && set_permission $*
+    test -n "$SUDO" && test -f /etc/issue && set_permission $*
     cd ..
     rm -rf install_glassfish
 }
