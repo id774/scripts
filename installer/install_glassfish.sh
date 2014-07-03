@@ -9,6 +9,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 7/3,2014
+#       Using update-rc.d, fix some bugs.
 #  v0.1 6/29,2014
 #       First.
 ########################################################################
@@ -50,6 +52,7 @@ copy_init() {
     $SUDO chown $OWNER /etc/init.d/glassfish
     $SUDO chmod 755 /etc/init.d/glassfish
     $SUDO service glassfish restart
+    $SUDO update-rc.d glassfish defaults
 }
 
 set_admin_passwd() {
