@@ -10,7 +10,6 @@
 ########################################################################
 
 main() {
-    sudo port -d install ruby
     sudo port -d install nodejs
     sudo port -d install nodejs-devel
     sudo port -d install npm
