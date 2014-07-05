@@ -16,4 +16,5 @@ install.packages('quadprog')
 install.packages('tseries')
 install.packages('xts')
 install.packages('zoo')
+library()
 
