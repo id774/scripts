@@ -15,7 +15,6 @@ remove_repo github hadoop-twitter-wordvector
 remove_repo github hadoop-category-map
 remove_repo github hadoop-user-clustering
 remove_repo github werkzeug
-remove_repo github house_api_web
 remove_repo github jinja2
 remove_repo github rub
 remove_repo github triglav
