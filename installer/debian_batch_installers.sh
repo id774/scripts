@@ -100,6 +100,10 @@ setup_ntp() {
     sudo vi /etc/ntp.conf
 }
 
+setup_get_resources() {
+    $SCRIPTS/installer/install_get_resources.sh
+}
+
 setup_munin() {
     $SCRIPTS/installer/install_munin.sh
 }
@@ -171,6 +175,7 @@ operation() {
     #setup_web
     setup_rc_local
     setup_ntp
+    setup_get_resources
     setup_munin
     setup_fail2ban
     change_default
