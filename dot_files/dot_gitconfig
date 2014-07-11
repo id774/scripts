@@ -36,7 +36,7 @@
   branch = auto
   grep = auto
 [color "diff"]
-  meta = white bold
-  frag = green
+  meta = magenta
+  frag = blue bold
   old = red
   new = cyan
