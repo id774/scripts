@@ -59,6 +59,8 @@ install_libs() {
     $SUDO $PIP install $PROXY beautifulsoup4
     $SUDO $PIP install $PROXY lxml
     $SUDO $PIP install $PROXY requests
+    $SUDO $PIP install $PROXY ggplot
+    $SUDO $PIP install $PROXY pyper
     $SUDO $PIP install $PROXY jinja2 tornado pyzmq
     $SUDO $PIP install $PROXY awscli
     $SUDO $PIP install $PROXY cchardet
