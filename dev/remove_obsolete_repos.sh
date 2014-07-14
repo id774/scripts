@@ -1,8 +1,8 @@
 #!/bin/sh
 
 remove_repo() {
-    test -d $HOME/local/$1/$2 && rm -rf $HOME/local/$1/$2
-    test -L $HOME/$2 && rm -f $HOME/$2
+    test -d $HOME/local/$1/$2 && rm -rvf $HOME/local/$1/$2
+    test -L $HOME/$2 && rm -vf $HOME/$2
 }
 
 remove_repo github hadoop-streaming-with-ruby
