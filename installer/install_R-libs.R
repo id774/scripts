@@ -2,6 +2,7 @@
 # sudo R --no-save --no-restore < ~/scripts/installer/install_R-libs.R
 
 options(repos="http://cran.ism.ac.jp")
+install.packages('DMwR')
 install.packages('ggplot2')
 install.packages('sem')
 install.packages('TTR')
