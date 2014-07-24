@@ -117,6 +117,7 @@ gitpull_all() {
     gitpull github id774 heartbeat-id774net $*
     gitpull github id774 hadoop-streaming $*
     gitpull github id774 d3js-stacked-chart $*
+    gitpull github id774 d3js-charts $*
     gitpull github id774 rurima $*
     gitpull github id774 ctoD $*
     gitpull github id774 okura $*
