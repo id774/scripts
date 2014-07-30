@@ -56,6 +56,7 @@ main() {
     sudo port -d install ctags
     sudo port -d install ncurses
     sudo port -d install vim
+    sudo port -d install sshfs
     sudo port -d install openblas
     sudo port -d install scalapack
     sudo port -d install smartmontools
