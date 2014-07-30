@@ -53,5 +53,10 @@ install.packages('tseries')
 install.packages('xts')
 install.packages('zoo')
 
+install.packages('maps')
+install.packages('gpclib')
+install.packages('maptools')
+install.packages('classInt')
+
 library()
 

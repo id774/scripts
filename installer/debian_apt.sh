@@ -206,7 +206,8 @@ optional_packages() {
       libssl-dev libio-socket-ssl-perl libnet-ssleay-perl \
       libtemplate-perl libxml-libxml-perl \
       migemo \
-      libcurl4-openssl-dev apache2-threaded-dev libapr1-dev libaprutil1-dev
+      libcurl4-openssl-dev apache2-threaded-dev libapr1-dev libaprutil1-dev \
+      libgpcl-dev
 }
 
 ruby_lang() {
