@@ -4,10 +4,11 @@
 import sys
 import datetime
 
+def unixtime2date(its):
+    return datetime.datetime.fromtimestamp(its).strftime('%Y/%m/%d %H:%M:%S')
+
 def main(args):
-    its = int(args[1])
-    now = datetime.datetime.fromtimestamp(its).strftime('%Y/%m/%d %H:%M:%S')
-    print(now)
+    print(unixtime2date(int(args[1])))
 
 if __name__ == '__main__':
     argsmin = 1
