@@ -54,8 +54,10 @@ install.packages('xts')
 install.packages('zoo')
 
 install.packages('classInt')
+install.packages('RColorBrewer')
 install.packages('gpclib')
 install.packages('maptools')
+install.packages('spsurvey')
 install.packages('mapproj')
 install.packages('maps')
 
