@@ -29,43 +29,43 @@ setup_environment() {
 
 install_libs() {
     $SUDO $PIP install $PROXY -U pip
-    $SUDO $PIP install $PROXY Cython
-    $SUDO $PIP install $PROXY IPython
-    $SUDO $PIP install $PROXY docutils
-    $SUDO $PIP install $PROXY nose
-    $SUDO $PIP install $PROXY simplejson
-    $SUDO $PIP install $PROXY msgpack-python
-    $SUDO $PIP install $PROXY numpy
-    $SUDO $PIP install $PROXY scipy
-    $SUDO $PIP install $PROXY scikit-learn
-    $SUDO $PIP install $PROXY matplotlib
-    $SUDO $PIP install $PROXY pandas
-    $SUDO $PIP install $PROXY patsy
-    $SUDO $PIP install $PROXY statsmodels
-    $SUDO $PIP install $PROXY sympy
-    $SUDO $PIP install $PROXY seaborn
-    $SUDO $PIP install $PROXY bokeh
-    $SUDO $PIP install $PROXY twisted
-    $SUDO $PIP install $PROXY Flask
-    $SUDO $PIP install $PROXY django
-    $SUDO $PIP install $PROXY SQLAlchemy
-    $SUDO $PIP install $PROXY migrate
-    $SUDO $PIP install $PROXY readline
-    $SUDO $PIP install $PROXY Pygments
-    $SUDO $PIP install $PROXY Babel
-    $SUDO $PIP install $PROXY Genshi
-    $SUDO $PIP install $PROXY bottle
-    $SUDO $PIP install $PROXY cherrypy
-    $SUDO $PIP install $PROXY beautifulsoup4
-    $SUDO $PIP install $PROXY lxml
-    $SUDO $PIP install $PROXY requests
-    $SUDO $PIP install $PROXY ggplot
-    $SUDO $PIP install $PROXY pyper
-    $SUDO $PIP install $PROXY jinja2 tornado pyzmq
-    $SUDO $PIP install $PROXY awscli
-    $SUDO $PIP install $PROXY cchardet
-    $SUDO $PIP install $PROXY openpyxl
-    $SUDO $PIP install $PROXY xlrd
+    $SUDO $PIP install $PROXY -U Cython
+    $SUDO $PIP install $PROXY -U IPython
+    $SUDO $PIP install $PROXY -U docutils
+    $SUDO $PIP install $PROXY -U nose
+    $SUDO $PIP install $PROXY -U simplejson
+    $SUDO $PIP install $PROXY -U msgpack-python
+    $SUDO $PIP install $PROXY -U numpy
+    $SUDO $PIP install $PROXY -U scipy
+    $SUDO $PIP install $PROXY -U scikit-learn
+    $SUDO $PIP install $PROXY -U matplotlib
+    $SUDO $PIP install $PROXY -U pandas
+    $SUDO $PIP install $PROXY -U patsy
+    $SUDO $PIP install $PROXY -U statsmodels
+    $SUDO $PIP install $PROXY -U sympy
+    $SUDO $PIP install $PROXY -U seaborn
+    $SUDO $PIP install $PROXY -U bokeh
+    $SUDO $PIP install $PROXY -U twisted
+    $SUDO $PIP install $PROXY -U Flask
+    $SUDO $PIP install $PROXY -U django
+    $SUDO $PIP install $PROXY -U SQLAlchemy
+    $SUDO $PIP install $PROXY -U migrate
+    $SUDO $PIP install $PROXY -U readline
+    $SUDO $PIP install $PROXY -U Pygments
+    $SUDO $PIP install $PROXY -U Babel
+    $SUDO $PIP install $PROXY -U Genshi
+    $SUDO $PIP install $PROXY -U bottle
+    $SUDO $PIP install $PROXY -U cherrypy
+    $SUDO $PIP install $PROXY -U beautifulsoup4
+    $SUDO $PIP install $PROXY -U lxml
+    $SUDO $PIP install $PROXY -U requests
+    $SUDO $PIP install $PROXY -U ggplot
+    $SUDO $PIP install $PROXY -U pyper
+    $SUDO $PIP install $PROXY -U jinja2 tornado pyzmq
+    $SUDO $PIP install $PROXY -U awscli
+    $SUDO $PIP install $PROXY -U cchardet
+    $SUDO $PIP install $PROXY -U openpyxl
+    $SUDO $PIP install $PROXY -U xlrd
 }
 
 main() {
