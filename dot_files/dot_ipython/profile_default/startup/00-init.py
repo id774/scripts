@@ -39,6 +39,6 @@ try:
     print("import pyper")
     r = pyper.R(use_pandas='True')
     print("r = pyper.R(use_pandas='True')")
-except ImportError:
+except (ImportError, FileNotFoundError):
     print("pyper has not been loaded") 
 
