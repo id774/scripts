@@ -5,10 +5,10 @@ setup_environment() {
 
     case $OSTYPE in
       *darwin*)
-        OPTIONS=-Ruv
+        OPTIONS=-Rv
         ;;
       *)
-        OPTIONS=-Ruvd
+        OPTIONS=-Rvd
         ;;
     esac
 }
