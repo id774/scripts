@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.4 8/12,2014
+#       Add pip, pyflakes. Upgrade option as default.
 #  v0.3 6/27,2014
 #       Auto proxy detection.
 #  v0.2 2/10,2014
@@ -29,6 +31,8 @@ setup_environment() {
 
 install_libs() {
     $SUDO $PIP install $PROXY -U pip
+    $SUDO $PIP install $PROXY -U pyflakes
+    $SUDO $PIP install $PROXY -U pep8
     $SUDO $PIP install $PROXY -U Cython
     $SUDO $PIP install $PROXY -U IPython
     $SUDO $PIP install $PROXY -U docutils
@@ -44,7 +48,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U statsmodels
     $SUDO $PIP install $PROXY -U sympy
     $SUDO $PIP install $PROXY -U seaborn
-    $SUDO $PIP install $PROXY -U bokeh
+    $SUDO $PIP install $PROXY bokeh
     $SUDO $PIP install $PROXY -U twisted
     $SUDO $PIP install $PROXY -U Flask
     $SUDO $PIP install $PROXY -U django
