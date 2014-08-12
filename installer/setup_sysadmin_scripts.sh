@@ -53,6 +53,7 @@ uninstall_sysadmin_scripts() {
         waitlock \
         swapext \
         git-follow-origin \
+        pyck \
         get_resources \
         tcmount \
         dpkg-hold \
@@ -74,6 +75,7 @@ setup_scripts() {
     install_scripts 755 waitlock.rb waitlock
     install_scripts 755 swapext.py swapext
     install_scripts 755 git-follow-origin.sh git-follow-origin
+    install_scripts 755 pyck.sh pyck
 }
 
 setup_darwin_scripts() {
