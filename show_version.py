@@ -24,6 +24,7 @@ import imp
 class PythonModuleInfo:
     def __init__(self, options):
         self.info = options.info
+        self.python = options.python
 
     def _get_module_info(self, module_name):
         try:
@@ -51,17 +52,23 @@ class PythonModuleInfo:
         else:
             self._get_module_version(module_name)
 
+    def get_python_version(self):
+        if self.python:
+            python_version = sys.version
+            print("Python %(python_version)s" %locals())
+
 def main():
     from optparse import OptionParser
     usage = "usage: %prog [options] file"
     parser = OptionParser(usage)
     parser.add_option("-i", "--info", help="show detail info",
                       action="store_true", dest="info")
+    parser.add_option("-p", "--python", help="show python version",
+                      action="store_true", dest="python")
     (options, args) = parser.parse_args()
 
     m = PythonModuleInfo(options)
-    python_version = sys.version
-    print("Python %(python_version)s" %locals())
+    m.get_python_version()
     m.get_info('IPython')
     m.get_info('cython')
     m.get_info('docutils')
