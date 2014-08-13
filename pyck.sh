@@ -6,8 +6,8 @@ setup_environment() {
 
 main() {
     setup_environment
-    which $PYTHON_PATH/bin/pyflakes > /dev/null || exit 1
-    which $PYTHON_PATH/bin/pep8 > /dev/null || exit 1
+    which $PYTHON_PATH/bin/pyflakes > /dev/null || exit 254
+    which $PYTHON_PATH/bin/pep8 > /dev/null || exit 254
     $PYTHON_PATH/bin/pyflakes $*
     $PYTHON_PATH/bin/py.test --pep8 $*
     exit 0
