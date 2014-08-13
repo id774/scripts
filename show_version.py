@@ -71,6 +71,8 @@ def main():
     m.get_python_version()
     m.get_info('pip')
     m.get_info('pyflakes')
+    m.get_info('pytest')
+    m.get_info('autopep8')
     m.get_info('IPython')
     m.get_info('cython')
     m.get_info('docutils')

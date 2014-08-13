@@ -33,6 +33,9 @@ install_libs() {
     $SUDO $PIP install $PROXY -U pip
     $SUDO $PIP install $PROXY -U pyflakes
     $SUDO $PIP install $PROXY -U pep8
+    $SUDO $PIP install $PROXY -U pytest
+    $SUDO $PIP install $PROXY -U pytest-pep8
+    $SUDO $PIP install $PROXY -U autopep8
     $SUDO $PIP install $PROXY -U Cython
     $SUDO $PIP install $PROXY -U IPython
     $SUDO $PIP install $PROXY -U docutils
