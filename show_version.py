@@ -69,6 +69,8 @@ def main():
 
     m = PythonModuleInfo(options)
     m.get_python_version()
+    m.get_info('pip')
+    m.get_info('pyflakes')
     m.get_info('IPython')
     m.get_info('cython')
     m.get_info('docutils')
