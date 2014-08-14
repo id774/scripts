@@ -18,7 +18,8 @@
 #       Stable.
 ########################################################################
 
-import sys, os
+import sys
+import os
 
 def os_exec(cmd, device):
     os.system('dmesg | grep ' + device)
@@ -27,18 +28,20 @@ def os_exec(cmd, device):
 def mount_drive(options, args, mount_options, device):
     if options.partition:
         cmd = 'test -b /dev/' + device + options.partition +\
-        ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
-        mount_options + ' /dev/' + device + options.partition + ' ~/mnt/' + device
+            ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
+            mount_options + ' /dev/' + device + \
+            options.partition + ' ~/mnt/' + device
     else:
         cmd = 'test -b /dev/' + device +\
-        ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
-        mount_options + ' /dev/' + device + ' ~/mnt/' + device
+            ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
+            mount_options + ' /dev/' + device + ' ~/mnt/' + device
     os_exec(cmd, device)
 
 def mount_file(options, args, mount_options, device, mount_point, filename):
     cmd = 'test -f /mnt/' + device + '/' + filename +\
-    ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
-    mount_options + ' /mnt/' + device + '/' + filename + ' ~/mnt/' + mount_point
+        ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
+        mount_options + ' /mnt/' + device + '/' + \
+        filename + ' ~/mnt/' + mount_point
     os_exec(cmd, device)
 
 def partition(options, args, mount_options, device):
@@ -80,11 +83,12 @@ def mount_local(device, options):
     cmd = 'test -f ~/local/' + device + '.tc && ' +\
           'test -d ~/mnt/' + device +\
           ' && sudo truecrypt -t -k "" --protect-hidden=no ' +\
-          '--fs-options=' + mount_options + ' ~/local/' + device + '.tc ~/mnt/' + device
+          '--fs-options=' + mount_options + \
+        ' ~/local/' + device + '.tc ~/mnt/' + device
     os.system(cmd)
     cmd = 'test -f /home/crypt/' + device +\
-    ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
-    mount_options + ' /home/crypt/' + device + ' ~/mnt/' + device
+        ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
+        mount_options + ' /home/crypt/' + device + ' ~/mnt/' + device
     os_exec(cmd, device)
 
 def tcmount(options, args):
@@ -136,4 +140,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

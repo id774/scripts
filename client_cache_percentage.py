@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import sys, os
+import sys
+import os
 p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib')
 if not p in sys.path:
     sys.path.append(p)
@@ -23,6 +24,5 @@ def main():
 
     print("%g%%" % client_cache_percentage(sys.argv[1]))
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
-

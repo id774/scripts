@@ -1,5 +1,11 @@
 
-import sys, os, readline, codecs, time, datetime, json
+import sys
+import os
+import readline
+import codecs
+import time
+import datetime
+import json
 print("import sys, os, readline, codecs, time, datetime, json")
 
 try:
@@ -41,4 +47,3 @@ try:
     print("r = pyper.R(use_pandas='True')")
 except (ImportError, FileNotFoundError):
     print("pyper has not been loaded")
-

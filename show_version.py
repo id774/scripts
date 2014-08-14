@@ -22,6 +22,7 @@ import sys
 import imp
 
 class PythonModuleInfo:
+
     def __init__(self, options):
         self.info = options.info
         self.python = options.python
@@ -55,7 +56,7 @@ class PythonModuleInfo:
     def get_python_version(self):
         if self.python:
             python_version = sys.version
-            print("Python %(python_version)s" %locals())
+            print("Python %(python_version)s" % locals())
 
 def main():
     from optparse import OptionParser
@@ -112,6 +113,5 @@ def main():
     m.get_info('MeCab')
     m.get_info('CaboCha')
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
-

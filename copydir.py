@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import os, sys
+import os
+import sys
 def main():
     from optparse import OptionParser
     usage = "usage: %prog [source_dir] [target_parent_dir]"
@@ -20,6 +21,5 @@ def main():
                 else:
                     print(os.path.join(sys.argv[2], root, d))
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
-

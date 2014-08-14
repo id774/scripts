@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import sys, os
+import sys
+import os
 p = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'lib')
 if not p in sys.path:
     sys.path.append(p)

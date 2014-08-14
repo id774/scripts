@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import sys, os
+import sys
+import os
 
 def chmodtree(options, arg):
     if options.sudo:
@@ -55,4 +56,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

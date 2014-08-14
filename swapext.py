@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 
-import os, sys
+import os
+import sys
 
 def swap_extensions(dir, before, after):
     if before[:1] != '.':
-        before = '.'+before
+        before = '.' + before
 
     thelen = -len(before)
     if after[:1] != '.':
-        after = '.'+after
+        after = '.' + after
 
     for path, subdirs, files in os.walk(dir):
         for oldfile in files:
@@ -27,4 +28,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
-import os, sys
+import os
+import sys
 import re
 
 def expand_directory(args):
     for root, dirs, files in os.walk(args[0]):
         for f in files:
-            cmd = ("unzip " + args[0] + os.sep + f) 
+            cmd = ("unzip " + args[0] + os.sep + f)
             os.system(cmd)
 
 def unzip_subdir(args):
@@ -19,7 +20,7 @@ def unzip_subdir(args):
             else:
                 os.mkdir(d)
                 os.chdir(d)
-                cmd = ("unzip " + args[0] + os.sep + f) 
+                cmd = ("unzip " + args[0] + os.sep + f)
                 os.system(cmd)
                 os.chdir("..")
     if len(l) > 0:
@@ -37,8 +38,7 @@ def main():
     from optparse import OptionParser
     usage = "usage: %prog source_dir target_dir"
     parser = OptionParser(usage)
-    parser.add_option("-e", "--expand", help= \
-                      "expand directory (not mkdir)",
+    parser.add_option("-e", "--expand", help="expand directory (not mkdir)",
                       action="store_true", dest="expand")
     (options, args) = parser.parse_args()
     if len(args) < 2:
@@ -46,6 +46,5 @@ def main():
     else:
         parse_option(options, args)
 
-if __name__=='__main__':
+if __name__ == '__main__':
     main()
-

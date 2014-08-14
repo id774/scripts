@@ -12,7 +12,8 @@
 #       First.
 ########################################################################
 
-import sys, os
+import sys
+import os
 
 def install_mysql_gui_to_debian():
     syscmd = 'sudo apt-get -y install mysql-gui-tools-common'
@@ -29,7 +30,7 @@ def mysql_configurations():
     src = os.path.join(os.environ['SCRIPTS'], 'etc', 'my-utf8.cnf')
     dst = os.path.join('/', 'etc', 'mysql', 'my.cnf')
     syscmd = '%scp %s %s' %\
-            ('sudo ', src, dst)
+        ('sudo ', src, dst)
     os.system(syscmd)
 
     syscmd = 'sudo /etc/init.d/mysql start'
@@ -58,4 +59,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

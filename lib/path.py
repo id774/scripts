@@ -90,6 +90,7 @@ except AttributeError:
 
 if sys.version < '3':
     import codecs
+
     def u(x):
         return codecs.unicode_escape_decode(x)[0]
 else:
@@ -115,6 +116,7 @@ def simple_cache(func):
     When Python 3.2 is available, use functools.lru_cache instead.
     """
     saved_results = {}
+
     def wrapper(cls, module):
         if module in saved_results:
             return saved_results[module]
@@ -123,14 +125,17 @@ def simple_cache(func):
     return wrapper
 
 class ClassProperty(property):
+
     def __get__(self, cls, owner):
         return self.fget.__get__(None, owner)()
 
 class multimethod(object):
+
     """
     Acts like a classmethod when invoked from the class and like an
     instancemethod when invoked from the instance.
     """
+
     def __init__(self, func):
         self.func = func
 
@@ -141,6 +146,7 @@ class multimethod(object):
         )
 
 class path(unicode):
+
     """ Represents a filesystem path.
 
     For documentation on individual methods, consult their
@@ -902,31 +908,47 @@ class path(unicode):
     # (e.g. isdir on Windows, Python 3.2.2), and compiled functions don't get
     # bound. Playing it safe and wrapping them all in method calls.
 
-    def isabs(self): return self.module.isabs(self)
-    def exists(self): return self.module.exists(self)
-    def isdir(self): return self.module.isdir(self)
-    def isfile(self): return self.module.isfile(self)
-    def islink(self): return self.module.islink(self)
-    def ismount(self): return self.module.ismount(self)
+    def isabs(self):
+        return self.module.isabs(self)
 
-    def samefile(self, other): return self.module.samefile(self, other)
+    def exists(self):
+        return self.module.exists(self)
 
-    def getatime(self): return self.module.getatime(self)
+    def isdir(self):
+        return self.module.isdir(self)
+
+    def isfile(self):
+        return self.module.isfile(self)
+
+    def islink(self):
+        return self.module.islink(self)
+
+    def ismount(self):
+        return self.module.ismount(self)
+
+    def samefile(self, other):
+        return self.module.samefile(self, other)
+
+    def getatime(self):
+        return self.module.getatime(self)
     atime = property(
         getatime, None, None,
         """ Last access time of the file. """)
 
-    def getmtime(self): return self.module.getmtime(self)
+    def getmtime(self):
+        return self.module.getmtime(self)
     mtime = property(
         getmtime, None, None,
         """ Last-modified time of the file. """)
 
-    def getctime(self): return self.module.getctime(self)
+    def getctime(self):
+        return self.module.getctime(self)
     ctime = property(
         getctime, None, None,
         """ Creation time of the file. """)
 
-    def getsize(self): return self.module.getsize(self)
+    def getsize(self):
+        return self.module.getsize(self)
     size = property(
         getsize, None, None,
         """ Size of the file, in bytes. """)
@@ -1171,6 +1193,7 @@ class path(unicode):
             return self
 
 class tempdir(path):
+
     """
     A temporary directory via tempfile.mkdtemp, and constructed with the
     same parameters that you can use as a context manager.
@@ -1218,10 +1241,12 @@ def _permission_mask(mode):
     if not parsed:
         raise ValueError("Unrecognized symbolic mode", mode)
     spec_map = dict(r=4, w=2, x=1)
-    spec = reduce(operator.or_, [spec_map[perm] for perm in parsed.group('what')])
+    spec = reduce(operator.or_, [spec_map[perm]
+                                 for perm in parsed.group('what')])
     # now apply spec to each in who
     shift_map = dict(u=6, g=3, o=0)
-    mask = reduce(operator.or_, [spec << shift_map[subj] for subj in parsed.group('who')])
+    mask = reduce(operator.or_, [spec << shift_map[subj]
+                                 for subj in parsed.group('who')])
 
     op = parsed.group('op')
     # if op is -, invert the mask

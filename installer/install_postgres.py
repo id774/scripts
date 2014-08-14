@@ -11,7 +11,8 @@
 #       First.
 ########################################################################
 
-import sys, os
+import sys
+import os
 
 def install_postgres_gui_to_debian():
     syscmd = 'sudo apt-get -y install pgadmin3'
@@ -39,4 +40,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

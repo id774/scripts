@@ -12,13 +12,16 @@ Author : OHTANI Hiroki       <hiro@liris.org>
        : SETOGUCHI Mitsuhiro <setomits@matatabi.homeip.net>
 """
 
-import urllib, re, time, warnings
+import urllib
+import re
+import time
+import warnings
 import BeautifulSoup
 
 ############################
 # Variables
 ############################
-__version__  = '0.2.0'
+__version__ = '0.2.0'
 
 WARNING = "Oh, we got mixi access restriction. We defer to access for a while.."
 MIXI_BASE_URL = "http://mixi.jp"
@@ -29,6 +32,7 @@ CACHE_SEC = 600
 # Classes
 ############################
 class LoginFailure(Exception):
+
     """
     ログインに失敗したときに送出される例外のクラスです。
     登録しているユーザ名かパスワードに誤りがあるときや、
@@ -36,6 +40,7 @@ class LoginFailure(Exception):
     """
 
 class MIXI:
+
     """
     MIXI クラス
     """
@@ -43,7 +48,8 @@ class MIXI:
     ############################
     # Internal Class Methods
     ############################
-    def __init__(self, proxy = None, err_retry_interval = 5):
+
+    def __init__(self, proxy=None, err_retry_interval=5):
         """
         - proxy: プロキシサーバを使用して接続する場合は、
         プロキシサーバの URL を指定します。
@@ -91,7 +97,7 @@ class MIXI:
             return True
         else:
             return False
-    
+
     def _purge_cache(self, now):
         for u in self.cache.keys():
             if self._fresh(self.cache[u], now):
@@ -108,7 +114,8 @@ class MIXI:
 
     def _get_absurl(self, url):
         try:
-            params = dict([kv.split("=") for kv in url[url.find("?")+1:].split("&")])
+            params = dict([kv.split("=")
+                           for kv in url[url.find("?") + 1:].split("&")])
             if params.has_key("url"):
                 return urllib.unquote(params["url"])
             return urllib.unquote("%s/%s" % (MIXI_BASE_URL, url))
@@ -119,7 +126,7 @@ class MIXI:
         fmt = u"%Y年%m月%d日 %H:%M"
         return time.strptime(ymdhm.replace("&nbsp;", " "), fmt)
 
-    def _mdhm2ptime(self, mdhm, backyear = 0):
+    def _mdhm2ptime(self, mdhm, backyear=0):
         ymdhm = u"%d年%s" % (time.localtime()[0] - backyear, mdhm)
         tt = self._ymdhm2ptime(ymdhm)
         if abs(time.time() - time.mktime(tt)) < 86400 * 30 \
@@ -157,18 +164,18 @@ class MIXI:
 
     def _get_name_and_num(self, s):
         n = s.rfind(u"(")
-        name = s[:n-2]
-        num = int(s[n+1:-1])
+        name = s[:n - 2]
+        num = int(s[n + 1:-1])
 
         return name, num
 
-    def _get_list_friend(self, u, result = None):
-        soup = self._get_soup(u)        
-        friendDivs = soup.findAll("div", 
+    def _get_list_friend(self, u, result=None):
+        soup = self._get_soup(u)
+        friendDivs = soup.findAll("div",
                                   {"class": re.compile("^iconState[0-9]*")})
         if not result:
             result = []
-            
+
         for div in friendDivs:
             anc = div.find("a", href=re.compile(r"^show_friend.pl"))
             if not anc:
@@ -215,7 +222,7 @@ class MIXI:
             return u"", {}, u""
 
         if url.startswith(MIXI_BASE_URL):
-            soup = self._get_soup(url[len(MIXI_BASE_URL)+1:])
+            soup = self._get_soup(url[len(MIXI_BASE_URL) + 1:])
             if not soup:
                 return [u"error"], {}
 
@@ -238,9 +245,8 @@ class MIXI:
 
         return self._node_to_text(td), ""
 
-
     def _get_bbs_last_comment(self, url):
-        soup = self._get_soup(url[len(MIXI_BASE_URL)+1:])
+        soup = self._get_soup(url[len(MIXI_BASE_URL) + 1:])
         item = {}
         commentList = soup.find("dl", {"class": "commentList01"})
         if commentList:
@@ -260,7 +266,7 @@ class MIXI:
                 item["creator"] = anc.string
                 body = dls.find("dd").find("dd")
                 item["content"] = self._node_to_text(body)
-        
+
         return item
 
     ############################
@@ -274,8 +280,8 @@ class MIXI:
         - email: ログインするための E-mail アドレス
         - password: ログインするためのパスワード
         """
-        params = urllib.urlencode({"email": email, "password":passwd,
-                                   "next_url":"home.pl"})
+        params = urllib.urlencode({"email": email, "password": passwd,
+                                   "next_url": "home.pl"})
         response = self.opener.open("%s/login.pl" % MIXI_BASE_URL, params)
         s = response.read()
         headers = response.headers
@@ -294,8 +300,8 @@ class MIXI:
             response.close()
             raise LoginFailure
 
-    def new_friend_diary(self, maxcount = 50,
-                         with_content = False, with_last_comment = False):
+    def new_friend_diary(self, maxcount=50,
+                         with_content=False, with_last_comment=False):
         """
         マイミクの最新日記を取得するメソッド。
         成功するとエントリのリストが返ります。
@@ -320,7 +326,7 @@ class MIXI:
         result = []
         for li in entryList[:min(_maxcount, len(entryList))]:
             item = {}
-            
+
             dt = li.dt
             item["date"] = self._ymdhm2ptime(dt.string)
 
@@ -334,15 +340,15 @@ class MIXI:
             item["creator"] = anc.nextSibling.strip()[1:-1]
             item["id"] = self._url_to_ids(anc["href"])[-1]
             item["content"], item["last_comment"], item["content_detail"] = \
-                 self._get_diary_entry(item["link"],
-                                       with_content, with_last_comment)
+                self._get_diary_entry(item["link"],
+                                      with_content, with_last_comment)
 
             result.append(item)
 
         return result
 
-    def friend_diary(self, mixiid, maxcount = 30,
-                     with_content = False, with_last_comment = False):
+    def friend_diary(self, mixiid, maxcount=30,
+                     with_content=False, with_last_comment=False):
         """
         日記を取得するメソッド。
         成功するとエントリのリストが返ります。
@@ -370,7 +376,7 @@ class MIXI:
         diaryTitles = soup.findAll("div", {"class": "listDiaryTitle"})
         if not diaryTitles:
             return []
-        
+
         result = []
         for entry in diaryTitles[:_maxcount]:
             dt = entry.find("dd").string.replace("\n", " ").replace("\r", "")
@@ -389,7 +395,7 @@ class MIXI:
 
         return result
 
-    def search_diary(self, maxcount = 50, keyword = None):
+    def search_diary(self, maxcount=50, keyword=None):
         """
         mixi内での新着日記、あるいは何らかのキーワードで日記を検索するメソッド。
         成功するとエントリのリストが返ります。
@@ -461,7 +467,7 @@ class MIXI:
 
         return result
 
-    def list_friend(self, mixiid = None):
+    def list_friend(self, mixiid=None):
         """
         自分、あるいは指定したユーザのマイミクシィ一覧を取得するメソッド。
         成功するとユーザのリストが返ります。
@@ -481,7 +487,7 @@ class MIXI:
 
         return self._get_list_friend(u)
 
-    def get_profile(self, mixiid = None):
+    def get_profile(self, mixiid=None):
         """
         自分、あるいは指定したユーザのプロフィールを取得するメソッド。
         成功するとマップ形式でプロフィールが返ります。
@@ -508,7 +514,7 @@ class MIXI:
 
         return item
 
-    def get_image(self, mixiid = None, thumbnail = False):
+    def get_image(self, mixiid=None, thumbnail=False):
         """
         自分、あるいは指定したユーザの写真のファイル名と画像ファイルを取得するメソッド。
         thumbnail が True の場合はサムネイル画像となります。
@@ -521,7 +527,7 @@ class MIXI:
             u = "home.pl"
         else:
             u = "show_friend.pl?id=%s" % mixiid
-            
+
         soup = self._get_soup(u)
         src = soup.find("div", {"class": "contents01"}).img["src"]
 
@@ -530,7 +536,7 @@ class MIXI:
         else:
             if thumbnail:
                 src = src[:-4] + "s.jpg"
-            return src[src.rfind("/")+1:], self._get_binary(src)
+            return src[src.rfind("/") + 1:], self._get_binary(src)
 
     def list_message(self):
         """
@@ -562,12 +568,12 @@ class MIXI:
             item["title"] = tds[3].a.string
             item["content"], item["date"] = \
                 self._get_message_entry_and_date(tds[3].a["href"])
-            
+
             result.append(item)
 
         return result
 
-    def new_bbs(self, maxcount = 50, with_last_comment = None):
+    def new_bbs(self, maxcount=50, with_last_comment=None):
         """
         コミュニティの最新書き込みを取得するメソッド。
         成功するとエントリのリストが返ります。
@@ -585,7 +591,7 @@ class MIXI:
 
         soup = self._get_soup(u)
         entryList = soup.find("ul", {"class": "entryList01"}).findAll("dl")
-        
+
         result = []
         for dl in entryList[:min(_maxcount, len(entryList))]:
             item = {}

@@ -8,7 +8,8 @@ Author : Hiroki Ohani<hiro@liris.org>
 """
 
 import mixi
-import sys, time
+import sys
+import time
 
 
 _USAGE_FORMAT = """usage:
@@ -27,6 +28,7 @@ _USAGE_FORMAT = """usage:
 """
 def main(argv):
     import getopt
+
     def usage(cmd):
         print _USAGE_FORMAT % (cmd)
 
@@ -78,7 +80,7 @@ def main(argv):
             l += m.friend_diary(t, with_content)
     for e in l:
         dt = e["date"]
-        fout.write("#"*80 + "\n")
+        fout.write("#" * 80 + "\n")
         fout.write(time.strftime("%Y/%m/%d %H:%M", dt) + "\n")
         fout.write(e["creator"].encode(encoding, "ignore") + "\n")
         fout.write(e["id"].encode(encoding, "ignore") + "\n")
@@ -86,7 +88,7 @@ def main(argv):
         fout.write(e["link"].encode(encoding, "ignore") + "\n")
 
         if e.has_key("content"):
-            fout.write("-"*40 + "\n")
+            fout.write("-" * 40 + "\n")
             fout.write(e["content"].encode(encoding, "ignore") + "\n")
 
         fout.write(e["link"].encode(encoding, "ignore") + "#write" + "\n")
