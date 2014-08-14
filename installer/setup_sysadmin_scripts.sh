@@ -54,6 +54,7 @@ uninstall_sysadmin_scripts() {
         swapext \
         git-follow-origin \
         pyck \
+        autopyck \
         get_resources \
         tcmount \
         dpkg-hold \
@@ -76,6 +77,7 @@ setup_scripts() {
     install_scripts 755 swapext.py swapext
     install_scripts 755 git-follow-origin.sh git-follow-origin
     install_scripts 755 pyck.sh pyck
+    install_scripts 755 autopyck.sh autopyck
 }
 
 setup_darwin_scripts() {
