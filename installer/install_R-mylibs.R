@@ -1,5 +1,5 @@
 
-# sudo R --no-save --no-restore < ~/scripts/installer/install_R-libs.R
+# sudo R --no-save --no-restore < ~/scripts/installer/install_R-mylibs.R
 
 options(repos="http://cran.ism.ac.jp")
 
