@@ -15,6 +15,7 @@ autofix() {
 
 main() {
     setup_environment
+    which $PYTHON_PATH/bin/autopep8 > /dev/null || exit 254
     which $PYTHON_PATH/bin/flake8 > /dev/null || exit 254
     test "$1" = "-i" || run_check $*
     test "$1" = "-i" && autofix $*
