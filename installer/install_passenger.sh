@@ -21,7 +21,7 @@
 
 install_passenger() {
     test -n "$1" && export GEM=$1/bin/gem
-    test -n "$1" || export GEM=gem
+    test -n "$1" || export GEM=/opt/ruby/current/bin/gem
     test -n "$1" && export PASSENGER_INSTALLER=$1/bin/passenger-install-apache2-module
     test -n "$1" || export PASSENGER_INSTALLER=passenger-install-apache2-module
     export RUBYOPT=rubygems

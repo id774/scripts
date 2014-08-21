@@ -13,7 +13,7 @@
 
 setup_environment() {
     test -n "$1" && export RUBY=$1/bin/ruby
-    test -n "$1" || export RUBY=ruby
+    test -n "$1" || export RUBY=/opt/ruby/current/bin/ruby
     test -n "$2" || SUDO=sudo
     test -n "$2" && SUDO=
     test "$2" = "sudo" && SUDO=sudo

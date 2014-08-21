@@ -14,7 +14,7 @@
 
 setup_environment() {
     test -n "$1" && export PYTHON=$1/bin/python
-    test -n "$1" || export PYTHON=/usr/local/bin/python
+    test -n "$1" || export PYTHON=/opt/python/current/bin/python
     test -n "$2" && export TARGET=$2
     test -n "$2" || export TARGET=/usr/local/src/cabocha/cabocha-0.67/python
     test -n "$3" || SUDO=sudo

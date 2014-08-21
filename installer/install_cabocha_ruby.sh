@@ -14,7 +14,7 @@
 
 setup_environment() {
     test -n "$1" && export RUBY=$1/bin/ruby
-    test -n "$1" || export RUBY=/usr/local/bin/ruby
+    test -n "$1" || export RUBY=/opt/ruby/current/bin/ruby
     test -n "$2" && export TARGET=$2
     test -n "$2" || export TARGET=/usr/local/src/cabocha/cabocha-0.67/ruby
     test -n "$3" || SUDO=sudo

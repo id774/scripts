@@ -21,7 +21,7 @@
 
 install_gem() {
     test -n "$1" && export GEM=$1/bin/gem
-    test -n "$1" || export GEM=gem
+    test -n "$1" || export GEM=/opt/ruby/current/bin/gem
     test -n "$2" || SUDO=sudo
     test -n "$2" && SUDO=
     test "$2" = "sudo" && SUDO=sudo

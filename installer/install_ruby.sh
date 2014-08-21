@@ -165,6 +165,7 @@ install_stable() {
 setup_environment() {
     test -n "$2" || export RUBY=ruby
     test -n "$2" || test -x /usr/local/bin/ruby && export RUBY=/usr/local/bin/ruby
+    test -n "$2" || test -x /opt/ruby/current/bin/ruby && export RUBY=/opt/ruby/current/bin/ruby
     test -n "$2" && export RUBY=$2/bin/ruby
     case $OSTYPE in
       *darwin*)
