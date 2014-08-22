@@ -1,9 +1,5 @@
 #!/bin/sh
 
-echo -n "Server Resource Report on `/bin/hostname` at "
-date "+%Y/%m/%d %T"
-echo
-
 echo "[GNU/Linux version]"
 dmesg | grep "Linux version"
 which lsb_release > /dev/null && lsb_release -a
@@ -91,9 +87,5 @@ echo
 
 echo "[grep WARNING /var/log/fail2ban.log]"
 grep "WARNING" /var/log/fail2ban.log
-echo
-
-echo -n "End of Report at `/bin/hostname` on "
-date "+%Y/%m/%d %T"
 echo
 
