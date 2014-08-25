@@ -17,8 +17,6 @@ except ImportError:
 try:
     import scipy as sp
     print("import scipy as sp")
-    from scipy import stats
-    print("from scipy import stats")
 except ImportError:
     print("scipy has not been loaded")
 
@@ -39,11 +37,3 @@ try:
     print("import pylab")
 except ImportError:
     print("pylab has not been loaded")
-
-try:
-    import pyper
-    print("import pyper")
-    r = pyper.R(use_pandas='True')
-    print("r = pyper.R(use_pandas='True')")
-except (ImportError, FileNotFoundError):
-    print("pyper has not been loaded")
