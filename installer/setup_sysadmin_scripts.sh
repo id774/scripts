@@ -54,6 +54,7 @@ uninstall_sysadmin_scripts() {
         waitlock \
         swapext \
         git-follow-origin \
+        git-ignore \
         pyck \
         autopyck \
         get_resources \
@@ -78,6 +79,7 @@ setup_scripts() {
     install_scripts 755 waitlock.rb waitlock
     install_scripts 755 swapext.py swapext
     install_scripts 755 git-follow-origin.sh git-follow-origin
+    install_scripts 755 git-ignore.sh git-ignore
     install_scripts 755 pyck.sh pyck
     install_scripts 755 autopyck.sh autopyck
 }
