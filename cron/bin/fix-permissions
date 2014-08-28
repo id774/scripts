@@ -8,3 +8,5 @@ chown -R www-data:www-data /var/sns
 chmodtree -s -q -d 770 -f 660 /var/sns
 chown -R debian:debian /home/debian/largefiles
 chmodtree -s -q -d 700 -f 600 /home/debian/largefiles
+
+exit 0
