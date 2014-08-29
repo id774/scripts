@@ -90,6 +90,7 @@ install_gem() {
     $SUDO $GEM install net-ssh --no-ri --no-rdoc $PROXY
     $SUDO $GEM install net-scp --no-ri --no-rdoc $PROXY
     $SUDO $GEM install net-sftp --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install net-ping --no-ri --no-rdoc $PROXY
     $SUDO $GEM install coverage --no-ri --no-rdoc $PROXY
     $SUDO $GEM install unicorn --no-ri --no-rdoc $PROXY
     $SUDO $GEM install capistrano --no-ri --no-rdoc $PROXY
