@@ -63,7 +63,7 @@ sudo yum -y install ruby
 sudo yum -y install ruby-libs ruby-rdoc ruby-ri ruby-irb ruby-devel ruby-cairo-devel
 sudo yum -y install rubygem-nokogiri
 sudo yum -y install libxml2 libxml2-devel libxslt libxslt-devel
-sudo yum -y install bzip2-devel bzip2-lib bzip2
+sudo yum -y install bzip2-devel bzip2-libs bzip2
 sudo yum -y install blas-devel lapack-devel
 sudo yum -y install openblas-devel
 sudo yum -y install openssl openssl-devel
