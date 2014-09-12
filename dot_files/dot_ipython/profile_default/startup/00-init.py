@@ -17,6 +17,14 @@ except ImportError:
 try:
     import scipy as sp
     print("import scipy as sp")
+    from scipy import stats
+    print("from scipy import stats")
+    from scipy import linalg
+    print("from scipy import linalg")
+    from scipy import constants as sc
+    print("from scipy import constants as sc")
+    from scipy.stats import mstats
+    print("from scipy.stats import mstats")
 except ImportError:
     print("scipy has not been loaded")
 
