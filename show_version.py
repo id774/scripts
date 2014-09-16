@@ -75,6 +75,7 @@ def main():
     m.get_info('flake8')
     m.get_info('pytest')
     m.get_info('autopep8')
+    m.get_info('autoflake')
     m.get_info('IPython')
     m.get_info('cython')
     m.get_info('docutils')
