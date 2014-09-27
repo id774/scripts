@@ -111,6 +111,7 @@ gitpull_all() {
     gitpull github id774 depression $*
     gitpull github id774 numerology $*
     gitpull github id774 sandbox $*
+    gitpull github id774 list_shift $*
     gitpull github id774 rurima $*
     gitpull github id774 batch_framework $*
     gitpull github id774 intraweb-template $*
@@ -118,7 +119,6 @@ gitpull_all() {
     gitpull github id774 hadoop-streaming $*
     gitpull github id774 d3js-stacked-chart $*
     gitpull github id774 d3js-charts $*
-    gitpull github id774 rurima $*
     gitpull github id774 ctoD $*
     gitpull github id774 okura $*
     gitpull github id774 rails4-bootstrap $*
