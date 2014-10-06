@@ -16,6 +16,7 @@ install_npm() {
     sudo $NPM install js2coffee -g
     sudo $NPM install coffee-script -g
     sudo $NPM install coffeelint -g
+    sudo $NPM install jsonlint -g
     sudo $NPM install mysql -g
     sudo $NPM install express -g
     sudo $NPM install jade -g
