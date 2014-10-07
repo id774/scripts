@@ -150,6 +150,7 @@ install_gem() {
     $SUDO $GEM install pocket-ruby --no-ri --no-rdoc $PROXY
     $SUDO $GEM install weather_hacker --no-ri --no-rdoc $PROXY
     $SUDO $GEM install when_exe --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install jpstock --no-ri --no-rdoc $PROXY
     $SUDO $GEM install prawn --no-ri --no-rdoc $PROXY
     $SUDO $GEM install gnuplot --no-ri --no-rdoc $PROXY
     $SUDO $GEM install ai4r --no-ri --no-rdoc $PROXY
