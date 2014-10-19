@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.13 10/19,2014
+#       Do not change the owner of Users dir on OS X.
 # v1.12 5/17,2014
 #       Do not change the permissions of Users dir on OS X.
 # v1.11 5/22,2013
@@ -139,7 +141,6 @@ deploy_dotfiles_to_mac() {
     do
         if [ -d /Users/$1 ]; then
             deploy_dotfiles /Users/$1
-            sudo chown -R $1 /Users/$1
         fi
         shift
     done
