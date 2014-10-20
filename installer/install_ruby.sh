@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.40 10/20,2014
+#       Update to ruby 2.1.3, 2.0.0-p576.
 # v1.39 6/23,2014
 #       Update to ruby 1.9.3-p547, fix typo.
 # v1.38 5/9,2014
@@ -182,6 +184,9 @@ setup_environment() {
 install_ruby() {
     setup_environment
     case "$1" in
+      213)
+        install_stable 2.1.3 2.1 $2
+        ;;
       212)
         install_stable 2.1.2 2.1 $2
         ;;
@@ -190,6 +195,9 @@ install_ruby() {
         ;;
       210-0)
         install_stable 2.1.0 2.1 $2
+        ;;
+      200-576)
+        install_stable 2.0.0-p576 2.0 $2
         ;;
       200-481)
         install_stable 2.0.0-p481 2.0 $2
