@@ -19,7 +19,7 @@
 TARGETDIRS="/"
 LOGFILE=/var/log/clamav/clamav.log
 EXECDIR=${0%/*}
-EXCLUDEFILE=$EXECDIR/clamscan_exclude 
+EXCLUDEFILE=$EXECDIR/clamscan_exclude
 
 freshclam
 if [ -s $EXCLUDEFILE ]; then
