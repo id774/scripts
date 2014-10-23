@@ -1,64 +1,240 @@
-#!/bin/sh
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          mongo
+# Required-Start:    $local_fs $remote_fs
+# Required-Stop:     $local_fs $remote_fs
+# Should-Start:      $time $network $syslog iptables firehol shorewall ipmasq arno-iptables-firewall
+# Should-Stop:       $network $syslog iptables firehol shorewall ipmasq arno-iptables-firewall
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start/stop mongo
+# Description:       Start/stop mongo.
+### END INIT INFO
 
-# chkconfig: 35 85 15
-# description: Mongo is a scalable, document-oriented database.
-# processname: mongod
-# config: /etc/mongod.conf
-# pidfile: /var/run/mongo/mongo.pid
+# Author: 774 <774@id774.net>
 
-# . /etc/rc.d/init.d/functions
+PATH=/usr/sbin:/usr/bin:/sbin:/bin
+DESC="authentication failure monitor"
+NAME=mongo
 
-MONGOHOME="/opt/mongo/current"
-CONFIGFILE="/etc/opt/mongod.conf"
-DBPATH=`awk -F= '/^dbpath[ ]*=/{print $2}' "$CONFIGFILE" |sed -e 's/^[ ]*//'`
-COMMAND="$MONGOHOME/bin/mongod"
-OPT="--config $CONFIGFILE"
-mongod=${MONGOD-$COMMAND}
-USERNAME="mongo"
+# mongo-client is not a daemon itself but starts a daemon and
+# loads its with configuration
+DAEMON=/opt/mongo/current/bin/mongod
+SCRIPTNAME=/etc/init.d/$NAME
 
-usage() {
-  echo "Usage: $0 {start|stop|restart|status}"
-  exit 0
+# Ad-hoc way to parse out socket file name
+SOCKFILE=`grep -h '^[^#]*socket *=' /etc/$NAME/$NAME.conf /etc/$NAME/$NAME.local 2>/dev/null \
+          | tail -n 1 | sed -e 's/.*socket *= *//g' -e 's/ *$//g'`
+[ -z "$SOCKFILE" ] && SOCKFILE='/tmp/mongo.sock'
+
+# Exit if the package is not installed
+[ -x "$DAEMON" ] || exit 0
+
+# Run as root by default.
+MONGO_USER=mongo
+
+# Options.
+MONGO_OPTS=""
+
+# Read configuration variable file if it is present
+[ -r /etc/default/$NAME ] && . /etc/default/$NAME
+DAEMON_ARGS="$MONGO_OPTS"
+
+# Load the VERBOSE setting and other rcS variables
+[ -f /etc/default/rcS ] && . /etc/default/rcS
+
+# Predefine what can be missing from lsb source later on -- necessary to run
+# on sarge. Just present it in a bit more compact way from what was shipped
+log_daemon_msg () {
+    [ -z "$1" ] && return 1
+    echo -n "$1:"
+    [ -z "$2" ] || echo -n " $2"
 }
 
-if [ $# != 1 ]; then
-  usage
-fi
+# Define LSB log_* functions.
+# Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
+# Actually has to (>=2.0-7) present in sarge. log_daemon_msg is predefined
+#  so we must be ok
+. /lib/lsb/init-functions
 
-start()
+#
+# Shortcut function for abnormal init script interruption
+#
+report_bug()
 {
-  echo -n $"Starting mongod: "
-  su $USERNAME -c "daemon $COMMAND $OPT"
-  RETVAL=$?
-  echo
-  [ $RETVAL -eq 0 ] && touch /var/lock/subsys/mongod
+    echo $*
+    echo "Please submit a bug report to Debian BTS (reportbug mongo)"
+    exit 1
 }
 
-stop()
+#
+# Helper function to check if socket is present, which is often left after
+# abnormal exit of mongo and needs to be removed
+#
+check_socket()
 {
-  echo -n $"Stopping mongod: "
-  killproc -p "$DBPATH"/mongod.lock -d 300 "$COMMAND"
-  RETVAL=$?
-  echo
-  [ $RETVAL -eq 0 ] && rm -f /var/lock/subsys/mongod
+    # Return
+    #    0 if socket is present and readable
+    #    1 if socket file is not present
+    #    2 if socket file is present but not readable
+    #    3 if socket file is present but is not a socket
+    [ -e "$SOCKFILE" ] || return 1
+    [ -r "$SOCKFILE" ] || return 2
+    [ -S "$SOCKFILE" ] || return 3
+    return 0
 }
-case "$1" in
-  start)
-    start
-    ;;
-  stop)
-    stop
-    ;;
-  restart)
-    stop
-    start
-    ;;
-  status)
-    status $mongod
-    RETVAL=$?
-    ;;
-  * )
-    usage
-    ;;
+
+#
+# Function that starts the daemon/service
+#
+do_start()
+{
+    # Return
+    #    0 if daemon has been started
+    #    1 if daemon was already running
+    #    2 if daemon could not be started
+    do_status && return 1
+
+    if [ -e "$SOCKFILE" ]; then
+        log_failure_msg "Socket file $SOCKFILE is present"
+        [ "$1" = "force-start" ] \
+            && log_success_msg "Starting anyway as requested" \
+            || return 2
+        DAEMON_ARGS="$DAEMON_ARGS -x"
+    fi
+
+    # Assure that /var/run/mongo exists
+    [ -d /var/run/mongo ] || mkdir -p /var/run/mongo
+
+    if [ "$MONGO_USER" != "root" ]; then
+        # Make the socket directory, IP lists and mongo log
+        # files writable by mongo
+        chown "$MONGO_USER" /var/run/mongo
+        # Create the logfile if it doesn't exist
+        touch /var/log/mongo.log
+        chown "$MONGO_USER" /var/log/mongo.log
+        find /proc/net/xt_recent -name 'mongo-*' -exec chown "$MONGO_USER" {} \;
+    fi
+
+    start-stop-daemon --start --quiet --chuid "$MONGO_USER" --exec $DAEMON -- \
+        $DAEMON_ARGS & > /dev/null\
+        || return 2
+
+    return 0
+}
+
+
+#
+# Function that checks the status of mongo and returns
+# corresponding code
+#
+do_status()
+{
+    $DAEMON ping > /dev/null
+    return $?
+}
+
+#
+# Function that stops the daemon/service
+#
+do_stop()
+{
+    # Return
+    #    0 if daemon has been stopped
+    #    1 if daemon was already stopped
+    #    2 if daemon could not be stopped
+    #    other if a failure occurred
+    $DAEMON status > /dev/null || return 1
+    $DAEMON stop > /dev/null || return 2
+
+    # now we need actually to wait a bit since it might take time
+    # for server to react on client's stop request. Especially
+    # important for restart command on slow boxes
+    count=1
+    while do_status && [ $count -lt 60 ]; do
+        sleep 1
+        count=$(($count+1))
+    done
+    [ $count -lt 60 ] || return 3 # failed to stop
+
+    return 0
+}
+
+#
+# Function to reload configuration
+#
+do_reload() {
+    $DAEMON reload > /dev/null && return 0 || return 1
+    return 0
+}
+
+# yoh:
+# shortcut function to don't duplicate case statements and to don't use
+# bashisms (arrays). Fixes #368218
+#
+log_end_msg_wrapper()
+{
+    [ $1 -lt $2 ] && value=0 || value=1
+    log_end_msg $value
+}
+
+command="$1"
+case "$command" in
+    start|force-start)
+        [ "$VERBOSE" != no ] && log_daemon_msg "Starting $DESC" "$NAME"
+        do_start "$command"
+        [ "$VERBOSE" != no ] && log_end_msg_wrapper $? 2
+        ;;
+
+    stop)
+        [ "$VERBOSE" != no ] && log_daemon_msg "Stopping $DESC" "$NAME"
+        do_stop
+        [ "$VERBOSE" != no ] && log_end_msg_wrapper $? 2
+        ;;
+
+    restart|force-reload)
+        log_daemon_msg "Restarting $DESC" "$NAME"
+        do_stop
+        case "$?" in
+            0|1)
+                do_start
+                log_end_msg_wrapper $? 1
+                ;;
+            *)
+                # Failed to stop
+                log_end_msg 1
+                ;;
+         esac
+        ;;
+
+    reload|force-reload)
+        log_daemon_msg "Reloading $DESC" "$NAME"
+        do_reload
+        log_end_msg $?
+        ;;
+
+    status)
+        log_daemon_msg "Status of $DESC"
+        do_status
+        case $? in
+            0)  log_success_msg " $NAME is running" ;;
+            255)
+                check_socket
+                case $? in
+                    1)  log_failure_msg " $NAME is not running" && exit 3 ;;
+                    0)  log_failure_msg " $NAME is not running but $SOCKFILE exists" && exit 3 ;;
+                    2)  log_failure_msg " $SOCKFILE not readable, status of $NAME is unknown" && exit 3 ;;
+                    3)  log_failure_msg " $SOCKFILE exists but not a socket, status of $NAME is unknown" && exit 3 ;;
+                    *)  report_bug "Unknown return code from $NAME:check_socket." && exit 4 ;;
+                esac
+                ;;
+            *)  report_bug "Unknown $NAME status code" && exit 4
+        esac
+        ;;
+    *)
+        echo "Usage: $SCRIPTNAME {start|force-start|stop|restart|force-reload|status}" >&2
+        exit 3
+        ;;
 esac
 
+:
