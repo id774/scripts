@@ -10,10 +10,11 @@
 ### END INIT INFO
 PROG="glassfish"
 GLASSFISH_PATH=/opt/glassfish/current/glassfish
+USERNAME="glassfish"
 
 start() {
     echo "starting $PROG: "
-    su glassfish -c "$GLASSFISH_PATH/bin/asadmin start-domain domain1"
+    su $USERNAME -c "$GLASSFISH_PATH/bin/asadmin start-domain domain1"
     RETVAL=$?
     if [ $RETVAL = 0 ]; then
         logger "$PROG start"
@@ -24,7 +25,7 @@ start() {
 
 stop() {
     echo "stopping $PROG: "
-    su glassfish -c "$GLASSFISH_PATH/bin/asadmin stop-domain domain1"
+    su $USERNAME -c "$GLASSFISH_PATH/bin/asadmin stop-domain domain1"
     RETVAL=$?
     if [ $RETVAL = 0 ]; then
         logger "$PROG stop"
