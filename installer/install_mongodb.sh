@@ -6,6 +6,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 10/27,2014
+#       Setup debian services.
 #  v0.1 7/8,2013
 #       First.
 ########################################################################
@@ -53,6 +55,15 @@ create_symlink() {
     sudo ln -fs $VERSION current
 }
 
+setup_debian_service() {
+    sudo cp ~/scripts/etc/init.d/mongod.conf /etc/opt/mongod.conf
+    sudo chown root:root /etc/opt/mongod.conf
+    sudo cp ~/scripts/etc/init.d/mongod /etc/init.d/mongod
+    sudo chown root:root /etc/init.d/mongod
+    sudo update-rc.d mongod defaults
+    sudo /etc/init.d/mongod start
+}
+
 deploy_mongodb() {
     mkdir_if_not_exist /data/db
     mkdir_if_not_exist /opt/mongo
@@ -86,6 +97,7 @@ install_mongodb() {
 install_main() {
     setup_environment $*
     install_mongodb $*
+    test -f /etc/debian_version && setup_debian_service
 }
 
 ping -c 1 id774.net > /dev/null 2>&1 || exit 1
