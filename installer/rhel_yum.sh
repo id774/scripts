@@ -70,6 +70,7 @@ sudo yum -y install openssl openssl-devel
 sudo yum -y install readline readline-devel
 sudo yum -y install shunit2
 sudo yum -y install ntp
+sudo yum -y install iperf
 
 sudo yum -y install sysstat
 sudo yum -y install dstat
