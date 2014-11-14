@@ -12,7 +12,7 @@
 ########################################################################
 
 install_ruby() {
-    $SCRIPTS/installer/install_ruby.sh 214 /opt/ruby/2.1
+    $SCRIPTS/installer/install_ruby.sh 215 /opt/ruby/2.1
     $SCRIPTS/installer/install_gems.sh /opt/ruby/2.1
 }
 
