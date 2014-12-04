@@ -58,6 +58,7 @@ uninstall_sysadmin_scripts() {
         pyck \
         autopyck \
         get_resources \
+        gpg-import \
         tcmount \
         dpkg-hold \
         platex2pdf \
@@ -100,6 +101,7 @@ setup_rhel_scripts() {
 setup_debian_scripts() {
     install_scripts 755 dpkg-hold.sh dpkg-hold
     install_scripts 755 get_resources.sh get_resources
+    install_scripts 755 gpg-import.sh gpg-import
     install_scripts 755 tcmount.py tcmount
     install_scripts 755 platex2pdf.sh platex2pdf
     install_scripts 755 userlist.sh userlist
