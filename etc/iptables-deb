@@ -110,6 +110,11 @@ $IPTABLES -A INPUT -p tcp --dport 5432 -m state --state NEW -m recent --set --na
 $IPTABLES -A INPUT -p tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES -j LOG --log-prefix 'POSTGRES attack: '
 $IPTABLES -A INPUT -p tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES -j DROP
 
+# 22 番ポートへの攻撃を監査する
+$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH22
+$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH22 -j LOG --log-prefix 'SSH attack: '
+$IPTABLES -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH22 -j DROP
+
 #----------------------------------------------------------#
 # 各種サービスを公開する場合の設定(ここから)               #
 #----------------------------------------------------------#
