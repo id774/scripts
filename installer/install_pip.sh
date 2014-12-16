@@ -42,6 +42,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U IPython
     $SUDO $PIP install $PROXY -U docutils
     $SUDO $PIP install $PROXY -U nose
+    $SUDO $PIP install $PROXY -U docopt
     $SUDO $PIP install $PROXY -U simplejson
     $SUDO $PIP install $PROXY -U msgpack-python
     $SUDO $PIP install $PROXY -U numpy
@@ -76,6 +77,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U cchardet
     $SUDO $PIP install $PROXY -U openpyxl
     $SUDO $PIP install $PROXY -U xlrd
+    $SUDO $PIP install $PROXY -U simpy
 }
 
 main() {
