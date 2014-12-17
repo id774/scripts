@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.2 12/17,2014
+#       Improvement symlink confirmation process.
 #  v2.1 3/2,2014
 #       Specify default gituser and githost.
 #  v2.0 4/15,2011
@@ -41,8 +43,7 @@ pull_from_gitbare() {
         git clone ssh://$GITBARE_USER@$GITBARE_HOST/var/lib/git/$2.git
     fi
     chmod 700 $HOME/local/$1/$2
-    test -L $HOME/$2 && rm $HOME/$2
-    ln -fs $HOME/local/$1/$2 $HOME/$2
+    test -L $HOME/$2 || ln -fs $HOME/local/$1/$2 $HOME/$2
 }
 
 gitpull_all() {
