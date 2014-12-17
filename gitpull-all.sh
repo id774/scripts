@@ -5,6 +5,9 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 12/17,2014
+#       Add Heroku.
+#       Improvement symlink confirmation process.
 #  v1.1 8/7,2013
 #       Speficy source address when git pull.
 #  v1.0 7/26,2010
@@ -21,8 +24,20 @@ gitpull() {
         cd $HOME/local/$1
         git clone git://github.com/$2/$3.git
     fi
-    test -L $HOME/$3 && rm $HOME/$3
-    ln -fs $HOME/local/$1/$3 $HOME/$3
+    test -L $HOME/$3 || ln -fs $HOME/local/$1/$3 $HOME/$3
+}
+
+heroku_git() {
+    echo "Pulling $1 $2 $3"
+    if [ -e $HOME/local/$1/$2 ]; then
+        cd $HOME/local/$1/$2
+        test -n "$3" && git reset --hard
+        git pull
+    else
+        cd $HOME/local/$1
+        git clone git@heroku.com:$2.git
+    fi
+    test -L $HOME/$2 || ln -fs $HOME/local/$1/$2 $HOME/$2
 }
 
 assembla_git() {
@@ -35,8 +50,7 @@ assembla_git() {
         cd $HOME/local/$1
         git clone git://git.assembla.com/$2.git
     fi
-    test -L $HOME/$2 && rm $HOME/$2
-    ln -fs $HOME/local/$1/$2 $HOME/$2
+    test -L $HOME/$2 || ln -fs $HOME/local/$1/$2 $HOME/$2
 }
 
 debian_monthly_report() {
@@ -51,8 +65,7 @@ debian_monthly_report() {
         cd monthly-report
     fi
     cp -p git-pre-commit.sh .git/hooks/pre-commit
-    test -L $HOME/$2 && rm $HOME/$2
-    ln -fs $HOME/local/$1/$2 $HOME/$2
+    test -L $HOME/$2 || ln -fs $HOME/local/$1/$2 $HOME/$2
 }
 
 emacswiki_get() {
@@ -62,8 +75,7 @@ emacswiki_get() {
     test -f $1.el && rm $1.el
     wget http://www.emacswiki.org/emacs/download/$1.el
     diff $HOME/local/$1/$1.el $HOME/.emacs.d/elisp/3rd-party/$1.el
-    test -L $HOME/$1 && rm $HOME/$1
-    ln -fs $HOME/local/$1/$1 $HOME/$1
+    test -L $HOME/$1 || ln -fs $HOME/local/$1/$1 $HOME/$1
 }
 
 repoorcz_pull() {
@@ -76,8 +88,7 @@ repoorcz_pull() {
         cd $HOME/local/$1
         git clone git://repo.or.cz/$2.git
     fi
-    test -L $HOME/$2 && rm $HOME/$2
-    ln -fs $HOME/local/$1/$2 $HOME/$2
+    test -L $HOME/$2 || ln -fs $HOME/local/$1/$2 $HOME/$2
 }
 
 anything_get_all() {
@@ -151,6 +162,8 @@ gitpull_all() {
     gitpull github othree html5.vim $*
     gitpull github kchmck vim-coffee-script $*
     gitpull github tpope vim-haml $*
+    heroku_git git d3js-data-clips $*
+    heroku_git git d3js-stacked-chart $*
 }
 
 main() {
