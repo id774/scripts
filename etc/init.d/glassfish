@@ -30,7 +30,7 @@ stop() {
     if [ $RETVAL = 0 ]; then
         logger "$PROG stop"
     else
-        failure "ERROR: $PROG stop failed"
+        logger "ERROR: $PROG stop failed"
     fi
 }
 
