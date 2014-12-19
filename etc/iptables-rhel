@@ -13,9 +13,9 @@
 -A INPUT -d 255.255.255.255 -j DROP
 -A INPUT -d 224.0.0.1 -j DROP
 -A INPUT -p tcp -m tcp --dport 113 -j REJECT --reject-with tcp-reset
--A INPUT -p tcp --dport 99999 -m state --state NEW -m recent --set --name SSH
--A INPUT -p tcp --dport 99999 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name SSH -j LOG --log-prefix "SSH attack: "
--A INPUT -p tcp --dport 99999 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name SSH -j DROP
+-A INPUT -p tcp --dport 11111 -m state --state NEW -m recent --set --name SSH
+-A INPUT -p tcp --dport 11111 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name SSH -j LOG --log-prefix "SSH attack: "
+-A INPUT -p tcp --dport 11111 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name SSH -j DROP
 -A INPUT -p tcp --dport 3306 -m state --state NEW -m recent --set --name MYSQL
 -A INPUT -p tcp --dport 3306 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name MYSQL -j LOG --log-prefix "MYSQL attack: "
 -A INPUT -p tcp --dport 3306 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name MYSQL -j DROP
@@ -25,7 +25,7 @@
 -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH22
 -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name SSH22 -j LOG --log-prefix "SSH attack: "
 -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name SSH22 -j DROP
--A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 11111 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
