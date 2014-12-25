@@ -1,6 +1,6 @@
 " vim:set ts=8 sts=2 sw=2 tw=0
 "
-" Last Change: 16-Jun-2014.
+" Last Change: 25-Dec-2014.
 " Maintainer:  id774 <idnanashi@gmail.com>
 
 if &encoding !=# 'utf-8'
@@ -78,10 +78,12 @@ set number
 set ruler
 set nolist
 set wrap
+set display=lastline
 set laststatus=2
 set cmdheight=1
 set showcmd
 set title
+set pumheight=20
 "colorscheme evening
 colorscheme desert
 set backupdir=$TMP
@@ -201,6 +203,7 @@ imap <C-K>  <ESC>"*pa
 nnoremap <C-X> <nop>
 nnoremap <C-A> <Home>
 nnoremap <C-S-J> <C-W>k<C-E><C-W><C-W>
+nnoremap Y y$
 
 :set browsedir=buffer
 
