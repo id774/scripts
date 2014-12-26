@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.43 12/26,2014
+#       Update to ruby 2.2.0.
 # v1.42 11/14,2014
 #       Update to ruby 2.1.5, 2.0.0-p598, 1.9.3-p551.
 # v1.41 10/28,2014
@@ -150,6 +152,24 @@ install_branch() {
     $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/branches/$1/misc
 }
 
+install_stable2() {
+    mkdir install_ruby
+    cd install_ruby
+    curl -L http://cache.ruby-lang.org/pub/ruby/$2/ruby-$1.tar.bz2 -O
+    tar xjvf ruby-$1.tar.bz2
+    cd ruby-$1
+    make_and_install $3
+    make_ext_module zlib readline openssl
+    cd ..
+    test -d /usr/local/src/ruby || sudo mkdir -p /usr/local/src/ruby
+    sudo cp $OPTIONS ruby-$1 /usr/local/src/ruby
+    sudo chown -R $OWNER /usr/local/src/ruby/ruby-$1
+    cd ..
+    sudo rm -rf install_ruby
+    test -x $SCRIPTS/installer/install_emacs_ruby.sh && \
+    $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/ruby-$1/misc
+}
+
 install_stable() {
     mkdir install_ruby
     cd install_ruby
@@ -188,6 +208,9 @@ setup_environment() {
 install_ruby() {
     setup_environment
     case "$1" in
+      220)
+        install_stable2 2.2.0 2.2 $2
+        ;;
       215)
         install_stable 2.1.5 2.1 $2
         ;;
@@ -313,6 +336,9 @@ install_ruby() {
         ;;
       186-420)
         install_stable 1.8.6-p420 1.8 $2
+        ;;
+      22-svn)
+        install_branch ruby_2_2 $2
         ;;
       21-svn)
         install_branch ruby_2_1 $2
