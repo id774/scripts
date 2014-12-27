@@ -33,7 +33,7 @@ install_gem() {
     $SUDO $GEM install debugger --no-ri --no-rdoc $PROXY
     $SUDO $GEM install -v "~> 0.9.0" pry --no-ri --no-rdoc $PROXY
     $SUDO $GEM install pry-doc --no-ri --no-rdoc $PROXY
-    $SUDO $GEM install pry-byebug --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install pry-debugger --no-ri --no-rdoc $PROXY
     $SUDO $GEM install pry-stack_explorer --no-ri --no-rdoc $PROXY
     $SUDO $GEM install pry-rails --no-ri --no-rdoc $PROXY
     $SUDO $GEM install pry-coolline --no-ri --no-rdoc $PROXY
