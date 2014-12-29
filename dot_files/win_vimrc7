@@ -3,7 +3,7 @@
 " An example for a Japanese version vimrc file.
 " 日本語版のデフォルト設定ファイル(vimrc) - Vim7用試作
 "
-" Last Change: 9-Jan-2012.
+" Last Change: 29-Dec-2014.
 " Maintainer:  id774 <idnanashi@gmail.com>
 "
 " 解説:
@@ -157,6 +157,8 @@ set nolist
 "set listchars=tab:>-,extends:<,trail:-,eol:<
 " 長い行を折り返して表示 (nowrap:折り返さない)
 set wrap
+" 一行の文字数が多くてもきちんと描画
+set display=lastline
 " 常にステータス行を表示 (詳細は:he laststatus)
 set laststatus=2
 " コマンドラインの高さ (Windows用gvim使用時はgvimrcを編集すること)
@@ -165,6 +167,8 @@ set cmdheight=1
 set showcmd
 " タイトルを表示
 set title
+" 補完メニューの高さ
+set pumheight=20
 " 画面を黒地に白にする (次行の先頭の " を削除すれば有効になる)
 colorscheme evening " (Windows用gvim使用時はgvimrcを編集すること)
 
@@ -326,6 +330,8 @@ nmap <C-X><C-G>  :TlistToggle<CR>
 imap <C-K>  <ESC>"*pa
 " Ctrl+Shift+Jで上に表示しているウィンドウをスクロールさせる
 nnoremap <C-S-J> <C-W>k<C-E><C-W><C-W>
+" マッピング Y を行末までのヤンクにする
+nnoremap Y y$
 
 "---------------------------------------------------------------------------
 " ファイルブラウザでバッファで開いているファイルのディレクトリを開く
