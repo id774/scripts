@@ -29,6 +29,8 @@ install_gem() {
     test -n "$HTTP_PROXY" && PROXY="-r -p $HTTP_PROXY"
     export RUBYOPT=rubygems
     $SUDO $GEM update --system $PROXY
+    $SUDO $GEM install -v "~> 3.2.17" rails --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install -v "~> 4.1.1" rails --no-ri --no-rdoc $PROXY
     $SUDO $GEM install rb-readline --no-ri --no-rdoc $PROXY
     $SUDO $GEM install debugger --no-ri --no-rdoc $PROXY
     $SUDO $GEM install -v "~> 0.9.0" pry --no-ri --no-rdoc $PROXY
@@ -43,8 +45,6 @@ install_gem() {
     $SUDO $GEM install rake --no-ri --no-rdoc $PROXY
     $SUDO $GEM install -v "~> 1.3.5" bundler --no-ri --no-rdoc $PROXY
     $SUDO $GEM install -v "~> 3.1.0" builder --no-ri --no-rdoc $PROXY
-    $SUDO $GEM install -v "~> 3.2.17" rails --no-ri --no-rdoc $PROXY
-    $SUDO $GEM install -v "~> 4.1.1" rails --no-ri --no-rdoc $PROXY
     $SUDO $GEM install sqlite3 --no-ri --no-rdoc $PROXY
     $SUDO $GEM install sqlite3-ruby --no-ri --no-rdoc $PROXY
     $SUDO $GEM install sass --no-ri --no-rdoc $PROXY
