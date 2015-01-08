@@ -190,7 +190,6 @@ install_gem() {
     $SUDO $GEM install fluent-plugin-flowcounter --no-ri --no-rdoc $PROXY
     $SUDO $GEM install fluent-plugin-growthforecast --no-ri --no-rdoc $PROXY
     $SUDO $GEM install fluent-plugin-datacounter --no-ri --no-rdoc $PROXY
-    $SUDO $GEM install fluent-plugin-twitter --no-ri --no-rdoc $PROXY
     $SUDO $GEM install heroku --no-ri --no-rdoc $PROXY
     $SUDO $GEM install aws-sdk --no-ri --no-rdoc $PROXY
     $SUDO $GEM install travis --no-ri --no-rdoc $PROXY
