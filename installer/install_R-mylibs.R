@@ -3,6 +3,8 @@
 
 options(repos="http://cran.ism.ac.jp")
 
+install.packages('devtools')
+
 install.packages('randomForest')
 install.packages('plyr')
 install.packages('reshape2')
