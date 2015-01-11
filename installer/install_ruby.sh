@@ -212,7 +212,7 @@ install_ruby() {
         install_stable2 2.2.0 2.2 $2
         ;;
       215)
-        install_stable 2.1.5 2.1 $2
+        install_stable2 2.1.5 2.1 $2
         ;;
       214)
         install_stable 2.1.4 2.1 $2
