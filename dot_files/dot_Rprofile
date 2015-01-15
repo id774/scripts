@@ -1,0 +1,28 @@
+# R interactive prompt
+options(prompt="R> ")
+options(continue="R+ ")
+
+# Help
+options(htmlhelp=TRUE)
+
+# General options 
+options(papersize="a4")
+options(editor="vim")
+options(tab.width = 2)
+options(width = 130)
+options(graphics.record=TRUE)
+
+# Repo
+options(repos = structure(c(CRAN = "http://cran.ism.ac.jp/")))
+
+# Shortcut for Quit
+class(Q)=Q="no";print.no=q
+
+# Start and End
+.First <- function(){
+  cat("\nWelcome at", date(), "\n")
+}
+
+.Last <- function(){ 
+  cat("\nGoodbye at", date(), "\n")
+}
