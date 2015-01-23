@@ -345,7 +345,7 @@ c.PromptManager.in2_template = r'{color.Green}[{color.LightGreen}\D{color.Green}
 
 # Input prompt.  '\#' will be transformed to the prompt number
 # c.PromptManager.in_template = 'In [\\#]: '
-c.PromptManager.in_template = r'{color.Yellow}\h{color.LightBlue}[{color.LightCyan}\T{color.LightBlue}]{color.Green}[\#]: '
+c.PromptManager.in_template = r'{color.Yellow}\h{color.LightBlue}[{color.LightCyan}\T{color.LightBlue}]{color.Green}[{color.LightGreen}\#{color.Green}]: '
 
 # If True (default), each prompt will be right-aligned with the preceding one.
 # c.PromptManager.justify = True
