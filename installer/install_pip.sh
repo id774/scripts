@@ -57,6 +57,7 @@ install_libs() {
     $SUDO $PIP install $PROXY bokeh
     $SUDO $PIP install $PROXY -U twisted
     $SUDO $PIP install $PROXY -U Flask
+    $SUDO $PIP install $PROXY -U gunicorn
     $SUDO $PIP install $PROXY -U django
     $SUDO $PIP install $PROXY -U SQLAlchemy
     $SUDO $PIP install $PROXY -U migrate
