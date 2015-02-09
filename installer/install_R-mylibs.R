@@ -54,6 +54,7 @@ install.packages('quadprog')
 install.packages('tseries')
 install.packages('xts')
 install.packages('zoo')
+install.packages('e1071')
 
 install.packages('XML')
 install.packages('RCurl')
