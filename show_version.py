@@ -32,7 +32,7 @@ class PythonModuleInfo:
             imp.find_module(module_name)
             help(module_name)
         except ImportError:
-            print(module_name + ' was not found.')
+            print(module_name, 'was not found.')
 
     def _get_module_version(self, module_name):
         try:
@@ -45,7 +45,7 @@ class PythonModuleInfo:
             else:
                 print(module_name, "unknown version")
         except ImportError:
-            print(module_name + ' was not found.')
+            print(module_name, 'was not found.')
 
     def get_info(self, module_name):
         if self.info:
@@ -112,6 +112,7 @@ def main():
     m.get_info('awscli')
     m.get_info('openpyxl')
     m.get_info('simpy')
+    m.get_info('networkx')
     m.get_info('nltk')
     m.get_info('MeCab')
     m.get_info('CaboCha')

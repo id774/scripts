@@ -82,6 +82,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U openpyxl
     $SUDO $PIP install $PROXY -U xlrd
     $SUDO $PIP install $PROXY -U simpy
+    $SUDO $PIP install $PROXY -U networkx
 }
 
 main() {
