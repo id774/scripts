@@ -73,6 +73,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U beautifulsoup4
     $SUDO $PIP install $PROXY -U lxml
     $SUDO $PIP install $PROXY -U requests
+    $SUDO $PIP install $PROXY -U html5lib
     $SUDO $PIP install $PROXY husl
     $SUDO $PIP install $PROXY -U ggplot
     $SUDO $PIP install $PROXY -U pyper
