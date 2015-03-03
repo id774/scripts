@@ -88,6 +88,7 @@ def main():
     m.get_info('sklearn')
     m.get_info('matplotlib')
     m.get_info('pandas')
+    m.get_info('japandas')
     m.get_info('patsy')
     m.get_info('statsmodels')
     m.get_info('sympy')

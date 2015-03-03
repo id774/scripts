@@ -30,6 +30,8 @@ except ImportError:
 try:
     import pandas as pd
     print("import pandas as pd")
+    import pandas.tools.plotting as plotting
+    print("import pandas.tools.plotting as plotting")
 except ImportError:
     print("pandas has not been loaded")
 

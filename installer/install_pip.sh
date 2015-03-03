@@ -50,6 +50,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U scikit-learn
     $SUDO $PIP install $PROXY -U matplotlib
     $SUDO $PIP install $PROXY -U pandas
+    $SUDO $PIP install $PROXY -U japandas
     $SUDO $PIP install $PROXY -U patsy
     $SUDO $PIP install $PROXY statsmodels
     $SUDO $PIP install $PROXY -U sympy
