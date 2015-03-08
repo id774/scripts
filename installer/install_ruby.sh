@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.44 3/8,2015
+#       Update to ruby 2.2.1.
 # v1.43 12/26,2014
 #       Update to ruby 2.2.0.
 # v1.42 11/14,2014
@@ -208,6 +210,9 @@ setup_environment() {
 install_ruby() {
     setup_environment
     case "$1" in
+      221)
+        install_stable2 2.2.1 2.2 $2
+        ;;
       220)
         install_stable2 2.2.0 2.2 $2
         ;;
