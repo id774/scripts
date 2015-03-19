@@ -10,7 +10,7 @@ smart_apt() {
     done
 }
 
-xul-ext_packages() {
+xulext_packages() {
     smart_apt \
       xul-ext-adblock-plus \
       xul-ext-firebug \
@@ -22,4 +22,4 @@ xul-ext_packages() {
       xul-ext-webdeveloper
 }
 
-xul-ext_packages $*
+xulext_packages $*
