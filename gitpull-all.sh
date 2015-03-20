@@ -122,6 +122,8 @@ gitpull_all() {
     gitpull github id774 depression $*
     gitpull github id774 numerology $*
     gitpull github id774 sandbox $*
+    gitpull github id774 hotnews $*
+    gitpull github id774 finance $*
     gitpull github id774 list_shift $*
     gitpull github id774 rurima $*
     gitpull github id774 batch_framework $*
