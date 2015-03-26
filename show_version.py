@@ -116,6 +116,7 @@ def main():
     m.get_info('openpyxl')
     m.get_info('simpy')
     m.get_info('networkx')
+    m.get_info('talib')
     m.get_info('nltk')
     m.get_info('MeCab')
     m.get_info('CaboCha')

@@ -85,6 +85,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U simpy
     $SUDO $PIP install $PROXY -U networkx
     $SUDO $PIP install $PROXY -U 'pep8<1.6'
+    $SUDO $EASY_INSTALL -U TA-Lib
 }
 
 main() {
