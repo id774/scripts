@@ -32,7 +32,6 @@ setup_environment() {
 install_libs() {
     $SUDO $PIP install $PROXY -U pip
     $SUDO $PIP install $PROXY -U IPython
-    $SUDO $PIP install $PROXY 'pep8<1.6'
     $SUDO $PIP install $PROXY -U pyflakes
     $SUDO $PIP install $PROXY -U flake8
     $SUDO $PIP install $PROXY -U pytest
@@ -85,6 +84,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U xlrd
     $SUDO $PIP install $PROXY -U simpy
     $SUDO $PIP install $PROXY -U networkx
+    $SUDO $PIP install $PROXY -U 'pep8<1.6'
 }
 
 main() {
