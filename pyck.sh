@@ -2,7 +2,7 @@
 
 setup_environment() {
     PYTHON_PATH=/opt/python/current
-    IGNORE_ERRORS=E302
+    IGNORE_ERRORS=E302,E402
 }
 
 run_check() {
