@@ -59,6 +59,17 @@ gconf_packages() {
       gnome-tweak-tool
 }
 
+utils_packages() {
+    smart_apt \
+      ranger \
+      caca-utils \
+      highlight \
+      atool \
+      w3m \
+      poppler-utils \
+      mediainfo
+}
+
 optional_packages() {
     test -f /etc/lsb-release && smart_apt thunderbird
     test -f /etc/lsb-release || smart_apt icedove
@@ -88,6 +99,7 @@ increase_debian_packages() {
     test -f /etc/lsb-release && codec_packages
     test -f /etc/lsb-release && icon_packages
     gconf_packages
+    utils_packages
     optional_packages
 }
 
