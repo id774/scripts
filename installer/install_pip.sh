@@ -46,7 +46,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U msgpack-python
     $SUDO $PIP install $PROXY -U numpy
     $SUDO $PIP install $PROXY -U scipy
-    $SUDO $PIP install $PROXY -U scikit-learn
+    $SUDO $PIP install $PROXY -U 'scikit-learn>=0.16'
     $SUDO $PIP install $PROXY -U matplotlib
     $SUDO $PIP install $PROXY -U pandas
     $SUDO $PIP install $PROXY -U japandas
