@@ -167,6 +167,7 @@ install_gem() {
     $SUDO $GEM install screening --no-ri --no-rdoc $PROXY
     $SUDO $GEM install ctoD --no-ri --no-rdoc $PROXY
     $SUDO $GEM install count_by --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install poppler --no-ri --no-rdoc $PROXY
     $SUDO $GEM install rubypython --no-ri --no-rdoc $PROXY
     $SUDO $GEM install narray --no-ri --no-rdoc $PROXY
     $SUDO $GEM install gsl --no-ri --no-rdoc $PROXY
