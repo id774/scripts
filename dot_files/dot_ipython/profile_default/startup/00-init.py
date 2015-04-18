@@ -47,6 +47,12 @@ try:
 except ImportError:
     print("pylab has not been loaded")
 
+try:
+    import talib as ta
+    print("import talib as ta")
+except ImportError:
+    print("talib has not been loaded")
+
 def set_trace():
     from IPython.core.debugger import Pdb
     Pdb(color_scheme='Linux').set_trace(sys._getframe().f_back)
