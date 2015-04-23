@@ -1,5 +1,6 @@
 #!/bin/sh
 
+LC_CTYPE=ja_JP.UTF-8
 JOBLOG=/var/log/sysadmin/rsync_backup
 JOBLOG_1=/var/log/sysadmin/rsync_backup.1
 TRIGGER_FILE=/home/ubuntu/mnt/rsync_backup

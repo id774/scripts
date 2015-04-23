@@ -1,5 +1,6 @@
 #!/bin/sh
 
+LC_CTYPE=ja_JP.UTF-8
 JOBLOG=/var/log/sysadmin/restorecon.log
 
 echo -n "*** $0: Job started on `/bin/hostname` at ">>$JOBLOG 2>&1

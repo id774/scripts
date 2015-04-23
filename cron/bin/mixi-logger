@@ -1,5 +1,6 @@
 #!/bin/sh
 
+LC_CTYPE=ja_JP.UTF-8
 JOBLOG=/var/log/sysadmin/mixi-update.log
 MIXI_LOG=/var/log/sysadmin/mixi.log
 

@@ -1,5 +1,6 @@
 #!/bin/sh
 
+LC_CTYPE=ja_JP.UTF-8
 JOBLOG=/var/log/clamav/clamscan.log
 SCANLOG=/var/log/clamav/clamav.log
 
