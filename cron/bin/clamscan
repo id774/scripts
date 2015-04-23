@@ -15,7 +15,7 @@ echo>>$JOBLOG 2>&1
 # ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
 case "$ADMIN_MAIL_ADDRESS" in
   *@*)
-    nkf -w $JOBLOG | mail -s "[cron][`/bin/hostname`] ClamAV Scan Log" $ADMIN_MAIL_ADDRESS
+    cat -v $JOBLOG | nkf -w | mail -s "[cron][`/bin/hostname`] ClamAV Scan Log" $ADMIN_MAIL_ADDRESS
     ;;
 esac
 

@@ -14,7 +14,7 @@ echo>>$JOBLOG 2>&1
 # ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
 case "$ADMIN_MAIL_ADDRESS" in
   *@*)
-    grep "INFECTED" $JOBLOG && (nkf -w $JOBLOG | mail -s "[cron][`/bin/hostname`] Infected rootkit" $ADMIN_MAIL_ADDRESS)
+    grep "INFECTED" $JOBLOG && (cat -v $JOBLOG | nkf -w | mail -s "[cron][`/bin/hostname`] Infected rootkit" $ADMIN_MAIL_ADDRESS)
     ;;
 esac
 
