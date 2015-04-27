@@ -30,8 +30,8 @@ setup_environment() {
 }
 
 install_libs() {
-    $SUDO $PIP install $PROXY -U pip
-    $SUDO $PIP install $PROXY -U IPython
+    $SUDO $PIP install $PROXY -U 'pip>=6.1.1'
+    $SUDO $PIP install $PROXY -U 'IPython>=3.1.0'
     $SUDO $PIP install $PROXY -U pyflakes
     $SUDO $PIP install $PROXY -U flake8
     $SUDO $PIP install $PROXY -U pytest
@@ -44,14 +44,15 @@ install_libs() {
     $SUDO $PIP install $PROXY -U docopt
     $SUDO $PIP install $PROXY -U simplejson
     $SUDO $PIP install $PROXY -U msgpack-python
-    $SUDO $PIP install $PROXY -U numpy
-    $SUDO $PIP install $PROXY -U scipy
-    $SUDO $PIP install $PROXY -U 'scikit-learn>=0.16'
-    $SUDO $PIP install $PROXY -U matplotlib
-    $SUDO $PIP install $PROXY -U pandas
+    $SUDO $PIP install $PROXY -U 'numpy>=1.9.2'
+    $SUDO $PIP install $PROXY -U 'scipy>=0.15.1'
+    $SUDO $PIP install $PROXY -U 'scikit-learn>=0.16.1'
+    $SUDO $PIP install $PROXY -U 'matplotlib>=1.4.3'
+    $SUDO $PIP install $PROXY -U 'pandas>=0.16'
     $SUDO $PIP install $PROXY -U japandas
+    $SUDO $PIP install $PROXY -U 'pandas-datareader>=0.1.1'
     $SUDO $PIP install $PROXY -U patsy
-    $SUDO $PIP install $PROXY statsmodels
+    $SUDO $PIP install $PROXY -U 'statsmodels>=0.6.1'
     $SUDO $PIP install $PROXY -U sympy
     $SUDO $PIP install $PROXY seaborn
     $SUDO $PIP install $PROXY bokeh
@@ -61,7 +62,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U Flask-Bootstrap
     $SUDO $PIP install $PROXY -U Hamlish-Jinja
     $SUDO $PIP install $PROXY -U gunicorn
-    $SUDO $PIP install $PROXY -U django
+    $SUDO $PIP install $PROXY -U 'django>=1.8'
     $SUDO $PIP install $PROXY -U SQLAlchemy
     $SUDO $PIP install $PROXY -U migrate
     $SUDO $PIP install $PROXY -U readline
