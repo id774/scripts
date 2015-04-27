@@ -63,7 +63,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U Hamlish-Jinja
     $SUDO $PIP install $PROXY -U gunicorn
     $SUDO $PIP install $PROXY -U 'django>=1.8'
-    $SUDO $PIP install $PROXY -U SQLAlchemy
+    $SUDO $PIP install $PROXY -U 'SQLAlchemy>=1.0.2'
     $SUDO $PIP install $PROXY -U migrate
     $SUDO $PIP install $PROXY -U readline
     $SUDO $PIP install $PROXY -U Pygments
