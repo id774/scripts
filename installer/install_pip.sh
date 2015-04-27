@@ -22,9 +22,9 @@ setup_environment() {
     test -n "$1" || export EASY_INSTALL=easy_install
     test -n "$1" && export PIP=$1/bin/pip
     test -n "$1" || export PIP=/opt/python/current/bin/pip
-    test -n "$2" || SUDO=sudo
+    test -n "$2" || SUDO='sudo -H'
     test -n "$2" && SUDO=
-    test "$2" = "sudo" && SUDO=sudo
+    test "$2" = "sudo" && SUDO='sudo -H'
     test -n "$HTTP_PROXY" || PROXY=
     test -n "$HTTP_PROXY" && PROXY="--proxy $HTTP_PROXY"
 }
