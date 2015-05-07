@@ -47,7 +47,7 @@ save_sources() {
 }
 
 install_crf() {
-    wget http://crfpp.googlecode.com/files/CRF%2B%2B-$CRF_VERSION.tar.gz
+    wget http://files.id774.net/archive/CRF%2B%2B-$CRF_VERSION.tar.gz
     tar xzvf "CRF++-$CRF_VERSION.tar.gz"
     cd "CRF++-$CRF_VERSION"
     ./configure
