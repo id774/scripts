@@ -4,9 +4,12 @@
 # Install CaboCha
 #  $1 = cabocha version
 #  $2 = CRF version
+#  $3 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.6 5/29,2015
+#       Change URL, fix args bug.
 #  v0.5 2/10,2014
 #       Refactoring.
 #  v0.4 1/27,2014
@@ -73,7 +76,7 @@ install_crf_and_cabocha() {
     install_cabocha $*
 
     cd ..
-    test -n "$2" || save_sources
+    test -n "$3" || save_sources
     cd ..
     sudo rm -rf install_cabocha
 }

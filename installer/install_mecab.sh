@@ -5,11 +5,12 @@
 #  $1 = mecab version
 #  $2 = ipadic version
 #  $3 = naistdic version
-#  $4 = naistdic version
-#  $5 = not save to src
+#  $4 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.4 5/29,2015
+#       Change URL, fix args bug.
 #  v0.3 2/10,2014
 #       Refactoring.
 #  v0.2 1/28,2013
@@ -25,10 +26,8 @@ setup_environment() {
     test -n "$1" && MECAB_VERSION=$1
     test -n "$2" || IPADIC_VERSION=2.7.0-20070801
     test -n "$2" && IPADIC_VERSION=$2
-    test -n "$3" || NAISTDIC_VERSION=0.6.3b-20111013
-    test -n "$3" && NAISTDIC_VERSION=$3
-    test -n "$4" || NAISTDIC_NUM=53500
-    test -n "$4" && NAISTDIC_NUM=$4
+    test -n "$3" || NAISTDIC_NUM=53500
+    test -n "$3" && NAISTDIC_NUM=$4
     case $OSTYPE in
       *darwin*)
         OWNER=root:wheel
@@ -52,7 +51,7 @@ save_sources() {
 }
 
 source_compile() {
-    wget http://mecab.googlecode.com/files/mecab-$MECAB_VERSION.tar.gz
+    wget http://files.id774.net/archive/mecab-$MECAB_VERSION.tar.gz
     tar xzvf mecab-$MECAB_VERSION.tar.gz
     cd mecab-$MECAB_VERSION
     ./configure --enable-utf8-only
@@ -62,7 +61,7 @@ source_compile() {
 }
 
 ipadic_compile() {
-    wget http://mecab.googlecode.com/files/mecab-ipadic-$IPADIC_VERSION.tar.gz
+    wget http://files.id774.net/archive/mecab-ipadic-$IPADIC_VERSION.tar.gz
     tar xzvf mecab-ipadic-$IPADIC_VERSION.tar.gz
     cd mecab-ipadic-$IPADIC_VERSION
     ./configure --with-charset=utf8
@@ -72,7 +71,7 @@ ipadic_compile() {
 }
 
 naistdic_compile() {
-    wget "http://sourceforge.jp/frs/redir.php?m=iij&f=%2Fnaist-jdic%2F$NAISTDIC_NUM%2Fmecab-naist-jdic-$NAISTDIC_VERSION.tar.gz" -O naistdic.tar.gz
+    wget http://files.id774.net/archive/naistdic.tar.gz
     tar xzvf naistdic.tar.gz
     cd mecab-naist-jdic-$NAISTDIC_VERSION
     ./configure --with-charset=utf8
@@ -82,9 +81,9 @@ naistdic_compile() {
 }
 
 get_binding() {
-    wget http://mecab.googlecode.com/files/mecab-python-$MECAB_VERSION.tar.gz
+    wget http://files.id774.net/archive/mecab-python-$MECAB_VERSION.tar.gz
     tar xzvf mecab-python-$MECAB_VERSION.tar.gz
-    wget http://mecab.googlecode.com/files/mecab-ruby-$MECAB_VERSION.tar.gz
+    wget http://files.id774.net/archive/mecab-ruby-$MECAB_VERSION.tar.gz
     tar xzvf mecab-ruby-$MECAB_VERSION.tar.gz
 }
 
@@ -97,7 +96,7 @@ install_mecab() {
     naistdic_compile $*
     get_binding $*
 
-    test -n "$5" || save_sources
+    test -n "$4" || save_sources
     cd ..
     rm -rf install_mecab
 }
