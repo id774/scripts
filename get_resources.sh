@@ -33,8 +33,8 @@ echo "[df -P -T]"
 df -P -T
 echo
 
-echo "[ifconfig]"
-ifconfig
+echo "[ip addr show]"
+ip addr show
 echo
 
 echo "[netstat -s]"
