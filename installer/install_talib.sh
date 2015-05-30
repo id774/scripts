@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 5/31,2015
+#       Change URL.
 #  v0.1 3/23,2015
 #       First.
 ########################################################################
@@ -29,7 +31,7 @@ install_talib() {
     mkdir install_talib
     cd install_talib
 
-    curl -L http://prdownloads.sourceforge.net/ta-lib/$FILENAME -O
+    curl -L http://files.id774.net/archive/$FILENAME -O
     tar xzvf $FILENAME
     cd ta-lib
     ./configure --prefix=/usr/local
