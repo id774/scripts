@@ -84,6 +84,7 @@ sudo yum -y install w3m
 sudo yum -y install lynx
 sudo yum -y install scons
 sudo yum -y install httpd-devel
+sudo yum -y install enca
 sudo yum -y install apr-devel
 sudo yum -y install apr-util-devel
 sudo yum -y install graphviz graphviz-devel
