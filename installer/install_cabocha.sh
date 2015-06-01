@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.7 6/1,2015
+#       Specify mecab-config.
 #  v0.6 5/29,2015
 #       Change URL, fix args bug.
 #  v0.5 2/10,2014
@@ -63,7 +65,7 @@ install_cabocha() {
     wget http://files.id774.net/archive/cabocha-$CABOCHA_VERSION.tar.bz2
     tar xjvf cabocha-$CABOCHA_VERSION.tar.bz2
     cd cabocha-$CABOCHA_VERSION
-    ./configure --with-charset=UTF8 --with-posset=IPA
+    ./configure --with-charset=UTF8 --with-posset=IPA --with-mecab-config=`which mecab-config`
     make
     sudo make install
 }
