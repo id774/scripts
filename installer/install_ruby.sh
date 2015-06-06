@@ -160,6 +160,9 @@ install_ruby() {
       210-0)
         install_stable 2.1.0 2.1 $2
         ;;
+      200-645)
+        install_stable 2.0.0-p645 2.0 $2
+        ;;
       200-598)
         install_stable 2.0.0-p598 2.0 $2
         ;;
