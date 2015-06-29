@@ -76,6 +76,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U requests
     $SUDO $PIP install $PROXY -U html5lib
     $SUDO $PIP install $PROXY husl
+    $SUDO $PIP install $PROXY -U pillow
     $SUDO $PIP install $PROXY -U ggplot
     $SUDO $PIP install $PROXY -U pyper
     $SUDO $PIP install $PROXY -U jinja2 tornado pyzmq
