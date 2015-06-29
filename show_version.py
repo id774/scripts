@@ -110,6 +110,7 @@ def main():
     m.get_info('lxml')
     m.get_info('requests')
     m.get_info('html5lib')
+    m.get_info('PIL')
     m.get_info('ggplot')
     m.get_info('pyper')
     m.get_info('awscli')
