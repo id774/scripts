@@ -30,7 +30,7 @@ setup_environment() {
 }
 
 install_libs() {
-    $SUDO $PIP install $PROXY -U 'pip>=6.1.1'
+    $SUDO $PIP install $PROXY -U 'pip>=7.1.0'
     $SUDO $PIP install $PROXY -U 'IPython>=3.1.0'
     $SUDO $PIP install $PROXY -U pyflakes
     $SUDO $PIP install $PROXY -U flake8
@@ -87,6 +87,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U simpy
     $SUDO $PIP install $PROXY -U networkx
     $SUDO $PIP install $PROXY -U pdfminer3k
+    $SUDO $PIP install $PROXY -U pybrain
     $SUDO $PIP install $PROXY -U 'pep8<1.6'
     $SUDO $EASY_INSTALL -U TA-Lib
     $SUDO $EASY_INSTALL -U nltk
