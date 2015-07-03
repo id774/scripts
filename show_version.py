@@ -117,6 +117,7 @@ def main():
     m.get_info('openpyxl')
     m.get_info('simpy')
     m.get_info('networkx')
+    m.get_info('pybrain')
     m.get_info('pdfminer')
     m.get_info('talib')
     m.get_info('nltk')
