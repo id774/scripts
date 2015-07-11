@@ -181,6 +181,8 @@ install_gem() {
     #$SUDO $GEM install hadoop-papyrus --no-ri --no-rdoc $PROXY
     #$SUDO $GEM install jruby-on-hadoop --no-ri --no-rdoc $PROXY
     $SUDO $GEM install passenger --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install daemons --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install eventmachine --no-ri --no-rdoc $PROXY
     $SUDO $GEM install -v "~> 0.10.48" fluentd --no-ri --no-rdoc $PROXY
     $SUDO $GEM install fluent-logger --no-ri --no-rdoc $PROXY
     $SUDO $GEM install fluent-plugin-sqlite3 --no-ri --no-rdoc $PROXY
