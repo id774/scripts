@@ -140,7 +140,6 @@ gitpull_all() {
     gitpull github id774 sinatra-api-provider $*
     gitpull github id774 fluentd-json-receiver $*
     gitpull github id774 house_api_web $*
-    gitpull github id774 akazunomabot $*
     gitpull github id774 scipy-lecture-notes $*
     gitpull github fastladder fastladder $*
     gitpull github jugyo rubytter $*
