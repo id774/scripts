@@ -80,6 +80,7 @@ system_packages() {
       anacron \
       clamav \
       chkrootkit \
+      jq \
       nmap \
       tcpdump \
       iperf \
