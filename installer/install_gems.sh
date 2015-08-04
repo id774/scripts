@@ -109,7 +109,7 @@ install_gem() {
     $SUDO $GEM install sequel --no-ri --no-rdoc $PROXY
     $SUDO $GEM install thrift --no-ri --no-rdoc $PROXY
     $SUDO $GEM install puppet --no-ri --no-rdoc $PROXY
-    $SUDO $GEM install -v "~> 1.7.7" json --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install -v "~> 1.8.3" json --no-ri --no-rdoc $PROXY
     $SUDO $GEM install rdoc --no-ri --no-rdoc $PROXY
     $SUDO $GEM install gherkin --no-ri --no-rdoc $PROXY
     $SUDO $GEM install cucumber --no-ri --no-rdoc $PROXY
