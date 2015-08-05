@@ -81,9 +81,9 @@ install_gem() {
     $SUDO $GEM install cosmicrawler --no-ri --no-rdoc $PROXY
     $SUDO $GEM install sanitize --no-ri --no-rdoc $PROXY
     $SUDO $GEM install Selenium --no-ri --no-rdoc $PROXY
-    $SUDO $GEM install pg --no-ri --no-rdoc $PROXY
-    $SUDO $GEM install mysql2 --no-ri --no-rdoc $PROXY
-    $SUDO $GEM install cassandra --no-ri --no-rdoc $PROXY
+    #$SUDO $GEM install pg --no-ri --no-rdoc $PROXY
+    #$SUDO $GEM install mysql2 --no-ri --no-rdoc $PROXY
+    #$SUDO $GEM install cassandra --no-ri --no-rdoc $PROXY
     $SUDO $GEM install -v "~> 1.9.0" bson --no-ri --no-rdoc $PROXY
     $SUDO $GEM install -v "~> 1.9.0" bson_ext --no-ri --no-rdoc $PROXY
     $SUDO $GEM install -v "~> 1.9.0" mongo --no-ri --no-rdoc $PROXY
