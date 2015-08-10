@@ -88,6 +88,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U networkx
     $SUDO $PIP install $PROXY -U pdfminer3k
     $SUDO $PIP install $PROXY -U pybrain
+    $SUDO $PIP install $PROXY -U fabric
     $SUDO $PIP install $PROXY -U 'pep8<1.6'
     $SUDO $EASY_INSTALL -U TA-Lib
     $SUDO $EASY_INSTALL -U nltk
