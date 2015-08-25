@@ -31,7 +31,7 @@ install_gem() {
     $SUDO $GEM update --system $PROXY
     $SUDO $GEM install -v "~> 3.2.22" rails --no-ri --no-rdoc $PROXY
     $SUDO $GEM install -v "~> 4.1.11" rails --no-ri --no-rdoc $PROXY
-    $SUDO $GEM install -v "~> 4.2.2" rails --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install -v "~> 4.2.4" rails --no-ri --no-rdoc $PROXY
     $SUDO $GEM install rb-readline --no-ri --no-rdoc $PROXY
     $SUDO $GEM install debugger --no-ri --no-rdoc $PROXY
     $SUDO $GEM install -v "~> 0.9.0" pry --no-ri --no-rdoc $PROXY
