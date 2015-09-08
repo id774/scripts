@@ -3,7 +3,8 @@
 ########################################################################
 # Install ncurses
 #  $1 = version
-#  $2 = not save to src
+#  $2 = configure prefix
+#  $3 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
