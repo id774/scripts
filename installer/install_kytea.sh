@@ -1,13 +1,15 @@
 #!/bin/sh
 #
 ########################################################################
-# Install kytea
+# Install KyTea
 #  $1 = version
 #  $2 = configure prefix
 #  $3 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 9/9,2015
+#       Install binding.
 #  v0.1 9/8,2015
 #       First.
 ########################################################################
@@ -25,6 +27,11 @@ save_sources() {
     sudo cp -a kytea-$VERSION /usr/local/src/kytea
 }
 
+install_binding() {
+    test -x /opt/ruby/current/bin/gem && $SUDO /opt/ruby/current/bin/gem install kytea
+    test -x /opt/python/current/bin/pip && $SUDO /opt/python/current/bin/pip install kytea
+}
+
 install_kytea() {
     setup_environment $*
     mkdir install_kytea
@@ -40,6 +47,7 @@ install_kytea() {
     test -n "$3" || save_sources
     cd ../
     rm -rf install_kytea
+    install_binding $*
 }
 
 ping -c 1 id774.net > /dev/null 2>&1 || exit 1
