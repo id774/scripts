@@ -32,6 +32,8 @@ try:
     print("import pandas as pd")
     import pandas.tools.plotting as plotting
     print("import pandas.tools.plotting as plotting")
+    import japandas as jpd
+    print("import japandas as jpd")
 except ImportError:
     print("pandas has not been loaded")
 
