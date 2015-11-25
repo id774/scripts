@@ -134,6 +134,7 @@ gitpull_all() {
     gitpull github id774 d3js-charts $*
     gitpull github id774 ctoD $*
     gitpull github id774 okura $*
+    gitpull github id774 flask-hello $*
     gitpull github id774 flask-bootstrap $*
     gitpull github id774 rails4-bootstrap $*
     gitpull github id774 sinatra-bootstrap $*
