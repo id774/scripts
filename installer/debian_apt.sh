@@ -159,6 +159,7 @@ lang_packages() {
       nasm \
       gauche gauche-dev \
       clisp clisp-dev \
+      libboost-dev \
       scheme48 cmuscheme48-el \
       gnu-smalltalk \
       scala \
