@@ -94,6 +94,7 @@ def main():
         'matplotlib',
         'pandas',
         'japandas',
+        'joblib',
         'dask',
         'patsy',
         'statsmodels',

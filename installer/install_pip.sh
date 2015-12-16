@@ -51,6 +51,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U 'pandas>=0.16'
     $SUDO $PIP install $PROXY -U japandas
     $SUDO $PIP install $PROXY -U 'pandas-datareader>=0.1.1'
+    $SUDO $PIP install $PROXY -U joblib
     $SUDO $PIP install $PROXY -U dask
     $SUDO $PIP install $PROXY -U patsy
     $SUDO $PIP install $PROXY -U 'statsmodels>=0.6.1'
