@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.2 9/28,2015
+#       Refactoring.
 #  v2.1 3/19,2014
 #       Show python version.
 #  v2.0 2/11,2014
