@@ -43,6 +43,7 @@
 -A INPUT -p tcp -m tcp --dport 1102 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 1103 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 1104 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 1880 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 3000 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 3001 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 3002 -j ACCEPT

@@ -236,6 +236,7 @@ $IPTABLES -A INPUT -p udp --dport 5001 -j ACCEPT
 #$IPTABLES -A INPUT -p tcp --dport 1102 -j ACCEPT
 #$IPTABLES -A INPUT -p tcp --dport 1103 -j ACCEPT
 #$IPTABLES -A INPUT -p tcp --dport 1104 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 1880 -j ACCEPT
 #$IPTABLES -A INPUT -p tcp --dport 3000 -j ACCEPT
 #$IPTABLES -A INPUT -p tcp --dport 3001 -j ACCEPT
 #$IPTABLES -A INPUT -p tcp --dport 3002 -j ACCEPT
