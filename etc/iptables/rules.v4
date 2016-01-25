@@ -1,0 +1,42 @@
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [255:45953]
+:LOG_PINGDEATH - [0:0]
+:fail2ban-ssh - [0:0]
+-A INPUT -s 207.29.224.0/19 -j DROP
+-A INPUT -s 206.223.144.0/20 -j DROP
+-A INPUT -i lo -j ACCEPT
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -f -j LOG --log-prefix "[IPTABLES FRAGMENT] : "
+-A INPUT -f -j DROP
+-A INPUT -p icmp -m icmp --icmp-type 8 -j LOG_PINGDEATH
+-A INPUT -p tcp -m tcp --dport 443 -m u32 --u32 "0x34=0x18030000:0x1803ffff" -j LOG --log-prefix "[OpenSSL HEARTBLEED] : "
+-A INPUT -p tcp -m tcp --dport 443 -m u32 --u32 "0x34=0x18030000:0x1803ffff" -j DROP
+-A INPUT -d 255.255.255.255/32 -j DROP
+-A INPUT -d 224.0.0.1/32 -j DROP
+-A INPUT -p tcp -m tcp --dport 113 -j REJECT --reject-with tcp-reset
+-A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --set --name SSH --mask 255.255.255.255 --rsource
+-A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH --mask 255.255.255.255 --rsource -j LOG --log-prefix "SSH attack: "
+-A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH --mask 255.255.255.255 --rsource -j DROP
+-A INPUT -p tcp -m tcp --dport 3306 -m state --state NEW -m recent --set --name MYSQL --mask 255.255.255.255 --rsource
+-A INPUT -p tcp -m tcp --dport 3306 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name MYSQL --mask 255.255.255.255 --rsource -j LOG --log-prefix "MYSQL attack: "
+-A INPUT -p tcp -m tcp --dport 3306 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name MYSQL --mask 255.255.255.255 --rsource -j DROP
+-A INPUT -p tcp -m tcp --dport 5432 -m state --state NEW -m recent --set --name POSTGRES --mask 255.255.255.255 --rsource
+-A INPUT -p tcp -m tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES --mask 255.255.255.255 --rsource -j LOG --log-prefix "POSTGRES attack: "
+-A INPUT -p tcp -m tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES --mask 255.255.255.255 --rsource -j DROP
+-A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --set --name SSH22 --mask 255.255.255.255 --rsource
+-A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH22 --mask 255.255.255.255 --rsource -j LOG --log-prefix "SSH22 attack: "
+-A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH22 --mask 255.255.255.255 --rsource -j DROP
+-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 123 -j ACCEPT
+-A INPUT -p udp -m udp --dport 123 -j ACCEPT
+-A INPUT -j DROP
+-A FORWARD -j DROP
+-A LOG_PINGDEATH -m limit --limit 1/sec --limit-burst 4 -j ACCEPT
+-A LOG_PINGDEATH -j LOG --log-prefix "[IPTABLES PINGDEATH] : "
+-A LOG_PINGDEATH -j DROP
+COMMIT

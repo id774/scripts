@@ -189,8 +189,8 @@ $IPTABLES -A INPUT -p tcp --dport 123 -j ACCEPT
 $IPTABLES -A INPUT -p udp --dport 123 -j ACCEPT
 
 # iperf 用
-$IPTABLES -A INPUT -p tcp --dport 5001 -j ACCEPT
-$IPTABLES -A INPUT -p udp --dport 5001 -j ACCEPT
+#$IPTABLES -A INPUT -p tcp --dport 5001 -j ACCEPT
+#$IPTABLES -A INPUT -p udp --dport 5001 -j ACCEPT
 
 # 外部からのTCP3306番ポート(MySQL)へのアクセスを許可
 # ※MySQLサーバーを公開する場合のみ
