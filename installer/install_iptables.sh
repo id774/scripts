@@ -18,10 +18,19 @@ install_iptables() {
             sudo chmod 600 /etc/sysconfig/iptables
             sudo chown root:root /etc/sysconfig/iptables
             ;;
-        *)
+        debian6)
             sudo cp $SCRIPTS/etc/iptables-deb /etc/network/if-pre-up.d/iptables
             sudo chmod 700 /etc/network/if-pre-up.d/iptables
             sudo chown root:root /etc/network/if-pre-up.d/iptables
+            ;;
+        *)
+            sudo cp $SCRIPTS/etc/iptables/rules.v4 /etc/iptables/rules.v4
+            sudo chmod 700 /etc/iptables/rules.v4
+            sudo chmod 700 /etc/iptables/rules.v6
+            sudo chown root:root /etc/iptables/rules.v4
+            sudo chown root:root /etc/iptables/rules.v6
+            sudo vim /etc/iptables/rules.v4
+            sudo sh -c 'iptables-restore < /etc/iptables/rules.v4'
             ;;
     esac
 }
