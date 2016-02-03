@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.3 1/28,2016
+#       Add ifexist option.
 #  v2.2 12/17,2014
 #       Improvement symlink confirmation process.
 #  v2.1 3/2,2014

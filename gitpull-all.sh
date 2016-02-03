@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.3 2/3,2016
+#       Add ifexist option.
 #  v1.2 12/17,2014
 #       Add Heroku.
 #       Improvement symlink confirmation process.
@@ -14,17 +16,34 @@
 #       Stable.
 ########################################################################
 
-gitpull() {
-    echo "Pulling $1 $3 $4"
-    if [ -e $HOME/local/$1/$3 ]; then
-        cd $HOME/local/$1/$3
-        test -n "$4" && git reset --hard
-        git pull
-    else
-        cd $HOME/local/$1
-        git clone git://github.com/$2/$3.git
-    fi
+set_permission() {
+    chmod 755 $HOME/local/$1/$3
     test -L $HOME/$3 || ln -fs $HOME/local/$1/$3 $HOME/$3
+}
+
+pull_repo() {
+    echo "Pulling $1 $3 $4"
+    cd $HOME/local/$1/$3
+    test "$4" = "--hard" && git reset --hard
+    git pull
+    set_permission $*
+}
+
+clone_repo() {
+    echo "Cloning $1 $2 $3"
+    cd $HOME/local/$1
+    git clone git://github.com/$2/$3.git
+    set_permission $*
+}
+
+gitpull() {
+    if [ -e $HOME/local/$1/$3 ]; then
+        pull_repo $*
+    else
+        if [ ! "$4" = "--ifexist" ]; then
+            clone_repo $*
+        fi
+    fi
 }
 
 heroku_git() {
