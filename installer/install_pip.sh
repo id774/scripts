@@ -30,7 +30,7 @@ setup_environment() {
 }
 
 install_libs() {
-    $SUDO $PIP install $PROXY -U 'pip>=7.1.0'
+    $SUDO $PIP install $PROXY -U pip
     $SUDO $PIP install $PROXY -U 'IPython>=3.1.0'
     $SUDO $PIP install $PROXY -U pyflakes
     $SUDO $PIP install $PROXY -U flake8
@@ -67,6 +67,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U gunicorn
     $SUDO $PIP install $PROXY -U 'django>=1.8'
     $SUDO $PIP install $PROXY -U 'SQLAlchemy>=1.0.2'
+    $SUDO $PIP install $PROXY -U lmdb
     $SUDO $PIP install $PROXY -U migrate
     $SUDO $PIP install $PROXY -U readline
     $SUDO $PIP install $PROXY -U Pygments
@@ -76,7 +77,9 @@ install_libs() {
     $SUDO $PIP install $PROXY -U cherrypy
     $SUDO $PIP install $PROXY -U beautifulsoup4
     $SUDO $PIP install $PROXY -U lxml
-    $SUDO $PIP install $PROXY -U requests
+    $SUDO $PIP install $PROXY -U 'requests<3.0'
+    $SUDO $PIP install $PROXY -U 'pysolr<4.0'
+    $SUDO $PIP install $PROXY -U watson-developer-cloud
     $SUDO $PIP install $PROXY -U html5lib
     $SUDO $PIP install $PROXY husl
     $SUDO $PIP install $PROXY -U pillow
