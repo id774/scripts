@@ -534,3 +534,5 @@ c.PromptManager.in_template = r'{color.Yellow}\h{color.LightBlue}[{color.LightCy
 # If True, any %store-d variables will be automatically restored when IPython
 # starts.
 # c.StoreMagics.autorestore = False
+
+c.InteractiveShellApp.extensions.append("autopep8magic")
