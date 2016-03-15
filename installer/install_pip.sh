@@ -32,6 +32,7 @@ setup_environment() {
 install_libs() {
     $SUDO $PIP install $PROXY -U pip
     $SUDO $PIP install $PROXY -U 'IPython>=3.1.0'
+    $SUDO $PIP install $PROXY -U jupyter
     $SUDO $PIP install $PROXY -U pyflakes
     $SUDO $PIP install $PROXY -U flake8
     $SUDO $PIP install $PROXY -U pytest
