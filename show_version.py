@@ -99,6 +99,7 @@ def main():
         'patsy',
         'statsmodels',
         'sympy',
+        'pystan',
         'seaborn',
         'bokeh',
         'twisted',
