@@ -209,6 +209,9 @@ $IPTABLES -A INPUT -p udp --dport 123 -j ACCEPT
 # Git
 #$IPTABLES -A INPUT -p tcp --dport 9418 -j ACCEPT
 
+# RStudio Server
+#$IPTABLES -A INPUT -p tcp --dport 8787 -j ACCEPT
+
 # VNC
 #$IPTABLES -A INPUT -p tcp --dport 5800 -j ACCEPT
 #$IPTABLES -A INPUT -p tcp --dport 5900 -j ACCEPT
