@@ -1,11 +1,15 @@
 #!/bin/sh
 
+exec_sql() {
+    DBFILE="$HOME/fastladder/db/fastladder.db"
+    SQL_COMMAND="sqlite3 -separator , $DBFILE"
+    echo $* | $SQL_COMMAND
+}
+
 SQL="select 'fav ' || link from pins;"
-COMMAND="sqlite3 -separator , $HOME/fastladder/db/fastladder.db"
-echo $SQL | $COMMAND
+exec_sql $SQL
 
 SQL="delete from pins;"
-COMMAND="sqlite3 -separator , $HOME/fastladder/db/fastladder.db"
-echo $SQL | $COMMAND
+exec_sql $SQL
 
 exit 0
