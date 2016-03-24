@@ -1,11 +1,15 @@
 #!/bin/sh
 
+exec_sql() {
+    DBFILE="$HOME/fastladder/db/fastladder.db"
+    SQL_COMMAND="sqlite3 -csv -nullvalue 'NULL' $DBFILE"
+    echo $* | $SQL_COMMAND
+}
+
 SQL="select title from feeds;"
-COMMAND="sqlite3 -csv -nullvalue 'NULL' $HOME/fastladder/db/fastladder.db"
-echo $SQL | $COMMAND
+exec_sql $SQL
 
 SQL="select count(*) from feeds;"
-COMMAND="sqlite3 -csv -nullvalue 'NULL' $HOME/fastladder/db/fastladder.db"
-echo $SQL | $COMMAND
+exec_sql $SQL
 
 exit 0
