@@ -14,12 +14,12 @@
 install_iptables() {
     case "$1" in
         rhel)
-            sudo cp $SCRIPTS/etc/iptables-rhel /etc/sysconfig/iptables
+            sudo cp $SCRIPTS/etc/iptables/iptables-rhel /etc/sysconfig/iptables
             sudo chmod 600 /etc/sysconfig/iptables
             sudo chown root:root /etc/sysconfig/iptables
             ;;
         debian6)
-            sudo cp $SCRIPTS/etc/iptables-deb /etc/network/if-pre-up.d/iptables
+            sudo cp $SCRIPTS/etc/iptables/iptables-deb /etc/network/if-pre-up.d/iptables
             sudo chmod 700 /etc/network/if-pre-up.d/iptables
             sudo chown root:root /etc/network/if-pre-up.d/iptables
             ;;
