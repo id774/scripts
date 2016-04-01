@@ -25,9 +25,10 @@ install_iptables() {
             ;;
         *)
             test -f /etc/network/if-pre-up.d/iptables && sudo rm /etc/network/if-pre-up.d/iptables
+            test -d /etc/iptables || sudo mkdir /etc/iptables
             sudo cp $SCRIPTS/etc/iptables/rules.v4 /etc/iptables/rules.v4
-            sudo chmod 700 /etc/iptables/rules.v4
-            sudo chmod 700 /etc/iptables/rules.v6
+            sudo chmod 600 /etc/iptables/rules.v4
+            sudo chmod 600 /etc/iptables/rules.v6
             sudo chown root:root /etc/iptables/rules.v4
             sudo chown root:root /etc/iptables/rules.v6
             sudo vim /etc/iptables/rules.v4
