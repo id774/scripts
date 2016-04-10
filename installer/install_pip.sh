@@ -99,6 +99,8 @@ install_libs() {
     $SUDO $PIP install $PROXY -U pybrain
     $SUDO $PIP install $PROXY -U fabric
     $SUDO $PIP install $PROXY -U uwsgi
+    $SUDO $PIP install $PROXY -U pypandoc
+    $SUDO $PIP install $PROXY -U DocumentFeatureSelection
     $SUDO $PIP install $PROXY -U python-tr
     $SUDO $PIP install $PROXY -U 'pep8<1.6'
     $SUDO $EASY_INSTALL -U TA-Lib

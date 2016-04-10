@@ -170,7 +170,8 @@ lang_packages() {
       markdown \
       graphviz graphviz-dev \
       gsl-bin libgsl0-dev libgsl-ruby libnarray-ruby \
-      shunit2
+      shunit2 \
+      pandoc
 }
 
 scm_packages() {
