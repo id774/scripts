@@ -130,6 +130,7 @@ def main():
         'pdfminer',
         'pybrain',
         'fabric',
+        'pypandoc',
         'talib',
         'nltk',
         'MeCab',
