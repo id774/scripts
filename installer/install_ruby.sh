@@ -145,6 +145,9 @@ install_ruby() {
       220)
         install_stable2 2.2.0 2.2 $2
         ;;
+      219)
+        install_stable2 2.1.9 2.1 $2
+        ;;
       218)
         install_stable2 2.1.8 2.1 $2
         ;;
