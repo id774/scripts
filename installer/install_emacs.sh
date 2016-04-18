@@ -4,11 +4,12 @@
 # Install emacs
 #  $1 = version
 #  $2 = prefix
-#  $3 = build options
-#  $4 = not save to src
+#  $3 = not save to src
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.0 4/18,2016
+#       Renew build options, for Emacs 23.4 on Debian/Ubuntu.
 #  v0.4 3/15,2013
 #       Update to Emacs 24.3, Change install source path.
 #  v0.3 3/17,2011
@@ -21,12 +22,10 @@
 
 setup_environment() {
     test -n "$1" && EMACS_VERSION=$1
-    test -n "$1" || EMACS_VERSION=24.3
-    test -n "$3" && BUILD_OPTIONS=$3
-    test -n "$3" || BUILD_OPTIONS=--with-ns
-    test -n "$4" || SUDO=sudo
-    test -n "$4" && SUDO=
-    test "$4" = "sudo" && SUDO=sudo
+    test -n "$1" || EMACS_VERSION=23.4
+    test -n "$3" || SUDO=sudo
+    test -n "$3" && SUDO=
+    test "$3" = "sudo" && SUDO=sudo
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR
@@ -59,8 +58,8 @@ adding_patches() {
 make_and_install() {
     cd emacs-$EMACS_VERSION
     adding_patches $*
-    test -n "$2" || ./configure --without-x $3 --prefix=$HOME/local/emacs/$EMACS_VERSION
-    test -n "$2" && ./configure --without-x $3 --prefix=$2
+    test -n "$2" || ./configure --sharedstatedir=/var/lib --libexecdir=/usr/lib --localstatedir=/var/lib --infodir=/usr/share/info --mandir=/usr/share/man --with-pop=yes --enable-locallisppath=/etc/emacs23:/etc/emacs:/usr/local/share/emacs/$EMACS_VERSION/site-lisp:/usr/local/share/emacs/site-lisp:/usr/share/emacs/$EMACS_VERSION/site-lisp:/usr/share/emacs/site-lisp --with-crt-dir=/usr/lib/i386-linux-gnu --with-x=yes --with-x-toolkit=gtk --with-toolkit-scroll-bars --with-xpm=no --with-gif=no --prefix=$HOME/local/emacs/$EMACS_VERSION
+    test -n "$2" && ./configure --sharedstatedir=/var/lib --libexecdir=/usr/lib --localstatedir=/var/lib --infodir=/usr/share/info --mandir=/usr/share/man --with-pop=yes --enable-locallisppath=/etc/emacs23:/etc/emacs:/usr/local/share/emacs/$EMACS_VERSION/site-lisp:/usr/local/share/emacs/site-lisp:/usr/share/emacs/$EMACS_VERSION/site-lisp:/usr/share/emacs/site-lisp --with-crt-dir=/usr/lib/i386-linux-gnu --with-x=yes --with-x-toolkit=gtk --with-toolkit-scroll-bars --with-xpm=no --with-gif=no --prefix=$2
     make
     $SUDO make install
     cd ..
