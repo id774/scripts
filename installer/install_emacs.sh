@@ -5,7 +5,8 @@
 #  $1 = version
 #  $2 = prefix
 #  $3 = without-x
-#  $4 = not save to src
+#  $4 = sudo
+#  $5 = sourceonly
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
@@ -74,8 +75,8 @@ get_emacs() {
     wget http://ftpmirror.gnu.org/emacs/emacs-$EMACS_VERSION.tar.gz
     test -f emacs-$EMACS_VERSION.tar.gz || exit 1
     tar xzvf emacs-$EMACS_VERSION.tar.gz
-    test "$2" = "sourceonly" || make_and_install $*
-    test -n "$4" || save_sources
+    test "$5" = "sourceonly" || make_and_install $*
+    test -n "$5" || save_sources
     cd ..
     rm -rf install_emacs
 }
