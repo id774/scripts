@@ -4,7 +4,7 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-# v1.17 5/29,2013
+# v1.17 4/19,2016
 #       Transfer between different ownwers.
 # v1.16 5/29,2013
 #       Fix device definition bugs.
