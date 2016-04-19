@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.17 5/29,2013
+#       Transfer between different ownwers.
 # v1.16 5/29,2013
 #       Fix device definition bugs.
 # v1.15 4/18,2013
@@ -66,7 +68,7 @@ svn_backup() {
 
 git_backup() {
   test -f /root/local/git.tar.gz && rm /root/local/git.tar.gz
-  rsync -avz --delete $1@$2:/var/lib/git /root/local/
+  rsync -avz --no-o --no-g --delete $1@$2:/var/lib/git /root/local/
   cd /root/local
   tar czvf git.tar.gz git/
   cp -v /root/local/git.tar.gz $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/
@@ -85,7 +87,7 @@ rsync_disk2ssh_0() {
   echo -n "* Executing rsync_disk2ssh_0 $B_DEVICE -> $T_DEVICE of $T_HOST on "
   date "+%Y/%m/%d %T"
   test -d $B_HOME/$B_MOUNT/$B_DEVICE && \
-    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE \
+    rsync -avz --no-o --no-g --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/
   echo "Return code is $?"
 }
@@ -94,15 +96,15 @@ rsync_disk2ssh_1() {
   echo -n "* Executing rsync_disk2ssh_1 $B_DEVICE -> $T_DEVICE of $T_HOST on "
   date "+%Y/%m/%d %T"
   test -d $B_HOME/$B_MOUNT/$B_DEVICE/user1 && \
-    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user1 \
+    rsync -avz --no-o --no-g --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user1 \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
   test -d $B_HOME/$B_MOUNT/$B_DEVICE/user2 && \
-    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user2 \
+    rsync -avz --no-o --no-g --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user2 \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
   test -d $B_HOME/$B_MOUNT/$B_DEVICE/user3 && \
-    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user3 \
+    rsync -avz --no-o --no-g --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user3 \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
 }
@@ -111,7 +113,7 @@ rsync_disk2ssh_2() {
   echo -n "* Executing rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST on "
   date "+%Y/%m/%d %T"
   test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles && \
-    rsync -avz --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles \
+    rsync -avz --no-o --no-g --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
 }
