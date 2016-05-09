@@ -35,6 +35,14 @@ set_for_mapper() {
     exec_tune2fs $mapper-opt
     exec_tune2fs $mapper-usr
     exec_tune2fs $mapper-home
+    exec_tune2fs $mapper-data
+    exec_tune2fs $mapper--root
+    exec_tune2fs $mapper--tmp
+    exec_tune2fs $mapper--var
+    exec_tune2fs $mapper--opt
+    exec_tune2fs $mapper--usr
+    exec_tune2fs $mapper--home
+    exec_tune2fs $mapper--data
 }
 
 set_lvm_debian() {
