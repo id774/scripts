@@ -155,6 +155,7 @@ install_gem() {
     $SUDO $GEM install when_exe --no-ri --no-rdoc $PROXY
     $SUDO $GEM install ungarbled --no-ri --no-rdoc $PROXY
     $SUDO $GEM install jpstock --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install spreadsheet --no-ri --no-rdoc $PROXY
     $SUDO $GEM install prawn --no-ri --no-rdoc $PROXY
     $SUDO $GEM install pdfkit --no-ri --no-rdoc $PROXY
     $SUDO $GEM install wkhtmltopdf --no-ri --no-rdoc $PROXY
@@ -199,7 +200,6 @@ install_gem() {
     $SUDO $GEM install fluent-plugin-datacounter --no-ri --no-rdoc $PROXY
     $SUDO $GEM install heroku --no-ri --no-rdoc $PROXY
     $SUDO $GEM install aws-sdk --no-ri --no-rdoc $PROXY
-    $SUDO $GEM install travis --no-ri --no-rdoc $PROXY
     test -f /etc/debian_version && $SUDO $GEM install rsruby --no-ri --no-rdoc $PROXY -- --with-R-include=/usr/include/R --with-R-dir=/usr/lib/R
     test -f /etc/redhat-release && $SUDO $GEM install rsruby --no-ri --no-rdoc $PROXY -- --with-R-include=/usr/share/R/include --with-R-dir=/usr/lib/R
     $GEM list --local
