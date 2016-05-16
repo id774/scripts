@@ -158,7 +158,7 @@ install_gem() {
     $SUDO $GEM install spreadsheet --no-ri --no-rdoc $PROXY
     $SUDO $GEM install prawn --no-ri --no-rdoc $PROXY
     $SUDO $GEM install pdfkit --no-ri --no-rdoc $PROXY
-    $SUDO $GEM install wkhtmltopdf --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install wkhtmltopdf-binary-edge --no-ri --no-rdoc $PROXY
     $SUDO $GEM install gnuplot --no-ri --no-rdoc $PROXY
     $SUDO $GEM install ai4r --no-ri --no-rdoc $PROXY
     $SUDO $GEM install --source http://gems.github.com tomz-liblinear-ruby-swig $PROXY
