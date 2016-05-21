@@ -59,7 +59,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U patsy
     $SUDO $PIP install $PROXY -U 'statsmodels>=0.6.1'
     $SUDO $PIP install $PROXY -U sympy
-    $SUDO $PIP install $PROXY -U pystan
+    #$SUDO $PIP install $PROXY -U pystan
     $SUDO $PIP install $PROXY seaborn
     $SUDO $PIP install $PROXY bokeh
     $SUDO $PIP install $PROXY -U twisted
