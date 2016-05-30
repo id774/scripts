@@ -70,7 +70,7 @@ emacs_batch_byte_compile() {
 }
 
 deploy_dotfile() {
-    for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore toprc gemrc pryrc Rprofile emacs
+    for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore toprc gemrc Rprofile emacs
     do
         test -d $1 && sudo cp $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES $1/.$DOT_FILES
     done
