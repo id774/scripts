@@ -50,7 +50,6 @@ install_libs() {
     $SUDO $PIP install $PROXY -U 'scipy>=0.15.1'
     $SUDO $PIP install $PROXY -U 'scikit-learn>=0.16.1'
     $SUDO $PIP install $PROXY -U 'matplotlib>=1.4.3'
-    $SUDO $PIP install $PROXY -U 'pandas<0.17'
     $SUDO $PIP install $PROXY -U japandas
     $SUDO $PIP install $PROXY -U 'pandas-datareader>=0.1.1'
     $SUDO $PIP install $PROXY -U chainer
@@ -102,6 +101,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U pypandoc
     $SUDO $PIP install $PROXY -U DocumentFeatureSelection
     $SUDO $PIP install $PROXY -U python-tr
+    $SUDO $PIP install $PROXY -U 'pandas<0.17'
     $SUDO $PIP install $PROXY -U 'pep8<1.6'
     $SUDO $EASY_INSTALL -U TA-Lib
     $SUDO $EASY_INSTALL -U nltk
