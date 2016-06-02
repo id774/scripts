@@ -46,12 +46,12 @@ install_libs() {
     $SUDO $PIP install $PROXY -U docopt
     $SUDO $PIP install $PROXY -U simplejson
     $SUDO $PIP install $PROXY -U msgpack-python
-    $SUDO $PIP install $PROXY -U 'numpy>=1.9.2'
-    $SUDO $PIP install $PROXY -U 'scipy>=0.15.1'
-    $SUDO $PIP install $PROXY -U 'scikit-learn>=0.16.1'
-    $SUDO $PIP install $PROXY -U 'matplotlib>=1.4.3'
+    $SUDO $PIP install $PROXY -U 'numpy>=1.11.1'
+    $SUDO $PIP install $PROXY -U 'scipy>=0.17.1'
+    $SUDO $PIP install $PROXY -U 'scikit-learn>=0.17.1'
+    $SUDO $PIP install $PROXY -U 'matplotlib>=1.5.1'
     $SUDO $PIP install $PROXY -U japandas
-    $SUDO $PIP install $PROXY -U 'pandas-datareader>=0.1.1'
+    $SUDO $PIP install $PROXY -U 'pandas-datareader>=0.2.1'
     $SUDO $PIP install $PROXY -U chainer
     $SUDO $PIP install $PROXY -U joblib
     $SUDO $PIP install $PROXY -U dask
