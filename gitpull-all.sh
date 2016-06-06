@@ -161,7 +161,7 @@ gitpull_all() {
     gitpull github id774 fluentd-json-receiver $*
     gitpull github id774 house_api_web $*
     gitpull github id774 scipy-lecture-notes $*
-    gitpull github fastladder fastladder $*
+    #gitpull github fastladder fastladder $*
     gitpull github jugyo rubytter $*
     gitpull github fluent fluentd $*
     gitpull github sandal rbp $*
