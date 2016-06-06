@@ -46,7 +46,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U docopt
     $SUDO $PIP install $PROXY -U simplejson
     $SUDO $PIP install $PROXY -U msgpack-python
-    $SUDO $PIP install $PROXY -U 'numpy>=1.11.1'
+    $SUDO $PIP install $PROXY -U 'numpy>=1.11.0'
     $SUDO $PIP install $PROXY -U 'scipy>=0.17.1'
     $SUDO $PIP install $PROXY -U 'scikit-learn>=0.17.1'
     $SUDO $PIP install $PROXY -U japandas
