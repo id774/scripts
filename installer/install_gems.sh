@@ -132,6 +132,7 @@ install_gem() {
     $SUDO $GEM install log4r --no-ri --no-rdoc $PROXY
     $SUDO $GEM install foreman --no-ri --no-rdoc $PROXY
     $SUDO $GEM install sinatra --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install sinatra_more --no-ri --no-rdoc $PROXY
     $SUDO $GEM install -v "~> 3.0.0" redis --no-ri --no-rdoc $PROXY
     $SUDO $GEM install redis-server --no-ri --no-rdoc $PROXY
     $SUDO $GEM install sidekiq -server --no-ri --no-rdoc $PROXY
