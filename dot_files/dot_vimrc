@@ -159,21 +159,21 @@ autocmd FileType python :set shiftwidth=4
 
 augroup filetypedetect
   au BufNewFile,BufRead *.pig set filetype=pig syntax=pig
-augroup END 
+augroup END
 
 if 1 && !filereadable($VIMRUNTIME . '/less.vim')
   au BufNewFile,BufRead *.less setf less
 endif
 
-:cnoremap <C-A>		<Home>
-:cnoremap <C-B>		<Left>
-:cnoremap <C-D>		<Del>
-:cnoremap <C-E>		<End>
-:cnoremap <C-F>		<Right>
-:cnoremap <C-N>		<Down>
-:cnoremap <C-P>		<Up>
-:cnoremap <Esc><C-B>	<S-Left>
-:cnoremap <Esc><C-F>	<S-Right> 
+:cnoremap <C-A>        <Home>
+:cnoremap <C-B>        <Left>
+:cnoremap <C-D>        <Del>
+:cnoremap <C-E>        <End>
+:cnoremap <C-F>        <Right>
+:cnoremap <C-N>        <Down>
+:cnoremap <C-P>        <Up>
+:cnoremap <Esc><C-B>   <S-Left>
+:cnoremap <Esc><C-F>   <S-Right>
 
 map ' `
 map! <C-A>  <Home>
@@ -257,23 +257,23 @@ nmap <Esc><Esc> :nohlsearch<CR><Esc>
 " http://subtech.g.hatena.ne.jp/cho45/20071009#c1191925480
 set completeopt=menuone,preview
 function! CompleteWithoutInsert()
-	return "\<C-n>\<C-r>=pumvisible() ? \"\\<C-P>\\<C-N>\\<C-P>\": \"\"\<CR>"
+    return "\<C-n>\<C-r>=pumvisible() ? \"\\<C-P>\\<C-N>\\<C-P>\": \"\"\<CR>"
 endfunction
 inoremap <expr> <C-n> pumvisible() ? "\<C-n>" : CompleteWithoutInsert()
 let letter = "a"
 while letter <=# "z"
-	execute 'inoremap <expr> ' letter ' "' . letter . '" . (pumvisible() ? "" : CompleteWithoutInsert())'
-	let letter = nr2char(char2nr(letter) + 1)
+    execute 'inoremap <expr> ' letter ' "' . letter . '" . (pumvisible() ? "" : CompleteWithoutInsert())'
+    let letter = nr2char(char2nr(letter) + 1)
 endwhile
 let letter = "A"
 while letter <=# "Z"
-	execute 'inoremap <expr> ' letter ' "' . letter . '" . (pumvisible() ? "" : CompleteWithoutInsert())'
-	let letter = nr2char(char2nr(letter) + 1)
+    execute 'inoremap <expr> ' letter ' "' . letter . '" . (pumvisible() ? "" : CompleteWithoutInsert())'
+    let letter = nr2char(char2nr(letter) + 1)
 endwhile
 let letter = "0"
 while letter <=# "9"
-	execute 'inoremap <expr> ' letter ' "' . letter . '" . (pumvisible() ? "" : CompleteWithoutInsert())'
-	let letter = nr2char(char2nr(letter) + 1)
+    execute 'inoremap <expr> ' letter ' "' . letter . '" . (pumvisible() ? "" : CompleteWithoutInsert())'
+    let letter = nr2char(char2nr(letter) + 1)
 endwhile
 inoremap <expr> <CR> pumvisible() ? "\<C-Y>\<CR>" : "\<CR>"
 set lazyredraw
@@ -282,4 +282,4 @@ if exists('&ambiwidth')
   set ambiwidth=double
 endif
 
-" Copyright (C) 2008-2014 id774 <idnanashi@gmail.com>
+" Copyright (C) 2008-2016 id774 <idnanashi@gmail.com>
