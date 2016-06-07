@@ -1,6 +1,6 @@
 " vim:set ts=8 sts=2 sw=2 tw=0
 "
-" Last Change: 25-Dec-2014.
+" Last Change: 07-Jun-2016.
 " Maintainer:  id774 <idnanashi@gmail.com>
 
 if &encoding !=# 'utf-8'
@@ -89,6 +89,7 @@ colorscheme desert
 set backupdir=$TMP
 set backupext=.bak
 set directory=$TMP
+set undodir=$TMP
 
 if filereadable($VIM . '/vimrc') && filereadable($VIM . '/ViMrC')
   set tags=./tags,tags
