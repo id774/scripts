@@ -7,47 +7,27 @@
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
 -A INPUT -f -j LOG --log-prefix "[IPTABLES FRAGMENT] : "
 -A INPUT -f -j DROP
--A INPUT -s ! 192.168.0.0/255.255.0.0 -p tcp -m multiport --dports 135,136,137,138,139,445 -j DROP
--A INPUT -s ! 192.168.0.0/255.255.0.0 -p udp -m multiport --dports 135,136,137,138,139,445 -j DROP
+-A INPUT ! -s 192.168.0.0/16 -p tcp -m multiport --dports 135,136,137,138,139,445 -j DROP
+-A INPUT ! -s 192.168.0.0/16 -p udp -m multiport --dports 135,136,137,138,139,445 -j DROP
 -A INPUT -p icmp -m icmp --icmp-type 8 -j LOG_PINGDEATH
--A INPUT -d 255.255.255.255 -j DROP
--A INPUT -d 224.0.0.1 -j DROP
+-A INPUT -d 255.255.255.255/32 -j DROP
+-A INPUT -d 224.0.0.1/32 -j DROP
 -A INPUT -p tcp -m tcp --dport 113 -j REJECT --reject-with tcp-reset
--A INPUT -p tcp --dport 11111 -m state --state NEW -m recent --set --name SSH
--A INPUT -p tcp --dport 11111 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name SSH -j LOG --log-prefix "SSH attack: "
--A INPUT -p tcp --dport 11111 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name SSH -j DROP
--A INPUT -p tcp --dport 3306 -m state --state NEW -m recent --set --name MYSQL
--A INPUT -p tcp --dport 3306 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name MYSQL -j LOG --log-prefix "MYSQL attack: "
--A INPUT -p tcp --dport 3306 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name MYSQL -j DROP
--A INPUT -p tcp --dport 5432 -m state --state NEW -m recent --set --name POSTGRES
--A INPUT -p tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES -j LOG --log-prefix "POSTGRES attack: "
--A INPUT -p tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES -j DROP
--A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set --name SSH22
--A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name SSH22 -j LOG --log-prefix "SSH attack: "
--A INPUT -p tcp --dport 22 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name SSH22 -j DROP
--A INPUT -p tcp -m tcp --dport 11111 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --set --name SSH22 --rsource
+-A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name SSH22 --rsource -j LOG --log-prefix "SSH22 attack: "
+-A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name SSH22 --rsource -j DROP
+-A INPUT -p tcp -m tcp --dport 99999 -m state --state NEW -m recent --set --name SSH --rsource
+-A INPUT -p tcp -m tcp --dport 99999 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name SSH --rsource -j LOG --log-prefix "SSH attack: "
+-A INPUT -p tcp -m tcp --dport 99999 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name SSH --rsource -j DROP
+-A INPUT -p tcp -m tcp --dport 3306 -m state --state NEW -m recent --set --name MYSQL --rsource
+-A INPUT -p tcp -m tcp --dport 3306 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name MYSQL --rsource -j LOG --log-prefix "MYSQL attack: "
+-A INPUT -p tcp -m tcp --dport 3306 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name MYSQL --rsource -j DROP
+-A INPUT -p tcp -m tcp --dport 5432 -m state --state NEW -m recent --set --name POSTGRES --rsource
+-A INPUT -p tcp -m tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES --rsource -j LOG --log-prefix "POSTGRES attack: "
+-A INPUT -p tcp -m tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES --rsource -j DROP
+-A INPUT -p tcp -m tcp --dport 99999 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 123 -j ACCEPT
--A INPUT -p tcp -m udp --dport 123 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 5001 -j ACCEPT
--A INPUT -p udp -m udp --dport 5001 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 5432 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 9160 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 27017 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 9418 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 8787 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 5800 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 5900 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 1099 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 1100 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 1101 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 1102 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 1103 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 1104 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 1880 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 3000 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 3001 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 3002 -j ACCEPT
@@ -58,17 +38,11 @@
 -A INPUT -p tcp -m tcp --dport 3007 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 3008 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 3009 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 4567 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 4848 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 8000 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 8181 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 9000 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 9090 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 9999 -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT
 -A INPUT -j DROP
 -A FORWARD -j DROP
--A OUTPUT -d ! 192.168.0.0/255.255.0.0 -p tcp -m multiport --sports 135,136,137,138,139,445 -j DROP
--A OUTPUT -d ! 192.168.0.0/255.255.0.0 -p udp -m multiport --sports 135,136,137,138,139,445 -j DROP
+-A OUTPUT ! -d 192.168.0.0/16 -p tcp -m multiport --sports 135,136,137,138,139,445 -j DROP
+-A OUTPUT ! -d 192.168.0.0/16 -p udp -m multiport --sports 135,136,137,138,139,445 -j DROP
 -A LOG_PINGDEATH -m limit --limit 1/sec --limit-burst 4 -j ACCEPT
 -A LOG_PINGDEATH -j LOG --log-prefix "[IPTABLES PINGDEATH] : "
 -A LOG_PINGDEATH -j DROP
