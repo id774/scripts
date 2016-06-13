@@ -29,11 +29,13 @@ install_iptables() {
             sudo cp $SCRIPTS/etc/iptables/iptables-rhel /etc/sysconfig/iptables
             sudo chmod 600 /etc/sysconfig/iptables
             sudo chown root:root /etc/sysconfig/iptables
+            sudo vim /etc/sysconfig/iptables
             ;;
         debian6)
             sudo cp $SCRIPTS/etc/iptables/iptables-deb /etc/network/if-pre-up.d/iptables
             sudo chmod 700 /etc/network/if-pre-up.d/iptables
             sudo chown root:root /etc/network/if-pre-up.d/iptables
+            sudo vim /etc/network/if-pre-up.d/iptables
             ;;
         *)
             test -f /etc/network/if-pre-up.d/iptables && sudo rm /etc/network/if-pre-up.d/iptables
