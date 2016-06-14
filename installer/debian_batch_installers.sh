@@ -165,7 +165,7 @@ operation() {
     install_dot_vim
     install_dot_zsh
     install_dot_emacs
-    install_dotfiles
+    install_dot_files
     install_truecrypt linux-`uname -m`
     sshfs_modules
     configure_sysstat
