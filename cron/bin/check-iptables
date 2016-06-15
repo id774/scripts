@@ -1,3 +1,3 @@
 #!/bin/sh
 
-iptables -vn -L | grep "SSH attack" > /dev/null || ip addr show | mail -s "[cron][`/bin/hostname`] iptables is not running" xxxxxx@gmail.com
+iptables -vn -L | grep "SSH attack" > /dev/null || ip addr show | mail -s "[admin][`/bin/hostname`] iptables is not running" xxxxxx@gmail.com
