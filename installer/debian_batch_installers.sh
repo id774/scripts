@@ -179,6 +179,7 @@ operation() {
     #setup_web
     setup_rc_local
     setup_ntp
+    setup_check-iptables
     setup_get_resources
     setup_munin
     setup_fail2ban
