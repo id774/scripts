@@ -104,6 +104,10 @@ setup_get_resources() {
     $SCRIPTS/installer/install_get_resources.sh
 }
 
+setup_check-iptables() {
+    $SCRIPTS/installer/install_check-iptables.sh
+}
+
 setup_munin() {
     $SCRIPTS/installer/install_munin.sh
 }
