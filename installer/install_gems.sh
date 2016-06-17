@@ -69,6 +69,7 @@ install_gem() {
     $SUDO $GEM install kaminari '~> 0.15.0' --no-ri --no-rdoc $PROXY
     $SUDO $GEM install kaminari-bootstrap '~> 0.1.3' --no-ri --no-rdoc $PROXY
     $SUDO $GEM install rinku --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install yaml_db --no-ri --no-rdoc $PROXY
     #$SUDO $GEM install enumerable-lazy --no-ri --no-rdoc $PROXY
     $SUDO $GEM install term-ansicolor --no-ri --no-rdoc $PROXY
     $SUDO $GEM install turn --no-ri --no-rdoc $PROXY
