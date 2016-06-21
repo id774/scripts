@@ -1,3 +1,3 @@
 #!/bin/sh
 
-iptables -vn -L | grep "SET name: SSH side: source" > /dev/null || ip addr show | mail -s "[admin][`/bin/hostname`] iptables is not running" xxxxxx@gmail.com
+iptables -vn -L | grep "SET name: SSH side: source" > /dev/null || ip addr show | mail -s "[admin][`/bin/hostname`] iptables is not running" sysadmin@id774.net

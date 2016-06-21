@@ -20,7 +20,7 @@ case "$RSYNC_BACKUP_RUN" in
     date "+%Y/%m/%d %T">>$JOBLOG 2>&1
     echo>>$JOBLOG 2>&1
 
-    # ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
+    # ADMIN_MAIL_ADDRESS=sysadmin@id774.net
     case "$ADMIN_MAIL_ADDRESS" in
       *@*)
         test -r $JOBLOG_1 && cat -v $JOBLOG_1 $JOBLOG | nkf -w | mail -s "[cron][`/bin/hostname`] Rsync Backup Log" $ADMIN_MAIL_ADDRESS

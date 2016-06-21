@@ -7,7 +7,7 @@ test -n "$1" || SOURCE_DRV=$HOME/mnt/sdc
 test -n "$2" && TARGET_DRV=$2
 test -n "$2" || TARGET_DRV=$HOME/mnt/sdb
 test -n "$3" && ADMIN_MAIL_ADDRESS=$3
-test -n "$3" || ADMIN_MAIL_ADDRESS=xxxxxx@gmail.com
+test -n "$3" || ADMIN_MAIL_ADDRESS=sysadmin@id774.net
 
 echo "diskcopy start.">$JOBLOG
 
