@@ -71,8 +71,14 @@ utils_packages() {
 }
 
 optional_packages() {
-    test -f /etc/lsb-release && smart_apt thunderbird
-    test -f /etc/lsb-release || smart_apt icedove
+    test -f /etc/lsb-release && smart_apt thunderbird \
+      thunderbird-locale-ja \
+      firefox \
+      firefox-locale-ja
+    test -f /etc/lsb-release || smart_apt icedove \
+      icedove-l10n-ja \
+      iceweasel \
+      iceweasel-l10n-ja
     smart_apt \
       uim \
       libreoffice \
@@ -89,6 +95,7 @@ optional_packages() {
       wireshark \
       xtightvncviewer \
       chromium-browser \
+      chromium-browser-l10n \
       flashplugin-nonfree
 }
 
