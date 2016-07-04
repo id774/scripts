@@ -112,7 +112,7 @@ install_gem() {
     $SUDO $GEM install cucumber --no-ri --no-rdoc $PROXY
     $SUDO $GEM install capybara --no-ri --no-rdoc $PROXY
     $SUDO $GEM install -v "~> 1.5.1" rubytter --no-ri --no-rdoc $PROXY
-    $SUDO $GEM install -v "~> 2.2.5" termtter --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install -v "~> 2.2.6" termtter --no-ri --no-rdoc $PROXY
     $SUDO $GEM install userstream --no-ri --no-rdoc $PROXY
     $SUDO $GEM install webtail --no-ri --no-rdoc $PROXY
     $SUDO $GEM install zipruby --no-ri --no-rdoc $PROXY
