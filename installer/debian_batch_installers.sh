@@ -130,6 +130,10 @@ change_default() {
     $SCRIPTS/securetty.sh
 }
 
+change_default() {
+    $SCRIPTS/installer/disable_ipv6.sh
+}
+
 customize_for_ubuntu() {
     sudo vi /etc/resolvconf/resolv.conf.d/base /etc/resolv.conf
     sudo ln -fs /var/log/syslog /var/log/messages
@@ -184,6 +188,7 @@ operation() {
     setup_munin
     setup_fail2ban
     change_default
+    disable_ipv6
     test -f /etc/lsb-release && customize_for_ubuntu
     setup_grub
     setup_group_and_passwd
