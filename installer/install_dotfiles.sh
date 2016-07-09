@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.15 7/9,2016
+#       Remove obsolete dotfiles.
 # v1.14 1/15,2015
 #       Add Rprofile.
 # v1.13 10/19,2014
@@ -74,6 +76,10 @@ deploy_dotfile() {
     do
         test -d $1 && sudo cp $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES $1/.$DOT_FILES
     done
+    for DOT_FILES in pryrc
+    do
+        test -d $1 && test -f $1/.$DOT_FILES && sudo rm -f $1/.$DOT_FILES
+    done
 }
 
 setup_dotemacs() {
@@ -102,7 +108,7 @@ setup_dotemacs() {
     test -d /usr/local/etc/emacs.d/elisp && \
       sudo ln -fs /usr/local/etc/emacs.d/elisp $1/.emacs.d/elisp
     test -L /usr/local/etc/emacs.d/elisp/elisp && \
-      sudo rm /usr/local/etc/emacs.d/elisp/elisp
+      sudo rm -f /usr/local/etc/emacs.d/elisp/elisp
 }
 
 mkdir_skelton() {
@@ -213,7 +219,7 @@ install_dotfiles() {
       cp $OPTIONS $HOME/etc/config.local/dot_gitconfig $HOME/.gitconfig
     vi $HOME/.gitconfig
 
-    test -f $HOME/.tmp/.gitconfig.bak && rm $HOME/.tmp/.gitconfig.bak
+    test -f $HOME/.tmp/.gitconfig.bak && rm -f $HOME/.tmp/.gitconfig.bak
     test -f $HOME/.viminfo && sudo chown $USER $HOME/.viminfo
 }
 
