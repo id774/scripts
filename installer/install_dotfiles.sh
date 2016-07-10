@@ -78,7 +78,7 @@ deploy_dotfile() {
     done
     for DOT_FILES in pryrc
     do
-        test -d $1 && test -f $1/.$DOT_FILES && sudo rm -f $1/.$DOT_FILES
+        test -d $1 && test -f $1/.$DOT_FILES && sudo rm -vf $1/.$DOT_FILES
     done
 }
 
