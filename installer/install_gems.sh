@@ -99,7 +99,9 @@ install_gem() {
     $SUDO $GEM install capistrano --no-ri --no-rdoc $PROXY
     $SUDO $GEM install redgreen --no-ri --no-rdoc $PROXY
     $SUDO $GEM install minitest --no-ri --no-rdoc $PROXY
-    $SUDO $GEM install -v "~> 3.4" rspec --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install -v "~> 3.5" rspec --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install -v "~> 3.5" rspec-rails --no-ri --no-rdoc $PROXY
+    $SUDO $GEM install -v "~> 3.5" rspec-mocks --no-ri --no-rdoc $PROXY
     $SUDO $GEM install flexmock --no-ri --no-rdoc $PROXY
     $SUDO $GEM install simplecov --no-ri --no-rdoc $PROXY
     $SUDO $GEM install simplecov-rcov --no-ri --no-rdoc $PROXY
