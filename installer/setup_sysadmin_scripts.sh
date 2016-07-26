@@ -82,6 +82,7 @@ setup_scripts() {
     install_scripts 755 waitlock.rb waitlock
     install_scripts 755 swapext.py swapext
     install_scripts 755 git-follow-origin.sh git-follow-origin
+    install_scripts 755 git-co-remote-branch.sh git-co-remote-branch
     install_scripts 755 git-ignore.sh git-ignore
     install_scripts 755 pyck.sh pyck
     install_scripts 755 autopyck.sh autopyck
