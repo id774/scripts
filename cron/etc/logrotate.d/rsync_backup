@@ -1,5 +1,5 @@
 /var/log/sysadmin/rsync_backup {
-  weekly
+  daily
   compress
   delaycompress
   missingok
