@@ -1,16 +1,16 @@
 #!/bin/sh
 #
 ########################################################################
-# Install dot_vim
+# Install PostgreSQL backup
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.0 3/7,2010
-#       Refactoring.
+#  v0.1 7/27,2016
+#       First.
 ########################################################################
 
 setup_environment() {
-    TARGET=$HOME/.vim
+    TARGET=/var/lib/postgresql
 
     case $OSTYPE in
       *darwin*)
@@ -22,14 +22,14 @@ setup_environment() {
     esac
 }
 
-install_dotvim() {
+install_script() {
     setup_environment
 
     sudo cp $OPTIONS $SCRIPTS/cron/etc/cron.d/postgres-backup /etc/cron.d/
-    test -d /var/lib/postgresql && test -d /var/lib/postgresql/backup || sudo mkdir -p /var/lib/postgresql/backup
-    test -d /var/lib/postgresql/backup && sudo chown postgres:postgres /var/lib/postgresql/backup
-    test -d /var/lib/postgresql/backup && sudo chmod 750 /var/lib/postgresql/backup
+    test -d $TARGET && test -d $TARGET/backup || sudo mkdir -p $TARGET/backup
+    test -d $TARGET/backup && sudo chown postgres:postgres $TARGET/backup
+    test -d $TARGET/backup && sudo chmod 750 $TARGET/backup
 }
 
-test -d $SCRIPTS/dot_files/dot_vim || exit 1
-install_dotvim
+test -d $TARGET || exit 1
+install_script
