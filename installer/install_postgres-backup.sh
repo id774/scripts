@@ -27,7 +27,7 @@ install_dotvim() {
 
     sudo cp $OPTIONS $SCRIPTS/cron/etc/cron.d/postgres-backup /etc/cron.d/
     test -d /var/lib/postgresql && test -d /var/lib/postgresql/backup || sudo mkdir -p /var/lib/postgresql/backup
-    test -d /var/lib/postgresql/backup && sudo chown postgres:root /var/lib/postgresql/backup
+    test -d /var/lib/postgresql/backup && sudo chown postgres:postgres /var/lib/postgresql/backup
     test -d /var/lib/postgresql/backup && sudo chmod 750 /var/lib/postgresql/backup
 }
 
