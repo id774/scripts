@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.16 7/28,2016
+#       Include pgsql dir.
 # v1.15 7/9,2016
 #       Remove obsolete dotfiles.
 # v1.14 1/15,2015
@@ -194,6 +196,7 @@ bulk_deploy() {
     deploy_dotfiles_to_others /var/root root
     deploy_dotfiles_to_others /root root
     deploy_dotfiles_to_others /var/lib/postgresql postgres
+    deploy_dotfiles_to_others /var/lib/pgsql postgres
     deploy_dotfiles_to_others /usr/lib/oracle/xe oracle
     deploy_dotfiles_to_others /export/home/solaris solaris
     deploy_dotfiles_to_others /var/lib/jenkins jenkins
