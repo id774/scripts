@@ -27,9 +27,9 @@ install_script() {
     setup_environment
 
     sudo cp $OPTIONS $SCRIPTS/cron/etc/cron.d/postgres-backup /etc/cron.d/
-    test -d $TARGET && test -d $TARGET/backup || sudo mkdir -vp $TARGET/backup
-    test -d $TARGET/backup && sudo chown postgres:postgres $TARGET/backup
-    test -d $TARGET/backup && sudo chmod 750 $TARGET/backup
+    test -d $TARGET && test -d $TARGET/pg_dump || sudo mkdir -v $TARGET/pg_dump
+    test -d $TARGET/pg_dump && sudo chown postgres:postgres $TARGET/pg_dump
+    test -d $TARGET/pg_dump && sudo chmod 750 $TARGET/pg_dump
 }
 
 install_script
