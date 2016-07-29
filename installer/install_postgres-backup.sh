@@ -5,11 +5,14 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 7/29,2016
+#       Change dirname, error check.
 #  v0.1 7/27,2016
 #       First.
 ########################################################################
 
 setup_environment() {
+    test -d /var/lib/postgresql || test -d /var/lib/pgsql || exit 1
     test -d /var/lib/postgresql && TARGET=/var/lib/postgresql
     test -d /var/lib/pgsql && TARGET=/var/lib/pgsql
 
