@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.18 8/1,2016
+#       Mute tar verbose.
 # v1.17 4/19,2016
 #       Transfer between different ownwers.
 # v1.16 5/29,2013
@@ -70,7 +72,7 @@ git_backup() {
   test -f /root/local/git.tar.gz && rm /root/local/git.tar.gz
   rsync -avz --no-o --no-g --delete $1@$2:/var/lib/git /root/local/
   cd /root/local
-  tar czvf git.tar.gz git/
+  tar czvf git.tar.gz git/ > /dev/null
   cp -v /root/local/git.tar.gz $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/
   cd
 }
@@ -162,8 +164,8 @@ operation() {
   smart_info
   #cleanup
   #svn_backup
-  #git_backup git git.id774.net
   #github_backup
+  #git_backup git git.id774.net
 
   #T_DEVICE=sdc
   rsync_disk2disk_1
