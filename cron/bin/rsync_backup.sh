@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.19 8/5,2016
+#       Rename junk file cleaner.
 # v1.18 8/1,2016
 #       Mute tar verbose.
 # v1.17 4/19,2016
@@ -53,8 +55,8 @@ smart_info() {
 }
 
 cleanup() {
-  test -x /root/bin/cleanup4mac.sh && \
-    /root/bin/cleanup4mac.sh $B_HOME/$B_MOUNT/$B_DEVICE
+  test -x /root/bin/cleanup-junk-files.sh && \
+    /root/bin/cleanup-junk-files.sh $B_HOME/$B_MOUNT/$B_DEVICE
 }
 
 svn_backup() {
