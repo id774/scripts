@@ -92,7 +92,7 @@ github_backup() {
 rsync_disk2ssh_0() {
   echo -n "* Executing rsync_disk2ssh_0 $B_DEVICE -> $T_DEVICE of $T_HOST on "
   date "+%Y/%m/%d %T"
-  ping -c 1 $T_HOST  > /dev/null 2>&1 \
+  ping -c 1 $T_HOST > /dev/null 2>&1 \
     test -d $B_HOME/$B_MOUNT/$B_DEVICE && \
     rsync -avz --no-o --no-g --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/
@@ -102,17 +102,17 @@ rsync_disk2ssh_0() {
 rsync_disk2ssh_1() {
   echo -n "* Executing rsync_disk2ssh_1 $B_DEVICE -> $T_DEVICE of $T_HOST on "
   date "+%Y/%m/%d %T"
-  ping -c 1 $T_HOST  > /dev/null 2>&1 \
+  ping -c 1 $T_HOST > /dev/null 2>&1 \
     test -d $B_HOME/$B_MOUNT/$B_DEVICE/user1 && \
     rsync -avz --no-o --no-g --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user1 \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
-  ping -c 1 $T_HOST  > /dev/null 2>&1 \
+  ping -c 1 $T_HOST > /dev/null 2>&1 \
     test -d $B_HOME/$B_MOUNT/$B_DEVICE/user2 && \
     rsync -avz --no-o --no-g --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user2 \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
-  ping -c 1 $T_HOST  > /dev/null 2>&1 \
+  ping -c 1 $T_HOST > /dev/null 2>&1 \
     test -d $B_HOME/$B_MOUNT/$B_DEVICE/user3 && \
     rsync -avz --no-o --no-g --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user3 \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
@@ -122,7 +122,7 @@ rsync_disk2ssh_1() {
 rsync_disk2ssh_2() {
   echo -n "* Executing rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST on "
   date "+%Y/%m/%d %T"
-  ping -c 1 $T_HOST  > /dev/null 2>&1 \
+  ping -c 1 $T_HOST > /dev/null 2>&1 \
     test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles && \
     rsync -avz --no-o --no-g --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
