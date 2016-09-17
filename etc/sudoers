@@ -18,6 +18,7 @@ Defaults    passprompt = "[sudo] <%U@%h> Enter %u's password: "
 
 # Cmnd alias specification
 Cmnd_Alias ADMIN = /sbin/shutdown
+Cmnd_Alias KILL = /usr/bin/pkill
 Cmnd_Alias NETWORK = /etc/init.d/networking
 
 # User privilege specification
@@ -25,7 +26,7 @@ root    ALL=(ALL) ALL
 
 # Members of the admin group may gain root privileges
 %sudo ALL=(ALL) ALL
-%sudo ALL=(root) NOPASSWD: ADMIN, NETWORK
+%sudo ALL=(root) NOPASSWD: ADMIN, KILL, NETWORK
 
 # Allow members of group sudo to execute any command
 #%sudo ALL=(ALL:ALL) ALL
