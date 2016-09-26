@@ -1,7 +1,8 @@
 #!/bin/sh
 
-JOBLOG=$HOME/diskcopy.log
-FILELIST=$HOME/filelist.log
+JOBLOG=$TMP/diskcopy.log
+FILELIST=$TMP/filelist.log
+
 test -n "$1" && SOURCE_DRV=$1
 test -n "$1" || SOURCE_DRV=$HOME/mnt/sdc
 test -n "$2" && TARGET_DRV=$2
@@ -49,6 +50,7 @@ case "$ADMIN_MAIL_ADDRESS" in
     ;;
 esac
 
+
 rsync -av $SOURCE_DRV/largefiles $TARGET_DRV >> $FILELIST 2>&1
 echo "Return code is $?">>$JOBLOG
 echo -n "Diskcopy largefiles completed at `/bin/hostname` on ">>$JOBLOG
@@ -60,5 +62,3 @@ case "$ADMIN_MAIL_ADDRESS" in
     ;;
 esac
 
-test -b /dev/sdb && sudo smartctl -a /dev/sdb
-test -b /dev/sdc && sudo smartctl -a /dev/sdc
