@@ -17,7 +17,7 @@ echo "diskcheck start.">$JOBLOG
 echo -n "Diskcheck job started at `/bin/hostname` on ">>$JOBLOG
 date "+%Y/%m/%d %T">>$JOBLOG
 
-rsync --dry-run -avz --no-o --no-g --delete $SOURCE_DRV/user1 $HOME/mnt/$T_MOUNT/>>$JOBLOG
+rsync --dry-run -avz --no-o --no-g --delete $SOURCE_DRV/user1 $TARGET_DRV/>>$JOBLOG
 echo "Return code is $?">>$JOBLOG
 echo -n "Diskcheck user1 completed at `/bin/hostname` on ">>$JOBLOG
 date "+%Y/%m/%d %T">>$JOBLOG
