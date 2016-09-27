@@ -17,18 +17,22 @@ echo "diskcheck start.">$JOBLOG
 echo -n "Diskcheck job started at `/bin/hostname` on ">>$JOBLOG
 date "+%Y/%m/%d %T">>$JOBLOG
 
+echo "Checking copy (DRY-RUN) from $SOURCE_DRV/user1 to $TARGET_DRV">>$JOBLOG
 rsync --dry-run -avz --no-o --no-g --delete $SOURCE_DRV/user1 $TARGET_DRV/>>$JOBLOG
 echo "Return code is $?">>$JOBLOG
 echo -n "Diskcheck user1 completed at `/bin/hostname` on ">>$JOBLOG
 date "+%Y/%m/%d %T">>$JOBLOG
+echo "Checking copy (DRY-RUN) from $SOURCE_DRV/user2 to $TARGET_DRV">>$JOBLOG
 rsync --dry-run -avz --no-o --no-g --delete $SOURCE_DRV/user2 $TARGET_DRV/>>$JOBLOG
 echo "Return code is $?">>$JOBLOG
 echo -n "Diskcheck user2 completed at `/bin/hostname` on ">>$JOBLOG
 date "+%Y/%m/%d %T">>$JOBLOG
+echo "Checking copy (DRY-RUN) from $SOURCE_DRV/user3 to $TARGET_DRV">>$JOBLOG
 rsync --dry-run -avz --no-o --no-g --delete $SOURCE_DRV/user3 $TARGET_DRV/>>$JOBLOG
 echo "Return code is $?">>$JOBLOG
 echo -n "Diskcheck user3 completed at `/bin/hostname` on ">>$JOBLOG
 date "+%Y/%m/%d %T">>$JOBLOG
+echo "Checking copy (DRY-RUN) from $SOURCE_DRV/largefiles to $TARGET_DRV">>$JOBLOG
 rsync --dry-run -avz --no-o --no-g --delete $SOURCE_DRV/largefiles $TARGET_DRV/>>$JOBLOG
 echo "Return code is $?">>$JOBLOG
 echo -n "Diskcheck largefiles completed at `/bin/hostname` on ">>$JOBLOG

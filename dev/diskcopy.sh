@@ -20,6 +20,7 @@ case "$ADMIN_MAIL_ADDRESS" in
     ;;
 esac
 
+echo "Copying from $SOURCE_DRV/user1 to $TARGET_DRV">>$JOBLOG
 rsync -av $SOURCE_DRV/user1 $TARGET_DRV > $FILELIST 2>&1
 echo "Return code is $?">>$JOBLOG
 echo -n "Diskcopy user1 completed at `/bin/hostname` on ">>$JOBLOG
@@ -30,6 +31,7 @@ case "$ADMIN_MAIL_ADDRESS" in
     ;;
 esac
 
+echo "Copying from $SOURCE_DRV/user2 to $TARGET_DRV">>$JOBLOG
 rsync -av $SOURCE_DRV/user2 $TARGET_DRV >> $FILELIST 2>&1
 echo "Return code is $?">>$JOBLOG
 echo -n "Diskcopy user2 completed at `/bin/hostname` on ">>$JOBLOG
@@ -40,6 +42,7 @@ case "$ADMIN_MAIL_ADDRESS" in
     ;;
 esac
 
+echo "Copying from $SOURCE_DRV/user3 to $TARGET_DRV">>$JOBLOG
 rsync -av $SOURCE_DRV/user3 $TARGET_DRV >> $FILELIST 2>&1
 echo "Return code is $?">>$JOBLOG
 echo -n "Diskcopy user3 completed at `/bin/hostname` on ">>$JOBLOG
@@ -51,6 +54,7 @@ case "$ADMIN_MAIL_ADDRESS" in
 esac
 
 
+echo "Copying from $SOURCE_DRV/largefiles to $TARGET_DRV">>$JOBLOG
 rsync -av $SOURCE_DRV/largefiles $TARGET_DRV >> $FILELIST 2>&1
 echo "Return code is $?">>$JOBLOG
 echo -n "Diskcopy largefiles completed at `/bin/hostname` on ">>$JOBLOG
