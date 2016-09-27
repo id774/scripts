@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.21 9/27,2016
+#       Fix filesystem owner problem.
 # v1.20 8/10,2016
 #       Checking target host.
 # v1.19 8/5,2016
@@ -134,17 +136,17 @@ rsync_disk2disk_1() {
   date "+%Y/%m/%d %T"
   test -d $B_HOME/$B_MOUNT/$B_DEVICE/user1 && \
     test -d $T_HOME/$T_MOUNT/$T_DEVICE/user1 && \
-    rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/user1 \
+    rsync -avz --no-o --no-g --delete $B_HOME/$B_MOUNT/$B_DEVICE/user1 \
     $T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
   test -d $B_HOME/$B_MOUNT/$B_DEVICE/user2 && \
     test -d $T_HOME/$T_MOUNT/$T_DEVICE/user2 && \
-    rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/user2 \
+    rsync -avz --no-o --no-g --delete $B_HOME/$B_MOUNT/$B_DEVICE/user2 \
     $T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
   test -d $B_HOME/$B_MOUNT/$B_DEVICE/user3 && \
     test -d $T_HOME/$T_MOUNT/$T_DEVICE/user3 && \
-    rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/user3 \
+    rsync -avz --no-o --no-g --delete $B_HOME/$B_MOUNT/$B_DEVICE/user3 \
     $T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
 }
@@ -154,7 +156,7 @@ rsync_disk2disk_2() {
   date "+%Y/%m/%d %T"
   test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles && \
     test -d $T_HOME/$T_MOUNT/$T_DEVICE/largefiles && \
-    rsync -av --delete $B_HOME/$B_MOUNT/$B_DEVICE/largefiles \
+    rsync -avz --no-o --no-g --delete $B_HOME/$B_MOUNT/$B_DEVICE/largefiles \
     $T_HOME/$T_MOUNT/$T_DEVICE/
   echo "Return code is $?"
 }
