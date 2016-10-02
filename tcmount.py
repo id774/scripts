@@ -108,9 +108,9 @@ def mount_local(device, options):
           '--fs-options=' + mount_options + \
         ' ~/local/' + device + '.tc ~/mnt/' + device
     os.system(cmd)
-    cmd = 'test -f /home/crypt/' + device +\
+    cmd = 'test -f /data/crypt/' + device +\
         ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
-        mount_options + ' /home/crypt/' + device + ' ~/mnt/' + device
+        mount_options + ' /data/crypt/' + device + ' ~/mnt/' + device
     os_exec(cmd, device)
 
 def tcmount(options, args):
