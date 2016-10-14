@@ -18,6 +18,7 @@ test -d ~/.gem && rm -vrf ~/.gem
 test -d ~/.pip && rm -vrf ~/.pip
 test -d ~/.npm && rm -vrf ~/.npm
 test -d /root/.cache && rm -vrf /root/.cache
-test -d ~/fastladder/log/development.log && rm -vf ~/fastladder/log/development.log
+test -f ~/twitter_viewer/log/twitter1.log && rm -vf ~/twitter_viewer/log/*.log
+test -f ~/fastladder/log/development.log && rm -vf ~/fastladder/log/development.log
 echo "cltmp (20161014) done."
 
