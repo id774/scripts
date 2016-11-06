@@ -130,7 +130,7 @@ change_default() {
     $SCRIPTS/securetty.sh
 }
 
-change_default() {
+disable_ipv6() {
     $SCRIPTS/installer/disable_ipv6.sh
 }
 
