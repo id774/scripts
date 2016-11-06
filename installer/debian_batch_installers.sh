@@ -104,7 +104,7 @@ setup_get_resources() {
     $SCRIPTS/installer/install_get_resources.sh
 }
 
-setup_check-iptables() {
+setup_check_iptables() {
     $SCRIPTS/installer/install_check-iptables.sh
 }
 
@@ -183,7 +183,7 @@ operation() {
     #setup_web
     setup_rc_local
     setup_ntp
-    setup_check-iptables
+    setup_check_iptables
     setup_get_resources
     setup_munin
     setup_fail2ban
