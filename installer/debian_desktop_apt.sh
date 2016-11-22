@@ -94,8 +94,8 @@ optional_packages() {
       skype \
       wireshark \
       xtightvncviewer \
-      chromium-browser \
-      chromium-browser-l10n \
+      chromium \
+      chromium-l10n \
       flashplugin-nonfree
 }
 
