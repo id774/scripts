@@ -130,6 +130,9 @@ setup_environment() {
 install_ruby() {
     setup_environment $*
     case "$1" in
+      233)
+        install_stable2 2.3.3 2.3 $2
+        ;;
       231)
         install_stable2 2.3.1 2.3 $2
         ;;
