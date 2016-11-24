@@ -69,6 +69,22 @@ install_branch() {
     $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/branches/$1/misc
 }
 
+install_stable3() {
+    mkdir install_ruby
+    cd install_ruby
+    curl -L https://cache.ruby-lang.org/pub/ruby/$2/ruby-$1.tar.gz -O
+    tar xzvf ruby-$1.tar.gz
+    cd ruby-$1
+    make_and_install $3
+    make_ext_module zlib readline openssl
+    cd ..
+    test -n "$SUDO" && save_sources $*
+    cd ..
+    $SUDO rm -rf install_ruby
+    test -x $SCRIPTS/installer/install_emacs_ruby.sh && \
+    $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/ruby-$1/misc
+}
+
 install_stable2() {
     mkdir install_ruby
     cd install_ruby
@@ -131,7 +147,7 @@ install_ruby() {
     setup_environment $*
     case "$1" in
       233)
-        install_stable2 2.3.3 2.3 $2
+        install_stable3 2.3.3 2.3 $2
         ;;
       231)
         install_stable2 2.3.1 2.3 $2
