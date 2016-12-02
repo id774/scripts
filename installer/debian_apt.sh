@@ -74,6 +74,7 @@ system_packages() {
       ethtool \
       xdelta \
       sshfs \
+      cifs-utils \
       exim4 \
       sysstat \
       dstat \
@@ -253,7 +254,7 @@ increase_debian_packages() {
     lang_packages
     scm_packages
     db_packages
-    #samba_packages
+    samba_packages
     sqlite_packages
     optional_packages
     ruby_lang
