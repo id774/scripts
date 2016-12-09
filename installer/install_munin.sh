@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 12/9,2016
+#       Apply munin apache conf template.
 #  v0.1 7/7,2011
 #       First.
 ########################################################################
@@ -13,9 +15,9 @@
 sudo apt-get install munin munin-node
 
 # Plugins
-sudo ln -s /usr/share/munin/plugins/apt              /etc/munin/plugins/
-sudo ln -s /usr/share/munin/plugins/ntp_             /etc/munin/plugins/
-sudo ln -s /usr/share/munin/plugins/hddtemp_smartctl /etc/munin/plugins/
+test -L /etc/munin/plugins/apt              || sudo ln -s /usr/share/munin/plugins/apt              /etc/munin/plugins/
+test -L /etc/munin/plugins/ntp_             || sudo ln -s /usr/share/munin/plugins/ntp_             /etc/munin/plugins/
+test -L /etc/munin/plugins/hddtemp_smartctl || sudo ln -s /usr/share/munin/plugins/hddtemp_smartctl /etc/munin/plugins/
 
 # Configure
 sudo vi /etc/munin/munin.conf
@@ -26,7 +28,8 @@ sudo chmod 640 /etc/apache2/.htpasswd
 sudo vi /etc/rsyslog.conf
 #AllowOverride All
 #Allow from all
-sudo vi /etc/munin/apache.conf
+sudo cp $SCRIPTS/etc/munin-apache.conf /etc/munin/apache.conf
+sudo chown root:root /etc/munin/apache.conf
 
 # Restart
 sudo /etc/init.d/rsyslog restart
