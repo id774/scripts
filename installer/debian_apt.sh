@@ -113,7 +113,8 @@ debian_developer_tools() {
       dh-make \
       libgtk2.0-dev \
       python-software-properties \
-      apt-file
+      apt-file \
+      software-properties-common
 #      apt-listchanges apt-listbugs \
 }
 
