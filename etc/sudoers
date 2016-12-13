@@ -7,6 +7,8 @@
 # See the man page for details on how to write a sudoers file.
 #
 Defaults    env_reset
+Defaults    env_keep="http_proxy"
+Defaults    env_keep+="https_proxy"
 Defaults    mail_badpass
 Defaults    secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 Defaults    !lecture,tty_tickets,!fqdn
@@ -25,12 +27,9 @@ Cmnd_Alias NETWORK = /etc/init.d/networking
 # User privilege specification
 root    ALL=(ALL) ALL
 
-# Members of the admin group may gain root privileges
+# Allow members of group sudo to execute any command
 %sudo ALL=(ALL) ALL
 %sudo ALL=(root) NOPASSWD: ADMIN, KILL, NETWORK
-
-# Allow members of group sudo to execute any command
-#%sudo ALL=(ALL:ALL) ALL
 
 # See sudoers(5) for more information on "#include" directives:
 
