@@ -12,7 +12,7 @@
 ########################################################################
 
 # Packages
-sudo apt-get install munin munin-node
+sudo apt-get -y install munin munin-node
 
 # Plugins
 test -L /etc/munin/plugins/apt              || sudo ln -s /usr/share/munin/plugins/apt              /etc/munin/plugins/
