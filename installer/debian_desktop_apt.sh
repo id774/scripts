@@ -81,6 +81,7 @@ optional_packages() {
       iceweasel-l10n-ja
     smart_apt \
       fcitx-mozc \
+      emacs-mozc \
       libreoffice \
       vim-gnome \
       gthumb \
