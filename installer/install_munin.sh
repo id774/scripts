@@ -30,8 +30,7 @@ sudo vi /etc/rsyslog.conf
 #Allow from all
 sudo cp $SCRIPTS/etc/munin-apache.conf /etc/munin/apache.conf
 sudo chown root:root /etc/munin/apache.conf
-test -f /etc/munin/apache24.conf && sudo rm -f /etc/munin/apache24.conf
-test -L /etc/munin/apache24.conf || sudo ln -s /etc/munin/apache.conf /etc/munin/apache24.conf
+test -f /etc/munin/apache24.conf && sudo rm -f /etc/munin/apache24.conf && sudo ln -s /etc/munin/apache.conf /etc/munin/apache24.conf
 
 # Restart
 sudo /etc/init.d/rsyslog restart
