@@ -1,23 +1,31 @@
 #!/bin/sh
 #
 ########################################################################
-# Install Numix for Debian
+# Install Numix
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.2 12/26,2016
+#       Running on Ubuntu.
 #  v0.1 12/24,2016
 #       First version.
 ########################################################################
 
-# if Ubuntu, exit 1
-test -f /etc/lsb-release && exit 1
-# if not Debian, exit 1
-test -f /etc/debian_version || exit 1
+UBUNTU_CODENAME=xenial
+DEBIAN_CODENAME=jessie
+
+# if not Debian, exit 2
+test -f /etc/debian_version || exit 2
+
+# Already installed, exit 1
+test -f /etc/apt/sources.list.d/numix-ppa-$UBUNTU_CODENAME.list && exit 1
+test -f /etc/apt/sources.list.d/numix-ppa-$DEBIAN_CODENAME.list && exit 1
 
 sudo apt-get install -y software-properties-common
 sudo add-apt-repository ppa:numix/ppa
 
-sudo sed -i 's/jessie/xenial/g' /etc/apt/sources.list.d/numix-ppa-jessie.list
+# If Debian, Replace source list from Debian to Ubuntu
+test -f /etc/apt/sources.list.d/numix-ppa-$DEBIAN_CODENAME.list && sudo sed -i "s/$DEBIAN_CODENAME/$UBUNTU_CODENAME/g" /etc/apt/sources.list.d/numix-ppa-$DEBIAN_CODENAME.list
 sudo apt-get update
 
 sudo apt-get install -y numix-gtk-theme numix-icon-theme-circle
