@@ -63,6 +63,7 @@ uninstall_sysadmin_scripts() {
         dpkg-hold \
         platex2pdf \
         userlist \
+        usershells \
         port-upgrade \
         port-cleanup
 }
@@ -97,6 +98,7 @@ setup_rhel_scripts() {
     install_scripts 755 get_resources.sh get_resources
     install_scripts 755 tcmount.py tcmount
     install_scripts 755 userlist.sh userlist
+    install_scripts 755 usershells.py usershells
 }
 
 setup_debian_scripts() {
@@ -106,6 +108,7 @@ setup_debian_scripts() {
     install_scripts 755 tcmount.py tcmount
     install_scripts 755 platex2pdf.sh platex2pdf
     install_scripts 755 userlist.sh userlist
+    install_scripts 755 usershells.py usershells
 }
 
 install_sysadmin_scripts() {
