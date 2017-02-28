@@ -6,6 +6,9 @@ exec_sql() {
     echo $* | $SQL_COMMAND
 }
 
+SQL="delete from feeds where subscribers_count = 0;"
+exec_sql $SQL
+
 SQL="select title from feeds;"
 exec_sql $SQL
 
