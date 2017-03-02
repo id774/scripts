@@ -132,6 +132,7 @@ def main():
         'fabric',
         'pypandoc',
         'talib',
+        'zipline',
         'nltk',
         'MeCab',
         'CaboCha'

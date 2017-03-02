@@ -98,6 +98,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U fabric
     $SUDO $PIP install $PROXY -U uwsgi
     $SUDO $PIP install $PROXY -U pypandoc
+    $SUDO $PIP install $PROXY -U zipline
     $SUDO $PIP install $PROXY -U DocumentFeatureSelection
     $SUDO $PIP install $PROXY -U python-tr
     $SUDO $PIP install $PROXY -U 'matplotlib<1.5'
