@@ -1,0 +1,1 @@
+00 22 * * 1-6 root cd / && tar czvf /home/backup/stocks.tar.gz /var/stock>/dev/null 2>&1
