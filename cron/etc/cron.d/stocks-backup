@@ -1,1 +1,1 @@
-05 22 * * 1-6 root cd / && tar czvf /home/backup/stocks.tar.gz -C / var/stock 1>/dev/null
+05 03 * * 2-6 root cd / && tar czvf /home/backup/stocks.tar.gz -C / var/stock 1>/dev/null
