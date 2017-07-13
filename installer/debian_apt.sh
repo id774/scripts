@@ -91,6 +91,7 @@ system_packages() {
       manpages-ja-dev \
       xmanpages-ja \
       lm-sensors \
+      needrestart \
       hddtemp \
       smartmontools
 #      linux-source \
