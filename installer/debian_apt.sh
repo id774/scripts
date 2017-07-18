@@ -47,7 +47,7 @@ basic_packages() {
       libgtest0 libgtest-dev \
       libgoogle-perftools0 libgoogle-perftools-dev \
       doxygen \
-      tar zip gzip unzip bzip2 \
+      tar zip gzip unzip bzip2 unar \
       p7zip p7zip-full \
       zsh \
       screen
