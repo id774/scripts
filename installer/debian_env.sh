@@ -50,7 +50,7 @@ operation() {
     $SCRIPTS/installer/setup_tune2fs.sh
 
     test -f /etc/lsb-release && DISTRIB_CODENAME=xenial
-    test -f /etc/lsb-release || DISTRIB_CODENAME=jessie
+    test -f /etc/lsb-release || DISTRIB_CODENAME=stretch
     setup_apt_source
     #chromium_daily_gpg
 
