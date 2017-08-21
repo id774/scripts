@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.4 8/21,2017
+#       Fix prefix option bug.
 #  v0.3 1/20,2014
 #       Renew screen build process.
 #  v0.2 9/16,2010
@@ -37,7 +39,7 @@ save_sources() {
 
 make_and_install() {
     test -n "$1" || ./configure --prefix=/opt/screen --enable-pam --enable-colors256 --enable-rxvt_osc --enable-use-locale --enable-telnet
-    test -n "$1" && ./configure --prefix=$2 --enable-pam --enable-colors256 --enable-rxvt_osc --enable-use-locale --enable-telnet
+    test -n "$1" && ./configure --prefix=$1 --enable-pam --enable-colors256 --enable-rxvt_osc --enable-use-locale --enable-telnet
     sudo make
     sudo make install
 }
@@ -49,7 +51,7 @@ get_screen() {
     cd screen/src
     autoconf
     ./autogen.sh
-    test "$1" = "sourceonly" || make_and_install $1 $2
+    test "$1" = "sourceonly" || make_and_install $*
     cd ../..
     test -n "$2" || save_sources
     cd ..
