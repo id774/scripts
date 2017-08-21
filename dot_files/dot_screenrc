@@ -21,7 +21,7 @@ terminfo kterm hs@
 vbell off
 bell_msg "Bell in window %"
 bind w windowlist -b
-hardstatus alwayslastline "%{= wk} %-w%{=bu dr}%n %t%{-}%+w %= %{=b wb}%y/%m/%d %{=b wb}%c"
+hardstatus alwayslastline "%{= wk} %-w%{=bu dr}%n %t%{-}%+w %= %{=b wk}%y/%m/%d %{=b wk}%c"
 shell -$SHELL
 startup_message off
 autodetach on
