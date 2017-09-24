@@ -1,0 +1,3 @@
+MAILTO=root
+
+00 22 * * 5 root /sbin/shutdown -h now
