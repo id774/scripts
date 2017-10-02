@@ -1,3 +1,3 @@
 #!/bin/sh
 
-ps -H auxwww | grep termtter | grep -v "grep termtter" | grep -v "check-termtter" > /dev/null || ip addr show | mail -s "[admin][`/bin/hostname`] termtter is not running" sysadmin@id774.net
+ps -H auxwww | grep termtter | grep -v "grep termtter" | grep -v "check-termtter" | grep termtter > /dev/null || ip addr show | mail -s "[admin][`/bin/hostname`] termtter is not running" sysadmin@id774.net
