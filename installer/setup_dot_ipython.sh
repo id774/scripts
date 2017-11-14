@@ -25,6 +25,7 @@ copy_dotipython() {
     ipython profile create default
     test -d $HOME/.ipython/profile_default/startup || mkdir -p $HOME/.ipython/profile_default/startup
     cp $OPTIONS $SCRIPTS/dot_files/dot_ipython/profile_default/startup/00-init.py $HOME/.ipython/profile_default/startup/
+    cp $OPTIONS $SCRIPTS/dot_files/dot_zshrc_local $HOME/.zshrc_local
 }
 
 main() {
