@@ -32,22 +32,8 @@ try:
     print("import pandas as pd")
     import pandas.tools.plotting as plotting
     print("import pandas.tools.plotting as plotting")
-    import japandas as jpd
-    print("import japandas as jpd")
 except ImportError:
     print("pandas has not been loaded")
-
-try:
-    import matplotlib.pyplot as plt
-    print("import matplotlib.pyplot as plt")
-except ImportError:
-    print("matplotlib has not been loaded")
-
-try:
-    import pylab
-    print("import pylab")
-except ImportError:
-    print("pylab has not been loaded")
 
 try:
     import talib as ta
