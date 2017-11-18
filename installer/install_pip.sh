@@ -101,6 +101,8 @@ install_libs() {
     $SUDO $PIP install $PROXY -U zipline
     $SUDO $PIP install $PROXY -U DocumentFeatureSelection
     $SUDO $PIP install $PROXY -U python-tr
+    $SUDO $PIP install $PROXY -U keras
+    $SUDO $PIP install $PROXY -U tensorflow
     $SUDO $PIP install $PROXY -U 'matplotlib<1.5'
     $SUDO $PIP install $PROXY -U 'pandas<0.17'
     $SUDO $PIP install $PROXY -U 'pep8<1.6'
