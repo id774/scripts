@@ -78,7 +78,10 @@
             "name": "Default profile",
             "selected": true,
             "simple_modifications": {
-                "japanese_eisuu": "left_command"
+                 "caps_lock": "japanese_eisuu",
+                 "escape": "japanese_eisuu",
+                 "japanese_eisuu": "escape",
+                 "japanese_kana": "return_or_enter"
             },
             "virtual_hid_keyboard": {
                 "caps_lock_delay_milliseconds": 0,
