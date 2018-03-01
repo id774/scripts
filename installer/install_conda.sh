@@ -90,7 +90,7 @@ install_libs() {
     $PIP install -y zipline
     $PIP install -y DocumentFeatureSelection
     $PIP install -y python-tr
-    $PIP install -y keras
+    $PIP install -y -c conda-forge keras
     $PIP install -y tensorflow
     $PIP install -y 'matplotlib<1.5'
     $PIP install -y 'pandas<0.17'
