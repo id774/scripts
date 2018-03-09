@@ -146,8 +146,17 @@ setup_environment() {
 install_ruby() {
     setup_environment $*
     case "$1" in
+      250)
+        install_stable3 2.5.0 2.5 $2
+        ;;
+      243)
+        install_stable3 2.4.3 2.4 $2
+        ;;
       241)
         install_stable3 2.4.1 2.4 $2
+        ;;
+      236)
+        install_stable3 2.3.6 2.3 $2
         ;;
       234)
         install_stable3 2.3.4 2.3 $2
@@ -316,6 +325,9 @@ install_ruby() {
         ;;
       186-420)
         install_stable 1.8.6-p420 1.8 $2
+        ;;
+      25-svn)
+        install_branch ruby_2_4 $2
         ;;
       24-svn)
         install_branch ruby_2_4 $2
