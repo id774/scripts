@@ -95,7 +95,6 @@ install_libs() {
     $SUDO $PIP install $PROXY -U networkx
     $SUDO $PIP install $PROXY -U pdfminer3k
     $SUDO $PIP install $PROXY -U pybrain
-    $SUDO $PIP install $PROXY -U fabric
     $SUDO $PIP install $PROXY -U uwsgi
     $SUDO $PIP install $PROXY -U pypandoc
     $SUDO $PIP install $PROXY -U zipline

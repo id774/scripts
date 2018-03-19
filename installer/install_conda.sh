@@ -83,7 +83,6 @@ install_libs() {
     $PIP install -y networkx
     $PIP install -y pdfminer3k
     $PIP install -y pybrain
-    $PIP install -y fabric
     $PIP install -y uwsgi
     $PIP install -y pypandoc
     $PIP install -y zipline
