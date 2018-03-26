@@ -28,6 +28,16 @@ except ImportError:
     print("scipy has not been loaded")
 
 try:
+    import matplotlib as mpl
+    print("import matplotlib as mpl")
+    mpl.use('Agg')
+    print("mpl.use('Agg')")
+    import matplotlib.pyplot as plt
+    print("import matplotlib.pyplot as plt")
+except ImportError:
+    print("matplotlib has not been loaded")
+
+try:
     import pandas as pd
     print("import pandas as pd")
     import pandas.tools.plotting as plotting
