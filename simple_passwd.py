@@ -5,7 +5,7 @@ import string
 from random import choice
 
 def generate_passwd(length):
-    print("".join([choice(string.ascii_lowercase + string.digits)
+    print("".join([choice(string.ascii_letters + string.digits + '_' + '-' + '!' + '#' + '&')
                    for i in range(int(length))]))
 
 if __name__ == '__main__':
