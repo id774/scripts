@@ -18,6 +18,6 @@ keycode 111 = Up
 keycode 116 = Down
 keycode 112 = Prior
 keycode 117 = Next
-keycode 97 = backslash underscore
+keycode 97 = underscore backslash
 keycode 98 = Up
 keycode 36 = Return
