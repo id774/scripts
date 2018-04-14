@@ -122,72 +122,72 @@ assembla_git_all() {
 gitpull_all() {
     gitpull github id774 dot_zsh $*
     gitpull github id774 dot_emacs $*
-    gitpull github id774 automaticruby $*
-    gitpull github id774 termtter $*
-    gitpull github id774 termtter-plugins $*
-    gitpull github id774 munin-plugins $*
-    gitpull github id774 deferred-sync $*
-    gitpull github id774 stdout $*
-    gitpull github id774 sysadmin $*
-    gitpull github id774 instant-deployer $*
-    gitpull github id774 twitter_viewer $*
-    gitpull github id774 blog_viewer $*
-    gitpull github id774 repo_manager $*
-    gitpull github id774 abuse $*
-    gitpull github id774 naivebayes $*
-    gitpull github id774 kmeans $*
-    gitpull github id774 recommendation $*
-    gitpull github id774 vocabulary $*
-    gitpull github id774 depression $*
-    gitpull github id774 numerology $*
+    #gitpull github id774 automaticruby $*
+    #gitpull github id774 termtter $*
+    #gitpull github id774 termtter-plugins $*
+    #gitpull github id774 munin-plugins $*
+    #gitpull github id774 deferred-sync $*
+    #gitpull github id774 stdout $*
+    #gitpull github id774 sysadmin $*
+    #gitpull github id774 instant-deployer $*
+    #gitpull github id774 twitter_viewer $*
+    #gitpull github id774 blog_viewer $*
+    #gitpull github id774 repo_manager $*
+    #gitpull github id774 abuse $*
+    #gitpull github id774 naivebayes $*
+    #gitpull github id774 kmeans $*
+    #gitpull github id774 recommendation $*
+    #gitpull github id774 vocabulary $*
+    #gitpull github id774 depression $*
+    #gitpull github id774 numerology $*
     gitpull github id774 sandbox $*
-    gitpull github id774 hotnews $*
+    #gitpull github id774 hotnews $*
     gitpull github id774 finance $*
     gitpull github id774 finance-dashboard $*
-    gitpull github id774 list_shift $*
-    gitpull github id774 rurima $*
-    gitpull github id774 batch_framework $*
-    gitpull github id774 intraweb-template $*
-    gitpull github id774 heartbeat-id774net $*
-    gitpull github id774 hadoop-streaming $*
-    gitpull github id774 d3js-charts $*
-    gitpull github id774 ctoD $*
-    gitpull github id774 okura $*
-    gitpull github id774 flask-hello $*
-    gitpull github id774 flask-bootstrap $*
-    gitpull github id774 rails4-bootstrap $*
-    gitpull github id774 rails5-bootstrap $*
-    gitpull github id774 sinatra-bootstrap $*
-    gitpull github id774 sinatra-api-provider $*
-    gitpull github id774 fluentd-json-receiver $*
-    gitpull github id774 house_api_web $*
-    gitpull github id774 scipy-lecture-notes $*
+    #gitpull github id774 list_shift $*
+    #gitpull github id774 rurima $*
+    #gitpull github id774 batch_framework $*
+    #gitpull github id774 intraweb-template $*
+    #gitpull github id774 heartbeat-id774net $*
+    #gitpull github id774 hadoop-streaming $*
+    #gitpull github id774 d3js-charts $*
+    #gitpull github id774 ctoD $*
+    #gitpull github id774 okura $*
+    #gitpull github id774 flask-hello $*
+    #gitpull github id774 flask-bootstrap $*
+    #gitpull github id774 rails4-bootstrap $*
+    #gitpull github id774 rails5-bootstrap $*
+    #gitpull github id774 sinatra-bootstrap $*
+    #gitpull github id774 sinatra-api-provider $*
+    #gitpull github id774 fluentd-json-receiver $*
+    #gitpull github id774 house_api_web $*
+    #gitpull github id774 scipy-lecture-notes $*
     #gitpull github fastladder fastladder $*
-    gitpull github jugyo rubytter $*
-    gitpull github fluent fluentd $*
-    gitpull github sandal rbp $*
-    gitpull github emacs-helm helm $*
-    gitpull github eschulte rhtml $*
-    gitpull github eschulte rinari $*
-    gitpull github auto-complete auto-complete $*
-    gitpull github auto-complete popup-el $*
-    gitpull github auto-complete fuzzy-el $*
-    gitpull github kiwanami emacs-deferred
-    gitpull github hitode909 emacs-highlight-unique-symbol
-    gitpull github rooney zencoding $*
-    gitpull github hober html5-el $*
-    gitpull github nex3 haml-mode $*
-    gitpull github nex3 sass-mode $*
-    gitpull github antonj scss-mode $*
-    gitpull github defunkt coffee-mode $*
-    gitpull github mooz js2-mode $*
-    gitpull github mooz shadow.el $*
-    gitpull github ujihisa shadow.vim $*
-    gitpull github othree html5.vim $*
-    gitpull github kchmck vim-coffee-script $*
-    gitpull github tpope vim-haml $*
-    heroku_git git d3js-data-clips $*
-    heroku_git git d3js-stacked-chart $*
+    #gitpull github jugyo rubytter $*
+    #gitpull github fluent fluentd $*
+    #gitpull github sandal rbp $*
+    #gitpull github emacs-helm helm $*
+    #gitpull github eschulte rhtml $*
+    #gitpull github eschulte rinari $*
+    #gitpull github auto-complete auto-complete $*
+    #gitpull github auto-complete popup-el $*
+    #gitpull github auto-complete fuzzy-el $*
+    #gitpull github kiwanami emacs-deferred
+    #gitpull github hitode909 emacs-highlight-unique-symbol
+    #gitpull github rooney zencoding $*
+    #gitpull github hober html5-el $*
+    #gitpull github nex3 haml-mode $*
+    #gitpull github nex3 sass-mode $*
+    #gitpull github antonj scss-mode $*
+    #gitpull github defunkt coffee-mode $*
+    #gitpull github mooz js2-mode $*
+    #gitpull github mooz shadow.el $*
+    #gitpull github ujihisa shadow.vim $*
+    #gitpull github othree html5.vim $*
+    #gitpull github kchmck vim-coffee-script $*
+    #gitpull github tpope vim-haml $*
+    #heroku_git git d3js-data-clips $*
+    #heroku_git git d3js-stacked-chart $*
 }
 
 main() {
