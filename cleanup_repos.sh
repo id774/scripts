@@ -21,8 +21,10 @@ clean_repo \
   automaticruby \
   batch_framework \
   blog_viewer \
+  bootstrap \
   classify \
   coffee-mode \
+  coffee-script \
   ctoD \
   d3js-charts \
   d3js-data-clips \
@@ -48,6 +50,7 @@ clean_repo \
   instant-deployer \
   intraweb-template \
   js2-mode \
+  kabbala \
   kmeans \
   list_shift \
   munin-plugins \
@@ -56,6 +59,7 @@ clean_repo \
   newscloud-sinatra \
   numerology \
   okura \
+  plagger \
   popup-el \
   rails4-bootstrap \
   rails5-bootstrap \
@@ -65,6 +69,7 @@ clean_repo \
   repo_manager \
   rhtml \
   rinari \
+  rub \
   rubytter \
   rurima \
   sass-mode \
@@ -73,15 +78,17 @@ clean_repo \
   service_portal \
   shadow.el \
   shadow.vim \
+  sinatra \
   sinatra-api-provider \
   sinatra-bootstrap \
   stdout \
+  summer-jumbo \
   sysadmin \
   termtter \
   termtter-plugins \
+  triglav \
   twitter_viewer \
   vim-coffee-script \
-  vim-ham \
   vim-haml \
   vocabulary \
   weekly-report \
