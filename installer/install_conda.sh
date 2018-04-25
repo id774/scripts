@@ -88,6 +88,10 @@ install_libs() {
     $PIP install -y zipline
     $PIP install -y DocumentFeatureSelection
     $PIP install -y python-tr
+    $PIP install -y mod_wsgi
+    $PIP install -y beaker
+    $PIP install -y python-memcached
+    $PIP install -y psycopg2-binary
     $PIP install -y -c conda-forge keras
     $PIP install -y tensorflow
     $PIP install -y matplotlib
