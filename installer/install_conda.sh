@@ -21,6 +21,7 @@ setup_environment() {
 }
 
 install_libs() {
+    $CONDA update -n base -y conda
     $CONDA install -y pip
     $CONDA install -y IPython
     $CONDA install -y jupyter
