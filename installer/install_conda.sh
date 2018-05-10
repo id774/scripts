@@ -6,6 +6,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.3 5/10,2018
+#       Remove channels conda-forge.
 #  v0.2 5/2,2018
 #       Append channels conda-forge.
 #  v0.1 2/28,2018
@@ -17,7 +19,6 @@ setup_environment() {
     test -n "$1" || export EASY_INSTALL=$HOME/local/anaconda3/bin/easy_install
     test -n "$1" && export CONDA=$1/bin/conda
     test -n "$1" || export CONDA=$HOME/local/anaconda3/bin/conda
-    $CONDA config --append channels conda-forge
 }
 
 install_libs() {
