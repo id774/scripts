@@ -186,8 +186,8 @@ gitpull_all() {
     gitpull github othree html5.vim $*
     gitpull github kchmck vim-coffee-script $*
     gitpull github tpope vim-haml $*
-    heroku_git git d3js-data-clips $*
-    heroku_git git d3js-stacked-chart $*
+    #heroku_git git d3js-data-clips $*
+    #heroku_git git d3js-stacked-chart $*
 }
 
 main() {
