@@ -69,14 +69,14 @@ gitpull_all() {
     pull_from_gitbare git development $*
     pull_from_gitbare git data $*
     pull_from_gitbare git id774-net $*
-    # pull_from_gitbare git kabbala $*
-    # pull_from_gitbare git goodstory $*
-    # pull_from_gitbare git service_portal $*
-    # pull_from_gitbare git redmine $*
-    # pull_from_gitbare git wordpress $*
-    # pull_from_gitbare git news_cloud $*
-    # pull_from_gitbare git newscloud-sinatra $*
-    # pull_from_gitbare git classify $*
+    pull_from_gitbare git kabbala $*
+    pull_from_gitbare git goodstory $*
+    pull_from_gitbare git service_portal $*
+    pull_from_gitbare git redmine $*
+    pull_from_gitbare git wordpress $*
+    pull_from_gitbare git news_cloud $*
+    pull_from_gitbare git newscloud-sinatra $*
+    pull_from_gitbare git classify $*
 }
 
 setup_environment $*
