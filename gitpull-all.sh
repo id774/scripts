@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.4 5/23,2018
+#       Fix option bug.
 #  v1.3 2/3,2016
 #       Add ifexist option.
 #  v1.2 12/17,2014
@@ -172,8 +174,8 @@ gitpull_all() {
     gitpull github auto-complete auto-complete $*
     gitpull github auto-complete popup-el $*
     gitpull github auto-complete fuzzy-el $*
-    gitpull github kiwanami emacs-deferred
-    gitpull github hitode909 emacs-highlight-unique-symbol
+    gitpull github kiwanami emacs-deferred $*
+    gitpull github hitode909 emacs-highlight-unique-symbol $*
     gitpull github rooney zencoding $*
     gitpull github hober html5-el $*
     gitpull github nex3 haml-mode $*
