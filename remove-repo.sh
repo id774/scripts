@@ -6,4 +6,12 @@ remove_repo() {
     test -L $HOME/$1 && rm -vf $HOME/$1
 }
 
-test -n "$1" && remove_repo $1
+remove_repos() {
+    while [ $# -gt 0 ]
+    do
+        remove_repo $1
+        shift
+    done
+}
+
+test -n "$1" && remove_repos $*
