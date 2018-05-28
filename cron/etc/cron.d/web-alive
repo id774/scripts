@@ -1,0 +1,5 @@
+MAILTO=root
+
+WEBSITE=xxxxxx
+
+00 * * * * root cd / && wget --no-check-certificate --spider -nv --timeout 60 -t 1 https://$WEBSITE/ 2>&1 | grep -c '200 OK' >/dev/null 2>&1 || echo "$WEBSITE is down" | mail -s "[admin][alert][`/bin/hostname`] $WEBSITE is down" sysadmin@id774.net
