@@ -1,0 +1,3 @@
+MAILTO=root
+
+00 04 * * * root sudo systemctl restart memcached.service && sudo systemctl restart httpd.service
