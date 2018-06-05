@@ -2,6 +2,7 @@
   weekly
   compress
   delaycompress
+  notifempty
   missingok
   create 0640 automatic adm
   rotate 52
@@ -11,6 +12,7 @@
   monthly
   compress
   delaycompress
+  notifempty
   missingok
   create 0660 automatic automatic
   rotate 12

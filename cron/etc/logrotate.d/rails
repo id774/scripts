@@ -3,6 +3,7 @@
   weekly
   compress
   delaycompress
+  notifempty
   missingok
   create 0660 www-data www-data
   rotate 52

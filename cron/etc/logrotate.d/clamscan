@@ -2,6 +2,7 @@
   weekly
   compress
   delaycompress
+  notifempty
   missingok
   create 0640 clamav adm
   rotate 52
@@ -11,6 +12,7 @@
   weekly
   compress
   delaycompress
+  notifempty
   missingok
   create 0640 clamav adm
   rotate 52
