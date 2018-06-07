@@ -2,7 +2,6 @@
 
 LC_CTYPE=ja_JP.UTF-8
 JOBLOG=/var/log/sysadmin/rsync_backup
-JOBLOG_1=/var/log/sysadmin/rsync_backup.1
 TRIGGER_FILE=/home/ubuntu/mnt/rsync_backup
 
 # trigger check
@@ -23,8 +22,7 @@ case "$RSYNC_BACKUP_RUN" in
     # ADMIN_MAIL_ADDRESS=sysadmin@id774.net
     case "$ADMIN_MAIL_ADDRESS" in
       *@*)
-        test -r $JOBLOG_1 && cat -v $JOBLOG_1 $JOBLOG | nkf -w | mail -s "[cron][`/bin/hostname`] Rsync Backup Log" $ADMIN_MAIL_ADDRESS
-        test -r $JOBLOG_1 || cat -v $JOBLOG | nkf -w | mail -s "[cron][`/bin/hostname`] Rsync Backup Log" $ADMIN_MAIL_ADDRESS
+        test -r $JOBLOG && cat -v $JOBLOG | nkf -w | mail -s "[cron][`/bin/hostname`] Rsync Backup Log" $ADMIN_MAIL_ADDRESS
         ;;
     esac
     ;;
