@@ -1,1 +1,6 @@
-ServerAliveInterval 120
+Host *
+  IdentityFile ~/.ssh/id_rsa
+  ForwardAgent yes
+  TCPKeepAlive yes
+  ServerAliveInterval 120
+  ServerAliveCountMax 5
