@@ -26,6 +26,8 @@ fix_apt_listbugs() {
 
 configure_exim4() {
     sudo dpkg-reconfigure exim4-config
+    sudo vi /etc/aliases
+    sudo newaliases
 }
 
 install_dot_vim() {
