@@ -177,6 +177,8 @@ bulk_deploy() {
       centos \
       sl \
       admin \
+      sysadmin \
+      sysop \
       ec2-user \
       git \
       automatic \
