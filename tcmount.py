@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.2 8/22,2018
+#       Requires privilege to run dmesg.
 #  v2.1 9/26,2016
 #       Correspond to sdz.
 #  v2.0 5/26,2014
@@ -24,7 +26,7 @@ import sys
 import os
 
 def os_exec(cmd, device):
-    os.system('dmesg | grep ' + device)
+    os.system('sudo dmesg | grep ' + device)
     os.system(cmd)
 
 def mount_drive(options, args, mount_options, device):
@@ -123,7 +125,7 @@ def tcmount(options, args):
         mount_device(options, args)
 
 def main():
-    version = "2.1"
+    version = "2.2"
     from optparse import OptionParser
     usage = "usage: %prog [options]"
     parser = OptionParser(usage)
