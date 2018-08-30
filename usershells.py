@@ -12,5 +12,5 @@ for line in fo:
 fo.close()
 
 for account in shells.keys():
-    if not (shells[account].endswith('false') or shells[account].endswith('nologin')):
+    if 'false' not in shells[account] and 'nologin' not in shells[account] and 'sync' not in shells[account] and 'shutdown' not in shells[account] and 'halt' not in shells[account]:
         print("{0:11} => {1}".format(account, shells[account]))
