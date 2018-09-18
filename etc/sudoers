@@ -23,6 +23,7 @@ Defaults    passprompt = "[sudo] <%U@%h> Enter %u's password: "
 Cmnd_Alias ADMIN = /sbin/shutdown
 Cmnd_Alias KILL = /usr/bin/pkill
 Cmnd_Alias NETWORK = /etc/init.d/networking
+Cmnd_Alias IPTABLES = /sbin/iptables
 
 # User privilege specification
 root    ALL=(ALL) ALL
@@ -30,6 +31,7 @@ root    ALL=(ALL) ALL
 # Allow members of group sudo to execute any command
 %sudo ALL=(ALL) ALL
 %sudo ALL=(root) NOPASSWD: ADMIN, KILL, NETWORK
+%munin ALL=(root) NOPASSWD: IPTABLES
 
 # See sudoers(5) for more information on "#include" directives:
 
