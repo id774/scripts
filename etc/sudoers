@@ -26,7 +26,7 @@ Cmnd_Alias NETWORK = /etc/init.d/networking
 Cmnd_Alias IPTABLES = /sbin/iptables
 
 # User privilege specification
-root    ALL=(ALL) ALL
+root	ALL=(ALL:ALL) ALL
 
 # Allow members of group sudo to execute any command
 %sudo ALL=(ALL) ALL
