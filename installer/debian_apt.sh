@@ -82,6 +82,7 @@ system_packages() {
       clamav \
       chkrootkit \
       jq \
+      arp-scan \
       nmap \
       tcpdump \
       iperf \
