@@ -24,7 +24,7 @@ operation() {
     test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
     test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
     $SCRIPTS/installer/purge_obsolete_sources.sh
-    install_ruby 244 /opt/ruby/2.4
+    install_ruby 260 /opt/ruby/2.6
 }
 
 operation $*

@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.1 1/14,2019
+#       Remove obsolete versions.
 #  v2.0 3/11,2015
 #       Fix bugs.
 #       Specify nosudo option.
@@ -146,221 +148,29 @@ setup_environment() {
 install_ruby() {
     setup_environment $*
     case "$1" in
-      251)
-        install_stable3 2.5.1 2.5 $2
+      260)
+        install_stable3 2.6.0 2.6 $2
         ;;
-      244)
-        install_stable3 2.4.4 2.4 $2
+      253)
+        install_stable3 2.5.3 2.5 $2
         ;;
-      241)
-        install_stable3 2.4.1 2.4 $2
+      245)
+        install_stable3 2.4.5 2.4 $2
         ;;
-      237)
-        install_stable3 2.3.7 2.3 $2
+      238)
+        install_stable3 2.3.8 2.3 $2
         ;;
-      234)
-        install_stable3 2.3.4 2.3 $2
-        ;;
-      233)
-        install_stable3 2.3.3 2.3 $2
-        ;;
-      231)
-        install_stable2 2.3.1 2.3 $2
-        ;;
-      230)
-        install_stable2 2.3.0 2.3 $2
-        ;;
-      225)
-        install_stable2 2.2.5 2.2 $2
-        ;;
-      224)
-        install_stable2 2.2.4 2.2 $2
-        ;;
-      222)
-        install_stable2 2.2.2 2.2 $2
-        ;;
-      221)
-        install_stable2 2.2.1 2.2 $2
-        ;;
-      220)
-        install_stable2 2.2.0 2.2 $2
-        ;;
-      2110)
-        install_stable2 2.1.10 2.1 $2
-        ;;
-      219)
-        install_stable2 2.1.9 2.1 $2
-        ;;
-      218)
-        install_stable2 2.1.8 2.1 $2
-        ;;
-      216)
-        install_stable2 2.1.6 2.1 $2
-        ;;
-      215)
-        install_stable2 2.1.5 2.1 $2
-        ;;
-      214)
-        install_stable 2.1.4 2.1 $2
-        ;;
-      213)
-        install_stable 2.1.3 2.1 $2
-        ;;
-      212)
-        install_stable 2.1.2 2.1 $2
-        ;;
-      211)
-        install_stable 2.1.1 2.1 $2
-        ;;
-      210-0)
-        install_stable 2.1.0 2.1 $2
-        ;;
-      200-645)
-        install_stable 2.0.0-p645 2.0 $2
-        ;;
-      200-598)
-        install_stable 2.0.0-p598 2.0 $2
-        ;;
-      200-594)
-        install_stable 2.0.0-p594 2.0 $2
-        ;;
-      200-576)
-        install_stable 2.0.0-p576 2.0 $2
-        ;;
-      200-481)
-        install_stable 2.0.0-p481 2.0 $2
-        ;;
-      200-451)
-        install_stable 2.0.0-p451 2.0 $2
-        ;;
-      200-353)
-        install_stable 2.0.0-p353 2.0 $2
-        ;;
-      200-247)
-        install_stable 2.0.0-p247 2.0 $2
-        ;;
-      200-195)
-        install_stable 2.0.0-p195 2.0 $2
-        ;;
-      200-0)
-        install_stable 2.0.0-p0 2.0 $2
-        ;;
-      193-551)
-        install_stable 1.9.3-p551 1.9 $2
-        ;;
-      193-550)
-        install_stable 1.9.3-p550 1.9 $2
-        ;;
-      193-547)
-        install_stable 1.9.3-p547 1.9 $2
-        ;;
-      193-484)
-        install_stable 1.9.3-p484 1.9 $2
-        ;;
-      193-448)
-        install_stable 1.9.3-p448 1.9 $2
-        ;;
-      193-429)
-        install_stable 1.9.3-p429 1.9 $2
-        ;;
-      193-392)
-        install_stable 1.9.3-p392 1.9 $2
-        ;;
-      193-385)
-        install_stable 1.9.3-p385 1.9 $2
-        ;;
-      193-374)
-        install_stable 1.9.3-p374 1.9 $2
-        ;;
-      193-362)
-        install_stable 1.9.3-p362 1.9 $2
-        ;;
-      193-327)
-        install_stable 1.9.3-p327 1.9 $2
-        ;;
-      193-286)
-        install_stable 1.9.3-p286 1.9 $2
-        ;;
-      193-194)
-        install_stable 1.9.3-p194 1.9 $2
-        ;;
-      193-125)
-        install_stable 1.9.3-p125 1.9 $2
-        ;;
-      193-0)
-        install_stable 1.9.3-p0 1.9 $2
-        ;;
-      192-290)
-        install_stable 1.9.2-p290 1.9 $2
-        ;;
-      192-180)
-        install_stable 1.9.2-p180 1.9 $2
-        ;;
-      192-136)
-        install_stable 1.9.2-p136 1.9 $2
-        ;;
-      192-0)
-        install_stable 1.9.2-p0 1.9 $2
-        ;;
-      191-431)
-        install_stable 1.9.1-p431 1.9 $2
-        ;;
-      191-430)
-        install_stable 1.9.1-p430 1.9 $2
-        ;;
-      191-429)
-        install_stable 1.9.1-p429 1.9 $2
-        ;;
-      191-378)
-        install_stable 1.9.1-p378 1.9 $2
-        ;;
-      191-376)
-        install_stable 1.9.1-p376 1.9 $2
-        ;;
-      191-243)
-        install_stable 1.9.1-p243 1.9 $2
-        ;;
-      187-374)
-        install_stable 1.8.7-p374 1.8 $2
-        ;;
-      186-420)
-        install_stable 1.8.6-p420 1.8 $2
+      26-svn)
+        install_branch ruby_2_6 $2
         ;;
       25-svn)
-        install_branch ruby_2_4 $2
+        install_branch ruby_2_5 $2
         ;;
       24-svn)
         install_branch ruby_2_4 $2
         ;;
       23-svn)
         install_branch ruby_2_3 $2
-        ;;
-      22-svn)
-        install_branch ruby_2_2 $2
-        ;;
-      21-svn)
-        install_branch ruby_2_1 $2
-        ;;
-      20-svn)
-        install_branch ruby_2_0_0 $2
-        ;;
-      18-svn)
-        install_branch ruby_1_8 $2
-        ;;
-      193-svn)
-        install_branch ruby_1_9_3 $2
-        ;;
-      192-svn)
-        install_branch ruby_1_9_2 $2
-        ;;
-      191-svn)
-        install_branch ruby_1_9_1 $2
-        ;;
-      187-svn)
-        install_branch ruby_1_8_7 $2
-        ;;
-      186-svn)
-        install_branch ruby_1_8_6 $2
         ;;
       trunk)
         install_trunk $2
