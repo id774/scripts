@@ -49,8 +49,8 @@ operation() {
     # tune2fs
     $SCRIPTS/installer/setup_tune2fs.sh
 
-    test -f /etc/lsb-release && DISTRIB_CODENAME=xenial
-    test -f /etc/lsb-release || DISTRIB_CODENAME=stretch
+    test -f /etc/lsb-release && DISTRIB_CODENAME=bionic
+    test -f /etc/lsb-release || DISTRIB_CODENAME=buster
     setup_apt_source
     #chromium_daily_gpg
 
