@@ -75,7 +75,7 @@ system_packages() {
       xdelta \
       sshfs \
       cifs-utils \
-      exim4 \
+      postfix \
       sysstat \
       dstat \
       anacron \

@@ -171,7 +171,7 @@ erase_history() {
 operation() {
     set_zsh_to_default
     fix_apt_listbugs
-    configure_exim4
+    #configure_exim4
     install_dot_vim
     install_dot_zsh
     install_dot_emacs
