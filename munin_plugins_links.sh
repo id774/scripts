@@ -10,5 +10,7 @@ cd $PLUGINS_DIR
 sudo $SCRIPT_NAME
 rm $SCRIPT_NAME
 
+sudo rm ntp_[0-9]*
+
 sudo systemctl restart munin-node.service
 
