@@ -58,15 +58,15 @@ command_c() {
 }
 
 setup() {
+    if [ ${opt1} -eq 1 ] ; then
+        echo opt1: true
+    fi
+    if [ ${opt2} -eq 1 ] ; then
+        echo opt2: true
+    fi
     for arg in ${args[@]}; do
         echo args: ${arg}
     done
-    if [ ${opt1} -eq 1 ] ; then
-        echo opt1: true 
-    fi 
-    if [ ${opt2} -eq 1 ] ; then
-        echo opt2: true
-    fi 
 }
 
 main() {
