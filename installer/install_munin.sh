@@ -16,20 +16,13 @@
 # Packages
 sudo apt-get -y install munin munin-node
 
-# Plugins
-test -L /etc/munin/plugins/apt              || sudo ln -s /usr/share/munin/plugins/apt              /etc/munin/plugins/
-test -L /etc/munin/plugins/ntp_             || sudo ln -s /usr/share/munin/plugins/ntp_             /etc/munin/plugins/
-test -L /etc/munin/plugins/hddtemp_smartctl || sudo ln -s /usr/share/munin/plugins/hddtemp_smartctl /etc/munin/plugins/
-
 # Configure
-sudo vi /etc/munin/munin.conf
+sudo vi /etc/munin/munin.conf /etc/munin/munin-conf.d/localhost.conf
 test -r /etc/apache2/.htpasswd || sudo htpasswd -c /etc/apache2/.htpasswd admin
 sudo chown root:www-data /etc/apache2/.htpasswd
 sudo chmod 640 /etc/apache2/.htpasswd
 #*.*;auth,authpriv.none,cron.none,mail.none		-/var/log/syslog
 sudo vi /etc/rsyslog.conf /etc/rsyslog.d/50-default.conf
-#AllowOverride All
-#Allow from all
 sudo cp $SCRIPTS/etc/munin-apache.conf /etc/munin/apache.conf
 sudo chown root:root /etc/munin/apache.conf
 test -f /etc/munin/apache24.conf && sudo rm -f /etc/munin/apache24.conf && sudo ln -s /etc/munin/apache.conf /etc/munin/apache24.conf
@@ -39,4 +32,4 @@ sudo /etc/init.d/rsyslog restart
 sudo /etc/init.d/munin-node restart
 sudo /etc/init.d/apache2 restart
 
-munin-node-configure
+$SCRIPTS/munin_plugins_links.sh
