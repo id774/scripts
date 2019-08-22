@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.3 8/22,2019
+#       Change default filename of rsyslog.
 #  v0.2 12/9,2016
 #       Apply munin apache conf template.
 #  v0.1 7/7,2011
@@ -25,7 +27,7 @@ test -r /etc/apache2/.htpasswd || sudo htpasswd -c /etc/apache2/.htpasswd admin
 sudo chown root:www-data /etc/apache2/.htpasswd
 sudo chmod 640 /etc/apache2/.htpasswd
 #*.*;auth,authpriv.none,cron.none,mail.none		-/var/log/syslog
-sudo vi /etc/rsyslog.conf
+sudo vi /etc/rsyslog.conf /etc/rsyslog.d/50-default.conf
 #AllowOverride All
 #Allow from all
 sudo cp $SCRIPTS/etc/munin-apache.conf /etc/munin/apache.conf
