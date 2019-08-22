@@ -44,8 +44,8 @@ basic_packages() {
       valgrind strace ltrace \
       scons \
       libcunit1 libcunit1-dev \
-      libgtest0 libgtest-dev \
-      libgoogle-perftools0 libgoogle-perftools-dev \
+      libgtest-dev \
+      libgoogle-perftools-dev \
       doxygen \
       tar zip gzip unzip bzip2 unar \
       p7zip p7zip-full \
@@ -105,7 +105,6 @@ debian_developer_tools() {
       dpkg-dev \
       lintian \
       debhelper \
-      yada \
       equivs \
       cvs-buildpackage \
       dupload \
@@ -126,7 +125,7 @@ editor_packages() {
       texlive-latex-base \
       dvipng \
       texinfo \
-      emacs23 emacs23-el \
+      emacs emacs-common \
       ess \
       mew stunnel ca-certificates \
       w3m-el-snapshot w3m-img imagemagick \
@@ -173,7 +172,8 @@ lang_packages() {
       global \
       markdown \
       graphviz graphviz-dev \
-      gsl-bin libgsl0-dev libgsl-ruby libnarray-ruby \
+      gsl-bin libgsl-dev libgsl-ruby libnarray-ruby \
+      libpng-dev libpng12-0 libpng16-16 \
       shunit2 \
       pandoc
 }
@@ -193,7 +193,7 @@ db_packages() {
 
 samba_packages() {
     smart_apt \
-      samba smbfs smbclient swat
+      samba cifs-utils smbclient swat
 }
 
 sqlite_packages() {
@@ -222,7 +222,7 @@ ruby_lang() {
     smart_apt \
       autoconf byacc bison automake \
       libopenssl-ruby libreadline-dev zlib1g-dev ruby \
-      ruby2.0 ruby2.0-dev libruby2.0 ruby-sqlite3
+      ruby ruby-dev libruby ruby-sqlite3
       # autoconf-doc
 }
 
