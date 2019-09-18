@@ -1,0 +1,5 @@
+MAILTO=root
+
+01 03 * * * root cd / && /root/bin/smartctl_monitor.sh sda
+02 03 * * * root cd / && /root/bin/smartctl_monitor.sh sdb
+03 03 * * * root cd / && /root/bin/smartctl_monitor.sh sdc
