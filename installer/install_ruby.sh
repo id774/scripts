@@ -154,8 +154,8 @@ install_ruby() {
       257)
         install_stable3 2.5.7 2.5 $2
         ;;
-      248)
-        install_stable3 2.4.8 2.4 $2
+      249)
+        install_stable3 2.4.9 2.4 $2
         ;;
       238)
         install_stable3 2.3.8 2.3 $2
