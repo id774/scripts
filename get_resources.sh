@@ -37,6 +37,22 @@ echo "[ip addr show]"
 ip addr show
 echo
 
+echo "[lsof -i]"
+lsof -i
+echo
+
+echo "[lsof -U]"
+lsof -U
+echo
+
+echo "[ss -t]"
+ss -t
+echo
+
+echo "[netstat -t]"
+netstat -t
+echo
+
 echo "[netstat -s]"
 netstat -s
 echo
