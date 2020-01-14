@@ -41,10 +41,6 @@ echo "[lsof -i]"
 lsof -i
 echo
 
-echo "[lsof -U]"
-lsof -U
-echo
-
 echo "[ss -t]"
 ss -t
 echo
