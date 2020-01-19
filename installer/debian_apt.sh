@@ -73,6 +73,7 @@ system_packages() {
       dnsutils \
       ethtool \
       xdelta \
+      autossh \
       sshfs \
       cifs-utils \
       postfix \
