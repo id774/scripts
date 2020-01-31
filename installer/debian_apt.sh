@@ -73,6 +73,7 @@ system_packages() {
       dnsutils \
       ethtool \
       wakeonlan \
+      openmpi-bin \
       xdelta \
       autossh \
       sshfs \
