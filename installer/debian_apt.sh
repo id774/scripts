@@ -72,6 +72,7 @@ system_packages() {
       digitools \
       dnsutils \
       ethtool \
+      wakeonlan \
       xdelta \
       autossh \
       sshfs \
