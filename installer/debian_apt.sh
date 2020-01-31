@@ -93,7 +93,6 @@ system_packages() {
       vrms \
       manpages-ja \
       manpages-ja-dev \
-      xmanpages-ja \
       lm-sensors \
       needrestart \
       hddtemp \
@@ -116,7 +115,6 @@ debian_developer_tools() {
       debget \
       dh-make \
       libgtk2.0-dev \
-      python-software-properties \
       apt-file \
       software-properties-common
 #      apt-listchanges apt-listbugs \
@@ -128,7 +126,7 @@ editor_packages() {
       texlive-latex-base \
       dvipng \
       texinfo \
-      emacs emacs-common \
+      emacs \
       ess \
       mew stunnel ca-certificates \
       w3m-el-snapshot w3m-img imagemagick \
@@ -175,7 +173,7 @@ lang_packages() {
       global \
       markdown \
       graphviz graphviz-dev \
-      gsl-bin libgsl-dev libgsl-ruby libnarray-ruby \
+      gsl-bin libgsl-dev \
       libpng-dev libpng12-0 libpng16-16 \
       shunit2 \
       pandoc
@@ -196,7 +194,7 @@ db_packages() {
 
 samba_packages() {
     smart_apt \
-      samba cifs-utils smbclient swat
+      samba cifs-utils smbclient
 }
 
 sqlite_packages() {
@@ -209,22 +207,21 @@ sqlite_packages() {
 optional_packages() {
     smart_apt \
       gnuserv \
-      mingw32 mingw32-binutils mingw32-runtime \
       libxml2 libxml2-dev \
-      libxslt-dev libxslt1-dev libxml-dev \
-      libxslt-ruby python-libxslt1 \
-      expat libexpat-dev \
+      libxslt-dev libxslt1-dev \
+      python-libxslt1 \
+      expat \
       libssl-dev libio-socket-ssl-perl libnet-ssleay-perl \
       libtemplate-perl libxml-libxml-perl \
       migemo \
-      libcurl4-openssl-dev apache2-threaded-dev libapr1-dev libaprutil1-dev \
+      libcurl4-openssl-dev libapr1-dev libaprutil1-dev \
       libgpcl-dev
 }
 
 ruby_lang() {
     smart_apt \
       autoconf byacc bison automake \
-      libopenssl-ruby libreadline-dev zlib1g-dev ruby \
+      libreadline-dev zlib1g-dev ruby \
       ruby ruby-dev libruby ruby-sqlite3
       # autoconf-doc
 }
@@ -239,13 +236,12 @@ nodejs_lang() {
 apache_packages() {
     smart_apt \
       apache2 \
-      apache2-mpm-prefork \
       apache2-utils
 }
 
 java_packages() {
     smart_apt \
-      openjdk-6-jdk
+      openjdk-11-jdk
 }
 
 increase_debian_packages() {
