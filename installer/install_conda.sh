@@ -97,6 +97,7 @@ install_libs() {
     $CONDA install -y beaker
     $CONDA install -y python-memcached
     $CONDA install -y psycopg2-binary
+    $CONDA install -y mpi4py
     $CONDA install -y keras
     $CONDA install -y tensorflow
     $CONDA install -y matplotlib

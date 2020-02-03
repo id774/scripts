@@ -104,6 +104,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U beaker
     $SUDO $PIP install $PROXY -U python-memcached
     $SUDO $PIP install $PROXY -U psycopg2-binary
+    $SUDO $PIP install $PROXY -U mpi4py
     $SUDO $PIP install $PROXY -U keras
     $SUDO $PIP install $PROXY -U tensorflow
     $SUDO $PIP install $PROXY -U 'matplotlib<1.5'
