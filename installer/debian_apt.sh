@@ -84,6 +84,7 @@ system_packages() {
       anacron \
       clamav \
       chkrootkit \
+      lshw \
       jq \
       arp-scan \
       nmap \
