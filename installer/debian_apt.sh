@@ -65,7 +65,7 @@ system_packages() {
       fail2ban \
       locales \
       nkf \
-      mailx \
+      mailutils \
       mutt \
       tree \
       sharutils \
