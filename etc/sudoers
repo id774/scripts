@@ -6,14 +6,14 @@
 #
 # See the man page for details on how to write a sudoers file.
 #
-Defaults    env_reset
-Defaults    env_keep="http_proxy"
-Defaults    env_keep+="https_proxy"
-Defaults    mail_badpass
-Defaults    secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-Defaults    !lecture,tty_tickets,!fqdn
-Defaults    timestamp_timeout = 180
-Defaults    passprompt = "[sudo] <%U@%h> Enter %u's password: "
+Defaults env_reset
+Defaults env_keep="http_proxy"
+Defaults env_keep+="https_proxy"
+Defaults mail_badpass
+Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+Defaults !lecture,tty_tickets,!fqdn
+Defaults timestamp_timeout = 180
+Defaults passprompt = "[sudo] <%U@%h> Enter %u's password: "
 
 # Host alias specification
 
@@ -25,7 +25,7 @@ Cmnd_Alias KILL = /usr/bin/pkill
 Cmnd_Alias IPTABLES = /sbin/iptables
 
 # User privilege specification
-root	ALL=(ALL:ALL) ALL
+root ALL=(ALL:ALL) ALL
 
 # Allow members of group sudo to execute any command
 %sudo ALL=(ALL:ALL) ALL
