@@ -90,6 +90,7 @@ system_packages() {
       nmap \
       tcpdump \
       iperf \
+      wvdial \
       pwgen \
       vrms \
       manpages-ja \
