@@ -26,7 +26,7 @@ Cmnd_Alias SOFTWARE = /usr/bin/apt, /usr/bin/apt-get, /usr/bin/aptitude
 Cmnd_Alias STORAGE = /sbin/fdisk, /sbin/sfdisk, /sbin/parted, /sbin/partprobe, /bin/mount, /bin/umount
 Cmnd_Alias DRIVERS = /sbin/modprobe
 Cmnd_Alias NETWORKING = /sbin/route, /sbin/ifconfig, /bin/ping, /sbin/dhclient, /usr/bin/net, /sbin/iptables, /usr/bin/rfcomm, /usr/bin/wvdial, /sbin/iwconfig, /sbin/mii-tool
-Cmnd_Alias PROCESSES = /usr/bin/nice, /usr/bin/kill, /usr/bin/killall
+Cmnd_Alias PROCESSES = /usr/bin/nice, /usr/bin/kill, /usr/bin/killall, /usr/bin/pkill
 
 # User privilege specification
 root ALL=(ALL:ALL) ALL
