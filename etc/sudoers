@@ -23,18 +23,19 @@ Defaults passprompt = "[sudo] <%U@%h> Enter %u's password: "
 Cmnd_Alias SHUTDOWN = /sbin/shutdown
 Cmnd_Alias SERVICES = /bin/systemctl
 Cmnd_Alias SOFTWARE = /usr/bin/apt, /usr/bin/apt-get, /usr/bin/aptitude
-Cmnd_Alias STORAGE = /sbin/fdisk, /sbin/sfdisk, /sbin/parted, /sbin/partprobe, /bin/mount, /bin/umount, /usr/sbin/smartctl
+Cmnd_Alias STORAGE = /sbin/fdisk, /sbin/sfdisk, /sbin/parted, /sbin/partprobe, /bin/mount, /bin/umount
 Cmnd_Alias DRIVERS = /sbin/modprobe
 Cmnd_Alias EDITORS = /usr/bin/vi, /usr/bin/vim, /usr/bin/emacs
 Cmnd_Alias NETWORKING = /sbin/route, /sbin/ifconfig, /bin/ping, /sbin/dhclient, /usr/bin/net, /sbin/iptables, /usr/bin/rfcomm, /usr/bin/wvdial, /sbin/iwconfig, /sbin/mii-tool
 Cmnd_Alias PROCESSES = /usr/bin/nice, /usr/bin/kill, /usr/bin/killall, /usr/bin/pkill
+Cmnd_Alias SMARTOOLS = /usr/sbin/smartctl
 
 # User privilege specification
 root ALL=(ALL:ALL) ALL
 
 # Allow members of group sudo to execute any command
 %sudo ALL=(ALL:ALL) ALL
-%sudo ALL=(root) NOPASSWD: SHUTDOWN, SERVICES, SOFTWARE, STORAGE, DRIVERS, EDITORS, NETWORKING, PROCESSES
+%sudo ALL=(root) NOPASSWD: SHUTDOWN, SERVICES, SOFTWARE, STORAGE, DRIVERS, EDITORS, NETWORKING, PROCESSES, SMARTOOLS
 %munin ALL=(root) NOPASSWD: NETWORKING
 
 # See sudoers(5) for more information on "#include" directives:
