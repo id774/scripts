@@ -22,7 +22,7 @@ Defaults passprompt = "[sudo] <%U@%h> Enter %u's password: "
 # Cmnd alias specification
 Cmnd_Alias SHUTDOWN = /sbin/shutdown
 Cmnd_Alias SERVICES = /bin/systemctl
-Cmnd_Alias SOFTWARE = /usr/bin/apt, /usr/bin/apt-get, /usr/bin/aptitude
+Cmnd_Alias SOFTWARE = /usr/bin/apt, /usr/bin/apt-get, /usr/bin/aptitude, /usr/bin/dpkg
 Cmnd_Alias STORAGE = /sbin/fdisk, /sbin/sfdisk, /sbin/parted, /sbin/partprobe, /bin/mount, /bin/umount
 Cmnd_Alias DRIVERS = /sbin/modprobe
 Cmnd_Alias EDITORS = /usr/bin/vi, /usr/bin/vim, /usr/bin/emacs
@@ -30,7 +30,6 @@ Cmnd_Alias NETWORKING = /sbin/route, /sbin/ifconfig, /bin/ping, /sbin/dhclient, 
 Cmnd_Alias PROCESSES = /usr/bin/nice, /usr/bin/kill, /usr/bin/killall, /usr/bin/pkill
 Cmnd_Alias SMARTOOLS = /usr/sbin/smartctl
 Cmnd_Alias POSTMASTER = /usr/sbin/postalias, /usr/sbin/postcat, /usr/sbin/postconf, /usr/sbin/postfix, /usr/sbin/postkick, /usr/sbin/postlock, /usr/sbin/postlog, /usr/sbin/postmap, /usr/sbin/postqueue, /usr/sbin/postsuper, /usr/bin/mailq, /usr/bin/newaliases, /usr/sbin/sendmail
-
 
 # User privilege specification
 root ALL=(ALL:ALL) ALL
