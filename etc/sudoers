@@ -29,13 +29,15 @@ Cmnd_Alias EDITORS = /usr/bin/vi, /usr/bin/vim, /usr/bin/emacs
 Cmnd_Alias NETWORKING = /sbin/route, /sbin/ifconfig, /bin/ping, /sbin/dhclient, /usr/bin/net, /sbin/iptables, /usr/bin/rfcomm, /usr/bin/wvdial, /sbin/iwconfig, /sbin/mii-tool
 Cmnd_Alias PROCESSES = /usr/bin/nice, /usr/bin/kill, /usr/bin/killall, /usr/bin/pkill
 Cmnd_Alias SMARTOOLS = /usr/sbin/smartctl
+Cmnd_Alias POSTMASTER = /usr/sbin/postalias, /usr/sbin/postcat, /usr/sbin/postconf, /usr/sbin/postfix, /usr/sbin/postkick, /usr/sbin/postlock, /usr/sbin/postlog, /usr/sbin/postmap, /usr/sbin/postqueue, /usr/sbin/postsuper, /usr/bin/mailq, /usr/bin/newaliases, /usr/sbin/sendmail
+
 
 # User privilege specification
 root ALL=(ALL:ALL) ALL
 
 # Allow members of group sudo to execute any command
 %sudo ALL=(ALL:ALL) ALL
-%sudo ALL=(root) NOPASSWD: SHUTDOWN, SERVICES, SOFTWARE, STORAGE, DRIVERS, EDITORS, NETWORKING, PROCESSES, SMARTOOLS
+%sudo ALL=(root) NOPASSWD: SHUTDOWN, SERVICES, SOFTWARE, STORAGE, DRIVERS, EDITORS, NETWORKING, PROCESSES, SMARTOOLS, POSTMASTER
 %munin ALL=(root) NOPASSWD: NETWORKING
 
 # See sudoers(5) for more information on "#include" directives:
