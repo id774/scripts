@@ -22,6 +22,7 @@
 
 import sys
 import imp
+import warnings
 
 class PythonModuleInfo:
 
@@ -94,6 +95,8 @@ def main():
         'matplotlib',
         'pandas',
         'japandas',
+        'tensorflow',
+        'keras',
         'joblib',
         'dask',
         'patsy',
@@ -138,7 +141,11 @@ def main():
         'CaboCha'
     ]
 
-    [m.get_info(p) for p in packages]
+    warnings.resetwarnings()
+
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        [m.get_info(p) for p in packages]
 
 if __name__ == '__main__':
     main()
