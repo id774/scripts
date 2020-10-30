@@ -124,7 +124,6 @@ def main():
         'watson-developer-cloud',
         'html5lib',
         'PIL',
-        'ggplot',
         'pyper',
         'awscli',
         'openpyxl',

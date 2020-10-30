@@ -18,9 +18,9 @@ install_python() {
 }
 
 operation() {
-    test -n "$1" || VERSION=3.7.5
+    test -n "$1" || VERSION=3.9.0
     test -n "$1" && VERSION=$1
-    test -n "$2" || PATH_VERSION=3.7
+    test -n "$2" || PATH_VERSION=3.9
     test -n "$2" && PATH_VERSION=$1
     test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
     test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts

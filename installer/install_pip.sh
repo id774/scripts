@@ -31,7 +31,7 @@ setup_environment() {
 
 install_libs() {
     $SUDO $PIP install $PROXY -U pip
-    $SUDO $PIP install $PROXY -U 'IPython>=3.1.0'
+    $SUDO $PIP install $PROXY -U IPython
     $SUDO $PIP install $PROXY -U jupyter
     $SUDO $PIP install $PROXY -U notebook
     $SUDO $PIP install $PROXY -U pyflakes
@@ -45,17 +45,17 @@ install_libs() {
     $SUDO $PIP install $PROXY -U nose
     $SUDO $PIP install $PROXY -U docopt
     $SUDO $PIP install $PROXY -U simplejson
-    $SUDO $PIP install $PROXY -U msgpack-python
-    $SUDO $PIP install $PROXY -U 'numpy>=1.11.0'
-    $SUDO $PIP install $PROXY -U 'scipy>=0.17.1'
-    $SUDO $PIP install $PROXY -U 'scikit-learn>=0.17.1'
+    $SUDO $PIP install $PROXY -U sgpack-python
+    $SUDO $PIP install $PROXY -U numpy
+    $SUDO $PIP install $PROXY -U scipy
+    $SUDO $PIP install $PROXY -U scikit-learn
     $SUDO $PIP install $PROXY -U japandas
-    $SUDO $PIP install $PROXY -U 'pandas-datareader>=0.2.1'
+    $SUDO $PIP install $PROXY -U pandas-datareader
     $SUDO $PIP install $PROXY -U chainer
     $SUDO $PIP install $PROXY -U joblib
     $SUDO $PIP install $PROXY -U dask
     $SUDO $PIP install $PROXY -U patsy
-    $SUDO $PIP install $PROXY -U 'statsmodels>=0.6.1'
+    $SUDO $PIP install $PROXY -U statsmodels
     $SUDO $PIP install $PROXY -U sympy
     #$SUDO $PIP install $PROXY -U pystan
     $SUDO $PIP install $PROXY seaborn
@@ -66,8 +66,8 @@ install_libs() {
     $SUDO $PIP install $PROXY -U Flask-Bootstrap
     $SUDO $PIP install $PROXY -U Hamlish-Jinja
     $SUDO $PIP install $PROXY -U gunicorn
-    $SUDO $PIP install $PROXY -U 'django>=1.8'
-    $SUDO $PIP install $PROXY -U 'SQLAlchemy>=1.0.2'
+    $SUDO $PIP install $PROXY -U django
+    $SUDO $PIP install $PROXY -U SQLAlchemy
     $SUDO $PIP install $PROXY -U lmdb
     $SUDO $PIP install $PROXY -U migrate
     $SUDO $PIP install $PROXY -U readline
@@ -78,8 +78,8 @@ install_libs() {
     $SUDO $PIP install $PROXY -U cherrypy
     $SUDO $PIP install $PROXY -U beautifulsoup4
     $SUDO $PIP install $PROXY -U lxml
-    $SUDO $PIP install $PROXY -U 'requests<3.0'
-    $SUDO $PIP install $PROXY -U 'pysolr<4.0'
+    $SUDO $PIP install $PROXY -U requests
+    $SUDO $PIP install $PROXY -U pysolr
     $SUDO $PIP install $PROXY -U watson-developer-cloud
     $SUDO $PIP install $PROXY -U html5lib
     $SUDO $PIP install $PROXY husl
@@ -107,9 +107,9 @@ install_libs() {
     $SUDO $PIP install $PROXY -U mpi4py
     $SUDO $PIP install $PROXY -U keras
     $SUDO $PIP install $PROXY -U tensorflow
-    $SUDO $PIP install $PROXY -U 'matplotlib<1.5'
-    $SUDO $PIP install $PROXY -U 'pandas<0.17'
-    $SUDO $PIP install $PROXY -U 'pep8<1.6'
+    $SUDO $PIP install $PROXY -U matplotlib
+    $SUDO $PIP install $PROXY -U pandas
+    $SUDO $PIP install $PROXY -U pep8
     $SUDO $EASY_INSTALL -U TA-Lib
     $SUDO $EASY_INSTALL -U nltk
 }
