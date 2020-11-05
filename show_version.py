@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.3 11/5,2020
+#       Using importlib instead of imp.
 #  v2.2 9/28,2015
 #       Refactoring.
 #  v2.1 3/19,2014
@@ -21,7 +23,7 @@
 ########################################################################
 
 import sys
-import imp
+import importlib
 import warnings
 
 class PythonModuleInfo:
@@ -39,8 +41,7 @@ class PythonModuleInfo:
 
     def _get_module_version(self, module_name):
         try:
-            filename, pathname, description = imp.find_module(module_name)
-            obj = imp.load_module(module_name, filename, pathname, description)
+            obj = importlib.import_module(module_name)
             if hasattr(obj, "__version__"):
                 print(module_name, obj.__version__)
             elif hasattr(obj, "VERSION"):
@@ -124,6 +125,7 @@ def main():
         'watson-developer-cloud',
         'html5lib',
         'PIL',
+        'ggplot',
         'pyper',
         'awscli',
         'openpyxl',
