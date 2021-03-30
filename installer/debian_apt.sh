@@ -118,7 +118,8 @@ debian_developer_tools() {
       dh-make \
       libgtk2.0-dev \
       apt-file \
-      software-properties-common
+      software-properties-common \
+      bittorrent
 #      apt-listchanges apt-listbugs \
 }
 

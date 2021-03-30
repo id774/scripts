@@ -86,7 +86,7 @@ optional_packages() {
       vim-gnome \
       gthumb \
       thunar \
-      ktorrent \
+      bittorrent-gui ktorrent qbittorrent \
       vlc \
       pidgin \
       xpdf \
