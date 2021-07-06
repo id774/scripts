@@ -22,7 +22,7 @@
 setup_environment() {
     test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
     test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
-    test -n "$1" || MECAB_VERSION=0.994
+    test -n "$1" || MECAB_VERSION=0.996
     test -n "$1" && MECAB_VERSION=$1
     test -n "$2" || IPADIC_VERSION=2.7.0-20070801
     test -n "$2" && IPADIC_VERSION=$2
@@ -102,7 +102,7 @@ install_mecab() {
 }
 
 install_binding() {
-    $SCRIPTS/installer/install_mecab_ruby.sh /opt/ruby/current /usr/local/src/mecab/mecab-ruby-$MECAB_VERSION
+    # $SCRIPTS/installer/install_mecab_ruby.sh /opt/ruby/current /usr/local/src/mecab/mecab-ruby-$MECAB_VERSION
     $SCRIPTS/installer/install_mecab_python.sh /opt/python/current /usr/local/src/mecab/mecab-python-$MECAB_VERSION
 }
 
