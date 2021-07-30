@@ -9,6 +9,7 @@
 .#*
 *.sw[po]
 tags
+.ipynb_checkpoints
 *.pyc
 *.class
 .svn
