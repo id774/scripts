@@ -30,6 +30,7 @@ configure_mail() {
 }
 
 install_dot_vim() {
+    sudo locale-gen ja_JP.UTF-8
     $SCRIPTS/installer/install_dotvim.sh
 }
 
