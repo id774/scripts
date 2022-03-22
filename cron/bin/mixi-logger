@@ -7,7 +7,7 @@ MIXI_LOG=/var/log/sysadmin/mixi.log
 test -x /home/plagger/bin/mixidiary2txt.py && /home/plagger/bin/mixidiary2txt.py>$JOBLOG
 cat $JOBLOG>>$MIXI_LOG
 
-# ADMIN_MAIL_ADDRESS=sysadmin@id774.net
+# ADMIN_MAIL_ADDRESS=sysad.idnanashi@gmail.com
 case "$ADMIN_MAIL_ADDRESS" in
   *@*)
     cat -v $JOBLOG | nkf -w | mail -s "[cron][`/bin/hostname`] Mixi Logger" $ADMIN_MAIL_ADDRESS
