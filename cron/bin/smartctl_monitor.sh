@@ -2,7 +2,7 @@
 
 test -n "$1" || target_device='sda'
 test -n "$1" && target_device="$1"
-test -n "$2" || mail_to='sysad.idnanashi@gmail.com'
+test -n "$2" || mail_to='root'
 test -n "$2" && mail_to="$2"
 test -n "$3" || mailqueue_file=''
 test -n "$3" && mailqueue_file="$3"

@@ -5,7 +5,7 @@ test -n "$1" || SOURCE_DRV=$HOME/mnt/sdf
 test -n "$2" && TARGET_DRV=$2
 test -n "$2" || TARGET_DRV=$HOME/mnt/sdg
 test -n "$3" && ADMIN_MAIL_ADDRESS=$3
-test -n "$3" || ADMIN_MAIL_ADDRESS=sysad.idnanashi@gmail.com
+test -n "$3" || ADMIN_MAIL_ADDRESS=root
 
 test -d $SOURCE_DRV || exit 1
 test -d $TARGET_DRV || exit 1

@@ -6,7 +6,7 @@ TWITTER_LOG=/var/log/sysadmin/twitter.log
 test -x /home/plagger/bin/twitter-client.py && /home/plagger/bin/twitter-client.py -u xxxxxxxx -b /home/plagger/.plagger_tmp/banlist -t /home/plagger/.plagger_tmp/last_id>$JOBLOG
 cat $JOBLOG>>$TWITTER_LOG
 
-# ADMIN_MAIL_ADDRESS=sysad.idnanashi@gmail.com
+# ADMIN_MAIL_ADDRESS=root
 case "$ADMIN_MAIL_ADDRESS" in
   *@*)
     cat -v $JOBLOG | nkf -w | mail -s "[cron][`/bin/hostname`] Twitter Logger" $ADMIN_MAIL_ADDRESS
