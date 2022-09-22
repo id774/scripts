@@ -1,6 +1,6 @@
 " vim:set ts=8 sts=2 sw=2 tw=0
 "
-" Last Change: 07-Jun-2016.
+" Last Change: 22-Sep-2022.
 " Maintainer:  id774 <idnanashi@gmail.com>
 
 if &encoding !=# 'utf-8'
@@ -102,7 +102,7 @@ if has('unix') && !has('gui_running')
   elseif uname =~? "freebsd"
     set term=builtin_cons25
   elseif uname =~? "Darwin"
-    set term=beos-ansi
+    set term=builtin_xterm
   else
     set term=builtin_xterm
   endif

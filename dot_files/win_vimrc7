@@ -3,7 +3,7 @@
 " An example for a Japanese version vimrc file.
 " 日本語版のデフォルト設定ファイル(vimrc) - Vim7用試作
 "
-" Last Change: 29-Dec-2014.
+" Last Change: 22-Sep-2022.
 " Maintainer:  id774 <idnanashi@gmail.com>
 "
 " 解説:
@@ -202,7 +202,7 @@ if has('unix') && !has('gui_running')
   elseif uname =~? "freebsd"
     set term=builtin_cons25
   elseif uname =~? "Darwin"
-    set term=beos-ansi
+    set term=builtin_xterm
   else
     set term=builtin_xterm
   endif
