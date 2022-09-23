@@ -2,7 +2,7 @@
 
 case $OSTYPE in
   *darwin*)
-    sudo launchctl unload -w /Library/LaunchDaemons/ssh2.plist && sudo launchctl load -w /Library/LaunchDaemons/ssh2.plist
+    sudo launchctl unload -w /System/Library/LaunchDaemons/ssh.plist && sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist
     ;;
   *)
     sudo systemctl restart ssh.service
