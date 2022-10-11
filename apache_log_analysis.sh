@@ -10,7 +10,7 @@ echo "[User Agent]"
 zgrep https /var/log/apache2/ssl_access.log* | awk -F '"' '{print $6}' | sort | uniq -c | sort -n -r | head -n 50
 
 echo "[Browser]"
-for UA in MSIE Firefox Chrome Safari; do COUNT=`grep 'https' /var/log/apache2/ssl_access.log* | grep "$UA" | wc -l`; echo "$UA: $COUNT"; done
+for UA in MSIE Firefox Chrome Safari; do COUNT=`zgrep 'https' /var/log/apache2/ssl_access.log* | grep "$UA" | wc -l`; echo "$UA: $COUNT"; done
 
 echo "[Daily Access]"
 zgrep https /var/log/apache2/ssl_access.log* | awk '{print $4}' | cut -b 2-12 | sort | uniq -c
