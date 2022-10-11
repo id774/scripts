@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 ########################################################################
-# Server Resource Report Setup Script
+# Apache Summary Report Setup Script
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
