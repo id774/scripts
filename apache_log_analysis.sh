@@ -23,3 +23,9 @@ zgrep https $LOG_PATH/$LOG_FILENAME* | awk '{print $4}' | cut -b 2-12 | sort | u
 echo "[Access By Time]"
 grep https $LOG_PATH/$LOG_FILENAME* | awk '{print $4}' | cut -b 2-15 | sort | uniq -c
 
+echo "[Recent Accesses]"
+grep https $LOG_PATH/$LOG_FILENAME* | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -n -r | head -n 100
+
+echo "[Recent Referer]"
+grep https $LOG_PATH/$LOG_FILENAME* | cut -d " " -f11 | sort | uniq -c | sort -r | head -n 100
+
