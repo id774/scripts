@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.17 10/17,2022
+#       Remove .toprc.
 # v1.16 7/28,2016
 #       Include pgsql dir.
 # v1.15 7/9,2016
@@ -74,7 +76,7 @@ emacs_batch_byte_compile() {
 }
 
 deploy_dotfile() {
-    for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore toprc gemrc Rprofile emacs
+    for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore gemrc Rprofile emacs
     do
         test -d $1 && sudo cp $OPTIONS $SCRIPTS/dot_files/dot_$DOT_FILES $1/.$DOT_FILES
     done
