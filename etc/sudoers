@@ -30,13 +30,14 @@ Cmnd_Alias NETWORKING = /sbin/route, /sbin/ifconfig, /bin/ping, /sbin/dhclient, 
 Cmnd_Alias PROCESSES = /usr/bin/nice, /usr/bin/kill, /usr/bin/killall, /usr/bin/pkill
 Cmnd_Alias SMARTOOLS = /usr/sbin/smartctl
 Cmnd_Alias POSTMASTER = /usr/sbin/postalias, /usr/sbin/postcat, /usr/sbin/postconf, /usr/sbin/postfix, /usr/sbin/postkick, /usr/sbin/postlock, /usr/sbin/postlog, /usr/sbin/postmap, /usr/sbin/postqueue, /usr/sbin/postsuper, /usr/bin/mailq, /usr/bin/newaliases, /usr/sbin/sendmail
+Cmnd_Alias TRUECRYPT = /usr/bin/truecrypt, /usr/bin/veracrypt
 
 # User privilege specification
 root ALL=(ALL:ALL) ALL
 
 # Allow members of group sudo to execute any command
 %sudo ALL=(ALL:ALL) ALL
-%sudo ALL=(root) NOPASSWD: SHUTDOWN, SERVICES, SOFTWARE, STORAGE, DRIVERS, EDITORS, NETWORKING, PROCESSES, SMARTOOLS, POSTMASTER
+%sudo ALL=(root) NOPASSWD: SHUTDOWN, SERVICES, SOFTWARE, STORAGE, DRIVERS, EDITORS, NETWORKING, PROCESSES, SMARTOOLS, POSTMASTER, TRUECRYPT
 %munin ALL=(root) NOPASSWD: NETWORKING
 
 # See sudoers(5) for more information on "#include" directives:
