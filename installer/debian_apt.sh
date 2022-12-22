@@ -78,6 +78,7 @@ system_packages() {
       autossh \
       sshfs \
       cifs-utils \
+      exfat-fuse exfat-utils \
       postfix \
       sysstat \
       dstat \
