@@ -9,7 +9,7 @@
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
 #  v0.1 1/18,2023
-#       Forked from veracrypt.
+#       Forked from TrueCrypt Installer.
 ########################################################################
 
 setup_environment() {
