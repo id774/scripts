@@ -61,8 +61,10 @@ install_truecrypt() {
     #$SCRIPTS/installer/install_truecrypt.sh src
     #$SCRIPTS/installer/install_truecrypt.sh win
     #$SCRIPTS/installer/install_truecrypt.sh mac
-    #$SCRIPTS/installer/install_truecrypt.sh $1
-    $SCRIPTS/installer/install_veracrypt.sh src
+    $SCRIPTS/installer/install_truecrypt.sh $1
+    #$SCRIPTS/installer/install_veracrypt.sh src
+    #$SCRIPTS/installer/install_veracrypt.sh win
+    #$SCRIPTS/installer/install_veracrypt.sh mac
     $SCRIPTS/installer/install_veracrypt.sh $1
 }
 
