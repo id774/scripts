@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.22 2/10,2023
+#       Display backup directory usage statistics.
 # v1.21 9/27,2016
 #       Fix filesystem owner problem.
 # v1.20 8/10,2016
@@ -56,6 +58,11 @@ smart_info() {
   test -b /dev/sdd && smartctl -a /dev/sdd
   test -b /dev/sde && smartctl -a /dev/sde
   test -b /dev/sdf && smartctl -a /dev/sdf
+}
+
+show_capacity_of_directories() {
+  test -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles && \
+    du -h --max-depth=2 $B_HOME/$B_MOUNT/$B_DEVICE
 }
 
 cleanup() {
@@ -173,6 +180,7 @@ operation() {
   df -T
 
   smart_info
+  show_capacity_of_directories
   #cleanup
   #svn_backup
   #github_backup
