@@ -17,7 +17,7 @@ def download_image(url, filename):
     with open(filename, 'wb') as f:
         f.write(response.content)
 
-    print(f'{filename}をダウンロードしました。')
+    print(f'{filename} をダウンロードしました。')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
