@@ -21,7 +21,7 @@ def get_instagram_photo_urls(username):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('username', help='Instagramアカウントのユーザー名')
+    parser.add_argument('username', help='Instagram アカウントのユーザー名')
     args = parser.parse_args()
 
     username = args.username
