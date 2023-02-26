@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import instaloader # pip install instaloader
 import time
 import urllib.request
