@@ -35,5 +35,5 @@ if __name__ == '__main__':
         filename = f"{username}_{i+1}.jpg"
         print(f"Downloading {filename}...")
         download_image(url, filename)
-        time.sleep(2)
+        time.sleep(1)
 
