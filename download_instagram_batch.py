@@ -29,7 +29,9 @@ if __name__ == '__main__':
     username = args.username
     urls = get_instagram_photo_urls(username)
     post_count = len(urls)
-    print(f'This account has {post_count} posts')
+    print(f'This account has {post_count} image posts.')
+    minutes = int(post_count/60)+1
+    print(f'Estimate processing time is {minutes} minutes.')
 
     for i, url in enumerate(reversed(urls)):
         time_left = f"{post_count-i} seconds"
