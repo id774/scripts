@@ -35,7 +35,8 @@ if __name__ == '__main__':
 
     for i, url in enumerate(reversed(urls)):
         time_left = f"{post_count-i} seconds"
-        print(f"{time_left} to complete processing.")
+        minutes_conv = f"({int((post_count-i)/60)+1} minutes)"
+        print(f"{time_left} {minutes_conv} to complete processing.")
         file_num = f"{i+1}".zfill(8)
         filename = f"{username}_{file_num}.jpg"
         print(f"Downloading {filename}...")
