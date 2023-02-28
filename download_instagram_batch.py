@@ -32,6 +32,8 @@ if __name__ == '__main__':
     print(f'This account has {post_count} posts')
 
     for i, url in enumerate(reversed(urls)):
+        time_left = f"{post_count-i} seconds"
+        print(f"{time_left} to complete processing.")
         filename = f"{username}_{i+1}.jpg"
         print(f"Downloading {filename}...")
         download_image(url, filename)
