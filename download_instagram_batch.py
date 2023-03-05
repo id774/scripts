@@ -4,6 +4,23 @@ import instaloader # pip install instaloader
 import time
 import urllib.request
 import argparse
+import os
+import re
+
+def get_max_number(directory_path):
+    max_number = 0  # 最大の数字を格納する変数を初期化
+
+    # ディレクトリ内のファイルを走査する
+    for filename in os.listdir(directory_path):
+        # ファイル名の末尾にある数字を正規表現で抽出する
+        basename = os.path.splitext(filename)[0]
+        match = re.search(r'\d+$', basename)
+        if match:
+            # 数値に変換し、最大値と比較する
+            number = int(match.group())
+            if number > max_number:
+                max_number = number
+    return max_number
 
 def download_image(url, filename):
     urllib.request.urlretrieve(url, filename)
@@ -33,13 +50,16 @@ if __name__ == '__main__':
     minutes = int(post_count/60)+1
     print(f'Estimate processing time is {minutes} minutes.')
 
+    max_number = get_max_number('.')
+
     for i, url in enumerate(reversed(urls)):
-        time_left = f"{post_count-i} seconds"
-        minutes_conv = f"({int((post_count-i)/60)+1} minutes)"
-        print(f"{time_left} {minutes_conv} to complete processing.")
-        file_num = f"{i+1}".zfill(5)
-        filename = f"{username}_{file_num}.jpg"
-        print(f"Downloading {filename}...")
-        download_image(url, filename)
-        time.sleep(1)
+        if i >= max_number:
+            time_left = f"{post_count-i} seconds"
+            minutes_conv = f"({int((post_count-i)/60)+1} minutes)"
+            print(f"{time_left} {minutes_conv} to complete processing.")
+            file_num = f"{i+1}".zfill(5)
+            filename = f"{username}_{file_num}.jpg"
+            print(f"Downloading {filename}...")
+            download_image(url, filename)
+            time.sleep(1)
 
