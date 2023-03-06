@@ -38,12 +38,7 @@ def get_instagram_photo_urls(username):
 
     return urls
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('username', help='Instagram アカウントのユーザー名')
-    args = parser.parse_args()
-
-    username = args.username
+def download_instagram_photos(username):
     urls = get_instagram_photo_urls(username)
     post_count = len(urls)
     print(f'This account has {post_count} image posts.')
@@ -62,4 +57,14 @@ if __name__ == '__main__':
             print(f"Downloading {filename}...")
             download_image(url, filename)
             time.sleep(1)
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('username', help='Instagram アカウントのユーザー名')
+    args = parser.parse_args()
+
+    download_instagram_photos(args.username)
+
+if __name__ == '__main__':
+    main()
 
