@@ -19,8 +19,12 @@ def rename_files(dir_path, num_digits):
         if not num_part:
             continue
 
-        # ゼロパディングされた数字部分に置き換える
-        new_num_part = num_part.zfill(num_digits)
+        # 数字部分を指定した桁数に合わせる
+        if len(num_part) > num_digits:
+            new_num_part = num_part[-num_digits:]
+        else:
+            new_num_part = num_part.zfill(num_digits)
+
         new_name_base = name_base[:-len(num_part)] + new_num_part
 
         # 新しいファイル名を作成し、リネームする
