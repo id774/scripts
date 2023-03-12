@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.2 3/12,2023
+#       Remove obsolete versions.
 #  v2.1 1/14,2019
 #       Remove obsolete versions.
 #  v2.0 3/11,2015
@@ -148,32 +150,29 @@ setup_environment() {
 install_ruby() {
     setup_environment $*
     case "$1" in
-      272)
-        install_stable3 2.7.2 2.7 $2
+      32)
+        install_stable3 3.2.1 3.2 $2
         ;;
-      265)
-        install_stable3 2.6.5 2.6 $2
+      31)
+        install_stable3 3.1.3 3.1 $2
         ;;
-      257)
-        install_stable3 2.5.7 2.5 $2
+      30)
+        install_stable3 3.0.5 3.0 $2
         ;;
-      249)
-        install_stable3 2.4.9 2.4 $2
+      27)
+        install_stable3 2.7.7 2.7 $2
         ;;
-      238)
-        install_stable3 2.3.8 2.3 $2
+      32-svn)
+        install_branch ruby_3_2 $2
         ;;
-      26-svn)
-        install_branch ruby_2_6 $2
+      31-svn)
+        install_branch ruby_3_1 $2
         ;;
-      25-svn)
-        install_branch ruby_2_5 $2
+      30-svn)
+        install_branch ruby_3_0 $2
         ;;
-      24-svn)
-        install_branch ruby_2_4 $2
-        ;;
-      23-svn)
-        install_branch ruby_2_3 $2
+      27-svn)
+        install_branch ruby_2_7 $2
         ;;
       trunk)
         install_trunk $2
