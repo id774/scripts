@@ -18,7 +18,7 @@ with warnings.catch_warnings():
         print("import numpy as np")
         print("numpy", np.__version__)
     except ImportError:
-        print("numpy has not been loaded")
+        pass
 
     try:
         import scipy as sp
@@ -33,7 +33,7 @@ with warnings.catch_warnings():
         from scipy.stats import mstats
         print("from scipy.stats import mstats")
     except ImportError:
-        print("scipy has not been loaded")
+        pass
 
     try:
         import matplotlib as mpl
@@ -44,7 +44,7 @@ with warnings.catch_warnings():
         import matplotlib.pyplot as plt
         print("import matplotlib.pyplot as plt")
     except ImportError:
-        print("matplotlib has not been loaded")
+        pass
 
     try:
         import pandas as pd
@@ -53,28 +53,28 @@ with warnings.catch_warnings():
         import pandas.tools.plotting as plotting
         print("import pandas.tools.plotting as plotting")
     except ImportError:
-        print("pandas has not been loaded")
+        pass
 
     try:
         import tensorflow as tf
         print("import tensorflow as tf")
         print("tensorflow", tf.__version__)
     except ImportError:
-        print("tensorflow has not been loaded")
+        pass
 
     try:
         import keras
         print("import keras")
         print("keras", keras.__version__)
     except ImportError:
-        print("keras has not been loaded")
+        pass
 
     try:
         import talib as ta
         print("import talib as ta")
         print("talib", ta.__version__)
     except ImportError:
-        print("talib has not been loaded")
+        pass
 
 def set_trace():
     from IPython.core.debugger import Pdb
