@@ -10,3 +10,4 @@ test -f ~/Music/.localized && rm -vf ~/Music/.localized
 test -f ~/Movies/.localized && rm -vf ~/Movies/.localized
 test -f ~/Library/.localized && rm -vf ~/Library/.localized
 test -f /Applications/.localized && sudo rm -vf /Applications/.localized
+test -f /Applications/Utilities/.localized && sudo rm -vf /Applications/Utilities/.localized
