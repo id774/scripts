@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Backup and Synging Removable Disk
+# Backup and Syncing Removable Disk
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
