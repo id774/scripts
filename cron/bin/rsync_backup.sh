@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.23 4/2,2023
+#       Display VeraCrypt version.
 # v1.22 2/10,2023
 #       Display backup directory usage statistics.
 # v1.21 9/27,2016
@@ -176,7 +178,8 @@ operation() {
   T_MOUNT=mnt
   T_DEVICE=sdb
 
-  truecrypt -t --version
+  test -x /usr/bin/truecrypt && truecrypt -t --version
+  test -x /usr/bin/veracrypt && veracrypt -t --version
   df -T
 
   smart_info
