@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.24 4/6,2023
+#       Display and update timestamp file of disk drive.
 # v1.23 4/2,2023
 #       Display VeraCrypt version.
 # v1.22 2/10,2023
@@ -53,6 +55,11 @@
 #  v1.0 2/28,2008
 #       Stable.
 ########################################################################
+
+display_and_update_timestamp() {
+  test -f $T_HOME/$T_MOUNT/$T_DEVICE/timestamp && ls -l $T_HOME/$T_MOUNT/$T_DEVICE/timestamp
+  touch $T_HOME/$T_MOUNT/$T_DEVICE/timestamp
+}
 
 smart_info() {
   test -b /dev/sdb && smartctl -a /dev/sdb
@@ -182,6 +189,7 @@ operation() {
   test -x /usr/bin/veracrypt && veracrypt -t --version
   df -T
 
+  display_and_update_timestamp
   smart_info
   show_capacity_of_directories
   #cleanup
