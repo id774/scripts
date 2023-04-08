@@ -151,16 +151,16 @@ install_ruby() {
     setup_environment $*
     case "$1" in
       32)
-        install_stable3 3.2.1 3.2 $2
+        install_stable3 3.2.2 3.2 $2
         ;;
       31)
-        install_stable3 3.1.3 3.1 $2
+        install_stable3 3.1.4 3.1 $2
         ;;
       30)
-        install_stable3 3.0.5 3.0 $2
+        install_stable3 3.0.6 3.0 $2
         ;;
       27)
-        install_stable3 2.7.7 2.7 $2
+        install_stable3 2.7.8 2.7 $2
         ;;
       32-svn)
         install_branch ruby_3_2 $2
