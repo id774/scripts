@@ -1,33 +1,31 @@
 #!/bin/sh
 
-os=$(uname)
-
-if [ "$os" = "Darwin" ]; then
-  test -L "~/Desktop/場所が変更された項目" && rm -f "~/Desktop/場所が変更された項目"
-  touch ~/Documents/.localized
-  touch ~/Downloads/.localized
-  touch ~/Desktop/.localized
-elif [ "$os" = "Linux" ]; then
+if [[ "$OSTYPE" == "darwin"* ]]; then
+  test -L "$HOME/Desktop/場所が変更された項目" && rm -f "$HOME/Desktop/場所が変更された項目"
+  touch $HOME/Documents/.localized
+  touch $HOME/Downloads/.localized
+  touch $HOME/Desktop/.localized
+elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
   test -d /root/.cache && rm -vrf /root/.cache
-  rm -vf ~/hardcopy.*
+  rm -vf $HOME/hardcopy.*
 fi
 
-rm -vf "~/wget-log*"
-rm -vf "~/.emacs.d/%backup%~"
-rm -vf "~/%backup%~"
-test -d ~/.gem && rm -vrf ~/.gem
-test -d ~/.pip && rm -vrf ~/.pip
-test -d ~/.npm && rm -vrf ~/.npm
-test -d ~/tmp && rm -vrf ~/tmp/*
-test -d ~/.tmp && find ~/.tmp -type f -mtime +7 -exec rm -vf {} \;
-test -d ~/.emacs.d/tmp && find ~/.emacs.d/tmp -type f -mtime +30 -exec rm -vf {} \;
-test -d ~/.emacs.d/backups && find ~/.emacs.d/backups -type f -mtime +30 -exec rm -vf {} \;
-test -d ~/.emacs.d/auto-save-list && find ~/.emacs.d/auto-save-list -type f -mtime +30 -exec rm -vf {} \;
-test -d ~/.emacs.d/tramp-auto-save && find ~/.emacs.d/tramp-auto-save -type f -mtime +30 -exec rm -vf {} \;
-test -d ~/Pictures && find ~/Pictures -type f -mtime +30 -exec rm -vf {} \;
-test -d ~/Downloads && find ~/Downloads -type f -mtime +30 -exec rm -vf {} \;
-test -d ~/Desktop && find ~/Desktop -type f -mtime +30 -exec rm -vf {} \;
-test -d ~/twitter_viewer/log && find ~/twitter_viewer/log -type f -mtime +7 -exec rm -vf {} \;
-test -d ~/fastladder/log && find ~/fastladder/log -type f -mtime +7 -exec rm -vf {} \;
+rm -vf "$HOME/wget-log*"
+rm -vf "$HOME/.emacs.d/%backup%$HOME"
+rm -vf "$HOME/%backup%$HOME"
+test -d $HOME/.gem && rm -vrf $HOME/.gem
+test -d $HOME/.pip && rm -vrf $HOME/.pip
+test -d $HOME/.npm && rm -vrf $HOME/.npm
+test -d $HOME/tmp && rm -vrf $HOME/tmp/*
+test -d $HOME/.tmp && find $HOME/.tmp -type f -mtime +7 -exec rm -vf {} \;
+test -d $HOME/.emacs.d/tmp && find $HOME/.emacs.d/tmp -type f -mtime +30 -exec rm -vf {} \;
+test -d $HOME/.emacs.d/backups && find $HOME/.emacs.d/backups -type f -mtime +30 -exec rm -vf {} \;
+test -d $HOME/.emacs.d/auto-save-list && find $HOME/.emacs.d/auto-save-list -type f -mtime +30 -exec rm -vf {} \;
+test -d $HOME/.emacs.d/tramp-auto-save && find $HOME/.emacs.d/tramp-auto-save -type f -mtime +30 -exec rm -vf {} \;
+test -d $HOME/Pictures && find $HOME/Pictures -type f -mtime +30 -exec rm -vf {} \;
+test -d $HOME/Downloads && find $HOME/Downloads -type f -mtime +30 -exec rm -vf {} \;
+test -d $HOME/Desktop && find $HOME/Desktop -type f -mtime +30 -exec rm -vf {} \;
+test -d $HOME/twitter_viewer/log && find $HOME/twitter_viewer/log -type f -mtime +7 -exec rm -vf {} \;
+test -d $HOME/fastladder/log && find $HOME/fastladder/log -type f -mtime +7 -exec rm -vf {} \;
 echo "cltmp (20230505) done."
 
