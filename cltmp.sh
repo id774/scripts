@@ -3,7 +3,7 @@
 os=$(uname)
 
 if [ "$os" = "Darwin" ]; then
-  test -L ~/Desktop/場所が変更された項目 && rm -f ~/Desktop/場所が変更された項目
+  test -L "~/Desktop/場所が変更された項目" && rm -f "~/Desktop/場所が変更された項目"
   touch ~/Documents/.localized
   touch ~/Downloads/.localized
   touch ~/Desktop/.localized
@@ -12,9 +12,9 @@ elif [ "$os" = "Linux" ]; then
   rm -vf ~/hardcopy.*
 fi
 
-rm -vf ~/wget-log*
-rm -vf ~/.emacs.d/%backup%\~
-rm -vf ~/%backup%\~
+rm -vf "~/wget-log*"
+rm -vf "~/.emacs.d/%backup%~"
+rm -vf "~/%backup%~"
 test -d ~/.gem && rm -vrf ~/.gem
 test -d ~/.pip && rm -vrf ~/.pip
 test -d ~/.npm && rm -vrf ~/.npm
