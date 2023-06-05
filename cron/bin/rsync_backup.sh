@@ -92,9 +92,9 @@ svn_backup() {
 
 git_backup() {
   test -f /root/local/git.tar.gz && rm /root/local/git.tar.gz
-  rsync -avz --no-o --no-g --delete $1@$2:/var/lib/git /root/local/
+  rsync -avz --no-o --no-g --delete $1@$2:/home/repo /root/local/
   cd /root/local
-  tar czvf git.tar.gz git/ > /dev/null
+  tar czvf git.tar.gz repo/ > /dev/null
   cp -v /root/local/git.tar.gz $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/
   cd
 }
@@ -177,13 +177,37 @@ rsync_disk2disk_2() {
   echo "Return code is $?"
 }
 
-operation() {
+operation1() {
   B_HOME=/home/ubuntu
   T_HOME=/home/ubuntu
   B_MOUNT=mnt
-  B_DEVICE=sdc
+  B_DEVICE=sdb
   T_MOUNT=mnt
-  T_DEVICE=sdb
+  T_DEVICE=sde
+
+  truecrypt -t --version
+  veracrypt -t --version
+  df -T
+
+  display_and_update_timestamp
+  smart_info
+  show_capacity_of_directories
+  cleanup
+  github_backup
+  git_backup git git.id774.net
+
+  rsync_disk2disk_1
+  rsync_disk2disk_2
+
+  df -T
+}
+
+operation2() {
+  B_HOME=/home/ubuntu
+  T_HOME=/home/ubuntu
+  B_MOUNT=mnt
+  B_DEVICE=sdb
+  T_MOUNT=mnt
 
   test -x /usr/bin/truecrypt && truecrypt -t --version
   test -x /usr/bin/veracrypt && veracrypt -t --version
@@ -191,22 +215,19 @@ operation() {
 
   display_and_update_timestamp
   smart_info
-  show_capacity_of_directories
-  #cleanup
-  #svn_backup
-  #github_backup
-  #git_backup git git.id774.net
-
-  #T_DEVICE=sdc
   rsync_disk2disk_1
   rsync_disk2disk_2
 
-  #T_DEVICE=sdb
-  #T_USER=
-  #T_HOST=
-  #rsync_disk2ssh_0
-
   df -T
+}
+
+operation() {
+  T_HOME=/home/ubuntu
+  T_MOUNT=mnt
+  T_DEVICE=sde
+  test -f $T_HOME/$T_MOUNT/$T_DEVICE/timestamp && operation1
+  T_DEVICE=sdf
+  test -f $T_HOME/$T_MOUNT/$T_DEVICE/timestamp && operation2
 }
 
 operation
