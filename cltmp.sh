@@ -4,6 +4,7 @@ os=$(uname)
 
 if [ "$os" = "Darwin" ]; then
   test -L "$HOME/Desktop/場所が変更された項目" && rm -f "$HOME/Desktop/場所が変更された項目"
+  touch $HOME/Pictures/.localized
   touch $HOME/Documents/.localized
   touch $HOME/Downloads/.localized
   touch $HOME/Desktop/.localized
@@ -29,5 +30,5 @@ test -d $HOME/Downloads && find $HOME/Downloads -type f -mtime +30 -exec rm -vf 
 test -d $HOME/Desktop && find $HOME/Desktop -type f -mtime +30 -exec rm -vf {} \;
 test -d $HOME/twitter_viewer/log && find $HOME/twitter_viewer/log -type f -mtime +7 -exec rm -vf {} \;
 test -d $HOME/fastladder/log && find $HOME/fastladder/log -type f -mtime +7 -exec rm -vf {} \;
-echo "cltmp (20230505) done."
+echo "cltmp (20230609) done."
 
