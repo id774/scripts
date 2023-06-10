@@ -185,12 +185,13 @@ operation1() {
   T_MOUNT=mnt
   T_DEVICE=sde
 
-  truecrypt -t --version
-  veracrypt -t --version
+  test -x /usr/bin/truecrypt && truecrypt -t --version
+  test -x /usr/bin/veracrypt && veracrypt -t --version
   df -T
 
   display_and_update_timestamp
   smart_info
+
   show_capacity_of_directories
   cleanup
   github_backup
@@ -215,6 +216,7 @@ operation2() {
 
   display_and_update_timestamp
   smart_info
+
   rsync_disk2disk_1
   rsync_disk2disk_2
 
