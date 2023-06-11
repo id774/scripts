@@ -74,8 +74,8 @@ smart_info() {
 }
 
 smart_check() {
-  test -f $HOME/$T_MOUNT/$T_DEVICE/smart_longtest && test -b /dev/$T_DEVICE && smartctl -t long /dev/$T_DEVICE
-  test -f $HOME/$T_MOUNT/$T_DEVICE/smart_longtest || test -b /dev/$T_DEVICE && smartctl -t short /dev/$T_DEVICE
+  test -f $T_HOME/$T_MOUNT/$T_DEVICE/smart_longtest && test -b /dev/$T_DEVICE && smartctl -t long /dev/$T_DEVICE
+  test -f $T_HOME/$T_MOUNT/$T_DEVICE/smart_longtest || test -b /dev/$T_DEVICE && smartctl -t short /dev/$T_DEVICE
 }
 
 show_capacity_of_directories() {
