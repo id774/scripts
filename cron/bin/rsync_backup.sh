@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.25 6/11,2023
+#       Disk check immediately after backup.
 # v1.24 4/6,2023
 #       Display and update timestamp file of disk drive.
 # v1.23 4/2,2023
@@ -61,12 +63,19 @@ display_and_update_timestamp() {
   touch $T_HOME/$T_MOUNT/$T_DEVICE/timestamp
 }
 
+version_info() {
+  test -x /usr/bin/truecrypt && truecrypt -t --version
+  test -x /usr/bin/veracrypt && veracrypt -t --version
+}
+
 smart_info() {
-  test -b /dev/sdb && smartctl -a /dev/sdb
-  test -b /dev/sdc && smartctl -a /dev/sdc
-  test -b /dev/sdd && smartctl -a /dev/sdd
-  test -b /dev/sde && smartctl -a /dev/sde
-  test -b /dev/sdf && smartctl -a /dev/sdf
+  test -b /dev/$B_DEVICE && smartctl -a /dev/$B_DEVICE
+  test -b /dev/$T_DEVICE && smartctl -a /dev/$T_DEVICE
+}
+
+smart_check() {
+  test -b /dev/$T_DEVICE && smartctl -t long /dev/$T_DEVICE
+  test -b /dev/$T_DEVICE && smartctl -a /dev/$T_DEVICE
 }
 
 show_capacity_of_directories() {
@@ -185,8 +194,7 @@ operation1() {
   T_MOUNT=mnt
   T_DEVICE=sde
 
-  test -x /usr/bin/truecrypt && truecrypt -t --version
-  test -x /usr/bin/veracrypt && veracrypt -t --version
+  version_info
   df -T
 
   display_and_update_timestamp
@@ -201,6 +209,7 @@ operation1() {
   rsync_disk2disk_2
 
   df -T
+  smart_check
 }
 
 operation2() {
@@ -210,8 +219,7 @@ operation2() {
   B_DEVICE=sdb
   T_MOUNT=mnt
 
-  test -x /usr/bin/truecrypt && truecrypt -t --version
-  test -x /usr/bin/veracrypt && veracrypt -t --version
+  version_info
   df -T
 
   display_and_update_timestamp
@@ -221,6 +229,7 @@ operation2() {
   rsync_disk2disk_2
 
   df -T
+  smart_check
 }
 
 operation() {
