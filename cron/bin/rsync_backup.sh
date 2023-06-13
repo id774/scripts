@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Backup and Syncing Removable Disk
 #
