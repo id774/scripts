@@ -25,7 +25,8 @@ def print_checksum(include_subdir, reversed_format, quiet_mode, paths):
                     checksum = Md5Checksum.calculate_checksum(full_path)
                     print_formatted_checksum(checksum, full_path, reversed_format, quiet_mode)
         elif S_ISDIR(os.stat(path)[ST_MODE]):
-            print(f"{os.path.basename(sys.argv[0])}: {path}: Is a directory")
+            print("{}: {}: Is a directory".format(os.path.basename(sys.argv[0]), path))
+
         else:
             checksum = Md5Checksum.calculate_checksum(path)
             print_formatted_checksum(checksum, path, reversed_format, quiet_mode)
