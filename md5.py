@@ -16,7 +16,7 @@ class Md5sum:
         return m.hexdigest()
 
 def md5_dir(subdirectory, reversed, quiet, args):
-    if subdirectory or S_ISDIR(os.stat(args[0])[ST_MODE]):
+    if subdirectory and S_ISDIR(os.stat(args[0])[ST_MODE]):
         for root, dirs, files in os.walk(args[0]):
             for file in files:
                 if quiet:
