@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.7 6/23,2023
+#       Fix uninstall bug, add md5, remove some obsolete files.
 #  v0.6 5/24,2014
 #       Using bash, switch arguments, show uninstall messages.
 #  v0.5 6/28,2011
@@ -46,6 +48,7 @@ uninstall_scripts() {
 
 uninstall_sysadmin_scripts() {
     uninstall_scripts \
+        md5 \
         chmodtree \
         cltmp \
         copydir \
@@ -54,6 +57,7 @@ uninstall_sysadmin_scripts() {
         waitlock \
         swapext \
         git-follow-origin \
+        git-co-remote-branch \
         git-ignore \
         pyck \
         autopyck \
@@ -75,9 +79,9 @@ install_scripts() {
 }
 
 setup_scripts() {
+    install_scripts 755 md5.py md5
     install_scripts 755 chmodtree.py chmodtree
     install_scripts 755 cltmp.sh cltmp
-    install_scripts 755 copydir.py copydir
     install_scripts 755 namecalc.rb namecalc
     install_scripts 755 now.sh now
     install_scripts 755 waitlock.rb waitlock
@@ -85,8 +89,6 @@ setup_scripts() {
     install_scripts 755 git-follow-origin.sh git-follow-origin
     install_scripts 755 git-co-remote-branch.sh git-co-remote-branch
     install_scripts 755 git-ignore.sh git-ignore
-    install_scripts 755 pyck.sh pyck
-    install_scripts 755 autopyck.sh autopyck
 }
 
 setup_darwin_scripts() {
@@ -96,7 +98,6 @@ setup_darwin_scripts() {
 
 setup_rhel_scripts() {
     install_scripts 755 get_resources.sh get_resources
-    install_scripts 755 tcmount.py tcmount
     install_scripts 755 userlist.sh userlist
     install_scripts 755 usershells.py usershells
 }
@@ -105,7 +106,6 @@ setup_debian_scripts() {
     install_scripts 755 dpkg-hold.sh dpkg-hold
     install_scripts 755 get_resources.sh get_resources
     install_scripts 755 gpg-import.sh gpg-import
-    install_scripts 755 tcmount.py tcmount
     install_scripts 755 platex2pdf.sh platex2pdf
     install_scripts 755 userlist.sh userlist
     install_scripts 755 usershells.py usershells
