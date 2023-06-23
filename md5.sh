@@ -1,9 +1,9 @@
 #!/bin/sh
 
 md5_universal() {
-    if [ -x $SCRIPTS/md5dir.py ]; then
-        $SCRIPTS/md5dir.py $*
-    elif [ -x $SCRIPTS/md5dir.rb ]; then
+    if [ -x $SCRIPTS/md5.py ]; then
+        $SCRIPTS/md5.py $*
+    elif [ -x $SCRIPTS/md5.rb ]; then
         $SCRIPTS/md5.rb $*
     else
         case $OSTYPE in
