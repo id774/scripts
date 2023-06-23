@@ -19,11 +19,11 @@ def md5_dir(subdirectory, args):
     if subdirectory or S_ISDIR(os.stat(args[0])[ST_MODE]):
         for root, dirs, files in os.walk(args[0]):
             for file in files:
-                print((Md5sum.get_md5(os.path.join(root, file)), 
-                       os.path.join(root, file)))
+                print("MD5 ({0}) = {1}".format(os.path.join(root, file),
+                       Md5sum.get_md5(os.path.join(root, file))))
     else:
         for f in args:
-            print((Md5sum.get_md5(f), f))
+            print("MD5 ({0}) = {1}".format(f, Md5sum.get_md5(f)))
 
 def main():
     usage = "usage: %prog [options] file"
