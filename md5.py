@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-#!/usr/bin/env python
-
 import os
+import sys
 import hashlib
 from optparse import OptionParser
 from stat import S_ISDIR, ST_MODE
@@ -25,6 +24,8 @@ def print_checksum(include_subdir, reversed_format, quiet_mode, paths):
                     full_path = os.path.join(root, file)
                     checksum = Md5Checksum.calculate_checksum(full_path)
                     print_formatted_checksum(checksum, full_path, reversed_format, quiet_mode)
+        elif S_ISDIR(os.stat(path)[ST_MODE]):
+            print(f"{os.path.basename(sys.argv[0])}: {path}: Is a directory")
         else:
             checksum = Md5Checksum.calculate_checksum(path)
             print_formatted_checksum(checksum, path, reversed_format, quiet_mode)
@@ -40,17 +41,16 @@ def print_formatted_checksum(checksum, path, reversed_format, quiet_mode):
 def main():
     usage = "usage: %prog [options] file"
     parser = OptionParser(usage)
-    parser.add_option("-d", "--subdirectory", help="Include sub directory.",
-                      action="store_true", dest="include_subdir")
-    parser.add_option("-r", "--reversed", help="Reverses the format of the output.",
-                      action="store_true", dest="reversed_format")
-    parser.add_option("-q", "--quiet", help="Quiet mode - only the checksum is printed out.",
-                      action="store_true", dest="quiet_mode")
-    parser.add_option("-v", "--version", help="Show the version and exit.",
+    parser.add_option("-v", "--version", help="show the version and exit",
                       action="store_true", dest="version")
+    parser.add_option("-d", "--subdirectory", help="include sub directory",
+                      action="store_true", dest="include_subdir")
+    parser.add_option("-r", "--reversed", help="reverses the format of the output",
+                      action="store_true", dest="reversed_format")
+    parser.add_option("-q", "--quiet", help="quiet mode - only the checksum is printed out",
+                      action="store_true", dest="quiet_mode")
     (options, args) = parser.parse_args()
     if options.version:
-        import sys
         print("{0} Version 1.0".format(os.path.basename(sys.argv[0])))
     elif len(args) < 1:
         parser.print_help()
