@@ -55,6 +55,8 @@ def main():
                       action="store_true", dest="reversed_format")
     parser.add_option("-q", "--quiet", help="quiet mode - only the checksum is printed out",
                       action="store_true", dest="quiet_mode")
+    parser.add_option("-p", "--print", help="echo stdin to stdout and append the checksum to stdout",
+                      action="store_true", dest="print_stdin")
     parser.add_option("-s", "--string", help="print a checksum of the given string",
                       action="store", type="string", dest="input_string")
     (options, args) = parser.parse_args()
@@ -63,6 +65,11 @@ def main():
     elif options.input_string:
         checksum = Md5Checksum.calculate_checksum_for_string(options.input_string)
         print_formatted_checksum(checksum, options.input_string, options.reversed_format, options.quiet_mode, is_file=False)
+    elif options.print_stdin:
+        input_data = sys.stdin.read()
+        print(input_data, end='')
+        checksum = Md5Checksum.calculate_checksum_for_string(input_data)
+        print("{0}".format(checksum))
     elif len(args) < 1:
         parser.print_help()
     else:
