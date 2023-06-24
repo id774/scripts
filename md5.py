@@ -44,9 +44,9 @@ def print_formatted_checksum(checksum, path, reversed_format, quiet_mode, is_fil
     if quiet_mode:
         print(checksum)
     elif reversed_format:
-        print("{0} {1}".format(checksum, path if is_file else f'"{path}"'))
+        print("{0} {1}".format(checksum, path if is_file else '"{}"'.format(path)))
     else:
-        print("MD5 ({0}) = {1}".format(path if is_file else f'"{path}"', checksum))
+        print("MD5 ({0}) = {1}".format(path if is_file else '"{}"'.format(path), checksum))
 
 def main():
     usage = "usage: %prog [options] file"
