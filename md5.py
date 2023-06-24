@@ -23,7 +23,11 @@ class Md5Checksum:
         return m.hexdigest()
 
 def print_checksum(include_subdir, reversed_format, quiet_mode, paths):
+    script_name = os.path.basename(sys.argv[0])
     for path in paths:
+        if not os.path.exists(path):
+            print("{0}: {1}: No such file or directory".format(script_name, path))
+            continue
         if include_subdir and S_ISDIR(os.stat(path)[ST_MODE]):
             for root, dirs, files in os.walk(path):
                 for file in files:
@@ -31,7 +35,7 @@ def print_checksum(include_subdir, reversed_format, quiet_mode, paths):
                     checksum = Md5Checksum.calculate_checksum(full_path)
                     print_formatted_checksum(checksum, full_path, reversed_format, quiet_mode, is_file=True)
         elif S_ISDIR(os.stat(path)[ST_MODE]):
-            print(f"{os.path.basename(sys.argv[0])}: {path}: Is a directory")
+            print("{0}: {1}: Is a directory".format(script_name, path))
         else:
             checksum = Md5Checksum.calculate_checksum(path)
             print_formatted_checksum(checksum, path, reversed_format, quiet_mode, is_file=True)
