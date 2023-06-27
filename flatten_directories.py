@@ -4,7 +4,7 @@ import os
 import shutil
 from optparse import OptionParser
 
-# OptParserを使用してオプションを追加します。
+# Add options using OptParser.
 parser = OptionParser()
 parser.add_option("-m", "--move", action="store_true", dest="move_mode", default=False,
                   help="move files instead of copying them")
@@ -17,18 +17,18 @@ parser.add_option("-x", "--execute", action="store_true", dest="execute_mode", d
 (options, args) = parser.parse_args()
 
 def handle_directory(path):
-    # ディレクトリ内のファイルとサブディレクトリを取得します。
+    # Get files and subdirectories in the directory.
     entries = os.listdir(path)
 
-    # 各エントリに対して操作を行います。
+    # Perform operations for each entry.
     for entry in entries:
         old_path = os.path.join(path, entry)
 
-        # エントリがディレクトリの場合は、再帰的に処理します。
+        # If the entry is a directory, process it recursively.
         if os.path.isdir(old_path):
             handle_directory(old_path)
         else:
-            # ファイルの場合、新しいファイル名を作成し、移動またはコピーします。
+            # If the entry is a file, create a new filename and move or copy it.
             new_filename = f"{path.replace('/', '_')}_{entry}"
             if options.move_mode:
                 if options.execute_mode:
@@ -41,14 +41,14 @@ def handle_directory(path):
                 if not options.quiet_mode:
                     print(f"Copied {old_path} -> {new_filename}")
 
-    # ディレクトリが空で、かつ削除オプションが有効であれば削除します。
+    # If the directory is empty and the delete option is active, delete it.
     if options.delete_mode and not os.listdir(path):
         if options.execute_mode:
             os.rmdir(path)
         if not options.quiet_mode:
             print(f"Deleted directory {path}")
 
-# 現在のディレクトリ内のすべてのサブディレクトリを取得し、処理を開始します。
+# Get all subdirectories in the current directory and start processing.
 subdirectories = [d for d in os.listdir('.') if os.path.isdir(d)]
 for subdir in subdirectories:
     handle_directory(subdir)
