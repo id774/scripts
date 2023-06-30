@@ -8,7 +8,6 @@ if [ "$os" = "Darwin" ]; then
   touch $HOME/Documents/.localized
   touch $HOME/Downloads/.localized
   touch $HOME/Desktop/.localized
-  test -d $HOME/largefiles/dashcam && find $HOME/largefiles/dashcam -type f -mtime +30 -exec rm -vf {} \;
   test -d $HOME/tmp && find $HOME/tmp -type f -mtime +3 -exec rm -vf {} \;
 elif [ "$os" = "Linux" ]; then
   test -d /root/.cache && rm -vrf /root/.cache
@@ -32,5 +31,5 @@ test -d $HOME/Downloads && find $HOME/Downloads -type f -mtime +7 -exec rm -vf {
 test -d $HOME/Desktop && find $HOME/Desktop -type f -mtime +7 -exec rm -vf {} \;
 test -d $HOME/twitter_viewer/log && find $HOME/twitter_viewer/log -type f -mtime +7 -exec rm -vf {} \;
 test -d $HOME/fastladder/log && find $HOME/fastladder/log -type f -mtime +7 -exec rm -vf {} \;
-echo "cltmp (20230627) done."
+echo "cltmp (20230630) done."
 
