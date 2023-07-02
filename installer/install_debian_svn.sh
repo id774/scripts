@@ -37,7 +37,7 @@ sudo vi /etc/apache2/mods-enabled/dav_svn.conf
 #  AuthUserFile /etc/apache2/.htpasswd
 #  <LimitExcept GET PROPFIND OPTIONS REPORT>
 #    Require valid-user
-#  </LimitExcept> 
+#  </LimitExcept>
 #</Location>
 
 # Permission

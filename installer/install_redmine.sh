@@ -69,7 +69,7 @@ sudo vi /etc/apache2/mods-enabled/dav_svn.conf
 #  AuthUserFile /var/lib/svn/$SVN_PROJECT_ID/.htpasswd
 #  <LimitExcept GET PROPFIND OPTIONS REPORT>
 #    Require valid-user
-#  </LimitExcept> 
+#  </LimitExcept>
 #</Location>
 
 # Mongrel Cluster

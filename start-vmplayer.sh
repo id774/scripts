@@ -4,7 +4,7 @@
 # VMware Player startup script
 #
 # Note:
-#  This needs following packages  
+#  This needs following packages
 #    - xvfb
 #    - fluxbox (non-free)
 #    - x11vnc (non-free)
