@@ -4,6 +4,9 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.27 7/2,2023
+#       Show return code 1 if required directory does not exist.
+#       (Same spec as before refactoring.)
 # v1.26 6/13,2023
 #       Fix bug, Refactoring.
 # v1.25 6/11,2023
@@ -137,18 +140,24 @@ rsync_disk2ssh_1() {
   if ping -c 1 $T_HOST > /dev/null 2>&1 && [[ -d $B_HOME/$B_MOUNT/$B_DEVICE/user1 ]]; then
     rsync -avz --no-o --no-g --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user1 \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
+  else
+    false
   fi
   echo "Return code is $?"
 
   if ping -c 1 $T_HOST > /dev/null 2>&1 && [[ -d $B_HOME/$B_MOUNT/$B_DEVICE/user2 ]]; then
     rsync -avz --no-o --no-g --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user2 \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
+  else
+    false
   fi
   echo "Return code is $?"
 
   if ping -c 1 $T_HOST > /dev/null 2>&1 && [[ -d $B_HOME/$B_MOUNT/$B_DEVICE/user3 ]]; then
     rsync -avz --no-o --no-g --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/user3 \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
+  else
+    false
   fi
   echo "Return code is $?"
 }
@@ -159,6 +168,8 @@ rsync_disk2ssh_2() {
   if ping -c 1 $T_HOST > /dev/null 2>&1 && [[ -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles ]]; then
     rsync -avz --no-o --no-g --delete -e ssh $B_HOME/$B_MOUNT/$B_DEVICE/largefiles \
     $T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/
+  else
+    false
   fi
   echo "Return code is $?"
 }
@@ -169,18 +180,24 @@ rsync_disk2disk_1() {
   if [[ -d $B_HOME/$B_MOUNT/$B_DEVICE/user1 ]] && [[ -d $T_HOME/$T_MOUNT/$T_DEVICE/user1 ]]; then
     rsync -avz --no-o --no-g --delete $B_HOME/$B_MOUNT/$B_DEVICE/user1 \
     $T_HOME/$T_MOUNT/$T_DEVICE/
+  else
+    false
   fi
   echo "Return code is $?"
 
   if [[ -d $B_HOME/$B_MOUNT/$B_DEVICE/user2 ]] && [[ -d $T_HOME/$T_MOUNT/$T_DEVICE/user2 ]]; then
     rsync -avz --no-o --no-g --delete $B_HOME/$B_MOUNT/$B_DEVICE/user2 \
     $T_HOME/$T_MOUNT/$T_DEVICE/
+  else
+    false
   fi
   echo "Return code is $?"
 
   if [[ -d $B_HOME/$B_MOUNT/$B_DEVICE/user3 ]] && [[ -d $T_HOME/$T_MOUNT/$T_DEVICE/user3 ]]; then
     rsync -avz --no-o --no-g --delete $B_HOME/$B_MOUNT/$B_DEVICE/user3 \
     $T_HOME/$T_MOUNT/$T_DEVICE/
+  else
+    false
   fi
   echo "Return code is $?"
 }
@@ -191,6 +208,8 @@ rsync_disk2disk_2() {
   if [[ -d $B_HOME/$B_MOUNT/$B_DEVICE/largefiles ]] && [[ -d $T_HOME/$T_MOUNT/$T_DEVICE/largefiles ]]; then
     rsync -avz --no-o --no-g --delete $B_HOME/$B_MOUNT/$B_DEVICE/largefiles \
     $T_HOME/$T_MOUNT/$T_DEVICE/
+  else
+    false
   fi
   echo "Return code is $?"
 }
