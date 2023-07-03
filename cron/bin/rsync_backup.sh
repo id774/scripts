@@ -140,8 +140,7 @@ rsync_disk2ssh_1() {
   date "+%Y/%m/%d %T"
   if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user1" ]; then
     rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
-    $T_USER@$T_HOST:"$T_HOME/$
-    $T_USER@$T_HOST:"$T_HOME/$T_MOUNT/$T_DEVICE/"
+    "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
   else
     false
   fi
@@ -149,7 +148,7 @@ rsync_disk2ssh_1() {
 
   if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2" ]; then
     rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
-    $T_USER@$T_HOST:"$T_HOME/$T_MOUNT/$T_DEVICE/"
+    "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
   else
     false
   fi
@@ -157,7 +156,7 @@ rsync_disk2ssh_1() {
 
   if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user3" ]; then
     rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
-    $T_USER@$T_HOST:"$T_HOME/$T_MOUNT/$T_DEVICE/"
+    "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
   else
     false
   fi
@@ -169,7 +168,7 @@ rsync_disk2ssh_2() {
   date "+%Y/%m/%d %T"
   if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ]; then
     rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
-    $T_USER@$T_HOST:"$T_HOME/$T_MOUNT/$T_DEVICE/"
+    "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
   else
     false
   fi
@@ -206,7 +205,6 @@ rsync_disk2disk_1() {
 
 rsync_disk2disk_2() {
   echo -n "* Executing rsync_disk2disk_2 $B_DEVICE -> $T_DEVICE on "
-  date "+%Y/%m/%d
   date "+%Y/%m/%d %T"
   if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/largefiles" ]; then
     rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
