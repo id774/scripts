@@ -4,6 +4,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v2.0  7/4,2023
+#       Upgrading major version with no functional changes.
 # v1.27 7/2,2023
 #       Convert script to POSIX-compatible syntax.
 #       Show return code 1 if required directory does not exist.
