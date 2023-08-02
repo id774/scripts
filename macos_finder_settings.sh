@@ -12,6 +12,9 @@ if [ "$os" = "Darwin" ]; then
   # スクリーンショットのファイル名変更
   defaults write com.apple.screencapture name "Screenshot"
 
+  # 共有フォルダで .DS_Store ファイルを作成しない
+  defaults write com.apple.desktopservices DSDontWriteNetworkStores true
+
   # SystemUIServer を再起動して設定を反映させる
   killall SystemUIServer
 else
