@@ -32,9 +32,9 @@ test -d $HOME/fastladder/log && find $HOME/fastladder/log -type f -mtime +7 -exe
 if [ "$os" = "Darwin" ]; then
   if type trash &> /dev/null
   then
-    test -d $HOME/Pictures && find $HOME/Pictures -type f -mtime +30 -exec trash -v {} \;
-    test -d $HOME/Downloads && find $HOME/Downloads -type f -mtime +7 -exec trash -v {} \;
-    test -d $HOME/Desktop && find $HOME/Desktop -type f -mtime +7 -exec trash -v {} \;
+    test -d $HOME/Pictures && find $HOME/Pictures -type f -mtime +7 -exec trash -v {} \;
+    test -d $HOME/Downloads && find $HOME/Downloads -type f -mtime +3 -exec trash -v {} \;
+    test -d $HOME/Desktop && find $HOME/Desktop -type f -mtime +3 -exec trash -v {} \;
   else
     test -d $HOME/Pictures && find $HOME/Pictures -type f -mtime +30 -exec rm -vf {} \;
     test -d $HOME/Downloads && find $HOME/Downloads -type f -mtime +7 -exec rm -vf {} \;
@@ -45,5 +45,5 @@ else
   test -d $HOME/Downloads && find $HOME/Downloads -type f -mtime +7 -exec rm -vf {} \;
   test -d $HOME/Desktop && find $HOME/Desktop -type f -mtime +7 -exec rm -vf {} \;
 fi
-echo "cltmp (20230822) done."
+echo "cltmp (20230824) done."
 
