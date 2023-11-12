@@ -1,10 +1,40 @@
 #!/bin/bash
 
-T_DEVICE=sde
-B_PATH=/mnt/sdd/home/ubuntu/largefiles/dashcam
-test -f $HOME/mnt/$T_DEVICE/timestamp || exit 1
-test -d $B_PATH || exit 2
-sudo smartctl -a /dev/$T_DEVICE
-rsync -avz --delete $B_PATH $HOME/mnt/$T_DEVICE/
-touch $HOME/mnt/$T_DEVICE/timestamp
-sudo smartctl -t long /dev/$T_DEVICE
+# Configurable Variables
+TARGET_DEVICE="sde"
+BACKUP_PATH="/mnt/sdd/home/ubuntu/largefiles/dashcam"
+MOUNT_PATH="$HOME/mnt/$TARGET_DEVICE"
+TIMESTAMP_FILE="$MOUNT_PATH/timestamp"
+
+# Functions
+check_conditions() {
+    if [ ! -f "$TIMESTAMP_FILE" ]; then
+        echo "Timestamp file not found."
+        exit 1
+    fi
+
+    if [ ! -d "$BACKUP_PATH" ]; then
+        echo "Backup path does not exist."
+        exit 2
+    fi
+}
+
+check_device_health() {
+    sudo smartctl -a /dev/$TARGET_DEVICE
+}
+
+sync_data() {
+    rsync -avz --delete "$BACKUP_PATH" "$MOUNT_PATH/"
+    touch "$TIMESTAMP_FILE"
+}
+
+perform_long_test() {
+    sudo smartctl -t long /dev/$TARGET_DEVICE
+}
+
+# Main script logic
+check_conditions
+check_device_health
+sync_data
+perform_long_test
+
