@@ -47,9 +47,5 @@ case $ACTION in
     unmount)
         unmount_device
         ;;
-    *)
-        echo "Invalid action. Use 'mount' or 'unmount'."
-        exit 3
-        ;;
 esac
 
