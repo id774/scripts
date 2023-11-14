@@ -1,27 +1,41 @@
 #!/bin/zsh
 
-# Check arguments
-if [ $# -lt 1 ]; then
-    echo "Usage: $0 [unmount] device"
+# Display usage information
+usage() {
+    echo "Usage: $0 device [unmount]"
+    echo "       $0 -h (display this help)"
     exit 1
+}
+
+# Check if device exists
+check_device_exists() {
+    if [ ! -e "/dev/$1" ]; then
+        echo "Error: Device /dev/$1 does not exist."
+        exit 2
+    fi
+}
+
+# Check arguments
+if [ $# -eq 0 ] || [ "$1" = "-h" ]; then
+    usage
 fi
 
+DEVICE=$1
 ACTION="mount"
-if [ "$1" = "unmount" ]; then
+if [ "$2" = "unmount" ]; then
     ACTION="unmount"
-    DEVICE=$2
-else
-    DEVICE=$1
 fi
 MOUNT_POINT=$HOME/mnt/$DEVICE
 
 # Function to mount the device
 mount_device() {
+    check_device_exists $DEVICE
     sudo veracrypt -tc -t -k "" --protect-hidden no --fs-options utf8 /dev/$DEVICE $MOUNT_POINT
 }
 
 # Function to unmount the device
 unmount_device() {
+    check_device_exists $DEVICE
     sudo veracrypt -d /dev/$DEVICE
 }
 
@@ -35,7 +49,7 @@ case $ACTION in
         ;;
     *)
         echo "Invalid action. Use 'mount' or 'unmount'."
-        exit 2
+        exit 3
         ;;
 esac
 

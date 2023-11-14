@@ -7,6 +7,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.8 11/14,2023
+#       Add veramount.
 #  v0.7 6/23,2023
 #       Fix uninstall bug, add md5, remove some obsolete files.
 #  v0.6 5/24,2014
@@ -62,9 +64,10 @@ uninstall_sysadmin_scripts() {
         pyck \
         autopyck \
         get_resources \
-        gpg-import \
         tcmount \
+        veramount \
         dpkg-hold \
+        gpg-import \
         platex2pdf \
         userlist \
         usershells \
@@ -105,6 +108,7 @@ setup_rhel_scripts() {
 setup_debian_scripts() {
     install_scripts 755 dpkg-hold.sh dpkg-hold
     install_scripts 755 get_resources.sh get_resources
+    install_scripts 755 veramount.sh veramount
     install_scripts 755 gpg-import.sh gpg-import
     install_scripts 755 platex2pdf.sh platex2pdf
     install_scripts 755 userlist.sh userlist
