@@ -2,8 +2,8 @@
 
 # Display usage information
 usage() {
-    echo "Usage: $0 device [unmount]"
-    echo "       $0 -h (display this help)"
+    echo "Usage: veramount device [unmount/umount]"
+    echo "       veramount -h (for help)"
     exit 1
 }
 
