@@ -22,7 +22,7 @@ fi
 
 DEVICE=$1
 ACTION="mount"
-if [ "$2" = "unmount" ]; then
+if [ "$2" = "unmount" ] || [ "$2" = "umount" ]; then
     ACTION="unmount"
 fi
 MOUNT_POINT=$HOME/mnt/$DEVICE
