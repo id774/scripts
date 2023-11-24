@@ -1,3 +1,0 @@
-# curl -s http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
-deb     http://pkg.jenkins-ci.org/debian binary/
-deb-src http://pkg.jenkins-ci.org/debian binary/

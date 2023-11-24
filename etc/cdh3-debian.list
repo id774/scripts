@@ -1,3 +1,0 @@
-# curl -s http://archive.cloudera.com/debian/archive.key | sudo apt-key add -
-deb     http://archive.cloudera.com/debian squeeze-cdh3 contrib
-deb-src http://archive.cloudera.com/debian squeeze-cdh3 contrib
