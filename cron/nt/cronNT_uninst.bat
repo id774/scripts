@@ -1,1 +1,0 @@
-cronNT.exe /UnregServer

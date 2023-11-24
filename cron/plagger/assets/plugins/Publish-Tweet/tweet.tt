@@ -1,1 +1,0 @@
-[% IF entry.title %][% entry.title %][% END %]: [% IF entry.body %][% entry.body_text %][% ELSE %]NO LOG[% END %]

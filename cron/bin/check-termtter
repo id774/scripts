@@ -1,3 +1,0 @@
-#!/bin/sh
-
-ps -H auxwww | grep termtter | grep -v "grep termtter" | grep -v "check-termtter" | grep termtter > /dev/null || ip addr show | mail -s "[admin][alert][`/bin/hostname`] termtter is not running" root
