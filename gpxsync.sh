@@ -24,6 +24,7 @@ copy_files() {
         echo "Destination directory $destination does not exist. Exiting."
         return 1
     fi
+    echo 'cp "$source" "$destination"'
     cp "$source" "$destination"
 }
 
@@ -32,6 +33,7 @@ sync_files() {
     local source=$1
     local destination_user=$2
     local destination_host=$3
+    echo 'rsync -avz --delete "$source" "$destination_user@$destination_host:~/gpx/"'
     rsync -avz --delete "$source" "$destination_user@$destination_host:~/gpx/"
 }
 
@@ -49,11 +51,7 @@ check_gpx_files "$TMP_DIR" || exit 1
 copy_files "$TMP_DIR"/*.gpx "$HOME/$USER_GPX_DIR/$CURRENT_YEAR/" || exit 1
 
 # Copy .gpx files to mounted directory, skip if not mounted
-if mount | grep -q '/mnt/sdb'; then
-    copy_files "$TMP_DIR"/*.gpx "$HOME/mnt/sdb/$USER_GPX_DIR/$CURRENT_YEAR/"
-else
-    echo "Mounted directory /mnt/sdb is not available. Skipping this step."
-fi
+copy_files "$TMP_DIR"/*.gpx "$HOME/mnt/sdb/$USER_GPX_DIR/$CURRENT_YEAR/" || exit 1
 
 # Rsync files to the server
 sync_files "$HOME/$USER_GPX_DIR" "$RSYNC_USER" "$RSYNC_HOST"
