@@ -24,7 +24,7 @@ copy_files() {
         echo "Destination directory $destination does not exist. Exiting."
         return 1
     fi
-    echo 'cp "$source" "$destination"'
+    echo cp "$source" "$destination"
     cp "$source" "$destination"
 }
 
@@ -33,14 +33,14 @@ sync_files() {
     local source=$1
     local destination_user=$2
     local destination_host=$3
-    echo 'rsync -avz --delete "$source" "$destination_user@$destination_host:~/gpx/"'
+    echo rsync -avz --delete "$source" "$destination_user@$destination_host:~/gpx/"
     rsync -avz --delete "$source" "$destination_user@$destination_host:~/gpx/"
 }
 
 # Function to remove files
 remove_files() {
     local file_pattern=$1
-    rm $file_pattern
+    rm -v $file_pattern
 }
 
 # Main logic
