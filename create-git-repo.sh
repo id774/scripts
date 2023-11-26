@@ -32,16 +32,28 @@ create_git_repo() {
     local repo_path=$2
     local dry_run=$3
 
+    # Check if the repo path is under the home directory
+    local use_sudo="sudo"
+    if [[ "${repo_path}" == "${HOME}"* ]]; then
+        use_sudo=""
+    fi
+
     if [ "$dry_run" = true ]; then
         echo "Dry run: A new repository would be created at '${repo_path}'"
         return 0
     fi
 
-    sudo mkdir -p "${repo_path}" || return 1
+    $use_sudo mkdir -p "${repo_path}" || return 1
     cd "${repo_path}" || return 1
-    sudo git init --bare --shared || return 1
-    sudo chmod -R o-rwx,g+ws "${repo_path}" || return 1
-    sudo chown -R git:git "${repo_path}" || return 1
+    $use_sudo git init --bare --shared || return 1
+    $use_sudo chmod -R o-rwx,g+ws "${repo_path}" || return 1
+
+    if [ -z "$use_sudo" ]; then
+        chmod -R u+rwX "${repo_path}"
+    else
+        $use_sudo chown -R git:git "${repo_path}"
+    fi
+
     echo "Repository '${repo_name}' created at '${repo_path}'"
 }
 
@@ -49,8 +61,14 @@ create_git_repo() {
 delete_git_repo() {
     local repo_path=$1
 
+    # Check if the repo path is under the home directory
+    local use_sudo="sudo"
+    if [[ "${repo_path}" == "${HOME}"* ]]; then
+        use_sudo=""
+    fi
+
     if is_git_repository "$repo_path"; then
-        sudo rm -rf "${repo_path}"
+        $use_sudo rm -rf "${repo_path}"
         echo "Repository at '${repo_path}' has been deleted."
     else
         echo "Error: '${repo_path}' is not a Git repository."
