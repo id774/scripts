@@ -4,14 +4,17 @@
 # User Shell Listing Script (usershells.py)
 #
 #  Description:
-#  This script lists user accounts and their corresponding shells from the /etc/passwd file,
-#  excluding accounts with non-interactive shells like 'false', 'nologin', 'sync', 'shutdown',
-#  and 'halt'.
+#  This script lists user accounts and their corresponding shells. It supports
+#  both macOS (using 'dscl') and other Unix-like systems (using /etc/passwd),
+#  excluding accounts with non-interactive shells like 'false', 'nologin', 'sync',
+#  'shutdown', and 'halt'.
 #
 #  Author: id774
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 11/29,2023
+#       Added support for macOS by using 'dscl' for retrieving user and shell information.
 #  v1.1 8/30,2018
 #       Improved shell filtering to exclude non-interactive system accounts such as 'sync',
 #       'shutdown', and 'halt'.
@@ -22,21 +25,39 @@
 #  Run the script without any arguments:
 #      python usershells.py
 #
-#  The script parses /etc/passwd and outputs a list of user accounts with interactive shells.
+#  The script detects the operating system and outputs a list of user accounts with interactive shells.
 #
 ########################################################################
 
-passwd = "/etc/passwd"
-fo = open(passwd, 'r')
+import subprocess
+import platform
+import os
 
-shells = {}
-for line in fo:
-    line = line.strip()
-    fields = line.split(":")
-    shells[fields[0]] = fields[-1]
+def get_shells_from_passwd():
+    shells = {}
+    with open("/etc/passwd", 'r') as fo:
+        for line in fo:
+            line = line.strip()
+            fields = line.split(":")
+            shells[fields[0]] = fields[-1]
+    return shells
 
-fo.close()
+def get_shells_from_dscl():
+    shells = {}
+    users = subprocess.check_output(['dscl', '.', '-list', '/Users']).decode().splitlines()
+    for user in users:
+        shell = subprocess.check_output(['dscl', '.', '-read', f'/Users/{user}', 'UserShell']).decode().split()[1]
+        shells[user] = shell
+    return shells
 
-for account in shells.keys():
-    if 'false' not in shells[account] and 'nologin' not in shells[account] and 'sync' not in shells[account] and 'shutdown' not in shells[account] and 'halt' not in shells[account]:
-        print("{0:11} => {1}".format(account, shells[account]))
+def main():
+    os_type = platform.system()
+    shells = get_shells_from_dscl() if os_type == 'Darwin' else get_shells_from_passwd()
+
+    for account, shell in shells.items():
+        if all(x not in shell for x in ['false', 'nologin', 'sync', 'shutdown', 'halt']):
+            print("{0:11} => {1}".format(account, shell))
+
+if __name__ == '__main__':
+    main()
+
