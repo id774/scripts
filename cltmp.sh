@@ -26,12 +26,6 @@
 
 os=$(uname)
 
-# [Rest of the script]
-echo "cltmp (20230827) done."
-
-
-os=$(uname)
-
 if [ "$os" = "Darwin" ]; then
   test -L "$HOME/Desktop/場所が変更された項目" && rm -f "$HOME/Desktop/場所が変更された項目"
   test -d $HOME/Pictures && touch $HOME/Pictures/.localized
