@@ -1,4 +1,36 @@
 #!/bin/sh
+#
+########################################################################
+# Git Repository Management Script
+#
+#  Description:
+#  This script automates the creation and deletion of Git repositories.
+#  It allows for setting a custom path for the repository and includes options
+#  for a dry run and for deleting an existing repository. The default repository
+#  path is set to /var/lib/git if not specified.
+#
+#  Author: id774
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 11/26,2023
+#       Initial release. Features include creating and deleting Git repositories,
+#       dry run option for creation, and custom repository path setting.
+#
+# Usage:
+#  To create a new repository:
+#      $0 <repository_name> [repository_path] [--dry-run]
+#
+#  To delete an existing repository:
+#      $0 <repository_name> [repository_path] [--delete]
+#
+#  For help:
+#      $0 -h
+#
+#  Note: The script may require sudo permissions for certain operations,
+#  especially when dealing with system-wide paths like /var/lib/git.
+#
+########################################################################
 
 # Display script usage information
 usage() {

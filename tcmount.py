@@ -2,9 +2,16 @@
 #
 ########################################################################
 # TrueCrypt Device Mounter
+# 
+#  Description:
+#  This script is designed to automate the mounting of TrueCrypt
+#  encrypted devices. It supports a variety of devices and includes
+#  options for different file systems and encoding types.
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Author: id774
+#  Contact: idnanashi@gmail.com
 #
+#  Version History:
 #  v2.2 8/22,2018
 #       Requires privilege to run dmesg.
 #  v2.1 9/26,2016
@@ -20,6 +27,17 @@
 #       Refactoring, and for legacy device.
 #  v1.0 8/6,2010
 #       Stable.
+#
+# Usage:
+#  To use this script, ensure you have TrueCrypt installed and run
+#  the script with appropriate privileges. You can specify the device
+#  and other mount options as arguments. For example:
+# 
+#      python tcmount.py [device] [options]
+#
+#  Refer to the TrueCrypt documentation for more detailed information
+#  on mount options and device specifications.
+#
 ########################################################################
 
 import sys

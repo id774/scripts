@@ -1,4 +1,39 @@
 #!/bin/zsh
+#
+########################################################################
+# VeraCrypt Device Mount/Unmount Script
+#
+#  Description:
+#  This script facilitates mounting and unmounting of VeraCrypt-encrypted
+#  devices. It supports both mount and unmount operations and checks for
+#  device existence before attempting any operation.
+#
+#  Author: id774
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 11/14,2023
+#       Initial release. Script includes functionality to mount and unmount
+#       VeraCrypt-encrypted devices, check for device existence, and display
+#       usage information.
+#
+# Usage:
+#  To mount a device:
+#      veramount [device]
+#
+#  To unmount a device:
+#      veramount [device] unmount
+#  or
+#      veramount [device] umount
+#
+#  For help:
+#      veramount -h
+#
+#  Note: This script requires VeraCrypt to be installed and assumes that
+#  devices are located in /dev. The mount point is created in the user's
+#  home directory under mnt/[device].
+#
+########################################################################
 
 # Display usage information
 usage() {

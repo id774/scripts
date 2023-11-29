@@ -1,4 +1,34 @@
 #!/usr/bin/env python
+#
+########################################################################
+# Calendar Printer
+#
+#  Description:
+#  This script prints the calendar for the current, previous, and next month.
+#  It checks the operating system and uses the 'cal' command in Unix-like systems,
+#  or the Python 'calendar' module otherwise. It highlights the current day in the
+#  current month's calendar.
+#
+#  Author: id774
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 11/25,2023
+#       Initial release. Includes functionality to check the operating system,
+#       verify if 'cal' command exists, and print calendars for the current,
+#       previous, and next month.
+#
+# Usage:
+#  Run the script without any arguments:
+#      python calendar_printer.py
+#
+#  The script automatically determines the current date and prints
+#  the calendars for the current, previous, and next month.
+#  If running on a Unix-like system with the 'cal' command,
+#  it will use 'cal' for printing. Otherwise, it will use
+#  Python's calendar module.
+#
+########################################################################
 
 import subprocess
 import datetime
