@@ -8,8 +8,8 @@
 #  It walks through the directory, renaming files from one extension to another.
 #  This is useful for batch processing file extensions in a directory.
 #
-#  Author: [Your Name or Alias]
-#  Contact: [Your Contact Information]
+#  Author: id774
+#  Contact: idnanashi@gmail.com
 #
 #  Version History:
 #  v1.1 8/14,2014
