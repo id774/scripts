@@ -1,10 +1,17 @@
 #!/usr/bin/env python
 #
 ########################################################################
-# Show python modules info and version
+# Show Python Modules Info and Version
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script displays detailed information and versions for a list of
+#  specified Python modules. It also shows the Python version upon request.
+#  It's useful for quickly checking the installed versions of various packages.
 #
+#  Author: id774
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
 #  v2.3 11/5,2020
 #       Using importlib instead of imp.
 #  v2.2 9/28,2015
@@ -13,13 +20,24 @@
 #       Show python version.
 #  v2.0 2/11,2014
 #       Simple version listing.
-#       Using -i option for detail info.
+#       Using -i option for detailed info.
 #  v1.2 2/10,2014
 #       Remove install process.
 #  v1.1 6/29,2011
 #       Add some packages.
 #  v1.0 8/15,2008
 #       Stable.
+#
+# Usage:
+#  To display the versions of predefined modules:
+#      python show_version.py
+#
+#  To display detailed information of predefined modules:
+#      python show_version.py -i
+#
+#  To display the Python version:
+#      python show_version.py -p
+#
 ########################################################################
 
 import sys

@@ -1,3 +1,27 @@
+#!/usr/bin/env python
+
+########################################################################
+# Wake-on-LAN Magic Packet Sender
+#
+#  Description:
+#  This script sends a Wake-on-LAN magic packet to a specified MAC address.
+#  It's designed to wake up computers remotely by using their network interface.
+#
+#  Author: id774
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 8/3,2022
+#       Initial release. Basic functionality for sending Wake-on-LAN magic packets.
+#
+# Usage:
+#  Run the script with a MAC address as the argument.
+#  Example:
+#      python wakeonlan.py 00:11:22:33:44:55
+#  This will send a magic packet to the specified MAC address.
+#
+########################################################################
+
 import sys
 import socket
 import struct
