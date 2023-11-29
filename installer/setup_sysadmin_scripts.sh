@@ -86,7 +86,6 @@ setup_scripts() {
     install_scripts 755 chmodtree.py chmodtree
     install_scripts 755 cltmp.sh cltmp
     install_scripts 755 namecalc.rb namecalc
-    install_scripts 755 now.sh now
     install_scripts 755 waitlock.rb waitlock
     install_scripts 755 swapext.py swapext
     install_scripts 755 git-follow-origin.sh git-follow-origin

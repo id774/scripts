@@ -35,6 +35,7 @@ import datetime
 import calendar
 import platform
 import sys
+import os
 
 def print_month_calendar(year, month, highlight_day=None):
     """
@@ -68,8 +69,18 @@ def is_command_exist(command):
 def run_system_cal(args):
     """
     Run the system's 'cal' command with the given arguments.
+    Checks if the 'cal' command is different from this script itself to avoid infinite loop.
     """
-    subprocess.call(['cal'] + args)
+    cal_path = subprocess.check_output(['which', 'cal']).decode().strip()
+
+    # Get the absolute path of the current script
+    script_path = os.path.abspath(__file__)
+
+    # Compare the paths to ensure 'cal' is not this script itself
+    if cal_path != script_path:
+        subprocess.call(['cal'] + args)
+    else:
+        print("Error: 'cal' command is the same as this script. Cannot execute to avoid infinite loop.")
 
 def is_unix_like():
     """
