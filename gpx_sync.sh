@@ -20,7 +20,7 @@
 # Usage:
 #  Run the script without any arguments. Ensure that the TMP_DIR and USER_GPX_DIR
 #  variables are set to the correct paths before running:
-#      bash gpx_manager.sh
+#      bash gpx_sync.sh
 #
 #  The script will automatically handle the copying, syncing, and removal of GPX files.
 #
