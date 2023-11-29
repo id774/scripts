@@ -1,4 +1,34 @@
 #!/usr/bin/env python
+#
+########################################################################
+# chmodtree: Directory Tree chmod Script
+#
+#  Description:
+#  This script changes file and directory permissions recursively within a specified directory.
+#  It uses the 'find' command to apply 'chmod' to files and directories matching certain criteria.
+#  The script supports options for using 'sudo', controlling verbosity, and filtering by name patterns.
+#
+#  Author: id774
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.2 8/14,2014
+#       Minor formatting revisions for readability and consistency.
+#  v1.1 1/27,2009
+#       Enhanced compatibility to consider platforms of Python other than GNU/Linux.
+#  v1.0 1/26,2009
+#       Initial release. Basic functionality for recursive chmod in directory trees,
+#       with options for sudo, quiet mode, file/directory specificity, and name pattern filtering.
+#
+# Usage:
+#  Run the script with a directory and options:
+#      python chmodtree.py [options] dir
+#
+#  Options include --sudo to execute with superuser privileges, --quiet to reduce output verbosity,
+#  --files and --dirs to specify chmod permissions for files and directories, and --name to filter
+#  by filename pattern.
+#
+########################################################################
 
 import sys
 import os

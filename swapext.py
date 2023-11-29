@@ -1,4 +1,31 @@
 #!/usr/bin/env python
+#
+########################################################################
+# swapext: File Extension Swapper
+#
+#  Description:
+#  This script changes the file extensions within a specified directory.
+#  It walks through the directory, renaming files from one extension to another.
+#  This is useful for batch processing file extensions in a directory.
+#
+#  Author: [Your Name or Alias]
+#  Contact: [Your Contact Information]
+#
+#  Version History:
+#  v1.1 8/14,2014
+#       Minor formatting revisions for readability and consistency.
+#  v1.0 4/19,2011
+#       Initial release. Basic functionality for swapping file extensions in a directory tree.
+#
+# Usage:
+#  Run the script with the directory and extensions:
+#      python swapext.py dir before_extension after_extension
+#
+#  Example:
+#      python swapext.py ./images jpg png
+#  This will change all '.jpg' files to '.png' within the './images' directory.
+#
+########################################################################
 
 import os
 import sys
