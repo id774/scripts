@@ -49,15 +49,6 @@ import hashlib
 from optparse import OptionParser
 from stat import S_ISDIR, ST_MODE
 
-# [Rest of the script]
-
-
-import sys
-import os
-import hashlib
-from optparse import OptionParser
-from stat import S_ISDIR, ST_MODE
-
 class Md5Checksum:
 
     @staticmethod
