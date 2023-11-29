@@ -1,32 +1,32 @@
 #!/usr/bin/env python
 #
 ########################################################################
-# Calendar Printer
+# Calendar Printer (cal.py)
 #
 #  Description:
-#  This script prints the calendar for the current, previous, and next month.
-#  It checks the operating system and uses the 'cal' command in Unix-like systems,
-#  or the Python 'calendar' module otherwise. It highlights the current day in the
-#  current month's calendar.
+#  This script acts as a wrapper for the 'cal' command in Unix-like systems.
+#  It prints the calendar for the current, previous, and next month if run
+#  without arguments. If arguments are provided, it passes them directly to
+#  the system's 'cal' command. In non-Unix systems, it uses Python's calendar
+#  module for printing.
 #
 #  Author: id774
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 11/29,2023
+#       Updated to pass arguments to system's 'cal' command if provided.
 #  v1.0 11/25,2023
-#       Initial release. Includes functionality to check the operating system,
-#       verify if 'cal' command exists, and print calendars for the current,
+#       Initial release. Functionality to print calendars for the current,
 #       previous, and next month.
 #
 # Usage:
-#  Run the script without any arguments:
-#      python calendar_printer.py
+#  Run the script with or without arguments:
+#      python cal.py [arguments]
 #
-#  The script automatically determines the current date and prints
-#  the calendars for the current, previous, and next month.
-#  If running on a Unix-like system with the 'cal' command,
-#  it will use 'cal' for printing. Otherwise, it will use
-#  Python's calendar module.
+#  Without arguments, it prints the calendars for the current, previous,
+#  and next month. With arguments, it executes the system's 'cal' command
+#  with those arguments.
 #
 ########################################################################
 
@@ -34,6 +34,7 @@ import subprocess
 import datetime
 import calendar
 import platform
+import sys
 
 def print_month_calendar(year, month, highlight_day=None):
     """
@@ -64,36 +65,46 @@ def is_command_exist(command):
     """
     return subprocess.call(['which', command], stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
 
+def run_system_cal(args):
+    """
+    Run the system's 'cal' command with the given arguments.
+    """
+    subprocess.call(['cal'] + args)
+
 def is_unix_like():
     """
     Check if the operating system is Unix-like.
     """
     return platform.system() != "Windows"
 
-# Get the current year, month, and day
-now = datetime.datetime.now()
-year = now.year
-month = now.month
-day = now.day
-
-# Calculate last month and next month
-last_month = (month - 1) if month > 1 else 12
-last_year = year if month > 1 else year - 1
-next_month = (month + 1) if month < 12 else 1
-next_year = year if month < 12 else year + 1
-
-# Check the platform and print the calendars accordingly
-if is_unix_like():
-    if is_command_exist('cal'):
-        print_cal_month(last_year, last_month)
-        print_cal_month(year, month)
-        print_cal_month(next_year, next_month)
+# Main execution
+if __name__ == '__main__':
+    if is_unix_like() and is_command_exist('cal') and len(sys.argv) > 1:
+        # Pass arguments to the system's 'cal' command
+        run_system_cal(sys.argv[1:])
     else:
-        print_month_calendar(last_year, last_month)
-        print_month_calendar(year, month, day)  # Highlight today
-        print_month_calendar(next_year, next_month)
-else:
-    print_month_calendar(last_year, last_month)
-    print_month_calendar(year, month, day)  # Highlight today
-    print_month_calendar(next_year, next_month)
+        # Original script functionality
+        now = datetime.datetime.now()
+        year = now.year
+        month = now.month
+        day = now.day
+
+        last_month = (month - 1) if month > 1 else 12
+        last_year = year if month > 1 else year - 1
+        next_month = (month + 1) if month < 12 else 1
+        next_year = year if month < 12 else year + 1
+
+        if is_unix_like():
+            if is_command_exist('cal'):
+                print_cal_month(last_year, last_month)
+                print_cal_month(year, month)
+                print_cal_month(next_year, next_month)
+            else:
+                print_month_calendar(last_year, last_month)
+                print_month_calendar(year, month, day)  # Highlight today
+                print_month_calendar(next_year, next_month)
+        else:
+            print_month_calendar(last_year, last_month)
+            print_month_calendar(year, month, day)  # Highlight today
+            print_month_calendar(next_year, next_month)
 
