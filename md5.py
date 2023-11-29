@@ -1,4 +1,56 @@
 #!/usr/bin/env python
+#
+########################################################################
+# MD5 Checksum Calculator
+#
+#  Description:
+#  This script calculates MD5 checksums for files and strings. It can process
+#  individual files, directories, and input strings, and supports various output
+#  formats including a quiet mode that only displays checksums.
+#
+#  Author: id774
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 6/24,2023
+#       Initial release. Functionality for calculating MD5 checksums of files and
+#       strings, supporting subdirectories, reverse output format, and quiet mode.
+#
+# Usage:
+#  Calculate checksum for files:
+#      python md5.py [options] file
+#
+#  Calculate checksum for a string:
+#      python md5.py -s "string"
+#
+#  Options:
+#   -v, --version: Show the version of the script and exit.
+#   -d, --subdirectory: Include subdirectories when calculating checksums for files.
+#   -r, --reversed: Reverse the format of the output (checksum first, then file path).
+#   -q, --quiet: Quiet mode, only the checksum is printed.
+#   -p, --print: Echo stdin to stdout and append the checksum to stdout (useful for piping).
+#   -s, --string: Calculate and print the checksum of the given string.
+#
+#  Example:
+#  Calculate checksum for all files in a directory (including subdirectories):
+#      python md5.py -d /path/to/directory
+#
+#  Calculate checksum for a single file in quiet mode:
+#      python md5.py -q /path/to/file
+#
+#  Calculate and print checksum for stdin input:
+#      echo "sample text" | python md5.py -p
+#
+########################################################################
+
+import sys
+import os
+import hashlib
+from optparse import OptionParser
+from stat import S_ISDIR, ST_MODE
+
+# [Rest of the script]
+
 
 import sys
 import os

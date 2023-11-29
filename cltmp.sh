@@ -1,4 +1,34 @@
 #!/bin/sh
+#
+########################################################################
+# cltmp: Cleanup Temporary and Cached Files
+#
+#  Description:
+#  This script is designed to clean up temporary and cached files on Unix-like systems.
+#  It includes specific operations for both macOS (Darwin) and Linux platforms, such as
+#  removing old files from designated directories and clearing system caches.
+#
+#  Author: id774
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  20230827 - Latest update with specific cleanup operations for macOS and Linux.
+#  [Further version history truncated for brevity]
+#
+# Usage:
+#  Run the script without any arguments:
+#      cltmp.sh
+#
+#  The script automatically detects the operating system and performs the appropriate
+#  cleanup actions. Ensure to have the necessary permissions before running.
+#
+########################################################################
+
+os=$(uname)
+
+# [Rest of the script]
+echo "cltmp (20230827) done."
+
 
 os=$(uname)
 
