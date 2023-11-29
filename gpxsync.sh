@@ -1,4 +1,30 @@
 #!/bin/bash
+#
+########################################################################
+# GPX File Management Script
+#
+#  Description:
+#  This script manages GPX files by performing operations like copying to
+#  specific directories, syncing with a remote server, and cleaning up
+#  temporary files. It's tailored for cycling or running data management.
+#
+#  Author: id774
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 11/24,2023
+#       Initial release. Features include checking for GPX files, copying them
+#       to specific user and mounted directories, syncing with a remote server,
+#       and removing files from the temporary directory.
+#
+# Usage:
+#  Run the script without any arguments. Ensure that the TMP_DIR and USER_GPX_DIR
+#  variables are set to the correct paths before running:
+#      bash gpx_manager.sh
+#
+#  The script will automatically handle the copying, syncing, and removal of GPX files.
+#
+########################################################################
 
 # Variables
 TMP_DIR="$HOME/tmp"

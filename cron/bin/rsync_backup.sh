@@ -1,69 +1,40 @@
 #!/bin/bash
 #
-# Backup and Syncing Removable Disk
+########################################################################
+# Backup and Syncing Removable Disk Script
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script facilitates the backup and syncing of data to removable
+#  disks. It includes functionalities like checking disk health, updating
+#  timestamps, performing cleanup tasks, and syncing data between disks and
+#  over SSH.
 #
-# v2.0  7/4,2023
-#       Upgrading major version with no functional changes.
-# v1.27 7/2,2023
-#       Convert script to POSIX-compatible syntax.
-#       Show return code 1 if required directory does not exist.
-#       (Same spec as before refactoring.)
-# v1.26 6/13,2023
-#       Fix bug, Refactoring.
-# v1.25 6/11,2023
-#       Disk check immediately after backup.
-# v1.24 4/6,2023
-#       Display and update timestamp file of disk drive.
-# v1.23 4/2,2023
-#       Display VeraCrypt version.
-# v1.22 2/10,2023
-#       Display backup directory usage statistics.
-# v1.21 9/27,2016
-#       Fix filesystem owner problem.
-# v1.20 8/10,2016
-#       Checking target host.
-# v1.19 8/5,2016
-#       Rename junk file cleaner.
-# v1.18 8/1,2016
-#       Mute tar verbose.
-# v1.17 4/19,2016
-#       Transfer between different ownwers.
-# v1.16 5/29,2013
-#       Fix device definition bugs.
-# v1.15 4/18,2013
-#       Directories re-construction.
-# v1.14 11/14,2011
-#       Backup git bare on vps.
-# v1.13 9/20,2011
-#       Refactoring. Move iso. Strict error code.
-# v1.12 8/29,2010
-#       Refactoring.
-# v1.11 8/9,2010
-#       Refactoring.
-# v1.10 8/5,2010
-#       Show return code.
-#  v1.9 4/11,2010
-#       Use ssh.
-#  v1.8 1/4,2010
-#       Show truecrypt version.
-#  v1.7 12/23,2009
-#       Add rsync function for portable media device.
-#  v1.6 1/22,2009
-#       SMART information.
-#  v1.5 12/22,2008
-#       Remove update area.
-#  v1.4 8/20,2008
-#       Add github backup.
-#  v1.3 8/6,2008
-#       Integrated update.
-#  v1.2 5/29,2008
-#       Option --delete added (user1, user2).
-#  v1.1 5/12,2008
-#       Repository backup added.
-#  v1.0 2/28,2008
-#       Stable.
+#  Author: id774
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v2.0  7/4,2023 - Major version upgrade with no functional changes.
+#  v1.27 7/2,2023 - Convert script to POSIX-compatible syntax. Show return
+#                   code 1 if required directory does not exist.
+#  [Further version history truncated for brevity]
+#  2023 - Several refinements, including POSIX-compatible syntax and return code adjustments.
+#         Implementation of disk health check immediately after backup.
+#  2016 - Enhanced target host checking and filesystem ownership issues fixed.
+#  2013 - Device definition bugs fixed and directories re-constructed.
+#  2011 - Backup functionalities for git repositories and GitHub.
+#  2010 - Improvements in error handling and SSH usage.
+#  2009 - Addition of rsync function for portable media devices and SMART information.
+#  2008 - Initial stable release, with basic backup and sync functionalities.
+#  v1.0 2/28,2008 - Stable initial release.
+#
+# Usage:
+#  Run the script without any arguments. Ensure all the necessary paths
+#  and variables are correctly set within the script:
+#      test -x /root/bin/rsync_backup.sh && /root/bin/rsync_backup.sh>>$JOBLOG 2>&1;
+#
+#  The script will automatically execute operations based on the configured
+#  settings and available devices.
+#
 ########################################################################
 
 display_and_update_timestamp() {
