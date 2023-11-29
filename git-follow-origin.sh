@@ -1,4 +1,30 @@
 #!/bin/sh
+#
+########################################################################
+# git-follow-origin: GitHub Repository Merge Script
+#
+#  Description:
+#  This script automates the process of merging changes from a GitHub
+#  repository into the local master branch. It is useful for quickly
+#  incorporating updates from a specified user's repository.
+#
+#  Author: id774
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 2/5,2013
+#       Initial release. Implements functionality to merge a specified
+#       GitHub repository's changes into the local master branch.
+#
+# Usage:
+#  Run the script with the GitHub user's name and the repository name:
+#      ./git-follow-origin.sh <user> <repo>
+#
+#  Example:
+#      ./git-follow-origin.sh exampleUser exampleRepo
+#  This will merge changes from 'exampleUser/exampleRepo' into the local master branch.
+#
+########################################################################
 
 git_merge() {
     git checkout -b merge-master master

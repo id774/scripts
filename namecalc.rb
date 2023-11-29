@@ -1,4 +1,33 @@
 #!/usr/bin/env ruby
+#!/usr/bin/env ruby
+#
+########################################################################
+# namecalc: Numerology Calculation Script
+#
+#  Description:
+#  This Ruby script performs numerology calculations based on input strings.
+#  It translates each character of the string into a numerical value and
+#  performs calculations to output a graphical representation of the
+#  numerological analysis. This can be used for names or any other strings.
+#
+#  Author: id774
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 4/12,2013
+#       Initial release. Implemented basic numerology calculation and
+#       graphical representation.
+#
+# Usage:
+#  Run the script with one or more strings:
+#      ./namecalc.rb [string1 string2 ...]
+#
+#  Example:
+#      ./namecalc.rb 111 153 111 115
+#  This will perform numerology calculations on the provided strings and
+#  display the results.
+#
+########################################################################
 
 class NameCalc
 end
