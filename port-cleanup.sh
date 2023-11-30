@@ -19,7 +19,7 @@
 #
 #  Usage:
 #  Run the script without any arguments:
-#      ./port-cleanup.sh
+#      port-cleanup.sh
 #
 #  Note:
 #  This script is intended for use on macOS systems with MacPorts installed.
