@@ -21,7 +21,7 @@
 #
 #  Usage:
 #  Run the script without any arguments:
-#      ./user-dir-manager.sh
+#      ./portland_us.sh
 #
 ########################################################################
 
