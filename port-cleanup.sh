@@ -8,8 +8,8 @@
 #  It finds all installed ports that are not active (outdated versions) and uninstalls them.
 #  This helps in maintaining a clean MacPorts environment by removing unused older versions.
 #
-#  Author: [Your Name or Handle]
-#  Contact: [Your Contact Information]
+#  Author: id774
+#  Contact: idnanashi@gmail.com
 #
 #  Version History:
 #  v1.1 11/30,2023
