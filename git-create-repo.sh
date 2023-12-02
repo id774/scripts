@@ -19,13 +19,13 @@
 #
 # Usage:
 #  To create a new repository:
-#      $0 <repository_name> [repository_path] [--dry-run]
+#      git-create-repo.sh <repository_name> [repository_path] [--dry-run]
 #
 #  To delete an existing repository:
-#      $0 <repository_name> [repository_path] [--delete]
+#      git-create-repo.sh <repository_name> [repository_path] [--delete]
 #
 #  For help:
-#      $0 -h
+#      git-create-repo.sh -h
 #
 #  Note: The script may require sudo permissions for certain operations,
 #  especially when dealing with system-wide paths like /var/lib/git.
