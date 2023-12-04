@@ -10,7 +10,9 @@ import os
 #  This script renames files in a given directory by zero-padding the numeric
 #  part of the file names to a specified number of digits.
 #
-#  Author: id774
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:

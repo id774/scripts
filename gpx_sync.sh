@@ -1,32 +1,33 @@
-
 #!/bin/bash
 #
 ########################################################################
 # GPX File Management Script
 #
-# Description:
-# This script manages GPX files by performing operations like copying to
-# specific directories, syncing with a remote server, and cleaning up
-# temporary files. It's tailored for cycling or running data management.
+#  Description:
+#  This script manages GPX files by performing operations like copying to
+#  specific directories, syncing with a remote server, and cleaning up
+#  temporary files. It's tailored for cycling or running data management.
 #
-# Author: id774
-# Contact: idnanashi@gmail.com
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
 #
-# Version History:
-# v1.1 12/01,2023
-#     Improved handling of multiple GPX files with enhanced file copying
-#     and deletion functionality.
-# v1.0 11/24,2023
-#     Initial release. Features include checking for GPX files, copying them
-#     to specific user and mounted directories, syncing with a remote server,
-#     and removing files from the temporary directory.
+#  Version History:
+#  v1.1 12/01,2023
+#       Improved handling of multiple GPX files with enhanced file copying
+#       and deletion functionality.
+#  v1.0 11/24,2023
+#       Initial release. Features include checking for GPX files, copying them
+#       to specific user and mounted directories, syncing with a remote server,
+#       and removing files from the temporary directory.
 #
 # Usage:
-# Run the script without any arguments. Ensure that the TMP_DIR and USER_GPX_DIR
-# variables are set to the correct paths before running:
-#     ./gpx_sync.sh
+#  Run the script without any arguments. Ensure that the TMP_DIR and USER_GPX_DIR
+#  variables are set to the correct paths before running:
+#      ./gpx_sync.sh
 #
-# The script will automatically handle the copying, syncing, and removal of GPX files.
+#  The script will automatically handle the copying, syncing, and removal of GPX files.
 #
 ########################################################################
 

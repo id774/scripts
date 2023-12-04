@@ -8,7 +8,9 @@
 #  It finds all installed ports that are not active (outdated versions) and uninstalls them.
 #  This helps in maintaining a clean MacPorts environment by removing unused older versions.
 #
-#  Author: id774
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:

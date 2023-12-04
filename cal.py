@@ -10,7 +10,9 @@
 #  the system's 'cal' command. In non-Unix systems, it uses Python's calendar
 #  module for printing.
 #
-#  Author: id774
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
@@ -20,7 +22,7 @@
 #       Initial release. Functionality to print calendars for the current,
 #       previous, and next month.
 #
-# Usage:
+#  Usage:
 #  Run the script with or without arguments:
 #      python cal.py [arguments]
 #

@@ -7,7 +7,9 @@
 #  This script is designed for macOS systems with the 'port' command installed.
 #  It updates the MacPorts system, synchronizes port tree, and upgrades outdated ports.
 #
-#  Author: id774
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:

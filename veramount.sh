@@ -8,7 +8,9 @@
 #  devices. It supports both mount and unmount operations and checks for
 #  device existence before attempting any operation.
 #
-#  Author: id774
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
