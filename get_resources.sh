@@ -32,9 +32,18 @@ command_exists() {
 
 # Function to display a command's output if the command exists
 execute_command() {
-    if command_exists "$1"; then
-        echo "[$1]"
-        "$@"
+    local cmd="$1"
+    shift  # Remove the first argument and use the rest as additional arguments
+    local args="$@"
+
+    if command_exists "$cmd"; then
+        if [ -n "$args" ]; then
+            echo "[$cmd $args]"
+            "$cmd" $args
+        else
+            echo "[$cmd]"
+            "$cmd"
+        fi
         echo
     fi
 }
