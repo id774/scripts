@@ -14,10 +14,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.1 11/29,2023
+#  v1.1 2023-11-29
 #       Improved script to support macOS by using 'dscacheutil' for user information retrieval.
 #       Maintained compatibility with Linux and other Unix-like systems.
-#  v1.0 11/16,2014
+#  v1.0 2014-11-16
 #       Initial release. Detects system type and displays user accounts with
 #       UIDs above the system-specific threshold.
 #

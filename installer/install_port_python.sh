@@ -7,11 +7,11 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.2 4/12,2014
+#  v1.2 2014-04-12
 #       Specify version and uninstall.
-#  v1.1 2/11,2014
+#  v1.1 2014-02-11
 #       Fork from macports lang installer.
-#  v1.0 10/27,2013
+#  v1.0 2013-10-27
 #       First.
 ########################################################################
 

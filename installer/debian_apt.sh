@@ -5,11 +5,11 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.3 10/3,2011
+#  v0.3 2011-10-03
 #       Implement smart_apt function.
-#  v0.2 9/28,2011
+#  v0.2 2011-09-28
 #       Cut off desktop suite.
-#  v0.1 6/16,2011
+#  v0.1 2011-06-16
 #       Forked from Initial Setup Script.
 ########################################################################
 

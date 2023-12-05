@@ -8,7 +8,7 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.1 1/18,2023
+#  v0.1 2023-01-18
 #       Forked from TrueCrypt Installer.
 ########################################################################
 

@@ -15,10 +15,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.1 11/30,2023
+#  v1.1 2023-11-30
 #       Updated to check if the environment is GNU/Linux and if 'apt' is available.
 #       Changed package installation command from 'apt-get' to 'apt'.
-#  v1.0 7/27,2010
+#  v1.0 2010-07-27
 #       Initial release. Basic functionality for managing user directories.
 #
 #  Usage:

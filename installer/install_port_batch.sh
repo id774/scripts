@@ -5,29 +5,29 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-# v1.11 6/12,2014
+# v1.11 2014-06-12
 #       Add openblas, scalapack.
-# v1.10 11/13,2011
+# v1.10 2011-11-13
 #       Add proctools.
-#  v1.9 3/28,2011
+#  v1.9 2011-03-28
 #       Remove mysql.
-#  v1.8 7/14,2010
+#  v1.8 2010-07-14
 #       Recover ruby 1.8.
-#  v1.7 7/12,2010
+#  v1.7 2010-07-12
 #       Remove ruby.
-#  v1.6 3/7,2010
+#  v1.6 2010-03-07
 #       Refactoring.
-#  v1.5 2/21,2010
+#  v1.5 2010-02-21
 #       Add emacs-w3m.
-#  v1.4 5/18,2009
+#  v1.4 2009-05-18
 #       Add PostgreSQL, launchd startup settings.
-#  v1.3 1/22,2009
+#  v1.3 2009-01-22
 #       Add smartmontools.
-#  v1.2 10/28,2008
+#  v1.2 2008-10-28
 #       Add MySQL server configuration.
-#  v1.1 8/29,2008
+#  v1.1 2008-08-29
 #       Add option -d.
-#  v1.0 8/15,2008
+#  v1.0 2008-08-15
 #       Stable.
 ########################################################################
 

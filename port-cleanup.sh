@@ -14,9 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.1 11/30,2023
+#  v1.1 2023-11-30
 #       Added checks to ensure the script is run on macOS with 'port' command available.
-#  v1.0 11/24,2013
+#  v1.0 2013-11-24
 #       Initial release. Script to uninstall outdated ports in MacPorts.
 #
 #  Usage:

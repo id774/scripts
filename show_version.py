@@ -14,20 +14,20 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v2.3 11/5,2020
+#  v2.3 2020-11-05
 #       Using importlib instead of imp.
-#  v2.2 9/28,2015
+#  v2.2 2015-09-28
 #       Refactoring.
-#  v2.1 3/19,2014
+#  v2.1 2014-03-19
 #       Show python version.
-#  v2.0 2/11,2014
+#  v2.0 2014-02-11
 #       Simple version listing.
 #       Using -i option for detailed info.
-#  v1.2 2/10,2014
+#  v1.2 2014-02-10
 #       Remove install process.
-#  v1.1 6/29,2011
+#  v1.1 2011-06-29
 #       Add some packages.
-#  v1.0 8/15,2008
+#  v1.0 2008-08-15
 #       Stable.
 #
 # Usage:

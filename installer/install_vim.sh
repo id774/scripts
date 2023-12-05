@@ -8,21 +8,21 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.7 6/23,2011
+#  v1.7 2011-06-23
 #       Fix prefix bug.
-#  v1.6 9/14,2010
+#  v1.6 2010-09-14
 #       Install to local.
-#  v1.5 8/29,2010
+#  v1.5 2010-08-29
 #       Update to 7.2.446.
-#  v1.4 3/7,2010
+#  v1.4 2010-03-07
 #       Refactoring and update to 7.2.385.
-#  v1.3 2/20,2010
+#  v1.3 2010-02-20
 #       Refactoring.
-#  v1.2 3/10,2009
+#  v1.2 2009-03-10
 #       Switch wget to curl.
-#  v1.1 10/3,2008
+#  v1.1 2008-10-03
 #       Implement local build from source.
-#  v1.0 8/15,2008
+#  v1.0 2008-08-15
 #       Stable.
 ########################################################################
 

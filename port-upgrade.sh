@@ -13,9 +13,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.1 11/29,2023
+#  v1.1 2023-11-29
 #       Added checks to confirm macOS system and presence of 'port' command.
-#  v1.0 4/26,2013
+#  v1.0 2013-04-26
 #       Initial release. Basic functionality to update and upgrade MacPorts.
 #
 #  Usage:

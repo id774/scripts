@@ -8,19 +8,19 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.7 6/1,2015
+#  v0.7 2015-06-01
 #       Specify mecab-config.
-#  v0.6 5/29,2015
+#  v0.6 2015-05-29
 #       Change URL, fix args bug.
-#  v0.5 2/10,2014
+#  v0.5 2014-02-10
 #       Refactoring.
-#  v0.4 1/27,2014
+#  v0.4 2014-01-27
 #       Fix erase process.
-#  v0.3 1/19,2014
+#  v0.3 2014-01-19
 #       Not use https.
-#  v0.2 10/29,2013
+#  v0.2 2013-10-29
 #       Update download URL.
-#  v0.1 10/23,2012
+#  v0.1 2012-10-23
 #       First.
 ########################################################################
 

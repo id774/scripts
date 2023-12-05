@@ -8,23 +8,23 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.8 6/26,2014
+#  v1.8 2014-06-26
 #       Change address of pip.
-#  v1.7 3/12,2014
+#  v1.7 2014-03-12
 #       Create symlink for ipython3.
-#  v1.6 2/14,2014
+#  v1.6 2014-02-14
 #       Change source tarball ext.
-#  v1.5 2/9,2014
+#  v1.5 2014-02-09
 #       Easy install as default, create symlink, bug fix.
-#  v1.4 9/16,2010
+#  v1.4 2010-09-16
 #       Refactoring.
-#  v1.3 3/7,2010
+#  v1.3 2010-03-07
 #       Refactoring.
-#  v1.2 2/20,2010
+#  v1.2 2010-02-20
 #       Refactoring.
-#  v1.1 2/21,2009
+#  v1.1 2009-02-21
 #       Add sourceonly option.
-#  v1.0 1/7,2009
+#  v1.0 2009-01-07
 #       Stable.
 ########################################################################
 

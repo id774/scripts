@@ -7,11 +7,11 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.3 4/21,2013
+#  v0.3 2013-04-21
 #       --no-ri --no-rdoc option as default.
-#  v0.2 4/10,2012
+#  v0.2 2012-04-10
 #       Update and increase gem packages.
-#  v0.1 2/2,2012
+#  v0.1 2012-02-02
 #       First.
 ########################################################################
 

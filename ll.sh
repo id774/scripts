@@ -18,7 +18,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.0 07/07,2009
+#  v1.0 2009-07-07
 #       Initial release. Provides a summary of file sizes in the current
 #       directory, including hidden files, but does not include sizes
 #       within subdirectories.

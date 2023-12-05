@@ -8,14 +8,14 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v2.2 3/12,2023
+#  v2.2 2023-03-12
 #       Remove obsolete versions.
-#  v2.1 1/14,2019
+#  v2.1 2019-01-14
 #       Remove obsolete versions.
-#  v2.0 3/11,2015
+#  v2.0 2015-03-11
 #       Fix bugs.
 #       Specify nosudo option.
-#  v1.0 6/23,2008
+#  v1.0 2008-06-23
 #       Stable.
 ########################################################################
 

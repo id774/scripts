@@ -6,13 +6,13 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.3 9/30,2011
+#  v1.3 2011-09-30
 #       Rename tar filename.
-#  v1.2 9/16,2010
+#  v1.2 2010-09-16
 #       Refactoring.
-#  v1.1 3/7,2010
+#  v1.1 2010-03-07
 #       Refactoring.
-#  v1.0 5/21,2009
+#  v1.0 2009-05-21
 #       Derived from install_crypt.sh.
 ########################################################################
 

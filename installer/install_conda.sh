@@ -6,11 +6,11 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.3 5/10,2018
+#  v0.3 2018-05-10
 #       Remove channels conda-forge.
-#  v0.2 5/2,2018
+#  v0.2 2018-05-02
 #       Append channels conda-forge.
-#  v0.1 2/28,2018
+#  v0.1 2018-02-28
 #       First.
 ########################################################################
 

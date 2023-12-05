@@ -7,9 +7,9 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.2 6/22,2011
+#  v0.2 2011-06-22
 #       Version added to installation target.
-#  v0.1 6/16,2011
+#  v0.1 2011-06-16
 #       First.
 ########################################################################
 

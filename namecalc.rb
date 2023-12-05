@@ -15,7 +15,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.0 4/12,2013
+#  v1.0 2013-04-12
 #       Initial release. Implemented basic numerology calculation and
 #       graphical representation.
 #

@@ -5,7 +5,7 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.1 9/28,2011
+#  v0.1 2011-09-28
 #       Forked from Initial Setup Script.
 ########################################################################
 

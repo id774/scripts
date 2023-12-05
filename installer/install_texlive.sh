@@ -5,9 +5,9 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.2 6/2,2014
+#  v0.2 2014-06-02
 #       If Ubuntu 12.04 LTS, Add texlive backports repo.
-#  v0.1 5/21,2014
+#  v0.1 2014-05-21
 #       First.
 ########################################################################
 

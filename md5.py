@@ -14,7 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.0 6/24,2023
+#  v1.0 2023-06-24
 #       Initial release. Functionality for calculating MD5 checksums of files and
 #       strings, supporting subdirectories, reverse output format, and quiet mode.
 #

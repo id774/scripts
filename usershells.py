@@ -15,12 +15,12 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.2 11/29,2023
+#  v1.2 2023-11-29
 #       Added support for macOS by using 'dscl' for retrieving user and shell information.
-#  v1.1 8/30,2018
+#  v1.1 2018-08-30
 #       Improved shell filtering to exclude non-interactive system accounts such as 'sync',
 #       'shutdown', and 'halt'.
-#  v1.0 2/14,2017
+#  v1.0 2017-02-14
 #       Initial release. Lists user accounts and their shells, excluding 'false' and 'nologin'.
 #
 # Usage:

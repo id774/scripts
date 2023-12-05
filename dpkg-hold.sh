@@ -16,11 +16,11 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.2 12/05,2023
+#  v1.2 2023-12-05
 #       Added environment check for Debian-based systems and refactored for clarity.
-#  v1.1 03/25,2011
+#  v1.1 2011-03-25
 #       Modified to operate without requiring sudo privileges.
-#  v1.0 08/22,2008
+#  v1.0 2008-08-22
 #       Initial release. Provides basic dpkg package management functionality.
 #
 # Usage:

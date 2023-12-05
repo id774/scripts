@@ -5,11 +5,11 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.1 8/6,2015
+#  v1.1 2015-08-06
 #       Install mecab and cabocha binding.
-#  v1.0 7/8,2013
+#  v1.0 2013-07-08
 #       Cut out purge process.
-#  v0.1 7/11,2011
+#  v0.1 2011-07-11
 #       First.
 ########################################################################
 

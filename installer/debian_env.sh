@@ -5,9 +5,9 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.2 4/16,2012
+#  v0.2 2012-04-16
 #       Shape up unnecessary functions.
-#  v0.1 9/28,2011
+#  v0.1 2011-09-28
 #       First version.
 ########################################################################
 

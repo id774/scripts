@@ -8,7 +8,7 @@
 #  -g = install with GUI Tools
 #  -c = overwrite MySQL Configuration File
 #
-#  v0.1 5/18,2011
+#  v0.1 2011-05-18
 #       First.
 ########################################################################
 

@@ -5,11 +5,11 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.3 8/22,2019
+#  v0.3 2019-08-22
 #       Change default filename of rsyslog.
-#  v0.2 12/9,2016
+#  v0.2 2016-12-09
 #       Apply munin apache conf template.
-#  v0.1 7/7,2011
+#  v0.1 2011-07-07
 #       First.
 ########################################################################
 

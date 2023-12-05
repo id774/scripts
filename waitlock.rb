@@ -34,13 +34,13 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.2 11/29,2023
+#  v1.2 2023-11-29
 #     - Refactored the script for improved readability and maintainability.
 #       Removed unnecessary class structure and streamlined command-line argument processing.
 #       Added clear usage instructions and feedback messages.
-#  v1.1 8/14,2014
+#  v1.1 2014-08-14
 #     - Minor formatting and style revisions.
-#  v1.0 12/1,2010
+#  v1.0 2010-12-01
 #     - Initial release. Basic functionality for file locking with check intervals.
 #
 ########################################################################

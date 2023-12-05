@@ -13,7 +13,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.0 8/3,2022
+#  v1.0 2022-08-03
 #       Initial release. Basic functionality for sending Wake-on-LAN magic packets.
 #
 # Usage:

@@ -10,15 +10,15 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.0 4/18,2016
+#  v1.0 2016-04-18
 #       Renew build options, for Emacs 23.4 on Debian/Ubuntu.
-#  v0.4 3/15,2013
+#  v0.4 2013-03-15
 #       Update to Emacs 24.3, Change install source path.
-#  v0.3 3/17,2011
+#  v0.3 2011-03-17
 #       Emacs 23.3.
-#  v0.2 9/16,2010
+#  v0.2 2010-09-16
 #       Refactoring.
-#  v0.1 9/14,2010
+#  v0.1 2010-09-14
 #       First.
 ########################################################################
 

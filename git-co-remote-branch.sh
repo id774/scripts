@@ -15,7 +15,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.0 1/26,2016
+#  v1.0 2016-01-26
 #       Initial release. Implements functionality to checkout a remote branch in Git,
 #       creating a corresponding local branch that tracks it.
 #

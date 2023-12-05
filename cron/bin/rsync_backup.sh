@@ -15,9 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v2.0  7/4,2023 - Major version upgrade with no functional changes.
-#  v1.27 7/2,2023 - Convert script to POSIX-compatible syntax. Show return
-#                   code 1 if required directory does not exist.
+#  v2.0  2023-07-04 - Major version upgrade with no functional changes.
+#  v1.27 2023-07-02 - Convert script to POSIX-compatible syntax. Show return
+#                     code 1 if required directory does not exist.
 #  [Further version history truncated for brevity]
 #  2023 - Several refinements, including POSIX-compatible syntax and return code adjustments.
 #         Implementation of disk health check immediately after backup.
@@ -27,7 +27,7 @@
 #  2010 - Improvements in error handling and SSH usage.
 #  2009 - Addition of rsync function for portable media devices and SMART information.
 #  2008 - Initial stable release, with basic backup and sync functionalities.
-#  v1.0 2/28,2008 - Stable initial release.
+#  v1.0 2008-02-28 - Stable initial release.
 #
 # Usage:
 #  Run the script without any arguments. Ensure all the necessary paths

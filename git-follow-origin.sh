@@ -14,7 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.0 2/5,2013
+#  v1.0 2013-02-05
 #       Initial release. Implements functionality to merge a specified
 #       GitHub repository's changes into the local master branch.
 #

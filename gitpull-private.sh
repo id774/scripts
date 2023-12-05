@@ -7,15 +7,15 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v2.3 1/28,2016
+#  v2.3 2016-01-28
 #       Add ifexist option.
-#  v2.2 12/17,2014
+#  v2.2 2014-12-17
 #       Improvement symlink confirmation process.
-#  v2.1 3/2,2014
+#  v2.1 2014-03-02
 #       Specify default gituser and githost.
-#  v2.0 4/15,2011
+#  v2.0 2011-04-15
 #       Repositories are moved from github to my server.
-#  v1.0 7/26,2010
+#  v1.0 2010-07-26
 #       Stable.
 ########################################################################
 

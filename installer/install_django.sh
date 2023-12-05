@@ -10,15 +10,15 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v2.0 10/24,2013
+#  v2.0 2013-10-24
 #       Install for stable version.
-#  v1.3 3/7,2010
+#  v1.3 2010-03-07
 #       Refactoring.
-#  v1.2 2/23,2010
+#  v1.2 2010-02-23
 #       Implement svn up and build.
-#  v1.1 2/20,2010
+#  v1.1 2010-02-20
 #       Refactoring.
-#  v1.0 9/8,2008
+#  v1.0 2008-09-08
 #       Stable.
 ########################################################################
 

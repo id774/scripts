@@ -7,17 +7,17 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.5 3/15,2013
+#  v1.5 2013-03-15
 #       Refactoring.
-#  v1.4 11/15,2011
+#  v1.4 2011-11-15
 #       Show usage.
-#  v1.3 9/13,2011
+#  v1.3 2011-09-13
 #       Renew target path and change symlink to filecopy.
-#  v1.2 9/16,2010
+#  v1.2 2010-09-16
 #       Refactoring.
-#  v1.1 5/18,2008
+#  v1.1 2008-05-18
 #       Emacs byte compile.
-#  v1.0 4/29,2009
+#  v1.0 2009-04-29
 #       Stable.
 ########################################################################
 

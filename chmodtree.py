@@ -14,11 +14,11 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.2 8/14,2014
+#  v1.2 2014-08-14
 #       Minor formatting revisions for readability and consistency.
-#  v1.1 1/27,2009
+#  v1.1 2009-01-27
 #       Enhanced compatibility to consider platforms of Python other than GNU/Linux.
-#  v1.0 1/26,2009
+#  v1.0 2009-01-26
 #       Initial release. Basic functionality for recursive chmod in directory trees,
 #       with options for sudo, quiet mode, file/directory specificity, and name pattern filtering.
 #

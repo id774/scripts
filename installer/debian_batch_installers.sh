@@ -5,13 +5,13 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.4 5/7,2012
+#  v0.4 2012-05-07
 #       Correspond to Ubuntu Precise.
-#  v0.3 4/16,2012
+#  v0.3 2012-04-16
 #       Shape up unnecessary functions.
-#  v0.2 1/23,2012
+#  v0.2 2012-01-23
 #       Reconstruction CoffeeScript Environment.
-#  v0.1 9/28,2011
+#  v0.1 2011-09-28
 #       First version.
 ########################################################################
 

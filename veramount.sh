@@ -14,7 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.0 11/14,2023
+#  v1.0 2023-11-14
 #       Initial release. Script includes functionality to mount and unmount
 #       VeraCrypt-encrypted devices, check for device existence, and display
 #       usage information.

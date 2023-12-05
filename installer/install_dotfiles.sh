@@ -5,41 +5,41 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-# v1.17 10/17,2022
+# v1.17 2022-10-17
 #       Remove .toprc.
-# v1.16 7/28,2016
+# v1.16 2016-07-28
 #       Include pgsql dir.
-# v1.15 7/9,2016
+# v1.15 2016-07-09
 #       Remove obsolete dotfiles.
-# v1.14 1/15,2015
+# v1.14 2015-01-15
 #       Add Rprofile.
-# v1.13 10/19,2014
+# v1.13 2014-10-19
 #       Do not change the owner of Users dir on OS X.
-# v1.12 5/17,2014
+# v1.12 2014-05-17
 #       Do not change the permissions of Users dir on OS X.
-# v1.11 5/22,2013
+# v1.11 2013-05-22
 #       Change permission of local to 750.
-# v1.10 4/24,2013
+# v1.10 2013-04-24
 #       Add user ec2-user.
-#  v1.9 2/5,2013
+#  v1.9 2013-02-05
 #       Add gemrc.
-#  v1.8 1/18,2013
+#  v1.8 2013-01-18
 #       Delete unnecessary symlinks.
-#  v1.7 2/20,2012
+#  v1.7 2012-02-20
 #       Change default emacs lisp directory to /usr/local/etc/emacs.d.
-#  v1.6 1/11,2012
+#  v1.6 2012-01-11
 #       Add line for Jenkins user.
-#  v1.5 12/8,2011
+#  v1.5 2011-12-08
 #       Corresponding site-lisp.
-#  v1.4 10/4,2011
+#  v1.4 2011-10-04
 #       Refactoring.
-#  v1.3 9/30,2011
+#  v1.3 2011-09-30
 #       Fix permission and Refactoring.
-#  v1.2 5/24,2011
+#  v1.2 2011-05-24
 #       Add emacs, Refactoring.
-#  v1.1 5/3,2011
+#  v1.1 2011-05-03
 #       Include .toprc.
-#  v1.0 3/2,2010
+#  v1.0 2010-03-02
 #       Refactoring.
 ########################################################################
 

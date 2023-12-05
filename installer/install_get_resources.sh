@@ -5,17 +5,17 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.5 6/6,2014
+#  v1.5 2014-06-06
 #       Remove obsolete archive.
-#  v1.4 11/5,2011
+#  v1.4 2011-11-05
 #       Purge obsolete jobs.
-#  v1.3 9/11,2008
+#  v1.3 2008-09-11
 #       Split.
-#  v1.2 8/21,2008
+#  v1.2 2008-08-21
 #       Add clone git2svn job.
-#  v1.1 8/18,2008
+#  v1.1 2008-08-18
 #       Edit all script after deploy.
-#  v1.0 8/15,2008
+#  v1.0 2008-08-15
 #       Stable.
 ########################################################################
 

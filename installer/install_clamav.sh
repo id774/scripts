@@ -5,13 +5,13 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.3 7/28,2010
+#  v1.3 2010-07-28
 #       Make database directory if not exist.
-#  v1.2 3/7,2010
+#  v1.2 2010-03-07
 #       Refactoring.
-#  v1.1 10/22,2009
+#  v1.1 2009-10-22
 #       Upgrade repository svn to git.
-#  v1.0 8/15,2008
+#  v1.0 2008-08-15
 #       Stable.
 ########################################################################
 

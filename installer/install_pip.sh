@@ -7,13 +7,13 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.4 8/12,2014
+#  v0.4 2014-08-12
 #       Add pip, pyflakes. Upgrade option as default.
-#  v0.3 6/27,2014
+#  v0.3 2014-06-27
 #       Auto proxy detection.
-#  v0.2 2/10,2014
+#  v0.2 2014-02-10
 #       Enable proxy.
-#  v0.1 2/9,2014
+#  v0.1 2014-02-09
 #       First.
 ########################################################################
 

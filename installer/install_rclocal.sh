@@ -5,11 +5,11 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v0.3 9/29,2011
+#  v0.3 2011-09-29
 #       Flash udev net persistent rules.
-#  v0.2 8/7,2010
+#  v0.2 2010-08-07
 #       Make directory rc.local.d.
-#  v0.1 8/6,2010
+#  v0.1 2010-08-06
 #       Stable.
 ########################################################################
 

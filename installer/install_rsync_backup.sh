@@ -5,15 +5,15 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.7 5/11,2012
+#  v1.7 2012-05-11
 #       Remove obsolete scripts.
-#  v1.6 8/9,2010
+#  v1.6 2010-08-09
 #       Setup github-arc script.
-#  v1.5 4/11,2010
+#  v1.5 2010-04-11
 #       Erase rsync_backup2.
-#  v1.4 1/22,2009
+#  v1.4 2009-01-22
 #       Fix script path.
-#  v1.3 9/11,2008
+#  v1.3 2008-09-11
 #       Split.
 ########################################################################
 

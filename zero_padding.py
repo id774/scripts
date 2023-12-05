@@ -16,9 +16,9 @@ import os
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.1 5/6,2023
+#  v1.1 2023-05-06
 #       Adjusted to fit the numeric part of file names to the specified number of digits.
-#  v1.0 2/28,2023
+#  v1.0 2023-02-28
 #       Initial release. Basic functionality for zero-padding numeric parts of file names.
 #
 # Usage:

@@ -16,9 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.1 11/29,2023
+#  v1.1 2023-11-29
 #       Updated to pass arguments to system's 'cal' command if provided.
-#  v1.0 11/25,2023
+#  v1.0 2023-11-25
 #       Initial release. Functionality to print calendars for the current,
 #       previous, and next month.
 #

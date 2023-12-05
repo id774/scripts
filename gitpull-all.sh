@@ -5,16 +5,16 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.4 5/23,2018
+#  v1.4 2018-05-23
 #       Fix option bug.
-#  v1.3 2/3,2016
+#  v1.3 2016-02-03
 #       Add ifexist option.
-#  v1.2 12/17,2014
+#  v1.2 2014-12-17
 #       Add Heroku.
 #       Improvement symlink confirmation process.
-#  v1.1 8/7,2013
+#  v1.1 2013-08-07
 #       Speficy source address when git pull.
-#  v1.0 7/26,2010
+#  v1.0 2010-07-26
 #       Stable.
 ########################################################################
 

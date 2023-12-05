@@ -20,9 +20,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.1 11/30,2023
+#  v1.1 2023-11-30
 #       Added check to ensure /etc/securetty is a file before clearing it.
-#  v1.0 5/21,2012
+#  v1.0 2012-05-21
 #       Initial release. Script to clear /etc/securetty for unrestricted root access.
 #
 #  Usage:

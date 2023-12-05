@@ -14,12 +14,12 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.2 12/05,2023
+#  v1.2 2023-12-05
 #       Enhanced error handling and return codes for each function.
-#  v1.1 12/01,2023
+#  v1.1 2023-12-01
 #       Improved handling of multiple GPX files with enhanced file copying
 #       and deletion functionality.
-#  v1.0 11/24,2023
+#  v1.0 2023-11-24
 #       Initial release. Features include checking for GPX files, copying them
 #       to specific user and mounted directories, syncing with a remote server,
 #       and removing files from the temporary directory.

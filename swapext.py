@@ -14,9 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.1 8/14,2014
+#  v1.1 2014-08-14
 #       Minor formatting revisions for readability and consistency.
-#  v1.0 4/19,2011
+#  v1.0 2011-04-19
 #       Initial release. Basic functionality for swapping file extensions in a directory tree.
 #
 # Usage:

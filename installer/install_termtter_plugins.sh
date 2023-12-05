@@ -5,15 +5,15 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
-#  v1.4 4/2,2012
+#  v1.4 2012-04-02
 #       Directory moved to lib/plugins.
-#  v1.3 1/24,2012
+#  v1.3 2012-01-24
 #       It run if only git repo exist.
-#  v1.2 12/21,2011
+#  v1.2 2011-12-21
 #       Update to ruby 1.9.3, termtter 1.10.0.
-#  v1.1 8/19,2010
+#  v1.1 2010-08-19
 #       Update to ruby 1.9.2.
-#  v1.0 7/26,2010
+#  v1.0 2010-07-26
 #       Stable.
 ########################################################################
 

@@ -15,7 +15,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.0 11/26,2023
+#  v1.0 2023-11-26
 #       Initial release. Features include creating and deleting Git repositories,
 #       dry run option for creation, and custom repository path setting.
 #

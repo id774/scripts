@@ -14,20 +14,20 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v2.2 8/22,2018
+#  v2.2 2018-08-22
 #       Requires privilege to run dmesg.
-#  v2.1 9/26,2016
+#  v2.1 2016-09-26
 #       Correspond to sdz.
-#  v2.0 5/26,2014
+#  v2.0 2014-05-26
 #       Show version on console.
 #       Mount with crypt files on home dir.
-#  v1.3 5/8,2014
+#  v1.3 2014-05-08
 #       Specify -u option for mounting with utf8, default is none.
-#  v1.2 4/14,2013
+#  v1.2 2013-04-14
 #       Implement file mount function.
-#  v1.1 1/26,2012
+#  v1.1 2012-01-26
 #       Refactoring, and for legacy device.
-#  v1.0 8/6,2010
+#  v1.0 2010-08-06
 #       Stable.
 #
 # Usage:
