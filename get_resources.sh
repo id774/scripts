@@ -39,12 +39,17 @@ execute_command() {
     fi
 }
 
-# Function to display log file contents if the file exists
+# Function to display specific log file contents if the file exists
 display_log() {
-    if [ -f "$1" ]; then
-        echo "[Contents of $1]"
-        cat "$1"
+    local log_file="$1"
+    local pattern="$2"
+
+    if [ -f "$log_file" ]; then
+        echo "[Contents of $log_file with pattern '$pattern']"
+        grep "$pattern" "$log_file"
         echo
+    else
+        echo "Skipping log file: $log_file"
     fi
 }
 
@@ -88,8 +93,9 @@ execute_command lsmod
 execute_command netstat -tan | grep ':80 ' | awk '{print $6}' | sort | uniq -c
 execute_command ntpq -pn
 
-# Log files
-display_log "/var/log/auth.log"
-display_log "/var/log/messages"
-display_log "/var/log/fail2ban.log"
+# Log files with specific patterns
+display_log "/var/log/auth.log" "Accepted"
+display_log "/var/log/messages" "attack"
+display_log "/var/log/auth.log" '(Fail|refuse)'
+display_log "/var/log/fail2ban.log" "WARNING"
 
