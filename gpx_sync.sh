@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 12/05,2023
+#       Enhanced error handling and return codes for each function.
 #  v1.1 12/01,2023
 #       Improved handling of multiple GPX files with enhanced file copying
 #       and deletion functionality.
@@ -53,10 +55,10 @@ copy_files() {
     local source_dir=$1
     local destination=$2
     if [ ! -d "$destination" ]; then
-        mkdir -p "$destination"
+        mkdir -p "$destination" || return $?
     fi
     echo "Copying files from $source_dir to $destination"
-    cp "$source_dir"/*.gpx "$destination"
+    cp "$source_dir"/*.gpx "$destination" || return $?
 }
 
 # Function to perform rsync
@@ -65,31 +67,27 @@ sync_files() {
     local destination_user=$2
     local destination_host=$3
     echo rsync -avz --delete "$source" "$destination_user@$destination_host:~/gpx/"
-    rsync -avz --delete "$source" "$destination_user@$destination_host:~/gpx/"
+    rsync -avz --delete "$source" "$destination_user@$destination_host:~/gpx/" || return $?
 }
 
 # Function to remove files
 remove_files() {
     for file in "$@"; do
         echo "Removing file: $file"
-        rm -v "$file"
+        rm -v "$file" || return $?
     done
 }
 
 # Main logic
-# Check if there are GPX files in the TMP_DIR
-check_gpx_files "$TMP_DIR" || exit 1
+check_gpx_files "$TMP_DIR" || exit $?
 
-# Copy .gpx files to GPX directory
-copy_files "$TMP_DIR" "$HOME/$USER_GPX_DIR/$CURRENT_YEAR/" || exit 1
+copy_files "$TMP_DIR" "$HOME/$USER_GPX_DIR/$CURRENT_YEAR/" || exit $?
 
-# Copy .gpx files to mounted directory, skip if not mounted
-copy_files "$TMP_DIR" "$HOME/mnt/sdb/$USER_GPX_DIR/$CURRENT_YEAR/" || exit 1
+copy_files "$TMP_DIR" "$HOME/mnt/sdb/$USER_GPX_DIR/$CURRENT_YEAR/" || exit $?
 
-# Rsync files to the server
-sync_files "$HOME/$USER_GPX_DIR" "$RSYNC_USER" "$RSYNC_HOST"
+sync_files "$HOME/$USER_GPX_DIR" "$RSYNC_USER" "$RSYNC_HOST" || exit $?
 
-# Remove .gpx files from tmp directory
-remove_files "$TMP_DIR"/*.gpx
+remove_files "$TMP_DIR"/*.gpx || exit $?
 
 echo "All operations completed successfully."
+
