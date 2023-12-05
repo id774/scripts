@@ -1,8 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# get_resources.sh
-# System Resources Information Gathering Script
+# get_resources.sh: System Resources Information Gathering Script
 #
 #  Description:
 #  This script gathers and displays various system resources and logs.
@@ -30,6 +29,7 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Function to display a command's output if the command exists
 execute_command() {
     local cmd="$1"
     shift  # Remove the first argument and use the rest as additional arguments
