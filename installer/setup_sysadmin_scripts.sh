@@ -92,7 +92,6 @@ setup_scripts() {
     install_scripts 755 usershells.py usershells
     install_scripts 755 git-follow-origin.sh git-follow-origin
     install_scripts 755 git-co-remote-branch.sh git-co-remote-branch
-    install_scripts 755 git-ignore.sh git-ignore
 }
 
 setup_darwin_scripts() {
