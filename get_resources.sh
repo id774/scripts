@@ -30,11 +30,13 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Function to display a command's output if the command exists
 execute_command() {
     local cmd="$1"
     shift  # Remove the first argument and use the rest as additional arguments
-    local args="$@"
+    local args
+    if [ "$#" -gt 0 ]; then
+        args="$@"
+    fi
 
     if command_exists "$cmd"; then
         if [ -n "$args" ]; then
@@ -57,8 +59,6 @@ display_log() {
         echo "[Contents of $log_file with pattern '$pattern']"
         grep "$pattern" "$log_file"
         echo
-    else
-        echo "Skipping log file: $log_file"
     fi
 }
 
