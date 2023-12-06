@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# ubuntu_eol_packages.sh: List Ubuntu Packages with End of Life Support
+# ubuntu-eol-packages.sh: List Ubuntu Packages with End of Life Support
 #
 #  Description:
 #  This script lists Ubuntu packages that have reached or are nearing
@@ -19,7 +19,7 @@
 #       Initial release.
 #
 #  Usage:
-#  ./ubuntu_eol_packages.sh
+#  ./ubuntu-eol-packages.sh
 #  Run this script on an Ubuntu system.
 #
 ########################################################################
