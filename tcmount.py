@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+
 ########################################################################
 # TrueCrypt Device Mounter
 # 
@@ -30,7 +30,7 @@
 #  v1.0 2010-08-06
 #       Stable.
 #
-# Usage:
+#  Usage:
 #  To use this script, ensure you have TrueCrypt installed and run
 #  the script with appropriate privileges. You can specify the device
 #  and other mount options as arguments. For example:

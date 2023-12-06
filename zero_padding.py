@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-import argparse
-import os
-
 ########################################################################
 # File Renaming Script
 #
@@ -21,13 +18,16 @@ import os
 #  v1.0 2023-02-28
 #       Initial release. Basic functionality for zero-padding numeric parts of file names.
 #
-# Usage:
+#  Usage:
 #  Run the script with the directory path and the number of digits for padding as arguments.
 #  Example:
 #      python zero_padding.py /path/to/directory 4
 #  This will rename files in '/path/to/directory', padding the numeric part to 4 digits.
 #
 ########################################################################
+
+import argparse
+import os
 
 def rename_files(dir_path, num_digits):
     # Retrieve all files in the directory

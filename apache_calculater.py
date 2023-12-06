@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+
 ########################################################################
 # apache_calculater.py: Apache Log File Analysis Tool
 #

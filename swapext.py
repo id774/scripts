@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+
 ########################################################################
 # swapext: File Extension Swapper
 #
@@ -19,7 +19,7 @@
 #  v1.0 2011-04-19
 #       Initial release. Basic functionality for swapping file extensions in a directory tree.
 #
-# Usage:
+#  Usage:
 #  Run the script with the directory and extensions:
 #      python swapext.py dir before_extension after_extension
 #

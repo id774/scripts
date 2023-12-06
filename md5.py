@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+
 ########################################################################
 # MD5 Checksum Calculator
 #
@@ -18,7 +18,7 @@
 #       Initial release. Functionality for calculating MD5 checksums of files and
 #       strings, supporting subdirectories, reverse output format, and quiet mode.
 #
-# Usage:
+#  Usage:
 #  Calculate checksum for files:
 #      python md5.py [options] file
 #

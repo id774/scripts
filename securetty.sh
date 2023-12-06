@@ -1,5 +1,5 @@
 #!/bin/sh
-#
+
 ########################################################################
 # securetty.sh: Script to Clear /etc/securetty for Unrestricted Root Access
 #

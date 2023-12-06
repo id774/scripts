@@ -1,5 +1,5 @@
 #!/bin/sh
-#
+
 ########################################################################
 # portland_us.sh: User Directory Management Script for GNU/Linux
 #

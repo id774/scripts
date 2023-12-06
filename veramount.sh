@@ -1,5 +1,5 @@
 #!/bin/zsh
-#
+
 ########################################################################
 # VeraCrypt Device Mount/Unmount Script
 #
@@ -19,7 +19,7 @@
 #       VeraCrypt-encrypted devices, check for device existence, and display
 #       usage information.
 #
-# Usage:
+#  Usage:
 #  To mount a device:
 #      veramount [device]
 #

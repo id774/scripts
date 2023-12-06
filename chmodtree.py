@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+
 ########################################################################
 # chmodtree: Directory Tree chmod Script
 #
@@ -22,7 +22,7 @@
 #       Initial release. Basic functionality for recursive chmod in directory trees,
 #       with options for sudo, quiet mode, file/directory specificity, and name pattern filtering.
 #
-# Usage:
+#  Usage:
 #  Run the script with a directory and options:
 #      python chmodtree.py [options] dir
 #

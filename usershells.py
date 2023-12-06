@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+
 ########################################################################
 # User Shell Listing Script (usershells.py)
 #
@@ -23,7 +23,7 @@
 #  v1.0 2017-02-14
 #       Initial release. Lists user accounts and their shells, excluding 'false' and 'nologin'.
 #
-# Usage:
+#  Usage:
 #  Run the script without any arguments:
 #      python usershells.py
 #

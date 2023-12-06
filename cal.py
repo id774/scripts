@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+
 ########################################################################
 # Calendar Printer (cal.py)
 #
@@ -22,7 +22,7 @@
 #       Initial release. Functionality to print calendars for the current,
 #       previous, and next month.
 #
-# Usage:
+#  Usage:
 #  Run the script with or without arguments:
 #      python cal.py [arguments]
 #

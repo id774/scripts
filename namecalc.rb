@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-#
+
 ########################################################################
 # namecalc: Numerology Calculation Script
 #
@@ -19,7 +19,7 @@
 #       Initial release. Implemented basic numerology calculation and
 #       graphical representation.
 #
-# Usage:
+#  Usage:
 #  Run the script with one or more strings:
 #      ./namecalc.rb [string1 string2 ...]
 #

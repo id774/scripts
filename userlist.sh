@@ -1,5 +1,5 @@
 #!/bin/sh
-#
+
 ########################################################################
 # User List Display Script (userlist.sh)
 #
@@ -21,7 +21,7 @@
 #       Initial release. Detects system type and displays user accounts with
 #       UIDs above the system-specific threshold.
 #
-# Usage:
+#  Usage:
 #  Run the script without any arguments:
 #      ./userlist.sh
 #

@@ -1,5 +1,5 @@
 #!/bin/sh
-#
+
 ########################################################################
 # cltmp: Cleanup Temporary and Cached Files
 #
@@ -17,7 +17,7 @@
 #  20230827 - Latest update with specific cleanup operations for macOS and Linux.
 #  [Further version history truncated for brevity]
 #
-# Usage:
+#  Usage:
 #  Run the script without any arguments:
 #      cltmp.sh
 #

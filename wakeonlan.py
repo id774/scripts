@@ -16,7 +16,7 @@
 #  v1.0 2022-08-03
 #       Initial release. Basic functionality for sending Wake-on-LAN magic packets.
 #
-# Usage:
+#  Usage:
 #  Run the script with a MAC address as the argument.
 #  Example:
 #      python wakeonlan.py 00:11:22:33:44:55

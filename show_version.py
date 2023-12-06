@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+
 ########################################################################
 # Show Python Modules Info and Version
 #
@@ -30,7 +30,7 @@
 #  v1.0 2008-08-15
 #       Stable.
 #
-# Usage:
+#  Usage:
 #  To display the versions of predefined modules:
 #      python show_version.py
 #
