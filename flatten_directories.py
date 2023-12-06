@@ -1,5 +1,39 @@
 #!/usr/bin/env python
 
+########################################################################
+# flatten_directories.py: Flatten Directories and Manipulate Files
+#
+#  Description:
+#  This script flattens the directory structure by either moving, copying,
+#  or renaming files to the base directory. It supports deletion of empty
+#  directories and can operate in a quiet mode.
+#
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.1 2023-09-11
+#       Added rename-only mode.
+#  v1.0 2023-06-27
+#       Initial release.
+#
+#  Usage:
+#  python flatten_directories.py [options]
+#  Options:
+#    -m, --move         Move files instead of copying
+#    -d, --delete       Delete empty directories
+#    -q, --quiet        Suppress operation info
+#    -x, --execute      Execute file operations
+#    -r, --rename-only  Only rename files, without moving or copying
+#
+#  Notes:
+#  - Use with caution as it can significantly modify directory contents.
+#  - It's recommended to backup data before executing with the --execute option.
+#
+########################################################################
+
 import os
 import shutil
 from optparse import OptionParser
