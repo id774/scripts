@@ -24,7 +24,7 @@
 #       Initial release.
 #
 #  Usage:
-#  sudo ./purge_apt_cache.sh
+#  ./purge_apt_cache.sh
 #
 ########################################################################
 
