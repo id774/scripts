@@ -4,9 +4,9 @@
 # purge_kernels.sh: Purge Old Kernels in Ubuntu
 #
 #  Description:
-#  This script removes old kernels from an Ubuntu or Debian-based system,
+#  This script removes old kernels from an Ubuntu or Ubuntu-based system,
 #  keeping the currently running kernel. It checks for system compatibility
-#  and only runs on Ubuntu or Debian-based distributions.
+#  and only runs on Ubuntu or Ubuntu-based distributions.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -24,9 +24,9 @@
 #
 ########################################################################
 
-# Check if the system is Ubuntu or Debian-based
+# Check if the system is Ubuntu or Ubuntu-based
 if [ ! -f /etc/lsb-release ] || [ ! -f /etc/debian_version ]; then
-  echo "This script only runs on Ubuntu or Debian-based systems."
+  echo "This script only runs on Ubuntu or Ubuntu-based systems."
   exit 1
 fi
 
