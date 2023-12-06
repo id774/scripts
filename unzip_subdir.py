@@ -1,50 +1,71 @@
 #!/usr/bin/env python
 
+########################################################################
+# unzip_subdir.py: Unzip Files to Subdirectories
+#
+#  Description:
+#  This script unzips each .zip file in the specified source directory
+#  into separate subdirectories. If a subdirectory already exists, it 
+#  skips the extraction for that zip file. The --dry-run option lists 
+#  the zip files that would be extracted without performing the actual
+#  extraction.
+#
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.1 2023-12-06
+#       Added --dry-run option and enhanced documentation.
+#  v1.0 2010-02-14
+#       Initial release.
+#
+#  Usage:
+#  unzip_subdir.py [options] source_dir
+#  Options:
+#    -d, --dry-run: List files without extracting
+#
+#  Notes:
+#  - Ensure that you have the necessary permissions to read and write
+#    files in the source directory.
+#  - The script does not overwrite existing directories.
+#
+########################################################################
+
 import os
 import sys
 import re
+from optparse import OptionParser
 
-def expand_directory(args):
-    for root, dirs, files in os.walk(args[0]):
-        for f in files:
-            cmd = ("unzip " + args[0] + os.sep + f)
-            os.system(cmd)
-
-def unzip_subdir(args):
-    l = []
+def unzip_files(args, dry_run=False):
     for root, dirs, files in os.walk(args[0]):
         for f in files:
             d = re.sub("\.zip\Z", "", os.path.basename(f))
-            if os.access(d, os.F_OK):
-                l.append(d)
+            target_dir = os.path.join(root, d)
+            if os.path.exists(target_dir):
+                continue
+
+            if dry_run:
+                print(f"Dry run: Would unzip {f} into {target_dir}")
             else:
-                os.mkdir(d)
-                os.chdir(d)
-                cmd = ("unzip " + args[0] + os.sep + f)
+                os.mkdir(target_dir)
+                os.chdir(target_dir)
+                cmd = f"unzip {os.path.join(args[0], f)}"
                 os.system(cmd)
                 os.chdir("..")
-    if len(l) > 0:
-        print("These directories already exists.")
-        print(l)
-
-def parse_option(options, args):
-    os.chdir(args[1])
-    if options.expand:
-        expand_directory(args)
-    else:
-        unzip_subdir(args)
 
 def main():
-    from optparse import OptionParser
-    usage = "usage: %prog source_dir target_dir"
-    parser = OptionParser(usage)
-    parser.add_option("-e", "--expand", help="expand directory (not mkdir)",
-                      action="store_true", dest="expand")
+    parser = OptionParser(usage="usage: %prog [options] source_dir")
+    parser.add_option("-d", "--dry-run", help="List files without extracting",
+                      action="store_true", dest="dry_run", default=False)
     (options, args) = parser.parse_args()
-    if len(args) < 2:
+
+    if len(args) < 1:
         parser.print_help()
     else:
-        parse_option(options, args)
+        unzip_files(args, options.dry_run)
 
 if __name__ == '__main__':
     main()
+
