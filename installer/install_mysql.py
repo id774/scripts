@@ -57,5 +57,6 @@ def main():
     (options, args) = parser.parse_args()
     install_mysql(options, args)
 
+
 if __name__ == "__main__":
     main()

@@ -36,9 +36,9 @@ def download_file(url):
     with open(filename, 'wb') as file:
         file.write(response.content)
 
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         usage()
 
     download_file(sys.argv[1])
-

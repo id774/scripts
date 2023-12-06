@@ -50,7 +50,8 @@ def print_month_calendar(year, month, highlight_day=None):
     if highlight_day:
         for i in range(len(cal_lines)):
             if str(highlight_day) in cal_lines[i]:
-                cal_lines[i] = cal_lines[i].replace(str(highlight_day), '{}*'.format(highlight_day))
+                cal_lines[i] = cal_lines[i].replace(
+                    str(highlight_day), '{}*'.format(highlight_day))
                 break
 
     for line in cal_lines:
@@ -90,6 +91,7 @@ def is_unix_like():
     """
     return platform.system() != "Windows"
 
+
 # Main execution
 if __name__ == '__main__':
     if is_unix_like() and is_command_exist('cal') and len(sys.argv) > 1:
@@ -120,4 +122,3 @@ if __name__ == '__main__':
             print_month_calendar(last_year, last_month)
             print_month_calendar(year, month, day)  # Highlight today
             print_month_calendar(next_year, next_month)
-

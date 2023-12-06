@@ -37,14 +37,15 @@ class InstagramPhotoDownloader:
         # Initialize the downloader with the given username
         self.username = username
         self.L = instaloader.Instaloader()
-        self.profile = instaloader.Profile.from_username(self.L.context, self.username)
+        self.profile = instaloader.Profile.from_username(
+            self.L.context, self.username)
 
     def download(self):
         # Retrieve the URLs of all Instagram photos
         urls = self._get_instagram_photo_urls()
         post_count = len(urls)
         print(f'This account has {post_count} image posts.')
-        minutes = int(post_count/60)+1
+        minutes = int(post_count / 60) + 1
         print(f'Estimate processing time is about {minutes} minutes.')
 
         # Determine the starting index based on existing files
@@ -95,6 +96,6 @@ def main():
     downloader = InstagramPhotoDownloader(args.username)
     downloader.download()
 
+
 if __name__ == '__main__':
     main()
-

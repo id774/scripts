@@ -2,7 +2,7 @@
 
 ########################################################################
 # TrueCrypt Device Mounter
-# 
+#
 #  Description:
 #  This script is designed to automate the mounting of TrueCrypt
 #  encrypted devices. It supports a variety of devices and includes
@@ -34,7 +34,7 @@
 #  To use this script, ensure you have TrueCrypt installed and run
 #  the script with appropriate privileges. You can specify the device
 #  and other mount options as arguments. For example:
-# 
+#
 #      python tcmount.py [device] [options]
 #
 #  Refer to the TrueCrypt documentation for more detailed information
@@ -181,6 +181,7 @@ def main():
         tcmount(options, args)
     else:
         parser.print_help()
+
 
 if __name__ == "__main__":
     main()

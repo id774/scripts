@@ -37,10 +37,10 @@ def main(args):
     """Process the command line arguments and output the result."""
     print(unixtime2date(int(args[1])))
 
+
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         main(sys.argv)
     else:
         print("Usage: unixtime2date.py <unix_timestamp>")
         print("Example: unixtime2date.py 1609459200")
-

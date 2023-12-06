@@ -37,6 +37,7 @@ def generate_passwd(length, use_symbols=True):
         chars += '_-!#&'
     print("".join([choice(chars) for i in range(length)]))
 
+
 if __name__ == '__main__':
     parser = OptionParser(usage="usage: %prog [options] length")
     parser.add_option("-s", "--no-symbols", action="store_false", dest="use_symbols", default=True,
@@ -49,4 +50,3 @@ if __name__ == '__main__':
 
     length = int(args[0])
     generate_passwd(length, options.use_symbols)
-

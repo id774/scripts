@@ -43,6 +43,7 @@ def download_image(url, filename):
 
     print(f'Downloaded {filename}.')
 
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('url', help='Instagram URL')
@@ -50,4 +51,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     download_image(args.url, args.filename)
-

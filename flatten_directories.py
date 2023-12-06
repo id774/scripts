@@ -72,7 +72,8 @@ def handle_directory(path):
                 if options.execute_mode:
                     os.rename(old_path, os.path.join(path, new_filename))
                 if not options.quiet_mode:
-                    print(f"Renamed {old_path} -> {os.path.join(path, new_filename)}")
+                    print(
+                        f"Renamed {old_path} -> {os.path.join(path, new_filename)}")
             # If move mode is active, move the file.
             elif options.move_mode:
                 if options.execute_mode:
@@ -93,8 +94,8 @@ def handle_directory(path):
         if not options.quiet_mode:
             print(f"Deleted directory {path}")
 
+
 # Process all subdirectories in the current directory.
 subdirectories = [d for d in os.listdir('.') if os.path.isdir(d)]
 for subdir in subdirectories:
     handle_directory(subdir)
-

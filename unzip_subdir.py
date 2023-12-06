@@ -5,8 +5,8 @@
 #
 #  Description:
 #  This script unzips each .zip file in the specified source directory
-#  into separate subdirectories. If a subdirectory already exists, it 
-#  skips the extraction for that zip file. The --dry-run option lists 
+#  into separate subdirectories. If a subdirectory already exists, it
+#  skips the extraction for that zip file. The --dry-run option lists
 #  the zip files that would be extracted without performing the actual
 #  extraction.
 #
@@ -66,6 +66,6 @@ def main():
     else:
         unzip_files(args, options.dry_run)
 
+
 if __name__ == '__main__':
     main()
-

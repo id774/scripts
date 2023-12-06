@@ -40,5 +40,6 @@ def main():
     (options, args) = parser.parse_args()
     hhk_switch(options, args)
 
+
 if __name__ == "__main__":
     main()

@@ -77,8 +77,9 @@ def main():
     log_file = sys.argv[1]
     # Calculate and display the results
     print("IP Hits:", ApacheCalculater.calculateApacheIpHits(log_file))
-    print("Client Cache Percentage:", ApacheCalculater.clientCachePercentage(log_file))
+    print("Client Cache Percentage:",
+          ApacheCalculater.clientCachePercentage(log_file))
+
 
 if __name__ == '__main__':
     main()
-

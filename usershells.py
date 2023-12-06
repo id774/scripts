@@ -46,9 +46,11 @@ def get_shells_from_passwd():
 
 def get_shells_from_dscl():
     shells = {}
-    users = subprocess.check_output(['dscl', '.', '-list', '/Users']).decode().splitlines()
+    users = subprocess.check_output(
+        ['dscl', '.', '-list', '/Users']).decode().splitlines()
     for user in users:
-        shell = subprocess.check_output(['dscl', '.', '-read', f'/Users/{user}', 'UserShell']).decode().split()[1]
+        shell = subprocess.check_output(
+            ['dscl', '.', '-read', f'/Users/{user}', 'UserShell']).decode().split()[1]
         shells[user] = shell
     return shells
 
@@ -60,6 +62,6 @@ def main():
         if all(x not in shell for x in ['false', 'nologin', 'sync', 'shutdown', 'halt']):
             print("{0:11} => {1}".format(account, shell))
 
+
 if __name__ == '__main__':
     main()
-

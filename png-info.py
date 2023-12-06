@@ -55,7 +55,8 @@ def read_png_info(png_file_path):
             raise ValueError("IHDR chunk not found")
 
         data = f.read(length)
-        width, height, bit_depth, color_type = struct.unpack(">IIBB", data[:10])
+        width, height, bit_depth, color_type = struct.unpack(
+            ">IIBB", data[:10])
 
         # Mapping of color type values to human-readable names
         color_types = {3: "PNG-8", 2: "PNG-24", 6: "PNG-32"}
@@ -63,12 +64,14 @@ def read_png_info(png_file_path):
 
         return width, height, bit_depth, color_type_name
 
+
 if __name__ == "__main__":
     # Process each file matching the provided glob pattern
     for arg in sys.argv[1:]:
         for filename in glob.glob(arg):
             try:
-                width, height, bit_depth, color_type_name = read_png_info(filename)
+                width, height, bit_depth, color_type_name = read_png_info(
+                    filename)
                 print(f"File: {filename}")
                 print(f"Width:        {width:4d}")
                 print(f"Height:       {height:4d}")
@@ -77,4 +80,3 @@ if __name__ == "__main__":
                 print("")
             except Exception as e:
                 print(f"Error processing {filename}: {e}")
-

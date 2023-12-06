@@ -64,10 +64,13 @@ def rename_files(dir_path, num_digits):
         # Display the renaming
         print(f"{file_name} -> {new_file_name}")
 
+
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='A program to uniformly rename file names by zero-padding their numeric parts')
+    parser = argparse.ArgumentParser(
+        description='A program to uniformly rename file names by zero-padding their numeric parts')
     parser.add_argument('dir_path', help='directory path')
-    parser.add_argument('num_digits', type=int, help='number of digits for padding')
+    parser.add_argument('num_digits', type=int,
+                        help='number of digits for padding')
     args = parser.parse_args()
 
     if not os.path.isdir(args.dir_path):
@@ -75,4 +78,3 @@ if __name__ == '__main__':
         exit()
 
     rename_files(args.dir_path, args.num_digits)
-
