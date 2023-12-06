@@ -14,7 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v0.1 2023-11-12
+#  v1.0 2023-11-12
 #       Initial release. Features include checking for necessary files and
 #       directories, performing data sync, and running device health checks.
 #

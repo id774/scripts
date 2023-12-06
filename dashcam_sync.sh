@@ -14,7 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v0.1 2023-12-05
+#  v1.0 2023-12-05
 #       Initial release. Adds directory checks, error handling, and
 #       improves script reusability.
 #
