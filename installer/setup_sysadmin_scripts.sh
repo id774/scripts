@@ -64,10 +64,10 @@ uninstall_sysadmin_scripts() {
         pyck \
         autopyck \
         get_resources \
-        tcmount \
-        veramount \
         dpkg-hold \
         gpg-import \
+        tcmount \
+        veramount \
         platex2pdf \
         userlist \
         usershells \
@@ -85,13 +85,12 @@ setup_scripts() {
     install_scripts 755 md5.py md5
     install_scripts 755 chmodtree.py chmodtree
     install_scripts 755 cltmp.sh cltmp
-    install_scripts 755 namecalc.rb namecalc
-    install_scripts 755 waitlock.rb waitlock
-    install_scripts 755 swapext.py swapext
     install_scripts 755 userlist.sh userlist
     install_scripts 755 usershells.py usershells
     install_scripts 755 git-follow-origin.sh git-follow-origin
     install_scripts 755 git-co-remote-branch.sh git-co-remote-branch
+    install_scripts 755 pyck.sh pyck
+    install_scripts 755 autopyck.sh autopyck
 }
 
 setup_darwin_scripts() {
@@ -99,24 +98,15 @@ setup_darwin_scripts() {
     install_scripts 755 port-cleanup.sh port-cleanup
 }
 
-setup_rhel_scripts() {
-    install_scripts 755 get_resources.sh get_resources
-    install_scripts 755 userlist.sh userlist
-    install_scripts 755 usershells.py usershells
-}
-
 setup_debian_scripts() {
     install_scripts 755 dpkg-hold.sh dpkg-hold
-    install_scripts 755 get_resources.sh get_resources
-    install_scripts 755 veramount.sh veramount
     install_scripts 755 gpg-import.sh gpg-import
-    install_scripts 755 platex2pdf.sh platex2pdf
+    install_scripts 755 veramount.sh veramount
 }
 
 install_sysadmin_scripts() {
     setup_scripts
     test -f /etc/debian_version && setup_debian_scripts
-    test -f /etc/redhat-release && setup_rhel_scripts
     case $OSTYPE in
       *darwin*)
         setup_darwin_scripts
