@@ -1,13 +1,27 @@
 #!/usr/bin/env ruby
-# -*- coding: utf-8 -*-
-#
+
 ########################################################################
-# Prepare for Aozora Bunko
+# aozora_prepare.rb: Prepare for Aozora Bunko Text Processing
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script processes text files from Aozora Bunko for readability and
+#  standardization. It converts the encoding, removes annotations, replaces
+#  full-width spaces, and standardizes newlines.
 #
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.1 2023-12-06
+#       Refactored for improved readability and documentation.
 #  v1.0 2014-01-22
-#       Stable.
+#       Initial release.
+#
+#  Usage:
+#  ./aozora_prepare.rb [input file] [output file]
+#
 ########################################################################
 
 class Aozora
@@ -17,22 +31,22 @@ class Aozora
   end
 
   def run
-    open(@infile, "r:Windows-31J:UTF-8") {|source|
-      open(@outfile, "w") {|data|
-        s = source.read
-        s = s.gsub(/《[^》]+》/, "")
-        s = s.gsub(/　/, "  ")
-        data.print s.gsub(/(\r\n)/, "\n")
-      }
-    }
+    File.open(@infile, "r:Windows-31J:UTF-8") do |source|
+      File.open(@outfile, "w") do |data|
+        content = source.read
+        content.gsub!(/《[^》]+》/, "")
+        content.gsub!(/　/, "  ")
+        data.print content.gsub(/(\r\n)/, "\n")
+      end
+    end
   end
 end
 
 if __FILE__ == $0
   if ARGV.length == 2
-    aozora = Aozora.new(ARGV)
-    aozora.run
+    Aozora.new(ARGV).run
   else
     puts "Syntax: aozora_prepare.rb [infile] [outfile]"
   end
 end
+
