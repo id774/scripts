@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# Directory Size Summary Script
+# dirsize.sh: Directory Size Summary Script
 #
 #  Description:
 #  This script displays a detailed list of files and directories in the
