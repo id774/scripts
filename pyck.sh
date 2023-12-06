@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2023-12-06
+#       Refactored for clarity, added detailed comments, and documentation.
 #  v1.0 2014-08-12
 #       Initial release.
 #
