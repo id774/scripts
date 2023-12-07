@@ -56,8 +56,10 @@ class InstagramPhotoDownloader:
         for i, url in enumerate(reversed(urls)):
             if i >= max_number:
                 time_left = "{} seconds".format(post_count - i)
-                minutes_conv = "({} minutes)".format(int((post_count - i) / 60) + 1)
-                print("{} {} to complete processing.".format(time_left, minutes_conv))
+                minutes_conv = "({} minutes)".format(
+                    int((post_count - i) / 60) + 1)
+                print("{} {} to complete processing.".format(
+                    time_left, minutes_conv))
                 file_num = str(i + 1).zfill(5)
                 filename = "{}_{}.jpg".format(self.username, file_num)
                 print("Downloading {}...".format(filename))
