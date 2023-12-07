@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 ########################################################################
-# waitlock: File Locking Script
+# waitlock.rb: File Locking Script
 #
 #  Description:
 #  This Ruby script implements a simple file locking mechanism. It is designed

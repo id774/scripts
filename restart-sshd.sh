@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ########################################################################
-# restart_sshd.sh: Restart SSH Daemon
+# restart-sshd.sh: Restart SSH Daemon
 #
 #  Description:
 #  This script restarts the SSH daemon. It supports both macOS (using
@@ -19,7 +19,7 @@
 #       Initial release.
 #
 #  Usage:
-#  ./restart_sshd.sh
+#  ./restart-sshd.sh
 #
 ########################################################################
 

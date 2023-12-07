@@ -1,7 +1,7 @@
 #!/bin/zsh
 
 ########################################################################
-# VeraCrypt Device Mount/Unmount Script
+# veramount.sh: VeraCrypt Device Mount/Unmount Script
 #
 #  Description:
 #  This script facilitates mounting and unmounting of VeraCrypt-encrypted

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# User List Display Script (userlist.sh)
+# userlist.sh: User List Display Script
 #
 #  Description:
 #  This script lists user accounts with UIDs greater than a specified threshold.

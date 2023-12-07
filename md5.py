@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# MD5 Checksum Calculator
+# md5.py: MD5 Checksum Calculator
 #
 #  Description:
 #  This script calculates MD5 checksums for files and strings. It can process

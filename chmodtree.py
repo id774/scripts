@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# chmodtree: Directory Tree chmod Script
+# chmodtree.py: Directory Tree chmod Script
 #
 #  Description:
 #  This script changes file and directory permissions recursively within a specified directory.

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# fluent startup script
+# fluent-start.sh: fluent startup script
 #  $1 = fluent
 #  $2 = fluent-conf path
 #  $3 = options

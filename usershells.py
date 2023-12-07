@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# User Shell Listing Script (usershells.py)
+# usershells.py: User Shell Listing Script
 #
 #  Description:
 #  This script lists user accounts and their corresponding shells. It supports

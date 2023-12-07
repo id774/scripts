@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ########################################################################
-# GPX File Management Script
+# gpx_sync.sh: GPX File Management Script
 #
 #  Description:
 #  This script manages GPX files by performing operations like copying to

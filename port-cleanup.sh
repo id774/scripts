@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# port-cleanup: macOS Port Cleanup Script
+# port-cleanup.sh: macOS Port Cleanup Script
 #
 #  Description:
 #  This script is used to clean up outdated ports in a macOS system using MacPorts.

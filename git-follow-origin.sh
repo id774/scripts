@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# git-follow-origin: GitHub Repository Merge Script
+# git-follow-origin.sh: GitHub Repository Merge Script
 #
 #  Description:
 #  This script automates the process of merging changes from a GitHub

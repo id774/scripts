@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 ########################################################################
-# namecalc: Numerology Calculation Script
+# namecalc.rb: Numerology Calculation Script
 #
 #  Description:
 #  This Ruby script performs numerology calculations based on input strings.

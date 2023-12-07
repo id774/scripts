@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# Calendar Printer (cal.py)
+# cal.py: Calendar Printer
 #
 #  Description:
 #  This script acts as a wrapper for the 'cal' command in Unix-like systems.

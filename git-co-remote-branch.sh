@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# git-co-remote-branch: Git Remote Branch Checkout Script
+# git-co-remote-branch.sh: Git Remote Branch Checkout Script
 #
 #  Description:
 #  This script simplifies the process of checking out a remote branch in Git.

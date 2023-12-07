@@ -1,8 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# platex2pdf.sh
-# LaTeX to PDF Conversion Script
+# platex2pdf.sh: LaTeX to PDF Conversion Script
 #
 #  Description:
 #  This script converts LaTeX (.tex) files to PDF, handling various

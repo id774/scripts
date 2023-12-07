@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# cltmp: Cleanup Temporary and Cached Files
+# cltmp.sh: Cleanup Temporary and Cached Files
 #
 #  Description:
 #  This script is designed to clean up temporary and cached files on Unix-like systems.

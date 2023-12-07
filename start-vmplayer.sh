@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# VMware Player startup script
+# start-vmplayer.sh: VMware Player startup script
 #
 # Note:
 #  This needs following packages

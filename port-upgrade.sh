@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# port-upgrade: macOS Port Upgrade Script
+# port-upgrade.sh: macOS Port Upgrade Script
 #
 #  Description:
 #  This script is designed for macOS systems with the 'port' command installed.
