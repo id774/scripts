@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2023-12-07
+#       Added check for Git installation.
 #  v1.0 2023-12-05
 #       Initial release. Supports pulling Git repositories and managing
 #       symbolic links with optional arguments.
@@ -25,6 +27,14 @@
 #  ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run]
 #
 ########################################################################
+
+# Check if Git is installed
+check_git_installed() {
+    if ! command -v git >/dev/null 2>&1; then
+        echo "Error: Git is not installed. This script requires Git for pulling repositories. Please install Git and try again."
+        exit 1
+    fi
+}
 
 HARD_MODE=false
 NO_SYMLINK=false
@@ -48,6 +58,8 @@ do
         ;;
     esac
 done
+
+check_git_installed
 
 pull_repo() {
     local repo_path="$1"

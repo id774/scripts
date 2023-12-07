@@ -1,13 +1,14 @@
 #!/bin/sh
 #
 ########################################################################
-# Git Repository Management Script
+# git-create-repo.sh: Git Repository Management Script
 #
 #  Description:
 #  This script automates the creation and deletion of Git repositories.
 #  It allows for setting a custom path for the repository and includes options
 #  for a dry run and for deleting an existing repository. The default repository
-#  path is set to /var/lib/git if not specified.
+#  path is set to /var/lib/git if not specified. It checks for Git installation
+#  before proceeding.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -15,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2023-12-07
+#       Added check for Git installation.
 #  v1.0 2023-11-26
 #       Initial release. Features include creating and deleting Git repositories,
 #       dry run option for creation, and custom repository path setting.
@@ -41,12 +44,20 @@ usage() {
     exit 1
 }
 
+# Check if Git is installed
+check_git_installed() {
+    if ! command -v git >/dev/null 2>&1; then
+        echo "Error: Git is not installed. This script requires Git for managing Git repositories. Please install Git and try again."
+        exit 2
+    fi
+}
+
 # Check if a directory exists
 check_directory() {
     local dir=$1
     if [ ! -d "$dir" ]; then
         echo "Error: Directory '$dir' does not exist."
-        exit 2
+        exit 3
     fi
 }
 
@@ -106,7 +117,7 @@ delete_git_repo() {
         echo "Repository at '${repo_path}' has been deleted."
     else
         echo "Error: '${repo_path}' is not a Git repository."
-        exit 3
+        exit 4
     fi
 }
 
@@ -130,6 +141,8 @@ done
 if [ "$#" -lt 1 ]; then
     usage
 fi
+
+check_git_installed
 
 repo_name=$1
 repo_base_path=${2:-"/var/lib/git"}

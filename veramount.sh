@@ -49,7 +49,7 @@ usage() {
 # Check if VeraCrypt is installed
 check_veracrypt_installed() {
     if ! command -v veracrypt >/dev/null 2>&1; then
-        echo "Error: VeraCrypt is not installed. This script requires the VeraCrypt commands to function. Please install VeraCrypt to use this script."
+        echo "Error: VeraCrypt is not installed. This script requires VeraCrypt to mount and unmount encrypted devices. Please install VeraCrypt and try again."
         exit 3
     fi
 }
