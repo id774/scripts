@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-08
+#       Removed f-strings for compatibility with Python versions below 3.6.
 #  v1.1 2023-12-06
 #       Added --dry-run option and enhanced documentation.
 #  v1.0 2010-02-14
@@ -46,11 +48,11 @@ def unzip_files(args, dry_run=False):
                 continue
 
             if dry_run:
-                print(f"Dry run: Would unzip {f} into {target_dir}")
+                print("Dry run: Would unzip {} into {}".format(f, target_dir))
             else:
                 os.mkdir(target_dir)
                 os.chdir(target_dir)
-                cmd = f"unzip {os.path.join(args[0], f)}"
+                cmd = "unzip {}".format(os.path.join(args[0], f))
                 os.system(cmd)
                 os.chdir("..")
 

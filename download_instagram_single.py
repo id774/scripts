@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-08
+#       Removed f-strings for compatibility with Python versions below 3.6.
 #  v1.1 2023-12-06
 #       Refactored for clarity, added English comments, and updated documentation.
 #  v1.0 2023-02-26
@@ -41,7 +43,7 @@ def download_image(url, filename):
     with open(filename, 'wb') as f:
         f.write(response.content)
 
-    print(f'Downloaded {filename}.')
+    print('Downloaded {}.'.format(filename))
 
 
 if __name__ == '__main__':

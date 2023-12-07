@@ -15,6 +15,12 @@ Source Code: https://github.com/id774/scripts
 License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
 Contact: idnanashi@gmail.com
 
+Version History:
+v1.1 2023-12-08
+     Removed f-strings for compatibility with Python versions below 3.6.
+v1.0 2023-12-07
+     Initial release.
+
 Dependencies:
 - BeautifulSoup
 - PyYAML
@@ -111,7 +117,7 @@ def main():
         yaml_data = html_to_yaml(html)
         print(yaml.dump(yaml_data))
     except Exception as e:
-        print(f"Error processing HTML: {e}")
+        print("Error processing HTML: {}".format(e))
         sys.exit(2)
 
 

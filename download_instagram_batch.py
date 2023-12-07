@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-08
+#       Removed f-strings for compatibility with Python versions below 3.6.
 #  v1.1 2023-12-06
 #       Refactored for clarity, added English comments, and updated documentation.
 #  v1.0 2023-02-26
@@ -44,21 +46,21 @@ class InstagramPhotoDownloader:
         # Retrieve the URLs of all Instagram photos
         urls = self._get_instagram_photo_urls()
         post_count = len(urls)
-        print(f'This account has {post_count} image posts.')
+        print('This account has {} image posts.'.format(post_count))
         minutes = int(post_count / 60) + 1
-        print(f'Estimate processing time is about {minutes} minutes.')
+        print('Estimate processing time is about {} minutes.'.format(minutes))
 
         # Determine the starting index based on existing files
         max_number = self._get_max_number('.')
 
         for i, url in enumerate(reversed(urls)):
             if i >= max_number:
-                time_left = f"{post_count-i} seconds"
-                minutes_conv = f"({int((post_count-i)/60)+1} minutes)"
-                print(f"{time_left} {minutes_conv} to complete processing.")
-                file_num = f"{i+1}".zfill(5)
-                filename = f"{self.username}_{file_num}.jpg"
-                print(f"Downloading {filename}...")
+                time_left = "{} seconds".format(post_count - i)
+                minutes_conv = "({} minutes)".format(int((post_count - i) / 60) + 1)
+                print("{} {} to complete processing.".format(time_left, minutes_conv))
+                file_num = str(i + 1).zfill(5)
+                filename = "{}_{}.jpg".format(self.username, file_num)
+                print("Downloading {}...".format(filename))
                 self._download_image(url, filename)
                 time.sleep(1)
 

@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2023-12-08
+#       Removed f-strings for compatibility with Python versions below 3.6.
 #  v1.2 2023-11-29
 #       Added support for macOS by using 'dscl' for retrieving user and shell information.
 #  v1.1 2018-08-30
@@ -49,7 +51,7 @@ def get_shells_from_dscl():
         ['dscl', '.', '-list', '/Users']).decode().splitlines()
     for user in users:
         shell = subprocess.check_output(
-            ['dscl', '.', '-read', f'/Users/{user}', 'UserShell']).decode().split()[1]
+            ['dscl', '.', '-read', '/Users/{}'.format(user), 'UserShell']).decode().split()[1]
         shells[user] = shell
     return shells
 

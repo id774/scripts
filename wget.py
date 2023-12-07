@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2023-12-08
+#       Removed f-strings for compatibility with Python versions below 3.6.
 #  v1.0 2023-12-06
 #       Initial release.
 #
@@ -26,7 +28,7 @@ import sys
 import requests
 
 def usage():
-    print(f"Usage: {sys.argv[0]} <URL>")
+    print("Usage: {} <URL>".format(sys.argv[0]))
     sys.exit(1)
 
 def download_file(url):

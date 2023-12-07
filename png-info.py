@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-08
+#       Removed f-strings for compatibility with Python versions below 3.6.
 #  v1.1 2023-12-06
 #       Refactored for clarity and improved error handling.
 #  v1.0 2023-11-25
@@ -72,11 +74,11 @@ if __name__ == "__main__":
             try:
                 width, height, bit_depth, color_type_name = read_png_info(
                     filename)
-                print(f"File: {filename}")
-                print(f"Width:        {width:4d}")
-                print(f"Height:       {height:4d}")
-                print(f"Bit Depth:    {bit_depth:4d}")
-                print(f"Color Type:   {color_type_name}")
+                print("File: {}".format(filename))
+                print("Width:        {:4d}".format(width))
+                print("Height:       {:4d}".format(height))
+                print("Bit Depth:    {:4d}".format(bit_depth))
+                print("Color Type:   {}".format(color_type_name))
                 print("")
             except Exception as e:
-                print(f"Error processing {filename}: {e}")
+                print("Error processing {}: {}".format(filename, e))

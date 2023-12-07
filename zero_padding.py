@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-08
+#       Removed f-strings for compatibility with Python versions below 3.6.
 #  v1.1 2023-05-06
 #       Adjusted to fit the numeric part of file names to the specified number of digits.
 #  v1.0 2023-02-28
@@ -62,7 +64,7 @@ def rename_files(dir_path, num_digits):
         os.rename(old_file_path, new_file_path)
 
         # Display the renaming
-        print(f"{file_name} -> {new_file_name}")
+        print("{} -> {}".format(file_name, new_file_name))
 
 
 if __name__ == '__main__':
@@ -74,7 +76,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if not os.path.isdir(args.dir_path):
-        print(f"{args.dir_path} is not a valid directory.")
+        print("{} is not a valid directory.".format(args.dir_path))
         exit()
 
     rename_files(args.dir_path, args.num_digits)

@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2023-12-08
+#       Removed f-strings for compatibility with Python versions below 3.6.
 #  v1.2 2023-12-07
 #       Enhanced dry-run mode output for clarity.
 #  v1.1 2023-09-11
@@ -57,14 +59,14 @@ parser.add_option("-r", "--rename-only", action="store_true", dest="rename_only_
 
 def print_action(action, source, destination=None):
     """ Prints the action being performed or simulated. """
-    action_message = f"{action} {source}"
+    action_message = "{} {}".format(action, source)
     if destination:
-        action_message += f" -> {destination}"
+        action_message += " -> {}".format(destination)
 
     if options.execute_mode:
         print(action_message)
     else:
-        print(f"[DRY RUN] {action_message}")
+        print("[DRY RUN] {}".format(action_message))
 
 def handle_directory(path):
     """Recursively processes a directory."""
