@@ -1,5 +1,5 @@
 #!/bin/sh
-#
+
 ########################################################################
 # git-follow-origin: GitHub Repository Merge Script
 #

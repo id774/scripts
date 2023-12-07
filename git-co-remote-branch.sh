@@ -1,5 +1,5 @@
 #!/bin/sh
-#
+
 ########################################################################
 # git-co-remote-branch: Git Remote Branch Checkout Script
 #

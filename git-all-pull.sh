@@ -4,9 +4,9 @@
 # git-all-pull.sh: Git Repositories Pull Script
 #
 #  Description:
-#  This script performs a 'git pull' on all Git repositories in the user's
-#  local directories ($HOME/local/git and $HOME/local/github). It also checks for
-#  and creates symbolic links from the home directory to these repositories.
+#  This script performs a 'git pull' on all Git repositories in specified
+#  local directories. It also checks for and creates symbolic links from
+#  the home directory to these repositories.
 #
 #  WARNING: The '--hard' option performs 'git reset --hard' which can
 #  overwrite local changes. Use with caution.
@@ -18,46 +18,75 @@
 #
 #  Version History:
 #  v1.1 2023-12-07
-#       Added check for Git installation.
+#       Added check for Git installation and options to pull from specific directories.
+#       Added '--all' option and default behavior to show help message if no option is provided.
 #  v1.0 2023-12-05
 #       Initial release. Supports pulling Git repositories and managing
 #       symbolic links with optional arguments.
 #
 #  Usage:
-#  ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run]
+#  ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]
 #
 ########################################################################
+
+HARD_MODE=false
+NO_SYMLINK=false
+DRY_RUN=false
+GITHUB_ONLY=false
+GIT_ONLY=false
+ALL=false
+SHOW_HELP=false
 
 # Check if Git is installed
 check_git_installed() {
     if ! command -v git >/dev/null 2>&1; then
         echo "Error: Git is not installed. This script requires Git for pulling repositories. Please install Git and try again."
-        exit 1
+        exit 2
     fi
 }
 
-HARD_MODE=false
-NO_SYMLINK=false
-DRY_RUN=false
+# Display script usage information
+usage() {
+    echo "Usage: $0 [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]"
+    echo "Default behavior is to show this help message. Use '--all' to pull from both github and git directories."
+    exit 1
+}
 
 # Parse options
+if [ $# -eq 0 ]; then
+    SHOW_HELP=true
+fi
+
 for arg in "$@"
 do
     case $arg in
         --hard)
         HARD_MODE=true
-        shift
         ;;
         --no-symlink)
         NO_SYMLINK=true
-        shift
         ;;
         --dry-run)
         DRY_RUN=true
-        shift
+        ;;
+        --github-only)
+        GITHUB_ONLY=true
+        ;;
+        --git-only)
+        GIT_ONLY=true
+        ;;
+        --all)
+        ALL=true
+        ;;
+        *)
+        SHOW_HELP=true
         ;;
     esac
 done
+
+if [ "$SHOW_HELP" = true ]; then
+    usage
+fi
 
 check_git_installed
 
@@ -98,7 +127,20 @@ create_symlink() {
     fi
 }
 
-for base_dir in "$HOME/local/github" "$HOME/local/git"; do
+# Define directories to pull from
+directories=()
+if [ "$ALL" = true ]; then
+    directories=("$HOME/local/github" "$HOME/local/git")
+elif [ "$GITHUB_ONLY" = true ]; then
+    directories=("$HOME/local/github")
+elif [ "$GIT_ONLY" = true ]; then
+    directories=("$HOME/local/git")
+else
+    usage
+fi
+
+# Process each directory
+for base_dir in "${directories[@]}"; do
     for repo_dir in "$base_dir"/*; do
         if [ -d "$repo_dir/.git" ]; then
             pull_repo "$repo_dir"
