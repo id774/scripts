@@ -77,7 +77,7 @@ def handle_directory(path):
         if os.path.isdir(old_path):
             handle_directory(old_path)
         else:
-            new_filename = f"{path.replace('/', '_')}_{entry}"
+            new_filename = "{}_{}".format(path.replace('/', '_'), entry)
             new_path = os.path.join(path, new_filename)
 
             if options.rename_only_mode:
