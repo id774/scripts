@@ -10,15 +10,15 @@ including or excluding specific elements based on CSS or XPath selectors.
 This is useful for converting HTML structures into a format that can be
 easily processed by scripts or programs.
 
-Dependencies:
-- BeautifulSoup
-- PyYAML
-- requests
-
 Author: id774 (More info: http://id774.net)
 Source Code: https://github.com/id774/scripts
 License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
 Contact: idnanashi@gmail.com
+
+Dependencies:
+- BeautifulSoup
+- PyYAML
+- requests
 
 Usage:
 Run the script with the URL or path of the HTML file, along with optional

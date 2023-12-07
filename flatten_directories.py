@@ -6,7 +6,8 @@
 #  Description:
 #  This script flattens the directory structure by either moving, copying,
 #  or renaming files to the base directory. It supports deletion of empty
-#  directories and can operate in a quiet mode.
+#  directories and can operate in a quiet mode. It also includes a dry-run
+#  mode to simulate file operations without making actual changes.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-07
+#       Enhanced dry-run mode output for clarity.
 #  v1.1 2023-09-11
 #       Added rename-only mode.
 #  v1.0 2023-06-27
@@ -52,50 +55,52 @@ parser.add_option("-r", "--rename-only", action="store_true", dest="rename_only_
                   help="only rename the files by adding directory name, without moving or copying")
 (options, args) = parser.parse_args()
 
+def print_action(action, source, destination=None):
+    """ Prints the action being performed or simulated. """
+    action_message = f"{action} {source}"
+    if destination:
+        action_message += f" -> {destination}"
+
+    if options.execute_mode:
+        print(action_message)
+    else:
+        print(f"[DRY RUN] {action_message}")
+
 def handle_directory(path):
     """Recursively processes a directory."""
-    # Get the list of files and subdirectories in the directory.
     entries = os.listdir(path)
 
     for entry in entries:
         old_path = os.path.join(path, entry)
-
-        # If the entry is a directory, process it recursively.
         if os.path.isdir(old_path):
             handle_directory(old_path)
         else:
-            # Form the new filename by adding the directory name.
             new_filename = f"{path.replace('/', '_')}_{entry}"
+            new_path = os.path.join(path, new_filename)
 
-            # If rename-only mode is active, rename the file.
             if options.rename_only_mode:
                 if options.execute_mode:
-                    os.rename(old_path, os.path.join(path, new_filename))
+                    os.rename(old_path, new_path)
                 if not options.quiet_mode:
-                    print(
-                        f"Renamed {old_path} -> {os.path.join(path, new_filename)}")
-            # If move mode is active, move the file.
+                    print_action("Renamed", old_path, new_path)
             elif options.move_mode:
                 if options.execute_mode:
                     shutil.move(old_path, new_filename)
                 if not options.quiet_mode:
-                    print(f"Moved {old_path} -> {new_filename}")
-            # Otherwise, copy the file.
+                    print_action("Moved", old_path, new_filename)
             else:
                 if options.execute_mode:
                     shutil.copy(old_path, new_filename)
                 if not options.quiet_mode:
-                    print(f"Copied {old_path} -> {new_filename}")
+                    print_action("Copied", old_path, new_filename)
 
-    # If delete mode is active and the directory is empty, delete it.
     if options.delete_mode and not os.listdir(path):
         if options.execute_mode:
             os.rmdir(path)
         if not options.quiet_mode:
-            print(f"Deleted directory {path}")
+            print_action("Deleted directory", path)
 
 
-# Process all subdirectories in the current directory.
 subdirectories = [d for d in os.listdir('.') if os.path.isdir(d)]
 for subdir in subdirectories:
     handle_directory(subdir)

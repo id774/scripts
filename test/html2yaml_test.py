@@ -12,15 +12,15 @@ Test Data:
 The test uses an HTML file located at 'test/html2yaml_data.html', which should contain
 a sample HTML structure. The expected YAML output is defined within the test cases.
 
-Dependencies:
-- BeautifulSoup
-- PyYAML
-- unittest (standard library)
-
 Author: id774 (More info: http://id774.net)
 Source Code: https://github.com/id774/scripts
 License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
 Contact: idnanashi@gmail.com
+
+Dependencies:
+- BeautifulSoup
+- PyYAML
+- unittest (standard library)
 
 Usage:
 Run the test from the command line:
