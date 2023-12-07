@@ -13,8 +13,6 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.1 2023-12-08
-#       Removed Python version check.
 #  v1.0 2022-08-03
 #       Initial release. Basic functionality for sending Wake-on-LAN magic packets.
 #
@@ -54,11 +52,15 @@ def send_magic_packet(addr):
 
 if __name__ == '__main__':
     argsmin = 1
-    if len(sys.argv) > argsmin:
-        try:
-            send_magic_packet(sys.argv[1])
-        except BaseException:
-            print_exc()
+    version = (3, 0)
+    if sys.version_info > (version):
+        if len(sys.argv) > argsmin:
+            try:
+                send_magic_packet(sys.argv[1])
+            except BaseException:
+                print_exc()
+        else:
+            print("This program needs at least %(argsmin)s arguments" %
+                  locals())
     else:
-        print("This program needs at least %(argsmin)s arguments" %
-              locals())
+        print("This program requires python > %(version)s" % locals())
