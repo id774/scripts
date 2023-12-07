@@ -40,8 +40,3 @@ sudo cp $SCRIPTS/cron/etc/logrotate.d/resources /etc/logrotate.d/resources
 sudo chmod 644 /etc/logrotate.d/resources
 sudo chown root:root /etc/logrotate.d/resources
 
-# Edit crontab
-# 50 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday
-# 55 6  * * 6   root cd / && run-parts --report /etc/cron.weekend
-sudo vi /etc/crontab $SCRIPTS/installer/install_get_resources.sh
-
