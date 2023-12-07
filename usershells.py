@@ -33,7 +33,6 @@
 
 import subprocess
 import platform
-import os
 
 def get_shells_from_passwd():
     shells = {}

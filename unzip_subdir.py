@@ -34,7 +34,6 @@
 ########################################################################
 
 import os
-import sys
 import re
 from optparse import OptionParser
 
