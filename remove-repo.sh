@@ -48,23 +48,31 @@ remove_repo() {
     local repo_path_git="$HOME/local/git/$1"
     local symlink_path="$HOME/$1"
 
-    if [ -d "$repo_path_github" ]; then
-        if is_git_repo "$repo_path_github"; then
-            [ "$DRY_RUN" = false ] && rm -rf "$repo_path_github"
+    if [ -d "$repo_path_github" ] && is_git_repo "$repo_path_github"; then
+        if [ "$DRY_RUN" = false ]; then
+            echo "Removing Git repository: $repo_path_github"
+            rm -rf "$repo_path_github"
+        else
             echo "[DRY RUN] Removing Git repository: $repo_path_github"
         fi
     fi
 
-    if [ -d "$repo_path_git" ]; then
-        if is_git_repo "$repo_path_git"; then
-            [ "$DRY_RUN" = false ] && rm -rf "$repo_path_git"
+    if [ -d "$repo_path_git" ] && is_git_repo "$repo_path_git"; then
+        if [ "$DRY_RUN" = false ]; then
+            echo "Removing Git repository: $repo_path_git"
+            rm -rf "$repo_path_git"
+        else
             echo "[DRY RUN] Removing Git repository: $repo_path_git"
         fi
     fi
 
     if [ -L "$symlink_path" ]; then
-        [ "$DRY_RUN" = false ] && rm -vf "$symlink_path"
-        echo "[DRY RUN] Removing symlink: $symlink_path"
+        if [ "$DRY_RUN" = false ]; then
+            echo "Removing symlink: $symlink_path"
+            rm -f "$symlink_path"
+        else
+            echo "[DRY RUN] Removing symlink: $symlink_path"
+        fi
     fi
 }
 
