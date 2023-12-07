@@ -86,7 +86,8 @@ def html_to_yaml(element):
     if element.attrs:
         data['attributes'] = element.attrs
 
-    children = [html_to_yaml(child) for child in element.children if child.name]
+    children = [html_to_yaml(child)
+                for child in element.children if child.name]
     if children:
         data['children'] = children
 
@@ -113,6 +114,6 @@ def main():
         print(f"Error processing HTML: {e}")
         sys.exit(2)
 
+
 if __name__ == "__main__":
     main()
-

@@ -34,13 +34,15 @@ import os
 import yaml
 from bs4 import BeautifulSoup
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '..')))
 from html2yaml import html_to_yaml
 
 class Html2YamlTest(unittest.TestCase):
     def test_html_to_yaml_conversion(self):
         """ Test HTML to YAML conversion for accuracy. """
-        test_html_path = os.path.join(os.path.dirname(__file__), 'html2yaml_data.html')
+        test_html_path = os.path.join(
+            os.path.dirname(__file__), 'html2yaml_data.html')
 
         with open(test_html_path, 'r') as file:
             html_content = file.read()
@@ -83,6 +85,6 @@ class Html2YamlTest(unittest.TestCase):
         self.assertIn("ul", yaml_string)
         self.assertIn("li", yaml_string)
 
+
 if __name__ == '__main__':
     unittest.main()
-
