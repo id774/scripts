@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-08
+#       Added Python version check to ensure the script runs on Python 3.6 or higher.
 #  v1.1 2023-05-06
 #       Adjusted to fit the numeric part of file names to the specified number of digits.
 #  v1.0 2023-02-28
@@ -28,6 +30,7 @@
 
 import argparse
 import os
+import sys
 
 def rename_files(dir_path, num_digits):
     # Retrieve all files in the directory
@@ -66,6 +69,11 @@ def rename_files(dir_path, num_digits):
 
 
 if __name__ == '__main__':
+    # Check if Python version is 3.6 or higher, exit if not
+    if not (sys.version_info.major > 3 or (sys.version_info.major == 3 and sys.version_info.minor >= 6)):
+        print("This script requires Python 3.6 or higher!")
+        sys.exit(1)
+
     parser = argparse.ArgumentParser(
         description='A program to uniformly rename file names by zero-padding their numeric parts')
     parser.add_argument('dir_path', help='directory path')

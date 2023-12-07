@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-08
+#       Added Python version check to ensure the script runs on Python 3.6 or higher.
 #  v1.1 2023-12-06
 #       Refactored for clarity, added English comments, and updated documentation.
 #  v1.0 2023-02-26
@@ -27,6 +29,7 @@
 import requests
 from bs4 import BeautifulSoup
 import argparse
+import sys
 
 def download_image(url, filename):
     # Fetch the Instagram page
@@ -45,6 +48,11 @@ def download_image(url, filename):
 
 
 if __name__ == '__main__':
+    # Check if Python version is 3.6 or higher, exit if not
+    if not (sys.version_info.major > 3 or (sys.version_info.major == 3 and sys.version_info.minor >= 6)):
+        print("This script requires Python 3.6 or higher!")
+        sys.exit(1)
+
     parser = argparse.ArgumentParser()
     parser.add_argument('url', help='Instagram URL')
     parser.add_argument('filename', help='Name of the file to save')

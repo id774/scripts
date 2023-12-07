@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-08
+#       Added Python version check to ensure the script runs on Python 3.6 or higher.
 #  v1.1 2023-12-06
 #       Refactored for clarity and improved error handling.
 #  v1.0 2023-11-25
@@ -66,6 +68,11 @@ def read_png_info(png_file_path):
 
 
 if __name__ == "__main__":
+    # Check if Python version is 3.6 or higher, exit if not
+    if not (sys.version_info.major > 3 or (sys.version_info.major == 3 and sys.version_info.minor >= 6)):
+        print("This script requires Python 3.6 or higher!")
+        sys.exit(1)
+
     # Process each file matching the provided glob pattern
     for arg in sys.argv[1:]:
         for filename in glob.glob(arg):
