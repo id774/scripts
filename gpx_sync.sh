@@ -24,7 +24,7 @@
 #       to specific user and mounted directories, syncing with a remote server,
 #       and removing files from the temporary directory.
 #
-# Usage:
+#  Usage:
 #  Run the script without any arguments. Ensure that the TMP_DIR and USER_GPX_DIR
 #  variables are set to the correct paths before running:
 #      ./gpx_sync.sh

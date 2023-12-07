@@ -23,7 +23,7 @@
 #  v1.0 2008-08-22
 #       Initial release. Provides basic dpkg package management functionality.
 #
-# Usage:
+#  Usage:
 #  To set a package state:
 #    ./dpkg-hold.sh package-name state
 #    (Where 'state' can be 'hold', 'install', etc.)

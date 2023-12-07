@@ -18,7 +18,7 @@
 #       Initial release. Features include checking for necessary files and
 #       directories, performing data sync, and running device health checks.
 #
-# Usage:
+#  Usage:
 #  Ensure that the TARGET_DEVICE, BACKUP_PATH, and MOUNT_PATH variables are
 #  set correctly. Then run the script:
 #      ./dashcam_backup.sh

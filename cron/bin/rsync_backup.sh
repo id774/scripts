@@ -29,7 +29,7 @@
 #  2008 - Initial stable release, with basic backup and sync functionalities.
 #  v1.0 2008-02-28 - Stable initial release.
 #
-# Usage:
+#  Usage:
 #  Run the script without any arguments. Ensure all the necessary paths
 #  and variables are correctly set within the script:
 #      test -x /root/bin/rsync_backup.sh && /root/bin/rsync_backup.sh>>$JOBLOG 2>&1;

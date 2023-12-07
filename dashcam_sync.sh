@@ -18,7 +18,7 @@
 #       Initial release. Adds directory checks, error handling, and
 #       improves script reusability.
 #
-# Usage:
+#  Usage:
 #  Run the script without any arguments. Ensure that the source and
 #  destination directories are correctly set in the script:
 #      ./dashcam_sync.sh

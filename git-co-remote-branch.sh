@@ -22,7 +22,7 @@
 #       Initial release. Implements functionality to checkout a remote branch in Git,
 #       creating a corresponding local branch that tracks it.
 #
-# Usage:
+#  Usage:
 #  Run the script with the name of the remote branch:
 #      ./git-co-remote-branch.sh <branch>
 #

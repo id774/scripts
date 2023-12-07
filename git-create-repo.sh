@@ -22,7 +22,7 @@
 #       Initial release. Features include creating and deleting Git repositories,
 #       dry run option for creation, and custom repository path setting.
 #
-# Usage:
+#  Usage:
 #  To create a new repository:
 #      git-create-repo.sh <repository_name> [repository_path] [--dry-run]
 #

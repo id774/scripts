@@ -21,7 +21,7 @@
 #       Initial release. Implements functionality to merge a specified
 #       GitHub repository's changes into the local master branch.
 #
-# Usage:
+#  Usage:
 #  Run the script with the GitHub user's name and the repository name:
 #      ./git-follow-origin.sh <user> <repo>
 #
