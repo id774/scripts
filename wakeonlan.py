@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# Wake-on-LAN Magic Packet Sender
+# wakeonlan.py: Wake-on-LAN Magic Packet Sender
 #
 #  Description:
 #  This script sends a Wake-on-LAN magic packet to a specified MAC address.

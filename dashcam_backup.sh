@@ -1,5 +1,5 @@
 #!/bin/bash
-#
+
 ########################################################################
 # dashcam_backup.sh: Dashcam Data Backup and Device Health Check Script
 #

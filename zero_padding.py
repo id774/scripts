@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# File Renaming Script
+# zero_padding.py: File Renaming Script
 #
 #  Description:
 #  This script renames files in a given directory by zero-padding the numeric

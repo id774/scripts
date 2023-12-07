@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# swapext: File Extension Swapper
+# swapext.py: File Extension Swapper
 #
 #  Description:
 #  This script changes the file extensions within a specified directory.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# Show Python Modules Info and Version
+# show_version.py: Show Python Modules Info and Version
 #
 #  Description:
 #  This script displays detailed information and versions for a list of

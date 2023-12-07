@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# TrueCrypt Device Mounter
+# tcmount.py: TrueCrypt Device Mounter
 #
 #  Description:
 #  This script is designed to automate the mounting of TrueCrypt
