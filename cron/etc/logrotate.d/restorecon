@@ -1,9 +1,9 @@
 /var/log/sysadmin/restorecon.log {
-  weekly
+  daily
   compress
   delaycompress
   notifempty
   missingok
   create 0640 root adm
-  rotate 52
+  rotate 365
 }
