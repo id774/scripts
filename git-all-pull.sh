@@ -20,6 +20,7 @@
 #  v1.1 2023-12-07
 #       Added check for Git installation and options to pull from specific directories.
 #       Added '--all' option and default behavior to show help message if no option is provided.
+#       Refactored to comply with POSIX standards.
 #  v1.0 2023-12-05
 #       Initial release. Supports pulling Git repositories and managing
 #       symbolic links with optional arguments.
@@ -127,20 +128,8 @@ create_symlink() {
     fi
 }
 
-# Define directories to pull from
-directories=()
-if [ "$ALL" = true ]; then
-    directories=("$HOME/local/github" "$HOME/local/git")
-elif [ "$GITHUB_ONLY" = true ]; then
-    directories=("$HOME/local/github")
-elif [ "$GIT_ONLY" = true ]; then
-    directories=("$HOME/local/git")
-else
-    usage
-fi
-
-# Process each directory
-for base_dir in "${directories[@]}"; do
+process_directory() {
+    local base_dir="$1"
     for repo_dir in "$base_dir"/*; do
         if [ -d "$repo_dir/.git" ]; then
             pull_repo "$repo_dir"
@@ -152,5 +141,17 @@ for base_dir in "${directories[@]}"; do
             echo "Skipping non-repository: $repo_dir"
         fi
     done
-done
+}
+
+# Process each specified directory
+if [ "$ALL" = true ]; then
+    process_directory "$HOME/local/github"
+    process_directory "$HOME/local/git"
+elif [ "$GITHUB_ONLY" = true ]; then
+    process_directory "$HOME/local/github"
+elif [ "$GIT_ONLY" = true ]; then
+    process_directory "$HOME/local/git"
+else
+    usage
+fi
 
