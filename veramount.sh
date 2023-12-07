@@ -5,8 +5,8 @@
 #
 #  Description:
 #  This script facilitates mounting and unmounting of VeraCrypt-encrypted
-#  devices. It supports both mount and unmount operations and checks for
-#  device existence before attempting any operation.
+#  devices. It checks for VeraCrypt installation, device existence before
+#  attempting any operation, and supports both mount and unmount operations.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2023-12-07
+#       Added check for VeraCrypt installation.
 #  v1.0 2023-11-14
 #       Initial release. Script includes functionality to mount and unmount
 #       VeraCrypt-encrypted devices, check for device existence, and display
@@ -44,6 +46,14 @@ usage() {
     exit 1
 }
 
+# Check if VeraCrypt is installed
+check_veracrypt_installed() {
+    if ! command -v veracrypt >/dev/null 2>&1; then
+        echo "Error: VeraCrypt is not installed."
+        exit 3
+    fi
+}
+
 # Check if device exists
 check_device_exists() {
     if [ ! -e "/dev/$1" ]; then
@@ -56,6 +66,8 @@ check_device_exists() {
 if [ $# -eq 0 ] || [ "$1" = "-h" ]; then
     usage
 fi
+
+check_veracrypt_installed
 
 DEVICE=$1
 ACTION="mount"
