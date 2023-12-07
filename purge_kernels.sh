@@ -20,7 +20,7 @@
 #       Initial release.
 #
 #  Usage:
-#  sudo ./purge_kernels.sh
+#  ./purge_kernels.sh
 #
 ########################################################################
 
