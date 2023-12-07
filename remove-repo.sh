@@ -7,7 +7,7 @@
 #  This script removes specified Git repositories from the user's local
 #  directories ($HOME/local/github and $HOME/local/git) and any associated
 #  symbolic links in the home directory. It checks if the directory is a Git
-#  repository before removing it.
+#  repository before removing it. Includes a dry-run mode for simulation.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,6 +17,7 @@
 #  Version History:
 #  v1.2 2023-12-07
 #       Added check to verify if directory is a Git repository.
+#       Added dry-run mode and execute option.
 #  v1.1 2023-12-05
 #       Refactored script with additional comments and error checking.
 #  v1.0 2018-04-20
@@ -24,15 +25,22 @@
 #
 #  Usage:
 #  ./remove-repo.sh [repository_name...]
+#  Add -x to actually execute the removal.
 #
 ########################################################################
 
-is_git_repo() {
-    if [ -d "$1/.git" ]; then
-        return 0
-    else
-        return 1
+DRY_RUN=true
+
+# Check for -x option to execute
+for arg in "$@"; do
+    if [ "$arg" = "-x" ]; then
+        DRY_RUN=false
+        break
     fi
+done
+
+is_git_repo() {
+    [ -d "$1/.git" ]
 }
 
 remove_repo() {
@@ -40,30 +48,30 @@ remove_repo() {
     local repo_path_git="$HOME/local/git/$1"
     local symlink_path="$HOME/$1"
 
-    if is_git_repo "$repo_path_github"; then
-        echo "Removing Git repository: $repo_path_github"
-        rm -rf "$repo_path_github"
-    else
-        echo "Skipping: $repo_path_github is not a Git repository."
+    if [ -d "$repo_path_github" ]; then
+        if is_git_repo "$repo_path_github"; then
+            [ "$DRY_RUN" = false ] && rm -rf "$repo_path_github"
+            echo "[DRY RUN] Removing Git repository: $repo_path_github"
+        fi
     fi
 
-    if is_git_repo "$repo_path_git"; then
-        echo "Removing Git repository: $repo_path_git"
-        rm -rf "$repo_path_git"
-    else
-        echo "Skipping: $repo_path_git is not a Git repository."
+    if [ -d "$repo_path_git" ]; then
+        if is_git_repo "$repo_path_git"; then
+            [ "$DRY_RUN" = false ] && rm -rf "$repo_path_git"
+            echo "[DRY RUN] Removing Git repository: $repo_path_git"
+        fi
     fi
 
     if [ -L "$symlink_path" ]; then
-        echo "Removing symlink: $symlink_path"
-        rm -vf "$symlink_path"
+        [ "$DRY_RUN" = false ] && rm -vf "$symlink_path"
+        echo "[DRY RUN] Removing symlink: $symlink_path"
     fi
 }
 
 remove_repos() {
     while [ $# -gt 0 ]
     do
-        remove_repo "$1"
+        [ "$1" != "-x" ] && remove_repo "$1"
         shift
     done
 }
@@ -71,6 +79,6 @@ remove_repos() {
 if [ -n "$1" ]; then
     remove_repos "$@"
 else
-    echo "Usage: $0 [repository_name...]"
+    echo "Usage: $0 [repository_name...] [-x]"
 fi
 
