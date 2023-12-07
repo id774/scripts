@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-07
+#       Removed dependency on specific Python path.
 #  v1.1 2023-12-06
 #       Refactored for clarity, added detailed comments, and documentation.
 #  v1.0 2014-08-14
@@ -26,19 +28,15 @@
 #
 ########################################################################
 
-setup_environment() {
-    PYTHON_PATH=/opt/python/current
-    IGNORE_ERRORS=E302,E402
-    DIR=${1:-"."}
-}
+IGNORE_ERRORS=E302,E402
+DIR=${1:-"."}
 
 main() {
-    setup_environment "$@"
-    which $PYTHON_PATH/bin/autopep8 > /dev/null || { echo "autopep8 not found"; exit 1; }
-    which $PYTHON_PATH/bin/flake8 > /dev/null || { echo "flake8 not found"; exit 1; }
+    which autopep8 > /dev/null || { echo "autopep8 not found"; exit 1; }
+    which flake8 > /dev/null || { echo "flake8 not found"; exit 1; }
 
     # Lint and auto-format the specified directory
-    $PYTHON_PATH/bin/flake8 --ignore=$IGNORE_ERRORS $DIR | cut -d: -f 1 | sort | uniq | xargs $PYTHON_PATH/bin/autopep8 --ignore=$IGNORE_ERRORS -v -i
+    flake8 --ignore=$IGNORE_ERRORS $DIR | cut -d: -f 1 | sort | uniq | xargs autopep8 --ignore=$IGNORE_ERRORS -v -i
     exit 0
 }
 

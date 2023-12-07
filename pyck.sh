@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-07
+#       Removed dependency on specific Python path.
 #  v1.1 2023-12-06
 #       Refactored for clarity, added detailed comments, and documentation.
 #  v1.0 2014-08-12
@@ -26,26 +28,22 @@
 #
 ########################################################################
 
-setup_environment() {
-    PYTHON_PATH=/opt/python/current
-    IGNORE_ERRORS=E302,E402
-}
+IGNORE_ERRORS=E302,E402
 
 run_check() {
-    $PYTHON_PATH/bin/flake8 --ignore=$IGNORE_ERRORS "$@"
+    flake8 --ignore=$IGNORE_ERRORS "$@"
 }
 
 autofix() {
     shift
-    $PYTHON_PATH/bin/autopep8 --ignore=$IGNORE_ERRORS -v -i "$@"
-    $PYTHON_PATH/bin/autoflake --imports=django,requests,urllib3 -i "$@"
+    autopep8 --ignore=$IGNORE_ERRORS -v -i "$@"
+    autoflake --imports=django,requests,urllib3 -i "$@"
 }
 
 main() {
-    setup_environment "$@"
-    which $PYTHON_PATH/bin/autopep8 > /dev/null || { echo "autopep8 not found"; exit 1; }
-    which $PYTHON_PATH/bin/flake8 > /dev/null || { echo "flake8 not found"; exit 1; }
-    which $PYTHON_PATH/bin/autoflake > /dev/null || { echo "autoflake not found"; exit 1; }
+    which autopep8 > /dev/null || { echo "autopep8 not found"; exit 1; }
+    which flake8 > /dev/null || { echo "flake8 not found"; exit 1; }
+    which autoflake > /dev/null || { echo "autoflake not found"; exit 1; }
 
     if [ "$1" = "-i" ]; then
         autofix "$@"
