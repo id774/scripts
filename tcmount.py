@@ -5,8 +5,9 @@
 #
 #  Description:
 #  This script is designed to automate the mounting of TrueCrypt
-#  encrypted devices. It supports a variety of devices and includes
-#  options for different file systems and encoding types.
+#  encrypted devices. It checks for the presence of the TrueCrypt
+#  command and supports a variety of devices, including options for
+#  different file systems and encoding types.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.3 2023-12-08
+#       Added check for TrueCrypt command presence.
 #  v2.2 2018-08-22
 #       Requires privilege to run dmesg.
 #  v2.1 2016-09-26
@@ -43,6 +46,8 @@
 ########################################################################
 
 import os
+import sys
+from optparse import OptionParser
 
 def os_exec(cmd, device):
     os.system('sudo dmesg | grep ' + device)
@@ -144,8 +149,8 @@ def tcmount(options, args):
         mount_device(options, args)
 
 def main():
-    version = "2.2"
-    from optparse import OptionParser
+    version = "2.3"
+
     usage = "usage: %prog [options]"
     parser = OptionParser(usage)
     parser.add_option("-u", "--utf8",
@@ -175,7 +180,13 @@ def main():
     parser.add_option("-p", "--partition", dest="partition",
                       help="partition number")
     (options, args) = parser.parse_args()
+
     if len(args) == 0:
+        # Check for TrueCrypt command presence
+        if not os.path.exists("/usr/bin/truecrypt") and not os.path.exists("/usr/local/bin/truecrypt"):
+            print("Error: TrueCrypt is not installed. Please install TrueCrypt and try again.")
+            sys.exit(1)
+
         print("tcmount " + version)
         tcmount(options, args)
     else:
