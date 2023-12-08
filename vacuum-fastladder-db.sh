@@ -13,6 +13,8 @@
 # Contact: idnanashi@gmail.com
 #
 # Version History:
+#  v1.2 2023-12-08
+#       Added file existence check for the Fastladder database.
 #  v1.1 2023-12-07
 #       Added check for sqlite3 program and updated documentation.
 #  v1.0 2019-03-18
@@ -39,6 +41,12 @@ fi
 # Navigate to the Fastladder database directory
 cd $HOME/fastladder/db
 DB_PATH=fastladder/db/fastladder.db
+
+# Check if the database file exists
+if [ ! -f "$HOME/$DB_PATH" ]; then
+    echo "Error: Fastladder database file does not exist. Please check the path and try again."
+    exit 1
+fi
 
 # Remove existing temporary database file if it exists
 test -f new.db && rm -vf new.db
