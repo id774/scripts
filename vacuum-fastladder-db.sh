@@ -14,7 +14,7 @@
 #
 # Version History:
 #  v1.2 2023-12-08
-#       Added file existence check for the Fastladder database.
+#       Added file and directory existence checks for the Fastladder database.
 #  v1.1 2023-12-07
 #       Added check for sqlite3 program and updated documentation.
 #  v1.0 2019-03-18
@@ -35,24 +35,33 @@
 # Check if sqlite3 is installed
 if ! command -v sqlite3 >/dev/null 2>&1; then
     echo "Error: sqlite3 is not installed. Please install sqlite3 and try again."
+    exit 3
+fi
+
+# Define the Fastladder database directory and file path
+DB_DIR="$HOME/fastladder/db"
+DB_PATH="$DB_DIR/fastladder.db"
+
+# Check if the database directory exists
+if [ ! -d "$DB_DIR" ]; then
+    echo "Error: Fastladder database directory does not exist. Please check the path and try again."
+    exit 2
+fi
+
+# Check if the database file exists
+if [ ! -f "$DB_PATH" ]; then
+    echo "Error: Fastladder database file does not exist. Please check the path and try again."
     exit 1
 fi
 
 # Navigate to the Fastladder database directory
-cd $HOME/fastladder/db
-DB_PATH=fastladder/db/fastladder.db
-
-# Check if the database file exists
-if [ ! -f "$HOME/$DB_PATH" ]; then
-    echo "Error: Fastladder database file does not exist. Please check the path and try again."
-    exit 1
-fi
+cd "$DB_DIR"
 
 # Remove existing temporary database file if it exists
 test -f new.db && rm -vf new.db
 
 # Vacuum the Fastladder SQLite database
-sqlite3 $HOME/$DB_PATH vacuum
+sqlite3 "$DB_PATH" vacuum
 
 # Dump the current database and create a new optimized database
 sqlite3 fastladder.db .dump | sqlite3 new.db
