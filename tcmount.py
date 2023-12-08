@@ -1,14 +1,12 @@
 #!/usr/bin/env python
-#!/usr/bin/env python
 
 ########################################################################
 # tcmount.py: TrueCrypt Device Mounter
 #
 #  Description:
 #  This script is designed to automate the mounting of TrueCrypt
-#  encrypted devices. It checks for the presence of TrueCrypt on the
-#  system and provides helpful messages for users. It supports a variety
-#  of devices and includes options for different file systems and encoding types.
+#  encrypted devices. It supports a variety of devices and includes
+#  options for different file systems and encoding types.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -16,9 +14,6 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v2.3 2023-12-08
-#       Check for TrueCrypt presence.
-#       Updated help message display logic.
 #  v2.2 2018-08-22
 #       Requires privilege to run dmesg.
 #  v2.1 2016-09-26
@@ -40,7 +35,7 @@
 #  the script with appropriate privileges. You can specify the device
 #  and other mount options as arguments. For example:
 #
-#      python tcmount.py [options]
+#      python tcmount.py [device] [options]
 #
 #  Refer to the TrueCrypt documentation for more detailed information
 #  on mount options and device specifications.
@@ -48,12 +43,6 @@
 ########################################################################
 
 import os
-import shutil
-from optparse import OptionParser
-
-def check_truecrypt_installed():
-    """Check if TrueCrypt is installed on the system."""
-    return shutil.which("truecrypt") is not None
 
 def os_exec(cmd, device):
     os.system('sudo dmesg | grep ' + device)
@@ -155,9 +144,8 @@ def tcmount(options, args):
         mount_device(options, args)
 
 def main():
-    version = "2.3"
-    parser = OptionParser(
-        usage="usage: %prog [options]", version="%prog " + version)
+    version = "2.2"
+    from optparse import OptionParser
     usage = "usage: %prog [options]"
     parser = OptionParser(usage)
     parser.add_option("-u", "--utf8",
@@ -186,19 +174,12 @@ def main():
                       action="store_true")
     parser.add_option("-p", "--partition", dest="partition",
                       help="partition number")
-
     (options, args) = parser.parse_args()
-
-    # Check if TrueCrypt is installed
-    if not check_truecrypt_installed():
-        print("Error: TrueCrypt is not installed on this system.")
-        return
-
-    # Show help message if no arguments provided
     if len(args) == 0:
-        parser.print_help()
-    else:
+        print("tcmount " + version)
         tcmount(options, args)
+    else:
+        parser.print_help()
 
 
 if __name__ == "__main__":
