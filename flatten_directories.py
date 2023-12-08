@@ -115,7 +115,7 @@ def handle_directory(path):
         if options.execute_mode:
             os.rmdir(path)
 
+
 subdirectories = [d for d in os.listdir('.') if os.path.isdir(d)]
 for subdir in subdirectories:
     handle_directory(subdir)
-

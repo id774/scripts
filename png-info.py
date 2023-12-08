@@ -16,6 +16,7 @@
 #  Version History:
 #  v1.2 2023-12-08
 #       Removed f-strings for compatibility with Python versions below 3.6.
+#       Added help message display when no arguments are provided.
 #  v1.1 2023-12-06
 #       Refactored for clarity and improved error handling.
 #  v1.0 2023-11-25
@@ -66,19 +67,27 @@ def read_png_info(png_file_path):
 
         return width, height, bit_depth, color_type_name
 
+def print_help():
+    print("Usage: python png-info.py <file_pattern>")
+    print("Example: python png-info.py *.png")
+    print("Reads width, height, bit depth, and color type information from PNG files.")
+
 
 if __name__ == "__main__":
-    # Process each file matching the provided glob pattern
-    for arg in sys.argv[1:]:
-        for filename in glob.glob(arg):
-            try:
-                width, height, bit_depth, color_type_name = read_png_info(
-                    filename)
-                print("File: {}".format(filename))
-                print("Width:        {:4d}".format(width))
-                print("Height:       {:4d}".format(height))
-                print("Bit Depth:    {:4d}".format(bit_depth))
-                print("Color Type:   {}".format(color_type_name))
-                print("")
-            except Exception as e:
-                print("Error processing {}: {}".format(filename, e))
+    if len(sys.argv) == 1:
+        print_help()
+    else:
+        # Process each file matching the provided glob pattern
+        for arg in sys.argv[1:]:
+            for filename in glob.glob(arg):
+                try:
+                    width, height, bit_depth, color_type_name = read_png_info(
+                        filename)
+                    print("File: {}".format(filename))
+                    print("Width:        {:4d}".format(width))
+                    print("Height:       {:4d}".format(height))
+                    print("Bit Depth:    {:4d}".format(bit_depth))
+                    print("Color Type:   {}".format(color_type_name))
+                    print("")
+                except Exception as e:
+                    print("Error processing {}: {}".format(filename, e))
