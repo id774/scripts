@@ -6,8 +6,7 @@
 #  Description:
 #  This script flattens the directory structure by either moving, copying,
 #  or renaming files to the base directory. It supports deletion of empty
-#  directories and can operate in a quiet mode. It also includes a dry-run
-#  mode to simulate file operations without making actual changes.
+#  directories and can operate in a quiet mode.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,6 +16,7 @@
 #  Version History:
 #  v1.3 2023-12-08
 #       Removed f-strings for compatibility with Python versions below 3.6.
+#       Modified behavior to require at least one option and display help message otherwise.
 #  v1.2 2023-12-07
 #       Enhanced dry-run mode output for clarity.
 #  v1.1 2023-09-11
@@ -27,10 +27,11 @@
 #  Usage:
 #  python flatten_directories.py [options]
 #  Options:
-#    -m, --move         Move files instead of copying
+#    -m, --move         Move files instead of copying (default if no option is provided)
+#    -c, --copy         Copy files instead of moving
 #    -d, --delete       Delete empty directories
 #    -q, --quiet        Suppress operation info
-#    -x, --execute      Execute file operations
+#    -x, --execute      Execute file operations (default is dry run)
 #    -r, --rename-only  Only rename files, without moving or copying
 #
 #  Notes:
@@ -47,15 +48,22 @@ from optparse import OptionParser
 parser = OptionParser()
 parser.add_option("-m", "--move", action="store_true", dest="move_mode", default=False,
                   help="move files instead of copying them")
+parser.add_option("-c", "--copy", action="store_true", dest="copy_mode", default=False,
+                  help="copy files instead of moving them")
 parser.add_option("-d", "--delete", action="store_true", dest="delete_mode", default=False,
                   help="delete empty directories")
 parser.add_option("-q", "--quiet", action="store_true", dest="quiet_mode", default=False,
                   help="suppress operation info")
 parser.add_option("-x", "--execute", action="store_true", dest="execute_mode", default=False,
-                  help="execute file operations")
+                  help="execute file operations (default is dry run)")
 parser.add_option("-r", "--rename-only", action="store_true", dest="rename_only_mode", default=False,
                   help="only rename the files by adding directory name, without moving or copying")
 (options, args) = parser.parse_args()
+
+# Show help and exit if no options are provided.
+if not any(vars(options).values()):
+    parser.print_help()
+    exit()
 
 def print_action(action, source, destination=None):
     """ Prints the action being performed or simulated. """
@@ -63,20 +71,24 @@ def print_action(action, source, destination=None):
     if destination:
         action_message += " -> {}".format(destination)
 
-    if options.execute_mode:
-        print(action_message)
-    else:
+    if not options.execute_mode:
         print("[DRY RUN] {}".format(action_message))
+    else:
+        print(action_message)
 
 def handle_directory(path):
     """Recursively processes a directory."""
     entries = os.listdir(path)
+    dir_empty = True
 
     for entry in entries:
         old_path = os.path.join(path, entry)
         if os.path.isdir(old_path):
             handle_directory(old_path)
+            if options.delete_mode and not os.listdir(old_path):
+                dir_empty = False  # Directory contains subdirectories
         else:
+            dir_empty = False  # Directory contains files
             new_filename = "{}_{}".format(path.replace('/', '_'), entry)
             new_path = os.path.join(path, new_filename)
 
@@ -85,24 +97,25 @@ def handle_directory(path):
                     os.rename(old_path, new_path)
                 if not options.quiet_mode:
                     print_action("Renamed", old_path, new_path)
+            elif options.copy_mode or (not options.move_mode and not options.copy_mode):
+                if options.execute_mode:
+                    shutil.copy(old_path, new_filename)
+                if not options.quiet_mode:
+                    print_action("Copied", old_path, new_filename)
             elif options.move_mode:
                 if options.execute_mode:
                     shutil.move(old_path, new_filename)
                 if not options.quiet_mode:
                     print_action("Moved", old_path, new_filename)
-            else:
-                if options.execute_mode:
-                    shutil.copy(old_path, new_filename)
-                if not options.quiet_mode:
-                    print_action("Copied", old_path, new_filename)
 
-    if options.delete_mode and not os.listdir(path):
-        if options.execute_mode:
-            os.rmdir(path)
+    # If directory is empty after processing files and subdirectories
+    if options.delete_mode and dir_empty:
         if not options.quiet_mode:
             print_action("Deleted directory", path)
-
+        if options.execute_mode:
+            os.rmdir(path)
 
 subdirectories = [d for d in os.listdir('.') if os.path.isdir(d)]
 for subdir in subdirectories:
     handle_directory(subdir)
+
