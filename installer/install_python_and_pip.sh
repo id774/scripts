@@ -31,7 +31,7 @@ operation() {
     test -n "$1" || usage
     test -n "$1" && VERSION=$1
     test -n "$2" || usage
-    test -n "$2" && PATH_VERSION=$1
+    test -n "$2" && PATH_VERSION=$2
     test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
     test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
     install_python $*
