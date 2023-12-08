@@ -184,7 +184,8 @@ def main():
     if len(args) == 0:
         # Check for TrueCrypt command presence
         if not os.path.exists("/usr/bin/truecrypt") and not os.path.exists("/usr/local/bin/truecrypt"):
-            print("Error: TrueCrypt is not installed. Please install TrueCrypt and try again.")
+            print(
+                "Error: TrueCrypt is not installed. Please install TrueCrypt and try again.")
             sys.exit(1)
 
         print("tcmount " + version)
