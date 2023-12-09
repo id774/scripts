@@ -95,7 +95,6 @@ setup_darwin_scripts() {
 setup_debian_scripts() {
     install_scripts 755 dpkg-hold.sh dpkg-hold
     install_scripts 755 gpg-import.sh gpg-import
-    install_scripts 755 veramount.sh veramount
 }
 
 install_sysadmin_scripts() {
