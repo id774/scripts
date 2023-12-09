@@ -7,7 +7,7 @@
 #  This script is designed to automate the mounting and unmounting of TrueCrypt
 #  encrypted devices. It checks for the presence of the TrueCrypt command and
 #  supports a variety of devices, including options for different file systems
-#  and encoding types. This version allows for specific device mounting and 
+#  and encoding types. This version allows for specific device mounting and
 #  unmounting by specifying the device name as an argument.
 #
 #  Author: id774 (More info: http://id774.net)
