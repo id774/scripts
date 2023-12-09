@@ -30,7 +30,7 @@ Cmnd_Alias NETWORKING = /sbin/route, /sbin/ifconfig, /bin/ping, /sbin/dhclient, 
 Cmnd_Alias PROCESSES = /usr/bin/nice, /usr/bin/kill, /usr/bin/killall, /usr/bin/pkill
 Cmnd_Alias SMARTOOLS = /usr/sbin/smartctl
 Cmnd_Alias POSTMASTER = /usr/sbin/postalias, /usr/sbin/postcat, /usr/sbin/postconf, /usr/sbin/postfix, /usr/sbin/postkick, /usr/sbin/postlock, /usr/sbin/postlog, /usr/sbin/postmap, /usr/sbin/postqueue, /usr/sbin/postsuper, /usr/bin/mailq, /usr/bin/newaliases, /usr/sbin/sendmail
-Cmnd_Alias TRUECRYPT = /usr/bin/truecrypt, /usr/bin/veracrypt, /bin/dmesg
+Cmnd_Alias TRUECRYPT = /usr/bin/truecrypt, /usr/bin/veracrypt
 
 # User privilege specification
 root ALL=(ALL:ALL) ALL
