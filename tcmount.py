@@ -187,7 +187,7 @@ def main():
     version = "3.0"
 
     usage = "usage: %prog [device] [unmount/umount] [options]"
-    parser = OptionParser(usage)
+    parser = OptionParser(usage, version="%prog " + version)
     parser.add_option("-u", "--utf8",
                       dest="utf8",
                       help="mount filesystem type with utf8",
@@ -216,17 +216,12 @@ def main():
                       help="partition number")
     (options, args) = parser.parse_args()
 
-    if len(args) == 0:
-        # Check for TrueCrypt command presence
-        if not is_truecrypt_installed():
-            print(
-                "Error: TrueCrypt is not installed. Please install TrueCrypt and try again.")
-            sys.exit(1)
+    if not is_truecrypt_installed():
+        print(
+            "Error: TrueCrypt is not installed. Please install TrueCrypt and try again.")
+        sys.exit(1)
 
-        print("tcmount " + version)
-        tcmount(options, args)
-    else:
-        tcmount(options, args)
+    tcmount(options, args)
 
 
 if __name__ == "__main__":
