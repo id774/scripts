@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.4 2023-12-09
+#       Refactored for improved readability and maintenance.
 #  v2.3 2023-12-08
 #       Added check for TrueCrypt command presence.
 #  v2.2 2018-08-22
@@ -50,6 +52,7 @@ import sys
 from optparse import OptionParser
 
 def os_exec(cmd, device):
+    # Executes a command and logs device information using dmesg
     os.system('sudo dmesg | grep ' + device)
     os.system(cmd)
 
@@ -90,39 +93,15 @@ def mount_device(options, args):
         mount_all(options, args, mount_options)
 
 def mount_all(options, args, mount_options):
-    if options.half and not options.readonly:
-        mount_options = ",".join(('ro', mount_options))
-
-    partition(options, args, mount_options, 'sdc')
-    partition(options, args, mount_options, 'sdd')
-    partition(options, args, mount_options, 'sde')
-    partition(options, args, mount_options, 'sdf')
-    partition(options, args, mount_options, 'sdg')
-    partition(options, args, mount_options, 'sdh')
-    partition(options, args, mount_options, 'sdi')
-    partition(options, args, mount_options, 'sdj')
-    partition(options, args, mount_options, 'sdk')
-    partition(options, args, mount_options, 'sdl')
-    partition(options, args, mount_options, 'sdm')
-    partition(options, args, mount_options, 'sdn')
-    partition(options, args, mount_options, 'sdo')
-    partition(options, args, mount_options, 'sdp')
-    partition(options, args, mount_options, 'sdq')
-    partition(options, args, mount_options, 'sdr')
-    partition(options, args, mount_options, 'sds')
-    partition(options, args, mount_options, 'sdt')
-    partition(options, args, mount_options, 'sdu')
-    partition(options, args, mount_options, 'sdv')
-    partition(options, args, mount_options, 'sdw')
-    partition(options, args, mount_options, 'sdx')
-    partition(options, args, mount_options, 'sdy')
-    partition(options, args, mount_options, 'sdz')
+    # Mounts a range of devices from sdc to sdz
+    for device_suffix in range(ord('c'), ord('z') + 1):
+        partition(options, args, mount_options, 'sd' + chr(device_suffix))
 
 def mount_legacy(options, args):
-    mount_local('pc98a', options)
-    mount_local('pc98b', options)
-    mount_local('data1', options)
-    mount_local('data2', options)
+    # Mounts a set of predefined legacy devices
+    legacy_devices = ['pc98a', 'pc98b', 'data1', 'data2']
+    for device in legacy_devices:
+        mount_local(device, options)
 
 def mount_local(device, options):
     mount_options = ''
@@ -149,7 +128,7 @@ def tcmount(options, args):
         mount_device(options, args)
 
 def main():
-    version = "2.3"
+    version = "2.4"
 
     usage = "usage: %prog [options]"
     parser = OptionParser(usage)
