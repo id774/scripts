@@ -7,7 +7,7 @@
 #  This script is designed to automate the mounting and unmounting of TrueCrypt
 #  encrypted devices. It checks for the presence of the TrueCrypt command and
 #  supports a variety of devices, including options for different file systems
-#  and encoding types. This version allows for specific device mounting and
+#  and encoding types. This version allows for specific device mounting and 
 #  unmounting by specifying the device name as an argument.
 #
 #  Author: id774 (More info: http://id774.net)
@@ -16,6 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.1 2023-12-10
+#       Minor refactoring of the os_exec function.
+#       Enhanced version display to include TrueCrypt version.
 #  v3.0 2023-12-09
 #       Refactored for improved readability and maintenance.
 #       Added specific device mounting and unmounting functionalities.
@@ -53,6 +56,15 @@
 #      python tcmount.py sdb umount
 #      These commands will unmount the device /dev/sdb.
 #
+#  Options:
+#  -u, --utf8         Mount filesystem with UTF-8 encoding.
+#  -r, --readonly     Mount the filesystem in read-only mode.
+#  -a, --all          Mount all available devices.
+#  -l, --local        Mount only local files.
+#  -g, --legacy       Mount legacy devices.
+#  -f, --half         Mount half of the devices read-write and the other half read-only.
+#  -p, --partition    Specify a particular partition number to mount.
+#
 #  Refer to the TrueCrypt documentation for more detailed information
 #  on mount options and device specifications.
 #
@@ -65,15 +77,26 @@ import subprocess
 
 def os_exec(cmd):
     """
-    Executes a system command.
+    Executes a system command using subprocess.
     """
-    os.system(cmd)
+    subprocess.call(cmd, shell=True)
 
 def is_truecrypt_installed():
     """
     Checks if TrueCrypt is installed by searching for its command in the system path.
     """
     return subprocess.call(['which', 'truecrypt'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
+
+def get_truecrypt_version():
+    """
+    Retrieves the version information of TrueCrypt.
+    """
+    try:
+        output = subprocess.check_output(
+            ["truecrypt", "--version"], stderr=subprocess.STDOUT)
+        return output.decode().strip()
+    except subprocess.CalledProcessError:
+        return "Unknown"
 
 def mount_drive(options, args, mount_options, device):
     """
@@ -135,7 +158,7 @@ def unmount_device(device):
     Unmounts a specified device.
     """
     cmd = 'sudo truecrypt -d ~/mnt/' + device
-    os.system(cmd)
+    os_exec(cmd)
 
 def mount_all(options, args, mount_options):
     """
@@ -181,13 +204,18 @@ def tcmount(options, args):
         mount_device(options, args)
 
 def main():
-    """
-    Main entry point for the script. Parses arguments and options.
-    """
-    version = "3.0"
+    if not is_truecrypt_installed():
+        print(
+            "Error: TrueCrypt is not installed. This script requires TrueCrypt to mount and unmount encrypted devices. Please install TrueCrypt and try again.")
+        sys.exit(5)
 
-    usage = "usage: %prog [device] [unmount/umount] [options]"
-    parser = OptionParser(usage, version="%prog " + version)
+    tcmount_version = "3.1"
+    truecrypt_version = get_truecrypt_version()
+
+    version_message = "tcmount.py {} - This script operates with {}.".format(
+        tcmount_version, truecrypt_version)
+
+    parser = OptionParser(version=version_message)
     parser.add_option("-u", "--utf8",
                       dest="utf8",
                       help="mount filesystem type with utf8",
@@ -215,11 +243,6 @@ def main():
     parser.add_option("-p", "--partition", dest="partition",
                       help="partition number")
     (options, args) = parser.parse_args()
-
-    if not is_truecrypt_installed():
-        print(
-            "Error: TrueCrypt is not installed. Please install TrueCrypt and try again.")
-        sys.exit(1)
 
     tcmount(options, args)
 
