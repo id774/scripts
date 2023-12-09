@@ -4,10 +4,11 @@
 # tcmount.py: TrueCrypt Device Mounter
 #
 #  Description:
-#  This script is designed to automate the mounting of TrueCrypt
-#  encrypted devices. It checks for the presence of the TrueCrypt
-#  command and supports a variety of devices, including options for
-#  different file systems and encoding types.
+#  This script is designed to automate the mounting and unmounting of TrueCrypt
+#  encrypted devices. It checks for the presence of the TrueCrypt command and
+#  supports a variety of devices, including options for different file systems
+#  and encoding types. This version allows for specific device mounting and
+#  unmounting by specifying the device name as an argument.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -15,8 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v2.4 2023-12-09
+#  v3.0 2023-12-09
 #       Refactored for improved readability and maintenance.
+#       Added specific device mounting and unmounting functionalities.
 #  v2.3 2023-12-08
 #       Added check for TrueCrypt command presence.
 #  v2.2 2018-08-22
@@ -33,7 +35,7 @@
 #  v1.1 2012-01-26
 #       Refactoring, and for legacy device.
 #  v1.0 2010-08-06
-#       Stable.
+#       First release.
 #
 #  Usage:
 #  To use this script, ensure you have TrueCrypt installed and run
@@ -41,6 +43,15 @@
 #  and other mount options as arguments. For example:
 #
 #      python tcmount.py [device] [options]
+#
+#  Specific device mounting:
+#      python tcmount.py sdb
+#      This will mount the device /dev/sdb.
+#
+#  Specific device unmounting:
+#      python tcmount.py sdb unmount
+#      python tcmount.py sdb umount
+#      These commands will unmount the device /dev/sdb.
 #
 #  Refer to the TrueCrypt documentation for more detailed information
 #  on mount options and device specifications.
@@ -50,13 +61,24 @@
 import os
 import sys
 from optparse import OptionParser
+import subprocess
 
-def os_exec(cmd, device):
-    # Executes a command and logs device information using dmesg
-    os.system('sudo dmesg | grep ' + device)
+def os_exec(cmd):
+    """
+    Executes a system command.
+    """
     os.system(cmd)
 
+def is_truecrypt_installed():
+    """
+    Checks if TrueCrypt is installed by searching for its command in the system path.
+    """
+    return subprocess.call(['which', 'truecrypt'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
+
 def mount_drive(options, args, mount_options, device):
+    """
+    Mounts a TrueCrypt volume on a specific drive.
+    """
     if options.partition:
         cmd = 'test -b /dev/' + device + options.partition +\
             ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
@@ -66,44 +88,74 @@ def mount_drive(options, args, mount_options, device):
         cmd = 'test -b /dev/' + device +\
             ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
             mount_options + ' /dev/' + device + ' ~/mnt/' + device
-    os_exec(cmd, device)
+    os_exec(cmd)
 
 def mount_file(options, args, mount_options, device, mount_point, filename):
+    """
+    Mounts a TrueCrypt volume from a file.
+    """
     cmd = 'test -f /mnt/' + device + '/' + filename +\
         ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
         mount_options + ' /mnt/' + device + '/' + \
         filename + ' ~/mnt/' + mount_point
-    os_exec(cmd, device)
+    os_exec(cmd)
 
 def partition(options, args, mount_options, device):
+    """
+    Handles partition mounting for a given device.
+    """
     mount_drive(options, args, mount_options, device)
     mount_file(options, args, mount_options, device, device + '1', 'data1')
     mount_file(options, args, mount_options, device, device + '2', 'data2')
 
 def mount_device(options, args):
+    """
+    Mounts a specific device or all devices based on the provided options.
+    """
     mount_options = ''
     if options.utf8:
         mount_options = 'utf8'
     if options.readonly:
         mount_options = ",".join(('ro', mount_options))
 
-    partition(options, args, mount_options, 'sdb')
+    # Mount a specific device if provided
+    if args:
+        device = args[0]
+        if len(args) > 1 and args[1] in ['unmount', 'umount']:
+            unmount_device(device)
+        else:
+            partition(options, args, mount_options, device)
+    else:
+        partition(options, args, mount_options, 'sdb')
+        if options.all:
+            mount_all(options, args, mount_options)
 
-    if options.all:
-        mount_all(options, args, mount_options)
+def unmount_device(device):
+    """
+    Unmounts a specified device.
+    """
+    cmd = 'sudo truecrypt -d ~/mnt/' + device
+    os.system(cmd)
 
 def mount_all(options, args, mount_options):
-    # Mounts a range of devices from sdc to sdz
+    """
+    Mounts all devices from sdc to sdz.
+    """
     for device_suffix in range(ord('c'), ord('z') + 1):
         partition(options, args, mount_options, 'sd' + chr(device_suffix))
 
 def mount_legacy(options, args):
-    # Mounts a set of predefined legacy devices
+    """
+    Mounts legacy devices.
+    """
     legacy_devices = ['pc98a', 'pc98b', 'data1', 'data2']
     for device in legacy_devices:
         mount_local(device, options)
 
 def mount_local(device, options):
+    """
+    Mounts a local TrueCrypt volume.
+    """
     mount_options = ''
     if options.utf8:
         mount_options = 'utf8'
@@ -116,21 +168,25 @@ def mount_local(device, options):
     cmd = 'test -f /data/crypt/' + device +\
         ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
         mount_options + ' /data/crypt/' + device + ' ~/mnt/' + device
-    os_exec(cmd, device)
+    os_exec(cmd)
 
 def tcmount(options, args):
+    """
+    Main function to handle the mounting process based on user inputs.
+    """
     mount_local('`/bin/hostname`', options)
     if options.legacy or options.all:
         mount_legacy(options, args)
-    if options.local:
-        pass
-    else:
+    if not options.local:
         mount_device(options, args)
 
 def main():
-    version = "2.4"
+    """
+    Main entry point for the script. Parses arguments and options.
+    """
+    version = "3.0"
 
-    usage = "usage: %prog [options]"
+    usage = "usage: %prog [device] [unmount/umount] [options]"
     parser = OptionParser(usage)
     parser.add_option("-u", "--utf8",
                       dest="utf8",
@@ -162,7 +218,7 @@ def main():
 
     if len(args) == 0:
         # Check for TrueCrypt command presence
-        if not os.path.exists("/usr/bin/truecrypt") and not os.path.exists("/usr/local/bin/truecrypt"):
+        if not is_truecrypt_installed():
             print(
                 "Error: TrueCrypt is not installed. Please install TrueCrypt and try again.")
             sys.exit(1)
@@ -170,7 +226,7 @@ def main():
         print("tcmount " + version)
         tcmount(options, args)
     else:
-        parser.print_help()
+        tcmount(options, args)
 
 
 if __name__ == "__main__":
