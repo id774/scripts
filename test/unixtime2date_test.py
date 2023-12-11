@@ -52,20 +52,20 @@ class TestUnixtime2date(unittest.TestCase):
 
     def test_century_boundary(self):
         # January 1, 2000 (Century Boundary) in UTC is January 1 in Japan
-        timestamp = 946684800  # 2000-01-01 00:00:00 UTC
-        expected_date = "2000-01-01T09:00:00+09:00"
+        timestamp = 946684799  # 1999-12-31 23:59:59 UTC
+        expected_date = "2000-01-01T08:59:59+09:00"
         self.assertEqual(unixtime2date(timestamp), expected_date)
 
     def test_new_year(self):
         # January 1, 2023 in UTC is January 1 in Japan
-        timestamp = 1672531200  # 2023-01-01 00:00:00 UTC
-        expected_date = "2023-01-01T09:00:00+09:00"
+        timestamp = 1672531199  # 2022-23-59 00:00:00 UTC
+        expected_date = "2023-01-01T08:59:59+09:00"
         self.assertEqual(unixtime2date(timestamp), expected_date)
 
     def test_end_of_year(self):
         # December 31, 2023 in UTC is January 1, 2024 in Japan
-        timestamp = 1704067200  # 2023-12-31 00:00:00 UTC
-        expected_date = "2024-01-01T09:00:00+09:00"
+        timestamp = 1704067199  # 2023-12-31 23:59:00 UTC
+        expected_date = "2024-01-01T08:59:59+09:00"
         self.assertEqual(unixtime2date(timestamp), expected_date)
 
     def test_midnight(self):
