@@ -1,10 +1,12 @@
 #!/usr/bin/env python
+#!/usr/bin/env python
 
 ########################################################################
 # unixtime2date.py: Convert Unix Timestamp to Human-Readable Date
 #
 #  Description:
-#  This script converts a Unix timestamp to a human-readable date format.
+#  This script converts a Unix timestamp to a human-readable date format in ISO 8601.
+#  Note: It uses the local timezone for conversion.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -12,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-11
+#       Modified output format to ISO 8601 in local timezone.
 #  v1.1 2023-12-06
 #       Removed Python version check and added comments for clarity.
 #  v1.0 2014-07-29
@@ -22,7 +26,7 @@
 #
 #  Example:
 #  unixtime2date.py 1609459200
-#  -> 2021/01/01 09:00:00
+#  -> 2021-01-01T09:00:00+09:00 (if your local timezone is UTC+9)
 #
 ########################################################################
 
@@ -30,17 +34,21 @@ import sys
 import datetime
 
 def unixtime2date(its):
-    """Convert Unix timestamp to human-readable date."""
-    return datetime.datetime.fromtimestamp(its).strftime('%Y/%m/%d %H:%M:%S')
+    """Convert Unix timestamp to human-readable date in local timezone (ISO 8601 format)."""
+    local_datetime = datetime.datetime.fromtimestamp(its, datetime.timezone.utc).astimezone()
+    return local_datetime.isoformat()
 
 def main(args):
     """Process the command line arguments and output the result."""
-    print(unixtime2date(int(args[1])))
-
-
-if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        main(sys.argv)
+    if len(args) > 1:
+        try:
+            print(unixtime2date(int(args[1])))
+        except ValueError:
+            print("Invalid timestamp. Please enter a valid Unix timestamp.")
     else:
         print("Usage: unixtime2date.py <unix_timestamp>")
         print("Example: unixtime2date.py 1609459200")
+
+if __name__ == '__main__':
+    main(sys.argv)
+
