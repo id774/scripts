@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-#!/usr/bin/env python
 
 ########################################################################
 # unixtime2date.py: Convert Unix Timestamp to Human-Readable Date
@@ -35,7 +34,8 @@ import datetime
 
 def unixtime2date(its):
     """Convert Unix timestamp to human-readable date in local timezone (ISO 8601 format)."""
-    local_datetime = datetime.datetime.fromtimestamp(its, datetime.timezone.utc).astimezone()
+    local_datetime = datetime.datetime.fromtimestamp(
+        its, datetime.timezone.utc).astimezone()
     return local_datetime.isoformat()
 
 def main(args):
@@ -49,6 +49,6 @@ def main(args):
         print("Usage: unixtime2date.py <unix_timestamp>")
         print("Example: unixtime2date.py 1609459200")
 
+
 if __name__ == '__main__':
     main(sys.argv)
-
