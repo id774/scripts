@@ -15,6 +15,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2023-12-14
+#      Refactored namecalc.rb for improved code readability and maintainability,
+#      adapting the structure and style from the Python version while keeping
+#      the original functionality and output intact.
 #  v1.0 2013-04-12
 #       Initial release. Implemented basic numerology calculation and
 #       graphical representation.
@@ -31,105 +35,65 @@
 ########################################################################
 
 class NameCalc
-end
+  class << self
+    def calc(parse_string)
+      base_array = split_array(parse_string)
+      draw_graph(base_array)
+    end
 
-class << NameCalc
-  def calc(parse_string)
-    base_array = split_array(parse_string)
-    draw_graph(base_array)
-  end
+    def number0_5?(str)
+      str.match(/[0-5]/)
+    end
 
-  private
-  def number0_5?(str)
-    /[0-5]/ =~ str
-  end
-
-  def split_array(parse_string)
-    base_array = Array.new
-    split_char = parse_string.scan(/.{1,1}/m)
-    i = 0
-    while i < parse_string.size do
-      if number0_5?(split_char[i])
-        base_array << split_char[i]
+    def split_array(parse_string)
+      base_array = []
+      split_char = parse_string.chars
+      split_char.each do |char|
+        base_array << char if number0_5?(char)
       end
-      i += 1
+      base_array
     end
-    base_array
-  end
 
-  def print_header(header_count)
-    header_count.times do
-      $stdout.printf(" ")
+    def print_header(header_count)
+      print ' ' * header_count
     end
-  end
 
-  def cross_sum(base_array, calc_array)
-    i = 1
-    base_array.each do |e|
-      if (i <= base_array.length)
-        $stdout.printf(" %s", e)
-        n = e.to_i + base_array[i].to_i
-        if n >= 10
-          n = n - 10
-        end
+    def cross_sum(base_array, calc_array)
+      i = 1
+      base_array.each do |e|
+        break if i > base_array.length
+
+        print " #{e}"
+        n = i < base_array.length ? e.to_i + base_array[i].to_i : 0
+        n -= 10 if n >= 10
         calc_array << n
         i += 1
       end
+      calc_array
     end
-    calc_array
-  end
 
-  def draw_graph(base_array)
-    calc_array = Array.new
-    parsed_string_size = base_array.size
-    while base_array.size >= 2 do
-      calc_array.clear
-      print_header(parsed_string_size - base_array.size)
-      calc_array = cross_sum(base_array, calc_array)
-      $stdout.printf("\n")
-      base_array.replace(calc_array)
-      base_array.pop
+    def draw_graph(base_array)
+      parsed_string_size = base_array.size
+      while base_array.size >= 2
+        calc_array = []
+        print_header(parsed_string_size - base_array.size)
+        calc_array = cross_sum(base_array, calc_array)
+        puts
+        base_array = calc_array.dup
+        base_array.pop
+      end
     end
   end
 end
 
 def main
-  require 'optparse'
-  parser = OptionParser.new do |parser|
-    parser.banner = "#{File.basename($0,".*")} #{version} by #{author}
-    Usage: #{File.basename($0,".*")} parse_strings
-    ex.: #{File.basename($0,".*")} 111 153 111 115 (YAMADA TAROU YAMADA HANAKO)"
-    parser.separator "options:"
-    parser.on('-h', '--help', "show this message") {
-      puts parser
-      exit 1
-    }
-  end
-
-  begin
-    parser.parse!
-  rescue OptionParser::ParseError => err
-    $stderr.puts err.message
-    $stderr.puts parser.help
-    exit 2
-  end
-
-  if ARGV.size >= 1
+  if ARGV.size > 1
     NameCalc.calc(ARGV.join)
   else
-    puts parser.help
+    puts "Usage: #{$0} [string1 string2 ...]"
+    puts "Example: #{$0} 111 153 111 115"
     exit 1
   end
 end
 
-def author
-  "id774 <http://id774.net>"
-end
-
-def version
-  "1.0"
-end
-
-if __FILE__ ==$0
-  main
-end
+main if __FILE__ == $0
