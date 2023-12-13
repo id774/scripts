@@ -56,7 +56,7 @@ class TestNameCalc(unittest.TestCase):
 
     def test_numerology_1234512345_5432154321(self):
         self.run_test(
-            '1234512345 5432154321', 
+            '1234512345 5432154321',
             " 1 2 3 4 5 1 2 3 4 5 5 4 3 2 1 5 4 3 2 1\n"
             "  3 5 7 9 6 3 5 7 9 0 9 7 5 3 6 9 7 5 3\n"
             "   8 2 6 5 9 8 2 6 9 9 6 2 8 9 5 6 2 8\n"
@@ -140,6 +140,7 @@ class TestNameCalc(unittest.TestCase):
             "       7 2 2 7\n"
             "        9 4 9\n"
             "         3 3")
+
 
 if __name__ == '__main__':
     unittest.main()
