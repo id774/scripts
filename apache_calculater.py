@@ -36,7 +36,8 @@ class ApacheCalculater(object):
     @staticmethod
     def loadIgnoreList(ignore_file):
         """
-        Load the ignore list from a file.
+        Load the ignore list from a file, ignoring comments and empty lines.
+        Use localhost as default if the list is empty.
 
         Args:
             ignore_file (str): Path to the ignore list file.
@@ -48,9 +49,13 @@ class ApacheCalculater(object):
         try:
             with open(ignore_file, "r") as file:
                 for line in file:
-                    ignore_ips.add(line.strip())
+                    stripped_line = line.strip()
+                    if stripped_line and not stripped_line.startswith("#"):
+                        ignore_ips.add(stripped_line)
+            if not ignore_ips:
+                ignore_ips.add("127.0.0.1")
         except FileNotFoundError:
-            pass  # If the file doesn't exist, return an empty set
+            ignore_ips.add("127.0.0.1")  # If the file doesn't exist, use localhost
         return ignore_ips
 
     @classmethod

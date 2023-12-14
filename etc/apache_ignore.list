@@ -1,2 +1,13 @@
-192.168.0.1
-192.168.11.1
+# apache_ignore.list
+#
+# This file contains a list of IP addresses to be ignored by the Apache log analysis tools.
+# Each line should contain one IP address. Lines starting with '#' are treated as comments
+# and blank lines are ignored.
+#
+# Example:
+# 192.168.1.1
+# 10.0.0.1
+#
+# The default ignored IP is localhost.
+127.0.0.1
+

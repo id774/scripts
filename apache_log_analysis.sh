@@ -16,7 +16,7 @@
 #
 #  Version History:
 #  v1.2 2023-12-14
-#       Added checks for log file existence and grep/zgrep availability.
+#       Added checks for log file existence and grep/zgrep/awk availability.
 #       Implemented the functionality to ignore IPs listed in apache_ignore.list.
 #  v1.1 2023-12-06
 #       Refactored for improved readability and added detailed comments.
@@ -29,7 +29,7 @@
 #
 ########################################################################
 
-# Check if grep and zgrep commands are available
+# Check if grep, zgrep, and awk commands are available
 if ! command -v grep &> /dev/null; then
     echo "Error: grep command not found."
     exit 1
@@ -37,6 +37,11 @@ fi
 
 if ! command -v zgrep &> /dev/null; then
     echo "Error: zgrep command not found."
+    exit 1
+fi
+
+if ! command -v awk &> /dev/null; then
+    echo "Error: awk command not found."
     exit 1
 fi
 
@@ -52,10 +57,13 @@ if [ -z "$LOG_FILES" ]; then
     exit 1
 fi
 
-# Load the ignore list if it exists, otherwise use localhost as default
+# Load the ignore list if it exists, use localhost as default if empty
 IGNORE_FILE="./etc/apache_ignore.list"
 if [ -f "$IGNORE_FILE" ]; then
-    IGNORE_IPS=$(awk '{print $1}' "$IGNORE_FILE" | paste -sd "|" -)
+    IGNORE_IPS=$(awk '!/^#/ && NF' "$IGNORE_FILE" | paste -sd "|" -)
+    if [ -z "$IGNORE_IPS" ]; then
+        IGNORE_IPS="127.0.0.1"
+    fi
 else
     IGNORE_IPS="127.0.0.1"
 fi
