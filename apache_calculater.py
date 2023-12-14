@@ -5,8 +5,9 @@
 #
 #  Description:
 #  This script analyzes Apache log files to calculate the number of hits per IP
-#  address and the percentage of client cache hits. It is designed to provide
-#  insights into web server traffic and client behavior.
+#  address and the percentage of client cache hits. It supports .gz compressed
+#  log files and excludes IPs listed in apache_ignore.list. It is designed to
+#  provide insights into web server traffic and client behavior.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-14
+#       Added support for .gz log files and implemented IP ignore list.
 #  v1.1 2023-12-06
 #       Refactored for improved clarity and removed unnecessary path manipulation.
 #  v1.0 2011-04-20
@@ -26,8 +29,29 @@
 ########################################################################
 
 import sys
+import gzip
 
 class ApacheCalculater(object):
+
+    @staticmethod
+    def loadIgnoreList(ignore_file):
+        """
+        Load the ignore list from a file.
+
+        Args:
+            ignore_file (str): Path to the ignore list file.
+
+        Returns:
+            set: A set of IPs to ignore.
+        """
+        ignore_ips = set()
+        try:
+            with open(ignore_file, "r") as file:
+                for line in file:
+                    ignore_ips.add(line.strip())
+        except FileNotFoundError:
+            pass  # If the file doesn't exist, return an empty set
+        return ignore_ips
 
     @classmethod
     def calculateApacheIpHits(cls, log):
@@ -41,12 +65,19 @@ class ApacheCalculater(object):
             list of tuples: Sorted list of (IP, hits) tuples.
         """
         ipHitListing = {}
-        with open(log, "r") as contents:
+        ignore_ips = cls.loadIgnoreList("./etc/apache_ignore.list")
+
+        open_func = gzip.open if log.endswith(".gz") else open
+
+        with open_func(log, "rt") as contents:
             for line in contents:
                 # Extract the IP address from each log entry
                 ip = line.split(" ", 1)[0]
+                if ip in ignore_ips:
+                    continue
                 if 6 < len(ip) <= 15:  # Validate the length of the IP address
                     ipHitListing[ip] = ipHitListing.get(ip, 0) + 1
+
         return sorted(ipHitListing.items(), reverse=True, key=lambda x: x[1])
 
     @classmethod
@@ -61,13 +92,16 @@ class ApacheCalculater(object):
             float: The percentage of cached requests.
         """
         totalRequests, cachedRequests = 0, 0
-        with open(log, "r") as contents:
+        open_func = gzip.open if log.endswith(".gz") else open
+
+        with open_func(log, "rt") as contents:
             for line in contents:
                 totalRequests += 1
                 # Check if the response status is 304 (Not Modified)
                 if line.split(" ")[8] == "304":
                     cachedRequests += 1
-        return float(100 * cachedRequests) / totalRequests
+
+        return float(100 * cachedRequests) / totalRequests if totalRequests > 0 else 0
 
 def main():
     if len(sys.argv) != 2:
