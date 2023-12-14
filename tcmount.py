@@ -63,10 +63,6 @@
 #  -u, --utf8         Mount filesystem with UTF-8 encoding.
 #  -r, --readonly     Mount the filesystem in read-only mode.
 #  -a, --all          Mount all available devices.
-#  -l, --local        Mount only local files.
-#  -g, --legacy       Mount legacy devices.
-#  -f, --half         Mount half of the devices read-write and the other half read-only.
-#  -p, --partition    Specify a particular partition number to mount.
 #
 #  Refer to the TrueCrypt documentation for more detailed information
 #  on mount options and device specifications.
