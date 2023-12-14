@@ -16,6 +16,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.3 2023-12-15
+#       Reversed the behavior of the -u (--utf8) option. Now, by default,
+#       the filesystem is mounted with UTF-8 encoding, and the -u option
+#       is used to disable this setting.
 #  v3.2 2023-12-14
 #       Removed -l (local), -g (legacy), -f (half), and -p (partition) options.
 #       Refactored code to focus on essential mounting functionalities.
@@ -61,7 +65,7 @@
 #      These commands will unmount the device /dev/sdb.
 #
 #  Options:
-#  -u, --utf8         Mount filesystem with UTF-8 encoding.
+#  -u, --no-utf8      Do not use UTF-8 encoding for the mounted filesystem.
 #  -r, --readonly     Mount the filesystem in read-only mode.
 #  -a, --all          Mount all available devices.
 #
@@ -162,16 +166,16 @@ def main():
             "Error: TrueCrypt is not installed. This script requires TrueCrypt to mount and unmount encrypted devices. Please install TrueCrypt and try again.")
         sys.exit(5)
 
-    tcmount_version = "3.2"
+    tcmount_version = "3.3"
     truecrypt_version = get_truecrypt_version()
 
     version_message = "tcmount.py {} - This script operates with {}.".format(
         tcmount_version, truecrypt_version)
 
     parser = OptionParser(version=version_message)
-    parser.add_option("-u", "--utf8",
-                      dest="utf8",
-                      help="mount filesystem type with utf8",
+    parser.add_option("-u", "--no-utf8",
+                      dest="no_utf8",
+                      help="do not use utf8 as the mount filesystem type",
                       action="store_true")
     parser.add_option("-r", "--readonly",
                       dest="readonly",
@@ -189,9 +193,9 @@ def main():
 
     (options, args) = parser.parse_args()
 
-    mount_options = ''
-    if options.utf8:
-        mount_options = 'utf8'
+    mount_options = 'utf8'
+    if options.no_utf8:
+        mount_options = ''
     if options.readonly:
         mount_options = ",".join(('ro', mount_options))
 
