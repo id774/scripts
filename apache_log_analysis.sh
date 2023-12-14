@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 ########################################################################
@@ -31,8 +30,13 @@
 ########################################################################
 
 # Check if grep and zgrep commands are available
-if ! command -v grep &> /dev/null || ! command -v zgrep &> /dev/null; then
-    echo "Error: grep and/or zgrep commands not found."
+if ! command -v grep &> /dev/null; then
+    echo "Error: grep command not found."
+    exit 1
+fi
+
+if ! command -v zgrep &> /dev/null; then
+    echo "Error: zgrep command not found."
     exit 1
 fi
 
