@@ -16,9 +16,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v3.2 2023-12-15
+#  v3.2 2023-12-14
 #       Removed -l (local), -g (legacy), -f (half), and -p (partition) options.
 #       Refactored code to focus on essential mounting functionalities.
+#       Added -e (--expansion) option to mount ~/mnt/Expansion/container.tc to a specified device.
 #  v3.1 2023-12-10
 #       Minor refactoring of the os_exec function.
 #       Enhanced version display to include TrueCrypt version.
@@ -106,15 +107,10 @@ def mount_drive(options, args, mount_options, device):
         mount_options + ' /dev/' + device + ' ~/mnt/' + device
     os_exec(cmd)
 
-def mount_device(options, args):
+def mount_device(options, args, mount_options):
     """
     Mounts a specific device or all devices based on the provided options.
     """
-    mount_options = ''
-    if options.utf8:
-        mount_options = 'utf8'
-    if options.readonly:
-        mount_options = ",".join(('ro', mount_options))
 
     # Mount a specific device if provided
     if args:
@@ -141,6 +137,21 @@ def mount_all(options, args, mount_options):
     """
     for device_suffix in range(ord('c'), ord('z') + 1):
         mount_drive(options, args, mount_options, 'sd' + chr(device_suffix))
+
+def mount_expansion(options, device, mount_options):
+    """
+    Mounts the ~/mnt/Expansion/container.tc file to the specified device.
+    """
+
+    expansion_file = os.path.expanduser('~/mnt/Expansion/container.tc')
+    mount_point = os.path.join('~/mnt', device)
+
+    if os.path.exists(expansion_file):
+        cmd = 'sudo truecrypt -t -k "" --protect-hidden=no --fs-options={} {} {}'.format(
+            mount_options, expansion_file, mount_point)
+        os_exec(cmd)
+    else:
+        print("The expansion file does not exist: {}".format(expansion_file))
 
 def main():
     """
@@ -170,9 +181,24 @@ def main():
                       dest="all",
                       help="mount all devices",
                       action="store_true")
+    parser.add_option("-e", "--expansion",
+                      dest="expansion",
+                      help="Mount the specified device with Expansion",
+                      action="store",
+                      type="string")
+
     (options, args) = parser.parse_args()
 
-    mount_device(options, args)
+    mount_options = ''
+    if options.utf8:
+        mount_options = 'utf8'
+    if options.readonly:
+        mount_options = ",".join(('ro', mount_options))
+
+    if options.expansion:
+        mount_expansion(options, options.expansion, mount_options)
+    else:
+        mount_device(options, args, mount_options)
 
 
 if __name__ == "__main__":
