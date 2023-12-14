@@ -45,16 +45,19 @@ LOG_PATH=${1:-/var/log/apache2}
 LOG_FILENAME=${2:-ssl_access.log}
 
 # Check if log files exist
-if [ ! -f "$LOG_PATH/$LOG_FILENAME" ]; then
-    echo "Error: Log file not found at $LOG_PATH/$LOG_FILENAME"
+LOG_FILES=$(ls $LOG_PATH/$LOG_FILENAME* 2> /dev/null)
+
+if [ -z "$LOG_FILES" ]; then
+    echo "Error: No log files found at $LOG_PATH/$LOG_FILENAME*"
     exit 1
 fi
 
-# Load the ignore list if it exists
+# Load the ignore list if it exists, otherwise use localhost as default
 IGNORE_FILE="./etc/apache_ignore.list"
-IGNORE_IPS=""
 if [ -f "$IGNORE_FILE" ]; then
     IGNORE_IPS=$(awk '{print $1}' "$IGNORE_FILE" | paste -sd "|" -)
+else
+    IGNORE_IPS="127.0.0.1"
 fi
 
 # Function to display top accessed URLs
