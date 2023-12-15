@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 
 ########################################################################
-# tcmount.py: TrueCrypt Device Mounter
+# tcmount.py: TrueCrypt/VeraCrypt Device Mounter
 #
 #  Description:
-#  This script is designed to automate the mounting and unmounting of TrueCrypt
-#  encrypted devices. It checks for the presence of the TrueCrypt command and
-#  supports a variety of devices, including options for different file systems
-#  and encoding types. This version allows for specific device mounting and
-#  unmounting by specifying the device name as an argument.
+#  This script is designed to automate the mounting and unmounting of
+#  TrueCrypt and VeraCrypt encrypted devices. It checks for the presence
+#  of the TrueCrypt and VeraCrypt commands and supports a variety of devices,
+#  including options for different file systems and encoding types. This version
+#  allows for specific device mounting and unmounting by specifying the device
+#  name as an argument and choosing between TrueCrypt and VeraCrypt.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,6 +18,8 @@
 #
 #  Version History:
 #  v4.0 2023-12-15
+#       Added support for VeraCrypt with the -v (--veracrypt) option.
+#       Improved error handling for systems where only TrueCrypt or VeraCrypt is installed.
 #       Reversed the behavior of the -u (--utf8) option. Now, by default,
 #       the filesystem is mounted with UTF-8 encoding, and the -u option
 #       is used to disable this setting.
@@ -50,27 +53,29 @@
 #       First release.
 #
 #  Usage:
-#  To use this script, ensure you have TrueCrypt installed and run
-#  the script with appropriate privileges. You can specify the device
+#  To use this script, ensure you have TrueCrypt or VeraCrypt installed and
+#  run the script with appropriate privileges. You can specify the device
 #  and other mount options as arguments. For example:
 #
 #      python tcmount.py [device] [options]
 #
 #  Specific device mounting:
 #      python tcmount.py sdb
-#      This will mount the device /dev/sdb.
+#      This will mount the device /dev/sdb using TrueCrypt or VeraCrypt based on the options.
 #
 #  Specific device unmounting:
 #      python tcmount.py sdb unmount
 #      python tcmount.py sdb umount
-#      These commands will unmount the device /dev/sdb.
+#      These commands will unmount the device /dev/sdb using TrueCrypt or VeraCrypt.
 #
 #  Options:
+#  -v, --veracrypt    Use VeraCrypt instead of TrueCrypt for mounting and unmounting.
 #  -u, --no-utf8      Do not use UTF-8 encoding for the mounted filesystem.
 #  -r, --readonly     Mount the filesystem in read-only mode.
 #  -a, --all          Mount all available devices.
+#  -e, --expansion    Mount the container file of Expansion to a specified device.
 #
-#  Refer to the TrueCrypt documentation for more detailed information
+#  Refer to the TrueCrypt and VeraCrypt documentation for more detailed information
 #  on mount options and device specifications.
 #
 ########################################################################
@@ -92,6 +97,12 @@ def is_truecrypt_installed():
     """
     return subprocess.call(['which', 'truecrypt'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
 
+def is_veracrypt_installed():
+    """
+    Checks if VeraCrypt is installed by searching for its command in the system path.
+    """
+    return subprocess.call(['which', 'veracrypt'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
+
 def get_truecrypt_version():
     """
     Retrieves the version information of TrueCrypt.
@@ -99,6 +110,17 @@ def get_truecrypt_version():
     try:
         output = subprocess.check_output(
             ["truecrypt", "--version"], stderr=subprocess.STDOUT)
+        return output.decode().strip()
+    except subprocess.CalledProcessError:
+        return "Unknown"
+
+def get_veracrypt_version():
+    """
+    Retrieves the version information of VeraCrypt.
+    """
+    try:
+        output = subprocess.check_output(
+            ["veracrypt", "--version"], stderr=subprocess.STDOUT)
         return output.decode().strip()
     except subprocess.CalledProcessError:
         return "Unknown"
@@ -164,25 +186,51 @@ def process_mounting(options, args):
             if options.all:
                 commands.extend(build_mount_all_command(mount_options_str))
 
+    if options.veracrypt:
+        if not is_veracrypt_installed():
+            print("Error: VeraCrypt is not installed, but '-v' option was specified. Please use TrueCrypt or install VeraCrypt and try again.")
+            sys.exit(6)
+        encryption_tool = "veracrypt -tc"
+        unmount_cmd = "veracrypt"
+    else:
+        if not is_truecrypt_installed():
+            print(
+                "Error: TrueCrypt is not installed. Please use VeraCrypt or install TrueCrypt and try again.")
+            sys.exit(6)
+        encryption_tool = "truecrypt"
+        unmount_cmd = "truecrypt"
+
     for cmd in commands:
+        if 'unmount' in cmd or 'umount' in cmd:
+            cmd = cmd.replace('truecrypt', unmount_cmd)
+        else:
+            cmd = cmd.replace('truecrypt', encryption_tool)
         os_exec(cmd)
 
 def main():
     """
     Main function to handle the mounting process based on user inputs.
     """
-    if not is_truecrypt_installed():
-        print(
-            "Error: TrueCrypt is not installed. This script requires TrueCrypt to mount and unmount encrypted devices. Please install TrueCrypt and try again.")
+    tcmount_version = "4.0"
+
+    versions = []
+    if is_truecrypt_installed():
+        versions.append(get_truecrypt_version())
+    if is_veracrypt_installed():
+        versions.append(get_veracrypt_version())
+
+    if not versions:
+        print("Error: Neither TrueCrypt nor VeraCrypt is installed. Please install one of them and try again.")
         sys.exit(5)
 
-    tcmount_version = "4.0"
-    truecrypt_version = get_truecrypt_version()
-
     version_message = "tcmount.py {} - This script operates with {}.".format(
-        tcmount_version, truecrypt_version)
+        tcmount_version, " / ".join(versions))
 
     parser = OptionParser(version=version_message)
+    parser.add_option("-v", "--veracrypt",
+                      dest="veracrypt",
+                      help="Use VeraCrypt instead of TrueCrypt",
+                      action="store_true")
     parser.add_option("-u", "--no-utf8",
                       dest="no_utf8",
                       help="do not use utf8 as the mount filesystem type",
