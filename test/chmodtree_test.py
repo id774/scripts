@@ -35,7 +35,7 @@ import chmodtree
 class TestChmodTree(unittest.TestCase):
     @patch('chmodtree.os_exec')
     def test_files_chmod(self, mock_os_exec):
-        """ Test chmod applied to files only. """
+        """ Test chmod application to files only, matching a specific pattern. """
         mock_os_exec.return_value = None  # Mock the os_exec function
         options = MagicMock()
         options.sudo = False
@@ -49,7 +49,7 @@ class TestChmodTree(unittest.TestCase):
 
     @patch('chmodtree.os_exec')
     def test_dirs_chmod(self, mock_os_exec):
-        """ Test chmod applied to directories only. """
+        """ Test chmod application to directories only, using sudo. """
         options = MagicMock()
         options.sudo = True
         options.quiet = False
@@ -61,21 +61,58 @@ class TestChmodTree(unittest.TestCase):
             'sudo find testdir2 -type d -exec chmod -v 755 {} \\;')
 
     @patch('chmodtree.os_exec')
-    def test_dirs_and_files_chmod(self, mock_os_exec):
-        """ Test chmod applied to directories and files. """
+    def test_files_and_dirs_chmod_with_pattern(self, mock_os_exec):
+        """ Test chmod application to both files and directories, matching a specific pattern. """
         options = MagicMock()
         options.sudo = True
         options.quiet = True
         options.files = '600'
         options.dirs = '700'
-        options.name = 'tmp/ruby'
+        options.name = '*.rb'
         chmodtree.chmodtree(options, 'testdir3')
 
         expected_calls = [
-            ('sudo find testdir3 -name "tmp/ruby" -type f -exec chmod 600 {} \\;',),
-            ('sudo find testdir3 -name "tmp/ruby" -type d -exec chmod 700 {} \\;',)
+            ('sudo find testdir3 -name "*.rb" -type f -exec chmod 600 {} \\;',),
+            ('sudo find testdir3 -name "*.rb" -type d -exec chmod 700 {} \\;',)
         ]
-        # Check if the calls to os_exec match the expected calls
+        actual_calls = [call_args[0]
+                        for call_args in mock_os_exec.call_args_list]
+        self.assertEqual(actual_calls, expected_calls)
+
+    @patch('chmodtree.os_exec')
+    def test_files_and_dirs_sudo_verbose_chmod(self, mock_os_exec):
+        """ Test chmod application to both files and directories with sudo, verbose output. """
+        options = MagicMock()
+        options.sudo = True
+        options.quiet = False
+        options.files = '640'
+        options.dirs = '750'
+        options.name = '*.txt'
+        chmodtree.chmodtree(options, 'testdir4')
+
+        expected_calls = [
+            ('sudo find testdir4 -name "*.txt" -type f -exec chmod -v 640 {} \\;',),
+            ('sudo find testdir4 -name "*.txt" -type d -exec chmod -v 750 {} \\;',)
+        ]
+        actual_calls = [call_args[0]
+                        for call_args in mock_os_exec.call_args_list]
+        self.assertEqual(actual_calls, expected_calls)
+
+    @patch('chmodtree.os_exec')
+    def test_files_and_dirs_quiet_chmod_with_pattern(self, mock_os_exec):
+        """ Test chmod application to both files and directories, matching a specific pattern, in quiet mode. """
+        options = MagicMock()
+        options.sudo = False
+        options.quiet = True
+        options.files = '775'
+        options.dirs = '750'
+        options.name = '*.sh'
+        chmodtree.chmodtree(options, 'testdir5')
+
+        expected_calls = [
+            ('find testdir5 -name "*.sh" -type f -exec chmod 775 {} \\;',),
+            ('find testdir5 -name "*.sh" -type d -exec chmod 750 {} \\;',)
+        ]
         actual_calls = [call_args[0]
                         for call_args in mock_os_exec.call_args_list]
         self.assertEqual(actual_calls, expected_calls)
