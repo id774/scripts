@@ -183,11 +183,11 @@ class TestTcMount(unittest.TestCase):
         for no_utf8, readonly, all_devices, expansion, expected_options in test_cases:
             with self.subTest(no_utf8=no_utf8, readonly=readonly, all_devices=all_devices, expansion=expansion):
                 def options(): return None
+                options.veracrypt = False
                 options.no_utf8 = no_utf8
                 options.readonly = readonly
                 options.all = all_devices
                 options.expansion = expansion
-                options.veracrypt = False
                 tcmount.process_mounting(options, ['sdb'])
 
                 if expansion:
@@ -198,6 +198,135 @@ class TestTcMount(unittest.TestCase):
                         expected_options)
                 else:
                     expected_command = 'test -b /dev/sdb && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={} /dev/sdb ~/mnt/sdb'.format(
+                        expected_options)
+
+                mock_os_exec.assert_called_with(expected_command)
+                mock_os_exec.reset_mock()
+
+    @patch('tcmount.build_mount_command')
+    @patch('tcmount.build_unmount_command')
+    @patch('tcmount.os_exec')
+    def test_process_mounting_with_veracrypt(self, mock_os_exec, mock_build_unmount, mock_build_mount):
+        # Set up mock responses
+        mock_build_mount.return_value = 'mocked mount command'
+        mock_build_unmount.return_value = 'mocked unmount command'
+
+        # Test mounting
+        def options(): return None
+        options.veracrypt = True
+        options.no_utf8 = False
+        options.readonly = False
+        options.all = False
+        options.expansion = None
+        tcmount.process_mounting(options, ['sdb'])
+        mock_build_mount.assert_called_with('sdb', 'utf8')
+        mock_os_exec.assert_called_with('mocked mount command')
+
+        # Test unmounting
+        tcmount.process_mounting(options, ['sdb', 'unmount'])
+        mock_build_unmount.assert_called_with('sdb')
+        mock_os_exec.assert_called_with('mocked unmount command')
+
+    @patch('tcmount.os_exec')
+    def test_process_mounting_readonly_no_utf8_with_veracrypt(self, mock_os_exec):
+        def options(): return None
+        options.veracrypt = True
+        options.no_utf8 = True
+        options.readonly = True
+        options.all = False
+        options.expansion = None
+        tcmount.process_mounting(options, ['sdb'])
+        expected_command = 'test -b /dev/sdb && sudo veracrypt -tc -t -k "" --protect-hidden=no --fs-options=ro /dev/sdb ~/mnt/sdb'
+        mock_os_exec.assert_called_with(expected_command)
+
+    @patch('tcmount.build_mount_command')
+    @patch('tcmount.build_unmount_command')
+    @patch('tcmount.os_exec')
+    def test_process_mounting_different_devices_with_veracrypt(self, mock_os_exec, mock_build_unmount, mock_build_mount):
+        # Set up mock responses
+        mock_build_mount.return_value = 'mocked mount command'
+        mock_build_unmount.return_value = 'mocked unmount command'
+
+        for device in ['sdb', 'sdc', 'sde', 'sdz']:
+            with self.subTest(device=device):
+                # Test mounting
+                def options(): return None
+                options.veracrypt = True
+                options.no_utf8 = False
+                options.readonly = False
+                options.all = False
+                options.expansion = None
+                tcmount.process_mounting(options, [device])
+                mock_build_mount.assert_called_with(device, 'utf8')
+                mock_os_exec.assert_called_with('mocked mount command')
+
+                # Test unmounting
+                tcmount.process_mounting(options, [device, 'unmount'])
+                mock_build_unmount.assert_called_with(device)
+                mock_os_exec.assert_called_with('mocked unmount command')
+
+    @patch('tcmount.os_exec')
+    def test_process_mounting_readonly_no_utf8_different_devices_with_veracrypt(self, mock_os_exec):
+        for device in ['sdb', 'sdc', 'sde', 'sdz']:
+            with self.subTest(device=device):
+                def options(): return None
+                options.veracrypt = True
+                options.no_utf8 = True
+                options.readonly = True
+                options.all = False
+                options.expansion = None
+                tcmount.process_mounting(options, [device])
+                expected_command = 'test -b /dev/{} && sudo veracrypt -tc -t -k "" --protect-hidden=no --fs-options=ro /dev/{} ~/mnt/{}'.format(
+                    device, device, device)
+                mock_os_exec.assert_called_with(expected_command)
+
+    @patch('tcmount.os_exec')
+    def test_process_mounting_combinations_with_veracrypt(self, mock_os_exec):
+        test_cases = [
+            (False, False, False, None, 'utf8'),
+            (True, False, False, None, ''),
+            (False, True, False, None, 'utf8,ro'),
+            (True, True, False, None, 'ro'),
+            (False, False, True, None, 'utf8'),
+            (True, False, True, None, ''),
+            (False, True, True, None, 'utf8,ro'),
+            (True, True, True, None, 'ro'),
+            (False, False, False, 'sdb', 'utf8'),
+            (True, False, False, 'sdb', ''),
+            (False, True, False, 'sdb', 'utf8,ro'),
+            (True, True, False, 'sdb', 'ro'),
+            (False, False, True, 'sdb', 'utf8'),
+            (True, False, True, 'sdb', ''),
+            (False, True, True, 'sdb', 'utf8,ro'),
+            (True, True, True, 'sdb', 'ro'),
+            (False, False, False, 'sdc', 'utf8'),
+            (True, False, False, 'sdc', ''),
+            (False, True, False, 'sdc', 'utf8,ro'),
+            (True, True, False, 'sdc', 'ro'),
+            (False, False, True, 'sdc', 'utf8'),
+            (True, False, True, 'sdc', ''),
+            (False, True, True, 'sdc', 'utf8,ro'),
+            (True, True, True, 'sdc', 'ro'),
+        ]
+
+        for no_utf8, readonly, all_devices, expansion, expected_options in test_cases:
+            with self.subTest(no_utf8=no_utf8, readonly=readonly, all_devices=all_devices, expansion=expansion):
+                def options(): return None
+                options.veracrypt = True
+                options.no_utf8 = no_utf8
+                options.readonly = readonly
+                options.all = all_devices
+                options.expansion = expansion
+                tcmount.process_mounting(options, ['sdb'])
+
+                if expansion:
+                    expected_command = 'test -f ~/mnt/Expansion/container.tc && sudo veracrypt -tc -t -k "" --protect-hidden=no --fs-options={} ~/mnt/Expansion/container.tc ~/mnt/{}'.format(
+                        expected_options, expansion)
+                elif all_devices:
+                    expected_command = 'test -b /dev/sdb && sudo veracrypt -tc -t -k "" --protect-hidden=no --fs-options={} /dev/sdb ~/mnt/sdb'.format(
+                        expected_options)
+                else:
+                    expected_command = 'test -b /dev/sdb && sudo veracrypt -tc -t -k "" --protect-hidden=no --fs-options={} /dev/sdb ~/mnt/sdb'.format(
                         expected_options)
 
                 mock_os_exec.assert_called_with(expected_command)
