@@ -37,10 +37,22 @@ import tcmount
 class TestTcMount(unittest.TestCase):
 
     @classmethod
-    def setUpClass(cls):
-        if not (tcmount.is_truecrypt_installed() and tcmount.is_veracrypt_installed()):
-            raise unittest.SkipTest(
-                "Neither TrueCrypt nor VeraCrypt is installed, skipping tests.")
+    def setUp(self):
+        self.truecrypt_installed = tcmount.is_truecrypt_installed()
+        self.veracrypt_installed = tcmount.is_veracrypt_installed()
+
+    def check_truecrypt_installed(self):
+        if not self.truecrypt_installed:
+            self.skipTest("TrueCrypt is not installed, skipping this test.")
+
+    def check_veracrypt_installed(self):
+        if not self.veracrypt_installed:
+            self.skipTest("VeraCrypt is not installed, skipping this test.")
+
+    def check_both_installed(self):
+        if not (self.truecrypt_installed and self.veracrypt_installed):
+            self.skipTest(
+                "Neither TrueCrypt nor VeraCrypt is installed, skipping this test.")
 
     def test_build_mount_command(self):
         expected = 'test -b /dev/sdb && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=utf8 /dev/sdb ~/mnt/sdb'
@@ -77,6 +89,11 @@ class TestTcMount(unittest.TestCase):
         self.assertTrue(tcmount.is_truecrypt_installed())
 
     @patch('tcmount.subprocess.call')
+    def test_is_veracrypt_installed(self, mock_call):
+        mock_call.return_value = 0
+        self.assertTrue(tcmount.is_veracrypt_installed())
+
+    @patch('tcmount.subprocess.call')
     def test_os_exec(self, mock_call):
         command = 'echo "Test Command"'
         tcmount.os_exec(command)
@@ -108,16 +125,21 @@ class TestTcMount(unittest.TestCase):
             mock_os_exec.assert_called_with('mocked unmount command')
 
     def test_process_mounting_truecrypt(self):
+        self.check_truecrypt_installed()
         self.process_mounting_test_helper(veracrypt=False, tc_compat=False)
 
     def test_process_mounting_veracrypt(self):
+        self.check_veracrypt_installed()
         self.process_mounting_test_helper(veracrypt=True, tc_compat=False)
 
     def test_process_mounting_tc_compat(self):
+        self.check_veracrypt_installed()
         self.process_mounting_test_helper(veracrypt=False, tc_compat=True)
 
     @patch('tcmount.os_exec')
     def test_process_mounting_readonly_no_utf8_with_truecrypt(self, mock_os_exec):
+        self.check_truecrypt_installed()
+
         def options(): return None
         options.veracrypt = False
         options.tc_compat = False
@@ -131,6 +153,8 @@ class TestTcMount(unittest.TestCase):
 
     @patch('tcmount.os_exec')
     def test_process_mounting_readonly_with_veracrypt(self, mock_os_exec):
+        self.check_veracrypt_installed()
+
         def options(): return None
         options.veracrypt = True
         options.tc_compat = False
@@ -144,6 +168,8 @@ class TestTcMount(unittest.TestCase):
 
     @patch('tcmount.os_exec')
     def test_process_mounting_no_utf8_with_tc_compat(self, mock_os_exec):
+        self.check_veracrypt_installed()
+
         def options(): return None
         options.veracrypt = False
         options.tc_compat = True
@@ -159,6 +185,8 @@ class TestTcMount(unittest.TestCase):
     @patch('tcmount.build_unmount_command')
     @patch('tcmount.os_exec')
     def test_process_mounting_different_devices(self, mock_os_exec, mock_build_unmount, mock_build_mount):
+        self.check_truecrypt_installed()
+
         # Set up mock responses
         mock_build_mount.return_value = 'mocked mount command'
         mock_build_unmount.return_value = 'mocked unmount command'
@@ -184,6 +212,8 @@ class TestTcMount(unittest.TestCase):
 
     @patch('tcmount.os_exec')
     def test_process_mounting_readonly_no_utf8_different_devices(self, mock_os_exec):
+        self.check_truecrypt_installed()
+
         for device in ['sdb', 'sdc', 'sde', 'sdz']:
             with self.subTest(device=device):
                 def options(): return None
@@ -200,6 +230,8 @@ class TestTcMount(unittest.TestCase):
 
     @patch('tcmount.os_exec')
     def test_process_mounting_combinations(self, mock_os_exec):
+        self.check_both_installed()
+
         test_cases = [
             (False, False, False, False, False, None, 'utf8'),
             (False, False, True, False, False, None, ''),
