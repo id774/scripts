@@ -105,7 +105,7 @@ class TestTcMount(unittest.TestCase):
         self.process_mounting_test_helper(veracrypt=True)
 
     @patch('tcmount.os_exec')
-    def test_process_mounting_readonly_no_utf8(self, mock_os_exec):
+    def test_process_mounting_readonly_no_utf8_with_truecrypt(self, mock_os_exec):
         def options(): return None
         options.veracrypt = False
         options.no_utf8 = True
@@ -114,6 +114,18 @@ class TestTcMount(unittest.TestCase):
         options.expansion = None
         tcmount.process_mounting(options, ['sdb'])
         expected_command = 'test -b /dev/sdb && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=ro /dev/sdb ~/mnt/sdb'
+        mock_os_exec.assert_called_with(expected_command)
+
+    @patch('tcmount.os_exec')
+    def test_process_mounting_readonly_no_utf8_with_veracrypt(self, mock_os_exec):
+        def options(): return None
+        options.veracrypt = True
+        options.no_utf8 = True
+        options.readonly = True
+        options.all = False
+        options.expansion = None
+        tcmount.process_mounting(options, ['sdb'])
+        expected_command = 'test -b /dev/sdb && sudo veracrypt -tc -t -k "" --protect-hidden=no --fs-options=ro /dev/sdb ~/mnt/sdb'
         mock_os_exec.assert_called_with(expected_command)
 
     @patch('tcmount.build_mount_command')
@@ -160,51 +172,77 @@ class TestTcMount(unittest.TestCase):
     @patch('tcmount.os_exec')
     def test_process_mounting_combinations(self, mock_os_exec):
         test_cases = [
-            (False, False, False, None, 'utf8'),
-            (True, False, False, None, ''),
-            (False, True, False, None, 'utf8,ro'),
-            (True, True, False, None, 'ro'),
-            (False, False, True, None, 'utf8'),
-            (True, False, True, None, ''),
-            (False, True, True, None, 'utf8,ro'),
-            (True, True, True, None, 'ro'),
-            (False, False, False, 'sdb', 'utf8'),
-            (True, False, False, 'sdb', ''),
-            (False, True, False, 'sdb', 'utf8,ro'),
-            (True, True, False, 'sdb', 'ro'),
-            (False, False, True, 'sdb', 'utf8'),
-            (True, False, True, 'sdb', ''),
-            (False, True, True, 'sdb', 'utf8,ro'),
-            (True, True, True, 'sdb', 'ro'),
-            (False, False, False, 'sdc', 'utf8'),
-            (True, False, False, 'sdc', ''),
-            (False, True, False, 'sdc', 'utf8,ro'),
-            (True, True, False, 'sdc', 'ro'),
-            (False, False, True, 'sdc', 'utf8'),
-            (True, False, True, 'sdc', ''),
-            (False, True, True, 'sdc', 'utf8,ro'),
-            (True, True, True, 'sdc', 'ro'),
+            (False, False, False, False, None, 'utf8'),
+            (False, True, False, False, None, ''),
+            (False, False, True, False, None, 'utf8,ro'),
+            (False, True, True, False, None, 'ro'),
+            (False, False, False, True, None, 'utf8'),
+            (False, True, False, True, None, ''),
+            (False, False, True, True, None, 'utf8,ro'),
+            (False, True, True, True, None, 'ro'),
+            (False, False, False, False, 'sdb', 'utf8'),
+            (False, True, False, False, 'sdb', ''),
+            (False, False, True, False, 'sdb', 'utf8,ro'),
+            (False, True, True, False, 'sdb', 'ro'),
+            (False, False, False, True, 'sdb', 'utf8'),
+            (False, True, False, True, 'sdb', ''),
+            (False, False, True, True, 'sdb', 'utf8,ro'),
+            (False, True, True, True, 'sdb', 'ro'),
+            (False, False, False, False, 'sdc', 'utf8'),
+            (False, True, False, False, 'sdc', ''),
+            (False, False, True, False, 'sdc', 'utf8,ro'),
+            (False, True, True, False, 'sdc', 'ro'),
+            (False, False, False, True, 'sdc', 'utf8'),
+            (False, True, False, True, 'sdc', ''),
+            (False, False, True, True, 'sdc', 'utf8,ro'),
+            (False, True, True, True, 'sdc', 'ro'),
+            (True, False, False, False, None, 'utf8'),
+            (True, True, False, False, None, ''),
+            (True, False, True, False, None, 'utf8,ro'),
+            (True, True, True, False, None, 'ro'),
+            (True, False, False, True, None, 'utf8'),
+            (True, True, False, True, None, ''),
+            (True, False, True, True, None, 'utf8,ro'),
+            (True, True, True, True, None, 'ro'),
+            (True, False, False, False, 'sdb', 'utf8'),
+            (True, True, False, False, 'sdb', ''),
+            (True, False, True, False, 'sdb', 'utf8,ro'),
+            (True, True, True, False, 'sdb', 'ro'),
+            (True, False, False, True, 'sdb', 'utf8'),
+            (True, True, False, True, 'sdb', ''),
+            (True, False, True, True, 'sdb', 'utf8,ro'),
+            (True, True, True, True, 'sdb', 'ro'),
+            (True, False, False, False, 'sdc', 'utf8'),
+            (True, True, False, False, 'sdc', ''),
+            (True, False, True, False, 'sdc', 'utf8,ro'),
+            (True, True, True, False, 'sdc', 'ro'),
+            (True, False, False, True, 'sdc', 'utf8'),
+            (True, True, False, True, 'sdc', ''),
+            (True, False, True, True, 'sdc', 'utf8,ro'),
+            (True, True, True, True, 'sdc', 'ro'),
         ]
 
-        for no_utf8, readonly, all_devices, expansion, expected_options in test_cases:
-            with self.subTest(no_utf8=no_utf8, readonly=readonly, all_devices=all_devices, expansion=expansion):
+        for veracrypt, no_utf8, readonly, all_devices, expansion, expected_options in test_cases:
+            with self.subTest(veracrypt=veracrypt, no_utf8=no_utf8, readonly=readonly, all_devices=all_devices, expansion=expansion):
                 def options(): return None
-                options.veracrypt = False
+                options.veracrypt = veracrypt
                 options.no_utf8 = no_utf8
                 options.readonly = readonly
                 options.all = all_devices
                 options.expansion = expansion
                 tcmount.process_mounting(options, ['sdb'])
 
-                if expansion:
-                    expected_command = 'test -f ~/mnt/Expansion/container.tc && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={} ~/mnt/Expansion/container.tc ~/mnt/{}'.format(
-                        expected_options, expansion)
-                elif all_devices:
-                    expected_command = 'test -b /dev/sdb && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={} /dev/sdb ~/mnt/sdb'.format(
-                        expected_options)
+                if veracrypt:
+                    cmd_prefix = 'veracrypt -tc'
                 else:
-                    expected_command = 'test -b /dev/sdb && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={} /dev/sdb ~/mnt/sdb'.format(
-                        expected_options)
+                    cmd_prefix = 'truecrypt'
+
+                if expansion:
+                    expected_command = 'test -f ~/mnt/Expansion/container.tc && sudo {} -t -k "" --protect-hidden=no --fs-options={} ~/mnt/Expansion/container.tc ~/mnt/{}'.format(
+                        cmd_prefix, expected_options, expansion)
+                else:
+                    expected_command = 'test -b /dev/sdb && sudo {} -t -k "" --protect-hidden=no --fs-options={} /dev/sdb ~/mnt/sdb'.format(
+                        cmd_prefix, expected_options)
 
                 mock_os_exec.assert_called_with(expected_command)
                 mock_os_exec.reset_mock()
