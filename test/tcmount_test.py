@@ -74,7 +74,7 @@ class TestTcMount(unittest.TestCase):
         tcmount.os_exec(command)
         mock_call.assert_called_with(command, shell=True)
 
-    def process_mounting_test_helper(self, veracrypt=False):
+    def process_mounting_test_helper(self, veracrypt=False, tc_compat=False):
         # Set up mock responses
         with patch('tcmount.build_mount_command') as mock_build_mount, \
                 patch('tcmount.build_unmount_command') as mock_build_unmount, \
@@ -85,6 +85,7 @@ class TestTcMount(unittest.TestCase):
             # Test mounting
             def options(): return None
             options.veracrypt = veracrypt
+            options.tc_compat = tc_compat
             options.no_utf8 = False
             options.readonly = False
             options.all = False
@@ -99,15 +100,19 @@ class TestTcMount(unittest.TestCase):
             mock_os_exec.assert_called_with('mocked unmount command')
 
     def test_process_mounting_truecrypt(self):
-        self.process_mounting_test_helper(veracrypt=False)
+        self.process_mounting_test_helper(veracrypt=False, tc_compat=False)
 
     def test_process_mounting_veracrypt(self):
-        self.process_mounting_test_helper(veracrypt=True)
+        self.process_mounting_test_helper(veracrypt=True, tc_compat=False)
+
+    def test_process_mounting_tc_compat(self):
+        self.process_mounting_test_helper(veracrypt=False, tc_compat=True)
 
     @patch('tcmount.os_exec')
     def test_process_mounting_readonly_no_utf8_with_truecrypt(self, mock_os_exec):
         def options(): return None
         options.veracrypt = False
+        options.tc_compat = False
         options.no_utf8 = True
         options.readonly = True
         options.all = False
@@ -117,15 +122,29 @@ class TestTcMount(unittest.TestCase):
         mock_os_exec.assert_called_with(expected_command)
 
     @patch('tcmount.os_exec')
-    def test_process_mounting_readonly_no_utf8_with_veracrypt(self, mock_os_exec):
+    def test_process_mounting_readonly_with_veracrypt(self, mock_os_exec):
         def options(): return None
         options.veracrypt = True
-        options.no_utf8 = True
+        options.tc_compat = False
+        options.no_utf8 = False
         options.readonly = True
         options.all = False
         options.expansion = None
         tcmount.process_mounting(options, ['sdb'])
-        expected_command = 'test -b /dev/sdb && sudo veracrypt -tc -t -k "" --protect-hidden=no --fs-options=ro /dev/sdb ~/mnt/sdb'
+        expected_command = 'test -b /dev/sdb && sudo veracrypt -t -k "" --protect-hidden=no --fs-options=utf8,ro /dev/sdb ~/mnt/sdb'
+        mock_os_exec.assert_called_with(expected_command)
+
+    @patch('tcmount.os_exec')
+    def test_process_mounting_no_utf8_with_tc_compat(self, mock_os_exec):
+        def options(): return None
+        options.veracrypt = False
+        options.tc_compat = True
+        options.no_utf8 = True
+        options.readonly = False
+        options.all = False
+        options.expansion = None
+        tcmount.process_mounting(options, ['sdb'])
+        expected_command = 'test -b /dev/sdb && sudo veracrypt -tc -t -k "" --protect-hidden=no --fs-options= /dev/sdb ~/mnt/sdb'
         mock_os_exec.assert_called_with(expected_command)
 
     @patch('tcmount.build_mount_command')
@@ -141,6 +160,7 @@ class TestTcMount(unittest.TestCase):
                 # Test mounting
                 def options(): return None
                 options.veracrypt = False
+                options.tc_compat = False
                 options.no_utf8 = False
                 options.readonly = False
                 options.all = False
@@ -160,6 +180,7 @@ class TestTcMount(unittest.TestCase):
             with self.subTest(device=device):
                 def options(): return None
                 options.veracrypt = False
+                options.tc_compat = False
                 options.no_utf8 = True
                 options.readonly = True
                 options.all = False
@@ -172,68 +193,95 @@ class TestTcMount(unittest.TestCase):
     @patch('tcmount.os_exec')
     def test_process_mounting_combinations(self, mock_os_exec):
         test_cases = [
-            (False, False, False, False, None, 'utf8'),
-            (False, True, False, False, None, ''),
-            (False, False, True, False, None, 'utf8,ro'),
-            (False, True, True, False, None, 'ro'),
-            (False, False, False, True, None, 'utf8'),
-            (False, True, False, True, None, ''),
-            (False, False, True, True, None, 'utf8,ro'),
-            (False, True, True, True, None, 'ro'),
-            (False, False, False, False, 'sdb', 'utf8'),
-            (False, True, False, False, 'sdb', ''),
-            (False, False, True, False, 'sdb', 'utf8,ro'),
-            (False, True, True, False, 'sdb', 'ro'),
-            (False, False, False, True, 'sdb', 'utf8'),
-            (False, True, False, True, 'sdb', ''),
-            (False, False, True, True, 'sdb', 'utf8,ro'),
-            (False, True, True, True, 'sdb', 'ro'),
-            (False, False, False, False, 'sdc', 'utf8'),
-            (False, True, False, False, 'sdc', ''),
-            (False, False, True, False, 'sdc', 'utf8,ro'),
-            (False, True, True, False, 'sdc', 'ro'),
-            (False, False, False, True, 'sdc', 'utf8'),
-            (False, True, False, True, 'sdc', ''),
-            (False, False, True, True, 'sdc', 'utf8,ro'),
-            (False, True, True, True, 'sdc', 'ro'),
-            (True, False, False, False, None, 'utf8'),
-            (True, True, False, False, None, ''),
-            (True, False, True, False, None, 'utf8,ro'),
-            (True, True, True, False, None, 'ro'),
-            (True, False, False, True, None, 'utf8'),
-            (True, True, False, True, None, ''),
-            (True, False, True, True, None, 'utf8,ro'),
-            (True, True, True, True, None, 'ro'),
-            (True, False, False, False, 'sdb', 'utf8'),
-            (True, True, False, False, 'sdb', ''),
-            (True, False, True, False, 'sdb', 'utf8,ro'),
-            (True, True, True, False, 'sdb', 'ro'),
-            (True, False, False, True, 'sdb', 'utf8'),
-            (True, True, False, True, 'sdb', ''),
-            (True, False, True, True, 'sdb', 'utf8,ro'),
-            (True, True, True, True, 'sdb', 'ro'),
-            (True, False, False, False, 'sdc', 'utf8'),
-            (True, True, False, False, 'sdc', ''),
-            (True, False, True, False, 'sdc', 'utf8,ro'),
-            (True, True, True, False, 'sdc', 'ro'),
-            (True, False, False, True, 'sdc', 'utf8'),
-            (True, True, False, True, 'sdc', ''),
-            (True, False, True, True, 'sdc', 'utf8,ro'),
-            (True, True, True, True, 'sdc', 'ro'),
+            (False, False, False, False, False, None, 'utf8'),
+            (False, False, True, False, False, None, ''),
+            (False, False, False, True, False, None, 'utf8,ro'),
+            (False, False, True, True, False, None, 'ro'),
+            (False, False, False, False, True, None, 'utf8'),
+            (False, False, True, False, True, None, ''),
+            (False, False, False, True, True, None, 'utf8,ro'),
+            (False, False, True, True, True, None, 'ro'),
+            (False, False, False, False, False, 'sdb', 'utf8'),
+            (False, False, True, False, False, 'sdb', ''),
+            (False, False, False, True, False, 'sdb', 'utf8,ro'),
+            (False, False, True, True, False, 'sdb', 'ro'),
+            (False, False, False, False, True, 'sdb', 'utf8'),
+            (False, False, True, False, True, 'sdb', ''),
+            (False, False, False, True, True, 'sdb', 'utf8,ro'),
+            (False, False, True, True, True, 'sdb', 'ro'),
+            (False, False, False, False, False, 'sdc', 'utf8'),
+            (False, False, True, False, False, 'sdc', ''),
+            (False, False, False, True, False, 'sdc', 'utf8,ro'),
+            (False, False, True, True, False, 'sdc', 'ro'),
+            (False, False, False, False, True, 'sdc', 'utf8'),
+            (False, False, True, False, True, 'sdc', ''),
+            (False, False, False, True, True, 'sdc', 'utf8,ro'),
+            (False, False, True, True, True, 'sdc', 'ro'),
+            (True, False, False, False, False, None, 'utf8'),
+            (True, False, True, False, False, None, ''),
+            (True, False, False, True, False, None, 'utf8,ro'),
+            (True, False, True, True, False, None, 'ro'),
+            (True, False, False, False, True, None, 'utf8'),
+            (True, False, True, False, True, None, ''),
+            (True, False, False, True, True, None, 'utf8,ro'),
+            (True, False, True, True, True, None, 'ro'),
+            (True, False, False, False, False, 'sdb', 'utf8'),
+            (True, False, True, False, False, 'sdb', ''),
+            (True, False, False, True, False, 'sdb', 'utf8,ro'),
+            (True, False, True, True, False, 'sdb', 'ro'),
+            (True, False, False, False, True, 'sdb', 'utf8'),
+            (True, False, True, False, True, 'sdb', ''),
+            (True, False, False, True, True, 'sdb', 'utf8,ro'),
+            (True, False, True, True, True, 'sdb', 'ro'),
+            (True, False, False, False, False, 'sdc', 'utf8'),
+            (True, False, True, False, False, 'sdc', ''),
+            (True, False, False, True, False, 'sdc', 'utf8,ro'),
+            (True, False, True, True, False, 'sdc', 'ro'),
+            (True, False, False, False, True, 'sdc', 'utf8'),
+            (True, False, True, False, True, 'sdc', ''),
+            (True, False, False, True, True, 'sdc', 'utf8,ro'),
+            (True, False, True, True, True, 'sdc', 'ro'),
+            (False, True, False, False, False, None, 'utf8'),
+            (False, True, True, False, False, None, ''),
+            (False, True, False, True, False, None, 'utf8,ro'),
+            (False, True, True, True, False, None, 'ro'),
+            (False, True, False, False, True, None, 'utf8'),
+            (False, True, True, False, True, None, ''),
+            (False, True, False, True, True, None, 'utf8,ro'),
+            (False, True, True, True, True, None, 'ro'),
+            (False, True, False, False, False, 'sdb', 'utf8'),
+            (False, True, True, False, False, 'sdb', ''),
+            (False, True, False, True, False, 'sdb', 'utf8,ro'),
+            (False, True, True, True, False, 'sdb', 'ro'),
+            (False, True, False, False, True, 'sdb', 'utf8'),
+            (False, True, True, False, True, 'sdb', ''),
+            (False, True, False, True, True, 'sdb', 'utf8,ro'),
+            (False, True, True, True, True, 'sdb', 'ro'),
+            (False, True, False, False, False, 'sdc', 'utf8'),
+            (False, True, True, False, False, 'sdc', ''),
+            (False, True, False, True, False, 'sdc', 'utf8,ro'),
+            (False, True, True, True, False, 'sdc', 'ro'),
+            (False, True, False, False, True, 'sdc', 'utf8'),
+            (False, True, True, False, True, 'sdc', ''),
+            (False, True, False, True, True, 'sdc', 'utf8,ro'),
+            (False, True, True, True, True, 'sdc', 'ro'),
         ]
 
-        for veracrypt, no_utf8, readonly, all_devices, expansion, expected_options in test_cases:
-            with self.subTest(veracrypt=veracrypt, no_utf8=no_utf8, readonly=readonly, all_devices=all_devices, expansion=expansion):
+        for veracrypt, tc_compat, no_utf8, readonly, all_devices, expansion, expected_options in test_cases:
+            with self.subTest(veracrypt=veracrypt, tc_compat=tc_compat, no_utf8=no_utf8, readonly=readonly, all_devices=all_devices, expansion=expansion):
                 def options(): return None
                 options.veracrypt = veracrypt
+                options.tc_compat = tc_compat
                 options.no_utf8 = no_utf8
                 options.readonly = readonly
                 options.all = all_devices
                 options.expansion = expansion
                 tcmount.process_mounting(options, ['sdb'])
 
-                if veracrypt:
+                if tc_compat:
                     cmd_prefix = 'veracrypt -tc'
+                elif veracrypt:
+                    cmd_prefix = 'veracrypt'
                 else:
                     cmd_prefix = 'truecrypt'
 

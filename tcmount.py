@@ -18,7 +18,7 @@
 #
 #  Version History:
 #  v4.0 2023-12-15
-#       Added support for VeraCrypt with the -v (--veracrypt) option.
+#       Added support for VeraCrypt with the -v (--veracrypt) and -t (--tc-compat) options.
 #       Improved error handling for systems where only TrueCrypt or VeraCrypt is installed.
 #       Reversed the behavior of the -u (--utf8) option. Now, by default,
 #       the filesystem is mounted with UTF-8 encoding, and the -u option
@@ -70,6 +70,7 @@
 #
 #  Options:
 #  -v, --veracrypt    Use VeraCrypt instead of TrueCrypt for mounting and unmounting.
+#  -t, --tc-compat    Use VeraCrypt in TrueCrypt compatibility mode.
 #  -u, --no-utf8      Do not use UTF-8 encoding for the mounted filesystem.
 #  -r, --readonly     Mount the filesystem in read-only mode.
 #  -a, --all          Mount all available devices.
@@ -186,17 +187,23 @@ def process_mounting(options, args):
             if options.all:
                 commands.extend(build_mount_all_command(mount_options_str))
 
-    if options.veracrypt:
+    if options.tc_compat:
         if not is_veracrypt_installed():
-            print("Error: VeraCrypt is not installed, but '-v' option was specified. Please use TrueCrypt or install VeraCrypt and try again.")
-            sys.exit(6)
+            print("Error: VeraCrypt is not installed, but '-t' option was specified. Please install VeraCrypt and try again.")
+            sys.exit(13)
         encryption_tool = "veracrypt -tc"
+        unmount_cmd = "veracrypt"
+    elif options.veracrypt:
+        if not is_veracrypt_installed():
+            print("Error: VeraCrypt is not installed, but '-v' option was specified. Please install VeraCrypt and try again.")
+            sys.exit(12)
+        encryption_tool = "veracrypt"
         unmount_cmd = "veracrypt"
     else:
         if not is_truecrypt_installed():
             print(
-                "Error: TrueCrypt is not installed. Please use VeraCrypt or install TrueCrypt and try again.")
-            sys.exit(6)
+                "Error: TrueCrypt is not installed. Please install TrueCrypt and try again.")
+            sys.exit(11)
         encryption_tool = "truecrypt"
         unmount_cmd = "truecrypt"
 
@@ -221,7 +228,7 @@ def main():
 
     if not versions:
         print("Error: Neither TrueCrypt nor VeraCrypt is installed. Please install one of them and try again.")
-        sys.exit(5)
+        sys.exit(99)
 
     version_message = "tcmount.py {} - This script operates with {}.".format(
         tcmount_version, " / ".join(versions))
@@ -230,6 +237,10 @@ def main():
     parser.add_option("-v", "--veracrypt",
                       dest="veracrypt",
                       help="Use VeraCrypt instead of TrueCrypt",
+                      action="store_true")
+    parser.add_option("-t", "--tc-compat",
+                      dest="tc_compat",
+                      help="Use VeraCrypt in TrueCrypt compatibility mode",
                       action="store_true")
     parser.add_option("-u", "--no-utf8",
                       dest="no_utf8",
