@@ -6,7 +6,8 @@
 # Description:
 # This script checks for the presence of Python and Ruby, and executes all 
 # Python and Ruby test files located in the 'test' subdirectory. It displays
-# the paths and versions of Python and Ruby being used.
+# the paths and versions of Python and Ruby being used, and checks if each
+# test passes or fails.
 #
 # Author: id774 (More info: http://id774.net)
 # Source Code: https://github.com/id774/scripts
@@ -32,6 +33,10 @@ fi
 
 cd $SCRIPTS
 
+# Initialize failure counters
+python_failures=0
+ruby_failures=0
+
 # Check if Python is installed
 if ! command -v python &> /dev/null; then
     echo "Python is not installed. Skipping Python tests."
@@ -43,7 +48,12 @@ else
     # Execute Python tests
     for file in test/*_test.py; do
         echo "Running Python test: $file"
-        python "$file"
+        output=$(python "$file" 2>&1) # Capture both stdout and stderr
+        echo "$output"
+        if ! echo "$output" | tail -n 2 | grep -q "OK"; then
+            echo "Failure in Python test: $file"
+            ((python_failures++))
+        fi
     done
     echo "All Python tests completed."
 fi
@@ -63,10 +73,23 @@ else
         # Execute Ruby tests
         for file in test/*_test.rb; do
             echo "Running Ruby test: $file"
-            rspec "$file"
+            output=$(rspec "$file" 2>&1) # Capture both stdout and stderr
+            echo "$output"
+            if ! echo "$output" | grep -q "0 failures"; then
+                echo "Failure in Ruby test: $file"
+                ((ruby_failures++))
+            fi
         done
         echo "All Ruby tests completed."
     fi
 fi
 
-echo "All tests completed."
+# Final report
+if [ "$python_failures" -ne 0 ] || [ "$ruby_failures" -ne 0 ]; then
+    echo "Some tests failed. Python failures: $python_failures, Ruby failures: $ruby_failures."
+    exit 1
+else
+    echo "All tests passed successfully."
+    exit 0
+fi
+
