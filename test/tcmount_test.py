@@ -4,9 +4,10 @@
 # test/tcmount_test.py: Tests for tcmount.py
 #
 #  Description:
-#  This test suite is designed to test the tcmount.py script, focusing on the
-#  functionality of building commands for mounting and unmounting TrueCrypt
-#  encrypted devices.
+#  This test suite is designed to test the tcmount.py script, focusing on
+#  the functionality of building commands for mounting and unmounting
+#  TrueCrypt and VeraCrypt encrypted devices. It tests various combinations
+#  of options, including TrueCrypt and VeraCrypt compatibility modes.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -15,7 +16,8 @@
 #
 #  Version History:
 #  v1.0 2023-12-15
-#       First release of the test suite for tcmount.py.
+#       First release of the test suite for tcmount.py, with expanded tests
+#       covering both TrueCrypt and VeraCrypt compatibility.
 #
 #  Running the tests:
 #  Execute the test script from the command line:

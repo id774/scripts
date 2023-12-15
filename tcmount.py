@@ -27,7 +27,7 @@
 #  v3.2 2023-12-14
 #       Removed -l (local), -g (legacy), -f (half), and -p (partition) options.
 #       Refactored code to focus on essential mounting functionalities.
-#       Added -e (--expansion) option to mount ~/mnt/Expansion/container.tc to a specified device.
+#       Added -e (--expansion) option to mount the container file of Expansion to a specified device.
 #  v3.1 2023-12-10
 #       Minor refactoring of the os_exec function.
 #       Enhanced version display to include TrueCrypt version.
@@ -136,7 +136,7 @@ def build_mount_all_command(mount_options):
 
 def build_mount_expansion_command(device, mount_options):
     """
-    Builds the command to mount the container.tc file of Expansion to the specified device.
+    Builds the command to mount the container file of Expansion to the specified device.
     """
     expansion_file = '~/mnt/Expansion/container.tc'
     mount_point = os.path.join('~/mnt', device)
