@@ -7,6 +7,7 @@ Welcome to the `scripts` repository, a curated collection of useful scripts to e
 - [About](#about)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Testing](#testing)
 - [Contribution](#contribution)
 - [License](#license)
 - [Contact](#contact)
@@ -24,11 +25,33 @@ git clone https://github.com/id774/scripts.git
 cd scripts
 ```
 
+We recommend setting the `$SCRIPTS` environment variable to the path of your scripts collection for easy access. You can do this by adding the following line to your .bashrc, .zshrc, or equivalent:
+
+``` html
+export SCRIPTS='/path/to/scripts'
+```
+
+Run setup_scripts.sh to set appropriate file permissions:
+
+``` html
+./setup_scripts.sh
+```
+
 For detailed instructions on how to use each script, please refer to the documentation within each script itself.
 
 ## Usage
 
 Navigate to the script you wish to use and follow the instructions provided in its README. Most scripts are executable from the command line and may require specific permissions or environment setup.
+
+## Testing
+
+To run all tests in the `test` subdirectory, execute:
+
+``` html
+./run_tests.sh
+```
+
+This script checks for the presence of Python and Ruby, and executes all Python and Ruby test files located in the `test` subdirectory. It displays the paths and versions of Python and Ruby being used.
 
 ## Contribution
 
