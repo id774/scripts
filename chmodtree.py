@@ -46,7 +46,6 @@ def is_command_installed(command):
 def os_exec(cmd):
     """ Execute a system command using subprocess. """
     subprocess.call(cmd, shell=True)
-    # print(cmd)
 
 def build_find_command(options, directory):
     """ Build the find command based on provided options and directory. """
