@@ -138,15 +138,18 @@ def process_mounting(options, args):
     """
     Processes the mounting based on the provided options and arguments.
     """
-    mount_options = 'utf8'
-    if options.no_utf8:
-        mount_options = ''
+    mount_options = []
+    if not options.no_utf8:
+        mount_options.append('utf8')
     if options.readonly:
-        mount_options = ",".join(('ro', mount_options))
+        mount_options.append('ro')
+
+    mount_options_str = ','.join(mount_options)
 
     commands = []
     if options.expansion:
-        cmd = build_mount_expansion_command(options.expansion, mount_options)
+        cmd = build_mount_expansion_command(
+            options.expansion, mount_options_str)
         if cmd:
             commands.append(cmd)
     else:
@@ -155,11 +158,11 @@ def process_mounting(options, args):
             if len(args) > 1 and args[1] in ['unmount', 'umount']:
                 commands.append(build_unmount_command(device))
             else:
-                commands.append(build_mount_command(device, mount_options))
+                commands.append(build_mount_command(device, mount_options_str))
         else:
-            commands.append(build_mount_command('sdb', mount_options))
+            commands.append(build_mount_command('sdb', mount_options_str))
             if options.all:
-                commands.extend(build_mount_all_command(mount_options))
+                commands.extend(build_mount_all_command(mount_options_str))
 
     for cmd in commands:
         os_exec(cmd)
