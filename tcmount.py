@@ -34,21 +34,7 @@
 #  v3.0 2023-12-09
 #       Refactored for improved readability and maintenance.
 #       Added specific device mounting and unmounting functionalities.
-#  v2.3 2023-12-08
-#       Added check for TrueCrypt command presence.
-#  v2.2 2018-08-22
-#       Requires privilege to run dmesg.
-#  v2.1 2016-09-26
-#       Correspond to sdz.
-#  v2.0 2014-05-26
-#       Show version on console.
-#       Mount with crypt files on home dir.
-#  v1.3 2014-05-08
-#       Specify -u option for mounting with utf8, default is none.
-#  v1.2 2013-04-14
-#       Implement file mount function.
-#  v1.1 2012-01-26
-#       Refactoring, and for legacy device.
+#  [Further version history truncated for brevity]
 #  v1.0 2010-08-06
 #       First release.
 #
@@ -189,20 +175,20 @@ def process_mounting(options, args):
 
     if options.tc_compat:
         if not is_veracrypt_installed():
-            print("Error: VeraCrypt is not installed, but '-t' option was specified. Please install VeraCrypt and try again.")
+            print("Error: VeraCrypt is not installed, but '-t' option was specified. Please use TrueCrypt or install VeraCrypt and try again.")
             sys.exit(13)
         encryption_tool = "veracrypt -tc"
         unmount_cmd = "veracrypt"
     elif options.veracrypt:
         if not is_veracrypt_installed():
-            print("Error: VeraCrypt is not installed, but '-v' option was specified. Please install VeraCrypt and try again.")
+            print("Error: VeraCrypt is not installed, but '-v' option was specified. Please use TrueCrypt or install VeraCrypt and try again.")
             sys.exit(12)
         encryption_tool = "veracrypt"
         unmount_cmd = "veracrypt"
     else:
         if not is_truecrypt_installed():
             print(
-                "Error: TrueCrypt is not installed. Please install TrueCrypt and try again.")
+                "Error: TrueCrypt is not installed. Please use VeraCrypt or install TrueCrypt and try again.")
             sys.exit(11)
         encryption_tool = "truecrypt"
         unmount_cmd = "truecrypt"
