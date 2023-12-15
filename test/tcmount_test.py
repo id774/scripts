@@ -53,10 +53,49 @@ class TestTcMount(unittest.TestCase):
         result = tcmount.build_mount_expansion_command('sdb', 'utf8')
         self.assertEqual(result, expected)
 
+    def test_build_mount_command_with_readonly(self):
+        expected = 'test -b /dev/sdb && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=ro /dev/sdb ~/mnt/sdb'
+        result = tcmount.build_mount_command('sdb', 'ro')
+        self.assertEqual(result, expected)
+
+    def test_build_mount_command_without_utf8(self):
+        expected = 'test -b /dev/sdb && sudo truecrypt -t -k "" --protect-hidden=no --fs-options= /dev/sdb ~/mnt/sdb'
+        result = tcmount.build_mount_command('sdb', '')
+        self.assertEqual(result, expected)
+
     @patch('tcmount.subprocess.call')
     def test_is_truecrypt_installed(self, mock_call):
         mock_call.return_value = 0
         self.assertTrue(tcmount.is_truecrypt_installed())
+
+    @patch('tcmount.subprocess.call')
+    def test_os_exec(self, mock_call):
+        command = 'echo "Test Command"'
+        tcmount.os_exec(command)
+        mock_call.assert_called_with(command, shell=True)
+
+    @patch('tcmount.build_mount_command')
+    @patch('tcmount.build_unmount_command')
+    @patch('tcmount.os_exec')
+    def test_process_mounting(self, mock_os_exec, mock_build_unmount, mock_build_mount):
+        # Set up mock responses
+        mock_build_mount.return_value = 'mocked mount command'
+        mock_build_unmount.return_value = 'mocked unmount command'
+
+        # Test mounting
+        def options(): return None
+        options.no_utf8 = False
+        options.readonly = False
+        options.all = False
+        options.expansion = None
+        tcmount.process_mounting(options, ['sdb'])
+        mock_build_mount.assert_called_with('sdb', 'utf8')
+        mock_os_exec.assert_called_with('mocked mount command')
+
+        # Test unmounting
+        tcmount.process_mounting(options, ['sdb', 'unmount'])
+        mock_build_unmount.assert_called_with('sdb')
+        mock_os_exec.assert_called_with('mocked unmount command')
 
 
 if __name__ == '__main__':
