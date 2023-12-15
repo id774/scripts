@@ -1,32 +1,37 @@
 #!/usr/bin/env python
 
-"""
-html2yaml_test.py: Tests for html2yaml.py Script
-
-Description:
-This test suite verifies the functionality of the html2yaml.py script. It checks
-whether the script correctly parses an HTML document and outputs the expected
-YAML format. The tests depend on BeautifulSoup and PyYAML libraries.
-
-Test Data:
-The test uses an HTML file located at 'test/html2yaml_data.html', which should contain
-a sample HTML structure. The expected YAML output is defined within the test cases.
-
-Author: id774 (More info: http://id774.net)
-Source Code: https://github.com/id774/scripts
-License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
-Contact: idnanashi@gmail.com
-
-Dependencies:
-- BeautifulSoup
-- PyYAML
-- unittest (standard library)
-
-Usage:
-Run the test from the command line:
-  cd test
-  python -m unittest html2yaml_test.py
-"""
+########################################################################
+# html2yaml_test.py: Tests for html2yaml.py Script
+#
+#  Description:
+#  This test suite verifies the functionality of the html2yaml.py script. It checks
+#  whether the script correctly parses an HTML document and outputs the expected
+#  YAML format. The tests depend on BeautifulSoup and PyYAML libraries.
+#
+#  Test Data:
+#  The test uses an HTML file located at 'test/html2yaml_data.html', which should contain
+#  a sample HTML structure. The expected YAML output is defined within the test cases.
+#
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Dependencies:
+#  - BeautifulSoup
+#  - PyYAML
+#  - requests
+#
+#  This script requires the following Python libraries: BeautifulSoup,
+#  PyYAML, and requests. These can be installed via pip using:
+#    pip install bs4 pyyaml requests
+#
+#  Usage:
+#  Run the test from the command line:
+#    cd test
+#    python -m unittest html2yaml_test.py
+#
+########################################################################
 
 import unittest
 import sys
