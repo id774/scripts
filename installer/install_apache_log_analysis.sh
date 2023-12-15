@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.1 2023-12-16
+#       Also install ignore list.
 #  v1.0 2022-10-11
 #       Stable.
 ########################################################################
@@ -18,6 +20,10 @@ sudo chown root:adm /var/log/sysadmin
 sudo cp $SCRIPTS/apache_log_analysis.sh /root/bin/apache_log_analysis.sh
 sudo chmod 700 /root/bin/apache_log_analysis.sh
 sudo chown root:root /root/bin/apache_log_analysis.sh
+sudo mkdir -p /root/bin/etc
+sudo cp $SCRIPTS/etc/apache_ignore.list /root/bin/etc/apache_ignore.list
+sudo chmod 600 /root/bin/etc/apache_ignore.list
+sudo chown root:root /root/bin/etc/apache_ignore.list
 sudo cp $SCRIPTS/cron/bin/apache_log_analysis /etc/cron.daily/apache_log_analysis
 sudo chmod 750 /etc/cron.daily/apache_log_analysis
 sudo chown root:adm /etc/cron.daily/apache_log_analysis
