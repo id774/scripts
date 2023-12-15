@@ -39,7 +39,8 @@ class TestTcMount(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         if not (tcmount.is_truecrypt_installed() or tcmount.is_veracrypt_installed()):
-            raise unittest.SkipTest("Neither TrueCrypt nor VeraCrypt is installed, skipping tests.")
+            raise unittest.SkipTest(
+                "Neither TrueCrypt nor VeraCrypt is installed, skipping tests.")
 
     def test_build_mount_command(self):
         expected = 'test -b /dev/sdb && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=utf8 /dev/sdb ~/mnt/sdb'
