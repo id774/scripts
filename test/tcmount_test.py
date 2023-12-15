@@ -84,6 +84,7 @@ class TestTcMount(unittest.TestCase):
 
         # Test mounting
         def options(): return None
+        options.veracrypt = False
         options.no_utf8 = False
         options.readonly = False
         options.all = False
@@ -100,6 +101,7 @@ class TestTcMount(unittest.TestCase):
     @patch('tcmount.os_exec')
     def test_process_mounting_readonly_no_utf8(self, mock_os_exec):
         def options(): return None
+        options.veracrypt = False
         options.no_utf8 = True
         options.readonly = True
         options.all = False
@@ -120,6 +122,7 @@ class TestTcMount(unittest.TestCase):
             with self.subTest(device=device):
                 # Test mounting
                 def options(): return None
+                options.veracrypt = False
                 options.no_utf8 = False
                 options.readonly = False
                 options.all = False
@@ -138,6 +141,7 @@ class TestTcMount(unittest.TestCase):
         for device in ['sdb', 'sdc', 'sde', 'sdz']:
             with self.subTest(device=device):
                 def options(): return None
+                options.veracrypt = False
                 options.no_utf8 = True
                 options.readonly = True
                 options.all = False
@@ -183,6 +187,7 @@ class TestTcMount(unittest.TestCase):
                 options.readonly = readonly
                 options.all = all_devices
                 options.expansion = expansion
+                options.veracrypt = False
                 tcmount.process_mounting(options, ['sdb'])
 
                 if expansion:
