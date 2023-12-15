@@ -16,10 +16,11 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v3.3 2023-12-15
+#  v4.0 2023-12-15
 #       Reversed the behavior of the -u (--utf8) option. Now, by default,
 #       the filesystem is mounted with UTF-8 encoding, and the -u option
 #       is used to disable this setting.
+#       Refactored command construction to improve testability.
 #  v3.2 2023-12-14
 #       Removed -l (local), -g (legacy), -f (half), and -p (partition) options.
 #       Refactored code to focus on essential mounting functionalities.
@@ -102,60 +103,66 @@ def get_truecrypt_version():
     except subprocess.CalledProcessError:
         return "Unknown"
 
-def mount_drive(options, args, mount_options, device):
+def build_mount_command(device, mount_options):
     """
-    Mounts a TrueCrypt volume on a specific drive.
+    Builds the command to mount a TrueCrypt volume on a specific drive.
     """
-    cmd = 'test -b /dev/' + device +\
-        ' && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=' +\
-        mount_options + ' /dev/' + device + ' ~/mnt/' + device
-    os_exec(cmd)
+    return 'test -b /dev/{0} && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={1} /dev/{0} ~/mnt/{0}'.format(device, mount_options)
 
-def mount_device(options, args, mount_options):
+def build_unmount_command(device):
     """
-    Mounts a specific device or all devices based on the provided options.
+    Builds the command to unmount a specified device.
     """
+    return 'sudo truecrypt -d ~/mnt/{0}'.format(device)
 
-    # Mount a specific device if provided
-    if args:
-        device = args[0]
-        if len(args) > 1 and args[1] in ['unmount', 'umount']:
-            unmount_device(device)
-        else:
-            mount_drive(options, args, mount_options, device)
-    else:
-        mount_drive(options, args, mount_options, 'sdb')
-        if options.all:
-            mount_all(options, args, mount_options)
-
-def unmount_device(device):
+def build_mount_all_command(mount_options):
     """
-    Unmounts a specified device.
+    Builds the commands to mount all devices from sdc to sdz.
     """
-    cmd = 'sudo truecrypt -d ~/mnt/' + device
-    os_exec(cmd)
-
-def mount_all(options, args, mount_options):
-    """
-    Mounts all devices from sdc to sdz.
-    """
+    commands = []
     for device_suffix in range(ord('c'), ord('z') + 1):
-        mount_drive(options, args, mount_options, 'sd' + chr(device_suffix))
+        commands.append(build_mount_command(
+            'sd' + chr(device_suffix), mount_options))
+    return commands
 
-def mount_expansion(options, device, mount_options):
+def build_mount_expansion_command(device, mount_options):
     """
-    Mounts the ~/mnt/Expansion/container.tc file to the specified device.
+    Builds the command to mount the container.tc file of Expansion to the specified device.
     """
-
-    expansion_file = os.path.expanduser('~/mnt/Expansion/container.tc')
+    expansion_file = '~/mnt/Expansion/container.tc'
     mount_point = os.path.join('~/mnt', device)
 
-    if os.path.exists(expansion_file):
-        cmd = 'sudo truecrypt -t -k "" --protect-hidden=no --fs-options={} {} {}'.format(
-            mount_options, expansion_file, mount_point)
-        os_exec(cmd)
+    return 'test -f {0} && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={1} {0} {2}'.format(expansion_file, mount_options, mount_point)
+
+def process_mounting(options, args):
+    """
+    Processes the mounting based on the provided options and arguments.
+    """
+    mount_options = 'utf8'
+    if options.no_utf8:
+        mount_options = ''
+    if options.readonly:
+        mount_options = ",".join(('ro', mount_options))
+
+    commands = []
+    if options.expansion:
+        cmd = build_mount_expansion_command(options.expansion, mount_options)
+        if cmd:
+            commands.append(cmd)
     else:
-        print("The expansion file does not exist: {}".format(expansion_file))
+        if args:
+            device = args[0]
+            if len(args) > 1 and args[1] in ['unmount', 'umount']:
+                commands.append(build_unmount_command(device))
+            else:
+                commands.append(build_mount_command(device, mount_options))
+        else:
+            commands.append(build_mount_command('sdb', mount_options))
+            if options.all:
+                commands.extend(build_mount_all_command(mount_options))
+
+    for cmd in commands:
+        os_exec(cmd)
 
 def main():
     """
@@ -166,7 +173,7 @@ def main():
             "Error: TrueCrypt is not installed. This script requires TrueCrypt to mount and unmount encrypted devices. Please install TrueCrypt and try again.")
         sys.exit(5)
 
-    tcmount_version = "3.3"
+    tcmount_version = "4.0"
     truecrypt_version = get_truecrypt_version()
 
     version_message = "tcmount.py {} - This script operates with {}.".format(
@@ -193,16 +200,7 @@ def main():
 
     (options, args) = parser.parse_args()
 
-    mount_options = 'utf8'
-    if options.no_utf8:
-        mount_options = ''
-    if options.readonly:
-        mount_options = ",".join(('ro', mount_options))
-
-    if options.expansion:
-        mount_expansion(options, options.expansion, mount_options)
-    else:
-        mount_device(options, args, mount_options)
+    process_mounting(options, args)
 
 
 if __name__ == "__main__":
