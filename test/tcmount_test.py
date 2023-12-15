@@ -38,7 +38,7 @@ class TestTcMount(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        if not (tcmount.is_truecrypt_installed() or tcmount.is_veracrypt_installed()):
+        if not (tcmount.is_truecrypt_installed() and tcmount.is_veracrypt_installed()):
             raise unittest.SkipTest(
                 "Neither TrueCrypt nor VeraCrypt is installed, skipping tests.")
 
