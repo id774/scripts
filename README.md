@@ -41,7 +41,7 @@ For detailed instructions on how to use each script, please refer to the documen
 
 ## Usage
 
-Navigate to the script you wish to use and follow the instructions provided in its README. Most scripts are executable from the command line and may require specific permissions or environment setup.
+Refer to the contents of the script you wish to use in an editor and review the code and its documentation. All scripts are executable from the command line, but some may require specific permissions or environment setup.
 
 ## Testing
 
