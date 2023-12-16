@@ -17,6 +17,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v4.1 2023-12-17
+#       Modified is_truecrypt_installed and is_veracrypt_installed functions for compatibility
+#       with Python versions below 3.3, replacing subprocess.DEVNULL with os.devnull.
 #  v4.0 2023-12-15
 #       Added support for VeraCrypt with the -v (--veracrypt) and -t (--tc-compat) options.
 #       Improved error handling for systems where only TrueCrypt or VeraCrypt is installed.
@@ -84,13 +87,15 @@ def is_truecrypt_installed():
     """
     Checks if TrueCrypt is installed by searching for its command in the system path.
     """
-    return subprocess.call(['which', 'truecrypt'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
+    with open(os.devnull, 'w') as devnull:
+        return subprocess.call(['which', 'truecrypt'], stdout=devnull, stderr=devnull) == 0
 
 def is_veracrypt_installed():
     """
     Checks if VeraCrypt is installed by searching for its command in the system path.
     """
-    return subprocess.call(['which', 'veracrypt'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
+    with open(os.devnull, 'w') as devnull:
+        return subprocess.call(['which', 'veracrypt'], stdout=devnull, stderr=devnull) == 0
 
 def get_truecrypt_version():
     """
@@ -206,7 +211,7 @@ def main():
     """
     Main function to handle the mounting process based on user inputs.
     """
-    tcmount_version = "4.0"
+    tcmount_version = "4.1"
 
     versions = []
     if is_truecrypt_installed():

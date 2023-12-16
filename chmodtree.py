@@ -14,6 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2023-12-17
+#       Updated for compatibility with Python versions below 3.3 by replacing
+#       subprocess.DEVNULL with os.devnull in is_command_installed function.
 #  v2.0 2023-12-16
 #       Refactored to use command construction method. Added external command checks.
 #       Updated documentation and added comments to functions.
@@ -62,7 +65,8 @@ import subprocess
 
 def is_command_installed(command):
     """ Check if a command is installed on the system. """
-    return subprocess.call(['which', command], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
+    with open(os.devnull, 'w') as devnull:
+        return subprocess.call(['which', command], stdout=devnull, stderr=devnull) == 0
 
 def os_exec(cmd):
     """ Execute a system command using subprocess. """

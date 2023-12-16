@@ -55,7 +55,8 @@ class ApacheCalculater(object):
             if not ignore_ips:
                 ignore_ips.add("127.0.0.1")
         except FileNotFoundError:
-            ignore_ips.add("127.0.0.1")  # If the file doesn't exist, use localhost
+            # If the file doesn't exist, use localhost
+            ignore_ips.add("127.0.0.1")
         return ignore_ips
 
     @classmethod
