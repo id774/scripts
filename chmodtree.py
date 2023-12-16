@@ -28,21 +28,30 @@
 #  Run the script with a directory and options:
 #      python chmodtree.py [options] dir
 #
+#  Options:
+#    -h, --help            show this help message and exit
+#    -s, --sudo            exec with sudo
+#    -q, --quiet           shut off non-error messages
+#    -f FILES, --files=FILES
+#                          chmod files
+#    -d DIRS, --dirs=DIRS  chmod directory
+#    -n NAME, --name=NAME  name pattern of find (ex. -n '*.sh')
+#
 #  Options include --sudo to execute with superuser privileges, --quiet to reduce output verbosity,
 #  --files and --dirs to specify chmod permissions for files and directories, and --name to filter
 #  by filename pattern.
 #
 #  Example:
-#  Changing permissions of files only, matching a specific pattern:
-#      python chmodtree.py --files 644 --name '*.py' your_dir1
-#  Changing permissions of directories only, using sudo:
-#      python chmodtree.py --sudo --dirs 755 your_dir2
-#  Changing permissions of both files and directories, matching a specific pattern:
-#      python chmodtree.py --sudo --files 600 --dirs 700 --name '*.rb' your_dir3
-#  Changing permissions with verbose output:
-#      python chmodtree.py --sudo --quiet --files 640 --dirs 750 --name '*.txt' your_dir4
-#  Changing permissions in quiet mode, matching a specific pattern:
-#      python chmodtree.py --files 775 --dirs 750 --name '*.sh' your_dir5
+#    Changing permissions of files only, matching a specific pattern:
+#      python chmodtree.py -f 644 -n '*.py' your_dir1
+#    Changing permissions of directories only, using sudo:
+#      python chmodtree.py -s -d 755 your_dir2
+#    Changing permissions of both files and directories, matching a specific pattern:
+#      python chmodtree.py -s -f 600 -d 700 -n '*.rb' your_dir3
+#    Changing permissions with verbose output:
+#      python chmodtree.py -s -q -f 640 -d 750 -n '*.txt' your_dir4
+#    Changing permissions in quiet mode, matching a specific pattern:
+#      python chmodtree.py -f 775 -d 750 -n '*.sh' your_dir5
 #
 ########################################################################
 
