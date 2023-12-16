@@ -24,10 +24,12 @@
 #       the filesystem is mounted with UTF-8 encoding, and the -u option
 #       is used to disable this setting.
 #       Refactored command construction to improve testability.
+#       Renamed the -e (--expansion) option to -e (--external) and updated the path to
+#       the container file to '~/mnt/external/container.tc' for generalizing external HDD support.
 #  v3.2 2023-12-14
 #       Removed -l (local), -g (legacy), -f (half), and -p (partition) options.
 #       Refactored code to focus on essential mounting functionalities.
-#       Added -e (--expansion) option to mount the container file of Expansion to a specified device.
+#       Added -e (--external) option to mount the container file of an external drive to a specified device.
 #  v3.1 2023-12-10
 #       Minor refactoring of the os_exec function.
 #       Enhanced version display to include TrueCrypt version.
@@ -60,7 +62,7 @@
 #  -u, --no-utf8      Do not use UTF-8 encoding for the mounted filesystem.
 #  -r, --readonly     Mount the filesystem in read-only mode.
 #  -a, --all          Mount all available devices.
-#  -e, --expansion    Mount the container file of Expansion to a specified device.
+#  -e, --external     Mount the container file of an external drive to a specified device.
 #
 #  Refer to the TrueCrypt and VeraCrypt documentation for more detailed information
 #  on mount options and device specifications.
@@ -134,14 +136,14 @@ def build_mount_all_command(mount_options):
             'sd' + chr(device_suffix), mount_options))
     return commands
 
-def build_mount_expansion_command(device, mount_options):
+def build_mount_external_command(device, mount_options):
     """
-    Builds the command to mount the container file of Expansion to the specified device.
+    Builds the command to mount the container file of external to the specified device.
     """
-    expansion_file = '~/mnt/Expansion/container.tc'
+    external_file = '~/mnt/external/container.tc'
     mount_point = os.path.join('~/mnt', device)
 
-    return 'test -f {0} && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={1} {0} {2}'.format(expansion_file, mount_options, mount_point)
+    return 'test -f {0} && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={1} {0} {2}'.format(external_file, mount_options, mount_point)
 
 def process_mounting(options, args):
     """
@@ -156,9 +158,9 @@ def process_mounting(options, args):
     mount_options_str = ','.join(mount_options)
 
     commands = []
-    if options.expansion:
-        cmd = build_mount_expansion_command(
-            options.expansion, mount_options_str)
+    if options.external:
+        cmd = build_mount_external_command(
+            options.external, mount_options_str)
         if cmd:
             commands.append(cmd)
     else:
@@ -240,9 +242,9 @@ def main():
                       dest="all",
                       help="mount all devices",
                       action="store_true")
-    parser.add_option("-e", "--expansion",
-                      dest="expansion",
-                      help="Mount the specified device with Expansion",
+    parser.add_option("-e", "--external",
+                      dest="external",
+                      help="Mount the specified device with an external drive",
                       action="store",
                       type="string")
 

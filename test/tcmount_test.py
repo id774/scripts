@@ -68,9 +68,9 @@ class TestTcMount(unittest.TestCase):
         result = tcmount.build_mount_all_command('utf8')
         self.assertTrue('sdz' in result[-1])
 
-    def test_build_mount_expansion_command(self):
-        expected = 'test -f ~/mnt/Expansion/container.tc && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=utf8 ~/mnt/Expansion/container.tc ~/mnt/sdb'
-        result = tcmount.build_mount_expansion_command('sdb', 'utf8')
+    def test_build_mount_external_command(self):
+        expected = 'test -f ~/mnt/external/container.tc && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=utf8 ~/mnt/external/container.tc ~/mnt/sdb'
+        result = tcmount.build_mount_external_command('sdb', 'utf8')
         self.assertEqual(result, expected)
 
     def test_build_mount_command_with_readonly(self):
@@ -114,7 +114,7 @@ class TestTcMount(unittest.TestCase):
             options.no_utf8 = False
             options.readonly = False
             options.all = False
-            options.expansion = None
+            options.external = None
             tcmount.process_mounting(options, ['sdb'])
             mock_build_mount.assert_called_with('sdb', 'utf8')
             mock_os_exec.assert_called_with('mocked mount command')
@@ -146,7 +146,7 @@ class TestTcMount(unittest.TestCase):
         options.no_utf8 = True
         options.readonly = True
         options.all = False
-        options.expansion = None
+        options.external = None
         tcmount.process_mounting(options, ['sdb'])
         expected_command = 'test -b /dev/sdb && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=ro /dev/sdb ~/mnt/sdb'
         mock_os_exec.assert_called_with(expected_command)
@@ -161,7 +161,7 @@ class TestTcMount(unittest.TestCase):
         options.no_utf8 = False
         options.readonly = True
         options.all = False
-        options.expansion = None
+        options.external = None
         tcmount.process_mounting(options, ['sdb'])
         expected_command = 'test -b /dev/sdb && sudo veracrypt -t -k "" --protect-hidden=no --fs-options=utf8,ro /dev/sdb ~/mnt/sdb'
         mock_os_exec.assert_called_with(expected_command)
@@ -176,7 +176,7 @@ class TestTcMount(unittest.TestCase):
         options.no_utf8 = True
         options.readonly = False
         options.all = False
-        options.expansion = None
+        options.external = None
         tcmount.process_mounting(options, ['sdb'])
         expected_command = 'test -b /dev/sdb && sudo veracrypt -tc -t -k "" --protect-hidden=no --fs-options= /dev/sdb ~/mnt/sdb'
         mock_os_exec.assert_called_with(expected_command)
@@ -200,7 +200,7 @@ class TestTcMount(unittest.TestCase):
                 options.no_utf8 = False
                 options.readonly = False
                 options.all = False
-                options.expansion = None
+                options.external = None
                 tcmount.process_mounting(options, [device])
                 mock_build_mount.assert_called_with(device, 'utf8')
                 mock_os_exec.assert_called_with('mocked mount command')
@@ -222,7 +222,7 @@ class TestTcMount(unittest.TestCase):
                 options.no_utf8 = True
                 options.readonly = True
                 options.all = False
-                options.expansion = None
+                options.external = None
                 tcmount.process_mounting(options, [device])
                 expected_command = 'test -b /dev/{} && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=ro /dev/{} ~/mnt/{}'.format(
                     device, device, device)
@@ -307,15 +307,15 @@ class TestTcMount(unittest.TestCase):
             (False, True, True, True, True, 'sdc', 'ro'),
         ]
 
-        for veracrypt, tc_compat, no_utf8, readonly, all_devices, expansion, expected_options in test_cases:
-            with self.subTest(veracrypt=veracrypt, tc_compat=tc_compat, no_utf8=no_utf8, readonly=readonly, all_devices=all_devices, expansion=expansion):
+        for veracrypt, tc_compat, no_utf8, readonly, all_devices, external, expected_options in test_cases:
+            with self.subTest(veracrypt=veracrypt, tc_compat=tc_compat, no_utf8=no_utf8, readonly=readonly, all_devices=all_devices, external=external):
                 def options(): return None
                 options.veracrypt = veracrypt
                 options.tc_compat = tc_compat
                 options.no_utf8 = no_utf8
                 options.readonly = readonly
                 options.all = all_devices
-                options.expansion = expansion
+                options.external = external
                 tcmount.process_mounting(options, ['sdb'])
 
                 if tc_compat:
@@ -325,9 +325,9 @@ class TestTcMount(unittest.TestCase):
                 else:
                     cmd_prefix = 'truecrypt'
 
-                if expansion:
-                    expected_command = 'test -f ~/mnt/Expansion/container.tc && sudo {} -t -k "" --protect-hidden=no --fs-options={} ~/mnt/Expansion/container.tc ~/mnt/{}'.format(
-                        cmd_prefix, expected_options, expansion)
+                if external:
+                    expected_command = 'test -f ~/mnt/external/container.tc && sudo {} -t -k "" --protect-hidden=no --fs-options={} ~/mnt/external/container.tc ~/mnt/{}'.format(
+                        cmd_prefix, expected_options, external)
                 else:
                     expected_command = 'test -b /dev/sdb && sudo {} -t -k "" --protect-hidden=no --fs-options={} /dev/sdb ~/mnt/sdb'.format(
                         cmd_prefix, expected_options)
