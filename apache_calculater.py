@@ -15,6 +15,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2023-12-17
+#       Enhanced the logic for loading the ignore list by searching
+#       in both the current directory's etc folder and the script's
+#       relative parent directory's etc folder.
 #  v1.2 2023-12-14
 #       Added support for .gz log files and implemented IP ignore list.
 #  v1.1 2023-12-06
@@ -30,33 +34,37 @@
 
 import sys
 import gzip
+import os
 
 class ApacheCalculater(object):
 
     @staticmethod
-    def loadIgnoreList(ignore_file):
+    def loadIgnoreList():
         """
-        Load the ignore list from a file, ignoring comments and empty lines.
-        Use localhost as default if the list is empty.
-
-        Args:
-            ignore_file (str): Path to the ignore list file.
+        Load the ignore list from the first available location.
+        Use localhost as default if the list is empty or file is not found.
 
         Returns:
             set: A set of IPs to ignore.
         """
-        ignore_ips = set()
-        try:
-            with open(ignore_file, "r") as file:
-                for line in file:
-                    stripped_line = line.strip()
-                    if stripped_line and not stripped_line.startswith("#"):
-                        ignore_ips.add(stripped_line)
-            if not ignore_ips:
-                ignore_ips.add("127.0.0.1")
-        except FileNotFoundError:
-            # If the file doesn't exist, use localhost
-            ignore_ips.add("127.0.0.1")
+        ignore_ips = set({"127.0.0.1"})  # Default value
+        current_dir_ignore_file = "./etc/apache_ignore.list"
+        script_dir_ignore_file = os.path.join(
+            os.path.dirname(__file__), "../etc/apache_ignore.list")
+
+        ignore_file = current_dir_ignore_file if os.path.isfile(
+            current_dir_ignore_file) else script_dir_ignore_file if os.path.isfile(script_dir_ignore_file) else None
+
+        if ignore_file:
+            try:
+                with open(ignore_file, "r") as file:
+                    for line in file:
+                        stripped_line = line.strip()
+                        if stripped_line and not stripped_line.startswith("#"):
+                            ignore_ips.add(stripped_line)
+            except FileNotFoundError:
+                pass  # Ignore file not found, default IP is used
+
         return ignore_ips
 
     @classmethod
@@ -71,7 +79,7 @@ class ApacheCalculater(object):
             list of tuples: Sorted list of (IP, hits) tuples.
         """
         ipHitListing = {}
-        ignore_ips = cls.loadIgnoreList("./etc/apache_ignore.list")
+        ignore_ips = cls.loadIgnoreList()
 
         open_func = gzip.open if log.endswith(".gz") else open
 
