@@ -19,6 +19,7 @@
 #                     Operations are now defined in an external file
 #                     'etc/rsync_backup.conf' for enhanced modularity and
 #                     maintainability.
+#                     Integrated github-arc.sh and cleanup-junk-files.sh scripts.
 #  v2.0  2023-07-04 - Major version upgrade with no functional changes.
 #  v1.27 2023-07-02 - Convert script to POSIX-compatible syntax. Show return
 #                     code 1 if required directory does not exist.
@@ -89,9 +90,9 @@ show_capacity_of_directories() {
 }
 
 cleanup() {
-  if [ -x /root/bin/cleanup-junk-files.sh ]; then
-    /root/bin/cleanup-junk-files.sh "$B_HOME/$B_MOUNT/$B_DEVICE"
-  fi
+  rm -vf "$B_HOME/$B_MOUNT/$B_DEVICE"/**/._*
+  rm -vf "$B_HOME/$B_MOUNT/$B_DEVICE"/**/.DS_Store
+  rm -vf "$B_HOME/$B_MOUNT/$B_DEVICE"/**/.*.un~
 }
 
 git_backup() {
@@ -106,9 +107,11 @@ git_backup() {
 }
 
 github_backup() {
-  if [ -x /root/bin/github-arc.sh ]; then
-    /root/bin/github-arc.sh
-  fi
+  test -f /root/local/github.tar.gz && rm -f /root/local/github.tar.gz
+  test -d $B_HOME/local/github && tar czvf /root/local/github.tar.gz $B_HOME/local/github > /dev/null
+  du -h --max-depth=1 $B_HOME/local/github
+  du -h --max-depth=1 $B_HOME/local/git
+
   if [ -f /root/local/github.tar.gz ] && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git" ]; then
     cp -v /root/local/github.tar.gz "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
   fi
