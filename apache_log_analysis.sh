@@ -15,6 +15,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2023-12-17
+#       Improved the logic for loading the ignore list by adding a
+#       fallback to check in the script's relative parent directory
+#       if not found in the current directory.
 #  v1.2 2023-12-14
 #       Added checks for log file existence and grep/zgrep/awk availability.
 #       Implemented the functionality to ignore IPs listed in apache_ignore.list.
@@ -57,8 +61,15 @@ if [ -z "$LOG_FILES" ]; then
     exit 1
 fi
 
-# Load the ignore list if it exists, use localhost as default if empty
-IGNORE_FILE="./etc/apache_ignore.list"
+# Load the ignore list from the first available location
+IGNORE_FILE=""
+if [ -f "./etc/apache_ignore.list" ]; then
+    IGNORE_FILE="./etc/apache_ignore.list"
+elif [ -f "$(dirname "${BASH_SOURCE[0]}")/../etc/apache_ignore.list" ]; then
+    IGNORE_FILE="$(dirname "${BASH_SOURCE[0]}")/../etc/apache_ignore.list"
+fi
+
+# Use localhost as default if the ignore file is empty or not found
 if [ -f "$IGNORE_FILE" ]; then
     IGNORE_IPS=$(awk '!/^#/ && NF' "$IGNORE_FILE" | paste -sd "|" -)
     if [ -z "$IGNORE_IPS" ]; then
@@ -66,6 +77,7 @@ if [ -f "$IGNORE_FILE" ]; then
     fi
 else
     IGNORE_IPS="127.0.0.1"
+    echo "Ignore file not found. Using default ignore IP: $IGNORE_IPS"
 fi
 
 # Function to display top accessed URLs
