@@ -15,6 +15,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1  2023-12-17 - Refactored script to separate logic and operations.
+#                     Operations are now defined in an external file
+#                     'etc/rsync_backup.conf' for enhanced modularity and
+#                     maintainability.
 #  v2.0  2023-07-04 - Major version upgrade with no functional changes.
 #  v1.27 2023-07-02 - Convert script to POSIX-compatible syntax. Show return
 #                     code 1 if required directory does not exist.
@@ -190,59 +194,13 @@ rsync_disk2disk_2() {
   echo "Return code is $?"
 }
 
-operation1() {
-  B_HOME=/home/ubuntu
-  T_HOME=/home/ubuntu
-  B_MOUNT=mnt
-  B_DEVICE=sdb
-  T_MOUNT=mnt
-  T_DEVICE=sde
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
-  version_info
-  df -T
+CONFIG_FILE="$SCRIPT_DIR/../etc/rsync_backup.conf"
 
-  display_and_update_timestamp
-  smart_info
-
-  show_capacity_of_directories
-  cleanup
-  github_backup
-  git_backup git git.id774.net
-
-  rsync_disk2disk_1
-  rsync_disk2disk_2
-
-  df -T
-  smart_check
-}
-
-operation2() {
-  B_HOME=/home/ubuntu
-  T_HOME=/home/ubuntu
-  B_MOUNT=mnt
-  B_DEVICE=sdb
-  T_MOUNT=mnt
-
-  version_info
-  df -T
-
-  display_and_update_timestamp
-  smart_info
-
-  rsync_disk2disk_1
-  rsync_disk2disk_2
-
-  df -T
-  smart_check
-}
-
-operation() {
-  T_HOME=/home/ubuntu
-  T_MOUNT=mnt
-  T_DEVICE=sde
-  test -f $T_HOME/$T_MOUNT/$T_DEVICE/timestamp && operation1
-  T_DEVICE=sdf
-  test -f $T_HOME/$T_MOUNT/$T_DEVICE/timestamp && operation2
-}
-
-operation
+if [[ -f "$CONFIG_FILE" ]]; then
+    source "$CONFIG_FILE"
+else
+    echo "Configuration file not found: $CONFIG_FILE"
+    exit 99
+fi

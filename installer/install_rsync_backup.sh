@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.8 2023-12-17
+#       Refactor rsync_backup script for modular operation definitions.
 #  v1.7 2012-05-11
 #       Remove obsolete scripts.
 #  v1.6 2010-08-09
@@ -26,8 +28,10 @@ sudo chown root:adm /var/log/sysadmin
 
 # Rsync Backup Job
 sudo cp $SCRIPTS/cron/bin/rsync_backup.sh /root/bin/rsync_backup.sh
-sudo vi /root/bin/rsync_backup.sh
 sudo chmod 700 /root/bin/rsync_backup.sh
+sudo cp $SCRIPTS/cron/etc/rsync_backup.conf /root/etc/rsync_backup.conf
+sudo vi /root/etc/rsync_backup.conf
+sudo chmod 600 /root/etc/rsync_backup.conf
 sudo cp $SCRIPTS/cron/bin/rsync_backup /etc/cron.hourly/rsync_backup
 sudo vi /etc/cron.hourly/rsync_backup
 sudo chmod 750 /etc/cron.hourly/rsync_backup
