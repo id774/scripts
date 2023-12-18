@@ -8,7 +8,7 @@
 # 'du' command on macOS. It uses a combination of 'find' and 'du' commands
 # to simulate the '--max-depth' functionality. The script takes a depth
 # number and a directory as arguments to perform disk usage analysis
-# with specified depth.
+# with specified depth. It works only on macOS.
 #
 # Author: id774 (More info: http://id774.net)
 # Source Code: https://github.com/id774/scripts
@@ -27,6 +27,7 @@
 
 import subprocess
 import sys
+import platform
 
 def is_command_exist(command):
     """
@@ -43,9 +44,13 @@ def run_custom_du(maxdepth, directory):
     subprocess.call(find_command)
 
 def main(args):
+    if platform.system() != 'Darwin':
+        print("Error: This script is intended for use on macOS only.")
+        sys.exit(1)
+
     if not is_command_exist('find') or not is_command_exist('du'):
         print("Error: Required commands 'find' or 'du' are not available.")
-        sys.exit(1)
+        sys.exit(2)
 
     if len(args) >= 2 and args[0].isdigit():
         run_custom_du(args[0], args[1])
