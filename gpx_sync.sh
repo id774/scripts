@@ -14,6 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2023-12-19
+#       Modified copy_files function to return an error if the destination
+#       directory does not exist.
 #  v1.2 2023-12-05
 #       Enhanced error handling and return codes for each function.
 #  v1.1 2023-12-01
@@ -50,12 +53,13 @@ check_gpx_files() {
     return 0
 }
 
-# Function to copy files to a directory, creating the directory if it does not exist
+# Function to copy files to a directory, returning an error if the directory does not exist
 copy_files() {
     local source_dir=$1
     local destination=$2
     if [ ! -d "$destination" ]; then
-        mkdir -p "$destination" || return $?
+        echo "Error: Destination directory $destination does not exist."
+        return 1
     fi
     echo "Copying files from $source_dir to $destination"
     cp "$source_dir"/*.gpx "$destination" || return $?
