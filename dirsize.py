@@ -54,7 +54,7 @@ def main():
 
     # Check if the directory exists
     if not os.path.exists(directory):
-        print(f"Error: Directory '{directory}' does not exist.")
+        print("Error: Directory '{}' does not exist.".format(directory))
         sys.exit(1)
 
     total_size = 0
