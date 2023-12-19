@@ -15,14 +15,20 @@
 # Contact: idnanashi@gmail.com
 #
 # Version History:
+# v1.1 2023-12-20
+#      Added environment variable to prevent the creation of __pycache__
+#      directories during Python tests.
+#      First release of the test script.
 # v1.0 2023-12-15
-#       First release of the test script.
+#      First release of the test script.
 #
 # Usage:
 # Run this script from the command line to execute all tests:
 # ./run_tests.sh
 #
 ########################################################################
+
+export PYTHONDONTWRITEBYTECODE=1
 
 # Check if SCRIPTS variable is set
 if [ -z "$SCRIPTS" ]; then
