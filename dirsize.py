@@ -32,6 +32,7 @@
 import os
 import subprocess
 import sys
+from decimal import Decimal, getcontext
 
 def convert_size(size_bytes):
     if size_bytes == 0:
@@ -39,9 +40,13 @@ def convert_size(size_bytes):
     i = 0
     prefix = ["B", "KiB", "MiB", "GiB", "TiB",
               "PiB", "EiB", "ZiB", "YiB", "RiB", "QiB"]
-    while size_bytes >= 1024 and i < len(prefix) - 1:
-        size_bytes /= 1024
+    size_bytes = Decimal(size_bytes)
+    getcontext().prec = 50
+
+    while size_bytes >= Decimal(1024) and i < len(prefix) - 1:
+        size_bytes /= Decimal(1024)
         i += 1
+
     return "{:.2f} {}".format(size_bytes, prefix[i])
 
 def main():
