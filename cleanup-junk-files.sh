@@ -5,8 +5,8 @@
 #
 #  Description:
 #  This script removes common junk files from a specified directory.
-#  It targets files like .DS_Store, ._* AppleDouble files, and temporary
-#  Unix files ending with '.un~'.
+#  It targets files like .DS_Store, ._* AppleDouble files, temporary
+#  Unix files ending with '.un~', and __pycache__ directories.
 #
 #  Notes:
 #  - This script will recursively delete the specified junk files in the target directory.
@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-20
+#       Added feature to remove __pycache__ directories.
 #  v1.1 2023-12-06
 #       Refactored for improved readability, added detailed comments and notes.
 #  v1.0 2016-08-05
@@ -42,6 +44,7 @@ echo "Cleaning up junk files in $1..."
 rm -vf $1/**/._*
 rm -vf $1/**/.DS_Store
 rm -vf $1/**/.*.un~
+rm -vrf $1/**/__pycache__
 
 echo "Cleanup completed."
 
