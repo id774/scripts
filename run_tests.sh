@@ -18,7 +18,6 @@
 # v1.1 2023-12-20
 #      Added environment variable to prevent the creation of __pycache__
 #      directories during Python tests.
-#      First release of the test script.
 # v1.0 2023-12-15
 #      First release of the test script.
 #
