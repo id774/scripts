@@ -41,6 +41,18 @@ if [ -z "$SCRIPTS" ]; then
     exit 1
 fi
 
+# Check if IPython is installed and get its path
+check_ipython() {
+    IPYTHON_PATH=$(which ipython)
+
+    if [ -z "$IPYTHON_PATH" ]; then
+        echo "Error: IPython is not installed."
+        exit 1
+    else
+        echo "IPython found at: $IPYTHON_PATH"
+    fi
+}
+
 # Setup environment variables based on OSTYPE
 setup_environment() {
      case $OSTYPE in
@@ -82,7 +94,8 @@ copy_dotipython() {
 
 # Main function to orchestrate setup
 main() {
-    setup_environment $*
+    check_ipython
+    setup_environment
     copy_dotipython $*
     init_nbserver $*
 }
