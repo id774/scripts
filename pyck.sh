@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2023-12-20
+#       Replaced 'which' with 'command -v' for command existence check.
 #  v1.2 2023-12-07
 #       Removed dependency on specific Python path.
 #  v1.1 2023-12-06
@@ -41,9 +43,9 @@ autofix() {
 }
 
 main() {
-    which autopep8 > /dev/null || { echo "autopep8 not found"; exit 1; }
-    which flake8 > /dev/null || { echo "flake8 not found"; exit 1; }
-    which autoflake > /dev/null || { echo "autoflake not found"; exit 1; }
+    command -v autopep8 > /dev/null || { echo "autopep8 not found"; exit 1; }
+    command -v flake8 > /dev/null || { echo "flake8 not found"; exit 1; }
+    command -v autoflake > /dev/null || { echo "autoflake not found"; exit 1; }
 
     if [ "$1" = "-i" ]; then
         autofix "$@"
@@ -54,4 +56,3 @@ main() {
 }
 
 main "$@"
-

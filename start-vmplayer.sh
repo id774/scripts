@@ -1,29 +1,34 @@
 #!/bin/sh
 
 ########################################################################
-# start-vmplayer.sh: VMware Player startup script
+# start-vmplayer.sh: VMware Player Startup Script
+#
+# Description:
+# This script starts VMware Player in a virtual X server environment.
+# It uses xvfb, fluxbox, x11vnc, and vmplayer to set up a virtual desktop
+# accessible via VNC.
+#
+# Author: id774 (More info: http://id774.net)
+# Source Code: https://github.com/id774/scripts
+# License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+# Contact: idnanashi@gmail.com
+#
+# Version History:
+# v0.2 2023-12-20
+#      Replaced 'which' with 'command -v' for command existence check.
+#      Updated script header for consistency.
+# v0.1 2011-11-07
+#      First release.
 #
 # Note:
-#  This needs following packages
-#    - xvfb
-#    - fluxbox (non-free)
-#    - x11vnc (non-free)
-#    - vmplayer (non-free)
+# This script requires xvfb, fluxbox (non-free), x11vnc (non-free),
+# and vmplayer (non-free) packages.
+# Start with the privileges of the user.
+# To connect from a client, use SSH port forwarding:
+#   $ ssh servername -L5900:localhost:5900
+# Then, connect to localhost:5900 using xtightvncviewer.
+# Kill the VNC and fluxbox for safety after starting VM.
 #
-#  Start with the privileges of the user.
-#
-#  To connect from a client, use SSH portfowarding following
-#  $ ssh servername -L5900:localhost:5900
-#
-#  Next, connect localhost:5900 by xtightvncviewer.
-#
-#  Kill the VNC and fluxbox for safety after starting VM.
-#
-#
-#  Maintainer: id774 <idnanashi@gmail.com>
-#
-#  v0.1 2011-11-07
-#       First version.
 ########################################################################
 
 test -n "$TMP" || export TMP=$HOME/.tmp
@@ -58,8 +63,9 @@ start_daemon() {
     start_vmplayer
 }
 
-which Xvfb > /dev/null && \
-  which fluxbox > /dev/null && \
-  which x11vnc > /dev/null && \
-  which vmplayer > /dev/null && \
+command -v Xvfb > /dev/null && \
+  command -v fluxbox > /dev/null && \
+  command -v x11vnc > /dev/null && \
+  command -v vmplayer > /dev/null && \
   start_daemon
+

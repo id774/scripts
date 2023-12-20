@@ -18,6 +18,7 @@
 # v1.1 2023-12-20
 #      Added environment variable to prevent the creation of __pycache__
 #      directories during Python tests.
+#      Replaced 'which' with 'command -v' for command existence check.
 # v1.0 2023-12-15
 #      First release of the test script.
 #
@@ -47,7 +48,7 @@ if ! command -v python &> /dev/null; then
     echo "Python is not installed. Skipping Python tests."
 else
     # Display Python path and version
-    echo "Python path: $(which python)"
+    echo "Python path: $(command -v python)"
     python --version
 
     # Execute Python tests
@@ -68,7 +69,7 @@ if ! command -v ruby &> /dev/null; then
     echo "Ruby is not installed. Skipping Ruby tests."
 else
     # Display Ruby path and version
-    echo "Ruby path: $(which ruby)"
+    echo "Ruby path: $(command -v ruby)"
     ruby --version
 
     # Check if 'rspec' is installed for Ruby tests
@@ -97,4 +98,3 @@ else
     echo "All tests passed successfully."
     exit 0
 fi
-
