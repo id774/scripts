@@ -35,15 +35,17 @@
 ########################################################################
 
 # Check if SCRIPTS variable is set
-if [ -z "$SCRIPTS" ]; then
-    echo "Error: SCRIPTS environment variable is not set."
-    echo "Please set the SCRIPTS variable to the path of your IPython startup files."
-    exit 1
-fi
+check_scripts() {
+    if [ -z "$SCRIPTS" ]; then
+        echo "Error: SCRIPTS environment variable is not set."
+        echo "Please set the SCRIPTS variable to the path of your IPython startup files."
+        exit 1
+    fi
+}
 
 # Check if IPython is installed and get its path
 check_ipython() {
-    IPYTHON_PATH=$(which ipython)
+    IPYTHON_PATH=$(command -v ipython)
 
     if [ -z "$IPYTHON_PATH" ]; then
         echo "Error: IPython is not installed."
@@ -94,6 +96,7 @@ copy_dotipython() {
 
 # Main function to orchestrate setup
 main() {
+    check_scripts
     check_ipython
     setup_environment
     copy_dotipython $*
