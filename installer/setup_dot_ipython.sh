@@ -41,41 +41,51 @@ if [ -z "$SCRIPTS" ]; then
     exit 1
 fi
 
+# Setup environment variables based on OSTYPE
 setup_environment() {
-    SCRIPTS=$HOME/scripts
-
-    case $OSTYPE in
-      *darwin*)
-        OPTIONS=-Rv
-        ;;
-      *)
-        OPTIONS=-Rvd
-        ;;
-    esac
+     case $OSTYPE in
+       *darwin*)
+         OPTIONS=-Rv
+         ;;
+       *)
+         OPTIONS=-Rvd
+         ;;
+     esac
 }
 
+# Initialize the nbserver IPython profile
 init_nbserver() {
-    cd
     ipython profile create nbserver
-    test -d $HOME/.ipython/profile_nbserver/startup && cp $OPTIONS $SCRIPTS/dot_files/dot_ipython/profile_default/startup/00-init.py $HOME/.ipython/profile_nbserver/startup/
-    test -f $HOME/.ipython/profile_nbserver/startup/00-init.py && chmod -x $HOME/.ipython/profile_nbserver/startup/00-init.py
+    NB_SERVER_DIR="${HOME}/.ipython/profile_nbserver/startup"
+
+    if [ -d "$NB_SERVER_DIR" ]; then
+        cp ${OPTIONS} "${SCRIPTS}/dot_files/dot_ipython/profile_default/startup/00-init.py" "$NB_SERVER_DIR"
+        [ -f "${NB_SERVER_DIR}/00-init.py" ] && chmod -x "${NB_SERVER_DIR}/00-init.py"
+    fi
 }
 
+# Copy .ipython configuration and set up default profile
 copy_dotipython() {
-    cd
-    test -d $HOME/.ipython && rm -rf $HOME/.ipython
+    IPYTHON_DIR="${HOME}/.ipython"
+    [ -d "$IPYTHON_DIR" ] && rm -rf "$IPYTHON_DIR"
+
     ipython profile create default
-    test -d $HOME/.ipython/profile_default/startup || mkdir -p $HOME/.ipython/profile_default/startup
-    cp $OPTIONS $SCRIPTS/dot_files/dot_ipython/profile_default/startup/00-init.py $HOME/.ipython/profile_default/startup/
-    test -f $HOME/.ipython/profile_default/startup/00-init.py && chmod -x $HOME/.ipython/profile_default/startup/00-init.py
-    cp $OPTIONS $SCRIPTS/dot_files/dot_zshrc $HOME/.zshrc
-    cp $OPTIONS $SCRIPTS/dot_files/dot_zshrc_local $HOME/.zshrc_local
+    DEFAULT_PROFILE_DIR="${IPYTHON_DIR}/profile_default/startup"
+
+    [ -d "$DEFAULT_PROFILE_DIR" ] || mkdir -p "$DEFAULT_PROFILE_DIR"
+    cp ${OPTIONS} "${SCRIPTS}/dot_files/dot_ipython/profile_default/startup/00-init.py" "$DEFAULT_PROFILE_DIR"
+    [ -f "${DEFAULT_PROFILE_DIR}/00-init.py" ] && chmod -x "${DEFAULT_PROFILE_DIR}/00-init.py"
+
+    cp ${OPTIONS} "${SCRIPTS}/dot_files/dot_zshrc" "${HOME}/.zshrc"
+    cp ${OPTIONS} "${SCRIPTS}/dot_files/dot_zshrc_local" "${HOME}/.zshrc_local"
 }
 
+# Main function to orchestrate setup
 main() {
     setup_environment $*
     copy_dotipython $*
     init_nbserver $*
 }
 
+# Execute main function
 main $*
