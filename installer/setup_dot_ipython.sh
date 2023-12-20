@@ -25,9 +25,10 @@ copy_dotipython() {
     test -d $HOME/.ipython && rm -rf $HOME/.ipython
     ipython profile create default
     test -d $HOME/.ipython/profile_default/startup || mkdir -p $HOME/.ipython/profile_default/startup
-    cp $OPTIONS $SCRIPTS/dot_files/dot_ipython/profile_default/startup/00-init.py $HOME/.ipython/profile_default/startup/
+    cp -v $OPTIONS $SCRIPTS/dot_files/dot_ipython/profile_default/startup/00-init.py $HOME/.ipython/profile_default/startup/
     test -f $HOME/.ipython/profile_default/startup/00-init.py && chmod -x $HOME/.ipython/profile_default/startup/00-init.py
-    cp $OPTIONS $SCRIPTS/dot_files/dot_zshrc_local $HOME/.zshrc_local
+    cp -v $OPTIONS $SCRIPTS/dot_files/dot_zshrc $HOME/.zshrc
+    cp -v $OPTIONS $SCRIPTS/dot_files/dot_zshrc_local $HOME/.zshrc_local
 }
 
 main() {
