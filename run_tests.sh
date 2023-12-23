@@ -77,7 +77,7 @@ else
     ruby --version
 
     # Check if 'rspec' is installed for Ruby tests
-    if ! command -v rspec &> /dev/null; then
+    if ! command -v rpsec > /dev/null 2>&1; then
         echo "'rspec' is not installed. Skipping Ruby tests."
     else
         # Execute Ruby tests
