@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 
 ########################################################################
 # setup_scripts.sh: Setup Script for Scripts Collection
@@ -13,6 +13,10 @@
 # Contact: idnanashi@gmail.com
 #
 # Version History:
+#  v1.2 2023-12-23
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax
+#       with POSIX standard commands and structures. Enhanced portability
+#       and compatibility across different UNIX-like systems.
 #  v1.1 2023-12-08
 #       Added documentation and environment variable check for SCRIPTS.
 #  v1.0 2008-08-22
@@ -37,9 +41,20 @@ if [ -z "$SCRIPTS" ]; then
     exit 1
 fi
 
+# Check if necessary commands are available
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# Check if chmod and find commands exist
+if ! command_exists chmod || ! command_exists find; then
+    echo "Error: Required commands 'chmod' or 'find' are not available."
+    exit 1
+fi
+
 # Set permissions for all files in the script collection
 chmod -R u+rw,g+r,g-w,o+r,o-w "$SCRIPTS"/*
 
 # Set execute permissions for script files
-chmod -R u+x,g+x,o+x "$SCRIPTS"/**/*.sh "$SCRIPTS"/**/*.py "$SCRIPTS"/**/*.rb
+find "$SCRIPTS" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
 
