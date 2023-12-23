@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 ########################################################################
 # Install texlive (for Debian 7.0/Ubuntu 14.04 or later)
@@ -11,19 +11,25 @@
 #       First.
 ########################################################################
 
+#!/bin/sh
+
 # If Ubuntu 12.04 LTS, Add texlive backports repo.
 if [ -f /etc/issue ]; then
-    ISSUE=`cat /etc/issue | head -n 1`
-    DIST=`echo $ISSUE | awk '{print $1}'`
-    if [[ $DIST =~ "Ubuntu" ]]; then
-        VER=`echo $ISSUE | awk '{print $2}'`
-        if [[ "$VER" =~ ^12\.04 ]]; then
-            echo "It seems that platform is Ubuntu 12.04 LTS"
-            echo "Adding texlive backports repository"
-            sudo apt-add-repository ppa:texlive-backports/ppa
-            sudo apt-get -y update
-        fi
-    fi
+    ISSUE=$(cat /etc/issue | head -n 1)
+    DIST=$(echo "$ISSUE" | awk '{print $1}')
+    case $DIST in
+        Ubuntu)
+            VER=$(echo "$ISSUE" | awk '{print $2}')
+            case $VER in
+                12.04*)
+                    echo "It seems that platform is Ubuntu 12.04 LTS"
+                    echo "Adding texlive backports repository"
+                    sudo apt-add-repository ppa:texlive-backports/ppa
+                    sudo apt-get -y update
+                    ;;
+            esac
+            ;;
+    esac
 fi
 
 sudo apt-get -y install texlive
