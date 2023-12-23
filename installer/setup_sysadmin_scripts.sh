@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 ########################################################################
 # Install System Administration Scripts
@@ -43,7 +43,10 @@ setup_environment() {
 uninstall_scripts() {
     while [ $# -gt 0 ]
     do
-        test -f $SBIN/$1 && echo -n "Removing: " && sudo rm -vf $SBIN/$1
+        if [ -f "$SBIN/$1" ]; then
+            echo "Removing: $SBIN/$1"
+            sudo rm -f "$SBIN/$1"
+        fi
         shift
     done
 }
