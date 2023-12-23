@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 #
 ########################################################################
 # Backup and Syncing Removable Disk Script
@@ -197,12 +197,12 @@ rsync_disk2disk_2() {
   echo "Return code is $?"
 }
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" >/dev/null 2>&1 && pwd)"
 
 CONFIG_FILE="$SCRIPT_DIR/../etc/rsync_backup.conf"
 
-if [[ -f "$CONFIG_FILE" ]]; then
-    source "$CONFIG_FILE"
+if [ -f "$CONFIG_FILE" ]; then
+    . "$CONFIG_FILE"
 else
     echo "Configuration file not found: $CONFIG_FILE"
     exit 99
