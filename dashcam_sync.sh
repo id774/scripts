@@ -18,6 +18,8 @@
 #  v1.1 2023-12-23
 #       Updated to load source and destination directories from an external
 #       configuration file located in 'etc' or '../etc'.
+#       Added file existence check in move_files function to prevent errors
+#       when no files are available to move.
 #  v1.0 2023-12-05
 #       Initial release. Adds directory checks, error handling, and
 #       improves script reusability.
@@ -46,12 +48,6 @@ YEAR_DIR="$(date +"%Y")"
 # Check if source and destination directories exist
 if [ ! -d "$SOURCE_DIR" ] || [ ! -d "$DEST_DIR" ]; then
     echo "Error: Source or destination directory does not exist."
-    exit 4
-fi
-
-# Check if source and destination directories exist
-if [ ! -d "$SOURCE_DIR" ] || [ ! -d "$DEST_DIR" ]; then
-    echo "Error: Source or destination directory does not exist."
     exit 3
 fi
 
@@ -67,6 +63,13 @@ fi
 move_files() {
     local from_dir=$1
     local to_dir=$2
+
+    # Check if there are files to move
+    if [ -z "$(ls -A $from_dir/* 2>/dev/null)" ]; then
+        echo "No files to move from $from_dir."
+        return 0
+    fi
+
     echo "Moving files from $from_dir to $to_dir..."
     mv "$from_dir"/* "$to_dir/"
     if [ $? -ne 0 ]; then
