@@ -6,7 +6,8 @@
 #  Description:
 #  This script performs backups from a specified path to a target device and
 #  checks the health of the device using smartctl. It's designed for
-#  dashcam data management and device health monitoring.
+#  dashcam data management and device health monitoring. Configuration settings
+#  are now loaded from an external .conf file for easier management.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,13 +15,15 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2023-12-23
+#       Updated to load configuration settings from an external .conf file.
 #  v1.0 2023-11-12
 #       Initial release. Features include checking for necessary files and
 #       directories, performing data sync, and running device health checks.
 #
 #  Usage:
-#  Ensure that the TARGET_DEVICE, BACKUP_PATH, and MOUNT_PATH variables are
-#  set correctly. Then run the script:
+#  Ensure that the dashcam_backup.conf file is properly configured with the
+#  TARGET_DEVICE, BACKUP_PATH, and MOUNT_PATH variables. Then run the script:
 #      ./dashcam_backup.sh
 #
 #  The script will check for the required conditions, sync data to the target
@@ -28,21 +31,27 @@
 #
 ########################################################################
 
-# Configurable Variables
-TARGET_DEVICE="sde"
-BACKUP_PATH="/mnt/sdd/home/ubuntu/largefiles/dashcam"
-MOUNT_PATH="$HOME/mnt/$TARGET_DEVICE"
-TIMESTAMP_FILE="$MOUNT_PATH/timestamp"
+# Load configuration from a .conf file
+CONF_FILE="./etc/dashcam_backup.conf"
+if [ ! -f "$CONF_FILE" ]; then
+    if [ -f "$(dirname "${BASH_SOURCE[0]}")/../etc/dashcam_backup.conf" ]; then
+        CONF_FILE="$(dirname "${BASH_SOURCE[0]}")/../etc/dashcam_backup.conf"
+    else
+        echo "Configuration file not found."
+        exit 3
+    fi
+fi
+source "$CONF_FILE"
 
 # Functions
 check_conditions() {
-    if [ ! -f "$TIMESTAMP_FILE" ]; then
-        echo "Timestamp file not found."
+    if [ ! -d "$BACKUP_PATH" ]; then
+        echo "Backup path does not exist."
         exit 1
     fi
 
-    if [ ! -d "$BACKUP_PATH" ]; then
-        echo "Backup path does not exist."
+    if [ ! -f "$TIMESTAMP_FILE" ]; then
+        echo "Timestamp file not found."
         exit 2
     fi
 }
