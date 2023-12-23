@@ -1,33 +1,63 @@
 #!/bin/sh
+
+########################################################################
+# setup_sysadmin_scripts.sh: Install System Administration Scripts
+#
+#  Description:
+#  This script installs or uninstalls a collection of system administration scripts.
+#  It allows specifying the installation path and supports uninstalling all scripts.
+#  The script handles setting file permissions and ownership appropriately.
+#
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#   v1.0 2023-12-23
+#        Refactored for POSIX compliance. Replaced Bash-specific syntax
+#        with POSIX standard commands and structures. Enhanced portability
+#        and compatibility across different UNIX-like systems.
+#   v0.8 2023-11-14
+#        Add veramount.
+#   v0.7 2023-06-23
+#        Fix uninstall bug, add md5, remove some obsolete files.
+#   v0.6 2014-05-24
+#        Using bash, switch arguments, show uninstall messages.
+#   v0.5 2011-06-28
+#        Uninstall enabled, RHEL scripts.
+#   v0.4 2011-05-27
+#        Debian only scripts was moved.
+#   v0.3 2011-03-25
+#        Install dpkg-hold for Debian.
+#   v0.2 2010-12-04
+#        Fix copy option on OS X.
+#   v0.1 2010-11-16
+#        First version.
+#
+#  Usage:
+#  Run this script with the desired action (install or uninstall) and the installation
+#   $1 = uninstall
+#   $2 = install path (ex. /usr/local/sbin)
+#  path as arguments. For example:
+#    ./install_sysadmin_scripts.sh install /usr/local/sbin
+#    ./install_sysadmin_scripts.sh uninstall
+#
+#  Note:
+#  - Ensure that the 'SCRIPTS' environment variable is set to the path containing
+#    the administration scripts.
+#  - Running the script with 'uninstall' will remove all installed administration scripts.
 #
 ########################################################################
-# Install System Administration Scripts
-#  $1 = uninstall
-#  $2 = install path (ex. /usr/local/sbin)
-#
-#  Maintainer: id774 <idnanashi@gmail.com>
-#
-#  v0.9 2023-12-23
-#       Refactored for POSIX compliance. Replaced Bash-specific syntax
-#       with POSIX standard commands and structures. Enhanced portability
-#       and compatibility across different UNIX-like systems.
-#  v0.8 2023-11-14
-#       Add veramount.
-#  v0.7 2023-06-23
-#       Fix uninstall bug, add md5, remove some obsolete files.
-#  v0.6 2014-05-24
-#       Using bash, switch arguments, show uninstall messages.
-#  v0.5 2011-06-28
-#       Uninstall enabled, RHEL scripts.
-#  v0.4 2011-05-27
-#       Debian only scripts was moved.
-#  v0.3 2011-03-25
-#       Install dpkg-hold for Debian.
-#  v0.2 2010-12-04
-#       Fix copy option on OS X.
-#  v0.1 2010-11-16
-#       First.
-########################################################################
+
+# Check if SCRIPTS variable is set
+check_scripts() {
+    if [ -z "$SCRIPTS" ]; then
+        echo "Error: SCRIPTS environment variable is not set."
+        echo "Please set the SCRIPTS variable to the path of your IPython startup files."
+        exit 1
+    fi
+}
 
 setup_environment() {
     test -n "$2" && SBIN=$2
@@ -115,11 +145,11 @@ install_sysadmin_scripts() {
 }
 
 setup_sysadmin_scripts() {
+    check_scripts
     setup_environment $*
     test -n "$1" && uninstall_sysadmin_scripts
     test -n "$1" || install_sysadmin_scripts
     test "$1" = "install" && install_sysadmin_scripts
 }
 
-test -n "$SCRIPTS" || exit 1
 setup_sysadmin_scripts $*
