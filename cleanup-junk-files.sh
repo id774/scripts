@@ -51,9 +51,17 @@ fi
 
 # Remove common junk files from the specified directory
 echo "Cleaning up junk files in $1..."
+
+echo "Removing ._* AppleDouble files..."
 find "$1" -name '._*' -exec rm -vf {} \;
+
+echo "Removing .DS_Store files..."
 find "$1" -name '.DS_Store' -exec rm -vf {} \;
+
+echo "Removing temporary Unix files ending with '.un~'..."
 find "$1" -name '.*.un~' -exec rm -vf {} \;
+
+echo "Removing __pycache__ directories..."
 find "$1" -type d -name '__pycache__' -exec rm -vrf {} \;
 
 echo "Cleanup completed."
