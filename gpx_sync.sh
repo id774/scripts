@@ -6,7 +6,7 @@
 #  Description:
 #  This script manages GPX files by performing operations like copying to
 #  specific directories, syncing with a remote server, and cleaning up
-#  temporary files. It's tailored for cycling or running data management.
+#  temporary files. It now loads configuration from an external file.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2023-12-23
+#       Updated to load configuration from an external file.
 #  v1.3 2023-12-19
 #       Modified copy_files function to return an error if the destination
 #       directory does not exist.
@@ -23,24 +25,26 @@
 #       Improved handling of multiple GPX files with enhanced file copying
 #       and deletion functionality.
 #  v1.0 2023-11-24
-#       Initial release. Features include checking for GPX files, copying them
-#       to specific user and mounted directories, syncing with a remote server,
-#       and removing files from the temporary directory.
+#       Initial release.
 #
 #  Usage:
-#  Run the script without any arguments. Ensure that the TMP_DIR and USER_GPX_DIR
-#  variables are set to the correct paths before running:
+#  Run the script without any arguments. Ensure that the gpx_sync.conf
+#  file is properly configured with the necessary variables.
 #      ./gpx_sync.sh
-#
-#  The script will automatically handle the copying, syncing, and removal of GPX files.
 #
 ########################################################################
 
-# Variables
-TMP_DIR="$HOME/tmp"
-USER_GPX_DIR="user3/gpx/strava"
-RSYNC_USER="debian"
-RSYNC_HOST="harpuia"
+# Load configuration from a .conf file
+CONF_FILE="./etc/gpx_sync.conf"
+if [ ! -f "$CONF_FILE" ]; then
+    CONF_FILE="$(dirname "${BASH_SOURCE[0]}")/../etc/gpx_sync.conf"
+    if [ ! -f "$CONF_FILE" ]; then
+        echo "Configuration file not found."
+        exit 1
+    fi
+fi
+source "$CONF_FILE"
+
 CURRENT_YEAR=$(date +"%Y")
 
 # Function to check if GPX files exist in a directory
