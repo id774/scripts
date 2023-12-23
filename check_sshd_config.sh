@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ########################################################################
 # check_sshd_config.sh: SSHD Configuration Check Tool
@@ -29,7 +29,7 @@
 ########################################################################
 
 # Detect the operating system
-os=$(uname)
+os=$(uname -s)
 
 # Check and handle macOS specific configuration
 if [ "$os" = "Darwin" ]; then
@@ -50,3 +50,4 @@ else
 fi
 
 exit 0
+

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ########################################################################
 # dashcam_backup.sh: Dashcam Data Backup and Device Health Check Script
@@ -32,7 +32,7 @@
 ########################################################################
 
 # Determine the script's directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR=$(dirname "$0")
 
 # Load configuration from a .conf file
 CONF_FILE="$SCRIPT_DIR/etc/dashcam_backup.conf"
@@ -43,7 +43,7 @@ if [ ! -f "$CONF_FILE" ]; then
         exit 3
     fi
 fi
-source "$CONF_FILE"
+. "$CONF_FILE"
 
 # Functions
 check_conditions() {

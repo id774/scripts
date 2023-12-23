@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ########################################################################
 # apache_log_analysis.sh: Apache Log File Analysis Tool
@@ -35,17 +35,17 @@
 ########################################################################
 
 # Check if grep, zgrep, and awk commands are available
-if ! command -v grep &> /dev/null; then
+if ! command -v grep > /dev/null 2>&1; then
     echo "Error: grep command not found."
     exit 1
 fi
 
-if ! command -v zgrep &> /dev/null; then
+if ! command -v zgrep > /dev/null 2>&1; then
     echo "Error: zgrep command not found."
     exit 1
 fi
 
-if ! command -v awk &> /dev/null; then
+if ! command -v awk > /dev/null 2>&1; then
     echo "Error: awk command not found."
     exit 1
 fi
@@ -67,7 +67,7 @@ if [ ! -f "$LOG_FILE" ]; then
 fi
 
 # Determine the script's directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR=$(dirname "$0")
 
 # Load the ignore list from the first available location
 IGNORE_FILE="$SCRIPT_DIR/etc/apache_ignore.list"

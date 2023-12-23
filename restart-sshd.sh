@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ########################################################################
 # restart-sshd.sh: Restart SSH Daemon
@@ -48,8 +48,9 @@ restart_linux_sshd() {
 }
 
 # Determine the operating system and restart SSH accordingly
-case $OSTYPE in
-    *darwin*)
+UNAME=$(uname)
+case $UNAME in
+    Darwin*)
         restart_macos_sshd
         ;;
     *)

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ########################################################################
 # find_python_compat_issues.sh: Find Python compatibility issues in Python files

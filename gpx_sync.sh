@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ########################################################################
 # gpx_sync.sh: GPX File Management Script
@@ -35,7 +35,7 @@
 ########################################################################
 
 # Determine the script's directory
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR=$(dirname "$0")
 
 # Load configuration from a .conf file
 CONF_FILE="$SCRIPT_DIR/etc/gpx_sync.conf"
@@ -46,7 +46,7 @@ if [ ! -f "$CONF_FILE" ]; then
         exit 1
     fi
 fi
-source "$CONF_FILE"
+. "$CONF_FILE"
 
 CURRENT_YEAR=$(date +"%Y")
 
@@ -77,7 +77,7 @@ sync_files() {
     local source=$1
     local destination_user=$2
     local destination_host=$3
-    echo rsync -avz --delete "$source" "$destination_user@$destination_host:~/gpx/"
+    echo "rsync -avz --delete $source $destination_user@$destination_host:~/gpx/"
     rsync -avz --delete "$source" "$destination_user@$destination_host:~/gpx/" || return $?
 }
 

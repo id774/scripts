@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ########################################################################
 # run_tests.sh: Run all Python and Ruby tests in the test directory
@@ -37,14 +37,14 @@ if [ -z "$SCRIPTS" ]; then
     exit 1
 fi
 
-cd $SCRIPTS
+cd "$SCRIPTS" || exit
 
 # Initialize failure counters
 python_failures=0
 ruby_failures=0
 
 # Check if Python is installed
-if ! command -v python &> /dev/null; then
+if ! command -v python > /dev/null 2>&1; then
     echo "Python is not installed. Skipping Python tests."
 else
     # Display Python path and version
@@ -58,14 +58,14 @@ else
         echo "$output"
         if ! echo "$output" | tail -n 2 | grep -q "OK"; then
             echo "Failure in Python test: $file"
-            ((python_failures++))
+            python_failures=$(expr $python_failures + 1)
         fi
     done
     echo "All Python tests completed."
 fi
 
 # Check if Ruby is installed
-if ! command -v ruby &> /dev/null; then
+if ! command -v ruby > /dev/null 2>&1; then
     echo "Ruby is not installed. Skipping Ruby tests."
 else
     # Display Ruby path and version
@@ -83,7 +83,7 @@ else
             echo "$output"
             if ! echo "$output" | grep -q "0 failures"; then
                 echo "Failure in Ruby test: $file"
-                ((ruby_failures++))
+                ruby_failures=$(expr $ruby_failures + 1)
             fi
         done
         echo "All Ruby tests completed."
