@@ -16,6 +16,9 @@
 #  Version History:
 #  v1.4 2023-12-23
 #       Updated to load configuration from an external file.
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax
+#       with POSIX standard commands and structures. Enhanced portability
+#       and compatibility across different UNIX-like systems.
 #  v1.3 2023-12-19
 #       Modified copy_files function to return an error if the destination
 #       directory does not exist.

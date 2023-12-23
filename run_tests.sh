@@ -3,28 +3,32 @@
 ########################################################################
 # run_tests.sh: Run all Python and Ruby tests in the test directory
 #
-# Description:
-# This script checks for the presence of Python and Ruby, and executes all 
-# Python and Ruby test files located in the 'test' subdirectory. It displays
-# the paths and versions of Python and Ruby being used, and checks if each
-# test passes or fails.
+#  Description:
+#  This script checks for the presence of Python and Ruby, and executes all 
+#  Python and Ruby test files located in the 'test' subdirectory. It displays
+#  the paths and versions of Python and Ruby being used, and checks if each
+#  test passes or fails.
 #
-# Author: id774 (More info: http://id774.net)
-# Source Code: https://github.com/id774/scripts
-# License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
-# Contact: idnanashi@gmail.com
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
 #
-# Version History:
-# v1.1 2023-12-20
-#      Added environment variable to prevent the creation of __pycache__
-#      directories during Python tests.
-#      Replaced 'which' with 'command -v' for command existence check.
-# v1.0 2023-12-15
-#      First release of the test script.
+#  Version History:
+#  v1.2 2023-12-23
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax
+#       with POSIX standard commands and structures. Enhanced portability
+#       and compatibility across different UNIX-like systems.
+#  v1.1 2023-12-20
+#       Added environment variable to prevent the creation of __pycache__
+#       directories during Python tests.
+#       Replaced 'which' with 'command -v' for command existence check.
+#  v1.0 2023-12-15
+#       First release of the test script.
 #
-# Usage:
-# Run this script from the command line to execute all tests:
-# ./run_tests.sh
+#  Usage:
+#  Run this script from the command line to execute all tests:
+#  ./run_tests.sh
 #
 ########################################################################
 

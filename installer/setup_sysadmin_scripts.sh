@@ -7,6 +7,10 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.9 2023-12-23
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax
+#       with POSIX standard commands and structures. Enhanced portability
+#       and compatibility across different UNIX-like systems.
 #  v0.8 2023-11-14
 #       Add veramount.
 #  v0.7 2023-06-23

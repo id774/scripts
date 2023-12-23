@@ -17,6 +17,9 @@
 #  Version History:
 #  v1.1 2023-12-23
 #       Updated to load configuration settings from an external .conf file.
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax
+#       with POSIX standard commands and structures. Enhanced portability
+#       and compatibility across different UNIX-like systems.
 #  v1.0 2023-11-12
 #       Initial release. Features include checking for necessary files and
 #       directories, performing data sync, and running device health checks.

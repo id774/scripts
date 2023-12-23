@@ -15,6 +15,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2023-12-23
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax
+#       with POSIX standard commands and structures. Enhanced portability
+#       and compatibility across different UNIX-like systems.
 #  v1.3 2023-12-17
 #       Enhanced the logic for loading the ignore list by adding a
 #       fallback to check in the script's relative parent directory

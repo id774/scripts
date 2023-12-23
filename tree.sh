@@ -13,6 +13,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2023-12-23
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax
+#       with POSIX standard commands and structures. Enhanced portability
+#       and compatibility across different UNIX-like systems.
 #  v1.0 2014-10-22
 #       Initial release.
 #

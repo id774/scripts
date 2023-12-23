@@ -5,6 +5,10 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.3 2023-12-23
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax
+#       with POSIX standard commands and structures. Enhanced portability
+#       and compatibility across different UNIX-like systems.
 #  v0.2 2014-06-02
 #       If Ubuntu 12.04 LTS, Add texlive backports repo.
 #  v0.1 2014-05-21

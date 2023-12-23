@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 ########################################################################
-# Backup and Syncing Removable Disk Script
+# rsync_backup.sh: Backup and Syncing Removable Disk Script
 #
 #  Description:
 #  This script facilitates the backup and syncing of data to removable
@@ -15,6 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.2  2023-12-23 - Refactored for POSIX compliance. Replaced Bash-specific syntax
+#                     with POSIX standard commands and structures. Enhanced portability
+#                     and compatibility across different UNIX-like systems.
 #  v2.1  2023-12-17 - Refactored script to separate logic and operations.
 #                     Operations are now defined in an external file
 #                     'etc/rsync_backup.conf' for enhanced modularity and
