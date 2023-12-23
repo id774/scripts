@@ -66,23 +66,21 @@ if [ ! -f "$LOG_FILE" ]; then
     exit 1
 fi
 
-# Load the ignore list from the first available location
-IGNORE_FILE=""
-if [ -f "./etc/apache_ignore.list" ]; then
-    IGNORE_FILE="./etc/apache_ignore.list"
-elif [ -f "$(dirname "${BASH_SOURCE[0]}")/../etc/apache_ignore.list" ]; then
-    IGNORE_FILE="$(dirname "${BASH_SOURCE[0]}")/../etc/apache_ignore.list"
-fi
+# Determine the script's directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-# Use localhost as default if the ignore file is empty or not found
-if [ -f "$IGNORE_FILE" ]; then
-    IGNORE_IPS=$(awk '!/^#/ && NF' "$IGNORE_FILE" | paste -sd "|" -)
-    if [ -z "$IGNORE_IPS" ]; then
+# Load the ignore list from the first available location
+IGNORE_FILE="$SCRIPT_DIR/etc/apache_ignore.list"
+if [ ! -f "$IGNORE_FILE" ]; then
+    IGNORE_FILE="$SCRIPT_DIR/../etc/apache_ignore.list"
+    if [ ! -f "$IGNORE_FILE" ]; then
         IGNORE_IPS="127.0.0.1"
+        echo "Ignore file not found. Using default ignore IP: $IGNORE_IPS"
+    else
+        IGNORE_IPS=$(awk '!/^#/ && NF' "$IGNORE_FILE" | paste -sd "|" -)
     fi
 else
-    IGNORE_IPS="127.0.0.1"
-    echo "Ignore file not found. Using default ignore IP: $IGNORE_IPS"
+    IGNORE_IPS=$(awk '!/^#/ && NF' "$IGNORE_FILE" | paste -sd "|" -)
 fi
 
 # Function to display top accessed URLs

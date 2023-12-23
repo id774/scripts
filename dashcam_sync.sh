@@ -32,10 +32,13 @@
 #
 ########################################################################
 
+# Determine the script's directory
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
 # Load configuration from a .conf file
-CONF_FILE="./etc/dashcam_sync.conf"
+CONF_FILE="$SCRIPT_DIR/etc/dashcam_sync.conf"
 if [ ! -f "$CONF_FILE" ]; then
-    CONF_FILE="$(dirname "${BASH_SOURCE[0]}")/../etc/dashcam_sync.conf"
+    CONF_FILE="$SCRIPT_DIR/../etc/dashcam_sync.conf"
     if [ ! -f "$CONF_FILE" ]; then
         echo "Configuration file not found."
         exit 5

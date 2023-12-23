@@ -31,12 +31,14 @@
 #
 ########################################################################
 
+# Determine the script's directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Load configuration from a .conf file
-CONF_FILE="./etc/dashcam_backup.conf"
+CONF_FILE="$SCRIPT_DIR/etc/dashcam_backup.conf"
 if [ ! -f "$CONF_FILE" ]; then
-    if [ -f "$(dirname "${BASH_SOURCE[0]}")/../etc/dashcam_backup.conf" ]; then
-        CONF_FILE="$(dirname "${BASH_SOURCE[0]}")/../etc/dashcam_backup.conf"
-    else
+    CONF_FILE="$SCRIPT_DIR/../etc/dashcam_backup.conf"
+    if [ ! -f "$CONF_FILE" ]; then
         echo "Configuration file not found."
         exit 3
     fi

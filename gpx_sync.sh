@@ -34,10 +34,13 @@
 #
 ########################################################################
 
+# Determine the script's directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Load configuration from a .conf file
-CONF_FILE="./etc/gpx_sync.conf"
+CONF_FILE="$SCRIPT_DIR/etc/gpx_sync.conf"
 if [ ! -f "$CONF_FILE" ]; then
-    CONF_FILE="$(dirname "${BASH_SOURCE[0]}")/../etc/gpx_sync.conf"
+    CONF_FILE="$SCRIPT_DIR/../etc/gpx_sync.conf"
     if [ ! -f "$CONF_FILE" ]; then
         echo "Configuration file not found."
         exit 1
