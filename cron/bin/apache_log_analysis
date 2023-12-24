@@ -6,6 +6,8 @@ echo -n "*** $0: Job started on `/bin/hostname` at ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1
 
 test -x /root/bin/apache_log_analysis.sh && /root/bin/apache_log_analysis.sh /var/log/apache2/ssl_access.log>>$JOBLOG 2>&1
+test -x /root/bin/apache_calculater.py && echo "[Recent IP Hits]">>$JOBLOG 2>&1
+test -x /root/bin/apache_calculater.py && /root/bin/apache_calculater.py /var/log/apache2/ssl_access.log.1>>$JOBLOG 2>&1
 
 echo -n "*** $0: Job ended on `/bin/hostname` at ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1

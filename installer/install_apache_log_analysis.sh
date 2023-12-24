@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.2 2023-12-25
+#       Add apache_calculater.
 #  v1.1 2023-12-16
 #       Also install ignore list.
 #  v1.0 2022-10-11
@@ -20,6 +22,9 @@ sudo chown root:adm /var/log/sysadmin
 sudo cp $SCRIPTS/apache_log_analysis.sh /root/bin/apache_log_analysis.sh
 sudo chmod 700 /root/bin/apache_log_analysis.sh
 sudo chown root:root /root/bin/apache_log_analysis.sh
+sudo cp $SCRIPTS/apache_calculater.py /root/bin/apache_calculater.py
+sudo chmod 700 /root/bin/apache_calculater.py
+sudo chown root:root /root/bin/apache_calculater.py
 sudo cp $SCRIPTS/etc/apache_ignore.list /root/etc/apache_ignore.list
 sudo chmod 600 /root/etc/apache_ignore.list
 sudo chown root:root /root/etc/apache_ignore.list
