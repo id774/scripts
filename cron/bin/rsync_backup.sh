@@ -94,12 +94,14 @@ show_capacity_of_directories() {
 
 cleanup() {
   echo "Removing junk files in $B_HOME/$B_MOUNT/$B_DEVICE..."
-  # Remove ._* AppleDouble files
+  echo "Removing ._* AppleDouble files..."
   find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '._*' -exec rm -vf {} \;
-  # Remove .DS_Store files
+  echo "Removing .DS_Store files..."
   find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '.DS_Store' -exec rm -vf {} \;
-  # Remove temporary Unix files ending with .un~
+  echo "Removing temporary Unix files ending with '.un~'..."
   find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '.*.un~' -exec rm -vf {} \;
+  echo "Removing __pycache__ directories..."
+  find "$1" -type d -name '__pycache__' -exec rm -vrf {} \;
   echo "Cleanup completed."
 }
 
