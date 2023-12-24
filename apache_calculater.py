@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2023-12-25
+#       Added error handling for non-existent log files.
 #  v1.3 2023-12-17
 #       Enhanced the logic for loading the ignore list by searching
 #       in both the current directory's etc folder and the script's
@@ -123,6 +125,11 @@ def main():
         sys.exit(1)
 
     log_file = sys.argv[1]
+
+    if not os.path.exists(log_file):
+        print(f"Error: Log file does not exist - {log_file}")
+        sys.exit(2)
+
     # Calculate and display the results
     print("IP Hits:", ApacheCalculater.calculateApacheIpHits(log_file))
     print("Client Cache Percentage:",
