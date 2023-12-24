@@ -154,7 +154,7 @@ def main():
     log_file = sys.argv[1]
 
     if not os.path.exists(log_file):
-        print(f"Error: Log file does not exist - {log_file}")
+        print("Error: Log file does not exist - {0}".format(log_file))
         sys.exit(2)
 
     # Check for valid log format
@@ -162,7 +162,7 @@ def main():
         for line in contents:
             if not ApacheCalculater.isValidLogFormat(line):
                 print(
-                    f"Error: Invalid log format detected in file - {log_file}")
+                    "Error: Invalid log format detected in file - {0}".format(log_file))
                 sys.exit(3)
             break  # Check only the first line for format
 
