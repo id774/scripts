@@ -93,9 +93,14 @@ show_capacity_of_directories() {
 }
 
 cleanup() {
-  rm -vf "$B_HOME/$B_MOUNT/$B_DEVICE"/**/._*
-  rm -vf "$B_HOME/$B_MOUNT/$B_DEVICE"/**/.DS_Store
-  rm -vf "$B_HOME/$B_MOUNT/$B_DEVICE"/**/.*.un~
+  echo "Removing junk files in $B_HOME/$B_MOUNT/$B_DEVICE..."
+  # Remove ._* AppleDouble files
+  find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '._*' -exec rm -vf {} \;
+  # Remove .DS_Store files
+  find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '.DS_Store' -exec rm -vf {} \;
+  # Remove temporary Unix files ending with .un~
+  find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '.*.un~' -exec rm -vf {} \;
+  echo "Cleanup completed."
 }
 
 git_backup() {
