@@ -34,6 +34,7 @@
 #
 ########################################################################
 
+import re
 import sys
 import gzip
 import os
@@ -119,6 +120,21 @@ class ApacheCalculater(object):
 
         return float(100 * cachedRequests) / totalRequests if totalRequests > 0 else 0
 
+    @classmethod
+    def isValidLogFormat(cls, line):
+        """
+        Check if a log line follows a basic Apache log format.
+
+        Args:
+            line (str): A line from the Apache log file.
+
+        Returns:
+            bool: True if the line follows the basic format, False otherwise.
+        """
+        # Basic pattern: IP followed by at least two spaces and some more text
+        pattern = r'^\d{1,3}(\.\d{1,3}){3}\s+\S+'
+        return re.match(pattern, line) is not None
+
 def main():
     if len(sys.argv) != 2:
         print("Usage: apache_calculater.py log_file_name")
@@ -126,9 +142,21 @@ def main():
 
     log_file = sys.argv[1]
 
+    # Define the function for opening the file (regular or gzipped)
+    open_func = gzip.open if log_file.endswith(".gz") else open
+
     if not os.path.exists(log_file):
         print(f"Error: Log file does not exist - {log_file}")
         sys.exit(2)
+
+    # Check for valid log format
+    with open_func(log_file, "rt") as contents:
+        for line in contents:
+            if not ApacheCalculater.isValidLogFormat(line):
+                print(
+                    f"Error: Invalid log format detected in file - {log_file}")
+                sys.exit(3)
+            break  # Check only the first line for format
 
     # Calculate and display the results
     print("IP Hits:", ApacheCalculater.calculateApacheIpHits(log_file))
