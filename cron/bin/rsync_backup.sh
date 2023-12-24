@@ -101,7 +101,7 @@ cleanup() {
   echo "Removing temporary Unix files ending with '.un~'..."
   find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '.*.un~' -exec rm -vf {} \;
   echo "Removing __pycache__ directories..."
-  find "$1" -type d -name '__pycache__' -exec rm -vrf {} \;
+  find "$B_HOME/$B_MOUNT/$B_DEVICE" -type d -name '__pycache__' -exec rm -vrf {} \;
   echo "Cleanup completed."
 }
 
