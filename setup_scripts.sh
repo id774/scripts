@@ -56,5 +56,5 @@ fi
 chmod -R u+rw,g+r,g-w,o+r,o-w "$SCRIPTS"/*
 
 # Set execute permissions for script files
-find "$SCRIPTS" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+find "$SCRIPTS"/ -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
 
