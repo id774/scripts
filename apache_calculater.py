@@ -17,6 +17,7 @@
 #  Version History:
 #  v1.4 2023-12-25
 #       Added error handling for non-existent log files.
+#       Added log format validation and refactored file opening logic.
 #  v1.3 2023-12-17
 #       Enhanced the logic for loading the ignore list by searching
 #       in both the current directory's etc folder and the script's
@@ -71,6 +72,19 @@ class ApacheCalculater(object):
         return ignore_ips
 
     @classmethod
+    def openLogFile(cls, log):
+        """
+        Open an Apache log file (regular or gzipped).
+
+        Args:
+            log (str): Path to the Apache log file.
+
+        Returns:
+            file object: Opened file object.
+        """
+        return gzip.open(log, "rt") if log.endswith(".gz") else open(log, "rt")
+
+    @classmethod
     def calculateApacheIpHits(cls, log):
         """
         Calculate the number of hits per IP address from an Apache log file.
@@ -84,9 +98,7 @@ class ApacheCalculater(object):
         ipHitListing = {}
         ignore_ips = cls.loadIgnoreList()
 
-        open_func = gzip.open if log.endswith(".gz") else open
-
-        with open_func(log, "rt") as contents:
+        with cls.openLogFile(log) as contents:
             for line in contents:
                 # Extract the IP address from each log entry
                 ip = line.split(" ", 1)[0]
@@ -109,9 +121,8 @@ class ApacheCalculater(object):
             float: The percentage of cached requests.
         """
         totalRequests, cachedRequests = 0, 0
-        open_func = gzip.open if log.endswith(".gz") else open
 
-        with open_func(log, "rt") as contents:
+        with cls.openLogFile(log) as contents:
             for line in contents:
                 totalRequests += 1
                 # Check if the response status is 304 (Not Modified)
@@ -142,15 +153,12 @@ def main():
 
     log_file = sys.argv[1]
 
-    # Define the function for opening the file (regular or gzipped)
-    open_func = gzip.open if log_file.endswith(".gz") else open
-
     if not os.path.exists(log_file):
         print(f"Error: Log file does not exist - {log_file}")
         sys.exit(2)
 
     # Check for valid log format
-    with open_func(log_file, "rt") as contents:
+    with ApacheCalculater.openLogFile(log_file) as contents:
         for line in contents:
             if not ApacheCalculater.isValidLogFormat(line):
                 print(
