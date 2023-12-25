@@ -7,6 +7,8 @@
 #  This script batch downloads photos from a specified Instagram account.
 #  It uses the instaloader library to fetch all photo URLs from the account
 #  and downloads them locally.
+#  If no account is specified as an argument, it uses the current
+#  directory name as the Instagram account name.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2023-12-25
+#       Modified to use current directory name as default Instagram username.
 #  v1.2 2023-12-08
 #       Removed f-strings for compatibility with Python versions below 3.6.
 #  v1.1 2023-12-06
@@ -22,8 +26,9 @@
 #       Initial release.
 #
 #  Usage:
-#  python download_instagram_batch.py <Instagram username>
+#  python download_instagram_batch.py [Instagram username]
 #  Example: python download_instagram_batch.py username
+#           (If no username is given, the current directory name is used)
 #
 ########################################################################
 
@@ -46,7 +51,8 @@ class InstagramPhotoDownloader:
         # Retrieve the URLs of all Instagram photos
         urls = self._get_instagram_photo_urls()
         post_count = len(urls)
-        print('This account has {} image posts.'.format(post_count))
+        print('This account {} has {} image posts.'.format(
+            self.username, post_count))
         minutes = int(post_count / 60) + 1
         print('Estimate processing time is about {} minutes.'.format(minutes))
 
@@ -94,7 +100,8 @@ class InstagramPhotoDownloader:
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('username', help='Instagram username')
+    parser.add_argument('username', nargs='?', help='Instagram username',
+                        default=os.path.basename(os.getcwd()))
     args = parser.parse_args()
 
     downloader = InstagramPhotoDownloader(args.username)
