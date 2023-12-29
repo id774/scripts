@@ -19,6 +19,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2023-12-30
+#      Fixed the issue with incorrect total disk usage calculation.
+#      The script now correctly identifies and reports the size of the top directory.
 #  v1.1 2023-12-25
 #      Added total disk usage calculation.
 #      Added note regarding total usage variation based on depth.
@@ -41,30 +44,32 @@ def is_command_exist(command):
     """
     return subprocess.call(['which', command], stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
 
-def parse_du_output(du_output):
+def parse_du_output(du_output, maxdepth, directory):
     """
-    Parse the output of the 'du' command to calculate total usage.
-    Use integer arithmetic to avoid floating point inaccuracies.
+    Parse the output of the 'du' command to find the size of the top directory.
     """
-    total = 0
     for line in du_output.split('\n'):
         if line:
-            size, _ = line.split('\t')
+            size, path = line.split('\t')
             size = size.strip()
-            if size.endswith('K'):
-                total += int(float(size[:-1]) * 1024)
-            elif size.endswith('M'):
-                total += int(float(size[:-1]) * 1024 * 1024)
-            elif size.endswith('G'):
-                total += int(float(size[:-1]) * 1024 * 1024 * 1024)
-            elif size.endswith('T'):
-                total += int(float(size[:-1]) * 1024 * 1024 * 1024 * 1024)
-            elif size.endswith('P'):
-                total += int(float(size[:-1]) * 1024 *
-                             1024 * 1024 * 1024 * 1024)
-            elif size.endswith('B') and size[:-1].isdigit():
-                total += int(size[:-1])
-    return total
+            path = path.rstrip('/')  # Removes trailing slash if present
+
+            # Check if the path matches the depth of the specified directory
+            if path == directory.rstrip('/') or path.count('/') == directory.rstrip('/').count('/') + int(maxdepth):
+                # Convert size to bytes
+                if size.endswith('K'):
+                    return int(float(size[:-1]) * 1024)
+                elif size.endswith('M'):
+                    return int(float(size[:-1]) * 1024 * 1024)
+                elif size.endswith('G'):
+                    return int(float(size[:-1]) * 1024 * 1024 * 1024)
+                elif size.endswith('T'):
+                    return int(float(size[:-1]) * 1024 * 1024 * 1024 * 1024)
+                elif size.endswith('P'):
+                    return int(float(size[:-1]) * 1024 * 1024 * 1024 * 1024 * 1024)
+                elif size.endswith('B') and size[:-1].isdigit():
+                    return int(size[:-1])
+    return 0  # Return 0 if no matching top directory size found
 
 def run_custom_du(maxdepth, directory):
     """
@@ -74,7 +79,7 @@ def run_custom_du(maxdepth, directory):
                     maxdepth, '-exec', 'du', '-h', '-d', '0', '{}', ';']
     result = subprocess.check_output(find_command).decode('utf-8')
     print(result)
-    total = parse_du_output(result)
+    total = parse_du_output(result, maxdepth, directory)
     print("Total: {:.2f}G".format(total / (1024 * 1024 * 1024)))
 
 def main(args):
