@@ -4,14 +4,17 @@
 # du.py: Simplified Disk Usage Reporting for macOS
 #
 #  Description:
-#  This script is a workaround for the lack of '--max-depth' option in the
-#  'du' command on macOS. It reports disk usage at specified depth and
-#  also shows the total usage. It works only on macOS.
+#  This script provides a simplified disk usage reporting on macOS, similar to
+#  the 'du' command with a '--max-depth' option. It reports disk usage at a
+#  specified depth and displays the total usage of the top-level directory.
+#  This script is designed to work exclusively on macOS.
 #
 #  Note:
-#  The total reported disk usage can vary depending on the specified depth.
-#  A greater depth value will include more subdirectories in the calculation,
-#  potentially increasing the reported total disk usage.
+#  The script focuses on reporting the total disk usage of the specified
+#  top-level directory, avoiding the complexities and limitations of the
+#  traditional 'du' command on macOS. It does not sum up the sizes of
+#  subdirectories; instead, it directly reports the size of the top-level
+#  directory as the total.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -22,6 +25,7 @@
 #  v1.2 2023-12-30
 #      Fixed the issue with incorrect total disk usage calculation.
 #      The script now correctly identifies and reports the size of the top directory.
+#      Simplified total size calculation by using the size string directly.
 #  v1.1 2023-12-25
 #      Added total disk usage calculation.
 #      Added note regarding total usage variation based on depth.
@@ -44,32 +48,16 @@ def is_command_exist(command):
     """
     return subprocess.call(['which', command], stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
 
-def parse_du_output(du_output, maxdepth, directory):
+def parse_du_output(du_output, directory):
     """
-    Parse the output of the 'du' command to find the size of the top directory.
+    Parse the output of the 'du' command to find the size of the specified top directory.
     """
     for line in du_output.split('\n'):
         if line:
             size, path = line.split('\t')
-            size = size.strip()
-            path = path.rstrip('/')  # Removes trailing slash if present
-
-            # Check if the path matches the depth of the specified directory
-            if path == directory.rstrip('/') or path.count('/') == directory.rstrip('/').count('/') + int(maxdepth):
-                # Convert size to bytes
-                if size.endswith('K'):
-                    return int(float(size[:-1]) * 1024)
-                elif size.endswith('M'):
-                    return int(float(size[:-1]) * 1024 * 1024)
-                elif size.endswith('G'):
-                    return int(float(size[:-1]) * 1024 * 1024 * 1024)
-                elif size.endswith('T'):
-                    return int(float(size[:-1]) * 1024 * 1024 * 1024 * 1024)
-                elif size.endswith('P'):
-                    return int(float(size[:-1]) * 1024 * 1024 * 1024 * 1024 * 1024)
-                elif size.endswith('B') and size[:-1].isdigit():
-                    return int(size[:-1])
-    return 0  # Return 0 if no matching top directory size found
+            if path.rstrip('/') == directory.rstrip('/'):
+                return size.strip()  # Return the size as a string
+    return "0B"  # Default return value if not found
 
 def run_custom_du(maxdepth, directory):
     """
@@ -79,8 +67,8 @@ def run_custom_du(maxdepth, directory):
                     maxdepth, '-exec', 'du', '-h', '-d', '0', '{}', ';']
     result = subprocess.check_output(find_command).decode('utf-8')
     print(result)
-    total = parse_du_output(result, maxdepth, directory)
-    print("Total: {:.2f}G".format(total / (1024 * 1024 * 1024)))
+    total_size = parse_du_output(result, directory)
+    print("Total: " + total_size)
 
 def main(args):
     if platform.system() != 'Darwin':
