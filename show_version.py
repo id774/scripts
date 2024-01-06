@@ -6,6 +6,8 @@
 #  Description:
 #  This script displays detailed information and versions for a list of
 #  specified Python modules. It also shows the Python version upon request.
+#  Instead of displaying 'not found' messages immediately, it collects them
+#  and displays a summary of missing modules at the end.
 #  It's useful for quickly checking the installed versions of various packages.
 #
 #  Author: id774 (More info: http://id774.net)
@@ -14,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.4 2024-01-06
+#       Added functionality to display a summary of not found modules at the end.
 #  v2.3 2020-11-05
 #       Using importlib instead of imp.
 #  v2.2 2015-09-28
@@ -51,13 +55,14 @@ class PythonModuleInfo:
     def __init__(self, options):
         self.info = options.info
         self.python = options.python
+        self.not_found = []
 
     def _get_module_info(self, module_name):
         try:
             imp.find_module(module_name)
             help(module_name)
         except ImportError:
-            print(module_name, 'was not found.')
+            self.not_found.append(module_name)
 
     def _get_module_version(self, module_name):
         try:
@@ -69,7 +74,7 @@ class PythonModuleInfo:
             else:
                 print(module_name, "unknown version")
         except ImportError:
-            print(module_name, 'was not found.')
+            self.not_found.append(module_name)
 
     def get_info(self, module_name):
         if self.info:
@@ -81,6 +86,12 @@ class PythonModuleInfo:
         if self.python:
             python_version = sys.version
             print("Python %(python_version)s" % locals())
+
+    def show_not_found(self):
+        if self.not_found:
+            print("\nThese modules were not found:")
+            for module in self.not_found:
+                print(module)
 
 def main():
     from optparse import OptionParser
@@ -165,7 +176,10 @@ def main():
 
     with warnings.catch_warnings():
         warnings.simplefilter('ignore')
-        [m.get_info(p) for p in packages]
+        for p in packages:
+            m.get_info(p)
+
+    m.show_not_found()
 
 
 if __name__ == '__main__':
