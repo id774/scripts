@@ -44,17 +44,22 @@
 import os
 import subprocess
 import sys
+import logging
 from optparse import OptionParser
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 class ExecOnWin:
     def run(self, mount, share, ipaddr, user, passw):
         bs = "\\\\"
         target = bs + bs + ipaddr + bs + share
         if self.ping(ipaddr):
-            print(subprocess.getoutput(
-                "net use {} {} {} /USER:{} /persistent:no".format(mount, target, passw, user)))
+            cmd = "net use {} {} {} /USER:{} /persistent:no".format(
+                mount, target, passw, user)
+            logger.info(subprocess.getoutput(cmd))
         else:
-            print("{} ping timeout.".format(ipaddr))
+            logger.warning("{} ping timeout.".format(ipaddr))
 
     def ping(self, ipaddr):
         return os.system("ping -n 1 -w 3 {} > nul".format(ipaddr)) == 0
@@ -62,10 +67,11 @@ class ExecOnWin:
 class ExecOnPosix:
     def run(self, mount, share, ipaddr, user, passw):
         if self.ping(ipaddr):
-            print(subprocess.getoutput(
-                "sudo mount -t cifs -o rw,uid={},username={},password={},iocharset=utf8 //{}/{} {}".format(user, user, passw, ipaddr, share, mount)))
+            cmd = "sudo mount -t cifs -o rw,uid={},username={},password={},iocharset=utf8 //{}/{} {}".format(
+                user, user, passw, ipaddr, share, mount)
+            logger.info(subprocess.getoutput(cmd))
         else:
-            print("{} ping timeout.".format(ipaddr))
+            logger.warning("{} ping timeout.".format(ipaddr))
 
     def ping(self, ipaddr):
         return os.system("ping -c 1 {} > /dev/null".format(ipaddr)) == 0

@@ -26,6 +26,7 @@ import unittest
 from unittest.mock import patch
 import sys
 import os
+import logging
 
 # Adjust the path to import smb from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -38,6 +39,7 @@ class TestExecOnWin(unittest.TestCase):
     @patch('subprocess.getoutput', return_value="")
     def test_run_win(self, mock_getoutput, mock_system):
         """Test the command generation for Windows system."""
+        smb.logger.setLevel(logging.CRITICAL)
         executor = smb.ExecOnWin()
         executor.run("Z:", "sharename1", "192.168.21.12",
                      "username1", "password1")
@@ -52,14 +54,13 @@ class TestExecOnPosix(unittest.TestCase):
     @patch('subprocess.getoutput', return_value="")
     def test_run_posix(self, mock_getoutput, mock_system):
         """Test the command generation for POSIX system."""
+        smb.logger.setLevel(logging.CRITICAL)
         executor = smb.ExecOnPosix()
         executor.run("/mnt/share", "sharename1",
                      "192.168.31.13", "username2", "password2")
         mock_getoutput.assert_called_with(
             "sudo mount -t cifs -o rw,uid=username2,username=username2,password=password2,iocharset=utf8 //192.168.31.13/sharename1 /mnt/share"
         )
-
-# Additional tests can be added here
 
 
 if __name__ == '__main__':
