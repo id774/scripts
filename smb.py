@@ -22,7 +22,7 @@
 #
 #  Usage:
 #  To mount a network share:
-#      python network_mount.py -m <mount_point> -s <share_name> -i <ip_address> -u <username> -p <password>
+#      python smb.py -m <mount_point> -s <share_name> -i <ip_address> -u <username> -p <password>
 #
 #  Options:
 #  -m, --mount  : Specify the mount point (default: ~/mnt)
@@ -32,7 +32,7 @@
 #  -p, --pass   : Specify the password for access
 #
 #  Example:
-#      python network_mount.py -i 192.168.1.100 -u myUser -p myPass
+#      python smb.py -i 192.168.1.100 -u myUser -p myPass
 #
 #  Note:
 #  Ensure that the necessary permissions and network configurations are set
