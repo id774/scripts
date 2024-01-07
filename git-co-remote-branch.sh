@@ -40,10 +40,10 @@ check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
             echo "Error: Git is not installed. This script requires Git to checkout remote branches. Please install Git and try again."
-            exit 9
+            exit 127
         elif ! [ -x "$(command -v "$cmd")" ]; then
             echo "Error: Command '$cmd' is not executable. Please check the permissions."
-            exit 9
+            exit 126
         fi
     done
 }
