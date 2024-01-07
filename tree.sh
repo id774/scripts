@@ -5,8 +5,9 @@
 #
 #  Description:
 #  This script displays the directory tree of the specified directory,
-#  or the current directory if no directory is specified.
-#  It uses 'find', 'sort', and 'sed' commands to format the tree structure.
+#  or the current directory if no directory is specified. Hidden directories
+#  (those starting with a dot) are excluded by default. An option can be
+#  provided to include these hidden directories in the tree.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-01-07
+#       Added an option to include hidden directories in the tree display.
 #  v1.2 2024-01-04
 #       Added functionality to accept a directory as an argument. If no
 #       argument is provided, the script displays the tree of the current
@@ -26,13 +29,21 @@
 #       Initial release.
 #
 #  Usage:
-#  ./tree.sh [directory]
+#  ./tree.sh [directory] [-a]
 #  Run the script without arguments to display the tree of the current
-#  directory, or with a directory path to display the tree of that directory.
+#  directory, with a directory path to display the tree of that directory,
+#  or with '-a' option to include hidden directories.
 #
 ########################################################################
 
-# Check if an argument is given
+# Check for hidden directory display option
+show_hidden=false
+if [ "$#" -gt 0 ] && [ "$1" = "-a" ]; then
+  show_hidden=true
+  shift
+fi
+
+# Check if an argument is given for directory
 if [ $# -eq 0 ]; then
     directory="."
 else
@@ -49,5 +60,9 @@ echo "$directory"
 cd "$directory" || exit
 
 # Generate and display the directory tree
-find . | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'
+if [ "$show_hidden" = true ]; then
+  find . -print | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'
+else
+  find . -not -path '*/\.*' -print | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'
+fi
 
