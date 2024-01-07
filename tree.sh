@@ -36,10 +36,14 @@
 #
 ########################################################################
 
-# Check if required commands are available
+# Check if required commands are available and executable
 for cmd in find sort sed; do
     if ! command -v "$cmd" >/dev/null 2>&1; then
         echo "Error: Required command '$cmd' is not available."
+        exit 1
+    fi
+    if ! [ -x "$(command -v "$cmd")" ]; then
+        echo "Error: Required command '$cmd' is not executable."
         exit 1
     fi
 done
