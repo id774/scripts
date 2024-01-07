@@ -16,6 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-01-07
+#       Updated command existence and execution permission checks
+#       using a common function for enhanced reliability and maintainability.
 #  v1.2 2023-12-05
 #       Added environment check for Debian-based systems and refactored for clarity.
 #  v1.1 2011-03-25
@@ -40,11 +43,20 @@
 #
 ########################################################################
 
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: '$cmd' is not installed. This script only works on Debian-based systems."
+            exit 9
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 9
+        fi
+    done
+}
+
 # Check if dpkg is installed
-if ! command -v dpkg >/dev/null 2>&1; then
-    echo "Error: dpkg is not installed. This script only works on Debian-based systems."
-    exit 1
-fi
+check_commands dpkg
 
 # Function to display the current state of a package
 show_package_status() {

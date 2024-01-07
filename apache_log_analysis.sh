@@ -15,6 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2024-01-07
+#       Updated command existence and execution permission checks
+#       using a common function for enhanced reliability and maintainability.
 #  v1.4 2023-12-23
 #       Refactored for POSIX compliance. Replaced Bash-specific syntax
 #       with POSIX standard commands and structures. Enhanced portability
@@ -38,21 +41,20 @@
 #
 ########################################################################
 
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 9
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 9
+        fi
+    done
+}
+
 # Check if grep, zgrep, and awk commands are available
-if ! command -v grep > /dev/null 2>&1; then
-    echo "Error: grep command not found."
-    exit 1
-fi
-
-if ! command -v zgrep > /dev/null 2>&1; then
-    echo "Error: zgrep command not found."
-    exit 1
-fi
-
-if ! command -v awk > /dev/null 2>&1; then
-    echo "Error: awk command not found."
-    exit 1
-fi
+check_commands grep zgrep awk
 
 # Check for correct number of arguments
 if [ "$#" -ne 1 ]; then

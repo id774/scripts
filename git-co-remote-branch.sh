@@ -16,6 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2024-01-07
+#       Updated command existence and execution permission checks
+#       using a common function for enhanced reliability and maintainability.
 #  v1.1 2023-12-07
 #       Added check for Git installation.
 #  v1.0 2016-01-26
@@ -33,13 +36,20 @@
 #
 ########################################################################
 
-# Check if Git is installed
-check_git_installed() {
-    if ! command -v git >/dev/null 2>&1; then
-        echo "Error: Git is not installed. This script requires Git to checkout remote branches. Please install Git and try again."
-        exit 2
-    fi
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Git is not installed. This script requires Git to checkout remote branches. Please install Git and try again."
+            exit 9
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 9
+        fi
+    done
 }
+
+# Check if Git is installed
+check_commands git
 
 main() {
     if [ -n "$1" ]; then

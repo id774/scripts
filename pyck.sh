@@ -14,6 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2024-01-07
+#       Updated command existence and execution permission checks
+#       using a common function for enhanced reliability and maintainability.
 #  v1.3 2023-12-20
 #       Replaced 'which' with 'command -v' for command existence check.
 #  v1.2 2023-12-07
@@ -32,6 +35,18 @@
 
 IGNORE_ERRORS=E302,E402
 
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 9
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 9
+        fi
+    done
+}
+
 run_check() {
     flake8 --ignore=$IGNORE_ERRORS "$@"
 }
@@ -43,9 +58,7 @@ autofix() {
 }
 
 main() {
-    command -v autopep8 > /dev/null || { echo "autopep8 not found"; exit 1; }
-    command -v flake8 > /dev/null || { echo "flake8 not found"; exit 1; }
-    command -v autoflake > /dev/null || { echo "autoflake not found"; exit 1; }
+    check_commands autopep8 flake8 autoflake
 
     if [ "$1" = "-i" ]; then
         autofix "$@"

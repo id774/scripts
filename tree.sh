@@ -17,6 +17,8 @@
 #  Version History:
 #  v1.3 2024-01-07
 #       Added an option to include hidden directories in the tree display.
+#       Updated command existence and execution permission checks
+#       using a common function for enhanced reliability and maintainability.
 #  v1.2 2024-01-04
 #       Added functionality to accept a directory as an argument. If no
 #       argument is provided, the script displays the tree of the current
@@ -36,17 +38,20 @@
 #
 ########################################################################
 
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 9
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 9
+        fi
+    done
+}
+
 # Check if required commands are available and executable
-for cmd in find sort sed; do
-    if ! command -v "$cmd" >/dev/null 2>&1; then
-        echo "Error: Required command '$cmd' is not available."
-        exit 1
-    fi
-    if ! [ -x "$(command -v "$cmd")" ]; then
-        echo "Error: Required command '$cmd' is not executable."
-        exit 1
-    fi
-done
+check_commands find sort sed
 
 # Check for hidden directory display option
 show_hidden=false

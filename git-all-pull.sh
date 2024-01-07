@@ -17,6 +17,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2024-01-07
+#       Updated command existence and execution permission checks
+#       using a common function for enhanced reliability and maintainability.
 #  v1.1 2023-12-07
 #       Added check for Git installation and options to pull from specific directories.
 #       Added '--all' option and default behavior to show help message if no option is provided.
@@ -38,12 +41,16 @@ GIT_ONLY=false
 ALL=false
 SHOW_HELP=false
 
-# Check if Git is installed
-check_git_installed() {
-    if ! command -v git >/dev/null 2>&1; then
-        echo "Error: Git is not installed. This script requires Git for pulling repositories. Please install Git and try again."
-        exit 2
-    fi
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Git is not installed. This script requires Git for pulling repositories. Please install Git and try again."
+            exit 9
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 9
+        fi
+    done
 }
 
 # Display script usage information
@@ -89,7 +96,8 @@ if [ "$SHOW_HELP" = true ]; then
     usage
 fi
 
-check_git_installed
+# Check if Git is installed
+check_commands git
 
 pull_repo() {
     local repo_path="$1"

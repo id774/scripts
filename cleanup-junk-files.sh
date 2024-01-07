@@ -19,6 +19,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2024-01-07
+#       Updated command existence and execution permission checks
+#       using a common function for enhanced reliability and maintainability.
 #  v1.3 2023-12-23
 #       Refactored for POSIX compliance. Replaced Bash-specific syntax
 #       with POSIX standard commands and structures. Enhanced portability
@@ -36,11 +39,20 @@
 #
 ########################################################################
 
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 9
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 9
+        fi
+    done
+}
+
 # Check if rm and find commands exist
-if ! command -v rm >/dev/null 2>&1 || ! command -v find >/dev/null 2>&1; then
-    echo "Error: 'rm' or 'find' command is not available."
-    exit 1
-fi
+check_commands rm find
 
 # Check if a directory is provided
 if [ -z "$1" ]; then
