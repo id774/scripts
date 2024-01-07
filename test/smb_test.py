@@ -56,10 +56,10 @@ class TestExecOnPosix(unittest.TestCase):
         """Test the command generation for POSIX system."""
         smb.logger.setLevel(logging.CRITICAL)
         executor = smb.ExecOnPosix()
-        executor.run("/mnt/share", "sharename1",
+        executor.run("/mnt/share", "sharename2",
                      "192.168.31.13", "username2", "password2")
         mock_getoutput.assert_called_with(
-            "sudo mount -t cifs -o rw,uid=username2,username=username2,password=password2,iocharset=utf8 //192.168.31.13/sharename1 /mnt/share"
+            "sudo mount -t cifs -o rw,uid=username2,username=username2,password=password2,iocharset=utf8 //192.168.31.13/sharename2 /mnt/share"
         )
 
 
