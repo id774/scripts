@@ -36,6 +36,14 @@
 #
 ########################################################################
 
+# Check if required commands are available
+for cmd in find sort sed; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+        echo "Error: Required command '$cmd' is not available."
+        exit 1
+    fi
+done
+
 # Check for hidden directory display option
 show_hidden=false
 if [ "$#" -gt 0 ] && [ "$1" = "-a" ]; then
