@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# image-resize.py: Image Resizer
+# image_resize.py: Image Resizer
 #
 #  Description:
 #  This Python script resizes images in a specified directory to a given size.
