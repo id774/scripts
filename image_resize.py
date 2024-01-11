@@ -6,7 +6,8 @@
 #  Description:
 #  This Python script resizes images in a specified directory to a given size.
 #  It supports JPEG and PNG formats. The script walks through the source directory,
-#  resizes each image, and saves it to the output directory.
+#  resizes each image, and saves it to the output directory. This version includes
+#  error handling for environments where the PIL library is not installed.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,18 +15,26 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2024-01-11
+#      Added error handling for PIL library not installed.
 #  v1.0 2023-12-24
 #      Initial release. Basic functionality for resizing images.
 #
 #  Usage:
-#  python image-resize.py <size> <source_directory> <output_directory>
-#  Example: python image-resize.py 300 ./images ./resized
+#  python image_resize.py <size> <source_directory> <output_directory>
+#  Example: python image_resize.py 300 ./images ./resized
 #
 ########################################################################
 
 import os
 import argparse
-from PIL import Image
+
+# Importing PIL library and handling errors if not installed
+try:
+    from PIL import Image
+except ImportError:
+    print("PIL library (Pillow) is not installed. Please install it to use this script.")
+    exit(1)
 
 def resize_file(size, filename, outpath):
     """Resizes an image to a square of the given size."""
