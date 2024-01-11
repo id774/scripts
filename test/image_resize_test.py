@@ -25,26 +25,24 @@ from unittest.mock import patch, MagicMock
 import sys
 import os
 
+# Adjusting the path to import image_resize from the parent directory
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+
 try:
     from PIL import Image
     pil_installed = True
 except ImportError:
     pil_installed = False
 
-# Adjusting the path to import image_resize from the parent directory
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import image_resize
 
 class TestImageResize(unittest.TestCase):
     """Unit tests for the image_resize.py script."""
 
     @classmethod
-    def setUpClass(cls):
-        try:
-            from PIL import Image
-        except ImportError:
-            raise unittest.SkipTest(
-                "PIL library is not installed. Skipping tests.")
+    def setUp(self):
+        if not pil_installed:
+            self.skipTest("PIL library is not installed. Skipping tests.")
 
     @patch('image_resize.print')
     @patch('image_resize.Image.open')
