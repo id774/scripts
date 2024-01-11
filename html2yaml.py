@@ -5,10 +5,12 @@
 #
 #  Description:
 #  This script parses an HTML document and converts it into a structured
-#  YAML format. It uses Nokogiri for HTML parsing and provides options for
-#  including or excluding specific elements based on CSS or XPath selectors.
-#  This is useful for converting HTML structures into a format that can be
-#  easily processed by scripts or programs.
+#  YAML format. It uses BeautifulSoup for HTML parsing and PyYAML for
+#  YAML generation. The script provides options for including or excluding
+#  specific elements based on CSS or XPath selectors. This is useful for
+#  converting HTML structures into a format that can be easily processed
+#  by scripts or programs. Now, it checks for the necessary libraries
+#  and exits with an error message if they are not installed.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -16,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2024-01-15
+#       Added checks for BeautifulSoup and PyYAML libraries.
 #  v1.1 2023-12-08
 #       Removed f-strings for compatibility with Python versions below 3.6.
 #  v1.0 2023-12-07
@@ -26,6 +30,7 @@
 #  - PyYAML
 #  - requests
 #
+#  Note:
 #  This script requires the following Python libraries: BeautifulSoup,
 #  PyYAML, and requests. These can be installed via pip using:
 #    pip install bs4 pyyaml requests
@@ -41,53 +46,20 @@
 #
 #  Example:
 #    html2yaml.py --exclude='//div[@class="footer"]' http://example.com
-#    This command will parse the HTML from example.com, excluding divs with class "footer".
-#
-#  Input/Output Example:
-#  - Given an HTML document like:
-#    <!DOCTYPE html>
-#    <html>
-#    <head>
-#        <title>Example Page</title>
-#    </head>
-#    <body>
-#        <div id="main" class="container">
-#            <h1>Welcome to the Example Page</h1>
-#            <p>This is a sample paragraph.</p>
-#        </div>
-#    </body>
-#    </html>
-#  - The output will be a YAML format representing the structure of the HTML:
-#    :name: html
-#    :children:
-#      - :name: head
-#        :children:
-#          - :name: title
-#            :children:
-#              - :name: text
-#                :value: Example Page
-#      - :name: body
-#        :children:
-#          - :name: div
-#            :attributes:
-#              :id: main
-#              :class: container
-#            :children:
-#              - :name: h1
-#                :children:
-#                  - :name: text
-#                    :value: Welcome to the Example Page
-#              - :name: p
-#                :children:
-#                  - :name: text
-#                    :value: This is a sample paragraph.
 #
 ########################################################################
 
 import sys
-import yaml
-from bs4 import BeautifulSoup
-import requests
+
+# Importing necessary libraries
+try:
+    import yaml
+    from bs4 import BeautifulSoup
+    import requests
+except ImportError as e:
+    print("Error: Required libraries not installed. Please install them to use this script.")
+    print("Missing library: {}".format(e.name))
+    sys.exit(1)
 
 def html_to_yaml(element):
     """ Convert HTML element to YAML-structured data. """

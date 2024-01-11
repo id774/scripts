@@ -6,7 +6,8 @@
 #  Description:
 #  This test suite verifies the functionality of the html2yaml.py script. It checks
 #  whether the script correctly parses an HTML document and outputs the expected
-#  YAML format. The tests depend on BeautifulSoup and PyYAML libraries.
+#  YAML format. The tests depend on BeautifulSoup and PyYAML libraries. If these
+#  libraries are not installed, the tests will be skipped.
 #
 #  Test Data:
 #  The test uses an HTML file located at 'test/html2yaml_data.html', which should contain
@@ -17,33 +18,49 @@
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
 #  Contact: idnanashi@gmail.com
 #
+#  Version History:
+#  v1.1 2024-01-15
+#       Updated tests to skip if BeautifulSoup and PyYAML are not installed.
+#  v1.0 2024-01-11
+#       Initial test script for html2yaml.py
+#
 #  Dependencies:
 #  - BeautifulSoup
 #  - PyYAML
 #  - requests
 #
-#  This script requires the following Python libraries: BeautifulSoup,
-#  PyYAML, and requests. These can be installed via pip using:
-#    pip install bs4 pyyaml requests
-#
 #  Usage:
 #  Run the test from the command line:
-#    cd test
-#    python -m unittest html2yaml_test.py
+#    python test/html2yaml_test.py
 #
 ########################################################################
 
 import unittest
 import sys
 import os
-import yaml
-from bs4 import BeautifulSoup
 
+# Check if required libraries are installed
+required_libraries_installed = True
+try:
+    import yaml
+    from bs4 import BeautifulSoup
+except ImportError:
+    required_libraries_installed = False
+
+# Adjusting the path to import html2yaml from the parent directory
 sys.path.insert(0, os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..')))
 from html2yaml import html_to_yaml
 
 class Html2YamlTest(unittest.TestCase):
+    """Unit tests for the html2yaml.py script."""
+
+    @classmethod
+    def setUpClass(cls):
+        if not required_libraries_installed:
+            raise unittest.SkipTest(
+                "Required libraries not installed. Skipping tests.")
+
     def test_html_to_yaml_conversion(self):
         """ Test HTML to YAML conversion for accuracy. """
         test_html_path = os.path.join(
