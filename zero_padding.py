@@ -5,7 +5,8 @@
 #
 #  Description:
 #  This script renames files in a given directory by zero-padding the numeric
-#  part of the file names to a specified number of digits.
+#  part of the file names to a specified number of digits. It now includes
+#  a quiet mode option to suppress logging output.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -13,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-01-11
+#       Added quiet mode option (-q) and refactored with logging and improved error handling.
 #  v1.2 2023-12-08
 #       Removed f-strings for compatibility with Python versions below 3.6.
 #  v1.1 2023-05-06
@@ -22,18 +25,32 @@
 #
 #  Usage:
 #  Run the script with the directory path and the number of digits for padding as arguments.
+#  Optionally, use the -q option to enable quiet mode, which suppresses logging output.
 #  Example:
 #      python zero_padding.py /path/to/directory 4
-#  This will rename files in '/path/to/directory', padding the numeric part to 4 digits.
+#      python zero_padding.py /path/to/directory 4 -q
+#  The first command will rename files in '/path/to/directory', padding the numeric part to 4 digits,
+#  with logging output. The second command does the same but in quiet mode (no logging output).
 #
 ########################################################################
 
 import argparse
 import os
+import logging
 
-def rename_files(dir_path, num_digits):
-    # Retrieve all files in the directory
-    files = os.listdir(dir_path)
+def setup_logger(quiet_mode):
+    if quiet_mode:
+        logging.basicConfig(level=logging.CRITICAL)
+    else:
+        logging.basicConfig(level=logging.INFO,
+                            format='%(levelname)s: %(message)s')
+
+def rename_files(dir_path, num_digits, quiet_mode):
+    try:
+        files = os.listdir(dir_path)
+    except OSError as e:
+        logging.error("Failed to list directory: %s", e)
+        return
 
     # Process each file name
     for file_name in files:
@@ -64,7 +81,14 @@ def rename_files(dir_path, num_digits):
         os.rename(old_file_path, new_file_path)
 
         # Display the renaming
-        print("{} -> {}".format(file_name, new_file_name))
+        if not quiet_mode:
+            logging.info("%s -> %s", file_name, new_file_name)
+
+        try:
+            os.rename(old_file_path, new_file_path)
+        except OSError as e:
+            logging.error("Failed to rename %s to %s: %s",
+                          old_file_path, new_file_path, e)
 
 
 if __name__ == '__main__':
@@ -73,10 +97,14 @@ if __name__ == '__main__':
     parser.add_argument('dir_path', help='directory path')
     parser.add_argument('num_digits', type=int,
                         help='number of digits for padding')
+    parser.add_argument('-q', '--quiet', action='store_true',
+                        help='enable quiet mode')
     args = parser.parse_args()
 
-    if not os.path.isdir(args.dir_path):
-        print("{} is not a valid directory.".format(args.dir_path))
-        exit()
+    setup_logger(args.quiet)
 
-    rename_files(args.dir_path, args.num_digits)
+    if not os.path.isdir(args.dir_path):
+        logging.error("%s is not a valid directory.", args.dir_path)
+        exit(1)
+
+    rename_files(args.dir_path, args.num_digits, args.quiet)
