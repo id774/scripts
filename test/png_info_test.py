@@ -13,7 +13,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.0 2024-01-12
+#  v1.0 2024-01-11
 #       Initial test script for png_info.py
 #
 ########################################################################
@@ -49,8 +49,6 @@ class TestPngInfo(unittest.TestCase):
         """Test reading information from an incomplete PNG file."""
         with self.assertRaises(struct.error):
             read_png_info('incomplete.png')
-
-    # Additional tests can be added here to cover more cases
 
 
 if __name__ == '__main__':

@@ -80,8 +80,6 @@ class TestUnixtime2date(unittest.TestCase):
         expected_date = "2020-10-01T21:00:00+09:00"
         self.assertEqual(unixtime2date(timestamp), expected_date)
 
-    # Additional tests can be added here
-
 
 if __name__ == '__main__':
     unittest.main()
