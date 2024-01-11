@@ -40,9 +40,10 @@ class TestImageResize(unittest.TestCase):
     """Unit tests for the image_resize.py script."""
 
     @classmethod
-    def setUp(self):
+    def setUpClass(cls):
         if not pil_installed:
-            self.skipTest("PIL library is not installed. Skipping tests.")
+            raise unittest.SkipTest(
+                "PIL library is not installed. Skipping tests.")
 
     @patch('image_resize.print')
     @patch('image_resize.Image.open')

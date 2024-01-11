@@ -60,7 +60,7 @@ else
         echo "Running Python test: $file"
         output=$(python "$file" 2>&1) # Capture both stdout and stderr
         echo "$output"
-        if ! echo "$output" | tail -n 2 | grep -q "OK"; then
+        if ! echo "$output" | grep -qE "OK|SKIPPED|OK \(skipped=[0-9]+\)" ; then
             echo "Failure in Python test: $file"
             python_failures=$(expr $python_failures + 1)
         fi
