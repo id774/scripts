@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2024-01-11
+#       Added '-q' option for quiet mode.
 #  v1.0 2024-01-10
 #      Initial release of test script.
 #
@@ -21,9 +23,10 @@
 #  Run this script from the command line using:
 #      python test/swapext_test.py
 #
-#  The script tests the swap_extensions function from swapext.py. It uses
-#  mock objects to simulate file system operations and checks whether
-#  the file extensions are correctly changed as per the specified parameters.
+#  The script tests the swap_extensions function from swapext.py with
+#  and without the quiet mode (-q) option. It uses mock objects to
+#  simulate file system operations and checks whether the file extensions
+#  are correctly changed as per the specified parameters.
 #
 ########################################################################
 
@@ -49,8 +52,30 @@ class TestSwapExt(unittest.TestCase):
             ('/testdir/subdir', [], ['file4.txt', 'file5.doc'])
         ]
 
-        # Call the function
-        swapext.swap_extensions('/testdir', 'txt', 'md')
+        # Call the function with quiet_mode=False
+        swapext.swap_extensions('/testdir', 'txt', 'md', False)
+
+        # Define expected calls to os.rename
+        expected_calls = [
+            call('/testdir/file1.txt', '/testdir/file1.md'),
+            call('/testdir/file3.txt', '/testdir/file3.md'),
+            call('/testdir/subdir/file4.txt', '/testdir/subdir/file4.md')
+        ]
+        # Verify that os.rename is called with the expected arguments
+        mock_rename.assert_has_calls(expected_calls, any_order=True)
+
+    @patch('os.rename')
+    @patch('os.walk')
+    def test_swap_extensions_quiet_mode(self, mock_walk, mock_rename):
+        """Test swapping file extensions with quiet mode."""
+        # Mock the os.walk to simulate directory structure
+        mock_walk.return_value = [
+            ('/testdir', ['subdir'], ['file1.txt', 'file2.doc', 'file3.txt']),
+            ('/testdir/subdir', [], ['file4.txt', 'file5.doc'])
+        ]
+
+        # Call the function with quiet_mode=True
+        swapext.swap_extensions('/testdir', 'txt', 'md', True)
 
         # Define expected calls to os.rename
         expected_calls = [
