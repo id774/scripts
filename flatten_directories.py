@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2024-01-11
+#       Refactored handle_directory function to accept options as a parameter.
 #  v1.3 2023-12-08
 #       Removed f-strings for compatibility with Python versions below 3.6.
 #       Modified behavior to require at least one option and display help message otherwise.
@@ -58,37 +60,31 @@ parser.add_option("-x", "--execute", action="store_true", dest="execute_mode", d
                   help="execute file operations (default is dry run)")
 parser.add_option("-r", "--rename-only", action="store_true", dest="rename_only_mode", default=False,
                   help="only rename the files by adding directory name, without moving or copying")
-(options, args) = parser.parse_args()
 
-# Show help and exit if no options are provided.
-if not any(vars(options).values()):
-    parser.print_help()
-    exit()
-
-def print_action(action, source, destination=None):
+def print_action(action, source, destination=None, options=None):
     """ Prints the action being performed or simulated. """
     action_message = "{} {}".format(action, source)
     if destination:
         action_message += " -> {}".format(destination)
 
-    if not options.execute_mode:
+    if options and not options.execute_mode:
         print("[DRY RUN] {}".format(action_message))
     else:
         print(action_message)
 
-def handle_directory(path):
-    """Recursively processes a directory."""
+def handle_directory(path, options):
+    """ Recursively processes a directory. """
     entries = os.listdir(path)
     dir_empty = True
 
     for entry in entries:
         old_path = os.path.join(path, entry)
         if os.path.isdir(old_path):
-            handle_directory(old_path)
+            handle_directory(old_path, options)
             if options.delete_mode and not os.listdir(old_path):
-                dir_empty = False  # Directory contains subdirectories
+                dir_empty = False
         else:
-            dir_empty = False  # Directory contains files
+            dir_empty = False
             new_filename = "{}_{}".format(path.replace('/', '_'), entry)
             new_path = os.path.join(path, new_filename)
 
@@ -96,26 +92,31 @@ def handle_directory(path):
                 if options.execute_mode:
                     os.rename(old_path, new_path)
                 if not options.quiet_mode:
-                    print_action("Renamed", old_path, new_path)
+                    print_action("Renamed", old_path, new_path, options)
             elif options.copy_mode or (not options.move_mode and not options.copy_mode):
                 if options.execute_mode:
                     shutil.copy(old_path, new_filename)
                 if not options.quiet_mode:
-                    print_action("Copied", old_path, new_filename)
+                    print_action("Copied", old_path, new_filename, options)
             elif options.move_mode:
                 if options.execute_mode:
                     shutil.move(old_path, new_filename)
                 if not options.quiet_mode:
-                    print_action("Moved", old_path, new_filename)
+                    print_action("Moved", old_path, new_filename, options)
 
-    # If directory is empty after processing files and subdirectories
     if options.delete_mode and dir_empty:
-        if not options.quiet_mode:
-            print_action("Deleted directory", path)
         if options.execute_mode:
             os.rmdir(path)
+        if not options.quiet_mode:
+            print_action("Deleted directory", path, options=options)
+
+def main(options):
+    """ Main function to process directories. """
+    subdirectories = [d for d in os.listdir('.') if os.path.isdir(d)]
+    for subdir in subdirectories:
+        handle_directory(subdir, options)
 
 
-subdirectories = [d for d in os.listdir('.') if os.path.isdir(d)]
-for subdir in subdirectories:
-    handle_directory(subdir)
+if __name__ == '__main__':
+    (options, args) = parser.parse_args()
+    main(options)
