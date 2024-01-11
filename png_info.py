@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# png-info.py: PNG File Information Reader
+# png_info.py: PNG File Information Reader
 #
 #  Description:
 #  This Python script reads basic information from PNG files, such as
@@ -24,8 +24,8 @@
 #       information from PNG files.
 #
 #  Usage:
-#  python png-info.py <file_pattern>
-#  Example: python png-info.py *.png
+#  python png_info.py <file_pattern>
+#  Example: python png_info.py *.png
 #
 ########################################################################
 
@@ -68,8 +68,8 @@ def read_png_info(png_file_path):
         return width, height, bit_depth, color_type_name
 
 def print_help():
-    print("Usage: python png-info.py <file_pattern>")
-    print("Example: python png-info.py *.png")
+    print("Usage: python png_info.py <file_pattern>")
+    print("Example: python png_info.py *.png")
     print("Reads width, height, bit depth, and color type information from PNG files.")
 
 
