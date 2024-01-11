@@ -35,7 +35,7 @@ except ImportError:
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import image_resize
 
-@unittest.skipIf(not pil_installed, "PIL library is not installed")
+@unittest.skipUnless(pil_installed, "PIL library is not installed. Skipping tests.")
 class TestImageResize(unittest.TestCase):
     """Unit tests for the image_resize.py script."""
 
