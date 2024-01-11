@@ -3,20 +3,21 @@
 ########################################################################
 # flatten_directories_test.py: Test script for flatten_directories.py
 #
-# Description:
-# This script contains unit tests for the flatten_directories.py script.
-# It verifies that the script correctly performs file operations such as
-# moving, copying, renaming, and deleting empty directories. Mock objects
-# are used to simulate file system operations and to verify the behavior
-# of the script under different conditions.
+#  Description:
+#  This script contains unit tests for the flatten_directories.py script.
+#  It verifies that the script correctly performs file operations such as
+#  moving, copying, renaming, and deleting empty directories. Mock objects
+#  are used to simulate file system operations and to verify the behavior
+#  of the script under different conditions.
 #
-# Author: id774 (More info: http://id774.net)
-# Source Code: https://github.com/id774/scripts
-# License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
-# Contact: idnanashi@gmail.com
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
 #
-# Version History:
-# v1.0 2024-01-11: Initial test script for flatten_directories.py
+#  Version History:
+#  v1.0 2024-01-11
+#       Initial test script for flatten_directories.py
 #
 ########################################################################
 
