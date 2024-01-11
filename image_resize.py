@@ -32,9 +32,10 @@ import argparse
 # Importing PIL library and handling errors if not installed
 try:
     from PIL import Image
-except ImportError:
-    print("PIL library (Pillow) is not installed. Please install it to use this script.")
-    exit(1)
+except ImportError as e:
+    libraries_installed = False
+else:
+    libraries_installed = True
 
 def resize_file(size, filename, outpath):
     """Resizes an image to a square of the given size."""
@@ -71,6 +72,10 @@ def parse_args():
 
 def main():
     """Main function to execute the script."""
+    if not libraries_installed:
+        print("Error: Required libraries not installed.")
+        sys.exit(1)
+
     args = parse_args()
     read_dir(args.size, args.src, args.out)
 

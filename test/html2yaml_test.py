@@ -19,8 +19,6 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.1 2024-01-15
-#       Updated tests to skip if BeautifulSoup and PyYAML are not installed.
 #  v1.0 2024-01-11
 #       Initial test script for html2yaml.py
 #

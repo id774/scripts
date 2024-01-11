@@ -18,7 +18,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.2 2024-01-15
+#  v1.2 2024-01-11
 #       Added checks for BeautifulSoup and PyYAML libraries.
 #  v1.1 2023-12-08
 #       Removed f-strings for compatibility with Python versions below 3.6.
@@ -57,9 +57,9 @@ try:
     from bs4 import BeautifulSoup
     import requests
 except ImportError as e:
-    print("Error: Required libraries not installed. Please install them to use this script.")
-    print("Missing library: {}".format(e.name))
-    sys.exit(1)
+    libraries_installed = False
+else:
+    libraries_installed = True
 
 def html_to_yaml(element):
     """ Convert HTML element to YAML-structured data. """
@@ -76,6 +76,10 @@ def html_to_yaml(element):
     return data
 
 def main():
+    if not libraries_installed:
+        print("Error: Required libraries not installed.")
+        sys.exit(1)
+
     if len(sys.argv) != 2:
         print("Usage: python html2yaml.py URL_OR_PATH")
         sys.exit(1)
