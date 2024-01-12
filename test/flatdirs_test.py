@@ -18,7 +18,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.1 2023-01-13
+#  v1.1 2024-01-13
 #       Updated for script name change to flatdirs.py.
 #       Enhanced test cases to cover all major functionalities.
 #  v1.0 2024-01-11
