@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 ########################################################################
-# flatten_directories_test.py: Test script for flatten_directories.py
+# flatdirs_test.py: Test script for flatdirs.py
 #
 #  Description:
-#  This script contains unit tests for the flatten_directories.py script.
+#  This script contains unit tests for the flatdirs.py script.
 #  It verifies that the script correctly performs file operations such as
 #  moving, copying, renaming, and deleting empty directories. Mock objects
 #  are used to simulate file system operations and to verify the behavior
@@ -16,8 +16,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2023-01-13
+#       Updated for script name change to flatdirs.py.
 #  v1.0 2024-01-11
-#       Initial test script for flatten_directories.py
+#       Initial test script for flatdirs.py
 #
 ########################################################################
 
@@ -26,22 +28,22 @@ from unittest.mock import patch, MagicMock
 import sys
 import os
 
-# Adjusting the path to import flatten_directories from the parent directory
+# Adjusting the path to import flatdirs from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import flatten_directories
+import flatdirs
 
-class TestFlattenDirectories(unittest.TestCase):
-    """Unit tests for the flatten_directories.py script."""
+class TestFlatDirs(unittest.TestCase):
+    """Unit tests for the flatdirs.py script."""
 
-    @patch('flatten_directories.print_action')
-    @patch('flatten_directories.shutil.move')
-    @patch('flatten_directories.shutil.copy')
-    @patch('flatten_directories.os.rename')
-    @patch('flatten_directories.os.rmdir')
-    @patch('flatten_directories.os.path.isdir')
-    @patch('flatten_directories.os.listdir')
-    def test_flatten_directories(self, mock_listdir, mock_isdir, mock_rmdir, mock_rename, mock_copy, mock_move, mock_print_action):
-        """Test the main functionality of flatten_directories.py."""
+    @patch('flatdirs.print_action')
+    @patch('flatdirs.shutil.move')
+    @patch('flatdirs.shutil.copy')
+    @patch('flatdirs.os.rename')
+    @patch('flatdirs.os.rmdir')
+    @patch('flatdirs.os.path.isdir')
+    @patch('flatdirs.os.listdir')
+    def test_flatdirs(self, mock_listdir, mock_isdir, mock_rmdir, mock_rename, mock_copy, mock_move, mock_print_action):
+        """Test the main functionality of flatdirs.py."""
         # Suppressing print_action output during testing
         mock_print_action.side_effect = lambda *args, **kwargs: None
 
@@ -73,7 +75,7 @@ class TestFlattenDirectories(unittest.TestCase):
         test_options.rename_only_mode = False
 
         # Calling the main function with test options
-        flatten_directories.main(test_options)
+        flatdirs.main(test_options)
 
         # Assertions to verify the expected behavior
         mock_listdir.assert_called_with('subdir2')

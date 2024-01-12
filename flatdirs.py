@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# flatten_directories.py: Flatten Directories and Manipulate Files
+# flatdirs.py: Flatten Directories and Manipulate Files
 #
 #  Description:
 #  This script flattens the directory structure by either moving, copying,
@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2024-01-13
+#       Changed script name to flatdirs.py for simplicity.
 #  v1.4 2024-01-11
 #       Refactored handle_directory function to accept options as a parameter.
 #  v1.3 2023-12-08
@@ -27,7 +29,7 @@
 #       Initial release.
 #
 #  Usage:
-#  python flatten_directories.py [options]
+#  python flatdirs.py [options]
 #  Options:
 #    -m, --move         Move files instead of copying (default if no option is provided)
 #    -c, --copy         Copy files instead of moving
