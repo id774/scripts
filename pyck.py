@@ -72,7 +72,6 @@ def dry_run_formatting(paths, ignore_errors):
         run_command("autoflake --imports=django,requests,urllib3 --check {}".format(path),
                     show_files="Would clean:")
 
-
 def execute_formatting(paths, ignore_errors):
     for path in paths:
         actual_path = path[0] if isinstance(path, list) else path
