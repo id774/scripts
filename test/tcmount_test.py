@@ -335,6 +335,61 @@ class TestTcMount(unittest.TestCase):
                 mock_os_exec.assert_called_with(expected_command)
                 mock_os_exec.reset_mock()
 
+    @patch('tcmount.os_exec')
+    def test_mounting_various_options(self, mock_os_exec):
+        self.check_both_installed()
+
+        # Define various option combinations for testing
+        options_combinations = [
+            {'veracrypt': False, 'tc_compat': False,
+                'no_utf8': False, 'readonly': False},
+            {'veracrypt': True, 'tc_compat': False,
+                'no_utf8': False, 'readonly': False},
+            {'veracrypt': False, 'tc_compat': True,
+                'no_utf8': False, 'readonly': False},
+            {'veracrypt': False, 'tc_compat': False,
+                'no_utf8': True, 'readonly': False},
+            {'veracrypt': True, 'tc_compat': False,
+                'no_utf8': True, 'readonly': False},
+            {'veracrypt': False, 'tc_compat': True,
+                'no_utf8': True, 'readonly': False},
+            {'veracrypt': False, 'tc_compat': False,
+                'no_utf8': False, 'readonly': True},
+            {'veracrypt': True, 'tc_compat': False,
+                'no_utf8': False, 'readonly': True},
+            {'veracrypt': False, 'tc_compat': True,
+                'no_utf8': False, 'readonly': True},
+        ]
+
+        for options_dict in options_combinations:
+            with self.subTest(**options_dict):
+                # Setup options based on the current combination
+                def options(): return None
+                options.veracrypt = options_dict['veracrypt']
+                options.tc_compat = options_dict['tc_compat']
+                options.no_utf8 = options_dict['no_utf8']
+                options.readonly = options_dict['readonly']
+                options.all = False
+                options.external = None
+
+                # Call process_mounting with the current options
+                tcmount.process_mounting(options, ['sdb'])
+
+                # Construct the expected command based on options
+                if options.tc_compat:
+                    cmd_prefix = 'veracrypt -tc'
+                elif options.veracrypt:
+                    cmd_prefix = 'veracrypt'
+                else:
+                    cmd_prefix = 'truecrypt'
+
+                fs_options = 'utf8' if not options.no_utf8 else ''
+                fs_options += ',ro' if options.readonly else ''
+                expected_command = f'test -b /dev/sdb && sudo {cmd_prefix} -t -k "" --protect-hidden=no --fs-options={fs_options} /dev/sdb ~/mnt/sdb'
+
+                mock_os_exec.assert_called_with(expected_command)
+                mock_os_exec.reset_mock()
+
 
 if __name__ == '__main__':
     unittest.main()
