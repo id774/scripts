@@ -9,6 +9,7 @@
 #  autopep8 for auto-formatting, and autoflake for removing unused
 #  imports. The script can operate in dry-run mode to display potential
 #  changes without modifying files, and in auto-fix mode to apply changes.
+#  It now supports multiple files and directories, including wildcard usage.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -20,6 +21,7 @@
 #       Ported from shell script (pyck.sh) to Python (pyck.py) for enhanced
 #       portability and functionality.
 #       Integrated functionality of autopyck.sh, including dry-run mode.
+#       Added support for multiple files and directories, including wildcard usage.
 #  v1.4 2024-01-07
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.
@@ -34,14 +36,14 @@
 #
 #  Usage:
 #  Without -i (Dry-run mode):
-#    ./pyck.py [directory or file]
-#    Example: ./pyck.py ./my_python_project
+#    ./pyck.py [file(s) or directory(ies)]
+#    Example: ./pyck.py ./my_python_project *.py
 #    This mode shows which files would be formatted and cleaned, without making changes.
 #
 #  With -i (Actual formatting mode):
-#    ./pyck.py -i [directory or file]
-#    Example: ./pyck.py -i ./my_python_project
-#    This mode actually formats and cleans the Python files in the specified directory or file.
+#    ./pyck.py -i [file(s) or directory(ies)]
+#    Example: ./pyck.py -i ./my_python_project *.py
+#    This mode actually formats and cleans the Python files in the specified files or directories.
 #
 ########################################################################
 
@@ -50,6 +52,7 @@ import subprocess
 import os
 import sys
 import shutil
+import glob
 
 def check_command(cmd):
     if not shutil.which(cmd):
@@ -60,26 +63,31 @@ def check_command(cmd):
         print("Error: Command '{}' is not executable. Please check the permissions.".format(cmd))
         sys.exit(126)
 
-def dry_run_formatting(path, ignore_errors):
-    print("Dry run: No files will be modified. Use -i to auto-fix.")
-    run_command("flake8 --ignore={} {}".format(ignore_errors, path),
-                show_files="Would format:")
-    run_command("autoflake --imports=django,requests,urllib3 --check {}".format(path),
-                show_files="Would clean:")
-
-def execute_formatting(path, ignore_errors):
-    if os.path.isdir(path):
-        for root, dirs, files in os.walk(path):
-            for name in files:
-                if name.endswith('.py'):
-                    file_path = os.path.join(root, name)
-                    format_file(file_path, ignore_errors)
-    elif os.path.isfile(path):
-        format_file(path, ignore_errors)
-    else:
+def dry_run_formatting(paths, ignore_errors):
+    for path in paths:
         print(
-            "Error: The specified path '{}' is neither a file nor a directory.".format(path))
-        sys.exit(1)
+            "Dry run: No files will be modified for '{}'. Use -i to auto-fix.".format(path))
+        run_command("flake8 --ignore={} {}".format(ignore_errors,
+                    path), show_files="Would format:")
+        run_command("autoflake --imports=django,requests,urllib3 --check {}".format(path),
+                    show_files="Would clean:")
+
+
+def execute_formatting(paths, ignore_errors):
+    for path in paths:
+        actual_path = path[0] if isinstance(path, list) else path
+
+        if os.path.isdir(actual_path):
+            for root, dirs, files in os.walk(actual_path):
+                for name in files:
+                    if name.endswith('.py'):
+                        file_path = os.path.join(root, name)
+                        format_file(file_path, ignore_errors)
+        elif os.path.isfile(actual_path):
+            format_file(actual_path, ignore_errors)
+        else:
+            print("Error: The specified path '{}' is neither a file nor a directory.".format(
+                actual_path))
 
 def format_file(file_path, ignore_errors):
     subprocess.run(
@@ -87,12 +95,19 @@ def format_file(file_path, ignore_errors):
     subprocess.run(
         "autopep8 --ignore={} -v -i {}".format(ignore_errors, file_path), shell=True)
 
-def execute_formatting(path, ignore_errors):
-    print("Auto-fixing code issues in: {}".format(path))
-    subprocess.run(
-        "autoflake --imports=django,requests,urllib3 -i {}".format(path), shell=True)
-    subprocess.run(
-        "autopep8 --ignore={} -v -i {}".format(ignore_errors, path), shell=True)
+def execute_formatting(paths, ignore_errors):
+    for path in paths:
+        if os.path.isdir(path):
+            for root, dirs, files in os.walk(path):
+                for name in files:
+                    if name.endswith('.py'):
+                        file_path = os.path.join(root, name)
+                        format_file(file_path, ignore_errors)
+        elif os.path.isfile(path):
+            format_file(path, ignore_errors)
+        else:
+            print(
+                "Error: The specified path '{}' is neither a file nor a directory.".format(path))
 
 def run_command(command, show_files=None):
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
@@ -105,15 +120,15 @@ def run_command(command, show_files=None):
 def main():
     parser = argparse.ArgumentParser(
         description="Python Code Formatter and Linter")
-    parser.add_argument(
-        "path", type=str, help="Directory or file to format and lint")
+    parser.add_argument("paths", nargs='+', type=str,
+                        help="Directories or files to format and lint")
     parser.add_argument("-i", "--auto-fix",
                         action="store_true", help="Auto-fix code issues")
     args = parser.parse_args()
 
-    if not os.path.exists(args.path):
-        print("Error: The specified path '{}' does not exist.".format(args.path))
-        sys.exit(1)
+    expanded_paths = []
+    for path in args.paths:
+        expanded_paths.extend(glob.glob(path) or [path])
 
     ignore_errors = "E302,E402"
     check_command("autopep8")
@@ -121,9 +136,9 @@ def main():
     check_command("autoflake")
 
     if args.auto_fix:
-        execute_formatting(args.path, ignore_errors)
+        execute_formatting(expanded_paths, ignore_errors)
     else:
-        dry_run_formatting(args.path, ignore_errors)
+        dry_run_formatting(expanded_paths, ignore_errors)
 
 
 if __name__ == "__main__":
