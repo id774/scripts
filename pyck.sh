@@ -1,12 +1,14 @@
 #!/bin/sh
 
 ########################################################################
-# pyck.sh: Python Code Check and Auto-Fix
+# pyck.sh: Comprehensive Python Code Formatter and Linter
 #
 #  Description:
-#  This script performs code style checks and auto-fixes for Python files.
-#  It uses flake8 for linting, autopep8 for auto-formatting, and autoflake
-#  for removing unused imports.
+#  This script performs code style checks, auto-formatting, and removal
+#  of unused imports for Python files. It uses flake8 for linting,
+#  autopep8 for auto-formatting, and autoflake for removing unused
+#  imports. The script can operate in dry-run mode to display potential
+#  changes without modifying files.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2024-01-08
+#       Integrated functionality of autopyck.sh, including dry-run mode.
 #  v1.4 2024-01-07
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.
@@ -27,13 +31,20 @@
 #       Initial release.
 #
 #  Usage:
-#  ./pyck.sh [options] [files...]
-#  Options:
-#    -i: Auto-fix code issues (using autopep8 and autoflake)
+#  Without -i (Dry-run mode):
+#    ./pyck.sh [directory]
+#    Example: ./pyck.sh ./my_python_project
+#    This mode shows which files would be formatted and cleaned, without making changes.
+#
+#  With -i (Actual formatting mode):
+#    ./pyck.sh -i [directory]
+#    Example: ./pyck.sh -i ./my_python_project
+#    This mode actually formats and cleans the Python files in the specified directory.
 #
 ########################################################################
 
 IGNORE_ERRORS=E302,E402
+AUTO_FIX=false
 
 check_commands() {
     for cmd in "$@"; do
@@ -47,25 +58,51 @@ check_commands() {
     done
 }
 
-run_check() {
-    flake8 --ignore=$IGNORE_ERRORS "$@"
+# Check for -i option to auto-fix
+while getopts ":i" opt; do
+  case $opt in
+    i)
+      AUTO_FIX=true
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      exit 1
+      ;;
+  esac
+done
+
+shift $((OPTIND-1))
+
+# Check if a directory is provided
+if [ -z "$1" ]; then
+    echo "Usage: $0 [directory]"
+    echo "Add -i to auto-fix code issues."
+    echo "Example: $0 -i ./my_python_project"
+    exit 1
+fi
+
+DIR=$1
+
+dry_run_formatting() {
+    echo "Dry run: No files will be modified. Use -i to auto-fix."
+    flake8 --ignore=$IGNORE_ERRORS "$DIR" | cut -d: -f 1 | sort | uniq | xargs -n 1 echo "Would format:"
+    autoflake --imports=django,requests,urllib3 --check "$DIR" | cut -d: -f 1 | sort | uniq | xargs -n 1 echo "Would clean:"
 }
 
-autofix() {
-    shift
-    autopep8 --ignore=$IGNORE_ERRORS -v -i "$@"
-    autoflake --imports=django,requests,urllib3 -i "$@"
+execute_formatting() {
+    echo "Auto-fixing code issues in directory: $DIR"
+    autoflake --imports=django,requests,urllib3 -i "$DIR"
+    flake8 --ignore=$IGNORE_ERRORS $DIR | cut -d: -f 1 | sort | uniq | xargs autopep8 --ignore=$IGNORE_ERRORS -v -i
 }
 
 main() {
     check_commands autopep8 flake8 autoflake
 
-    if [ "$1" = "-i" ]; then
-        autofix "$@"
+    if [ "$AUTO_FIX" = true ]; then
+        execute_formatting
     else
-        run_check "$@"
+        dry_run_formatting
     fi
-    exit 0
 }
 
 main "$@"
