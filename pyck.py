@@ -98,7 +98,7 @@ def run_command(command, show_files=None):
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
     stdout, _ = process.communicate()
     if process.returncode != 0 and show_files:
-        for line in stdout.decode().split('\n'):
+        for line in stdout.split('\n'):
             if line:
                 print("{} {}".format(show_files, line))
 

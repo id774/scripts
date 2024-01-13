@@ -65,6 +65,30 @@ class TestPyck(unittest.TestCase):
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
+    def test_run_command_success(self, mock_print, mock_popen):
+        # Test scenario for successful command execution
+        mock_process = MagicMock()
+        mock_process.communicate.return_value = ('output', '')
+        mock_process.returncode = 0
+        mock_popen.return_value = mock_process
+
+        pyck.run_command('echo test', show_files=None)
+        mock_print.assert_not_called()
+
+    @patch('pyck.subprocess.Popen')
+    @patch('pyck.print')
+    def test_run_command_error(self, mock_print, mock_popen):
+        # Test scenario for command execution with an error
+        mock_process = MagicMock()
+        mock_process.communicate.return_value = ('error output', '')
+        mock_process.returncode = 1
+        mock_popen.return_value = mock_process
+
+        pyck.run_command('echo test', show_files="Error occurred")
+        mock_print.assert_called_with("Error occurred error output")
+
+    @patch('pyck.subprocess.Popen')
+    @patch('pyck.print')
     def test_dry_run_formatting_single_file(self, mock_print, mock_popen):
         mock_process = MagicMock()
         mock_process.communicate.return_value = ('output', 'error')
