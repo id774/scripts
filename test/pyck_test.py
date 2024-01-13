@@ -62,6 +62,33 @@ class TestPyck(unittest.TestCase):
         mock_run.assert_any_call(
             "autopep8 --ignore=E302,E402 -v -i path/to/file.py", shell=True)
 
+    @patch('pyck.shutil.which')
+    @patch('pyck.os.access')
+    @patch('pyck.sys.exit')
+    @patch('pyck.print')
+    def test_check_command(self, mock_print, mock_exit, mock_access, mock_which):
+        mock_which.return_value = None
+        pyck.check_command('nonexistent_command')
+        mock_print.assert_called_with(
+            "Error: Command 'nonexistent_command' is not installed. Please install nonexistent_command and try again.")
+        mock_exit.assert_called_with(127)
+
+        mock_which.return_value = '/usr/bin/nonexecutable_command'
+        mock_access.return_value = False
+        pyck.check_command('nonexecutable_command')
+        mock_print.assert_called_with(
+            "Error: Command 'nonexecutable_command' is not executable. Please check the permissions.")
+        mock_exit.assert_called_with(126)
+
+    @patch('pyck.subprocess.run')
+    @patch('pyck.print')
+    def test_format_file(self, mock_print, mock_run):
+        pyck.format_file('path/to/file.py', 'E302,E402')
+        mock_run.assert_any_call(
+            "autoflake --imports=django,requests,urllib3 -i path/to/file.py", shell=True)
+        mock_run.assert_any_call(
+            "autopep8 --ignore=E302,E402 -v -i path/to/file.py", shell=True)
+
 
 if __name__ == '__main__':
     unittest.main()
