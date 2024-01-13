@@ -95,20 +95,6 @@ def format_file(file_path, ignore_errors):
     subprocess.run(
         "autopep8 --ignore={} -v -i {}".format(ignore_errors, file_path), shell=True)
 
-def execute_formatting(paths, ignore_errors):
-    for path in paths:
-        if os.path.isdir(path):
-            for root, dirs, files in os.walk(path):
-                for name in files:
-                    if name.endswith('.py'):
-                        file_path = os.path.join(root, name)
-                        format_file(file_path, ignore_errors)
-        elif os.path.isfile(path):
-            format_file(path, ignore_errors)
-        else:
-            print(
-                "Error: The specified path '{}' is neither a file nor a directory.".format(path))
-
 def run_command(command, show_files=None):
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
     stdout, _ = process.communicate()

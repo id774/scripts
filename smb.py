@@ -43,7 +43,6 @@
 
 import os
 import subprocess
-import sys
 import logging
 from optparse import OptionParser
 
