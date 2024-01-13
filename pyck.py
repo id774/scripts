@@ -68,6 +68,26 @@ def dry_run_formatting(path, ignore_errors):
                 show_files="Would clean:")
 
 def execute_formatting(path, ignore_errors):
+    if os.path.isdir(path):
+        for root, dirs, files in os.walk(path):
+            for name in files:
+                if name.endswith('.py'):
+                    file_path = os.path.join(root, name)
+                    format_file(file_path, ignore_errors)
+    elif os.path.isfile(path):
+        format_file(path, ignore_errors)
+    else:
+        print(
+            "Error: The specified path '{}' is neither a file nor a directory.".format(path))
+        sys.exit(1)
+
+def format_file(file_path, ignore_errors):
+    subprocess.run(
+        "autoflake --imports=django,requests,urllib3 -i {}".format(file_path), shell=True)
+    subprocess.run(
+        "autopep8 --ignore={} -v -i {}".format(ignore_errors, file_path), shell=True)
+
+def execute_formatting(path, ignore_errors):
     print("Auto-fixing code issues in: {}".format(path))
     subprocess.run(
         "autoflake --imports=django,requests,urllib3 -i {}".format(path), shell=True)
