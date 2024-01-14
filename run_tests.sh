@@ -15,6 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-01-14
+#       Added the ability to specify custom Python and RSpec paths
+#       as command-line arguments.
 #  v1.2 2023-12-23
 #       Refactored for POSIX compliance. Replaced Bash-specific syntax
 #       with POSIX standard commands and structures. Enhanced portability
@@ -28,7 +31,8 @@
 #
 #  Usage:
 #  Run this script from the command line to execute all tests:
-#  ./run_tests.sh
+#  ./run_tests.sh [Python path] [RSpec path]
+#  If no paths are specified, it will use the default system paths.
 #
 ########################################################################
 
@@ -43,22 +47,29 @@ fi
 
 cd "$SCRIPTS" || exit
 
+python_path="$1"
+rspec_path="$2"
+
 # Initialize failure counters
 python_failures=0
 ruby_failures=0
 
 # Check if Python is installed
-if ! command -v python > /dev/null 2>&1; then
+if [ -z "$python_path" ]; then
+    python_path=$(command -v python)
+fi
+
+if [ -z "$python_path" ]; then
     echo "Python is not installed. Skipping Python tests."
 else
     # Display Python path and version
-    echo "Python path: $(command -v python)"
-    python --version
+    echo "Python path: $python_path"
+    "$python_path" --version
 
     # Execute Python tests
     for file in test/*_test.py; do
         echo "Running Python test: $file"
-        output=$(python "$file" 2>&1) # Capture both stdout and stderr
+        output="$("$python_path" "$file" 2>&1)" # Capture both stdout and stderr
         echo "$output"
         if ! echo "$output" | grep -qE "OK|SKIPPED|OK \(skipped=[0-9]+\)" ; then
             echo "Failure in Python test: $file"
@@ -68,30 +79,32 @@ else
     echo "All Python tests completed."
 fi
 
-# Check if Ruby is installed
-if ! command -v ruby > /dev/null 2>&1; then
-    echo "Ruby is not installed. Skipping Ruby tests."
-else
-    # Display Ruby path and version
-    echo "Ruby path: $(command -v ruby)"
-    ruby --version
+# Check if RSpec is installed
+if [ -z "$rspec_path" ]; then
+    rspec_path=$(command -v rspec)
+fi
 
-    # Check if 'rspec' is installed for Ruby tests
-    if ! command -v rspec > /dev/null 2>&1; then
-        echo "'rspec' is not installed. Skipping Ruby tests."
-    else
-        # Execute Ruby tests
-        for file in test/*_test.rb; do
-            echo "Running Ruby test: $file"
-            output=$(rspec "$file" 2>&1) # Capture both stdout and stderr
-            echo "$output"
-            if ! echo "$output" | grep -q "0 failures"; then
-                echo "Failure in Ruby test: $file"
-                ruby_failures=$(expr $ruby_failures + 1)
-            fi
-        done
-        echo "All Ruby tests completed."
-    fi
+if [ -z "$rspec_path" ]; then
+    echo "RSpec is not installed. Skipping Ruby tests."
+else
+    # Display RSpec path and version
+    echo "RSpec path: $rspec_path"
+    ruby_dir="$(dirname "$rspec_path")"
+    ruby_command="$ruby_dir/ruby"
+    "$ruby_command" --version
+    "$rspec_path" --version
+
+    # Execute Ruby tests
+    for file in test/*_test.rb; do
+        echo "Running Ruby test: $file"
+        output="$("$rspec_path" "$file" 2>&1)" # Capture both stdout and stderr
+        echo "$output"
+        if ! echo "$output" | grep -q "0 failures"; then
+            echo "Failure in Ruby test: $file"
+            ruby_failures=$(expr $ruby_failures + 1)
+        fi
+    done
+    echo "All Ruby tests completed."
 fi
 
 # Final report
@@ -102,3 +115,4 @@ else
     echo "All tests passed successfully."
     exit 0
 fi
+
