@@ -6,7 +6,8 @@
 #  Description:
 #  This script searches for Python compatibility issues such as f-strings,
 #  subprocess.DEVNULL usage, and usage of async/await keywords in Python files
-#  within a specified directory.
+#  within a specified directory. Additionally, it now also searches for
+#  subprocess.run usage.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-01-14
+#       Added search for subprocess.run usage for Python compatibility issues.
 #  v1.2 2023-12-23
 #       Refactored for POSIX compliance. Replaced Bash-specific syntax
 #       with POSIX standard commands and structures. Enhanced portability
@@ -49,4 +52,8 @@ grep -n -r --include="*.py" "subprocess.DEVNULL" "$TARGET_DIR"
 # Search for async and await keyword usage in Python files
 echo "Searching for async and await keyword usage in Python files..."
 grep -n -r --include="*.py" -E "\basync\b|\bawait\b" "$TARGET_DIR"
+
+# Search for subprocess.run usage in Python files
+echo "Searching for subprocess.run usage in Python files..."
+grep -n -r --include="*.py" "subprocess.run" "$TARGET_DIR"
 
