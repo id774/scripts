@@ -97,7 +97,7 @@ check_gpx_files "$TMP_DIR" || exit $?
 
 copy_files "$TMP_DIR" "$HOME/$USER_GPX_DIR/$CURRENT_YEAR/" || exit $?
 
-copy_files "$TMP_DIR" "$HOME/mnt/sdb/$USER_GPX_DIR/$CURRENT_YEAR/" || exit $?
+copy_files "$TMP_DIR" "$MOUNTED_DIR/$USER_GPX_DIR/$CURRENT_YEAR/" || exit $?
 
 sync_files "$HOME/$USER_GPX_DIR" "$RSYNC_USER" "$RSYNC_HOST" || exit $?
 
