@@ -89,10 +89,11 @@ def execute_formatting(paths, ignore_errors):
                 actual_path))
 
 def format_file(file_path, ignore_errors):
-    subprocess.run(
-        "autoflake --imports=django,requests,urllib3 -i {}".format(file_path), shell=True)
-    subprocess.run(
-        "autopep8 --ignore={} -v -i {}".format(ignore_errors, file_path), shell=True)
+    command = "autoflake --imports=django,requests,urllib3 -i {}".format(
+        file_path)
+    subprocess.Popen(command, shell=True).wait()
+    command = "autopep8 --ignore={} -v -i {}".format(ignore_errors, file_path)
+    subprocess.Popen(command, shell=True).wait()
 
 def run_command(command, show_files=None):
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)

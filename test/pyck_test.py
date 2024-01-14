@@ -54,14 +54,19 @@ class TestPyck(unittest.TestCase):
             "Error: Command 'nonexecutable_command' is not executable. Please check the permissions.")
         mock_exit.assert_called_with(126)
 
-    @patch('pyck.subprocess.run')
+    @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
-    def test_format_file(self, mock_print, mock_run):
+    def test_format_file(self, mock_print, mock_popen):
         pyck.format_file('path/to/file.py', 'E302,E402')
-        mock_run.assert_any_call(
-            "autoflake --imports=django,requests,urllib3 -i path/to/file.py", shell=True)
-        mock_run.assert_any_call(
-            "autopep8 --ignore=E302,E402 -v -i path/to/file.py", shell=True)
+
+        expected_calls = [
+            call(
+                "autoflake --imports=django,requests,urllib3 -i path/to/file.py", shell=True),
+            call().wait(),
+            call("autopep8 --ignore=E302,E402 -v -i path/to/file.py", shell=True),
+            call().wait()
+        ]
+        mock_popen.assert_has_calls(expected_calls, any_order=True)
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
@@ -104,10 +109,9 @@ class TestPyck(unittest.TestCase):
         mock_popen.assert_any_call(
             "autoflake --imports=django,requests,urllib3 --check path/to/single_file.py", shell=True, stdout=-1)
 
-    @patch('pyck.subprocess.run')
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
-    def test_dry_run_formatting_with_multiple_files(self, mock_print, mock_popen, mock_run):
+    def test_dry_run_formatting_with_multiple_files(self, mock_print, mock_popen):
         mock_process = MagicMock()
         mock_process.communicate.return_value = ('output', 'error')
         mock_process.returncode = 0
@@ -116,14 +120,17 @@ class TestPyck(unittest.TestCase):
         pyck.dry_run_formatting(
             ['path/to/file1.py', 'path/to/file2.py'], 'E302,E402')
 
-        mock_popen.assert_any_call(
-            "flake8 --ignore=E302,E402 path/to/file1.py", shell=True, stdout=-1)
-        mock_popen.assert_any_call(
-            "autoflake --imports=django,requests,urllib3 --check path/to/file1.py", shell=True, stdout=-1)
-        mock_popen.assert_any_call(
-            "flake8 --ignore=E302,E402 path/to/file2.py", shell=True, stdout=-1)
-        mock_popen.assert_any_call(
-            "autoflake --imports=django,requests,urllib3 --check path/to/file2.py", shell=True, stdout=-1)
+        expected_calls = [
+            call("flake8 --ignore=E302,E402 path/to/file1.py",
+                 shell=True, stdout=-1),
+            call("autoflake --imports=django,requests,urllib3 --check path/to/file1.py",
+                 shell=True, stdout=-1),
+            call("flake8 --ignore=E302,E402 path/to/file2.py",
+                 shell=True, stdout=-1),
+            call("autoflake --imports=django,requests,urllib3 --check path/to/file2.py",
+                 shell=True, stdout=-1)
+        ]
+        mock_popen.assert_has_calls(expected_calls, any_order=True)
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
