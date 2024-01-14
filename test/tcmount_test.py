@@ -385,7 +385,8 @@ class TestTcMount(unittest.TestCase):
 
                 fs_options = 'utf8' if not options.no_utf8 else ''
                 fs_options += ',ro' if options.readonly else ''
-                expected_command = f'test -b /dev/sdb && sudo {cmd_prefix} -t -k "" --protect-hidden=no --fs-options={fs_options} /dev/sdb ~/mnt/sdb'
+                expected_command = 'test -b /dev/sdb && sudo {} -t -k "" --protect-hidden=no --fs-options={} /dev/sdb ~/mnt/sdb'.format(
+                    cmd_prefix, fs_options)
 
                 mock_os_exec.assert_called_with(expected_command)
                 mock_os_exec.reset_mock()
