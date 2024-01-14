@@ -20,6 +20,7 @@
 #       Added search for Python 3.x features like type hints, nonlocal statements,
 #       matrix multiplication operators, asyncio library, yield from, extended unpacking,
 #       pathlib module, and subprocess.run usage.
+#       Added check for the existence of 'grep' command before execution.
 #  v1.2 2023-12-23
 #       Added search for async/await keyword usage and subprocess.DEVNULL usage.
 #  v1.1 2023-12-17
@@ -35,6 +36,20 @@
 #  - This script requires grep to be installed on the system.
 #
 ########################################################################
+
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Git is not installed. This script requires Git for pulling repositories. Please install Git and try again."
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 126
+        fi
+    done
+}
+
+check_commands "grep"
 
 # Set the target directory
 TARGET_DIR=${1:-.}
