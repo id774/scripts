@@ -7,6 +7,8 @@
 #  This script provides a simplified disk usage reporting on macOS, similar to
 #  the 'du' command with a '--max-depth' option. It reports disk usage at a
 #  specified depth and displays the total usage of the top-level directory.
+#  The script checks if the specified directory exists and is a directory
+#  before performing operations, enhancing error handling.
 #  This script is designed to work exclusively on macOS.
 #
 #  Note:
@@ -22,6 +24,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-01-16
+#      Added error handling for non-existent or non-directory paths.
 #  v1.2 2023-12-30
 #      Fixed the issue with incorrect total disk usage calculation.
 #      The script now correctly identifies and reports the size of the top directory.
@@ -38,9 +42,10 @@
 #
 ########################################################################
 
-import subprocess
 import sys
+import os
 import platform
+import subprocess
 
 def is_command_exist(command):
     """
@@ -62,7 +67,17 @@ def parse_du_output(du_output, directory):
 def run_custom_du(maxdepth, directory):
     """
     Run a custom 'du' command using 'find' and 'du' with the specified maxdepth.
+    Check if the specified directory exists and is a directory.
     """
+    # Check if the directory exists
+    if not os.path.exists(directory):
+        print("Error: Directory '{}' does not exist.".format(directory))
+        return
+    # Check if the path is a directory
+    if not os.path.isdir(directory):
+        print("Error: '{}' is not a directory.".format(directory))
+        return
+
     find_command = ['find', directory, '-type', 'd', '-maxdepth',
                     maxdepth, '-exec', 'du', '-h', '-d', '0', '{}', ';']
     result = subprocess.check_output(find_command).decode('utf-8')
