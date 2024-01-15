@@ -57,15 +57,15 @@ TARGET_DIR=${1:-.}
 echo "*** Searching for Python 3.x compatibility issues in Python files..."
 
 # Search for f-strings
-echo "*** Search for f-strings"
+echo "*** Searching f-strings"
 grep -n -r --include="*.py" -E "f['\"][^']*['\"]|f[\"\'][^\"]*[\"\']" "$TARGET_DIR" | grep -v '^#'
 
-# Search for subprocess.run and subprocess.DEVNULL
-echo "*** Search for subprocess.run and subprocess.DEVNULL"
+# Searching subprocess.run and subprocess.DEVNULL
+echo "*** Searching subprocess.run and subprocess.DEVNULL"
 grep -n -r --include="*.py" -E "subprocess.run|subprocess.DEVNULL" "$TARGET_DIR" | grep -v '^#'
 
-# Search for async/await keywords
-echo "*** Search for async/await keywords"
+# Searching async/await keywords
+echo "*** Searching async/await keywords"
 grep -n -r --include="*.py" -E "\basync\b|\bawait\b" "$TARGET_DIR" | grep -v '^#'
 
 # Search for nonlocal keyword usage
