@@ -13,6 +13,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2024-01-15
+#      Suppressed standard error output from ping command.
+#      Improved command line argument interface using argparse.
 #  v1.0 2024-01-12
 #      Initial release. Python version of the rubyping.rb script.
 #
@@ -26,16 +29,18 @@
 #
 ########################################################################
 
-import sys
 import subprocess
 import threading
+import os
+import argparse
 
 def ping(ip):
     """Send a ping request to the specified IP address."""
     try:
-        subprocess.check_output(
-            ["ping", "-c", "1", "-i", "1", ip], stderr=subprocess.DEVNULL)
-        print("{} --> alive".format(ip))
+        with open(os.devnull, 'w') as DEVNULL:
+            subprocess.check_output(
+                ["ping", "-c", "1", "-i", "1", ip], stderr=DEVNULL)
+            print("{} --> alive".format(ip))
     except subprocess.CalledProcessError:
         print("{} --> -----".format(ip))
 
@@ -54,13 +59,15 @@ def main(subnet, start_ip, end_ip):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 4:
-        print("Usage: pyping.py <subnet> <start_ip> <end_ip>")
-        print("Example: pyping.py 192.168.11. 1 32")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description='Ping a range of IP addresses in a subnet.')
+    parser.add_argument('subnet', type=str,
+                        help='Subnet part of the IP. Example: "192.168.11."')
+    parser.add_argument('start_ip', type=int,
+                        help='Start of the IP range. Example: 1')
+    parser.add_argument('end_ip', type=int,
+                        help='End of the IP range. Example: 32')
 
-    subnet = sys.argv[1]
-    start_ip = int(sys.argv[2])
-    end_ip = int(sys.argv[3])
+    args = parser.parse_args()
 
-    main(subnet, start_ip, end_ip)
+    main(args.subnet, args.start_ip, args.end_ip)
