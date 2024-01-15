@@ -16,7 +16,7 @@
 #  Version History:
 #  v2.1 2023-12-17
 #       Updated for compatibility with Python versions below 3.3 by replacing
-#       subprocess.DEVNULL with os.devnull in is_command_installed function.
+#       DEVNULL with os.devnull in is_command_installed function.
 #  v2.0 2023-12-16
 #       Refactored to use command construction method. Added external command checks.
 #       Updated documentation and added comments to functions.
@@ -109,7 +109,8 @@ def main():
                       action="store_true", dest="sudo")
     parser.add_option("-q", "--quiet", help="shut off non-error messages",
                       action="store_true", dest="quiet")
-    parser.add_option("-f", "--files", dest="files", help="chmod files")
+    parser.add_option("-f",
+                      "--files", dest="files", help="chmod files")
     parser.add_option("-d", "--dirs", dest="dirs", help="chmod directory")
     parser.add_option("-n", "--name", dest="name",
                       help="name pattern of find (ex. -n '*.sh')")

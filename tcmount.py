@@ -19,7 +19,7 @@
 #  Version History:
 #  v4.1 2023-12-17
 #       Modified is_truecrypt_installed and is_veracrypt_installed functions for compatibility
-#       with Python versions below 3.3, replacing subprocess.DEVNULL with os.devnull.
+#       with Python versions below 3.3, replacing DEVNULL with os.devnull.
 #  v4.0 2023-12-15
 #       Added support for VeraCrypt with the -v (--veracrypt) and -t (--tc-compat) options.
 #       Improved error handling for systems where only TrueCrypt or VeraCrypt is installed.

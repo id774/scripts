@@ -58,7 +58,7 @@ echo "*** Searching for Python 3.x compatibility issues in Python files..."
 
 # Search for f-strings
 echo "*** Search for f-strings"
-grep -n -r --include="*.py" "f['\"]" "$TARGET_DIR" | grep -v '^#'
+grep -n -r --include="*.py" -E "f['\"][^']*['\"]|f[\"\'][^\"]*[\"\']" "$TARGET_DIR" | grep -v '^#'
 
 # Search for subprocess.run and subprocess.DEVNULL
 echo "*** Search for subprocess.run and subprocess.DEVNULL"
