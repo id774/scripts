@@ -53,6 +53,22 @@ def is_command_exist(command):
     """
     return subprocess.call(['which', command], stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
 
+def error_message(message, exit_code=1):
+    """
+    Print an error message and exit with a given exit code.
+    """
+    print("Error: " + message)
+    sys.exit(exit_code)
+
+def check_directory(directory):
+    """
+    Check if the directory exists and is a directory. Exit with an error if not.
+    """
+    if not os.path.exists(directory):
+        error_message("Directory '{}' does not exist.".format(directory))
+    if not os.path.isdir(directory):
+        error_message("'{}' is not a directory.".format(directory))
+
 def parse_du_output(du_output, directory):
     """
     Parse the output of the 'du' command to find the size of the specified top directory.
@@ -67,16 +83,8 @@ def parse_du_output(du_output, directory):
 def run_custom_du(maxdepth, directory):
     """
     Run a custom 'du' command using 'find' and 'du' with the specified maxdepth.
-    Check if the specified directory exists and is a directory.
     """
-    # Check if the directory exists
-    if not os.path.exists(directory):
-        print("Error: Directory '{}' does not exist.".format(directory))
-        return
-    # Check if the path is a directory
-    if not os.path.isdir(directory):
-        print("Error: '{}' is not a directory.".format(directory))
-        return
+    check_directory(directory)
 
     find_command = ['find', directory, '-type', 'd', '-maxdepth',
                     maxdepth, '-exec', 'du', '-h', '-d', '0', '{}', ';']
