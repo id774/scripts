@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2024-01-18
+#       Standardized command existence checks using a common function.
 #  v1.1 2023-12-05
 #       Added environment check for Debian-based systems.
 #       Refactored for improved readability and added usage information.
@@ -25,16 +27,20 @@
 #
 ########################################################################
 
-# Check if required commands are available
-if ! command -v apt-key >/dev/null 2>&1; then
-    echo "Error: apt-key is not available. This script is intended for Debian-based systems."
-    exit 1
-fi
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: '$cmd' is not installed. This script only works on Debian-based systems."
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 126
+        fi
+    done
+}
 
-if ! command -v gpg >/dev/null 2>&1; then
-    echo "Error: gpg is not installed. This script only works on systems with gpg."
-    exit 1
-fi
+# Check if required commands are installed
+check_commands gpg apt-key
 
 # Check if both arguments are provided
 if [ -n "$2" ]; then
@@ -47,4 +53,3 @@ else
     # Display usage information if arguments are missing
     echo "Usage: $0 KEYSERVER PUBKEY"
 fi
-
