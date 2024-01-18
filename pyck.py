@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#
+
 ########################################################################
 # pyck.py: Comprehensive Python Code Formatter and Linter
 #
