@@ -1,15 +1,16 @@
 #!/usr/bin/env python
-
+#
 ########################################################################
 # pyck.py: Comprehensive Python Code Formatter and Linter
 #
 #  Description:
 #  This script performs code style checks, auto-formatting, and removal
 #  of unused imports for Python files. It uses flake8 for linting,
-#  autopep8 for auto-formatting, and autoflake for removing unused
-#  imports. The script can operate in dry-run mode to display potential
-#  changes without modifying files, and in auto-fix mode to apply changes.
-#  It now supports multiple files and directories, including wildcard usage.
+#  autopep8 for auto-formatting, autoflake for removing unused
+#  imports, and isort for organizing imports. The script can operate in
+#  dry-run mode to display potential changes without modifying files,
+#  and in auto-fix mode to apply changes. It supports multiple files and
+#  directories, including wildcard usage.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -18,6 +19,7 @@
 #
 #  Version History:
 #  v2.1 2024-01-18
+#       Added isort integration for organizing imports.
 #       Fixed TypeError in run_command function by decoding stdout to string.
 #  v2.0 2024-01-13
 #       Ported from shell script (pyck.sh) to Python (pyck.py) for enhanced
@@ -40,21 +42,24 @@
 #  Without -i (Dry-run mode):
 #    ./pyck.py [file(s) or directory(ies)]
 #    Example: ./pyck.py ./my_python_project *.py
-#    This mode shows which files would be formatted and cleaned, without making changes.
+#    This mode shows which files would be formatted, cleaned, and have imports organized,
+#    without making changes.
 #
 #  With -i (Actual formatting mode):
 #    ./pyck.py -i [file(s) or directory(ies)]
 #    Example: ./pyck.py -i ./my_python_project *.py
-#    This mode actually formats and cleans the Python files in the specified files or directories.
+#    This mode actually formats, cleans, and organizes imports in the Python files
+#    in the specified files or directories.
 #
 ########################################################################
 
 import argparse
-import subprocess
-import os
-import sys
-import shutil
 import glob
+import os
+import shutil
+import subprocess
+import sys
+
 
 def check_command(cmd):
     if not shutil.which(cmd):
@@ -65,6 +70,11 @@ def check_command(cmd):
         print("Error: Command '{}' is not executable. Please check the permissions.".format(cmd))
         sys.exit(126)
 
+def format_imports(file_path):
+    command = "isort {}".format(file_path)
+    subprocess.Popen(command, shell=True).wait()
+
+
 def dry_run_formatting(paths, ignore_errors):
     for path in paths:
         print(
@@ -73,6 +83,8 @@ def dry_run_formatting(paths, ignore_errors):
                     path), show_files="Would format:")
         run_command("autoflake --imports=django,requests,urllib3 --check {}".format(path),
                     show_files="Would clean:")
+        run_command("isort --check-only {}".format(path),
+                    show_files="Would sort imports in:")
 
 def execute_formatting(paths, ignore_errors):
     for path in paths:
@@ -96,6 +108,7 @@ def format_file(file_path, ignore_errors):
     subprocess.Popen(command, shell=True).wait()
     command = "autopep8 --ignore={} -v -i {}".format(ignore_errors, file_path)
     subprocess.Popen(command, shell=True).wait()
+    format_imports(file_path)
 
 def run_command(command, show_files=None):
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
@@ -124,6 +137,7 @@ def main():
     check_command("autopep8")
     check_command("flake8")
     check_command("autoflake")
+    check_command("isort")
 
     if args.auto_fix:
         execute_formatting(expanded_paths, ignore_errors)
