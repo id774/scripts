@@ -122,6 +122,9 @@ setup_scripts() {
     install_scripts 755 md5.py md5
     install_scripts 755 chmodtree.py chmodtree
     install_scripts 755 cltmp.sh cltmp
+    install_scripts 755 userlist.py userlist
+    install_scripts 755 usershells.py usershells
+    install_scripts 755 pyck.py pyck
 }
 
 setup_darwin_scripts() {
