@@ -45,11 +45,12 @@
 #
 ########################################################################
 
-import sys
-import os
 import hashlib
+import os
+import sys
 from optparse import OptionParser
 from stat import S_ISDIR, ST_MODE
+
 
 class Md5Checksum:
 

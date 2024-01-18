@@ -26,8 +26,8 @@
 #
 ########################################################################
 
-import os
 import argparse
+import os
 
 # Importing PIL library and handling errors if not installed
 try:

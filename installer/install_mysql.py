@@ -12,8 +12,8 @@
 #       First.
 ########################################################################
 
-import sys
 import os
+
 
 def install_mysql_gui_to_debian():
     syscmd = 'sudo apt-get -y install mysql-gui-tools-common'

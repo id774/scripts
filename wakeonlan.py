@@ -26,9 +26,9 @@
 #
 ########################################################################
 
-import sys
 import socket
 import struct
+import sys
 from traceback import print_exc
 
 DEFAULT_PORT = 9

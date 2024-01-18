@@ -30,14 +30,15 @@
 #
 ########################################################################
 
-import unittest
-from unittest.mock import patch, call
-import sys
 import os
+import sys
+import unittest
+from unittest.mock import call, patch
 
 # Adjust the path to import swapext from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import swapext
+
 
 class TestSwapExt(unittest.TestCase):
     """Test cases for the swap_extensions function in swapext.py."""

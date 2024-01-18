@@ -43,11 +43,12 @@
 #
 ########################################################################
 
-import sys
-import os
-import subprocess
-import platform
 import argparse
+import os
+import platform
+import subprocess
+import sys
+
 
 def is_command_exist(command):
     """

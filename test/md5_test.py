@@ -22,13 +22,14 @@
 #
 ########################################################################
 
-import unittest
-import sys
 import os
+import sys
+import unittest
 
 # Adjust the path to import md5 from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import md5
+
 
 class TestMd5Checksum(unittest.TestCase):
     """Test cases for Md5Checksum class in md5.py."""

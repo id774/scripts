@@ -20,10 +20,10 @@
 #
 ########################################################################
 
-import unittest
-from unittest.mock import patch, MagicMock
-import sys
 import os
+import sys
+import unittest
+from unittest.mock import MagicMock, patch
 
 # Adjusting the path to import image_resize from the parent directory
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -35,6 +35,7 @@ except ImportError:
     pil_installed = False
 
 import image_resize
+
 
 class TestImageResize(unittest.TestCase):
     """Unit tests for the image_resize.py script."""

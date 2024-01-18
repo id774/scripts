@@ -1,11 +1,7 @@
-import sys
-import os
 import readline
-import codecs
-import time
-import datetime
-import json
+import sys
 import warnings
+
 print("import sys, os, readline, codecs, time, datetime, json, warnings")
 
 warnings.resetwarnings()

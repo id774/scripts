@@ -35,9 +35,10 @@
 #
 ########################################################################
 
+import logging
 import os
 import sys
-import logging
+
 
 def setup_logger(quiet_mode):
     if quiet_mode:

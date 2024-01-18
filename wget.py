@@ -25,7 +25,9 @@
 ########################################################################
 
 import sys
+
 import requests
+
 
 def usage():
     print("Usage: {} <URL>".format(sys.argv[0]))

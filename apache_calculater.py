@@ -35,10 +35,11 @@
 #
 ########################################################################
 
-import re
-import sys
 import gzip
 import os
+import re
+import sys
+
 
 class ApacheCalculater(object):
 

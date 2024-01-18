@@ -53,9 +53,9 @@ import sys
 
 # Importing necessary libraries
 try:
+    import requests
     import yaml
     from bs4 import BeautifulSoup
-    import requests
 except ImportError as e:
     libraries_installed = False
 else:

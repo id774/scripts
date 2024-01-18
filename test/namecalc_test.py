@@ -26,15 +26,16 @@
 #
 ########################################################################
 
-import unittest
-import sys
-from io import StringIO
-from contextlib import contextmanager
 import os
+import sys
+import unittest
+from contextlib import contextmanager
+from io import StringIO
 
 # Change the path according to the location of your namecalc.py script
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import namecalc
+
 
 @contextmanager
 def captured_output():

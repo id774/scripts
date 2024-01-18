@@ -26,14 +26,15 @@
 #
 ########################################################################
 
-import unittest
-from unittest.mock import patch, MagicMock
-import sys
 import os
+import sys
+import unittest
+from unittest.mock import MagicMock, patch
 
 # Adjusting the path to import flatdirs from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import flatdirs
+
 
 class TestFlatDirs(unittest.TestCase):
     """Unit tests for the flatdirs.py script."""

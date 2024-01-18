@@ -32,12 +32,13 @@
 #
 ########################################################################
 
-import subprocess
-import datetime
 import calendar
-import platform
-import sys
+import datetime
 import os
+import platform
+import subprocess
+import sys
+
 
 def print_month_calendar(year, month, highlight_day=None):
     """

@@ -33,9 +33,9 @@
 #
 ########################################################################
 
-import unittest
-import sys
 import os
+import sys
+import unittest
 
 # Check if required libraries are installed
 required_libraries_installed = True
@@ -49,6 +49,7 @@ except ImportError:
 sys.path.insert(0, os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..')))
 from html2yaml import html_to_yaml
+
 
 class Html2YamlTest(unittest.TestCase):
     """Unit tests for the html2yaml.py script."""

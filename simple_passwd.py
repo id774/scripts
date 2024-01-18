@@ -25,10 +25,11 @@
 #
 ########################################################################
 
-import sys
 import string
-from random import choice
+import sys
 from optparse import OptionParser
+from random import choice
+
 
 def generate_passwd(length, use_symbols=True):
     """Generate a random password of specified length."""

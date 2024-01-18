@@ -26,9 +26,11 @@
 #
 ########################################################################
 
+import argparse
+
 import requests
 from bs4 import BeautifulSoup
-import argparse
+
 
 def download_image(url, filename):
     # Fetch the Instagram page

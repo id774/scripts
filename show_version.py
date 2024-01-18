@@ -46,9 +46,10 @@
 #
 ########################################################################
 
-import sys
 import importlib
+import sys
 import warnings
+
 
 class PythonModuleInfo:
 

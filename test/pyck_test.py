@@ -58,13 +58,13 @@ class TestPyck(unittest.TestCase):
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
     def test_format_file(self, mock_print, mock_popen):
-        pyck.format_file('path/to/file.py', 'E302,E402')
+        pyck.format_file('path/to/file.py', 'E302,E402,E501')
 
         expected_calls = [
             call(
                 "autoflake --imports=django,requests,urllib3 -i path/to/file.py", shell=True),
             call().wait(),
-            call("autopep8 --ignore=E302,E402 -v -i path/to/file.py", shell=True),
+            call("autopep8 --ignore=E302,E402,E501 -v -i path/to/file.py", shell=True),
             call().wait(),
             call("isort path/to/file.py", shell=True),
             call().wait()
@@ -104,11 +104,11 @@ class TestPyck(unittest.TestCase):
         mock_popen.return_value = mock_process
 
         # Testing dry-run for a single file
-        pyck.dry_run_formatting(['path/to/single_file.py'], 'E302,E402')
+        pyck.dry_run_formatting(['path/to/single_file.py'], 'E302,E402,E501')
 
         # Verify subprocess.Popen calls for the single file
         mock_popen.assert_any_call(
-            "flake8 --ignore=E302,E402 path/to/single_file.py", shell=True, stdout=-1)
+            "flake8 --ignore=E302,E402,E501 path/to/single_file.py", shell=True, stdout=-1)
         mock_popen.assert_any_call(
             "autoflake --imports=django,requests,urllib3 --check path/to/single_file.py", shell=True, stdout=-1)
         mock_popen.assert_any_call(
@@ -123,16 +123,16 @@ class TestPyck(unittest.TestCase):
         mock_popen.return_value = mock_process
 
         pyck.dry_run_formatting(
-            ['path/to/file1.py', 'path/to/file2.py'], 'E302,E402')
+            ['path/to/file1.py', 'path/to/file2.py'], 'E302,E402,E501')
 
         expected_calls = [
-            call("flake8 --ignore=E302,E402 path/to/file1.py",
+            call("flake8 --ignore=E302,E402,E501 path/to/file1.py",
                  shell=True, stdout=-1),
             call("autoflake --imports=django,requests,urllib3 --check path/to/file1.py",
                  shell=True, stdout=-1),
             call("isort --check-only path/to/file1.py",
                  shell=True, stdout=-1),
-            call("flake8 --ignore=E302,E402 path/to/file2.py",
+            call("flake8 --ignore=E302,E402,E501 path/to/file2.py",
                  shell=True, stdout=-1),
             call("autoflake --imports=django,requests,urllib3 --check path/to/file2.py",
                  shell=True, stdout=-1),
@@ -153,10 +153,10 @@ class TestPyck(unittest.TestCase):
             mock_walk.return_value = [
                 ('path/to/directory', [], ['file1.py', 'file2.py'])]
 
-            pyck.dry_run_formatting(['path/to/directory'], 'E302,E402')
+            pyck.dry_run_formatting(['path/to/directory'], 'E302,E402,E501')
 
             expected_calls = [
-                call("flake8 --ignore=E302,E402 path/to/directory",
+                call("flake8 --ignore=E302,E402,E501 path/to/directory",
                      shell=True, stdout=-1),
                 call("autoflake --imports=django,requests,urllib3 --check path/to/directory",
                      shell=True, stdout=-1),
@@ -180,16 +180,16 @@ class TestPyck(unittest.TestCase):
             ]
 
             pyck.dry_run_formatting(
-                ['path/to/dir1', 'path/to/dir2'], 'E302,E402')
+                ['path/to/dir1', 'path/to/dir2'], 'E302,E402,E501')
 
             expected_calls = [
-                call("flake8 --ignore=E302,E402 path/to/dir1",
+                call("flake8 --ignore=E302,E402,E501 path/to/dir1",
                      shell=True, stdout=-1),
                 call("autoflake --imports=django,requests,urllib3 --check path/to/dir1",
                      shell=True, stdout=-1),
                 call("isort --check-only path/to/dir1",
                      shell=True, stdout=-1),
-                call("flake8 --ignore=E302,E402 path/to/dir2",
+                call("flake8 --ignore=E302,E402,E501 path/to/dir2",
                      shell=True, stdout=-1),
                 call("autoflake --imports=django,requests,urllib3 --check path/to/dir2",
                      shell=True, stdout=-1),
@@ -208,11 +208,11 @@ class TestPyck(unittest.TestCase):
         mock_path.isdir.return_value = False
 
         # Testing path for a single file
-        pyck.execute_formatting(['path/to/single_file.py'], 'E302,E402')
+        pyck.execute_formatting(['path/to/single_file.py'], 'E302,E402,E501')
 
         # Verify format_file call for the single file
         mock_format_file.assert_called_once_with(
-            'path/to/single_file.py', 'E302,E402')
+            'path/to/single_file.py', 'E302,E402,E501')
 
     @patch('pyck.format_file')
     @patch('pyck.print')
@@ -227,19 +227,19 @@ class TestPyck(unittest.TestCase):
 
         # Testing paths for a directory and a file
         pyck.execute_formatting(
-            ['path/to/directory', 'path/to/file.py'], 'E302,E402')
+            ['path/to/directory', 'path/to/file.py'], 'E302,E402,E501')
 
         # Verify format_file calls for files in the directory
         expected_file1_path = os.path.join('path/to/directory', 'file1.py')
         expected_file2_path = os.path.join('path/to/directory', 'file2.py')
-        mock_format_file.assert_any_call(expected_file1_path, 'E302,E402')
-        mock_format_file.assert_any_call(expected_file2_path, 'E302,E402')
+        mock_format_file.assert_any_call(expected_file1_path, 'E302,E402,E501')
+        mock_format_file.assert_any_call(expected_file2_path, 'E302,E402,E501')
 
         # Verify format_file call for a single file
-        mock_format_file.assert_any_call('path/to/file.py', 'E302,E402')
+        mock_format_file.assert_any_call('path/to/file.py', 'E302,E402,E501')
 
         # Test behavior when path is neither a file nor a directory
-        pyck.execute_formatting(['invalid/path'], 'E302,E402')
+        pyck.execute_formatting(['invalid/path'], 'E302,E402,E501')
         mock_print.assert_called_with(
             "Error: The specified path 'invalid/path' is neither a file nor a directory.")
 
@@ -255,13 +255,13 @@ class TestPyck(unittest.TestCase):
             ('path/to/directory', [], ['file1.py', 'file2.py'])]
 
         # Testing path for a directory
-        pyck.execute_formatting(['path/to/directory'], 'E302,E402')
+        pyck.execute_formatting(['path/to/directory'], 'E302,E402,E501')
 
         # Verify format_file calls for files in the directory
         expected_file1_path = os.path.join('path/to/directory', 'file1.py')
         expected_file2_path = os.path.join('path/to/directory', 'file2.py')
-        mock_format_file.assert_any_call(expected_file1_path, 'E302,E402')
-        mock_format_file.assert_any_call(expected_file2_path, 'E302,E402')
+        mock_format_file.assert_any_call(expected_file1_path, 'E302,E402,E501')
+        mock_format_file.assert_any_call(expected_file2_path, 'E302,E402,E501')
 
     @patch('pyck.format_file')
     @patch('pyck.print')
@@ -278,7 +278,7 @@ class TestPyck(unittest.TestCase):
         ]
 
         # Testing paths for multiple directories
-        pyck.execute_formatting(['path/to/dir1', 'path/to/dir2'], 'E302,E402')
+        pyck.execute_formatting(['path/to/dir1', 'path/to/dir2'], 'E302,E402,E501')
 
         # Verify format_file calls for files in each directory
         expected_calls = [
@@ -288,7 +288,7 @@ class TestPyck(unittest.TestCase):
             os.path.join('path/to/dir2', 'file4.py')
         ]
         for call in expected_calls:
-            mock_format_file.assert_any_call(call, 'E302,E402')
+            mock_format_file.assert_any_call(call, 'E302,E402,E501')
 
 
 if __name__ == '__main__':

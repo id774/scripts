@@ -32,12 +32,14 @@
 #
 ########################################################################
 
-import instaloader
-import time
-import urllib.request
 import argparse
 import os
 import re
+import time
+import urllib.request
+
+import instaloader
+
 
 class InstagramPhotoDownloader:
     def __init__(self, username):

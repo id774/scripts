@@ -58,10 +58,11 @@
 #
 ########################################################################
 
-import sys
 import os
-from optparse import OptionParser
 import subprocess
+import sys
+from optparse import OptionParser
+
 
 def is_command_installed(command):
     """ Check if a command is installed on the system. """

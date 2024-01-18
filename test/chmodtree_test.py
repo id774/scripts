@@ -23,14 +23,15 @@
 #
 ########################################################################
 
-import unittest
-import sys
 import os
-from unittest.mock import patch, MagicMock
+import sys
+import unittest
+from unittest.mock import MagicMock, patch
 
 # Import the script/module to be tested
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import chmodtree
+
 
 class TestChmodTree(unittest.TestCase):
     @patch('chmodtree.os_exec')

@@ -41,9 +41,9 @@
 #
 ########################################################################
 
+import logging
 import os
 import subprocess
-import logging
 from optparse import OptionParser
 
 logging.basicConfig(level=logging.INFO)

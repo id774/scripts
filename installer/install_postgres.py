@@ -11,8 +11,8 @@
 #       First.
 ########################################################################
 
-import sys
 import os
+
 
 def install_postgres_gui_to_debian():
     syscmd = 'sudo apt-get -y install pgadmin3'

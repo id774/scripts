@@ -33,9 +33,10 @@
 #
 ########################################################################
 
-import subprocess
 import os
 import platform
+import subprocess
+
 
 def show_userlist(threshold):
     if platform.system() == 'Darwin':

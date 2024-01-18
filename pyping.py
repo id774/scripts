@@ -29,10 +29,11 @@
 #
 ########################################################################
 
+import argparse
+import os
 import subprocess
 import threading
-import os
-import argparse
+
 
 def ping(ip):
     """Send a ping request to the specified IP address."""

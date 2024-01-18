@@ -23,13 +23,14 @@
 #
 ########################################################################
 
-import unittest
-from unittest.mock import patch, call
-import sys
 import os
+import sys
+import unittest
+from unittest.mock import call, patch
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import zero_padding
+
 
 class TestZeroPadding(unittest.TestCase):
     """Test cases for the rename_files function in zero_padding.py."""

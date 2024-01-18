@@ -29,9 +29,10 @@
 #
 ########################################################################
 
+import glob
 import struct
 import sys
-import glob
+
 
 def read_png_info(png_file_path):
     """

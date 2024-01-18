@@ -73,9 +73,10 @@
 ########################################################################
 
 import os
+import subprocess
 import sys
 from optparse import OptionParser
-import subprocess
+
 
 def os_exec(cmd):
     """

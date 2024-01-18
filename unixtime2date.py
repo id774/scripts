@@ -29,8 +29,9 @@
 #
 ########################################################################
 
-import sys
 import datetime
+import sys
+
 
 def unixtime2date(its):
     """Convert Unix timestamp to human-readable date in local timezone (ISO 8601 format)."""

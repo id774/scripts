@@ -33,8 +33,9 @@
 #
 ########################################################################
 
-import subprocess
 import platform
+import subprocess
+
 
 def get_shells_from_passwd():
     shells = {}

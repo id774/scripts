@@ -133,7 +133,7 @@ def main():
     for path in args.paths:
         expanded_paths.extend(glob.glob(path) or [path])
 
-    ignore_errors = "E302,E402"
+    ignore_errors = "E302,E402,E501"
     check_command("autopep8")
     check_command("flake8")
     check_command("autoflake")

@@ -39,6 +39,7 @@ import os
 import re
 from optparse import OptionParser
 
+
 def unzip_files(args, dry_run=False):
     for root, dirs, files in os.walk(args[0]):
         for f in files:

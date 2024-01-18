@@ -35,8 +35,9 @@
 ########################################################################
 
 import argparse
-import os
 import logging
+import os
+
 
 def setup_logger(quiet_mode):
     if quiet_mode:

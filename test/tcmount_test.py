@@ -25,14 +25,15 @@
 #
 ########################################################################
 
-import unittest
-import sys
 import os
+import sys
+import unittest
 from unittest.mock import patch
 
 # Import the script/module to be tested
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import tcmount
+
 
 class TestTcMount(unittest.TestCase):
 
