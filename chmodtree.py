@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.2 2024-01-18
+#       Standardized command existence checks using a common function.
 #  v2.1 2023-12-17
 #       Updated for compatibility with Python versions below 3.3 by replacing
 #       DEVNULL with os.devnull in is_command_installed function.
@@ -59,15 +61,20 @@
 ########################################################################
 
 import os
+import shutil
 import subprocess
 import sys
 from optparse import OptionParser
 
 
-def is_command_installed(command):
-    """ Check if a command is installed on the system. """
-    with open(os.devnull, 'w') as devnull:
-        return subprocess.call(['which', command], stdout=devnull, stderr=devnull) == 0
+def check_command(cmd):
+    if not shutil.which(cmd):
+        print("Error: Command '{}' is not installed. Please install {} and try again.".format(
+            cmd, cmd))
+        sys.exit(127)
+    elif not os.access(shutil.which(cmd), os.X_OK):
+        print("Error: Command '{}' is not executable. Please check the permissions.".format(cmd))
+        sys.exit(126)
 
 def os_exec(cmd):
     """ Execute a system command using subprocess. """
@@ -102,8 +109,8 @@ def chmodtree(options, directory):
 
 def main():
     """ Main function to parse options and execute chmodtree. """
-    if not is_command_installed('find') or not is_command_installed('chmod'):
-        sys.exit("Error: Required commands 'find' and/or 'chmod' are not installed.")
+    check_command('find')
+    check_command('chmod')
 
     parser = OptionParser("usage: %prog [options] dir")
     parser.add_option("-s", "--sudo", help="exec with sudo",
