@@ -76,7 +76,7 @@ class TestPyck(unittest.TestCase):
     def test_run_command_success(self, mock_print, mock_popen):
         # Test scenario for successful command execution
         mock_process = MagicMock()
-        mock_process.communicate.return_value = (b'output', b'')
+        mock_process.communicate.return_value = ('output', '')
         mock_process.returncode = 0
         mock_popen.return_value = mock_process
 
@@ -88,7 +88,7 @@ class TestPyck(unittest.TestCase):
     def test_run_command_error(self, mock_print, mock_popen):
         # Test scenario for command execution with an error
         mock_process = MagicMock()
-        mock_process.communicate.return_value = (b'error output', b'')
+        mock_process.communicate.return_value = ('error output', '')
         mock_process.returncode = 1
         mock_popen.return_value = mock_process
 
