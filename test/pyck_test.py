@@ -24,14 +24,15 @@
 #
 ########################################################################
 
-import unittest
-from unittest.mock import patch, MagicMock, call
-import sys
 import os
+import sys
+import unittest
+from unittest.mock import MagicMock, call, patch
 
 # Adjusting the path to import pyck from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import pyck
+
 
 class TestPyck(unittest.TestCase):
     """Unit tests for the pyck.py script."""
@@ -64,6 +65,8 @@ class TestPyck(unittest.TestCase):
                 "autoflake --imports=django,requests,urllib3 -i path/to/file.py", shell=True),
             call().wait(),
             call("autopep8 --ignore=E302,E402 -v -i path/to/file.py", shell=True),
+            call().wait(),
+            call("isort path/to/file.py", shell=True),
             call().wait()
         ]
         mock_popen.assert_has_calls(expected_calls, any_order=True)
@@ -108,6 +111,8 @@ class TestPyck(unittest.TestCase):
             "flake8 --ignore=E302,E402 path/to/single_file.py", shell=True, stdout=-1)
         mock_popen.assert_any_call(
             "autoflake --imports=django,requests,urllib3 --check path/to/single_file.py", shell=True, stdout=-1)
+        mock_popen.assert_any_call(
+            "isort --check-only path/to/single_file.py", shell=True, stdout=-1)
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
@@ -125,9 +130,13 @@ class TestPyck(unittest.TestCase):
                  shell=True, stdout=-1),
             call("autoflake --imports=django,requests,urllib3 --check path/to/file1.py",
                  shell=True, stdout=-1),
+            call("isort --check-only path/to/file1.py",
+                 shell=True, stdout=-1),
             call("flake8 --ignore=E302,E402 path/to/file2.py",
                  shell=True, stdout=-1),
             call("autoflake --imports=django,requests,urllib3 --check path/to/file2.py",
+                 shell=True, stdout=-1),
+            call("isort --check-only path/to/file2.py",
                  shell=True, stdout=-1)
         ]
         mock_popen.assert_has_calls(expected_calls, any_order=True)
@@ -150,6 +159,8 @@ class TestPyck(unittest.TestCase):
                 call("flake8 --ignore=E302,E402 path/to/directory",
                      shell=True, stdout=-1),
                 call("autoflake --imports=django,requests,urllib3 --check path/to/directory",
+                     shell=True, stdout=-1),
+                call("isort --check-only path/to/directory",
                      shell=True, stdout=-1)
             ]
             mock_popen.assert_has_calls(expected_calls, any_order=True)
@@ -176,9 +187,13 @@ class TestPyck(unittest.TestCase):
                      shell=True, stdout=-1),
                 call("autoflake --imports=django,requests,urllib3 --check path/to/dir1",
                      shell=True, stdout=-1),
+                call("isort --check-only path/to/dir1",
+                     shell=True, stdout=-1),
                 call("flake8 --ignore=E302,E402 path/to/dir2",
                      shell=True, stdout=-1),
                 call("autoflake --imports=django,requests,urllib3 --check path/to/dir2",
+                     shell=True, stdout=-1),
+                call("isort --check-only path/to/dir2",
                      shell=True, stdout=-1)
             ]
             mock_popen.assert_has_calls(expected_calls, any_order=True)
