@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2024-01-18
+#       Fixed TypeError in run_command function by decoding stdout to string.
 #  v2.0 2024-01-13
 #       Ported from shell script (pyck.sh) to Python (pyck.py) for enhanced
 #       portability and functionality.
@@ -98,7 +100,8 @@ def format_file(file_path, ignore_errors):
 def run_command(command, show_files=None):
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
     stdout, _ = process.communicate()
-    stdout = stdout.decode('utf-8')
+    if isinstance(stdout, bytes):
+        stdout = stdout.decode('utf-8')
     if process.returncode != 0 and show_files:
         for line in stdout.split('\n'):
             if line:
