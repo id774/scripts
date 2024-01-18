@@ -16,6 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.5 2024-01-18
+#       Refactored function names for clarity.
+#       Improved comments for better understanding.
 #  v2.4 2024-01-06
 #       Added functionality to display a summary of not found modules at the end.
 #  v2.3 2020-11-05
@@ -58,14 +61,16 @@ class PythonModuleInfo:
         self.python = options.python
         self.not_found = []
 
-    def _get_module_info(self, module_name):
+    def display_module_help(self, module_name):
+        """ Display help information for the specified module. """
         try:
-            importlib.find_module(module_name)
-            help(module_name)
+            module = importlib.import_module(module_name)
+            help(module)
         except ImportError:
             self.not_found.append(module_name)
 
-    def _get_module_version(self, module_name):
+    def get_module_version(self, module_name):
+        """ Get and display the version of the specified module. """
         try:
             obj = importlib.import_module(module_name)
             if hasattr(obj, "__version__"):
@@ -79,9 +84,9 @@ class PythonModuleInfo:
 
     def get_info(self, module_name):
         if self.info:
-            self._get_module_info(module_name)
+            self.display_module_help(module_name)
         else:
-            self._get_module_version(module_name)
+            self.get_module_version(module_name)
 
     def get_python_version(self):
         if self.python:
