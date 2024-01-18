@@ -60,7 +60,7 @@ class PythonModuleInfo:
 
     def _get_module_info(self, module_name):
         try:
-            imp.find_module(module_name)
+            importlib.find_module(module_name)
             help(module_name)
         except ImportError:
             self.not_found.append(module_name)

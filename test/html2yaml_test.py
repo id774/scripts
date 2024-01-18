@@ -97,6 +97,7 @@ class Html2YamlTest(unittest.TestCase):
           name: html
         name: '[document]'
         """
+
         # Test if the expected structure is in the generated YAML
         self.assertIn("html", yaml_string)
         self.assertIn("head", yaml_string)
@@ -105,6 +106,12 @@ class Html2YamlTest(unittest.TestCase):
         self.assertIn("div", yaml_string)
         self.assertIn("ul", yaml_string)
         self.assertIn("li", yaml_string)
+
+        # Convert the expected structure to a YAML object
+        expected_yaml = yaml.safe_load(expected_structure)
+
+        # Test if the generated YAML matches the expected structure
+        self.assertEqual(yaml_data, expected_yaml)
 
 
 if __name__ == '__main__':

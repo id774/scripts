@@ -33,6 +33,7 @@ install_libs() {
     $CONDA install -y pytest-pep8
     $CONDA install -y autopep8
     $CONDA install -y autoflake
+    $CONDA install -y isort
     $CONDA install -y Cython
     $CONDA install -y docutils
     $CONDA install -y nose
