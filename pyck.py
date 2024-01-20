@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.2 2024-01-20
+#       Refactored to include a main function and separate argument parser setup function.
 #  v2.1 2024-01-18
 #       Added isort integration for organizing imports.
 #       Fixed TypeError in run_command function by decoding stdout to string.
@@ -60,6 +62,16 @@ import shutil
 import subprocess
 import sys
 
+
+def setup_argument_parser():
+    """ Set up and return the argument parser. """
+    parser = argparse.ArgumentParser(
+        description="Python Code Formatter and Linter")
+    parser.add_argument("paths", nargs='+', type=str,
+                        help="Directories or files to format and lint")
+    parser.add_argument("-i", "--auto-fix",
+                        action="store_true", help="Auto-fix code issues")
+    return parser
 
 def check_command(cmd):
     if not shutil.which(cmd):
@@ -121,12 +133,8 @@ def run_command(command, show_files=None):
                 print("{} {}".format(show_files, line))
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Python Code Formatter and Linter")
-    parser.add_argument("paths", nargs='+', type=str,
-                        help="Directories or files to format and lint")
-    parser.add_argument("-i", "--auto-fix",
-                        action="store_true", help="Auto-fix code issues")
+    """ Main function to parse arguments and execute formatting. """
+    parser = setup_argument_parser()
     args = parser.parse_args()
 
     expanded_paths = []
