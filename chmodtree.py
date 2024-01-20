@@ -76,8 +76,7 @@ def setup_option_parser():
                       action="store_true", dest="sudo")
     parser.add_option("-q", "--quiet", help="shut off non-error messages",
                       action="store_true", dest="quiet")
-    parser.add_option("-f",
-                      "--files", dest="files", help="chmod files")
+    parser.add_option("-f", "--files", dest="files", help="chmod files")
     parser.add_option("-d", "--dirs", dest="dirs", help="chmod directory")
     parser.add_option("-n", "--name", dest="name",
                       help="name pattern of find (ex. -n '*.sh')")

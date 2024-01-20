@@ -30,7 +30,7 @@
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "Error: '$cmd' is not installed. This script only works on Debian-based systems."
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
             exit 127
         elif ! [ -x "$(command -v "$cmd")" ]; then
             echo "Error: Command '$cmd' is not executable. Please check the permissions."

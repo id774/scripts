@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2024-01-20
+#       Improved f-strings detection regular expression to accurately identify common patterns.
 #  v1.3 2024-01-14
 #       Added search for Python 3.x features like type hints, nonlocal statements,
 #       matrix multiplication operators, asyncio library, yield from, extended unpacking,
@@ -40,7 +42,7 @@
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "Error: Git is not installed. This script requires Git for pulling repositories. Please install Git and try again."
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
             exit 127
         elif ! [ -x "$(command -v "$cmd")" ]; then
             echo "Error: Command '$cmd' is not executable. Please check the permissions."
@@ -58,7 +60,7 @@ echo "*** Searching for Python 3.x compatibility issues in Python files..."
 
 # Search for f-strings
 echo "*** Searching for f-strings..."
-grep -n -r --include="*.py" -E "f['\"][^']*['\"]|f[\"\'][^\"]*[\"\']" "$TARGET_DIR" | grep -v '^#'
+grep -n -r --include="*.py" -E "f['\"][^'\"]*\{[^}]*\}[^'\"]*['\"]" "$TARGET_DIR" | grep -v '^#'
 
 # Searching subprocess.run and subprocess.DEVNULL
 echo "*** Searching for subprocess.run and subprocess.DEVNULL..."
