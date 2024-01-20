@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.3 2024-01-20
+#       Refactored to include a main function and separate option parser setup function.
 #  v2.2 2024-01-18
 #       Standardized command existence checks using a common function.
 #  v2.1 2023-12-17
@@ -67,6 +69,19 @@ import sys
 from optparse import OptionParser
 
 
+def setup_option_parser():
+    """ Set up and return the option parser. """
+    parser = OptionParser("usage: %prog [options] dir")
+    parser.add_option("-s", "--sudo", help="exec with sudo",
+                      action="store_true", dest="sudo")
+    parser.add_option("-q", "--quiet", help="shut off non-error messages",
+                      action="store_true", dest="quiet")
+    parser.add_option("-f", "--files", dest="files", help="chmod files")
+    parser.add_option("-d", "--dirs", dest="dirs", help="chmod directory")
+    parser.add_option("-n", "--name", dest="name",
+                      help="name pattern of find (ex. -n '*.sh')")
+    return parser
+
 def check_command(cmd):
     if not shutil.which(cmd):
         print("Error: Command '{}' is not installed. Please install {} and try again.".format(
@@ -112,16 +127,7 @@ def main():
     check_command('find')
     check_command('chmod')
 
-    parser = OptionParser("usage: %prog [options] dir")
-    parser.add_option("-s", "--sudo", help="exec with sudo",
-                      action="store_true", dest="sudo")
-    parser.add_option("-q", "--quiet", help="shut off non-error messages",
-                      action="store_true", dest="quiet")
-    parser.add_option("-f",
-                      "--files", dest="files", help="chmod files")
-    parser.add_option("-d", "--dirs", dest="dirs", help="chmod directory")
-    parser.add_option("-n", "--name", dest="name",
-                      help="name pattern of find (ex. -n '*.sh')")
+    parser = setup_option_parser()
     (options, args) = parser.parse_args()
 
     if len(args) != 1:
