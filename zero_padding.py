@@ -5,8 +5,9 @@
 #
 #  Description:
 #  This script renames files in a given directory by zero-padding the numeric
-#  part of the file names to a specified number of digits. It now includes
-#  a quiet mode option to suppress logging output.
+#  part of the file names to a specified number of digits. It includes
+#  a quiet mode option to suppress logging output and has improved structure
+#  with the addition of a main function and separate argument parser setup.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2024-01-20
+#       Refactored to include a main function and separate argument parser setup function.
 #  v1.3 2024-01-11
 #       Added quiet mode option (-q) and refactored with logging and improved error handling.
 #  v1.2 2023-12-08
@@ -38,6 +41,15 @@ import argparse
 import logging
 import os
 
+
+def setup_argument_parser():
+    """ Set up and return the argument parser. """
+    parser = argparse.ArgumentParser(
+        description='A program to uniformly rename file names by zero-padding their numeric parts')
+    parser.add_argument('dir_path', help='directory path')
+    parser.add_argument('num_digits', type=int, help='number of digits for padding')
+    parser.add_argument('-q', '--quiet', action='store_true', help='enable quiet mode')
+    return parser
 
 def setup_logger(quiet_mode):
     if quiet_mode:
@@ -91,15 +103,9 @@ def rename_files(dir_path, num_digits, quiet_mode):
             logging.error("Failed to rename %s to %s: %s",
                           old_file_path, new_file_path, e)
 
-
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description='A program to uniformly rename file names by zero-padding their numeric parts')
-    parser.add_argument('dir_path', help='directory path')
-    parser.add_argument('num_digits', type=int,
-                        help='number of digits for padding')
-    parser.add_argument('-q', '--quiet', action='store_true',
-                        help='enable quiet mode')
+def main():
+    """ Main function to control the flow of the program. """
+    parser = setup_argument_parser()
     args = parser.parse_args()
 
     setup_logger(args.quiet)
@@ -109,3 +115,7 @@ if __name__ == '__main__':
         exit(1)
 
     rename_files(args.dir_path, args.num_digits, args.quiet)
+
+
+if __name__ == '__main__':
+    main()
