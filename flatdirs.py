@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2024-01-20
+#       Refactored to encapsulate option parser configuration in a separate function.
 #  v1.5 2024-01-13
 #       Changed script name to flatdirs.py for simplicity.
 #  v1.4 2024-01-11
@@ -48,20 +50,23 @@ import os
 import shutil
 from optparse import OptionParser
 
-# Set up command-line options using OptionParser.
-parser = OptionParser()
-parser.add_option("-m", "--move", action="store_true", dest="move_mode", default=False,
-                  help="move files instead of copying them")
-parser.add_option("-c", "--copy", action="store_true", dest="copy_mode", default=False,
-                  help="copy files instead of moving them")
-parser.add_option("-d", "--delete", action="store_true", dest="delete_mode", default=False,
-                  help="delete empty directories")
-parser.add_option("-q", "--quiet", action="store_true", dest="quiet_mode", default=False,
-                  help="suppress operation info")
-parser.add_option("-x", "--execute", action="store_true", dest="execute_mode", default=False,
-                  help="execute file operations (default is dry run)")
-parser.add_option("-r", "--rename-only", action="store_true", dest="rename_only_mode", default=False,
-                  help="only rename the files by adding directory name, without moving or copying")
+
+def setup_option_parser():
+    """ Set up command-line options using OptionParser. """
+    parser = OptionParser()
+    parser.add_option("-m", "--move", action="store_true", dest="move_mode", default=False,
+                      help="move files instead of copying them")
+    parser.add_option("-c", "--copy", action="store_true", dest="copy_mode", default=False,
+                      help="copy files instead of moving them")
+    parser.add_option("-d", "--delete", action="store_true", dest="delete_mode", default=False,
+                      help="delete empty directories")
+    parser.add_option("-q", "--quiet", action="store_true", dest="quiet_mode", default=False,
+                      help="suppress operation info")
+    parser.add_option("-x", "--execute", action="store_true", dest="execute_mode", default=False,
+                      help="execute file operations (default is dry run)")
+    parser.add_option("-r", "--rename-only", action="store_true", dest="rename_only_mode", default=False,
+                      help="only rename the files by adding directory name, without moving or copying")
+    return parser
 
 def print_action(action, source, destination=None, options=None):
     """ Prints the action being performed or simulated. """
@@ -120,5 +125,6 @@ def main(options):
 
 
 if __name__ == '__main__':
+    parser = setup_option_parser()
     (options, args) = parser.parse_args()
     main(options)
