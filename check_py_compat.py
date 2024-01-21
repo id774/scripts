@@ -62,6 +62,11 @@ def search_feature(directory, feature_name, pattern, script_patterns):
 def main():
     target_dir = sys.argv[1] if len(sys.argv) > 1 else '.'
 
+    # Check if the target directory exists
+    if not os.path.isdir(target_dir):
+        print(f"Error: Directory '{target_dir}' does not exist.")
+        sys.exit(1)
+
     # Patterns to exclude (comments and patterns used in this script)
     script_patterns = [("#", "mail"), ("r\"", ""), ("r'", "")]
 
