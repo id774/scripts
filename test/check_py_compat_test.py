@@ -19,9 +19,10 @@
 ########################################################################
 
 import os
+import re
 import sys
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import check_py_compat
@@ -45,59 +46,100 @@ class TestCheckPyCompat(unittest.TestCase):
     def mock_file_read(self, *args, **kwargs):
         return MagicMock(read=lambda: self.file_content)
 
-    def test_f_strings_detection(self):
+    def test_f_strings_detection_success(self):
         pattern = r"f['\"][^'\"]*\{[^}]*\}[^'\"]*['\"]"
-        self.run_feature_test("f-strings", pattern, "print(f'Hello {name}')", "print('Hello')")
+        self.run_feature_test("f-strings", pattern, "print(f'Hello {name}')", should_match=True)
 
-    def test_subprocess_run_detection(self):
+    def test_f_strings_detection_failure(self):
+        pattern = r"f['\"][^'\"]*\{[^}]*\}[^'\"]*['\"]"
+        self.run_feature_test("f-strings", pattern, "print('Hello')", should_match=False)
+
+    def test_subprocess_run_detection_success(self):
         pattern = r"subprocess\.run"
-        self.run_feature_test("subprocess.run", pattern, "subprocess.run(['ls', '-l'])", "print('subprocess')")
+        self.run_feature_test("subprocess.run", pattern, "subprocess.run(['ls', '-l'])", should_match=True)
 
-    def test_subprocess_devnull_detection(self):
+    def test_subprocess_run_detection_failure(self):
+        pattern = r"subprocess\.run"
+        self.run_feature_test("subprocess.run", pattern, "print('subprocess')", should_match=False)
+
+    def test_subprocess_devnull_detection_success(self):
         pattern = r"subprocess\.DEVNULL"
-        self.run_feature_test("subprocess.DEVNULL", pattern, "subprocess.Popen(['ls'], stdout=subprocess.DEVNULL)", "print('DEVNULL')")
+        self.run_feature_test("subprocess.DEVNULL", pattern, "subprocess.Popen(['ls'], stdout=subprocess.DEVNULL)", should_match=True)
 
-    def test_async_await_keywords_detection(self):
+    def test_subprocess_devnull_detection_failure(self):
+        pattern = r"subprocess\.DEVNULL"
+        self.run_feature_test("subprocess.DEVNULL", pattern, "print('DEVNULL')", should_match=False)
+
+    def test_async_await_keywords_detection_success(self):
         pattern = r"\basync\b|\bawait\b"
-        self.run_feature_test("async/await keywords", pattern, "async def foo(): await bar()", "def foo(): bar()")
+        self.run_feature_test("async/await keywords", pattern, "async def foo(): await bar()", should_match=True)
 
-    def test_type_hints_detection(self):
+    def test_async_await_keywords_detection_failure(self):
+        pattern = r"\basync\b|\bawait\b"
+        self.run_feature_test("async/await keywords", pattern, "def foo(): bar()", should_match=False)
+
+    def test_type_hints_detection_success(self):
         pattern = r"\bdef\b.*->"
-        self.run_feature_test("type hints", pattern, "def foo(bar: int) -> str:", "def foo(bar):")
+        self.run_feature_test("type hints", pattern, "def foo(bar: int) -> str:", should_match=True)
 
-    def test_nonlocal_keyword_detection(self):
+    def test_type_hints_detection_failure(self):
+        pattern = r"\bdef\b.*->"
+        self.run_feature_test("type hints", pattern, "def foo(bar):", should_match=False)
+
+    def test_nonlocal_keyword_detection_success(self):
         pattern = r"\bnonlocal\b"
-        self.run_feature_test("nonlocal keyword", pattern, "def foo(): nonlocal x", "def foo(): global x")
+        self.run_feature_test("nonlocal keyword", pattern, "def foo(): nonlocal x", should_match=True)
 
-    def test_matrix_multiplication_operator_detection(self):
+    def test_nonlocal_keyword_detection_failure(self):
+        pattern = r"\bnonlocal\b"
+        self.run_feature_test("nonlocal keyword", pattern, "def foo(): global x", should_match=False)
+
+    def test_matrix_multiplication_operator_detection_success(self):
         pattern = r"\b[a-zA-Z_][a-zA-Z0-9_]*\s*@\s*[a-zA-Z_][a-zA-Z0-9_]*\b"
-        self.run_feature_test("matrix multiplication operator", pattern, "a @ b", "a * b")
+        self.run_feature_test("matrix multiplication operator", pattern, "a @ b", should_match=True)
 
-    def test_asyncio_usage_detection(self):
+    def test_matrix_multiplication_operator_detection_failure(self):
+        pattern = r"\b[a-zA-Z_][a-zA-Z0-9_]*\s*@\s*[a-zA-Z_][a-zA-Z0-9_]*\b"
+        self.run_feature_test("matrix multiplication operator", pattern, "a * b", should_match=False)
+
+    def test_asyncio_usage_detection_success(self):
         pattern = r"\basyncio\."
-        self.run_feature_test("asyncio usage", pattern, "import asyncio\nasyncio.run(main())", "import sys")
+        self.run_feature_test("asyncio usage", pattern, "import asyncio\nasyncio.run(main())", should_match=True)
 
-    def test_yield_from_usage_detection(self):
+    def test_asyncio_usage_detection_failure(self):
+        pattern = r"\basyncio\."
+        self.run_feature_test("asyncio usage", pattern, "import sys", should_match=False)
+
+    def test_yield_from_usage_detection_success(self):
         pattern = r"\byield from\b"
-        self.run_feature_test("yield from usage", pattern, "def foo(): yield from bar()", "def foo(): yield bar()")
+        self.run_feature_test("yield from usage", pattern, "def foo(): yield from bar()", should_match=True)
 
-    def test_pathlib_usage_detection(self):
+    def test_yield_from_usage_detection_failure(self):
+        pattern = r"\byield from\b"
+        self.run_feature_test("yield from usage", pattern, "def foo(): yield bar()", should_match=False)
+
+    def test_pathlib_usage_detection_success(self):
         pattern = r"\bpathlib\."
-        self.run_feature_test("pathlib usage", pattern, "from pathlib import Path\nPath('/usr/local')", "import os")
+        self.run_feature_test("pathlib usage", pattern, "from pathlib import Path\nPath('/usr/local')", should_match=True)
 
-    def run_feature_test(self, feature_name, pattern, match_string, no_match_string):
-        # Set file content to a string that should match
-        self.file_content = match_string
+    def test_pathlib_usage_detection_failure(self):
+        pattern = r"\bpathlib\."
+        self.run_feature_test("pathlib usage", pattern, "import os", should_match=False)
+
+    def run_feature_test(self, feature_name, pattern, test_string, should_match):
+        self.file_content = test_string
         self.mock_open.side_effect = self.mock_file_read
         check_py_compat.search_feature('.', feature_name, pattern, [])
-        self.mock_open.assert_called_with(os.path.join('.', 'dummy.py'), 'r', encoding='utf-8')
 
-        # Reset mock and set file content to a string that should not match
-        self.mock_open.reset_mock()
-        self.file_content = no_match_string
-        self.mock_open.side_effect = self.mock_file_read
-        check_py_compat.search_feature('.', feature_name, pattern, [])
-        self.mock_open.assert_called_with(os.path.join('.', 'dummy.py'), 'r', encoding='utf-8')
+        file_open_call = call(os.path.join('.', 'dummy.py'), 'r', encoding='utf-8')
+        if should_match:
+            self.mock_open.assert_has_calls([file_open_call])
+        else:
+            if file_open_call in self.mock_open.mock_calls:
+                compiled_pattern = re.compile(pattern)
+                self.assertFalse(compiled_pattern.search(self.file_content))
+            else:
+                self.mock_open.assert_not_called()
 
 
 if __name__ == '__main__':
