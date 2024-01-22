@@ -13,6 +13,8 @@
 # Contact: idnanashi@gmail.com
 #
 # Version History:
+#  v1.3 2024-01-22
+#       Integrated check_commands function for dependency checks.
 #  v1.2 2023-12-08
 #       Added file and directory existence checks for the Fastladder database.
 #  v1.1 2023-12-07
@@ -32,11 +34,20 @@
 #
 ########################################################################
 
-# Check if sqlite3 is installed
-if ! command -v sqlite3 >/dev/null 2>&1; then
-    echo "Error: sqlite3 is not installed. Please install sqlite3 and try again."
-    exit 3
-fi
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 126
+        fi
+    done
+}
+
+# Check for required commands
+check_commands sqlite3
 
 # Define the Fastladder database directory and file path
 DB_DIR="$HOME/fastladder/db"
