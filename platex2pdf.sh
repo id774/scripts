@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2024-01-23
+#       Integrated check_commands function for dependency checks.
 #  v1.1 2023-12-05
 #       Refactored for improved readability, added environment checks.
 #  v1.0 2014-05-21
@@ -24,13 +26,20 @@
 #
 ########################################################################
 
-# Check for necessary commands
-for cmd in platex uplatex dvipdfmx nkf; do
-    if ! command -v "$cmd" > /dev/null 2>&1; then
-        echo "Error: $cmd is not installed. This script requires platex, uplatex, dvipdfmx, and nkf."
-        exit 1
-    fi
-done
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 126
+        fi
+    done
+}
+
+# Check for required commands
+check_commands platex uplatex dvipdfmx nkf
 
 # Check for input file
 if [ -z "$1" ]; then
