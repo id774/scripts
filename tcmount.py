@@ -230,27 +230,27 @@ def main():
     parser = OptionParser(version=version_message)
     parser.add_option("-v", "--veracrypt",
                       dest="veracrypt",
-                      help="Use VeraCrypt instead of TrueCrypt",
+                      help="use VeraCrypt instead of TrueCrypt",
                       action="store_true")
     parser.add_option("-t", "--tc-compat",
                       dest="tc_compat",
-                      help="Use VeraCrypt in TrueCrypt compatibility mode",
+                      help="use VeraCrypt in TrueCrypt compatibility mode",
                       action="store_true")
     parser.add_option("-u", "--no-utf8",
                       dest="no_utf8",
-                      help="do not use utf8 as the mount filesystem type",
+                      help="do not use UTF-8 as the mount filesystem type",
                       action="store_true")
     parser.add_option("-r", "--readonly",
                       dest="readonly",
-                      help="read only",
+                      help="mount filesystem as read-only",
                       action="store_true")
     parser.add_option("-a", "--all",
                       dest="all",
-                      help="mount all devices",
+                      help="mount all available devices",
                       action="store_true")
     parser.add_option("-e", "--external",
                       dest="external",
-                      help="Mount the specified device with an external drive",
+                      help="mount the specified device with an external drive",
                       action="store",
                       type="string")
 
