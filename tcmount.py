@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v4.2 2024-01-26
+#       Updated documentation to include notes on custom return codes.
 #  v4.1 2023-12-17
 #       Modified is_truecrypt_installed and is_veracrypt_installed functions for compatibility
 #       with Python versions below 3.3, replacing DEVNULL with os.devnull.
@@ -29,16 +31,6 @@
 #       Refactored command construction to improve testability.
 #       Renamed the -e (--expansion) option to -e (--external) and updated the path to
 #       the container file to '~/mnt/external/container.tc' for generalizing external HDD support.
-#  v3.2 2023-12-14
-#       Removed -l (local), -g (legacy), -f (half), and -p (partition) options.
-#       Refactored code to focus on essential mounting functionalities.
-#       Added -e (--external) option to mount the container file of an external drive to a specified device.
-#  v3.1 2023-12-10
-#       Minor refactoring of the os_exec function.
-#       Enhanced version display to include TrueCrypt version.
-#  v3.0 2023-12-09
-#       Refactored for improved readability and maintenance.
-#       Added specific device mounting and unmounting functionalities.
 #  [Further version history truncated for brevity]
 #  v1.0 2010-08-06
 #       First release.
@@ -66,6 +58,14 @@
 #  -r, --readonly     Mount the filesystem in read-only mode.
 #  -a, --all          Mount all available devices.
 #  -e, --external     Mount the container file of an external drive to a specified device.
+#
+#  Note on Custom Return Codes:
+#  This script uses custom return codes to indicate specific error conditions:
+#  - 0: Success. The operation completed without any errors.
+#  - 1: Neither TrueCrypt nor VeraCrypt is installed. The script requires one of them to be installed to function.
+#  - 11: TrueCrypt is not installed. This is returned when TrueCrypt is required but not found.
+#  - 12: VeraCrypt is not installed but specified for use. This occurs when VeraCrypt is selected but not installed.
+#  - 13: VeraCrypt compatibility mode is specified but VeraCrypt is not installed.
 #
 #  Refer to the TrueCrypt and VeraCrypt documentation for more detailed information
 #  on mount options and device specifications.
@@ -222,7 +222,7 @@ def main():
 
     if not versions:
         print("Error: Neither TrueCrypt nor VeraCrypt is installed. Please install one of them and try again.")
-        sys.exit(99)
+        sys.exit(1)
 
     version_message = "tcmount.py {} - This script operates with {}.".format(
         tcmount_version, " / ".join(versions))
