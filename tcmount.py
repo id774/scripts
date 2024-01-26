@@ -212,7 +212,7 @@ def main():
     """
     Main function to handle the mounting process based on user inputs.
     """
-    tcmount_version = "4.1"
+    tcmount_version = "4.2"
 
     versions = []
     if is_truecrypt_installed():
