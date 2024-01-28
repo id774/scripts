@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 ########################################################################
 # check_py_compat_test.py: Test script for check_py_compat.py
@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2024-01-28
+#       Added detection for shutil.which usage to enhance compatibility checks.
 #  v1.0 2024-01-21
 #        Initial test script for check_py_compat.py
 #
@@ -125,6 +127,14 @@ class TestCheckPyCompat(unittest.TestCase):
     def test_pathlib_usage_detection_failure(self):
         pattern = r"\bpathlib\."
         self.run_feature_test("pathlib usage", pattern, "import os", should_match=False)
+
+    def test_shutil_which_detection_success(self):
+        pattern = r"\bshutil\.which\b"
+        self.run_feature_test("shutil.which usage", pattern, "if not shutil.which('gcc'):", should_match=True)
+
+    def test_shutil_which_detection_failure(self):
+        pattern = r"\bshutil\.which\b"
+        self.run_feature_test("shutil.which usage", pattern, "if not cmd_exists('gcc'):", should_match=False)
 
     def run_feature_test(self, feature_name, pattern, test_string, should_match):
         self.file_content = test_string

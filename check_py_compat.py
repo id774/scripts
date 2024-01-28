@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2024-01-28
+#       Added detection for shutil.which usage to enhance compatibility checks.
 #  v2.0 2024-01-21
 #       Ported script from shell to Python. Removed usage of Python 3.x specific features
 #       for compatibility checks. Enhanced modularity for better testability.
@@ -82,7 +84,8 @@ def main():
         "yield from usage": r"\byield from\b",
         "matrix multiplication operator": r"\b[a-zA-Z_][a-zA-Z0-9_]*\s*@\s*[a-zA-Z_][a-zA-Z0-9_]*\b",
         "pathlib usage": r"\bpathlib\.",
-        "type hints": r"\bdef\b.*->"
+        "type hints": r"\bdef\b.*->",
+        "shutil.which usage": r"\bshutil\.which\b"
     }
 
     # Perform search for each feature
