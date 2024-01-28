@@ -18,6 +18,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.3 2024-01-28
+#       Replaced shutil.which with a custom which function to ensure compatibility
+#       with Python versions prior to 3.3.
 #  v2.2 2024-01-20
 #       Refactored to include a main function and separate argument parser setup function.
 #  v2.1 2024-01-18
@@ -58,7 +61,6 @@
 import argparse
 import glob
 import os
-import shutil
 import subprocess
 import sys
 
@@ -73,19 +75,26 @@ def setup_argument_parser():
                         action="store_true", help="Auto-fix code issues")
     return parser
 
+def which(cmd):
+    """Simple implementation of shutil.which for older Python versions."""
+    for path in os.environ["PATH"].split(os.pathsep):
+        full_path = os.path.join(path, cmd)
+        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+            return full_path
+    return None
+
 def check_command(cmd):
-    if not shutil.which(cmd):
+    if not which(cmd):
         print("Error: Command '{}' is not installed. Please install {} and try again.".format(
             cmd, cmd))
         sys.exit(127)
-    elif not os.access(shutil.which(cmd), os.X_OK):
+    elif not os.access(which(cmd), os.X_OK):
         print("Error: Command '{}' is not executable. Please check the permissions.".format(cmd))
         sys.exit(126)
 
 def format_imports(file_path):
     command = "isort {}".format(file_path)
     subprocess.Popen(command, shell=True).wait()
-
 
 def dry_run_formatting(paths, ignore_errors):
     for path in paths:
