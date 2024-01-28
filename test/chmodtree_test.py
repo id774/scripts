@@ -14,6 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2024-01-28
+#       Added individual test cases for check_command function to verify
+#       behavior with existing, nonexistent, and non-executable commands.
 #  v1.0 2023-12-15
 #       First release of the test suite for chmodtree.py.
 #
@@ -34,6 +37,43 @@ import chmodtree
 
 
 class TestChmodTree(unittest.TestCase):
+    """Unit tests for the chmodtree.py script."""
+
+    @patch('chmodtree.os.access')
+    @patch('chmodtree.which')
+    @patch('chmodtree.sys.exit')
+    @patch('chmodtree.print')
+    def test_check_command_with_existing_executable_command(self, mock_print, mock_exit, mock_which, mock_access):
+        """ Test check_command with a command that exists and is executable. """
+        mock_which.return_value = '/usr/bin/command'
+        mock_access.return_value = True
+        chmodtree.check_command('command')
+        mock_exit.assert_not_called()
+        mock_print.assert_not_called()
+
+    @patch('chmodtree.os.access')
+    @patch('chmodtree.which')
+    @patch('chmodtree.sys.exit')
+    @patch('chmodtree.print')
+    def test_check_command_with_nonexistent_command(self, mock_print, mock_exit, mock_which, mock_access):
+        """ Test check_command with a command that does not exist. """
+        mock_which.return_value = None
+        chmodtree.check_command('nonexistent')
+        mock_print.assert_called_with("Error: Command 'nonexistent' is not installed. Please install nonexistent and try again.")
+        mock_exit.assert_called_with(127)
+
+    @patch('chmodtree.os.access')
+    @patch('chmodtree.which')
+    @patch('chmodtree.sys.exit')
+    @patch('chmodtree.print')
+    def test_check_command_with_nonexecutable_command(self, mock_print, mock_exit, mock_which, mock_access):
+        """ Test check_command with a command that exists but is not executable. """
+        mock_which.return_value = '/usr/bin/nonexecutable'
+        mock_access.return_value = False
+        chmodtree.check_command('nonexecutable')
+        mock_print.assert_called_with("Error: Command 'nonexecutable' is not executable. Please check the permissions.")
+        mock_exit.assert_called_with(126)
+
     @patch('chmodtree.os_exec')
     def test_files_chmod(self, mock_os_exec):
         """ Test chmod application to files only, matching a specific pattern. """

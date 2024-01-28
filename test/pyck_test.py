@@ -15,6 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2024-01-28
+#       Added individual test cases for check_command function to verify
+#       behavior with existing, nonexistent, and non-executable commands.
 #  v1.0 2024-01-13
 #       Initial test script for pyck.py
 #
@@ -37,22 +40,39 @@ import pyck
 class TestPyck(unittest.TestCase):
     """Unit tests for the pyck.py script."""
 
-    @patch('pyck.which')
     @patch('pyck.os.access')
+    @patch('pyck.which')
     @patch('pyck.sys.exit')
     @patch('pyck.print')
-    def test_check_command(self, mock_print, mock_exit, mock_access, mock_which):
+    def test_check_command_with_existing_executable_command(self, mock_print, mock_exit, mock_which, mock_access):
+        """ Test check_command with a command that exists and is executable. """
+        mock_which.return_value = '/usr/bin/command'
+        mock_access.return_value = True
+        pyck.check_command('command')
+        mock_exit.assert_not_called()
+        mock_print.assert_not_called()
+
+    @patch('pyck.os.access')
+    @patch('pyck.which')
+    @patch('pyck.sys.exit')
+    @patch('pyck.print')
+    def test_check_command_with_nonexistent_command(self, mock_print, mock_exit, mock_which, mock_access):
+        """ Test check_command with a command that does not exist. """
         mock_which.return_value = None
-        pyck.check_command('nonexistent_command')
-        mock_print.assert_called_with(
-            "Error: Command 'nonexistent_command' is not installed. Please install nonexistent_command and try again.")
+        pyck.check_command('nonexistent')
+        mock_print.assert_called_with("Error: Command 'nonexistent' is not installed. Please install nonexistent and try again.")
         mock_exit.assert_called_with(127)
 
-        mock_which.return_value = '/usr/bin/nonexecutable_command'
+    @patch('pyck.os.access')
+    @patch('pyck.which')
+    @patch('pyck.sys.exit')
+    @patch('pyck.print')
+    def test_check_command_with_nonexecutable_command(self, mock_print, mock_exit, mock_which, mock_access):
+        """ Test check_command with a command that exists but is not executable. """
+        mock_which.return_value = '/usr/bin/nonexecutable'
         mock_access.return_value = False
-        pyck.check_command('nonexecutable_command')
-        mock_print.assert_called_with(
-            "Error: Command 'nonexecutable_command' is not executable. Please check the permissions.")
+        pyck.check_command('nonexecutable')
+        mock_print.assert_called_with("Error: Command 'nonexecutable' is not executable. Please check the permissions.")
         mock_exit.assert_called_with(126)
 
     @patch('pyck.subprocess.Popen')
