@@ -37,7 +37,7 @@ import pyck
 class TestPyck(unittest.TestCase):
     """Unit tests for the pyck.py script."""
 
-    @patch('pyck.shutil.which')
+    @patch('pyck.which')
     @patch('pyck.os.access')
     @patch('pyck.sys.exit')
     @patch('pyck.print')
