@@ -56,6 +56,7 @@ class Md5Checksum:
 
     @staticmethod
     def calculate_checksum(path):
+        """ Calculate and return the MD5 checksum for a given file. """
         m = hashlib.md5()
         with open(path, 'rb') as f:
             for line in f:
@@ -64,11 +65,13 @@ class Md5Checksum:
 
     @staticmethod
     def calculate_checksum_for_string(input_string):
+        """ Calculate and return the MD5 checksum for a given input string. """
         m = hashlib.md5()
         m.update(input_string.encode('utf-8'))
         return m.hexdigest()
 
 def print_checksum(include_subdir, reversed_format, quiet_mode, paths):
+    """ Calculate and print MD5 checksums for given paths with optional inclusion of subdirectories. """
     script_name = os.path.basename(sys.argv[0])
     for path in paths:
         if not os.path.exists(path):
@@ -89,6 +92,7 @@ def print_checksum(include_subdir, reversed_format, quiet_mode, paths):
                 checksum, path, reversed_format, quiet_mode, is_file=True)
 
 def print_formatted_checksum(checksum, path, reversed_format, quiet_mode, is_file):
+    """ Print the MD5 checksum in a formatted manner based on the provided options. """
     if quiet_mode:
         print(checksum)
     elif reversed_format:
@@ -98,6 +102,7 @@ def print_formatted_checksum(checksum, path, reversed_format, quiet_mode, is_fil
             path if is_file else '"{}"'.format(path), checksum))
 
 def main():
+    """ Parse command-line arguments and execute the MD5 checksum calculation and printing. """
     usage = "usage: %prog [options] file"
     parser = OptionParser(usage)
     parser.add_option("-v", "--version", help="show the version and exit",

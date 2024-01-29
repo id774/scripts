@@ -66,7 +66,7 @@ import sys
 
 
 def setup_argument_parser():
-    """ Set up and return the argument parser. """
+    """ Initialize and return an argument parser for command-line options. """
     parser = argparse.ArgumentParser(
         description="Python Code Formatter and Linter")
     parser.add_argument("paths", nargs='+', type=str,
@@ -76,7 +76,7 @@ def setup_argument_parser():
     return parser
 
 def find_command(cmd):
-    """Find if command exists in PATH."""
+    """ Check if a given command exists in the system's PATH. """
     for path in os.environ["PATH"].split(os.pathsep):
         full_path = os.path.join(path, cmd)
         if os.path.isfile(full_path):
@@ -84,7 +84,7 @@ def find_command(cmd):
     return None
 
 def check_command(cmd):
-    """ Check if a given command is available and executable in the system's PATH. """
+    """ Verify if a command is available and executable in the system's PATH. """
     cmd_path = find_command(cmd)
     if not cmd_path:
         # If the command is not found
@@ -96,10 +96,12 @@ def check_command(cmd):
         sys.exit(126)
 
 def format_imports(file_path):
+    """ Format and organize imports in a Python file using 'isort'. """
     command = "isort {}".format(file_path)
     subprocess.Popen(command, shell=True).wait()
 
 def dry_run_formatting(paths, ignore_errors):
+    """ Perform a dry run to show which files would be formatted and cleaned without making actual changes. """
     for path in paths:
         print(
             "Dry run: No files will be modified for '{}'. Use -i to auto-fix.".format(path))
@@ -111,6 +113,7 @@ def dry_run_formatting(paths, ignore_errors):
                     show_files="Would sort imports in:")
 
 def execute_formatting(paths, ignore_errors):
+    """ Execute auto-formatting and cleaning on specified Python files or directories. """
     for path in paths:
         actual_path = path[0] if isinstance(path, list) else path
 
@@ -127,6 +130,7 @@ def execute_formatting(paths, ignore_errors):
                 actual_path))
 
 def format_file(file_path, ignore_errors):
+    """ Format a single Python file by cleaning up imports, and applying 'autopep8' and 'isort'. """
     command = "autoflake --imports=django,requests,urllib3 -i {}".format(
         file_path)
     subprocess.Popen(command, shell=True).wait()
@@ -135,6 +139,7 @@ def format_file(file_path, ignore_errors):
     format_imports(file_path)
 
 def run_command(command, show_files=None):
+    """ Execute a shell command and optionally display formatted files. """
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
     stdout, _ = process.communicate()
     if isinstance(stdout, bytes):
@@ -145,7 +150,7 @@ def run_command(command, show_files=None):
                 print("{} {}".format(show_files, line))
 
 def main():
-    """ Main function to parse arguments and execute formatting. """
+    """ Parse command-line arguments and perform formatting or dry-run based on the input. """
     parser = setup_argument_parser()
     args = parser.parse_args()
 

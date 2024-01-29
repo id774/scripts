@@ -72,7 +72,7 @@ from optparse import OptionParser
 
 
 def setup_option_parser():
-    """ Set up and return the option parser. """
+    """ Initialize and return an argument parser for command-line options. """
     parser = OptionParser("usage: %prog [options] dir")
     parser.add_option("-s", "--sudo", help="exec with sudo",
                       action="store_true", dest="sudo")
@@ -85,7 +85,7 @@ def setup_option_parser():
     return parser
 
 def find_command(cmd):
-    """Find if command exists in PATH."""
+    """ Check if a given command exists in the system's PATH. """
     for path in os.environ["PATH"].split(os.pathsep):
         full_path = os.path.join(path, cmd)
         if os.path.isfile(full_path):
@@ -93,7 +93,7 @@ def find_command(cmd):
     return None
 
 def check_command(cmd):
-    """ Check if a given command is available and executable in the system's PATH. """
+    """ Verify if a command is available and executable in the system's PATH. """
     cmd_path = find_command(cmd)
     if not cmd_path:
         # If the command is not found
