@@ -84,16 +84,20 @@ sync_files() {
     done
 }
 
-# Loop through source directories and file patterns to sync
-for source_dir in "${SOURCE_DIRS[@]}"; do
-    for file_pattern in "${FILE_PATTERNS[@]}"; do
+# New loop without arrays
+OLD_IFS="$IFS"
+IFS=' '
+for source_dir in $SOURCE_DIRS; do
+    for file_pattern in $FILE_PATTERNS; do
         sync_files "$source_dir" "$file_pattern" "$DEST_DIR"
     done
 done
+IFS="$OLD_IFS"
 
 # Check if any files were copied
 if [ "$files_copied" = false ]; then
     echo "No matching files found to copy."
+    exit 1
 else
     echo "Operation completed successfully."
 fi
