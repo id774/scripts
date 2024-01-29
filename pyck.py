@@ -75,20 +75,23 @@ def setup_argument_parser():
                         action="store_true", help="Auto-fix code issues")
     return parser
 
-def which(cmd):
-    """Simple implementation of shutil.which for older Python versions."""
+def find_command(cmd):
+    """Find if command exists in PATH."""
     for path in os.environ["PATH"].split(os.pathsep):
         full_path = os.path.join(path, cmd)
-        if os.path.isfile(full_path) and os.access(full_path, os.X_OK):
+        if os.path.isfile(full_path):
             return full_path
     return None
 
 def check_command(cmd):
-    if not which(cmd):
-        print("Error: Command '{}' is not installed. Please install {} and try again.".format(
-            cmd, cmd))
+    """ Check if a given command is available and executable in the system's PATH. """
+    cmd_path = find_command(cmd)
+    if not cmd_path:
+        # If the command is not found
+        print("Error: Command '{}' is not installed. Please install {} and try again.".format(cmd, cmd))
         sys.exit(127)
-    elif not os.access(which(cmd), os.X_OK):
+    elif not os.access(cmd_path, os.X_OK):
+        # If the command is found but not executable
         print("Error: Command '{}' is not executable. Please check the permissions.".format(cmd))
         sys.exit(126)
 
