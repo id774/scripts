@@ -15,6 +15,13 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2024-01-30
+#       Fixed an issue where the loop processing file lists did not function correctly
+#       due to subshell execution in the 'find ... | while read' pipeline.
+#       This caused variables set within the loop to not be accessible outside of it.
+#       Introduced a flag file method to accurately detect successful file copy operations.
+#       This change was made to overcome the limitation of variable scope within subshell execution,
+#       ensuring that the script accurately reflects the outcome of file synchronization processes.
 #  v1.0 2024-01-29
 #       Initial release. Supports synchronization of specified file types from
 #       multiple source directories to a local destination directory, only if they exist.
@@ -46,52 +53,56 @@ if [ ! -d "$DEST_DIR" ]; then
     exit 3
 fi
 
-# Initialize a flag to check if any files were copied
-files_copied=false
-
-# Function to sync files from source to destination
+# A temporary flag file is used instead of a variable to detect if any files have been copied.
+# This approach is necessary because the 'find ... | while read' loop runs in a subshell due to the pipeline.
+# Variables set in a subshell are not visible in the parent shell, so changes to variables inside the loop do not persist outside of it.
+# By using a flag file, we can create a persistent indicator that can be checked outside of the subshell.
 sync_files() {
     local source_dir=$1
     local file_pattern=$2
     local dest_dir=$3
+    # Create a temporary flag file to detect if any files have been copied
+    local flag_file="/tmp/files_copied_$$"
 
-    # Check if source directory exists
+    # Check if the source directory exists
     if [ ! -d "$source_dir" ]; then
-        # Skip non-existent source directory
+        # Skip the loop if the source directory doesn't exist
         return
     fi
 
-    # Find files matching the pattern in source directory
-    files=$(find "$source_dir" -name "$file_pattern" 2>/dev/null)
-
-    # Check if any files were found
-    if [ -z "$files" ]; then
-        # Skip if no files match the pattern
-        return
-    fi
-
-    # Set the flag to true as files are being copied
-    files_copied=true
-
-    # Sync each found file
-    for file in $files; do
+    # Find files matching the pattern in the source directory and sync each file individually
+    find "$source_dir" -name "$file_pattern" 2>/dev/null | while IFS= read -r file; do
         echo "Synchronizing $file to $dest_dir..."
         rsync -avz "$file" "$dest_dir/"
-        if [ $? -ne 0 ]; then
+        if [ $? -eq 0 ]; then
+            # If the file is successfully copied, create a flag file
+            touch "$flag_file"
+        else
             echo "Error: Rsync failed for $file."
             exit 2
         fi
     done
+
+    # Check for the flag file to determine if files_copied should be set to true.
+    if [ -f "$flag_file" ]; then
+        files_copied=true
+        # Remove the flag file after setting the flag
+        rm "$flag_file"
+    fi
 }
 
-# New loop without arrays
+# Loop through each source directory and file pattern defined in the configuration
+# Temporarily change IFS (Internal Field Separator) to space to treat the space-separated
+# strings in SOURCE_DIRS and FILE_PATTERNS as lists
 OLD_IFS="$IFS"
 IFS=' '
 for source_dir in $SOURCE_DIRS; do
     for file_pattern in $FILE_PATTERNS; do
+        # Call sync_files function for each combination of source directory and file pattern
         sync_files "$source_dir" "$file_pattern" "$DEST_DIR"
     done
 done
+# Restore the original IFS value to avoid affecting subsequent script behavior
 IFS="$OLD_IFS"
 
 # Check if any files were copied
