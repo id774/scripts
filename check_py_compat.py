@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.2 2024-01-30
+#       Removed usage of f-strings to enhance compatibility with older Python versions.
 #  v2.1 2024-01-28
 #       Added detection for shutil.which usage to enhance compatibility checks.
 #  v2.0 2024-01-21
@@ -66,7 +68,7 @@ def main():
 
     # Check if the target directory exists
     if not os.path.isdir(target_dir):
-        print(f"Error: Directory '{target_dir}' does not exist.")
+        print("Error: Directory '{}' does not exist.".format(target_dir))
         sys.exit(1)
 
     # Patterns to exclude (comments and patterns used in this script)
