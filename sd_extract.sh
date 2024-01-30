@@ -53,6 +53,9 @@ if [ ! -d "$DEST_DIR" ]; then
     exit 3
 fi
 
+# Initialize a flag to check if any files were copied
+files_copied=false
+
 # A temporary flag file is used instead of a variable to detect if any files have been copied.
 # This approach is necessary because the 'find ... | while read' loop runs in a subshell due to the pipeline.
 # Variables set in a subshell are not visible in the parent shell, so changes to variables inside the loop do not persist outside of it.
