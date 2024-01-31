@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 ########################################################################
-# check_py_compat_test.py: Test script for check_py_compat.py
+# find_pycompat_test.py: Test script for find_pycompat.py
 #
 #  Description:
-#  This script contains comprehensive unit tests for the check_py_compat.py script.
+#  This script contains comprehensive unit tests for the find_pycompat.py script.
 #  It verifies the script's functionality including the detection of various Python 3.x features.
 #
 #  Author: id774 (More info: http://id774.net)
@@ -13,10 +13,13 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2024-01-31
+#       Renamed script from 'check_py_compat.py' to 'find_pycompat.py'
+#       to improve clarity and ease of use.
 #  v1.1 2024-01-28
 #       Added detection for shutil.which usage to enhance compatibility checks.
 #  v1.0 2024-01-21
-#        Initial test script for check_py_compat.py
+#        Initial test script for find_pycompat.py
 #
 ########################################################################
 
@@ -27,11 +30,11 @@ import unittest
 from unittest.mock import MagicMock, call, patch
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import check_py_compat
+import find_pycompat
 
 
-class TestCheckPyCompat(unittest.TestCase):
-    """Unit tests for the check_py_compat.py script."""
+class TestFindPyCompat(unittest.TestCase):
+    """Unit tests for the find_pycompat.py script."""
 
     def setUp(self):
         """Common setup for all tests."""
@@ -139,7 +142,7 @@ class TestCheckPyCompat(unittest.TestCase):
     def run_feature_test(self, feature_name, pattern, test_string, should_match):
         self.file_content = test_string
         self.mock_open.side_effect = self.mock_file_read
-        check_py_compat.search_feature('.', feature_name, pattern, [])
+        find_pycompat.search_feature('.', feature_name, pattern, [])
 
         file_open_call = call(os.path.join('.', 'dummy.py'), 'r', encoding='utf-8')
         if should_match:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# check_py_compat.py: Check Python compatibility issues in Python files
+# find_pycompat.py: Check Python compatibility issues in Python files
 #
 #  Description:
 #  This script searches for Python compatibility issues in Python files
@@ -16,6 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.3 2024-01-31
+#       Renamed script from 'check_py_compat.py' to 'find_pycompat.py'
+#       to improve clarity and ease of use.
 #  v2.2 2024-01-30
 #       Removed usage of f-strings to enhance compatibility with older Python versions.
 #  v2.1 2024-01-28
@@ -38,7 +41,7 @@
 #       Initial release. Search for f-strings in Python files.
 #
 # Usage:
-# ./check_py_compat.py [directory]
+# ./find_pycompat.py [directory]
 # If no directory is specified, it searches in the current directory.
 #
 ########################################################################
