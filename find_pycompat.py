@@ -5,10 +5,12 @@
 #
 #  Description:
 #  This script searches for Python compatibility issues in Python files
-#  within a specified directory. It looks for features introduced in Python 3.x,
-#  such as f-strings, subprocess.run, subprocess.DEVNULL, async/await keywords,
+#  within a specified directory. It identifies usage of features introduced in Python 3.x,
+#  including f-strings, subprocess.run, subprocess.DEVNULL, async/await keywords,
 #  type hints, nonlocal statements, matrix multiplication operators, asyncio library,
-#  yield from, extended unpacking, and pathlib module.
+#  yield from, extended unpacking, pathlib module, and notably, the shutil.which function.
+#  The script helps in identifying code segments that may not be compatible with earlier
+#  versions of Python, facilitating easier code migration and compatibility assessments.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -20,7 +22,7 @@
 #       Renamed script from 'check_py_compat.py' to 'find_pycompat.py'
 #       to improve clarity and ease of use.
 #  v2.2 2024-01-30
-#       Removed usage of f-strings to enhance compatibility with older Python versions.
+#       Enhanced script compatibility with older Python versions.
 #  v2.1 2024-01-28
 #       Added detection for shutil.which usage to enhance compatibility checks.
 #  v2.0 2024-01-21
@@ -40,9 +42,9 @@
 #  v1.0 2023-12-08
 #       Initial release. Search for f-strings in Python files.
 #
-# Usage:
-# ./find_pycompat.py [directory]
-# If no directory is specified, it searches in the current directory.
+#  Usage:
+#  ./find_pycompat.py [directory]
+#  If no directory is specified, it searches in the current directory.
 #
 ########################################################################
 
