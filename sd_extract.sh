@@ -6,8 +6,10 @@
 #  Description:
 #  This script synchronizes specified file types from multiple source directories
 #  on SD cards to a destination directory on the local machine. It reads source
-#  directories, file patterns, and the destination directory from an external
-#  configuration file. Files are copied only if they exist in the source directories.
+#  directories, file patterns, the destination directory, and default file permissions
+#  from an external configuration file. Files are copied only if they exist in the source directories.
+#  The permissions of the copied files can be set as specified by the user through a command-line argument,
+#  or they will default to the value specified in the configuration file.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -15,6 +17,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2024-02-01
+#       Updated to use a default permissions setting from the configuration file.
+#       Users can still override this setting via command-line argument.
 #  v1.1 2024-01-30
 #       Fixed an issue where the loop processing file lists did not function correctly
 #       due to subshell execution in the 'find ... | while read' pipeline.
@@ -27,11 +32,32 @@
 #       multiple source directories to a local destination directory, only if they exist.
 #
 #  Usage:
-#  Run the script without any arguments. Ensure that the sync.conf file is properly
-#  configured with SOURCE_DIRS, FILE_PATTERNS, and DEST_DIR variables.
-#      ./sd_extract.sh
+#  Run the script with an optional argument to set the file permissions for the copied files.
+#  If no argument is provided, the default permission setting from the configuration file will be used.
+#  To specify a different permission, provide it as the first argument when running the script. For example:
+#
+#      ./sd_extract.sh 644
+#
+#  This will set the file permissions of copied files to 644, overriding the default value specified in
+#  the configuration file. Ensure that the sync.conf file is properly configured with SOURCE_DIRS, FILE_PATTERNS,
+#  DEST_DIR, and DEFAULT_PERMISSIONS variables before running the script.
 #
 ########################################################################
+
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 126
+        fi
+    done
+}
+
+# Check if necessary commands are available
+check_commands rsync find chmod
 
 # Determine the script's directory
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -50,8 +76,11 @@ fi
 # Check if destination directory exists
 if [ ! -d "$DEST_DIR" ]; then
     echo "Error: Destination directory $DEST_DIR does not exist."
-    exit 3
+    exit 4
 fi
+
+# Set default permissions from configuration file or use the first argument if provided
+permissions=${1:-$DEFAULT_PERMISSIONS}
 
 # Initialize a flag to check if any files were copied
 files_copied=false
@@ -64,6 +93,7 @@ sync_files() {
     local source_dir=$1
     local file_pattern=$2
     local dest_dir=$3
+    local permissions=$4
     # Create a temporary flag file to detect if any files have been copied
     local flag_file="/tmp/files_copied_$$"
 
@@ -78,8 +108,15 @@ sync_files() {
         echo "Synchronizing $file to $dest_dir..."
         rsync -avz "$file" "$dest_dir/"
         if [ $? -eq 0 ]; then
-            # If the file is successfully copied, create a flag file
-            touch "$flag_file"
+            # Set permissions for the copied file
+            chmod "$permissions" "$dest_dir/$(basename "$file")"
+            if [ $? -eq 0 ]; then
+                # If the file is successfully copied, create a flag file
+                touch "$flag_file"
+            else
+                echo "Error: Failed to set permissions for $dest_dir/$(basename "$file")"
+                exit 3
+            fi
         else
             echo "Error: Rsync failed for $file."
             exit 2
@@ -102,7 +139,7 @@ IFS=' '
 for source_dir in $SOURCE_DIRS; do
     for file_pattern in $FILE_PATTERNS; do
         # Call sync_files function for each combination of source directory and file pattern
-        sync_files "$source_dir" "$file_pattern" "$DEST_DIR"
+        sync_files "$source_dir" "$file_pattern" "$DEST_DIR" "$permissions"
     done
 done
 # Restore the original IFS value to avoid affecting subsequent script behavior
