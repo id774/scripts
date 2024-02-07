@@ -80,7 +80,7 @@ sync_files() {
 check_remote_sync() {
     if ping -c 1 $REMOTE_HOST > /dev/null 2>&1; then
         echo "Remote server reachable. Syncing data to remote server..."
-        sync_files "$1" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR/$2"
+        sync_files "$1" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR/"
     else
         echo "Warning: Remote server not reachable. Skipping remote sync."
     fi
@@ -96,21 +96,21 @@ fi
 
 ACCOUNT_NAME=$1
 INSTA_ACCOUNT_DIR="$INSTA_DIR/$ACCOUNT_NAME"
-BACKUP_ACCOUNT_DIR="$BACKUP_DIR/$ACCOUNT_NAME"
+BACKUP_ACCOUNT_DIR="$BACKUP_DIR/"
 
 # Check existence of required directories
 check_dir "$INSTA_ACCOUNT_DIR"
 check_dir "$BACKUP_DIR"
 
 # Update permissions
-chmod -R 750 "$INSTA_ACCOUNT_DIR"
+chmod 750 "$INSTA_ACCOUNT_DIR"
 find "$INSTA_ACCOUNT_DIR" -type f -exec chmod 640 {} \;
 
 # Perform local sync
 sync_files "$INSTA_ACCOUNT_DIR" "$BACKUP_ACCOUNT_DIR"
 
 # Attempt remote sync
-check_remote_sync "$INSTA_ACCOUNT_DIR" "$ACCOUNT_NAME"
+check_remote_sync "$INSTA_ACCOUNT_DIR"
 
 echo "Instagram account data sync for '$ACCOUNT_NAME' completed successfully."
 
