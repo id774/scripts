@@ -5,9 +5,9 @@
 #
 #  Description:
 #  This script synchronizes dashcam files from a local directory to an
-#  external drive and then moves them into a yearly organized folder.
-#  It now loads source and destination directories from an external
-#  configuration file located in either the 'etc' directory or its parent.
+#  external drive and organizes them into a yearly structured folder. It
+#  requires a configuration file named 'dashcam_sync.conf' for specifying
+#  source and destination directories.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -15,6 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2024-02-08
+#       Enhanced documentation, added configuration variable checks, and
+#       improved error handling and script structure.
 #  v1.1 2023-12-23
 #       Updated to load source and destination directories from an external
 #       configuration file located in 'etc' or '../etc'.
@@ -25,10 +28,25 @@
 #       improves script reusability.
 #
 #  Usage:
-#  Run the script without any arguments. Ensure that the dashcam_sync.conf
-#  file is properly configured with the SOURCE_DIR and DEST_DIR variables,
-#  located either in the 'etc' directory or its parent.
+#  Run the script without any arguments. Ensure that 'dashcam_sync.conf'
+#  is properly set up with SOURCE_DIR and DEST_DIR variables.
 #      ./dashcam_sync.sh
+#
+#  Configuration file ('dashcam_sync.conf') requirements:
+#  - SOURCE_DIR: Directory containing the dashcam files to be synchronized.
+#  - DEST_DIR: Destination directory on the external drive for synchronized files.
+#  Ensure both variables are set in 'dashcam_sync.conf'.
+#
+#  Notes:
+#  - Both source and destination directories must exist and be writable.
+#  - Files are first synced to a 'daily' subdirectory, then moved to a yearly directory.
+#
+#  Error Conditions:
+#  1. Source or destination directory does not exist.
+#  2. Rsync operation failed.
+#  3. Moving files failed.
+#  4. Configuration file not found.
+#  5. One or more configuration variables not set.
 #
 ########################################################################
 
@@ -41,17 +59,23 @@ if [ ! -f "$CONF_FILE" ]; then
     CONF_FILE="$SCRIPT_DIR/../etc/dashcam_sync.conf"
     if [ ! -f "$CONF_FILE" ]; then
         echo "Configuration file not found."
-        exit 5
+        exit 4
     fi
 fi
 . "$CONF_FILE"
+
+# Check if necessary variables are set
+if [ -z "$SOURCE_DIR" ] || [ -z "$DEST_DIR" ]; then
+    echo "Error: SOURCE_DIR or DEST_DIR not set in configuration."
+    exit 5
+fi
 
 YEAR_DIR="$(date +"%Y")"
 
 # Check if source and destination directories exist
 if [ ! -d "$SOURCE_DIR" ] || [ ! -d "$DEST_DIR" ]; then
     echo "Error: Source or destination directory does not exist."
-    exit 3
+    exit 1
 fi
 
 # Rsync files
@@ -62,7 +86,7 @@ if [ $? -ne 0 ]; then
     exit 2
 fi
 
-# Move files to yearly directory
+# Function to move files to yearly directory
 move_files() {
     local from_dir=$1
     local to_dir=$2
@@ -77,7 +101,7 @@ move_files() {
     mv "$from_dir"/* "$to_dir/"
     if [ $? -ne 0 ]; then
         echo "Error: Moving files failed."
-        exit 1
+        exit 3
     fi
 }
 

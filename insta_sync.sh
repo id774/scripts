@@ -60,7 +60,7 @@ CONF_FILE="$SCRIPT_DIR/etc/insta_sync.conf"
 if [ ! -f "$CONF_FILE" ]; then
     CONF_FILE="$SCRIPT_DIR/../etc/insta_sync.conf"
     if [ ! -f "$CONF_FILE" ]; then
-        echo "Configuration file not found."
+        echo "Error: Configuration file not found."
         exit 4
     fi
 fi
