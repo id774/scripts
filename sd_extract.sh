@@ -7,9 +7,8 @@
 #  This script synchronizes specified file types from multiple source directories
 #  on SD cards to a destination directory on the local machine. It reads source
 #  directories, file patterns, the destination directory, and default file permissions
-#  from an external configuration file. Files are copied only if they exist in the source directories.
-#  The permissions of the copied files can be set as specified by the user through a command-line argument,
-#  or they will default to the value specified in the configuration file.
+#  from an external configuration file. The script allows overriding the default
+#  file permissions via a command-line argument.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,6 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-02-09
+#       Enhanced documentation, added configuration variable checks, improved error
+#       handling, and script structure. Introduced a method to check command availability.
 #  v1.2 2024-02-01
 #       Updated to use a default permissions setting from the configuration file.
 #       Users can still override this setting via command-line argument.
@@ -34,13 +36,27 @@
 #  Usage:
 #  Run the script with an optional argument to set the file permissions for the copied files.
 #  If no argument is provided, the default permission setting from the configuration file will be used.
-#  To specify a different permission, provide it as the first argument when running the script. For example:
+#      ./sd_extract.sh [permissions]
 #
-#      ./sd_extract.sh 644
+#  Configuration file ('sd_extract.conf') requirements:
+#  - SOURCE_DIRS: Space-separated list of source directories.
+#  - FILE_PATTERNS: Space-separated list of file patterns to sync.
+#  - DEST_DIR: Destination directory for synced files.
+#  - DEFAULT_PERMISSIONS: Default file permissions if not overridden by command-line argument.
 #
-#  This will set the file permissions of copied files to 644, overriding the default value specified in
-#  the configuration file. Ensure that the sync.conf file is properly configured with SOURCE_DIRS, FILE_PATTERNS,
-#  DEST_DIR, and DEFAULT_PERMISSIONS variables before running the script.
+#  Notes:
+#  - Ensure 'rsync' and 'chmod' commands are available on the system.
+#  - Run this script with sufficient permissions to access source directories and write to the destination directory.
+#
+#  Error Conditions:
+#  1. No matching files found to copy.
+#  2. Destination directory does not exist.
+#  3. Rsync failed for a file.
+#  4. Failed to set permissions for a copied file.
+#  5. Configuration file not found.
+#  6. Configuration variables not set.
+#  126. Required command(s) not executable.
+#  127. Required command(s) not installed.
 #
 ########################################################################
 
@@ -73,10 +89,16 @@ if [ ! -f "$CONF_FILE" ]; then
 fi
 . "$CONF_FILE"
 
+# Check if necessary variables are set
+if [ -z "$SOURCE_DIRS" ] || [ -z "$FILE_PATTERNS" ] || [ -z "$DEST_DIR" ] || [ -z "$DEFAULT_PERMISSIONS" ]; then
+    echo "Error: Configuration variables not set. Check sd_extract.conf."
+    exit 6
+fi
+
 # Check if destination directory exists
 if [ ! -d "$DEST_DIR" ]; then
     echo "Error: Destination directory $DEST_DIR does not exist."
-    exit 4
+    exit 2
 fi
 
 # Set default permissions from configuration file or use the first argument if provided
@@ -115,11 +137,11 @@ sync_files() {
                 touch "$flag_file"
             else
                 echo "Error: Failed to set permissions for $dest_dir/$(basename "$file")"
-                exit 3
+                exit 4
             fi
         else
             echo "Error: Rsync failed for $file."
-            exit 2
+            exit 3
         fi
     done
 
