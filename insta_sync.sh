@@ -8,6 +8,9 @@
 #  It updates directory permissions, syncs data with a local backup directory,
 #  and conditionally syncs with a remote server if reachable. The script operates
 #  on a per-account basis, with each account's data stored in its own directory.
+#  It requires a configuration file named 'insta_sync.conf' for specifying
+#  various settings. The script checks if all necessary configuration variables
+#  are set and terminates with an error if any are missing.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,7 +20,8 @@
 #  Version History:
 #  v1.0 2024-02-08
 #       Initial release. Added support for per-account directory handling,
-#       local and conditional remote synchronization.
+#       local and conditional remote synchronization. Added checks for necessary
+#       configuration variables.
 #
 #  Usage:
 #  Run the script with the Instagram account name as an argument. Make sure
@@ -31,6 +35,7 @@
 #  - REMOTE_USER: Username for remote server access.
 #  - REMOTE_HOST: Hostname or IP address of the remote server.
 #  - REMOTE_DIR: Remote directory for data synchronization.
+#  Ensure all these variables are set in 'insta_sync.conf'.
 #
 #  Notes:
 #  - Ensure the specified Instagram account directory exists within INSTA_DIR.
@@ -43,6 +48,7 @@
 #  2. Instagram account directory does not exist.
 #  3. Local backup directory does not exist.
 #  4. Configuration file not found.
+#  5. One or more configuration variables not set.
 #
 ########################################################################
 
@@ -59,6 +65,12 @@ if [ ! -f "$CONF_FILE" ]; then
     fi
 fi
 . "$CONF_FILE"
+
+# Check if necessary variables are set
+if [ -z "$INSTA_DIR" ] || [ -z "$BACKUP_DIR" ] || [ -z "$REMOTE_USER" ] || [ -z "$REMOTE_HOST" ] || [ -z "$REMOTE_DIR" ]; then
+    echo "Error: One or more configuration variables are not set. Please check your insta_sync.conf."
+    exit 5
+fi
 
 # Function Definitions
 
