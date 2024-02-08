@@ -6,7 +6,8 @@
 #  Description:
 #  This script manages GPX files by performing operations like copying to
 #  specific directories, syncing with a remote server, and cleaning up
-#  temporary files. It now loads configuration from an external file.
+#  temporary files. It requires a configuration file named 'gpx_sync.conf' to
+#  specify necessary settings such as directories and remote server information.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,6 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2024-02-08
+#       Updated to load configuration from an external file. Added checks for
+#       necessary configuration variables. Improved error handling.
 #  v1.4 2023-12-23
 #       Updated to load configuration from an external file.
 #       Refactored for POSIX compliance. Replaced Bash-specific syntax
@@ -31,9 +35,28 @@
 #       Initial release.
 #
 #  Usage:
-#  Run the script without any arguments. Ensure that the gpx_sync.conf
-#  file is properly configured with the necessary variables.
+#  Run the script without any arguments. Ensure that the 'gpx_sync.conf' file
+#  is properly configured with the necessary variables.
 #      ./gpx_sync.sh
+#
+#  Configuration file ('gpx_sync.conf') requirements:
+#  - TMP_DIR: Temporary directory for GPX files.
+#  - USER_GPX_DIR: User-specific GPX directory.
+#  - MOUNTED_DIR: Mounted directory for backups.
+#  - RSYNC_USER: Username for remote server access.
+#  - RSYNC_HOST: Hostname or IP address of the remote server.
+#  Ensure all these variables are set in 'gpx_sync.conf'.
+#
+#  Notes:
+#  - Ensure that all specified directories exist and are writable.
+#  - The script updates file permissions as needed and performs clean-up operations.
+#  - Remote synchronization is attempted only if the remote server is reachable.
+#
+#  Error Conditions:
+#  1. No GPX files found in the specified temporary directory.
+#  2. Destination directory for copying files does not exist.
+#  3. Configuration file not found.
+#  4. Necessary configuration variable(s) not set.
 #
 ########################################################################
 
@@ -45,11 +68,17 @@ CONF_FILE="$SCRIPT_DIR/etc/gpx_sync.conf"
 if [ ! -f "$CONF_FILE" ]; then
     CONF_FILE="$SCRIPT_DIR/../etc/gpx_sync.conf"
     if [ ! -f "$CONF_FILE" ]; then
-        echo "Configuration file not found."
-        exit 1
+        echo "Error: Configuration file not found."
+        exit 3
     fi
 fi
 . "$CONF_FILE"
+
+# Check if necessary variables are set
+if [ -z "$TMP_DIR" ] || [ -z "$USER_GPX_DIR" ] || [ -z "$MOUNTED_DIR" ] || [ -z "$RSYNC_USER" ] || [ -z "$RSYNC_HOST" ]; then
+    echo "Error: One or more configuration variables are not set. Please check your gpx_sync.conf."
+    exit 4
+fi
 
 CURRENT_YEAR=$(date +"%Y")
 
@@ -69,7 +98,7 @@ copy_files() {
     local destination=$2
     if [ ! -d "$destination" ]; then
         echo "Error: Destination directory $destination does not exist."
-        return 1
+        return 2
     fi
     echo "Copying files from $source_dir to $destination"
     cp "$source_dir"/*.gpx "$destination" || return $?
