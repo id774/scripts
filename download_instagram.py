@@ -38,15 +38,23 @@
 import argparse
 import os
 import re
+import sys
 import time
 import urllib.request
 
-import instaloader
-
+# Try to import instaloader and set a flag based on its availability
+try:
+    import instaloader
+    INSTALOADER_AVAILABLE = True
+except ImportError:
+    INSTALOADER_AVAILABLE = False
 
 class InstagramPhotoDownloader:
     def __init__(self, username):
         """Initialize the downloader with the specified username."""
+        if not INSTALOADER_AVAILABLE:
+            print("Instaloader is not available. Functionality will be limited.")
+            sys.exit(1)
         self.username = username
         self.loader = instaloader.Instaloader()
         self.profile = instaloader.Profile.from_username(self.loader.context, username)
