@@ -16,8 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.4 2024-02-10
-#       Renamed script to download_instagram.py for broader functionality.
+#  v2.0 2024-02-10
+#       Renamed script to download_instagram.py for expanded functionality.
+#       Comprehensive refactoring for improved testability and maintainability.
 #  v1.3 2023-12-25
 #       Modified to use current directory name as default Instagram username.
 #  v1.2 2023-12-08
@@ -45,67 +46,65 @@ import instaloader
 
 class InstagramPhotoDownloader:
     def __init__(self, username):
-        # Initialize the downloader with the given username
+        """Initialize the downloader with the specified username."""
         self.username = username
-        self.L = instaloader.Instaloader()
-        self.profile = instaloader.Profile.from_username(
-            self.L.context, self.username)
+        self.loader = instaloader.Instaloader()
+        self.profile = instaloader.Profile.from_username(self.loader.context, username)
 
     def download(self):
-        # Retrieve the URLs of all Instagram photos
+        """Main method to download all available Instagram photos."""
         urls = self._get_instagram_photo_urls()
-        post_count = len(urls)
-        print('This account {} has {} image posts.'.format(
-            self.username, post_count))
-        minutes = int(post_count / 60) + 1
-        print('Estimate processing time is about {} minutes.'.format(minutes))
+        self._print_download_info(len(urls))
 
-        # Determine the starting index based on existing files
         max_number = self._get_max_number('.')
+        remaining_urls = list(reversed(urls))[max_number:]
 
-        for i, url in enumerate(reversed(urls)):
-            if i >= max_number:
-                time_left = "{} seconds".format(post_count - i)
-                minutes_conv = "({} minutes)".format(
-                    int((post_count - i) / 60) + 1)
-                print("{} {} to complete processing.".format(
-                    time_left, minutes_conv))
-                file_num = str(i + 1).zfill(5)
-                filename = "{}_{}.jpg".format(self.username, file_num)
-                print("Downloading {}...".format(filename))
-                self._download_image(url, filename)
-                time.sleep(1)
-
-    def _get_max_number(self, directory_path):
-        # Determine the highest numbered file in the directory
-        max_number = 0
-        for filename in os.listdir(directory_path):
-            basename = os.path.splitext(filename)[0]
-            match = re.search(r'\d+$', basename)
-            if match:
-                number = int(match.group())
-                if number > max_number:
-                    max_number = number
-        return max_number
-
-    def _download_image(self, url, filename):
-        # Download an image from the given URL
-        urllib.request.urlretrieve(url, filename)
+        for i, url in enumerate(remaining_urls, start=max_number + 1):
+            self._print_remaining_time(len(remaining_urls), i - max_number)
+            self._download_and_save_image(url, i)
 
     def _get_instagram_photo_urls(self):
-        # Fetch URLs of all photos from the Instagram profile
+        """Fetch all photo URLs from the Instagram profile."""
         urls = []
         for post in self.profile.get_posts():
-            for image_url in post.get_sidecar_nodes():
-                urls.append(image_url.display_url)
+            urls += [node.display_url for node in post.get_sidecar_nodes()]
             if post.typename == "GraphImage":
                 urls.append(post.url)
         return urls
 
+    def _print_download_info(self, post_count):
+        """Print information about the download session."""
+        print('This account {} has {} image posts.'.format(self.username, post_count))
+        print('Estimate processing time is about {} minutes.'.format(int(post_count / 60) + 1))
+
+    def _get_max_number(self, directory_path):
+        """Find the highest numbered file in the directory to avoid overwriting."""
+        max_number = 0
+        for filename in os.listdir(directory_path):
+            number = self._extract_number_from_filename(filename)
+            max_number = max(max_number, number)
+        return max_number
+
+    def _extract_number_from_filename(self, filename):
+        """Extract the number from the filename."""
+        match = re.search(r'\d+$', os.path.splitext(filename)[0])
+        return int(match.group()) if match else 0
+
+    def _print_remaining_time(self, total, current):
+        """Print the remaining time for the download process."""
+        remaining = total - current
+        print("{} seconds ({} minutes) remaining to complete processing.".format(remaining, int(remaining / 60) + 1))
+
+    def _download_and_save_image(self, url, file_num):
+        """Download a single photo from a URL."""
+        filename = "{}_{}.jpg".format(self.username, str(file_num).zfill(5))
+        print("Downloading {}...".format(filename))
+        urllib.request.urlretrieve(url, filename)
+        time.sleep(1)  # Prevent too many requests in a short time
+
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('username', nargs='?', help='Instagram username',
-                        default=os.path.basename(os.getcwd()))
+    parser = argparse.ArgumentParser(description='Download all photos from an Instagram account.')
+    parser.add_argument('username', nargs='?', help='Instagram username', default=os.path.basename(os.getcwd()))
     args = parser.parse_args()
 
     downloader = InstagramPhotoDownloader(args.username)
