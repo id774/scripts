@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# download_instagram_batch.py: Batch Download Photos from Instagram
+# download_instagram.py: Batch Download Photos from Instagram
 #
 #  Description:
 #  This script batch downloads photos from a specified Instagram account.
@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2024-02-10
+#       Renamed script to download_instagram.py for broader functionality.
 #  v1.3 2023-12-25
 #       Modified to use current directory name as default Instagram username.
 #  v1.2 2023-12-08
@@ -26,8 +28,8 @@
 #       Initial release.
 #
 #  Usage:
-#  python download_instagram_batch.py [Instagram username]
-#  Example: python download_instagram_batch.py username
+#  python download_instagram.py [Instagram username]
+#  Example: python download_instagram.py username
 #           (If no username is given, the current directory name is used)
 #
 ########################################################################
