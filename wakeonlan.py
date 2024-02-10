@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2024-02-10
+#       Refactored for better testability. Added function decomposition and extensive comments for maintenance.
 #  v1.1 2023-12-08
 #       Removed Python version check
 #  v1.0 2022-08-03
@@ -27,38 +29,42 @@
 ########################################################################
 
 import socket
-import struct
 import sys
 from traceback import print_exc
 
 DEFAULT_PORT = 9
 
-def send_magic_packet(addr):
+def format_mac_address(mac):
+    """Remove delimiters from a MAC address and convert to uppercase."""
+    return mac.replace('-', '').replace(':', '').upper()
+
+def create_magic_packet(mac):
+    """Create a magic packet from a MAC address."""
+    if len(mac) != 12:
+        raise ValueError("Incorrect MAC address format")
+    # Repeat the MAC address 16 times after 6 bytes of FF
+    return bytes.fromhex('FF' * 6 + mac * 16)
+
+def send_udp_broadcast(packet, port=DEFAULT_PORT):
+    """Send a packet to the broadcast address using UDP."""
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
         s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+        s.sendto(packet, ('<broadcast>', port))
 
-        mac_ = addr.upper().replace("-", "").replace(":", "")
-        if len(mac_) != 12:
-            raise Exception(
-                "{} is not a hardware address and I could not resolve it as to an IP address.".format(addr))
-        buf_ = b'f' * 12 + (mac_ * 20).encode()
-
-        magicp = b''
-        for i in range(0, len(buf_), 2):
-            magicp += struct.pack('B', int(buf_[i:i + 2], 16))
-
-        print('Sending magic packet to 255.255.255.255:{} with {}'.format(
-            DEFAULT_PORT, addr))
-        s.sendto(magicp, ('<broadcast>', DEFAULT_PORT))
+def send_magic_packet(addr):
+    """Main function to format MAC address, create and send magic packet."""
+    mac = format_mac_address(addr)
+    packet = create_magic_packet(mac)
+    print(f'Sending magic packet to 255.255.255.255:{DEFAULT_PORT} with {addr}')
+    send_udp_broadcast(packet)
 
 
 if __name__ == '__main__':
-    argsmin = 1
-    if len(sys.argv) > argsmin:
+    if len(sys.argv) > 1:
         try:
             send_magic_packet(sys.argv[1])
-        except BaseException:
+        except Exception as e:
+            print(f"Error: {e}")
             print_exc()
     else:
-        print("This program needs at least %(argsmin)s arguments" %
-              locals())
+        print("This program requires at least 1 argument (MAC address).")
