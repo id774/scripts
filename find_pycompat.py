@@ -57,14 +57,15 @@ import re
 import sys
 
 
-def is_excluded_line(line, script_patterns):
-    """ Check if the line should be excluded from search (e.g., comments, certain words, script patterns, email addresses) """
+def is_excluded_line(line):
+    """ Check if the line should be excluded from search (e.g., comments). """
+    # Check if the line is a comment
     email_pattern = re.compile(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')
     if email_pattern.search(line):
         return True  # If an email address is found, exclude this line
-    return any(line.strip().startswith(comment) or term in line for comment, term in script_patterns)
+    return line.strip().startswith("#")
 
-def search_feature(directory, feature_name, pattern, script_patterns):
+def search_feature(directory, feature_name, pattern):
     print("*** Searching for " + feature_name + "...")
 
     # Get the base name of the current script without extension
@@ -81,7 +82,7 @@ def search_feature(directory, feature_name, pattern, script_patterns):
                 file_path = os.path.join(root, file)
                 with open(file_path, 'r', encoding='utf-8') as f:
                     for i, line in enumerate(f):
-                        if re.search(pattern, line) and not is_excluded_line(line, script_patterns):
+                        if re.search(pattern, line) and not is_excluded_line(line):
                             print(file_path + ":" + str(i + 1) + ": " + line.strip())
 
 def main():
@@ -91,9 +92,6 @@ def main():
     if not os.path.isdir(target_dir):
         print("Error: Directory '{}' does not exist.".format(target_dir))
         sys.exit(1)
-
-    # Patterns to exclude (comments and patterns used in this script)
-    script_patterns = [("#", ""), ("r\"", ""), ("r'", "")]
 
     print("*** Searching for Python 3.x compatibility issues in Python files...")
 
@@ -113,7 +111,7 @@ def main():
 
     # Perform search for each feature
     for feature, pattern in features.items():
-        search_feature(target_dir, feature, pattern, script_patterns)
+        search_feature(target_dir, feature, pattern)
 
 
 if __name__ == "__main__":
