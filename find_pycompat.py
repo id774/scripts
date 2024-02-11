@@ -58,8 +58,11 @@ import sys
 
 
 def is_excluded_line(line, script_patterns):
-    """Check if the line should be excluded from search (e.g., comments, certain words, script patterns)"""
-    return any(line.strip().startswith(comment) or (term and term in line) for comment, term in script_patterns)
+    """ Check if the line should be excluded from search (e.g., comments, certain words, script patterns, email addresses) """
+    email_pattern = re.compile(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')
+    if email_pattern.search(line):
+        return True  # If an email address is found, exclude this line
+    return any(line.strip().startswith(comment) or term in line for comment, term in script_patterns)
 
 def search_feature(directory, feature_name, pattern, script_patterns):
     print("*** Searching for " + feature_name + "...")
@@ -90,7 +93,8 @@ def main():
         sys.exit(1)
 
     # Patterns to exclude (comments and patterns used in this script)
-    script_patterns = [("#", "exclude certain words or patterns"), ("r\"", ""), ("r'", "")]
+    script_patterns = [("#", ""), ("\"", "\""), ("'", "'"), ("", "deprecated")]
+    script_patterns = [("#", ""), ("r\"", ""), ("r'", "")]
 
     print("*** Searching for Python 3.x compatibility issues in Python files...")
 
