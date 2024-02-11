@@ -119,7 +119,7 @@ def main():
                       action="store", type="string", dest="input_string")
     (options, args) = parser.parse_args()
     if options.version:
-        print("{0} Version 1.0 Copyright (c) 2023 id774 <idnanashi@gmail.com>".format(
+        print("{0} Version 1.0 Copyright (c) 2023 id774 <http://id774.net>".format(
             os.path.basename(sys.argv[0])))
     elif options.input_string:
         checksum = Md5Checksum.calculate_checksum_for_string(
