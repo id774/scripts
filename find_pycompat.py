@@ -18,6 +18,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.0 2024-02-11
+#       Fixed an issue where valid search results were not being displayed.
+#       The script and its associated test file are now excluded from search results.
+#       Updated comments to English for better clarity.
 #  v2.3 2024-01-31
 #       Renamed script from 'check_py_compat.py' to 'find_pycompat.py'
 #       to improve clarity and ease of use.
@@ -54,14 +58,23 @@ import sys
 
 
 def is_excluded_line(line, script_patterns):
-    """ Check if the line should be excluded from search (e.g., comments, certain words, script patterns) """
-    return any(line.strip().startswith(comment) or term in line for comment, term in script_patterns)
+    """Check if the line should be excluded from search (e.g., comments, certain words, script patterns)"""
+    return any(line.strip().startswith(comment) or (term and term in line) for comment, term in script_patterns)
 
 def search_feature(directory, feature_name, pattern, script_patterns):
     print("*** Searching for " + feature_name + "...")
+
+    # Get the base name of the current script without extension
+    script_base_name = os.path.basename(__file__).replace('.py', '')
+    # Define the pattern for test files related to this script
+    test_file_pattern = script_base_name + '_test.py'
+
     for root, dirs, files in os.walk(directory):
         for file in files:
             if file.endswith('.py'):
+                # Skip the script itself and its test file
+                if file == os.path.basename(__file__) or file == test_file_pattern:
+                    continue
                 file_path = os.path.join(root, file)
                 with open(file_path, 'r', encoding='utf-8') as f:
                     for i, line in enumerate(f):
@@ -77,7 +90,7 @@ def main():
         sys.exit(1)
 
     # Patterns to exclude (comments and patterns used in this script)
-    script_patterns = [("#", "mail"), ("r\"", ""), ("r'", "")]
+    script_patterns = [("#", "exclude certain words or patterns"), ("r\"", ""), ("r'", "")]
 
     print("*** Searching for Python 3.x compatibility issues in Python files...")
 
