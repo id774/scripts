@@ -93,7 +93,6 @@ def main():
         sys.exit(1)
 
     # Patterns to exclude (comments and patterns used in this script)
-    script_patterns = [("#", ""), ("\"", "\""), ("'", "'"), ("", "deprecated")]
     script_patterns = [("#", ""), ("r\"", ""), ("r'", "")]
 
     print("*** Searching for Python 3.x compatibility issues in Python files...")
