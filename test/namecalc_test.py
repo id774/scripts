@@ -3,26 +3,26 @@
 ########################################################################
 # namecalc_test.py: Test suite for Numerology Calculation Script
 #
-# Description:
-# This test suite verifies the correctness of the namecalc.py script.
-# It tests the script's functionality by providing various input strings
-# and comparing the script's output against expected results.
+#  Description:
+#  This test suite verifies the correctness of the namecalc.py script.
+#  It tests the script's functionality by providing various input strings
+#  and comparing the script's output against expected results.
 #
-# Author: id774 (More info: http://id774.net)
-# Source Code: https://github.com/id774/scripts
-# License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
-# Contact: idnanashi@gmail.com
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
 #
-# Version History:
-# v1.0 2023-12-13
-#     Initial release. Test suite for namecalc.rb script.
+#  Version History:
+#  v1.0 2023-12-13
+#       Initial release. Test suite for namecalc.rb script.
 #
-# Running the tests:
-# Execute the test script from the command line:
-# `python test/namecalc_test.py`
+#  Running the tests:
+#  Execute the test script from the command line:
+#  `python test/namecalc_test.py`
 #
-# Test Cases:
-# - Verify correct numerological calculation and graphical representation.
+#  Test Cases:
+#  - Verify correct numerological calculation and graphical representation.
 #
 ########################################################################
 

@@ -30,7 +30,7 @@
 #  - PyYAML
 #  - requests
 #
-#  Note:
+#  Notes:
 #  This script requires the following Python libraries: BeautifulSoup,
 #  PyYAML, and requests. These can be installed via pip using:
 #    pip install bs4 pyyaml requests

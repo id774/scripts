@@ -3,27 +3,27 @@
 ########################################################################
 # fluent-start.sh: Fluentd Startup Script
 #
-# Description:
-# This script starts Fluentd with specified configuration. It sets up
-# Fluentd and executes it in the background, along with Fluent-Cat for
-# sending test messages.
+#  Description:
+#  This script starts Fluentd with specified configuration. It sets up
+#  Fluentd and executes it in the background, along with Fluent-Cat for
+#  sending test messages.
 #
-# Author: id774 (More info: http://id774.net)
-# Source Code: https://github.com/id774/scripts
-# License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
-# Contact: idnanashi@gmail.com
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
 #
-# Version History:
-# v0.3 2023-12-20
-#      Replaced 'which' with 'command -v' for command existence check.
-#      Updated script header for consistency.
-# v0.2 2013-04-08
-#      Add options.
-# v0.1 2013-04-04
-#      First release.
+#  Version History:
+#  v0.3 2023-12-20
+#       Replaced 'which' with 'command -v' for command existence check.
+#       Updated script header for consistency.
+#  v0.2 2013-04-08
+#       Add options.
+#  v0.1 2013-04-04
+#       First release.
 #
-# Usage:
-# ./fluent-start.sh [fluentd path] [fluentd conf path] [options]
+#  Usage:
+#  ./fluent-start.sh [fluentd path] [fluentd conf path] [options]
 #
 ########################################################################
 

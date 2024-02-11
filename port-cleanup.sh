@@ -26,7 +26,7 @@
 #  Run the script without any arguments:
 #      port-cleanup.sh
 #
-#  Note:
+#  Notes:
 #  This script is intended for use on macOS systems with MacPorts installed.
 #  It requires administrative privileges to uninstall ports.
 #

@@ -50,7 +50,7 @@
 #  ./find_pycompat.py [directory]
 #  If no directory is specified, it searches in the current directory.
 #
-#  Note:
+#  Notes:
 #  This script excludes certain lines from the search to avoid false positives. Specifically,
 #  lines that are comments (starting with '#') or contain email addresses are excluded.
 #  This is to prevent the inclusion of non-code elements like email addresses, which may

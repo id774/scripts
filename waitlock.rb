@@ -35,13 +35,13 @@
 #
 #  Version History:
 #  v1.2 2023-11-29
-#     - Refactored the script for improved readability and maintainability.
+#       Refactored the script for improved readability and maintainability.
 #       Removed unnecessary class structure and streamlined command-line argument processing.
 #       Added clear usage instructions and feedback messages.
 #  v1.1 2014-08-14
-#     - Minor formatting and style revisions.
+#       Minor formatting and style revisions.
 #  v1.0 2010-12-01
-#     - Initial release. Basic functionality for file locking with check intervals.
+#       Initial release. Basic functionality for file locking with check intervals.
 #
 ########################################################################
 

@@ -11,13 +11,6 @@
 #  exclude hidden directories (those starting with '.') in the report.
 #  This script is designed to work exclusively on macOS.
 #
-#  Note:
-#  The script focuses on reporting the total disk usage of the specified
-#  top-level directory, avoiding the complexities and limitations of the
-#  traditional 'du' command on macOS. It does not sum up the sizes of
-#  subdirectories; instead, it directly reports the size of the top-level
-#  directory as the total.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -40,6 +33,13 @@
 #  Usage:
 #  Run the script with a depth number and a directory:
 #      python du.py [maxdepth] [directory]
+#
+#  Notes:
+#  The script focuses on reporting the total disk usage of the specified
+#  top-level directory, avoiding the complexities and limitations of the
+#  traditional 'du' command on macOS. It does not sum up the sizes of
+#  subdirectories; instead, it directly reports the size of the top-level
+#  directory as the total.
 #
 ########################################################################
 

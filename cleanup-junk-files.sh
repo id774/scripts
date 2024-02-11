@@ -8,11 +8,6 @@
 #  It targets files like .DS_Store, ._* AppleDouble files, temporary
 #  Unix files ending with '.un~', and __pycache__ directories.
 #
-#  Notes:
-#  - This script will recursively delete the specified junk files in the target directory.
-#  - Use with caution and ensure that the target directory is correct.
-#  - It is advisable to perform a dry run or backup important files before execution.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -36,6 +31,11 @@
 #  Usage:
 #  ./cleanup-junk-files.sh <target_directory>
 #  Example: ./cleanup-junk-files.sh /path/to/directory
+#
+#  Notes:
+#  - This script will recursively delete the specified junk files in the target directory.
+#  - Use with caution and ensure that the target directory is correct.
+#  - It is advisable to perform a dry run or backup important files before execution.
 #
 ########################################################################
 

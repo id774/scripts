@@ -34,7 +34,7 @@
 #  Example:
 #      python smb.py -i 192.168.1.100 -u myUser -p myPass
 #
-#  Note:
+#  Notes:
 #  Ensure that the necessary permissions and network configurations are set
 #  to allow mounting of network shares. This script may require administrative
 #  privileges or sudo access, depending on the system's configuration.

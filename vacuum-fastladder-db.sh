@@ -3,16 +3,16 @@
 ########################################################################
 # vacuum-fastladder-db.sh: Optimize Fastladder SQLite Database
 #
-# Description:
-# This script is used to vacuum and optimize the Fastladder SQLite database.
-# It creates a new database file from the existing database after running the vacuum command.
+#  Description:
+#  This script is used to vacuum and optimize the Fastladder SQLite database.
+#  It creates a new database file from the existing database after running the vacuum command.
 #
-# Author: id774 (More info: http://id774.net)
-# Source Code: https://github.com/id774/scripts
-# License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
-# Contact: idnanashi@gmail.com
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
 #
-# Version History:
+#  Version History:
 #  v1.3 2024-01-22
 #       Integrated check_commands function for dependency checks.
 #  v1.2 2023-12-08
@@ -22,15 +22,15 @@
 #  v1.0 2019-03-18
 #       Initial release.
 #
-# Usage:
-# Run the script from the command line:
-#   ./vacuum-fastladder-db.sh
+#  Usage:
+#  Run the script from the command line:
+#    ./vacuum-fastladder-db.sh
 #
-# Note:
-# - Ensure that the Fastladder application is not actively using the database when this script is run.
-# - This script should be run from the root directory of the Fastladder installation.
-# - Backup the existing database before running this script as a safety precaution.
-# - The script requires sqlite3 to be installed on the system.
+#  Notes:
+#  - Ensure that the Fastladder application is not actively using the database when this script is run.
+#  - This script should be run from the root directory of the Fastladder installation.
+#  - Backup the existing database before running this script as a safety precaution.
+#  - The script requires sqlite3 to be installed on the system.
 #
 ########################################################################
 

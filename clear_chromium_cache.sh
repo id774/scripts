@@ -6,11 +6,6 @@
 #  Description:
 #  This script forcefully terminates Chromium and removes its cache.
 #
-#  Notes:
-#  - This script will immediately terminate all Chromium processes.
-#  - It removes the 'Web Data' file in the Chromium config, clearing the cache.
-#  - Ensure that no important data is lost by closing Chromium before running.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -24,6 +19,11 @@
 #
 #  Usage:
 #  ./clear_chromium_cache.sh
+#
+#  Notes:
+#  - This script will immediately terminate all Chromium processes.
+#  - It removes the 'Web Data' file in the Chromium config, clearing the cache.
+#  - Ensure that no important data is lost by closing Chromium before running.
 #
 ########################################################################
 

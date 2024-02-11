@@ -30,7 +30,7 @@
 #  Ensure that the SCRIPTS environment variable is set to the path of
 #  your script collection before running this script.
 #
-#  Note:
+#  Notes:
 #  - This script should be run from the root directory of the script collection.
 #  - Make sure to back up your scripts before running this script as a precaution.
 #  - SCRIPTS environment variable must be set to the path of the script collection.

@@ -5,7 +5,7 @@
 #
 #  Description:
 #  This script converts a Unix timestamp to a human-readable date format in ISO 8601.
-#  Note: It uses the local timezone for conversion.
+#  It uses the local timezone for conversion.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts

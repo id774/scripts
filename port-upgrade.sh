@@ -25,7 +25,7 @@
 #  Run the script without any arguments:
 #      port-upgrade.sh
 #
-#  Note:
+#  Notes:
 #  This script assumes that the 'port' command is installed on a macOS system.
 #
 ########################################################################
