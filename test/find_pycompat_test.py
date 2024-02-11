@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-02-11
+#       Updated test cases to reflect changes in find_pycompat.py function signatures.
 #  v1.2 2024-01-31
 #       Renamed script from 'check_py_compat.py' to 'find_pycompat.py'
 #       to improve clarity and ease of use.
@@ -142,7 +144,7 @@ class TestFindPyCompat(unittest.TestCase):
     def run_feature_test(self, feature_name, pattern, test_string, should_match):
         self.file_content = test_string
         self.mock_open.side_effect = self.mock_file_read
-        find_pycompat.search_feature('.', feature_name, pattern, [])
+        find_pycompat.search_feature('.', feature_name, pattern)
 
         file_open_call = call(os.path.join('.', 'dummy.py'), 'r', encoding='utf-8')
         if should_match:
