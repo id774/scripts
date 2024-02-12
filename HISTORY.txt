@@ -1,0 +1,16 @@
+Change Log
+==========
+
+v1.2 (2024-01-31)
+-----------------
+- Major updates to several scripts included in this release.
+
+v1.1 (2023-12-30)
+-----------------
+- Maintenance incorporating continuous development.
+- Renaming of numerous scripts as part of the updates.
+
+v1.0 (2023-11-25)
+-----------------
+- Official initial release of the project.
+
