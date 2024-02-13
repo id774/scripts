@@ -1,5 +1,5 @@
-Change Log
-==========
+HISTORY.txt
+===========
 
 v1.2 (2024-01-31)
 -----------------
@@ -13,4 +13,16 @@ v1.1 (2023-12-30)
 v1.0 (2023-11-25)
 -----------------
 - Official initial release of the project.
+
+[2008-2023]
+-----------
+- Numerous changes and versions were made throughout this period, marking continuous development and improvement of the project.
+
+v0.1 (2008-10-31)
+-----------------
+- The very first initial version of the project, marking the start of public releases.
+
+First Commit (2008-08-22)
+-------------------------
+- Commemorating the first commit and push, marking the inception of the project.
 
