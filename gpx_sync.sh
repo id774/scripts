@@ -5,9 +5,11 @@
 #
 #  Description:
 #  This script manages GPX files by performing operations like copying to
-#  specific directories, syncing with a remote server, and cleaning up
-#  temporary files. It requires a configuration file named 'gpx_sync.conf' to
-#  specify necessary settings such as directories and remote server information.
+#  specific directories, syncing with a remote server, cleaning up
+#  temporary files, and setting file permissions. It requires a configuration
+#  file named 'gpx_sync.conf' to specify necessary settings such as directories,
+#  remote server information, and default file permissions. The script allows
+#  overriding the default file permissions via a command-line argument.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -15,6 +17,11 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2024-02-14
+#       Added functionality to set file permissions for GPX files before
+#       copying them to the destination directories. Permissions can be
+#       specified via a command-line argument or through the configuration
+#       file. Improved error handling for missing configuration settings.
 #  v1.5 2024-02-08
 #       Updated to load configuration from an external file. Added checks for
 #       necessary configuration variables. Improved error handling.
@@ -35,9 +42,9 @@
 #       Initial release.
 #
 #  Usage:
-#  Run the script without any arguments. Ensure that the 'gpx_sync.conf' file
-#  is properly configured with the necessary variables.
-#      ./gpx_sync.sh
+#  Run the script with an optional argument to set the file permissions for the copied files.
+#  If no argument is provided, the default permission setting from the configuration file will be used.
+#      ./gpx_sync.sh [permissions]
 #
 #  Configuration file ('gpx_sync.conf') requirements:
 #  - TMP_DIR: Temporary directory for GPX files.
@@ -45,6 +52,7 @@
 #  - MOUNTED_DIR: Mounted directory for backups.
 #  - RSYNC_USER: Username for remote server access.
 #  - RSYNC_HOST: Hostname or IP address of the remote server.
+#  - DEFAULT_PERMISSIONS: Default file permissions if not overridden by command-line argument.
 #  Ensure all these variables are set in 'gpx_sync.conf'.
 #
 #  Notes:
@@ -57,6 +65,7 @@
 #  2. Destination directory for copying files does not exist.
 #  3. Configuration file not found.
 #  4. Necessary configuration variable(s) not set.
+#  5. DEFAULT_PERMISSIONS not set in configuration file when no permissions argument provided.
 #
 ########################################################################
 
@@ -80,6 +89,15 @@ if [ -z "$TMP_DIR" ] || [ -z "$USER_GPX_DIR" ] || [ -z "$MOUNTED_DIR" ] || [ -z 
     exit 4
 fi
 
+# Check if DEFAULT_PERMISSIONS is set in the configuration file if no permissions are provided as an argument
+if [ -z "$1" ] && [ -z "$DEFAULT_PERMISSIONS" ]; then
+    echo "Error: DEFAULT_PERMISSIONS is not set in the configuration file and no permissions argument was provided."
+    exit 5
+fi
+
+# Set default permissions from the configuration file or use the first argument if provided
+permissions=${1:-$DEFAULT_PERMISSIONS}
+
 CURRENT_YEAR=$(date +"%Y")
 
 # Function to check if GPX files exist in a directory
@@ -92,16 +110,20 @@ check_gpx_files() {
     return 0
 }
 
-# Function to copy files to a directory, returning an error if the directory does not exist
+# Function to set permissions and copy files to a directory, returning an error if the directory does not exist
 copy_files() {
     local source_dir=$1
     local destination=$2
+    local permissions=$3
     if [ ! -d "$destination" ]; then
         echo "Error: Destination directory $destination does not exist."
         return 2
     fi
     echo "Copying files from $source_dir to $destination"
-    cp "$source_dir"/*.gpx "$destination" || return $?
+    for file in "$source_dir"/*.gpx; do
+        chmod "$permissions" "$file"
+        cp "$file" "$destination" || return $?
+    done
 }
 
 # Function to perform rsync
@@ -124,9 +146,9 @@ remove_files() {
 # Main logic
 check_gpx_files "$TMP_DIR" || exit $?
 
-copy_files "$TMP_DIR" "$HOME/$USER_GPX_DIR/$CURRENT_YEAR/" || exit $?
+copy_files "$TMP_DIR" "$HOME/$USER_GPX_DIR/$CURRENT_YEAR/" "$permissions" || exit $?
 
-copy_files "$TMP_DIR" "$MOUNTED_DIR/$USER_GPX_DIR/$CURRENT_YEAR/" || exit $?
+copy_files "$TMP_DIR" "$MOUNTED_DIR/$USER_GPX_DIR/$CURRENT_YEAR/" "$permissions" || exit $?
 
 sync_files "$HOME/$USER_GPX_DIR" "$RSYNC_USER" "$RSYNC_HOST" || exit $?
 
