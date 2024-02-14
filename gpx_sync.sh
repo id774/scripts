@@ -23,8 +23,7 @@
 #       specified via a command-line argument or through the configuration
 #       file. Improved error handling for missing configuration settings.
 #  v1.5 2024-02-08
-#       Updated to load configuration from an external file. Added checks for
-#       necessary configuration variables. Improved error handling.
+#       Added checks for necessary configuration variables and improved error handling.
 #  v1.4 2023-12-23
 #       Updated to load configuration from an external file.
 #       Refactored for POSIX compliance. Replaced Bash-specific syntax
