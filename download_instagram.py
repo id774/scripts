@@ -4,11 +4,13 @@
 # download_instagram.py: Batch Download Photos from Instagram
 #
 #  Description:
-#  This script batch downloads photos from a specified Instagram account
-#  in chronological order, including pinned posts in their original
-#  chronological position. It uses the instaloader library to fetch photo
-#  URLs from the account and downloads them locally. The script supports
-#  incremental downloads, avoiding re-downloading of already downloaded photos.
+#  This script enables batch downloading of photos from a specified
+#  Instagram account. It organizes downloads chronologically, ensuring
+#  even pinned posts are sorted by their original post dates. The script
+#  leverages the instaloader library to obtain photo URLs and associated
+#  post IDs, facilitating incremental downloads. This approach prevents
+#  re-downloading of already acquired photos by incorporating post IDs
+#  into filenames, thus ensuring each download is unique.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,8 +19,9 @@
 #
 #  Version History:
 #  v2.1 2024-02-15
-#       Added functionality to download posts in chronological order, including
-#       handling of pinned posts. Improved incremental download feature.
+#       Added chronological download feature with support for pinned posts.
+#       Adjusted the download strategy to include post IDs in filenames,
+#       supporting incremental updates.
 #  v2.0 2024-02-10
 #       Renamed script to download_instagram.py for expanded functionality.
 #       Comprehensive refactoring for improved testability and maintainability.
@@ -34,18 +37,16 @@
 #  Usage:
 #  python download_instagram.py [Instagram username]
 #  Example: python download_instagram.py username
-#           (If no username is given, the current directory name is used)
+#           (If no username is given, the script uses the current directory name)
 #
 ########################################################################
 
 import argparse
 import os
-import re
 import sys
 import time
 import urllib.request
 
-# Try to import instaloader and set a flag based on its availability
 try:
     import instaloader
     INSTALOADER_AVAILABLE = True
@@ -54,7 +55,6 @@ except ImportError:
 
 class InstagramPhotoDownloader:
     def __init__(self, username):
-        """Initialize the downloader with the specified username."""
         if not INSTALOADER_AVAILABLE:
             print("Instaloader is not available. Functionality will be limited.")
             sys.exit(1)
@@ -63,61 +63,36 @@ class InstagramPhotoDownloader:
         self.profile = instaloader.Profile.from_username(self.loader.context, username)
 
     def download(self):
-        """Main method to download all available Instagram photos."""
-        urls = self._get_instagram_photo_urls()
-        self._print_download_info(len(urls))
+        urls_post_ids = self._get_instagram_photo_urls()
+        print('This account {} has {} image posts to download.'.format(self.username, len(urls_post_ids)))
+        print('Estimated processing time is about {} minutes.'.format(int(len(urls_post_ids) / 60) + 1))
 
-        max_number = self._get_max_number('.')
-        remaining_urls = list(reversed(urls))[max_number:]
+        existing_files = {filename for filename in os.listdir('.') if filename.endswith('.jpg')}
 
-        for i, url in enumerate(remaining_urls, start=max_number + 1):
-            self._print_remaining_time(len(remaining_urls), i - max_number)
-            self._download_and_save_image(url, i)
+        for url, post_id in urls_post_ids:
+            filename = "{}_{}.jpg".format(self.username, post_id)
+            if filename in existing_files:
+                print("{} is already downloaded. Skipping...".format(filename))
+                continue
+            self._download_and_save_image((url, post_id))
+
+        print("Download completed.")
 
     def _get_instagram_photo_urls(self):
-        """Fetch all photo URLs from the Instagram profile, along with their timestamps."""
         posts_data = []
         for post in self.profile.get_posts():
-            # For each post, get the URL and the timestamp
             if post.typename == "GraphImage":
-                posts_data.append((post.url, post.date))
+                posts_data.append((post.url, post.date, post.shortcode))
             else:
                 for node in post.get_sidecar_nodes():
-                    posts_data.append((node.display_url, post.date))
+                    posts_data.append((node.display_url, post.date, post.shortcode))
 
-        # Sort the posts by their timestamp, from oldest to newest
         sorted_posts_data = sorted(posts_data, key=lambda x: x[1])
+        return [(data[0], data[2]) for data in sorted_posts_data]
 
-        # Extract the URLs from the sorted posts data
-        sorted_urls = [data[0] for data in sorted_posts_data]
-        return sorted_urls
-
-    def _print_download_info(self, post_count):
-        """Print information about the download session."""
-        print('This account {} has {} image posts.'.format(self.username, post_count))
-        print('Estimate processing time is about {} minutes.'.format(int(post_count / 60) + 1))
-
-    def _get_max_number(self, directory_path):
-        """Find the highest numbered file in the directory to avoid overwriting."""
-        max_number = 0
-        for filename in os.listdir(directory_path):
-            number = self._extract_number_from_filename(filename)
-            max_number = max(max_number, number)
-        return max_number
-
-    def _extract_number_from_filename(self, filename):
-        """Extract the number from the filename."""
-        match = re.search(r'\d+$', os.path.splitext(filename)[0])
-        return int(match.group()) if match else 0
-
-    def _print_remaining_time(self, total, current):
-        """Print the remaining time for the download process."""
-        remaining = total - current
-        print("{} seconds ({} minutes) remaining to complete processing.".format(remaining, int(remaining / 60) + 1))
-
-    def _download_and_save_image(self, url, file_num):
-        """Download a single photo from a URL."""
-        filename = "{}_{}.jpg".format(self.username, str(file_num).zfill(5))
+    def _download_and_save_image(self, url_post_id_tuple):
+        url, post_id = url_post_id_tuple
+        filename = "{}_{}.jpg".format(self.username, post_id)
         print("Downloading {}...".format(filename))
         urllib.request.urlretrieve(url, filename)
         time.sleep(1)  # Prevent too many requests in a short time
