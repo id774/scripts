@@ -18,19 +18,14 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v2.1 2024-02-15
+#  v3.0 2024-02-15
 #       Added chronological download feature with support for pinned posts.
 #       Adjusted the download strategy to include post IDs in filenames,
 #       supporting incremental updates.
 #  v2.0 2024-02-10
 #       Renamed script to download_instagram.py for expanded functionality.
 #       Comprehensive refactoring for improved testability and maintainability.
-#  v1.3 2023-12-25
-#       Modified to use current directory name as default Instagram username.
-#  v1.2 2023-12-08
-#       Removed f-strings for compatibility with Python versions below 3.6.
-#  v1.1 2023-12-06
-#       Refactored for clarity, added English comments, and updated documentation.
+#  [Further version history truncated for brevity]
 #  v1.0 2023-02-26
 #       Initial release.
 #
