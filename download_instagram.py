@@ -63,29 +63,39 @@ class InstagramPhotoDownloader:
         self.profile = instaloader.Profile.from_username(self.loader.context, username)
 
     def download(self):
+        # Fetch URLs and post IDs for all Instagram photos of the specified account
         urls_post_ids = self._get_instagram_photo_urls()
         total_images = len(urls_post_ids)
         print('This account {} has {} image posts to download.'.format(self.username, total_images))
+        # Estimate and print the total processing time in minutes
         print('Estimated processing time is about {} minutes.'.format(int(total_images / 60) + 1))
 
+        # Create a set of existing filenames to avoid re-downloading images
         existing_files = {filename for filename in os.listdir('.') if filename.endswith('.jpg')}
-        images_to_download = total_images - len(existing_files)
 
         for index, (url, post_id) in enumerate(urls_post_ids, start=1):
+            # Construct the filename using the account username and post ID
             filename = "{}_{}.jpg".format(self.username, post_id)
+            # Skip downloading if the file already exists
             if filename in existing_files:
                 print("{} is already downloaded. Skipping...".format(filename))
                 continue
-            print("Downloading {}... ({} of {} remaining)".format(filename, images_to_download, total_images))
+            # Calculate the number of remaining images and the approximate time left
+            remaining_images = total_images - index
+            estimated_minutes_left = int(remaining_images / 60)
+            # Print the download status with the remaining number of images and approximate time left
+            print("Downloading {}... ({} of {} remaining, approx. {} minutes left)".format(filename, remaining_images, total_images, estimated_minutes_left))
+            # Download the image and save it with the constructed filename
             self._download_and_save_image((url, post_id))
-            images_to_download -= 1  # Decrement the counter after each download
 
-            # Print the countdown
-            if images_to_download > 0:
-                print("{} images left...".format(images_to_download))
+            # Check if there are any images left to download and print the status
+            if index < total_images:
+                print("{} images left... (approx. {} minutes left)".format(remaining_images, estimated_minutes_left))
             else:
+                # Notify when all images have been downloaded
                 print("All images have been downloaded.")
 
+        # Print a message upon completing all downloads
         print("Download completed.")
 
     def _get_instagram_photo_urls(self):
@@ -103,7 +113,6 @@ class InstagramPhotoDownloader:
     def _download_and_save_image(self, url_post_id_tuple):
         url, post_id = url_post_id_tuple
         filename = "{}_{}.jpg".format(self.username, post_id)
-        print("Downloading {}...".format(filename))
         urllib.request.urlretrieve(url, filename)
         time.sleep(1)  # Prevent too many requests in a short time
 
