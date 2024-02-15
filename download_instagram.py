@@ -42,6 +42,7 @@
 ########################################################################
 
 import argparse
+import math
 import os
 import sys
 import time
@@ -82,18 +83,11 @@ class InstagramPhotoDownloader:
                 continue
             # Calculate the number of remaining images and the approximate time left
             remaining_images = total_images - index
-            estimated_minutes_left = int(remaining_images / 60)
+            estimated_minutes_left = math.ceil(remaining_images / 60.0)
             # Print the download status with the remaining number of images and approximate time left
             print("Downloading {}... ({} of {} remaining, approx. {} minutes left)".format(filename, remaining_images, total_images, estimated_minutes_left))
             # Download the image and save it with the constructed filename
             self._download_and_save_image((url, post_id))
-
-            # Check if there are any images left to download and print the status
-            if index < total_images:
-                print("{} images left... (approx. {} minutes left)".format(remaining_images, estimated_minutes_left))
-            else:
-                # Notify when all images have been downloaded
-                print("All images have been downloaded.")
 
         # Print a message upon completing all downloads
         print("Download completed.")
