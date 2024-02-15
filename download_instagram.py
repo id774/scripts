@@ -4,11 +4,11 @@
 # download_instagram.py: Batch Download Photos from Instagram
 #
 #  Description:
-#  This script batch downloads photos from a specified Instagram account.
-#  It uses the instaloader library to fetch all photo URLs from the account
-#  and downloads them locally.
-#  If no account is specified as an argument, it uses the current
-#  directory name as the Instagram account name.
+#  This script batch downloads photos from a specified Instagram account
+#  in chronological order, including pinned posts in their original
+#  chronological position. It uses the instaloader library to fetch photo
+#  URLs from the account and downloads them locally. The script supports
+#  incremental downloads, avoiding re-downloading of already downloaded photos.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -16,6 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2024-02-15
+#       Added functionality to download posts in chronological order, including
+#       handling of pinned posts. Improved incremental download feature.
 #  v2.0 2024-02-10
 #       Renamed script to download_instagram.py for expanded functionality.
 #       Comprehensive refactoring for improved testability and maintainability.
@@ -72,13 +75,22 @@ class InstagramPhotoDownloader:
             self._download_and_save_image(url, i)
 
     def _get_instagram_photo_urls(self):
-        """Fetch all photo URLs from the Instagram profile."""
-        urls = []
+        """Fetch all photo URLs from the Instagram profile, along with their timestamps."""
+        posts_data = []
         for post in self.profile.get_posts():
-            urls += [node.display_url for node in post.get_sidecar_nodes()]
+            # For each post, get the URL and the timestamp
             if post.typename == "GraphImage":
-                urls.append(post.url)
-        return urls
+                posts_data.append((post.url, post.date))
+            else:
+                for node in post.get_sidecar_nodes():
+                    posts_data.append((node.display_url, post.date))
+
+        # Sort the posts by their timestamp, from oldest to newest
+        sorted_posts_data = sorted(posts_data, key=lambda x: x[1])
+
+        # Extract the URLs from the sorted posts data
+        sorted_urls = [data[0] for data in sorted_posts_data]
+        return sorted_urls
 
     def _print_download_info(self, post_count):
         """Print information about the download session."""
