@@ -18,7 +18,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v3.0 2024-02-15
+#  v2.1 2024-02-15
 #       Added chronological download feature with support for pinned posts.
 #       Adjusted the download strategy to include post IDs in filenames,
 #       supporting incremental updates.
