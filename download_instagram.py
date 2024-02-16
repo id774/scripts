@@ -10,7 +10,8 @@
 #  leverages the instaloader library to obtain photo URLs and associated
 #  post IDs, facilitating incremental downloads. This approach prevents
 #  re-downloading of already acquired photos by incorporating post IDs
-#  into filenames, thus ensuring each download is unique.
+#  into filenames, thus ensuring each download is unique. Additionally,
+#  it now allows setting custom file permissions for the downloaded photos.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -18,6 +19,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.2 2024-02-17
+#       Added functionality to set custom file permissions for downloaded photos
+#       using the --permissions command-line argument.
 #  v2.1 2024-02-15
 #       Added chronological download feature with support for pinned posts.
 #       Adjusted the download strategy to include post IDs in filenames,
@@ -30,9 +34,10 @@
 #       Initial release.
 #
 #  Usage:
-#  python download_instagram.py [Instagram username]
-#  Example: python download_instagram.py username
-#           (If no username is given, the script uses the current directory name)
+#  python download_instagram.py [Instagram username] [--permissions PERM]
+#  Example: python download_instagram.py username --permissions 640
+#           (If no username is given, the script uses the current directory name.
+#           Default permissions are 640 if not specified.)
 #
 ########################################################################
 
@@ -49,12 +54,14 @@ try:
 except ImportError:
     INSTALOADER_AVAILABLE = False
 
+
 class InstagramPhotoDownloader:
-    def __init__(self, username):
+    def __init__(self, username, permissions=0o640):  # Set default permissions to 0o640
         if not INSTALOADER_AVAILABLE:
             print("Instaloader is not available. Functionality will be limited.")
             sys.exit(1)
         self.username = username
+        self.permissions = permissions  # Store permissions
         self.loader = instaloader.Instaloader()
         self.profile = instaloader.Profile.from_username(self.loader.context, username)
 
@@ -103,14 +110,16 @@ class InstagramPhotoDownloader:
         url, post_id = url_post_id_tuple
         filename = "{}_{}.jpg".format(self.username, post_id)
         urllib.request.urlretrieve(url, filename)
+        os.chmod(filename, self.permissions)  # Set permissions for the downloaded file
         time.sleep(1)  # Prevent too many requests in a short time
 
 def main():
     parser = argparse.ArgumentParser(description='Download all photos from an Instagram account.')
     parser.add_argument('username', nargs='?', help='Instagram username', default=os.path.basename(os.getcwd()))
+    parser.add_argument('--permissions', type=lambda x: int(x, 0), default=0o640, help='File permissions (octal)')
     args = parser.parse_args()
 
-    downloader = InstagramPhotoDownloader(args.username)
+    downloader = InstagramPhotoDownloader(args.username, args.permissions)
     downloader.download()
 
 
