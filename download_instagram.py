@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.3 2024-02-18
+#       Fixed a bug to ensure all images from multi-image posts are downloaded.
 #  v2.2 2024-02-17
 #       Added functionality to set custom file permissions for downloaded photos
 #       using the --permissions command-line argument.
@@ -69,6 +71,7 @@ class InstagramPhotoDownloader:
         # Fetch URLs and post IDs for all Instagram photos of the specified account
         urls_post_ids = self._get_instagram_photo_urls()
         total_images = len(urls_post_ids)
+
         print('This account {} has {} image posts to download.'.format(self.username, total_images))
         # Estimate and print the total processing time in minutes
         print('Estimated processing time is about {} minutes.'.format(int(total_images / 60) + 1))
@@ -76,20 +79,23 @@ class InstagramPhotoDownloader:
         # Create a set of existing filenames to avoid re-downloading images
         existing_files = {filename for filename in os.listdir('.') if filename.endswith('.jpg')}
 
-        for index, (url, post_id) in enumerate(urls_post_ids, start=1):
-            # Construct the filename using the account username and post ID
-            filename = "{}_{}.jpg".format(self.username, post_id)
+        for index, (url, _, post_id, image_index) in enumerate(urls_post_ids, start=1):
+            # Construct the filename using the account username, post ID, and image index
+            filename = "{}_{}_{}.jpg".format(self.username, post_id, str(image_index).zfill(2))
+
             # Skip downloading if the file already exists
             if filename in existing_files:
-                print("{} is already downloaded. Skipping...".format(filename))
                 continue
+
             # Calculate the number of remaining images and the approximate time left
             remaining_images = total_images - index
             estimated_minutes_left = math.ceil(remaining_images / 60.0)
+
             # Print the download status with the remaining number of images and approximate time left
             print("Downloading {}... ({} of {} remaining, approx. {} minutes left)".format(filename, remaining_images, total_images, estimated_minutes_left))
+
             # Download the image and save it with the constructed filename
-            self._download_and_save_image((url, post_id))
+            self._download_and_save_image(url, filename)
 
         # Print a message upon completing all downloads
         print("Download completed.")
@@ -98,17 +104,15 @@ class InstagramPhotoDownloader:
         posts_data = []
         for post in self.profile.get_posts():
             if post.typename == "GraphImage":
-                posts_data.append((post.url, post.date, post.shortcode))
-            else:
-                for node in post.get_sidecar_nodes():
-                    posts_data.append((node.display_url, post.date, post.shortcode))
+                posts_data.append((post.url, post.date, post.shortcode, 1))  # Single image post with default index 1
+            elif post.typename == "GraphSidecar":
+                for index, node in enumerate(post.get_sidecar_nodes(), start=1):
+                    posts_data.append((node.display_url, post.date, post.shortcode, index))  # Multiple images with index
 
         sorted_posts_data = sorted(posts_data, key=lambda x: x[1])
-        return [(data[0], data[2]) for data in sorted_posts_data]
+        return sorted_posts_data
 
-    def _download_and_save_image(self, url_post_id_tuple):
-        url, post_id = url_post_id_tuple
-        filename = "{}_{}.jpg".format(self.username, post_id)
+    def _download_and_save_image(self, url, filename):
         urllib.request.urlretrieve(url, filename)
         os.chmod(filename, self.permissions)  # Set permissions for the downloaded file
         time.sleep(1)  # Prevent too many requests in a short time
