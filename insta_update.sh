@@ -108,7 +108,7 @@ update_content() {
     fi
     echo "Running: $PYTHON_BIN $DOWNLOADER_SCRIPT in $subdir"
     $PYTHON_BIN "$DOWNLOADER_SCRIPT" || exit
-    cd ..
+    cd "$TARGET_DIR"
     echo "Synchronizing: $SYNC_SCRIPT $(basename "$subdir")"
     "$SYNC_SCRIPT" "$(basename "$subdir")" || exit
 }
