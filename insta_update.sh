@@ -54,9 +54,6 @@
 #
 ########################################################################
 
-EXCLUDE_LIST="$TARGET_DIR/exclude_accounts.txt"
-INCLUDE_LIST="$TARGET_DIR/include_accounts.txt"
-
 # Determine the script's directory
 SCRIPT_DIR=$(dirname "$0")
 
@@ -115,6 +112,9 @@ update_content() {
 }
 
 should_process() {
+    EXCLUDE_LIST="$TARGET_DIR/exclude_accounts.txt"
+    INCLUDE_LIST="$TARGET_DIR/include_accounts.txt"
+
     local subdir_name=$(basename "$1")
     # Skip if subdir is in exclude list
     if [ -f "$EXCLUDE_LIST" ] && grep -qx "$subdir_name" "$EXCLUDE_LIST"; then
