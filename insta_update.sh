@@ -135,8 +135,6 @@ cd "$TARGET_DIR" || exit
 for subdir in */ ; do
     if [ -d "$subdir" ] && should_process "$subdir"; then
         update_content "$subdir"
-    else
-        echo "Skipping: $subdir"
     fi
 done
 
