@@ -1,6 +1,14 @@
 HISTORY.txt
 ===========
 
+v1.2.1 (Release Date: TBD)
+--------------------------
+- Resolved a critical issue with the Python compatibility search script.
+- Significant renaming and specification changes to the Instagram download script.
+- Added the ability to specify permissions in several scripts.
+- Numerous refactorings and documentation updates.
+- Added entry for HISTORY.txt itself.
+
 v1.2 (2024-01-31)
 -----------------
 - Major updates to several scripts included in this release.
