@@ -35,26 +35,27 @@
 #  Notes:
 #  - The --reset option will irreversibly delete existing content in each
 #    subdirectory before updating. Ensure backups are made if necessary.
+#  - Make sure 'exclude_accounts.txt' and 'include_accounts.txt' are properly
+#    formatted, with one account name per line, if they are used.
+#  - The script supports 'exclude_accounts.txt' and 'include_accounts.txt' lists.
+#    If 'exclude_accounts.txt' is present, any subdirectories matching the names
+#    in this list will be skipped. If 'include_accounts.txt' is present, only the
+#    subdirectories listed will be processed. If a subdirectory is listed in both,
+#    it will be excluded.
 #
 #  Error Conditions:
 #  1. Configuration file not found or incomplete: The script will terminate if
 #     it cannot find 'insta_update.conf' or if any required variables are unset.
-#     This error condition will exit the script with an error code of 1.
 #  2. Unknown command-line options: If any unrecognized options are provided,
-#     the script will display an error message and exit. This includes any options
-#     other than the supported '--reset' option. This error condition will exit
-#     the script with an error code of 2.
-#  3. One or more configuration variables are not set: The script checks if all 
-#     necessary configuration variables (PYTHON_BIN, DOWNLOADER_SCRIPT, SYNC_SCRIPT,
-#     TARGET_DIR) are set in 'insta_update.conf'. If any of these variables are unset,
-#     the script will exit with an error message and an error code of 3.
-#  4. Specified scripts or target directory do not exist or are not executable:
-#     The script checks for the existence and executability of the Python binary,
-#     the downloader script, the synchronization script, and the target directory.
-#     If any of these checks fail, the script will exit with an error message
-#     and an error code of 4.
+#     the script will display an error message and exit.
+#  3. Necessary configuration variables not set: The script checks if all
+#     necessary configuration variables are set in 'insta_update.conf'.
+#  4. Specified scripts or target directory do not exist or are not executable.
 #
 ########################################################################
+
+EXCLUDE_LIST="$TARGET_DIR/exclude_accounts.txt"
+INCLUDE_LIST="$TARGET_DIR/include_accounts.txt"
 
 # Determine the script's directory
 SCRIPT_DIR=$(dirname "$0")
@@ -113,12 +114,29 @@ update_content() {
     "$SYNC_SCRIPT" "$(basename "$subdir")" || exit
 }
 
+should_process() {
+    local subdir_name=$(basename "$1")
+    # Skip if subdir is in exclude list
+    if [ -f "$EXCLUDE_LIST" ] && grep -qx "$subdir_name" "$EXCLUDE_LIST"; then
+        return 1
+    fi
+    # Process if subdir is in include list
+    if [ -f "$INCLUDE_LIST" ]; then
+        if grep -qx "$subdir_name" "$INCLUDE_LIST"; then
+            return 0
+        else
+            return 1  # Skip if subdir is not in include list
+        fi
+    fi
+    return 0  # Default to process if no include list is provided
+}
+
 cd "$TARGET_DIR" || exit
 for subdir in */ ; do
-    if [ -d "$subdir" ]; then
+    if [ -d "$subdir" ] && should_process "$subdir"; then
         update_content "$subdir"
     else
-        echo "Skipping non-directory: $subdir"
+        echo "Skipping: $subdir"
     fi
 done
 
