@@ -100,15 +100,15 @@ while [ $# -gt 0 ]; do
 done
 
 update_content() {
-    subdir=$1
+    subdir="$1"
     cd "$subdir" || exit
     if [ "$RESET" = true ]; then
         echo "Resetting directory: $subdir"
         rm -f ./*
     fi
     echo "Running: $PYTHON_BIN $DOWNLOADER_SCRIPT in $subdir"
-    $PYTHON_BIN "$DOWNLOADER_SCRIPT" || exit
-    cd "$TARGET_DIR"
+    "$PYTHON_BIN" "$DOWNLOADER_SCRIPT" || exit
+    cd "$TARGET_DIR" || exit
     echo "Synchronizing: $SYNC_SCRIPT $(basename "$subdir")"
     "$SYNC_SCRIPT" "$(basename "$subdir")" || exit
 }
