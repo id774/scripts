@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# download_instagram.py: Batch Download Photos from Instagram
+# insta_downloader.py: Batch Download Photos from Instagram
 #
 #  Description:
 #  This script enables batch downloading of photos from a specified
@@ -29,15 +29,15 @@
 #       Adjusted the download strategy to include post IDs in filenames,
 #       supporting incremental updates.
 #  v2.0 2024-02-10
-#       Renamed script to download_instagram.py for expanded functionality.
+#       Renamed script to insta_downloader.py for expanded functionality.
 #       Comprehensive refactoring for improved testability and maintainability.
 #  [Further version history truncated for brevity]
 #  v1.0 2023-02-26
 #       Initial release.
 #
 #  Usage:
-#  python download_instagram.py [Instagram username] [--permissions PERM]
-#  Example: python download_instagram.py username --permissions 640
+#  python insta_downloader.py [Instagram username] [--permissions PERM]
+#  Example: python insta_downloader.py username --permissions 640
 #           (If no username is given, the script uses the current directory name.
 #           Default permissions are 640 if not specified.)
 #
