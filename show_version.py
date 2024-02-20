@@ -173,6 +173,7 @@ def main():
         'pypandoc',
         'talib',
         'zipline',
+        'instaloader',
         'nltk',
         'MeCab',
         'CaboCha'

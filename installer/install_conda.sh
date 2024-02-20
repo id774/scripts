@@ -104,6 +104,7 @@ install_libs() {
     $CONDA install -y matplotlib
     $CONDA install -y pandas
     $CONDA install -y pep8
+    $CONDA install -y instaloader
     $EASY_INSTALL TA-Lib
     $EASY_INSTALL nltk
 }

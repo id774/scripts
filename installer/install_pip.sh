@@ -111,6 +111,7 @@ install_libs() {
     $SUDO $PIP install $PROXY -U matplotlib
     $SUDO $PIP install $PROXY -U pandas
     $SUDO $PIP install $PROXY -U pep8
+    $SUDO $PIP install $PROXY -U instaloader
     $SUDO $EASY_INSTALL -U TA-Lib
     $SUDO $EASY_INSTALL -U nltk
 }
