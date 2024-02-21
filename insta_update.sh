@@ -104,35 +104,55 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-update_content() {
-    cd "$TARGET_DIR" || exit
+create_temp_dir() {
+    # Creates a temporary directory for the specified subdir and returns its path
+    local subdir="$1"
+    local temp_dir="/tmp/${subdir}_temp_$(date +%Y%m%d%H%M%S)"
+    mkdir -p "$temp_dir"
+    echo "$temp_dir"  # Return the path of the temporary directory
+}
 
-    subdir="$1"
-    temp_dir="${subdir}_temp_$(date +%Y%m%d%H%M%S)"  # Temporary directory name with timestamp
+download_content() {
+    # Runs the downloader script in the specified directory
+    local dir="$1"
+    echo "Running downloader script in $dir"
+    cd "$dir" || exit
+    "$PYTHON_BIN" "$DOWNLOADER_SCRIPT" || return 1  # Return 1 on failure
+    return 0  # Return 0 on success
+}
+
+cleanup_temp_dir() {
+    # Cleans up the specified temporary directory
+    local temp_dir="$1"
+    echo "Cleaning up temporary directory: $temp_dir"
+    rm -rf "$temp_dir"
+}
+
+update_content() {
+    local subdir="$1"
+    local temp_dir=""
 
     if [ "$RESET" = true ]; then
-        mv "$subdir" "$temp_dir"  # Rename or move the directory temporarily
-        mkdir -p "$subdir"  # Ensure the subdir exists for the downloader
-    fi
-
-    cd "$subdir" || exit
-
-    echo "Running: $PYTHON_BIN $DOWNLOADER_SCRIPT in $subdir"
-    if "$PYTHON_BIN" "$DOWNLOADER_SCRIPT"; then  # Downloading content
-        cd "$TARGET_DIR" || exit
-        if [ "$RESET" = true ]; then
-            echo "Removing temporary directory: $temp_dir"
-            rm -rf "$temp_dir"  # Remove the temporary directory on success
+        temp_dir=$(create_temp_dir "$subdir")
+        mv "$TARGET_DIR/$subdir" "$temp_dir"  # Move the original directory to the temporary location
+        mkdir -p "$TARGET_DIR/$subdir"  # Ensure the subdir exists for the downloader
+        if ! download_content "$TARGET_DIR/$subdir"; then
+            echo "Download failed, restoring original content."
+            rm -rf "$TARGET_DIR/$subdir"
+            mv "$temp_dir" "$TARGET_DIR/$subdir"  # Restore the original directory
+            cleanup_temp_dir "$temp_dir"
+            exit 1
         fi
+        cleanup_temp_dir "$temp_dir"  # Clean up the temporary directory on success
     else
-        echo "Download failed, restoring original directory"
-        rm -rf "$subdir"  # Remove the new directory on failure
-        mv "$temp_dir" "$subdir"  # Restore the original directory
-        exit
+        if ! download_content "$TARGET_DIR/$subdir"; then
+            echo "Download failed."
+            exit 1
+        fi
     fi
 
-    echo "Synchronizing: $SYNC_SCRIPT $(basename "$subdir")"
-    "$SYNC_SCRIPT" "$(basename "$subdir")" || exit  # Synchronize the content
+    echo "Synchronizing content for $subdir"
+    "$SYNC_SCRIPT" "$(basename "$subdir")" || exit 1  # Synchronize the content
 }
 
 should_process() {
