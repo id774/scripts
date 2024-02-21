@@ -104,55 +104,20 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-create_temp_dir() {
-    # Creates a temporary directory for the specified subdir and returns its path
-    local subdir="$1"
-    local temp_dir="/tmp/${subdir}_temp_$(date +%Y%m%d%H%M%S)"
-    mkdir -p "$temp_dir"
-    echo "$temp_dir"  # Return the path of the temporary directory
-}
-
-download_content() {
-    # Runs the downloader script in the specified directory
-    local dir="$1"
-    echo "Running downloader script in $dir"
-    cd "$dir" || exit
-    "$PYTHON_BIN" "$DOWNLOADER_SCRIPT" || return 1  # Return 1 on failure
-    return 0  # Return 0 on success
-}
-
-cleanup_temp_dir() {
-    # Cleans up the specified temporary directory
-    local temp_dir="$1"
-    echo "Cleaning up temporary directory: $temp_dir"
-    rm -rf "$temp_dir"
-}
-
 update_content() {
-    local subdir="$1"
-    local temp_dir=""
-
+    subdir="$1"
     if [ "$RESET" = true ]; then
-        temp_dir=$(create_temp_dir "$subdir")
-        mv "$TARGET_DIR/$subdir" "$temp_dir"  # Move the original directory to the temporary location
-        mkdir -p "$TARGET_DIR/$subdir"  # Ensure the subdir exists for the downloader
-        if ! download_content "$TARGET_DIR/$subdir"; then
-            echo "Download failed, restoring original content."
-            rm -rf "$TARGET_DIR/$subdir"
-            mv "$temp_dir" "$TARGET_DIR/$subdir"  # Restore the original directory
-            cleanup_temp_dir "$temp_dir"
-            return
-        fi
-        cleanup_temp_dir "$temp_dir"  # Clean up the temporary directory on success
-    else
-        if ! download_content "$TARGET_DIR/$subdir"; then
-            echo "Download failed."
-            return
-        fi
+        echo "Resetting directory: $subdir"
+        mv "$subdir" "${subdir}_old"  # Rename the existing directory to *_old
+        mkdir -p "$subdir"  # Create a new directory with the original name
     fi
 
-    echo "Synchronizing content for $subdir"
-    "$SYNC_SCRIPT" "$(basename "$subdir")" || return
+    echo "Running: $PYTHON_BIN $DOWNLOADER_SCRIPT in $subdir"
+    cd "$subdir" || exit
+    "$PYTHON_BIN" "$DOWNLOADER_SCRIPT" || exit
+    cd "$TARGET_DIR" || exit
+    echo "Synchronizing: $SYNC_SCRIPT $(basename "$subdir")"
+    "$SYNC_SCRIPT" "$(basename "$subdir")" || exit
 }
 
 should_process() {
