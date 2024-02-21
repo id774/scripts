@@ -106,10 +106,18 @@ done
 
 update_content() {
     subdir="$1"
+
     if [ "$RESET" = true ]; then
         echo "Resetting directory: $subdir"
-        subdir_basename=$(basename "$subdir")
-        mv "$subdir" "${TARGET_DIR}/${subdir_basename}_old"  # Rename the existing directory to *_old
+        subdir_basename=$(basename "$subdir")  # Extract the directory name
+        old_dir="${TARGET_DIR}/${subdir_basename}_old"
+
+        if [ -d "$old_dir" ]; then
+            echo "Removing existing backup directory: ${subdir_basename}_old"
+            rm -rf "$old_dir"  # Remove existing backup directory if it exists
+        fi
+
+        mv "$subdir" "$old_dir"  # Rename the directory to *_old
         mkdir -p "$subdir"  # Create a new directory with the original name
     fi
 
