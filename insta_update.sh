@@ -141,18 +141,18 @@ update_content() {
             rm -rf "$TARGET_DIR/$subdir"
             mv "$temp_dir" "$TARGET_DIR/$subdir"  # Restore the original directory
             cleanup_temp_dir "$temp_dir"
-            exit 1
+            return
         fi
         cleanup_temp_dir "$temp_dir"  # Clean up the temporary directory on success
     else
         if ! download_content "$TARGET_DIR/$subdir"; then
             echo "Download failed."
-            exit 1
+            return
         fi
     fi
 
     echo "Synchronizing content for $subdir"
-    "$SYNC_SCRIPT" "$(basename "$subdir")" || exit 1  # Synchronize the content
+    "$SYNC_SCRIPT" "$(basename "$subdir")" || return
 }
 
 should_process() {
