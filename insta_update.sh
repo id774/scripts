@@ -108,7 +108,8 @@ update_content() {
     subdir="$1"
     if [ "$RESET" = true ]; then
         echo "Resetting directory: $subdir"
-        mv "$subdir" "${subdir}_old"  # Rename the existing directory to *_old
+        subdir_basename=$(basename "$subdir")
+        mv "$subdir" "${TARGET_DIR}/${subdir_basename}_old"  # Rename the existing directory to *_old
         mkdir -p "$subdir"  # Create a new directory with the original name
     fi
 
