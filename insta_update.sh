@@ -7,9 +7,12 @@
 #  This script navigates to a specified directory and executes an Instagram
 #  content downloader script in each subdirectory, followed by a synchronization
 #  script. It supports an optional reset feature to clear each target directory
-#  before downloading new content. The script requires a configuration file
-#  named 'insta_update.conf' to specify necessary settings. It is designed to
-#  be run in a POSIX-compliant shell environment.
+#  before downloading new content. Instead of directly clearing the content,
+#  it now safely renames the target directory and only removes it after a
+#  successful update, ensuring data integrity even if the download fails.
+#  The script requires a configuration file named 'insta_update.conf' to
+#  specify necessary settings. It is designed to be run in a POSIX-compliant
+#  shell environment.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,13 +20,17 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2024-02-21
+#       Updated the reset functionality to rename the target directory before
+#       clearing, ensuring data is not lost if the download fails.
 #  v1.0 2024-02-19
 #       Initial release.
 #
 #  Usage:
 #  ./insta_update.sh [--reset]
-#  The --reset option is powerful and will clear all content in each target
-#  subdirectory before downloading new content. Use with caution.
+#  The --reset option is powerful and will now safely rename the target
+#  directory before downloading new content. The original directory will only be
+#  removed if the download succeeds, ensuring data integrity.
 #
 #  Configuration file ('insta_update.conf') requirements:
 #  - PYTHON_BIN: Path to the Python binary.
@@ -33,8 +40,8 @@
 #  Ensure all these variables are set in 'insta_update.conf'.
 #
 #  Notes:
-#  - The --reset option will irreversibly delete existing content in each
-#    subdirectory before updating. Ensure backups are made if necessary.
+#  - The --reset option now renames the target directory to a temporary one
+#    before downloading. If the download fails, the original content is restored.
 #  - Make sure 'exclude_accounts.txt' and 'include_accounts.txt' are properly
 #    formatted, with one account name per line, if they are used.
 #  - The script supports 'exclude_accounts.txt' and 'include_accounts.txt' lists.
@@ -98,17 +105,34 @@ while [ $# -gt 0 ]; do
 done
 
 update_content() {
-    subdir="$1"
-    cd "$subdir" || exit
-    if [ "$RESET" = true ]; then
-        echo "Resetting directory: $subdir"
-        rm -f ./*
-    fi
-    echo "Running: $PYTHON_BIN $DOWNLOADER_SCRIPT in $subdir"
-    "$PYTHON_BIN" "$DOWNLOADER_SCRIPT" || exit
     cd "$TARGET_DIR" || exit
+
+    subdir="$1"
+    temp_dir="${subdir}_temp_$(date +%Y%m%d%H%M%S)"  # Temporary directory name with timestamp
+
+    if [ "$RESET" = true ]; then
+        mv "$subdir" "$temp_dir"  # Rename or move the directory temporarily
+        mkdir -p "$subdir"  # Ensure the subdir exists for the downloader
+    fi
+
+    cd "$subdir" || exit
+
+    echo "Running: $PYTHON_BIN $DOWNLOADER_SCRIPT in $subdir"
+    if "$PYTHON_BIN" "$DOWNLOADER_SCRIPT"; then  # Downloading content
+        cd "$TARGET_DIR" || exit
+        if [ "$RESET" = true ]; then
+            echo "Removing temporary directory: $temp_dir"
+            rm -rf "$temp_dir"  # Remove the temporary directory on success
+        fi
+    else
+        echo "Download failed, restoring original directory"
+        rm -rf "$subdir"  # Remove the new directory on failure
+        mv "$temp_dir" "$subdir"  # Restore the original directory
+        exit
+    fi
+
     echo "Synchronizing: $SYNC_SCRIPT $(basename "$subdir")"
-    "$SYNC_SCRIPT" "$(basename "$subdir")" || exit
+    "$SYNC_SCRIPT" "$(basename "$subdir")" || exit  # Synchronize the content
 }
 
 should_process() {
