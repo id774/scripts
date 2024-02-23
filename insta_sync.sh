@@ -18,6 +18,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2024-02-23
+#       Added check_commands function to verify the presence and executability
+#       of required system commands before proceeding with the main script.
 #  v1.0 2024-02-08
 #       Initial release. Added support for per-account directory handling,
 #       local and conditional remote synchronization. Added checks for necessary
@@ -74,6 +77,19 @@ fi
 
 # Function Definitions
 
+# Check for required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 126
+        fi
+    done
+}
+
 # Checks if the specified directory exists
 check_dir() {
     if [ ! -d "$1" ]; then
@@ -105,6 +121,9 @@ if [ -z "$1" ]; then
     echo "Error: No Instagram account name provided."
     exit 1
 fi
+
+# Ensure necessary commands are available
+check_commands rsync ping chmod find
 
 ACCOUNT_NAME=$1
 INSTA_ACCOUNT_DIR="$INSTA_DIR/$ACCOUNT_NAME"
