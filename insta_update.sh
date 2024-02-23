@@ -61,6 +61,8 @@
 #  3. Necessary configuration variables not set: The script checks if all
 #     necessary configuration variables are set in 'insta_update.conf'.
 #  4. Specified scripts or target directory do not exist or are not executable.
+#  126. Required command(s) not executable.
+#  127. Required command(s) not installed.
 #
 ########################################################################
 

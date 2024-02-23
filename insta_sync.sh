@@ -52,6 +52,8 @@
 #  3. Local backup directory does not exist.
 #  4. Configuration file not found.
 #  5. One or more configuration variables not set.
+#  126. Required command(s) not executable.
+#  127. Required command(s) not installed.
 #
 ########################################################################
 
