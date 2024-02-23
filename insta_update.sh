@@ -20,6 +20,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2024-02-23
+#       Added check_commands function to verify the presence and executability
+#       of required system commands before proceeding with the main script.
 #  v1.1 2024-02-21
 #       Updated the reset functionality to rename the target directory before
 #       clearing, ensuring data is not lost if the download fails.
@@ -86,6 +89,22 @@ if [ ! -x "$PYTHON_BIN" ] || [ ! -f "$DOWNLOADER_SCRIPT" ] || [ ! -x "$DOWNLOADE
     echo "Error: Specified scripts or target directory do not exist or are not executable."
     exit 4
 fi
+
+# Check for required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 126
+        fi
+    done
+}
+
+# Ensure necessary commands are available
+check_commands mv mkdir rm cd grep
 
 RESET=false
 
