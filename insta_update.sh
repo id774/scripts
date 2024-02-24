@@ -106,7 +106,7 @@ check_commands() {
 }
 
 # Ensure necessary commands are available
-check_commands mv mkdir rm cd grep
+check_commands mv mkdir rm grep
 
 RESET=false
 
