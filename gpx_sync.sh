@@ -17,6 +17,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2024-02-24
+#       Added check_commands function to ensure all required system commands
+#       are installed and executable before proceeding with file operations.
 #  v1.6 2024-02-14
 #       Added functionality to set file permissions for GPX files before
 #       copying them to the destination directories. Permissions can be
@@ -93,6 +96,22 @@ if [ -z "$1" ] && [ -z "$DEFAULT_PERMISSIONS" ]; then
     echo "Error: DEFAULT_PERMISSIONS is not set in the configuration file and no permissions argument was provided."
     exit 5
 fi
+
+# Check for required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 126
+        fi
+    done
+}
+
+# Ensure necessary commands are available
+check_commands chmod cp rsync rm
 
 # Set default permissions from the configuration file or use the first argument if provided
 permissions=${1:-$DEFAULT_PERMISSIONS}
