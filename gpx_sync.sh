@@ -68,6 +68,8 @@
 #  3. Configuration file not found.
 #  4. Necessary configuration variable(s) not set.
 #  5. DEFAULT_PERMISSIONS not set in configuration file when no permissions argument provided.
+#  126. Required command(s) not executable.
+#  127. Required command(s) not installed.
 #
 ########################################################################
 
