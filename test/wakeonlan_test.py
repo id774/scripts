@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2024-02-26
+#       Modified test cases to suppress message output during tests.
 #  v1.0 2024-02-10
 #       Initial test script for wakeonlan.py
 #
@@ -45,8 +47,9 @@ class TestWakeOnLan(unittest.TestCase):
         expected_packet = bytes.fromhex('FF' * 6 + mac * 16)
         self.assertEqual(packet, expected_packet)
 
-    @ patch('wakeonlan.send_udp_broadcast')
-    def test_send_magic_packet(self, mock_send_udp_broadcast):
+    @patch('builtins.print')
+    @patch('wakeonlan.send_udp_broadcast')
+    def test_send_magic_packet(self, mock_send_udp_broadcast, mock_print):
         """Test sending a magic packet without actual network communication."""
         mac = "00:11:22:33:44:55"
         send_magic_packet(mac)
