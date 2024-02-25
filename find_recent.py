@@ -38,7 +38,8 @@
 #  0: Success
 #  1: Missing or incorrect arguments
 #  2: Incorrect datetime format
-#  3. Python version not supported.
+#  3: Specified path does not exist
+#  4. Python version not supported.
 #
 ########################################################################
 
@@ -102,6 +103,17 @@ def parse_datetime(date_str, time_str=None):
 
     return dt.replace(tzinfo=timezone.utc)
 
+def check_directory_exists(path):
+    """
+    Check if the specified directory exists.
+
+    Args:
+        path: The directory path to check.
+    """
+    if not os.path.exists(path):
+        print(f"Error: The specified path '{path}' does not exist.")
+        sys.exit(3)
+
 # Function to list recent files
 def list_recent_files(root_dir, datetime_obj, include_hidden):
     """
@@ -130,7 +142,12 @@ if __name__ == "__main__":
     # Check Python version
     if sys.version_info < (3, 2):
         print("Error: This script requires Python 3.2 or later.")
-        sys.exit(3)
+        sys.exit(4)
+
     date_arg, time_arg, path_arg, include_hidden = parse_arguments()
     datetime_obj = parse_datetime(date_arg, time_arg)
+
+    # Call the new function to check directory existence
+    check_directory_exists(path_arg)
+
     list_recent_files(path_arg, datetime_obj, include_hidden)
