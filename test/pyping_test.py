@@ -15,7 +15,7 @@
 #
 #  Version History:
 #  v1.0 2024-01-12
-#      Initial release. Test suite for pyping.py script.
+#       Initial release. Test suite for pyping.py script.
 #
 #  Notes:
 #  - This test simulates the pinging process and does not send actual

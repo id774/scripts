@@ -17,7 +17,7 @@
 #  v1.1 2024-01-11
 #       Added '-q' option for quiet mode.
 #  v1.0 2024-01-10
-#      Initial release of test script.
+#       Initial release of test script.
 #
 #  Usage:
 #  Run this script from the command line using:

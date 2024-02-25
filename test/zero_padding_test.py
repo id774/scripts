@@ -15,7 +15,7 @@
 #
 #  Version History:
 #  v1.0 2024-01-11
-#      Initial release of test script.
+#       Initial release of test script.
 #
 #  Usage:
 #  Run this script from the command line using:
