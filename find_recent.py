@@ -20,14 +20,14 @@
 #       displaying their modification time, and ignoring hidden directories by default.
 #
 #  Usage:
-#  Run this script with a date argument in the format YYYY-MM-DD and an
-#  optional time in the format HH:MM. You can also specify a directory path.
+#  Run this script with the '-d' option followed by the date in YYYY-MM-DD format
+#  and optionally time in HH:MM format. You can also specify a directory path with '-p'.
 #  Use the '-a' option to include hidden directories.
 #  Examples:
-#    ./find_recent.py 2024-01-01
-#    ./find_recent.py 2024-01-01 13:00
-#    ./find_recent.py 2024-01-01 /path/to/directory
-#    ./find_recent.py -a 2024-01-01 13:00 /path/to/directory
+#     ./find_recent.py -d "2024-01-01"
+#     ./find_recent.py -d "2024-01-01 13:00"
+#     ./find_recent.py -d "2024-01-01" -p "/path/to/directory"
+#     ./find_recent.py -d "2024-01-01 13:00" -a -p "/path/to/directory"
 #
 #  Notes:
 #  - This script is compatible with Python 3.2 and later versions.
@@ -42,6 +42,7 @@
 #
 ########################################################################
 
+import argparse
 import os
 import sys
 from datetime import datetime, timezone
@@ -50,24 +51,33 @@ from datetime import datetime, timezone
 # Function to parse command line arguments
 def parse_arguments():
     """
-    Parse command line arguments.
+    Parses command line arguments.
 
     Returns:
-        A tuple containing date_str, time_str, path, and include_hidden.
+        datetime_str: A string representing the date and optional time in ISO format.
+        path: The directory path to search. Defaults to current directory if not specified.
+        include_hidden: Boolean flag indicating whether to include hidden directories in the search.
     """
-    include_hidden = '-a' in sys.argv
-    if include_hidden:
-        sys.argv.remove('-a')
+    parser = argparse.ArgumentParser(description='List files updated after a specified datetime.')
 
-    if len(sys.argv) < 2 or len(sys.argv) > 4:
-        print("Usage: find_recent.py [-a] <YYYY-MM-DD> [HH:MM] [path]")
-        sys.exit(1)
+    # Add argument for date and optional time in ISO format (YYYY-MM-DD or "YYYY-MM-DD HH:MM")
+    parser.add_argument('-d', '--datetime', required=True, help='Date and optional time in ISO format (YYYY-MM-DD or "YYYY-MM-DD HH:MM"). Time is optional and defaults to 00:00.')
 
-    date_arg = sys.argv[1]
-    time_arg = sys.argv[2] if len(sys.argv) >= 3 and ':' in sys.argv[2] else None
-    path_arg = sys.argv[3] if len(sys.argv) == 4 else (sys.argv[2] if len(sys.argv) == 3 and time_arg is None else ".")
+    # Add argument for the search directory path, defaulting to the current directory
+    parser.add_argument('-p', '--path', default='.', help='Directory path to search, defaults to current directory.')
 
-    return date_arg, time_arg, path_arg, include_hidden
+    # Add argument to include hidden directories in the search
+    parser.add_argument('-a', '--all', action='store_true', help='Include hidden directories in the search.')
+
+    args = parser.parse_args()
+
+    # date_arg and time_arg are combined in args.datetime, so they need to be split
+    datetime_parts = args.datetime.split(' ')
+    date_arg = datetime_parts[0]
+    time_arg = datetime_parts[1] if len(datetime_parts) > 1 else None
+
+    return date_arg, time_arg, args.path, args.all
+
 
 # Function to convert string arguments to datetime object
 def parse_datetime(date_str, time_str=None):
