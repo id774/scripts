@@ -28,7 +28,7 @@ import sys
 import unittest
 from unittest.mock import patch
 
-# Adjust the path to import smb from the parent directory
+# Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import smb
 

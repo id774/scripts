@@ -24,7 +24,7 @@ import sys
 import unittest
 from unittest.mock import patch
 
-# Adjusting the path to import wakeonlan from the parent directory
+# Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from wakeonlan import (create_magic_packet, format_mac_address,
                        send_magic_packet, send_udp_broadcast)

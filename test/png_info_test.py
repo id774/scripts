@@ -26,7 +26,7 @@ import sys
 import unittest
 from unittest.mock import mock_open, patch
 
-# Adjusting the path to import png_info from the parent directory
+# Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from png_info import read_png_info
 

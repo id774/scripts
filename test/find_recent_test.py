@@ -29,7 +29,7 @@ import unittest
 from datetime import datetime, timezone
 from unittest.mock import patch
 
-# Adjust the path to import find_recent from the parent directory
+# Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import find_recent
 
