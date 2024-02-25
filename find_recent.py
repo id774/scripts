@@ -93,7 +93,13 @@ def parse_datetime(date_str, time_str=None):
     """
     datetime_str = date_str + " " + time_str if time_str else date_str
     datetime_format = "%Y-%m-%d %H:%M" if time_str else "%Y-%m-%d"
-    dt = datetime.strptime(datetime_str, datetime_format)
+
+    try:
+        dt = datetime.strptime(datetime_str, datetime_format)
+    except ValueError:
+        print(f"Error: The datetime '{datetime_str}' does not match the required format '{datetime_format}'.")
+        sys.exit(2)
+
     return dt.replace(tzinfo=timezone.utc)
 
 # Function to list recent files
