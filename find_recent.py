@@ -137,11 +137,11 @@ def list_recent_files(root_dir, datetime_obj, include_hidden):
                 print("{} - {}".format(mtime.strftime('%Y-%m-%d %H:%M:%S'), file_path))  # No change in print statement
 
 
-if __name__ == "__main__":
+def main():
     # Check Python version
     if sys.version_info < (3, 2):
         print("Error: This script requires Python 3.2 or later.")
-        sys.exit(3)
+        sys.exit(4)
 
     date_arg, time_arg, path_arg, include_hidden = parse_arguments()
     datetime_obj = parse_datetime(date_arg, time_arg)
@@ -150,3 +150,7 @@ if __name__ == "__main__":
     check_directory_exists(path_arg)
 
     list_recent_files(path_arg, datetime_obj, include_hidden)
+
+
+if __name__ == "__main__":
+    main()

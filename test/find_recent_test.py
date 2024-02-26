@@ -153,6 +153,58 @@ class TestFindRecent(unittest.TestCase):
         ]
         mock_print.assert_has_calls(expected_calls, any_order=True)
 
+    @patch('builtins.print')
+    @patch('find_recent.os.path.getmtime')
+    @patch('find_recent.os.walk')
+    def test_empty_directory(self, mock_walk, mock_getmtime, mock_print):
+        """Test behavior when the specified directory is empty."""
+        test_path = "/path/to/empty_directory"
+        include_hidden = False
+        test_date = datetime(2024, 2, 24, 7, 0, tzinfo=timezone.utc)
+
+        # Mock the os.walk function to simulate an empty directory
+        mock_walk.return_value = [(test_path, [], [])]
+
+        find_recent.list_recent_files(test_path, test_date, include_hidden)
+
+        # Ensure that the print function was not called
+        mock_print.assert_not_called()
+
+    @patch('builtins.print')
+    @patch('find_recent.os.path.getmtime')
+    @patch('find_recent.os.walk')
+    def test_deep_directory_structure(self, mock_walk, mock_getmtime, mock_print):
+        """Test behavior with a deep directory structure."""
+        test_path = "/path/to/deep/directory/structure"
+        include_hidden = False
+        test_date = datetime(2024, 2, 24, 7, 0, tzinfo=timezone.utc)
+
+        # Mock the os.walk function to return a deep directory structure
+        mock_walk.return_value = [
+            (test_path, ["subdir1", "subdir2"], ["recent1.txt"]),
+            (os.path.join(test_path, "subdir1"), ["subsubdir"], ["recent2.txt"]),
+            (os.path.join(test_path, "subdir1", "subsubdir"), [], ["recent3.txt"]),
+        ]
+
+        # Define modification times for each file
+        modification_times = {
+            os.path.join(test_path, "recent1.txt"): test_date.timestamp() + 3600,
+            os.path.join(test_path, "subdir1", "recent2.txt"): test_date.timestamp() + 7200,
+            os.path.join(test_path, "subdir1", "subsubdir", "recent3.txt"): test_date.timestamp() + 10800,
+        }
+
+        mock_getmtime.side_effect = lambda x: modification_times[x]
+
+        find_recent.list_recent_files(test_path, test_date, include_hidden)
+
+        # Assertions for expected output
+        expected_calls = [
+            call('2024-02-24 08:00:00 - {}'.format(os.path.join(test_path, "recent1.txt"))),
+            call('2024-02-24 09:00:00 - {}'.format(os.path.join(test_path, "subdir1", "recent2.txt"))),
+            call('2024-02-24 10:00:00 - {}'.format(os.path.join(test_path, "subdir1", "subsubdir", "recent3.txt"))),
+        ]
+        mock_print.assert_has_calls(expected_calls, any_order=True)
+
 
 if __name__ == '__main__':
     unittest.main()
