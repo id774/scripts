@@ -36,10 +36,9 @@
 #
 #  Error Conditions and Return Codes:
 #  0: Success
-#  1: Missing or incorrect arguments
+#  1: Specified path does not exist
 #  2: Incorrect datetime format
-#  3: Specified path does not exist
-#  4. Python version not supported.
+#  3. Python version not supported.
 #
 ########################################################################
 
@@ -112,7 +111,7 @@ def check_directory_exists(path):
     """
     if not os.path.exists(path):
         print("Error: The specified path '{}' does not exist.".format(path))
-        sys.exit(3)
+        sys.exit(1)
 
 # Function to list recent files
 def list_recent_files(root_dir, datetime_obj, include_hidden):
@@ -142,7 +141,7 @@ if __name__ == "__main__":
     # Check Python version
     if sys.version_info < (3, 2):
         print("Error: This script requires Python 3.2 or later.")
-        sys.exit(4)
+        sys.exit(3)
 
     date_arg, time_arg, path_arg, include_hidden = parse_arguments()
     datetime_obj = parse_datetime(date_arg, time_arg)
