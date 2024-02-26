@@ -11,6 +11,8 @@
 #  yield from, extended unpacking, pathlib module, and notably, the shutil.which function.
 #  The script helps in identifying code segments that may not be compatible with earlier
 #  versions of Python, facilitating easier code migration and compatibility assessments.
+#  It now also tracks the detected issues and provides feedback on whether the issues
+#  are confined to the dummy.py script or present in other scripts as well.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -18,6 +20,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.1 2024-02-27
+#       Enhanced issue tracking to differentiate between issues found in dummy.py and other scripts.
 #  v3.0 2024-02-11
 #       Fixed an issue where valid search results were not being displayed.
 #       The script and its associated test file are now excluded from search results.
@@ -62,6 +66,7 @@ import os
 import re
 import sys
 
+detected_issues = []  # List to store detected issues
 
 def is_excluded_line(line):
     """ Check if the line should be excluded from search (e.g., comments). """
@@ -90,6 +95,7 @@ def search_feature(directory, feature_name, pattern):
                     for i, line in enumerate(f):
                         if re.search(pattern, line) and not is_excluded_line(line):
                             print(file_path + ":" + str(i + 1) + ": " + line.strip())
+                            detected_issues.append(os.path.basename(file_path))  # Store only the file name, not the entire path
 
 def main():
     target_dir = sys.argv[1] if len(sys.argv) > 1 else '.'
@@ -118,6 +124,16 @@ def main():
     # Perform search for each feature
     for feature, pattern in features.items():
         search_feature(target_dir, feature, pattern)
+
+    unique_issues = set(detected_issues)  # Create a set of unique entries from detected issues
+
+    # Check if the set of unique issues contains only 'dummy.py'
+    if not detected_issues:
+        print("No Python 3.x compatibility issues found.")
+    elif unique_issues == {'dummy.py'}:
+        print("Only dummy.py was detected with Python 3.x features, which is expected. No compatibility issues found in other scripts.")
+    else:
+        print("Compatibility issues detected in scripts other than dummy.py. Please review the findings.")
 
 
 if __name__ == "__main__":
