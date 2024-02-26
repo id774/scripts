@@ -98,7 +98,7 @@ def parse_datetime(date_str, time_str=None):
     try:
         dt = datetime.strptime(datetime_str, datetime_format)
     except ValueError:
-        print(f"Error: The datetime '{datetime_str}' does not match the required format '{datetime_format}'.")
+        print("Error: The datetime '{}' does not match the required format '{}'.".format(datetime_str, datetime_format))
         sys.exit(2)
 
     return dt.replace(tzinfo=timezone.utc)
@@ -111,7 +111,7 @@ def check_directory_exists(path):
         path: The directory path to check.
     """
     if not os.path.exists(path):
-        print(f"Error: The specified path '{path}' does not exist.")
+        print("Error: The specified path '{}' does not exist.".format(path))
         sys.exit(3)
 
 # Function to list recent files
