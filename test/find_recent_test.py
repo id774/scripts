@@ -58,7 +58,7 @@ class TestFindRecent(unittest.TestCase):
         }[x]
 
         # Execute the function with the test parameters
-        find_recent.list_recent_files(test_path, test_date, include_hidden)
+        find_recent.list_recent_files(test_path, test_date, include_hidden, False)
 
         # Assertions to check if the 'print' function was called with the expected file
         # This requires patching 'print' function as well
@@ -78,7 +78,7 @@ class TestFindRecent(unittest.TestCase):
         ]
         mock_getmtime.return_value = test_date.timestamp() + 3600  # 1 hour after test_date
 
-        find_recent.list_recent_files(test_path, test_date, include_hidden)
+        find_recent.list_recent_files(test_path, test_date, include_hidden, False)
 
         mock_print.assert_any_call('2024-02-24 08:00:00 - /path/to/directory/recent.txt')
         mock_print.assert_any_call('2024-02-24 08:00:00 - /path/to/directory/.hidden_file.txt')
@@ -97,7 +97,7 @@ class TestFindRecent(unittest.TestCase):
         ]
         mock_getmtime.return_value = test_date.timestamp() + 3600  # 1 hour after test_date
 
-        find_recent.list_recent_files(test_path, test_date, include_hidden)
+        find_recent.list_recent_files(test_path, test_date, include_hidden, False)
 
         mock_print.assert_called_once_with('2024-02-24 08:00:00 - /path/to/directory/recent.txt')
         # Ensure that the print function was not called for the hidden file
@@ -141,7 +141,7 @@ class TestFindRecent(unittest.TestCase):
         mock_getmtime.side_effect = lambda x: modification_times[x]
 
         # Execute the function with the test parameters
-        find_recent.list_recent_files(test_path, test_date, include_hidden)
+        find_recent.list_recent_files(test_path, test_date, include_hidden, False)
 
         # Assertions to check if the 'print' function was called with the expected files
         expected_calls = [
@@ -165,7 +165,7 @@ class TestFindRecent(unittest.TestCase):
         # Mock the os.walk function to simulate an empty directory
         mock_walk.return_value = [(test_path, [], [])]
 
-        find_recent.list_recent_files(test_path, test_date, include_hidden)
+        find_recent.list_recent_files(test_path, test_date, include_hidden, False)
 
         # Ensure that the print function was not called
         mock_print.assert_not_called()
@@ -195,7 +195,7 @@ class TestFindRecent(unittest.TestCase):
 
         mock_getmtime.side_effect = lambda x: modification_times[x]
 
-        find_recent.list_recent_files(test_path, test_date, include_hidden)
+        find_recent.list_recent_files(test_path, test_date, include_hidden, False)
 
         # Assertions for expected output
         expected_calls = [
