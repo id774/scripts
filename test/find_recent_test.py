@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2024-03-03
+#       Added test case for '-f' option to ensure filenames are listed correctly.
 #  v1.0 2024-02-25
 #       Initial release of test script.
 #
@@ -204,6 +206,31 @@ class TestFindRecent(unittest.TestCase):
             call('2024-02-24 10:00:00 - {}'.format(os.path.join(test_path, "subdir1", "subsubdir", "recent3.txt"))),
         ]
         mock_print.assert_has_calls(expected_calls, any_order=True)
+
+    @patch('builtins.print')
+    @patch('find_recent.os.path.getmtime')
+    @patch('find_recent.os.walk')
+    def test_recent_files_with_filenames_only_option(self, mock_walk, mock_getmtime, mock_print):
+        """Test that only filenames are listed when the '-f' option is used."""
+        test_path = "/path/to/directory"
+        include_hidden = False
+        filenames_only = True
+        test_date = datetime(2024, 3, 3, 7, 0, tzinfo=timezone.utc)
+
+        mock_walk.return_value = [
+            (test_path, [], ["recent.txt", "old.txt", ".hidden.txt"]),
+        ]
+
+        mock_getmtime.side_effect = lambda x: {
+            "/path/to/directory/recent.txt": test_date.timestamp() + 3600,  # 1 hour after the test date
+            "/path/to/directory/old.txt": test_date.timestamp() - 86400,  # 1 day before the test date
+            "/path/to/directory/.hidden.txt": test_date.timestamp() + 3600,  # 1 hour after the test date (hidden file)
+        }[x]
+
+        find_recent.list_recent_files(test_path, test_date, include_hidden, filenames_only)
+
+        # Check if the 'print' function was called only with the filename of the recent file
+        mock_print.assert_called_once_with('recent.txt')
 
 
 if __name__ == '__main__':
