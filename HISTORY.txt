@@ -1,6 +1,9 @@
 HISTORY.txt
 ===========
 
+v1.2.2 (Release Date: TBD)
+--------------------------
+
 v1.2.1 (2024-02-28)
 --------------------------
 - Resolved a critical issue with the Python compatibility search script.
