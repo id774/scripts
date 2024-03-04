@@ -17,6 +17,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2024-03-04
+#       Added command check functionality to ensure all required commands
+#       are available before script execution.
 #  v1.4 2024-03-03
 #       Added a function to check SSHD configuration parameters and extended
 #       macOS support to check both default and main configuration files.
@@ -38,6 +41,22 @@
 #  the operating system and checks the SSHD configuration accordingly.
 #
 ########################################################################
+
+# Check for required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 126
+        fi
+    done
+}
+
+# Ensure necessary commands are available
+check_commands grep sudo cp chown
 
 # Define a function to check key SSHD configuration parameters
 check_sshd_config() {
@@ -71,3 +90,4 @@ else
 fi
 
 exit 0
+
