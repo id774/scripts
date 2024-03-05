@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2024-03-05
+#       Fixed issue with deleting directories containing subdirectories.
 #  v1.6 2024-01-20
 #       Refactored to encapsulate option parser configuration in a separate function.
 #  v1.5 2024-01-13
@@ -81,15 +83,23 @@ def print_action(action, source, destination=None, options=None):
 
 def handle_directory(path, options):
     """ Recursively processes a directory. """
-    entries = os.listdir(path)
-    dir_empty = True
+    try:
+        entries = os.listdir(path)
+    except FileNotFoundError:
+        return
 
     for entry in entries:
         old_path = os.path.join(path, entry)
         if os.path.isdir(old_path):
             handle_directory(old_path, options)
-            if options.delete_mode and not os.listdir(old_path):
-                dir_empty = False
+            try:
+                if options.delete_mode and not os.listdir(old_path):
+                    if options.execute_mode:
+                        os.rmdir(old_path)
+                    if not options.quiet_mode:
+                        print_action("Deleted empty directory", old_path, options=options)
+            except FileNotFoundError:
+                pass
         else:
             dir_empty = False
             new_filename = "{}_{}".format(path.replace('/', '_'), entry)
@@ -111,11 +121,14 @@ def handle_directory(path, options):
                 if not options.quiet_mode:
                     print_action("Moved", old_path, new_filename, options)
 
-    if options.delete_mode and dir_empty:
-        if options.execute_mode:
-            os.rmdir(path)
-        if not options.quiet_mode:
-            print_action("Deleted directory", path, options=options)
+    try:
+        if options.delete_mode and not os.listdir(path):
+            if options.execute_mode:
+                os.rmdir(path)
+            if not options.quiet_mode:
+                print_action("Deleted empty directory", path, options=options)
+    except FileNotFoundError:
+        pass
 
 def main(options):
     """ Main function to process directories. """
