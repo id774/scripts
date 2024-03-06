@@ -15,6 +15,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2024-03-06
+#       Added checks to ensure specified Python and RSpec paths are not only
+#       non-empty but also point to executable files. This enhancement
+#       prevents the execution of tests with invalid paths.
 #  v1.3 2024-01-14
 #       Added the ability to specify custom Python and RSpec paths
 #       as command-line arguments.
@@ -62,6 +66,10 @@ fi
 if [ -z "$python_path" ]; then
     echo "Python is not installed. Skipping Python tests."
 else
+    if [ ! -x "$python_path" ]; then
+        echo "Error: Specified Python path is either invalid or not executable."
+        exit 1
+    fi
     # Display Python path and version
     echo "Python path: $python_path"
     "$python_path" --version
@@ -87,6 +95,10 @@ fi
 if [ -z "$rspec_path" ]; then
     echo "RSpec is not installed. Skipping Ruby tests."
 else
+    if [ ! -x "$rspec_path" ]; then
+        echo "Error: Specified RSpec path is either invalid or not executable."
+        exit 1
+    fi
     # Display RSpec path and version
     echo "RSpec path: $rspec_path"
     ruby_dir="$(dirname "$rspec_path")"
