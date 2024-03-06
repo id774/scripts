@@ -31,4 +31,10 @@ echo -n "*** $0: Job ended on `/bin/hostname` at ">>$JOBLOG 2>&1
 date "+%Y/%m/%d %T">>$JOBLOG 2>&1
 echo>>$JOBLOG 2>&1
 
-exit 0
+grep "Some tests failed" $JOBLOG
+
+if [ $? = 0 ]; then
+    exit 1
+else
+    exit 0
+fi
