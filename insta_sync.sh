@@ -18,6 +18,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2024-03-07
+#       Added configuration options for customizable file and directory
+#       permissions in 'insta_sync.conf'. Updated script to apply these
+#       permissions to Instagram account data directories and files.
 #  v1.1 2024-02-23
 #       Added check_commands function to verify the presence and executability
 #       of required system commands before proceeding with the main script.
@@ -38,6 +42,8 @@
 #  - REMOTE_USER: Username for remote server access.
 #  - REMOTE_HOST: Hostname or IP address of the remote server.
 #  - REMOTE_DIR: Remote directory for data synchronization.
+#  - DIR_PERMISSIONS: Permissions for directories within INSTA_DIR.
+#  - FILE_PERMISSIONS: Permissions for files within INSTA_DIR.
 #  Ensure all these variables are set in 'insta_sync.conf'.
 #
 #  Notes:
@@ -136,8 +142,8 @@ check_dir "$INSTA_ACCOUNT_DIR"
 check_dir "$BACKUP_DIR"
 
 # Update permissions
-chmod 750 "$INSTA_ACCOUNT_DIR"
-find "$INSTA_ACCOUNT_DIR" -type f -exec chmod 640 {} \;
+chmod "$DIR_PERMISSIONS" "$INSTA_ACCOUNT_DIR"
+find "$INSTA_ACCOUNT_DIR" -type f -exec chmod "$FILE_PERMISSIONS" {} \;
 
 # Perform local sync
 sync_files "$INSTA_ACCOUNT_DIR" "$BACKUP_ACCOUNT_DIR"
