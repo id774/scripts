@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# find_recent.py: List files updated within a specified datetime range
+# find_range.py: List files updated within a specified datetime range
 #
 #  Description:
 #  This script lists all files within a specified directory (or the current
@@ -20,6 +20,8 @@
 #  v1.2 2024-03-08
 #       Added '-s' and '-e' options for specifying start and end datetime.
 #       Maintained '-d' option for backward compatibility.
+#       Renamed script to find_range.py to better reflect its functionality
+#       of searching files within a specified datetime range.
 #  v1.1 2024-03-03
 #       Added '-f' option to list filenames only.
 #  v1.0 2024-02-25
@@ -32,11 +34,11 @@
 #  Use the '-a' option to include hidden directories. The '-f' option lists filenames only.
 #  Use '-s' and '-e' options to specify a datetime range.
 #  Examples:
-#     ./find_recent.py -d "2024-01-01"
-#     ./find_recent.py -s "2024-01-01" -e "2024-01-02 13:00"
-#     ./find_recent.py -s "2024-01-01" -p "/path/to/directory"
-#     ./find_recent.py -d "2024-03-02" -f
-#     ./find_recent.py -e "2024-01-02"
+#     ./find_range.py -d "2024-01-01"
+#     ./find_range.py -s "2024-01-01" -e "2024-01-02 13:00"
+#     ./find_range.py -s "2024-01-01" -p "/path/to/directory"
+#     ./find_range.py -d "2024-03-02" -f
+#     ./find_range.py -e "2024-01-02"
 #
 #  Notes:
 #  - This script is compatible with Python 3.2 and later versions.
