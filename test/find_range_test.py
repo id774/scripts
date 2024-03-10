@@ -34,6 +34,7 @@
 #
 ########################################################################
 
+import argparse
 import os
 import sys
 import unittest
@@ -393,6 +394,30 @@ class TestFindRecent(unittest.TestCase):
         ]
         mock_print.assert_has_calls(expected_calls, any_order=True)
         self.assertEqual(mock_print.call_count, 2)
+
+    @patch('find_range.sys.exit')
+    @patch('find_range.print')
+    def test_invalid_datetime_format(self, mock_print, mock_sys_exit):
+        """Test the script exits with error on incorrect datetime format."""
+        with patch('find_range.parse_arguments', return_value=argparse.Namespace(datetime=['2024-02-30'], start=None, end=None, path='.', all=False, filenames=False)):
+            find_range.main()
+            mock_sys_exit.assert_called_with(2)
+
+    @patch('find_range.sys.exit')
+    @patch('find_range.print')
+    def test_nonexistent_directory_path(self, mock_print, mock_sys_exit):
+        """Test the script exits with error when the specified path does not exist."""
+        with patch('find_range.parse_arguments', return_value=argparse.Namespace(datetime=['2024-02-25'], start=None, end=None, path='/nonexistent/path', all=False, filenames=False)):
+            find_range.main()
+            mock_sys_exit.assert_called_with(1)
+
+    @patch('find_range.list_recent_files')
+    @patch('find_range.print')
+    def test_default_directory_path(self, mock_print, mock_list_recent_files):
+        """Test the script uses the current directory as default when no path is specified."""
+        with patch('find_range.parse_arguments', return_value=argparse.Namespace(datetime=['2024-02-25'], start=None, end=None, path='.', all=False, filenames=False)):
+            find_range.main()
+            mock_list_recent_files.assert_called()
 
 
 if __name__ == '__main__':
