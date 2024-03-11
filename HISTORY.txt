@@ -6,6 +6,7 @@ v1.2.2 (Release Date: TBD)
 - Renamed find_recent.py to find_range.py with enhanced range options.
 - Enhanced checks in existing scripts.
 - Added CI cron scripts.
+- Added several test cases to enrich the testing of new features and ensure robustness.
 
 v1.2.1 (2024-02-28)
 --------------------------
