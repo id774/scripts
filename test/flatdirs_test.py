@@ -18,6 +18,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2024-03-11
+#       Added new test cases to enhance coverage and ensure the script's
+#       robustness in handling various file system operations.
 #  v1.1 2024-01-13
 #       Updated for script name change to flatdirs.py.
 #       Enhanced test cases to cover all major functionalities.
@@ -29,7 +32,7 @@
 import os
 import sys
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -124,6 +127,54 @@ class TestFlatDirs(unittest.TestCase):
                                  quiet_mode=True, execute_mode=True, rename_only_mode=False)
         flatdirs.main(test_options)
         self.mock_print_action.assert_not_called()
+
+    def test_move_files_permission_error(self):
+        """Test handling permission error during file move within subdirectories."""
+        self.mock_move.side_effect = PermissionError("Permission denied")
+        test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
+                                 quiet_mode=False, execute_mode=True, rename_only_mode=False)
+        with self.assertRaises(PermissionError):
+            flatdirs.main(test_options)
+
+    def test_handle_nested_subdirectories(self):
+        """Test handling files in nested subdirectories are moved correctly to the base directory."""
+        self.dir_contents['subdir1'].append('nested_subdir')
+        self.dir_contents['subdir1/nested_subdir'] = ['file5.txt']
+        test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
+                                 quiet_mode=False, execute_mode=True, rename_only_mode=False)
+        flatdirs.main(test_options)
+        expected_destination = 'subdir1_nested_subdir_file5.txt'
+        self.mock_move.assert_any_call(os.path.join('subdir1', 'nested_subdir', 'file5.txt'), expected_destination)
+
+    def test_move_files_to_correct_destination(self):
+        """Test files are moved to the correct destination in the base directory."""
+        test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
+                                 quiet_mode=False, execute_mode=True, rename_only_mode=False)
+        flatdirs.main(test_options)
+        expected_calls = [
+            call(os.path.join('subdir1', 'file3.txt'), 'subdir1_file3.txt'),
+            call(os.path.join('subdir2', 'file4.txt'), 'subdir2_file4.txt')
+        ]
+        self.mock_move.assert_has_calls(expected_calls, any_order=True)
+
+    def test_move_files_with_name_conflict(self):
+        """Test moving files with name conflict results in overwriting in the base directory."""
+        # Simulate a file that would cause a name conflict
+        self.dir_contents['.'].append('subdir1_file3.txt')
+        test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
+                                 quiet_mode=False, execute_mode=True, rename_only_mode=False)
+        flatdirs.main(test_options)
+        # Expected that the existing file in the base directory is overwritten
+        self.mock_move.assert_any_call(os.path.join('subdir1', 'file3.txt'), 'subdir1_file3.txt')
+
+    def test_handle_special_characters_in_filenames(self):
+        """Test handling files with special characters in their names are moved correctly to the base directory."""
+        self.dir_contents['subdir2'].append('special@file$.txt')
+        test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
+                                 quiet_mode=False, execute_mode=True, rename_only_mode=False)
+        flatdirs.main(test_options)
+        # The special character file is moved to the base directory with its directory prefix
+        self.mock_move.assert_any_call(os.path.join('subdir2', 'special@file$.txt'), 'subdir2_special@file$.txt')
 
 
 if __name__ == '__main__':
