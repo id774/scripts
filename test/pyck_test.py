@@ -310,6 +310,56 @@ class TestPyck(unittest.TestCase):
         for call in expected_calls:
             mock_format_file.assert_any_call(call, 'E302,E402,E501')
 
+    @patch('pyck.os.path.isfile')
+    @patch.dict('pyck.os.environ', {'PATH': '/usr/bin:/bin'})
+    def test_find_command_with_existing_command(self, mock_isfile):
+        # Test the case where the command exists
+        mock_isfile.return_value = True
+        result = pyck.find_command('python')
+        self.assertTrue(result.endswith('/python'))
+
+    @patch('pyck.os.path.isfile')
+    @patch.dict('pyck.os.environ', {'PATH': '/usr/bin:/bin'})
+    def test_find_command_with_nonexistent_command(self, mock_isfile):
+        # Test the case where the command does not exist
+        mock_isfile.return_value = False
+        result = pyck.find_command('nonexistent')
+        self.assertIsNone(result)
+
+    @patch('pyck.sys.exit')
+    @patch('pyck.print')
+    @patch('pyck.find_command')
+    @patch('pyck.os.access')
+    def test_check_command_with_existing_executable(self, mock_access, mock_find_command, mock_print, mock_exit):
+        # Test with an existing and executable command
+        mock_find_command.return_value = '/usr/bin/python'
+        mock_access.return_value = True
+        pyck.check_command('python')
+        mock_exit.assert_not_called()
+        mock_print.assert_not_called()
+
+    @patch('pyck.sys.exit')
+    @patch('pyck.print')
+    @patch('pyck.find_command')
+    def test_check_command_with_nonexistent_command(self, mock_find_command, mock_print, mock_exit):
+        # Test with a non-existent command
+        mock_find_command.return_value = None
+        pyck.check_command('nonexistent')
+        mock_print.assert_called_once()
+        mock_exit.assert_called_once_with(127)
+
+    @patch('pyck.sys.exit')
+    @patch('pyck.print')
+    @patch('pyck.find_command')
+    @patch('pyck.os.access')
+    def test_check_command_with_nonexecutable_command(self, mock_access, mock_find_command, mock_print, mock_exit):
+        # Test with an existing but non-executable command
+        mock_find_command.return_value = '/usr/bin/nonexecutable'
+        mock_access.return_value = False
+        pyck.check_command('nonexecutable')
+        mock_print.assert_called_once()
+        mock_exit.assert_called_once_with(126)
+
 
 if __name__ == '__main__':
     unittest.main()
