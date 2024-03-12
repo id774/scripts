@@ -6,7 +6,7 @@ export SCRIPTS=/home/debian/scripts
 run_tests() {
     python_version=$1
     ruby_version=$2
-    echo "=== Running Tests with Python $python_version and Ruby $ruby_version ===" >>$JOBLOG 2>&1
+    echo "=== Running Tests with Python $python_version and Ruby $ruby_version. ===" >>$JOBLOG 2>&1
     $SCRIPTS/run_tests.sh /opt/python/$python_version/bin/python /opt/ruby/$ruby_version/bin/rspec >>$JOBLOG 2>&1
 }
 
@@ -22,15 +22,22 @@ for ruby_version in $ruby_versions; do
     done
 done
 
+echo "=== Starting the inspection for Python compatibility issues. ===" >>$JOBLOG 2>&1
+python_versions="3.12"
+/opt/python/$python_version/bin/python $SCRIPTS/find_pycompat.py $SCRIPTS >>$JOBLOG 2>&1
+result=$?
+
 echo -n "*** $0: Job ended on `/bin/hostname` at " >>$JOBLOG 2>&1
 date "+%Y/%m/%d %T" >>$JOBLOG 2>&1
 
-if grep -q "Some tests failed" $JOBLOG; then
+if [ $result -ge 1 ]; then
+    echo "*** $0: Python compatibility inspection failed. Check the logs for details." >>$JOBLOG 2>&1
+    exit 1
+elif grep -q "Some tests failed" $JOBLOG; then
     echo "*** $0: Some tests failed. Check the logs for details." >>$JOBLOG 2>&1
     exit 1
 else
     echo "*** $0: All tests completed successfully for all versions." >>$JOBLOG 2>&1
-    exit 0
 fi
 
 echo >>$JOBLOG 2>&1
