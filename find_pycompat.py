@@ -13,6 +13,8 @@
 #  versions of Python, facilitating easier code migration and compatibility assessments.
 #  It now also tracks the detected issues and provides feedback on whether the issues
 #  are confined to the dummy.py script or present in other scripts as well.
+#  If compatibility issues are detected in scripts other than dummy.py, the script
+#  exits with a return code of 1 to indicate the presence of such issues.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -20,6 +22,11 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.2 2024-03-12
+#       Modified the detection pattern for the matrix multiplication operator
+#       to require spaces around it.
+#       Updated the script to exit with a return code of 1 if compatibility issues
+#       are detected in scripts other than dummy.py.
 #  v3.1 2024-02-27
 #       Enhanced issue tracking to differentiate between issues found in dummy.py and other scripts.
 #  v3.0 2024-02-11
@@ -115,7 +122,7 @@ def main():
         "nonlocal keyword": r"\bnonlocal\b",
         "asyncio usage": r"\basyncio\.",
         "yield from usage": r"\byield from\b",
-        "matrix multiplication operator": r"\b[a-zA-Z_][a-zA-Z0-9_]*\s*@\s*[a-zA-Z_][a-zA-Z0-9_]*\b",
+        "matrix multiplication operator": r"\b[a-zA-Z_][a-zA-Z0-9_]*\s+@\s+[a-zA-Z_][a-zA-Z0-9_]*\b",
         "pathlib usage": r"\bpathlib\.",
         "type hints": r"\bdef\b.*->",
         "shutil.which usage": r"\bshutil\.which\b"
@@ -134,6 +141,7 @@ def main():
         print("Only dummy.py was detected with Python 3.x features, which is expected. No compatibility issues found in other scripts.")
     else:
         print("Compatibility issues detected in scripts other than dummy.py. Please review the findings.")
+        sys.exit(1)  # Exit with a status code of 1 to indicate an error.
 
 
 if __name__ == "__main__":

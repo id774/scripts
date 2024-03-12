@@ -6,6 +6,9 @@
 #  Description:
 #  This script contains comprehensive unit tests for the find_pycompat.py script.
 #  It verifies the script's functionality including the detection of various Python 3.x features.
+#  Recent updates have modified the detection pattern for the matrix multiplication operator
+#  to require spaces around it. These tests ensure that the updated patterns accurately identify
+#  the intended features without false positives or negatives.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -13,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2024-03-12
+#       Updated tests to reflect the modified detection pattern for the matrix multiplication operator.
 #  v1.3 2024-02-11
 #       Updated test cases to reflect changes in find_pycompat.py function signatures.
 #  v1.2 2024-01-31
@@ -102,12 +107,16 @@ class TestFindPyCompat(unittest.TestCase):
         pattern = r"\bnonlocal\b"
         self.run_feature_test("nonlocal keyword", pattern, "def foo(): global x", should_match=False)
 
-    def test_matrix_multiplication_operator_detection_success(self):
-        pattern = r"\b[a-zA-Z_][a-zA-Z0-9_]*\s*@\s*[a-zA-Z_][a-zA-Z0-9_]*\b"
+    def test_matrix_multiplication_operator_detection_success_with_spaces(self):
+        pattern = r"\b[a-zA-Z_][a-zA-Z0-9_]*\s+@\s+[a-zA-Z_][a-zA-Z0-9_]*\b"
         self.run_feature_test("matrix multiplication operator", pattern, "a @ b", should_match=True)
 
+    def test_matrix_multiplication_operator_detection_success_without_spaces_failure(self):
+        pattern = r"\b[a-zA-Z_][a-zA-Z0-9_]*\s+@\s+[a-zA-Z_][a-zA-Z0-9_]*\b"
+        self.run_feature_test("matrix multiplication operator", pattern, "a@b", should_match=False)
+
     def test_matrix_multiplication_operator_detection_failure(self):
-        pattern = r"\b[a-zA-Z_][a-zA-Z0-9_]*\s*@\s*[a-zA-Z_][a-zA-Z0-9_]*\b"
+        pattern = r"\b[a-zA-Z_][a-zA-Z0-9_]*\s+@\s+[a-zA-Z_][a-zA-Z0-9_]*\b"
         self.run_feature_test("matrix multiplication operator", pattern, "a * b", should_match=False)
 
     def test_asyncio_usage_detection_success(self):
