@@ -32,7 +32,7 @@ date "+%Y/%m/%d %T" >>$JOBLOG 2>&1
 
 if [ $result -ge 1 ]; then
     echo "*** $0: Python compatibility inspection failed. Check the logs for details." >>$JOBLOG 2>&1
-    exit 1
+    exit $result
 elif grep -q "Some tests failed" $JOBLOG; then
     echo "*** $0: Some tests failed. Check the logs for details." >>$JOBLOG 2>&1
     exit 1
