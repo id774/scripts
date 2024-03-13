@@ -7,9 +7,9 @@
 #  This script lists all files within a specified directory (or the current
 #  directory by default) and its subdirectories that have been modified within
 #  a given datetime range. It displays the modification time of each file next
-#  to the filename. Hidden directories are ignored by default unless the '-a'
+#  to the filename in UTC. Hidden directories are ignored by default unless the '-a'
 #  option is used. The '-f' option can be used to list filenames only, without
-#  path or modification time.
+#  path or modification time. Note: All input and output times are treated as UTC.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -18,34 +18,36 @@
 #
 #  Version History:
 #  v1.2 2024-03-08
-#       Added '-s' and '-e' options for specifying start and end datetime.
+#       Added '-s' and '-e' options for specifying start and end datetime in UTC.
 #       Maintained '-d' option for backward compatibility.
 #       Renamed script to find_range.py to better reflect its functionality
-#       of searching files within a specified datetime range.
+#       of searching files within a specified datetime range in UTC.
 #  v1.1 2024-03-03
 #       Added '-f' option to list filenames only.
 #  v1.0 2024-02-25
 #       Initial release. Added functionality to list files based on modification date,
-#       displaying their modification time, and ignoring hidden directories by default.
+#       displaying their modification time in UTC, and ignoring hidden directories by default.
 #
 #  Usage:
 #  Run this script with the '-d' option followed by the date in YYYY-MM-DD format
-#  and optionally time in HH:MM format. You can also specify a directory path with '-p'.
+#  and optionally time in HH:MM format, both in UTC. You can also specify a directory path with '-p'.
 #  Use the '-a' option to include hidden directories. The '-f' option lists filenames only.
-#  Use '-s' and '-e' options to specify a datetime range.
+#  Use '-s' and '-e' options to specify a datetime range in UTC.
 #  Examples:
 #     ./find_range.py -d "2024-01-01"
 #     ./find_range.py -s "2024-01-01" -e "2024-01-02 13:00"
-#     ./find_range.py -s "2024-01-01" -p "/path/to/directory"
+#     ./find_range.py -d "2024-01-01" -p "/path/to/directory"
 #     ./find_range.py -d "2024-03-02" -f
 #     ./find_range.py -e "2024-01-02"
 #
 #  Notes:
 #  - This script is compatible with Python 3.2 and later versions.
-#  - If the time is not specified for '-d', '-s', or '-e', it defaults to 00:00 (midnight) for '-d' and '-s', and to 23:59 (end of day) for '-e'.
+#  - If the time is not specified for '-d', '-s', or '-e',
+#    it defaults to 00:00 (midnight) for '-d' and '-s', and to 23:59 (end of day) for '-e', all in UTC.
 #  - Hidden directories are ignored by default. Use the '-a' option to include them.
 #  - The '-f' option lists filenames only, without path or modification time.
-#  - Either the start datetime '-s' or the end datetime '-e' can be specified independently for more flexible searches.
+#  - Either the start datetime '-s' or the end datetime '-e' can be specified independently for
+#    more flexible searches, both expected to be in UTC.
 #
 #  Error Conditions and Return Codes:
 #  0: Success
