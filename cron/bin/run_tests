@@ -1,7 +1,74 @@
 #!/bin/sh
 
-export JOBLOG=/var/log/sysadmin/run_tests.log
-export SCRIPTS=/home/debian/scripts
+########################################################################
+# run_tests.sh: Automated Testing Script for Python and Ruby projects
+#
+#  Description:
+#  This script automates the process of running tests for projects developed
+#  in Python and Ruby. It loads configuration settings from an external '.conf'
+#  file, iterates through specified versions of Python and Ruby to run tests,
+#  and performs a compatibility check using the last Python version in the loop.
+#  It is intended to be executed automatically via cron jobs.
+#
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 2024-03-13
+#       Initial release. Features include dynamic version testing for Python
+#       and Ruby, external configuration loading, and compatibility checking.
+#
+#  Usage:
+#  This script is designed to be run automatically through a cron job. Ensure
+#  that 'run_tests.conf' is properly configured with the SCRIPTS, JOBLOG,
+#  python_versions, and ruby_versions variables. For manual execution, run the script:
+#      ./run_tests.sh
+#
+#  The script iterates through the specified versions, runs tests for each
+#  combination of Python and Ruby versions, and concludes with a compatibility
+#  check using the last Python version tested.
+#
+#  Configuration file ('run_tests.conf') requirements:
+#  - SCRIPTS: Path to the scripts directory.
+#  - JOBLOG: Path to the job log file.
+#  - python_versions: Space-separated list of Python versions to test.
+#  - ruby_versions: Space-separated list of Ruby versions to test.
+#  Ensure these variables are set in 'run_tests.conf'.
+#
+#  Notes:
+#  - The script is designed to be run in environments where Python and Ruby
+#    are used for development and testing.
+#  - Ensure the specified Python and Ruby versions are installed and accessible.
+#
+#  Error Conditions:
+#  0. All tests completed successfully.
+#  1. Some tests failed.
+#  3. Configuration file not found.
+#  4. Configuration variables not set.
+#
+########################################################################
+
+# Determine the script's directory
+SCRIPT_DIR=$(dirname "$0")
+
+# Load configuration from a .conf file
+CONF_FILE="$SCRIPT_DIR/etc/run_tests.conf"
+if [ ! -f "$CONF_FILE" ]; then
+    CONF_FILE="$SCRIPT_DIR/../etc/run_tests.conf"
+    if [ ! -f "$CONF_FILE" ]; then
+        echo "Configuration file not found."
+        exit 3
+    fi
+fi
+. "$CONF_FILE"
+
+# Check if necessary variables are set
+if [ -z "$SCRIPTS" ] || [ -z "$JOBLOG" ] || [ -z "$python_versions" ] || [ -z "$ruby_versions" ]; then
+    echo "Error: Configuration variables not set. Check run_tests.conf."
+    exit 4
+fi
 
 run_tests() {
     python_version=$1
@@ -10,21 +77,18 @@ run_tests() {
     $SCRIPTS/run_tests.sh /opt/python/$python_version/bin/python /opt/ruby/$ruby_version/bin/rspec >>$JOBLOG 2>&1
 }
 
-echo -n "*** $0: Job started on `/bin/hostname` at " >>$JOBLOG 2>&1
-date "+%Y/%m/%d %T" >>$JOBLOG 2>&1
-
-python_versions="3.12 3.11 3.10 3.9 3.8 3.7 3.6"
-ruby_versions="3.3 3.2 3.1 3.0"
+last_python_version=""
 
 for ruby_version in $ruby_versions; do
     for python_version in $python_versions; do
         run_tests $python_version $ruby_version
+        last_python_version=$python_version  # Update the last_python_version on each iteration
     done
 done
 
-echo "=== Starting the inspection for Python compatibility issues. ===" >>$JOBLOG 2>&1
-python_version="3.11"
-/opt/python/$python_version/bin/python $SCRIPTS/find_pycompat.py $SCRIPTS >>$JOBLOG 2>&1
+# Now last_python_version contains the last Python version used in the loop
+echo "=== Starting the inspection for Python compatibility issues with Python $last_python_version. ===" >>$JOBLOG 2>&1
+/opt/python/$last_python_version/bin/python $SCRIPTS/find_pycompat.py $SCRIPTS >>$JOBLOG 2>&1
 result=$?
 
 echo -n "*** $0: Job ended on `/bin/hostname` at " >>$JOBLOG 2>&1
