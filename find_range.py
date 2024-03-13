@@ -6,10 +6,10 @@
 #  Description:
 #  This script lists all files within a specified directory (or the current
 #  directory by default) and its subdirectories that have been modified within
-#  a given datetime range. It displays the modification time of each file next
-#  to the filename. Hidden directories are ignored by default unless the '-a'
-#  option is used. The '-f' option can be used to list filenames only, without
-#  path or modification time.
+#  a given datetime range. It displays the modification time of each file in
+#  the local timezone next to the filename. Hidden directories are ignored by
+#  default unless the '-a' option is used. The '-f' option can be used to list
+#  filenames only, without path or modification time.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-03-14
+#       Updated datetime handling to use local timezone for file modification times.
 #  v1.2 2024-03-08
 #       Added '-s' and '-e' options for specifying start and end datetime.
 #       Maintained '-d' option for backward compatibility.
@@ -36,12 +38,12 @@
 #  Examples:
 #     ./find_range.py -d "2024-01-01"
 #     ./find_range.py -s "2024-01-01" -e "2024-01-02 13:00"
-#     ./find_range.py -s "2024-01-01" -p "/path/to/directory"
+#     ./find_range.py -d "2024-01-01" -p "/path/to/directory"
 #     ./find_range.py -d "2024-03-02" -f
 #     ./find_range.py -e "2024-01-02"
 #
 #  Notes:
-#  - This script is compatible with Python 3.2 and later versions.
+#  - This script is compatible with Python 3.3 and later versions, due to the use of `timestamp()`.
 #  - If the time is not specified for '-d', '-s', or '-e', it defaults to 00:00 (midnight) for '-d' and '-s', and to 23:59 (end of day) for '-e'.
 #  - Hidden directories are ignored by default. Use the '-a' option to include them.
 #  - The '-f' option lists filenames only, without path or modification time.
@@ -123,7 +125,7 @@ def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, fi
 
         for file in filenames:
             file_path = os.path.join(dirpath, file)
-            mtime = datetime.fromtimestamp(os.path.getmtime(file_path), tz=timezone.utc)
+            mtime = datetime.fromtimestamp(os.path.getmtime(file_path)).astimezone()
             # Check if file modification time is within the specified datetime range
             if (start_datetime is None or mtime >= start_datetime) and (end_datetime is None or mtime <= end_datetime):
                 if filenames_only:
@@ -136,9 +138,9 @@ def main():
     Main function that orchestrates the flow of the script, including argument parsing,
     validation, and initiating the file listing process.
     """
-    # Ensure the script is run with Python 3.2 or later
-    if sys.version_info < (3, 2):
-        print("Error: This script requires Python 3.2 or later.")
+    # Ensure the script is run with Python 3.3 or later
+    if sys.version_info < (3, 3):
+        print("Error: This script requires Python 3.3 or later.")
         sys.exit(3)
 
     args = parse_arguments()
