@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-03-14
+#       Modified the output format to ISO 8601, indicating UTC dates and times.
 #  v1.2 2024-03-08
 #       Added '-s' and '-e' options for specifying start and end datetime in UTC.
 #       Maintained '-d' option for backward compatibility.
@@ -131,7 +133,8 @@ def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, fi
                 if filenames_only:
                     print(file)
                 else:
-                    print("{} - {}".format(mtime.strftime('%Y-%m-%d %H:%M:%S'), file_path))
+                    # Format the modification time in ISO 8601 format, indicating UTC with 'Z'
+                    print("{} - {}".format(mtime.strftime('%Y-%m-%dT%H:%M:%SZ'), file_path))
 
 def main():
     """

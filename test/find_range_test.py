@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-03-14
+#       Updated test cases to expect output in ISO 8601 format, indicating UTC dates and times.
 #  v1.2 2024-03-09
 #       Updated existing test cases for enhanced coverage and clarity.
 #       Added new test cases to cover various patterns including:
@@ -92,8 +94,8 @@ class TestFindRecent(unittest.TestCase):
 
         find_range.list_recent_files(test_path, test_start_date, None, include_hidden, False)
 
-        mock_print.assert_any_call('2024-02-24 08:00:00 - /path/to/directory/recent.txt')
-        mock_print.assert_any_call('2024-02-24 08:00:00 - /path/to/directory/.hidden_file.txt')
+        mock_print.assert_any_call('2024-02-24T08:00:00Z - /path/to/directory/recent.txt')
+        mock_print.assert_any_call('2024-02-24T08:00:00Z - /path/to/directory/.hidden_file.txt')
 
     @patch('builtins.print')
     @patch('find_range.os.path.getmtime')
@@ -111,7 +113,7 @@ class TestFindRecent(unittest.TestCase):
 
         find_range.list_recent_files(test_path, test_start_date, None, include_hidden, False)
 
-        mock_print.assert_called_once_with('2024-02-24 08:00:00 - /path/to/directory/recent.txt')
+        mock_print.assert_called_once_with('2024-02-24T08:00:00Z - /path/to/directory/recent.txt')
         # Ensure that the print function was not called for the hidden file
 
     @patch('builtins.print')
@@ -157,11 +159,11 @@ class TestFindRecent(unittest.TestCase):
 
         # Assertions to check if the 'print' function was called with the expected files
         expected_calls = [
-            call('2024-02-24 08:00:00 - /path/to/directory/recent1.txt'),
-            call('2024-02-24 09:00:00 - /path/to/directory/subdir1/recent2.txt'),
-            call('2024-02-24 10:00:00 - /path/to/directory/recent3.txt'),
-            call('2024-02-24 11:00:00 - /path/to/directory/subdir2/recent4.txt'),
-            call('2024-02-24 12:00:00 - /path/to/directory/subdir2/subsubdir1/recent5.txt'),
+            call('2024-02-24T08:00:00Z - /path/to/directory/recent1.txt'),
+            call('2024-02-24T09:00:00Z - /path/to/directory/subdir1/recent2.txt'),
+            call('2024-02-24T10:00:00Z - /path/to/directory/recent3.txt'),
+            call('2024-02-24T11:00:00Z - /path/to/directory/subdir2/recent4.txt'),
+            call('2024-02-24T12:00:00Z - /path/to/directory/subdir2/subsubdir1/recent5.txt'),
         ]
         mock_print.assert_has_calls(expected_calls, any_order=True)
 
@@ -211,9 +213,9 @@ class TestFindRecent(unittest.TestCase):
 
         # Assertions for expected output
         expected_calls = [
-            call('2024-02-24 08:00:00 - {}'.format(os.path.join(test_path, "recent1.txt"))),
-            call('2024-02-24 09:00:00 - {}'.format(os.path.join(test_path, "subdir1", "recent2.txt"))),
-            call('2024-02-24 10:00:00 - {}'.format(os.path.join(test_path, "subdir1", "subsubdir", "recent3.txt"))),
+            call('2024-02-24T08:00:00Z - {}'.format(os.path.join(test_path, "recent1.txt"))),
+            call('2024-02-24T09:00:00Z - {}'.format(os.path.join(test_path, "subdir1", "recent2.txt"))),
+            call('2024-02-24T10:00:00Z - {}'.format(os.path.join(test_path, "subdir1", "subsubdir", "recent3.txt"))),
         ]
         mock_print.assert_has_calls(expected_calls, any_order=True)
 
@@ -263,7 +265,7 @@ class TestFindRecent(unittest.TestCase):
 
         find_range.list_recent_files(test_path, test_start_date, test_end_date, include_hidden, False)
 
-        mock_print.assert_called_once_with('2024-03-05 22:59:00 - /path/to/directory/file1.txt')
+        mock_print.assert_called_once_with('2024-03-05T22:59:00Z - /path/to/directory/file1.txt')
         self.assertEqual(mock_print.call_count, 1)
 
     @patch('builtins.print')
@@ -286,7 +288,7 @@ class TestFindRecent(unittest.TestCase):
 
         find_range.list_recent_files(test_path, None, test_end_date, include_hidden, False)
 
-        mock_print.assert_called_once_with('2024-03-04 00:00:00 - /path/to/directory/file1.txt')
+        mock_print.assert_called_once_with('2024-03-04T00:00:00Z - /path/to/directory/file1.txt')
 
     @patch('builtins.print')
     @patch('find_range.os.path.getmtime')
@@ -308,7 +310,7 @@ class TestFindRecent(unittest.TestCase):
 
         find_range.list_recent_files(test_path, None, test_end_datetime, include_hidden, False)
 
-        mock_print.assert_called_once_with('2024-03-05 14:30:00 - /path/to/directory/file1.txt')
+        mock_print.assert_called_once_with('2024-03-05T14:30:00Z - /path/to/directory/file1.txt')
 
     @patch('builtins.print')
     @patch('find_range.os.path.getmtime')
@@ -334,8 +336,8 @@ class TestFindRecent(unittest.TestCase):
         find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False)
 
         expected_calls = [
-            call('2024-03-04 08:00:00 - /path/to/directory/file2.txt'),
-            call('2024-03-05 18:00:00 - /path/to/directory/file3.txt')
+            call('2024-03-04T08:00:00Z - /path/to/directory/file2.txt'),
+            call('2024-03-05T18:00:00Z - /path/to/directory/file3.txt')
         ]
         mock_print.assert_has_calls(expected_calls, any_order=True)
         self.assertEqual(mock_print.call_count, 2)
@@ -361,8 +363,8 @@ class TestFindRecent(unittest.TestCase):
         find_range.list_recent_files(test_path, None, test_end_datetime, include_hidden, False)
 
         expected_calls = [
-            call('2024-03-05 14:30:00 - /path/to/directory/file1.txt'),
-            call('2024-03-05 15:00:00 - /path/to/directory/.hidden1.txt')
+            call('2024-03-05T14:30:00Z - /path/to/directory/file1.txt'),
+            call('2024-03-05T15:00:00Z - /path/to/directory/.hidden1.txt')
         ]
         mock_print.assert_has_calls(expected_calls, any_order=True)
 
