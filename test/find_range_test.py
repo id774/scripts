@@ -6,7 +6,9 @@
 #  Description:
 #  Tests the functionality of the find_range.py script, ensuring it correctly
 #  lists files modified after a specified date and time, and handles hidden
-#  directories and various options as specified.
+#  directories and various options as specified. It now includes tests for
+#  local timezone handling with the '-l' option, ensuring both UTC and local
+#  timezone outputs are correctly formatted and calculated.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -16,6 +18,8 @@
 #  Version History:
 #  v1.3 2024-03-14
 #       Updated test cases to expect output in ISO 8601 format, indicating UTC dates and times.
+#       Added tests for the '-l' option to ensure correct handling of local timezone.
+#       Updated existing tests to use ISO 8601 format for UTC dates and times.
 #  v1.2 2024-03-09
 #       Updated existing test cases for enhanced coverage and clarity.
 #       Added new test cases to cover various patterns including:
@@ -40,7 +44,7 @@ import argparse
 import os
 import sys
 import unittest
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from unittest.mock import call, patch
 
 # Adjust the path to import script from the parent directory
@@ -401,7 +405,8 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.print')
     def test_invalid_datetime_format(self, mock_print, mock_sys_exit):
         """Test the script exits with error on incorrect datetime format."""
-        with patch('find_range.parse_arguments', return_value=argparse.Namespace(datetime=['2024-02-30'], start=None, end=None, path='.', all=False, filenames=False)):
+        with patch('find_range.parse_arguments', return_value=argparse.Namespace(
+                datetime=['2024-02-30'], start=None, end=None, path='.', all=False, filenames=False, localtime=False)):
             find_range.main()
             mock_sys_exit.assert_called_with(2)
 
@@ -409,7 +414,8 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.print')
     def test_nonexistent_directory_path(self, mock_print, mock_sys_exit):
         """Test the script exits with error when the specified path does not exist."""
-        with patch('find_range.parse_arguments', return_value=argparse.Namespace(datetime=['2024-02-25'], start=None, end=None, path='/nonexistent/path', all=False, filenames=False)):
+        with patch('find_range.parse_arguments', return_value=argparse.Namespace(
+                datetime=['2024-02-25'], start=None, end=None, path='/nonexistent/path', all=False, filenames=False, localtime=False)):
             find_range.main()
             mock_sys_exit.assert_called_with(1)
 
@@ -417,7 +423,53 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.print')
     def test_default_directory_path(self, mock_print, mock_list_recent_files):
         """Test the script uses the current directory as default when no path is specified."""
-        with patch('find_range.parse_arguments', return_value=argparse.Namespace(datetime=['2024-02-25'], start=None, end=None, path='.', all=False, filenames=False)):
+        with patch('find_range.parse_arguments', return_value=argparse.Namespace(
+                datetime=['2024-02-25'], start=None, end=None, path='.', all=False, filenames=False, localtime=False)):
+            find_range.main()
+            mock_list_recent_files.assert_called()
+
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_localtime_option(self, mock_walk, mock_getmtime, mock_print):
+        # Set test path and options
+        test_path = "/path/to/directory"
+        include_hidden = False
+        filenames_only = False
+        use_localtime = True
+
+        # Set start datetime in local timezone
+        test_start_date = datetime(2024, 3, 4, 12, 0).astimezone()
+
+        # Mock the os.walk function to return a predefined file structure
+        mock_walk.return_value = [
+            (test_path, [], ["file1.txt"]),
+        ]
+
+        # Mock os.path.getmtime to return modification time 1 hour after the test start date
+        mock_getmtime.return_value = (test_start_date + timedelta(hours=1)).timestamp()
+
+        # Call the function under test with local timezone option
+        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, filenames_only, use_localtime)
+
+        # Generate the expected time string in local timezone without timezone information
+        expected_time_str = (test_start_date + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S')
+        # Assert the expected print call
+        mock_print.assert_called_once_with(f'{expected_time_str} - {os.path.join(test_path, "file1.txt")}')
+
+    @patch('find_range.sys.exit')
+    @patch('find_range.print')
+    def test_localtime_option_with_incorrect_format(self, mock_print, mock_sys_exit):
+        """Test the script exits with error when datetime format is incorrect with '-l' option."""
+        with patch('find_range.parse_arguments', return_value=argparse.Namespace(datetime=['2024-03-32'], start=None, end=None, path='.', all=False, filenames=False, localtime=True)):
+            find_range.main()
+            mock_sys_exit.assert_called_with(2)
+
+    @patch('find_range.list_recent_files')
+    @patch('find_range.print')
+    def test_localtime_option_default_directory_path(self, mock_print, mock_list_recent_files):
+        """Test the script uses the current directory as default when no path is specified with '-l' option."""
+        with patch('find_range.parse_arguments', return_value=argparse.Namespace(datetime=['2024-02-25'], start=None, end=None, path='.', all=False, filenames=False, localtime=True)):
             find_range.main()
             mock_list_recent_files.assert_called()
 
