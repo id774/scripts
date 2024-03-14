@@ -455,7 +455,7 @@ class TestFindRecent(unittest.TestCase):
         # Generate the expected time string in local timezone without timezone information
         expected_time_str = (test_start_date + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S')
         # Assert the expected print call
-        mock_print.assert_called_once_with(f'{expected_time_str} - {os.path.join(test_path, "file1.txt")}')
+        mock_print.assert_called_once_with('{} - {}'.format(expected_time_str, os.path.join(test_path, "file1.txt")))
 
     @patch('find_range.sys.exit')
     @patch('find_range.print')
