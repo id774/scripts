@@ -4,6 +4,7 @@ HISTORY.txt
 v1.2.2 (Release Date: TBD)
 --------------------------
 - Renamed find_recent.py to find_range.py with enhanced range options.
+- Added support for ISO format and local timezone in find_range.py.
 - Enhanced checks in existing scripts.
 - Added CI cron scripts.
 - Added several test cases to enrich the testing of new features and ensure robustness.
