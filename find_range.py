@@ -6,10 +6,11 @@
 #  Description:
 #  This script lists all files within a specified directory (or the current
 #  directory by default) and its subdirectories that have been modified within
-#  a given datetime range. It displays the modification time of each file next
+#  a given datetime range. By default, it displays the modification time of each file next
 #  to the filename in UTC. Hidden directories are ignored by default unless the '-a'
 #  option is used. The '-f' option can be used to list filenames only, without
-#  path or modification time. Note: All input and output times are treated as UTC.
+#  path or modification time. Note: By default, all input and output times are treated as UTC,
+#  unless the '--localtime' option is used to use the local timezone instead.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -19,6 +20,7 @@
 #  Version History:
 #  v1.3 2024-03-14
 #       Modified the output format to ISO 8601, indicating UTC dates and times.
+#       Added '-l' option to use local timezone for input and output times.
 #  v1.2 2024-03-08
 #       Added '-s' and '-e' options for specifying start and end datetime in UTC.
 #       Maintained '-d' option for backward compatibility.
@@ -31,25 +33,36 @@
 #       displaying their modification time in UTC, and ignoring hidden directories by default.
 #
 #  Usage:
-#  Run this script with the '-d' option followed by the date in YYYY-MM-DD format
-#  and optionally time in HH:MM format, both in UTC. You can also specify a directory path with '-p'.
-#  Use the '-a' option to include hidden directories. The '-f' option lists filenames only.
-#  Use '-s' and '-e' options to specify a datetime range in UTC.
+#  Run this script with the appropriate options to list files modified within a specified datetime range.
 #  Examples:
 #     ./find_range.py -d "2024-01-01"
 #     ./find_range.py -s "2024-01-01" -e "2024-01-02 13:00"
 #     ./find_range.py -d "2024-01-01" -p "/path/to/directory"
 #     ./find_range.py -d "2024-03-02" -f
 #     ./find_range.py -e "2024-01-02"
+#     ./find_range.py -l -s "2024-01-01" -e "2024-01-02 13:00"
+#
+#  Options:
+#  -d, --datetime:  Date and optional time in ISO format (YYYY-MM-DD [HH:MM]).
+#                   Acts as the start datetime if -s is not provided.
+#  -s, --start:     Start datetime in ISO format (YYYY-MM-DD [HH:MM]).
+#                   Overrides -d if provided.
+#  -e, --end:       End datetime in ISO format (YYYY-MM-DD [HH:MM]).
+#                   Specifies the end of the datetime range.
+#  -p, --path:      Directory path to search, defaults to current directory.
+#  -a, --all:       Include hidden directories in the search.
+#  -f, --filenames: List filenames only, without path or modification time.
+#  -l, --localtime: Use local timezone for input and output times instead of UTC.
 #
 #  Notes:
-#  - This script is compatible with Python 3.2 and later versions.
+#  - This script is compatible with Python 3.3 and later versions.
 #  - If the time is not specified for '-d', '-s', or '-e',
-#    it defaults to 00:00 (midnight) for '-d' and '-s', and to 23:59 (end of day) for '-e', all in UTC.
+#    it defaults to 00:00 (midnight) for '-d' and '-s', and to 23:59 (end of day) for '-e',
+#    all in UTC unless '--localtime' is used.
 #  - Hidden directories are ignored by default. Use the '-a' option to include them.
 #  - The '-f' option lists filenames only, without path or modification time.
 #  - Either the start datetime '-s' or the end datetime '-e' can be specified independently for
-#    more flexible searches, both expected to be in UTC.
+#    more flexible searches, both expected to be in UTC unless '--localtime' is used.
 #
 #  Error Conditions and Return Codes:
 #  0: Success
@@ -78,6 +91,7 @@ def parse_arguments():
     parser.add_argument('-p', '--path', default='.', help='Directory path to search, defaults to current directory.')
     parser.add_argument('-a', '--all', action='store_true', help='Include hidden directories in the search.')
     parser.add_argument('-f', '--filenames', action='store_true', help='List filenames only, without path or modification time.')
+    parser.add_argument('-l', '--localtime', action='store_true', help='Use local timezone for input and output times instead of UTC.')
     args = parser.parse_args()
 
     # Ensure that at least one datetime argument is provided
@@ -87,7 +101,7 @@ def parse_arguments():
 
     return args
 
-def parse_datetime(args):
+def parse_datetime(args, use_localtime=False):
     """
     Converts the date and optional time arguments into a datetime object.
     Supports both date-only and date with time formats.
@@ -97,7 +111,11 @@ def parse_datetime(args):
     datetime_str = ' '.join(args)  # Combines date and time parts if time is provided
     try:
         # First, try parsing with both date and time
-        return datetime.strptime(datetime_str, "%Y-%m-%d %H:%M").replace(tzinfo=timezone.utc)
+        parsed_datetime = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M")
+        if use_localtime:
+            return parsed_datetime.astimezone()
+        else:
+            return parsed_datetime.replace(tzinfo=timezone.utc)
     except ValueError:
         # If that fails, try parsing with date only
         try:
@@ -114,7 +132,7 @@ def check_directory_exists(path):
         print("Error: The specified path '{}' does not exist.".format(path))
         sys.exit(1)
 
-def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, filenames_only):
+def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, filenames_only, use_localtime=False):
     """
     Walks through the directory tree from the root_dir, listing files modified within the specified datetime range.
     Can optionally list filenames only and include or exclude hidden directories.
@@ -127,31 +145,37 @@ def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, fi
 
         for file in filenames:
             file_path = os.path.join(dirpath, file)
-            mtime = datetime.fromtimestamp(os.path.getmtime(file_path), tz=timezone.utc)
+            if use_localtime:
+                mtime = datetime.fromtimestamp(os.path.getmtime(file_path)).astimezone()
+            else:
+                mtime = datetime.fromtimestamp(os.path.getmtime(file_path), tz=timezone.utc)
             # Check if file modification time is within the specified datetime range
             if (start_datetime is None or mtime >= start_datetime) and (end_datetime is None or mtime <= end_datetime):
                 if filenames_only:
                     print(file)
                 else:
                     # Format the modification time in ISO 8601 format, indicating UTC with 'Z'
-                    print("{} - {}".format(mtime.strftime('%Y-%m-%dT%H:%M:%SZ'), file_path))
+                    if use_localtime:
+                        print("{} - {}".format(mtime.strftime('%Y-%m-%dT%H:%M:%S'), file_path))
+                    else:
+                        print("{} - {}".format(mtime.strftime('%Y-%m-%dT%H:%M:%SZ'), file_path))
 
 def main():
     """
     Main function that orchestrates the flow of the script, including argument parsing,
     validation, and initiating the file listing process.
     """
-    # Ensure the script is run with Python 3.2 or later
-    if sys.version_info < (3, 2):
-        print("Error: This script requires Python 3.2 or later.")
+    # Ensure the script is run with Python 3.3 or later
+    if sys.version_info < (3, 3):
+        print("Error: This script requires Python 3.3 or later.")
         sys.exit(3)
 
     args = parse_arguments()
-    start_datetime = parse_datetime(args.start or args.datetime)
-    end_datetime = parse_datetime(args.end)
+    start_datetime = parse_datetime(args.start or args.datetime, use_localtime=args.localtime)
+    end_datetime = parse_datetime(args.end, use_localtime=args.localtime)
 
     check_directory_exists(args.path)
-    list_recent_files(args.path, start_datetime, end_datetime, args.all, args.filenames)
+    list_recent_files(args.path, start_datetime, end_datetime, args.all, args.filenames, use_localtime=args.localtime)
 
 
 if __name__ == "__main__":
