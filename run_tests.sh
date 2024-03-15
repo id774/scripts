@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2024-03-15
+#       Added functionality to display total number of test scripts executed.
 #  v1.4 2024-03-06
 #       Added checks to ensure specified Python and RSpec paths are not only
 #       non-empty but also point to executable files. This enhancement
@@ -54,9 +56,11 @@ cd "$SCRIPTS" || exit
 python_path="$1"
 rspec_path="$2"
 
-# Initialize failure counters
+# Initialize failure counters and total test counters
 python_failures=0
 ruby_failures=0
+python_scripts=0
+ruby_scripts=0
 
 # Check if Python is installed
 if [ -z "$python_path" ]; then
@@ -81,10 +85,11 @@ else
         echo "$output"
         if ! echo "$output" | grep -qE "OK|SKIPPED|OK \(skipped=[0-9]+\)" ; then
             echo "Failure in Python test: $file"
-            python_failures=$(expr $python_failures + 1)
+            python_failures=$((python_failures + 1))
         fi
+        python_scripts=$((python_scripts + 1))
     done
-    echo "All Python tests completed."
+    echo "All Python tests completed. Total Python test scripts: $python_scripts"
 fi
 
 # Check if RSpec is installed
@@ -113,18 +118,20 @@ else
         echo "$output"
         if ! echo "$output" | grep -q "0 failures"; then
             echo "Failure in Ruby test: $file"
-            ruby_failures=$(expr $ruby_failures + 1)
+            ruby_failures=$((ruby_failures + 1))
         fi
+        ruby_scripts=$((ruby_scripts + 1))
     done
-    echo "All Ruby tests completed."
+    echo "All Ruby tests completed. Total Ruby test scripts: $ruby_scripts"
 fi
 
 # Final report
-if [ "$python_failures" -ne 0 ] || [ "$ruby_failures" -ne 0 ]; then
-    echo "Some tests failed. Python failures: $python_failures, Ruby failures: $ruby_failures."
+total_scripts=$((python_scripts + ruby_scripts))
+total_failures=$((python_failures + ruby_failures))
+if [ "$total_failures" -ne 0 ]; then
+    echo "Some tests failed. Total failures: $total_failures."
     exit 1
 else
-    echo "All tests passed successfully."
+    echo "All tests passed successfully. Total test scripts executed: $total_scripts"
     exit 0
 fi
-
