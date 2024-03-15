@@ -84,7 +84,7 @@ extract_python_test_count() {
 extract_ruby_test_count() {
     local result="$1"
     local regex='([0-9]+) examples?, [0-9]+ failures?'
-    if [[ $result =~ $regex ]]; then
+    if [ "$result" =~ $regex ]; then
         ruby_tests="${BASH_REMATCH[1]}"
     else
         ruby_tests=0
