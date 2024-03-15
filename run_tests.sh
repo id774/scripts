@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ########################################################################
 # run_tests.sh: Run all Python and Ruby tests in the test directory
@@ -18,8 +18,6 @@
 #  v1.5 2024-03-15
 #       Added functionality to display total number of test scripts
 #       and test cases executed for each language.
-#       Removed the usage of 'expr' for arithmetic operations
-#       to maintain POSIX compliance.
 #  v1.4 2024-03-06
 #       Added checks to ensure specified Python and RSpec paths are not only
 #       non-empty but also point to executable files. This enhancement
@@ -73,7 +71,7 @@ total_scripts=0
 extract_python_test_count() {
     local result="$1"
     local regex='Ran ([0-9]+) tests?'
-    if [ "$result" =~ $regex ]; then
+    if [[ $result =~ $regex ]]; then
         python_tests="${BASH_REMATCH[1]}"
     else
         python_tests=0
@@ -84,7 +82,7 @@ extract_python_test_count() {
 extract_ruby_test_count() {
     local result="$1"
     local regex='([0-9]+) examples?, [0-9]+ failures?'
-    if [ "$result" =~ $regex ]; then
+    if [[ $result =~ $regex ]]; then
         ruby_tests="${BASH_REMATCH[1]}"
     else
         ruby_tests=0
