@@ -73,7 +73,7 @@ total_scripts=0
 extract_python_test_count() {
     local result="$1"
     local regex='Ran ([0-9]+) tests?'
-    if [[ $result =~ $regex ]]; then
+    if [ "$result" =~ $regex ]; then
         python_tests="${BASH_REMATCH[1]}"
     else
         python_tests=0
