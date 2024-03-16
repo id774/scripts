@@ -18,6 +18,8 @@
 #  Version History:
 #  v1.4 2024-03-16
 #       Added test cases for local timezone handling.
+#       Added more specific tests for ensuring hidden directories and their files
+#       are properly excluded by default and included when using the '-a' option.
 #  v1.3 2024-03-14
 #       Updated test cases to expect output in ISO 8601 format, indicating UTC dates and times.
 #       Added tests for the '-l' option to ensure correct handling of local timezone.
@@ -607,6 +609,52 @@ class TestFindRecent(unittest.TestCase):
 
         expected_output = '{} - {}'.format(test_datetime.strftime('%Y-%m-%dT%H:%M:%SZ'), os.path.join(test_path, "visible_file.txt"))
         mock_print.assert_called_once_with(expected_output)
+
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_hidden_directory_files_excluded_by_default(self, mock_walk, mock_getmtime, mock_print):
+        """Test that files in hidden directories are excluded by default."""
+        test_path = "/path/to/directory"
+        include_hidden = False
+        test_datetime = datetime.utcnow().replace(tzinfo=timezone.utc) - timedelta(hours=2)
+
+        mock_walk.return_value = [
+            (test_path, [".hidden_dir"], ["visible_file.txt"]),
+            (os.path.join(test_path, ".hidden_dir"), [], ["hidden_file.txt"]),
+        ]
+
+        mock_getmtime.return_value = test_datetime.timestamp()
+
+        find_range.list_recent_files(test_path, test_datetime, None, include_hidden, False, False)
+
+        expected_output = '{} - {}'.format(test_datetime.strftime('%Y-%m-%dT%H:%M:%SZ'), os.path.join(test_path, "visible_file.txt"))
+        mock_print.assert_called_once_with(expected_output)
+
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_hidden_directory_files_included_with_all_option(self, mock_walk, mock_getmtime, mock_print):
+        """Test that files in hidden directories are included when the '-a' option is used."""
+        test_path = "/path/to/directory"
+        include_hidden = True
+        test_datetime = datetime.utcnow().replace(tzinfo=timezone.utc) - timedelta(hours=2)
+
+        mock_walk.return_value = [
+            (test_path, [".hidden_dir"], ["visible_file.txt"]),
+            (os.path.join(test_path, ".hidden_dir"), [], ["hidden_file.txt"]),
+        ]
+
+        mock_getmtime.return_value = test_datetime.timestamp()
+
+        find_range.list_recent_files(test_path, test_datetime, None, include_hidden, False, False)
+
+        expected_outputs = [
+            '{} - {}'.format(test_datetime.strftime('%Y-%m-%dT%H:%M:%SZ'), os.path.join(test_path, "visible_file.txt")),
+            '{} - {}'.format(test_datetime.strftime('%Y-%m-%dT%H:%M:%SZ'), os.path.join(test_path, ".hidden_dir", "hidden_file.txt"))
+        ]
+        mock_print.assert_has_calls([call(output) for output in expected_outputs], any_order=True)
+        self.assertEqual(mock_print.call_count, len(expected_outputs))
 
 
 if __name__ == '__main__':
