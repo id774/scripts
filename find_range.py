@@ -143,7 +143,6 @@ def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, fi
     for dirpath, dirnames, filenames in os.walk(root_dir):
         # Exclude hidden directories if not specified by the user
         if not include_hidden:
-            dirnames[:] = [d for d in dirnames if not d.startswith('.')]
             dirnames[:] = [d for d in dirnames if not d.startswith('.')]  # Exclude hidden directories from dirnames to prevent walking into them
             if os.path.basename(dirpath).startswith('.'):
                 continue  # Skip hidden directories entirely
