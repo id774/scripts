@@ -45,12 +45,16 @@ if [ ! -d /var/log/sysadmin ]; then
     sudo mkdir -p /var/log/sysadmin
     sudo chmod 750 /var/log/sysadmin
     sudo chown root:adm /var/log/sysadmin
-    if [ ! -f /var/log/sysadmin/run_tests.log ]; then
-        sudo touch /var/log/sysadmin/run_tests.log
-        sudo chmod 640 /var/log/sysadmin/run_tests.log
-        sudo chown root:adm /var/log/sysadmin/run_tests.log
-    fi
 fi
+
+# Set up log file and permissions
+if [ ! -f /var/log/sysadmin/run_tests.log ]; then
+    sudo touch /var/log/sysadmin/run_tests.log
+    sudo chmod 640 /var/log/sysadmin/run_tests.log
+    sudo chown root:adm /var/log/sysadmin/run_tests.log
+fi
+
+# Deploy log rotation configuration
 if [ ! -f /etc/logrotate.d/run_tests ]; then
     sudo cp "$SCRIPTS/cron/etc/logrotate.d/run_tests" /etc/logrotate.d/run_tests
     sudo chmod 640 /etc/logrotate.d/run_tests
