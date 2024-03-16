@@ -15,6 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-03-16
+#       Removed the --delete option from the rsync command in the sync_data function
+#       to prevent deletion of files in the backup destination that are not present in the source.
 #  v1.2 2024-02-08
 #       Enhanced documentation, added configuration variable checks, improved error
 #       handling, script structure, and added command checks.
@@ -115,7 +118,7 @@ check_device_health() {
 }
 
 sync_data() {
-    if ! rsync -avz --delete "$BACKUP_PATH/" "$MOUNT_PATH/"; then
+    if ! rsync -avz "$BACKUP_PATH/" "$MOUNT_PATH/"; then
         echo "Data sync failed."
         exit 6
     fi
