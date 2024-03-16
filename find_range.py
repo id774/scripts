@@ -18,6 +18,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2024-03-16
+#       Fixed a bug where hidden files and directories were not properly excluded
+#       when the '-a' option was not used.
 #  v1.3 2024-03-14
 #       Modified the output format to ISO 8601, indicating UTC dates and times.
 #       Added '-l' option to use local timezone for input and output times.
@@ -141,6 +144,9 @@ def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, fi
         # Exclude hidden directories if not specified by the user
         if not include_hidden:
             dirnames[:] = [d for d in dirnames if not d.startswith('.')]
+            dirnames[:] = [d for d in dirnames if not d.startswith('.')]  # Exclude hidden directories from dirnames to prevent walking into them
+            if os.path.basename(dirpath).startswith('.'):
+                continue  # Skip hidden directories entirely
             filenames = [f for f in filenames if not f.startswith('.')]
 
         for file in filenames:

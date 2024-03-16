@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2024-03-16
+#       Added test cases for local timezone handling.
 #  v1.3 2024-03-14
 #       Updated test cases to expect output in ISO 8601 format, indicating UTC dates and times.
 #       Added tests for the '-l' option to ensure correct handling of local timezone.
@@ -472,6 +474,139 @@ class TestFindRecent(unittest.TestCase):
         with patch('find_range.parse_arguments', return_value=argparse.Namespace(datetime=['2024-02-25'], start=None, end=None, path='.', all=False, filenames=False, localtime=True)):
             find_range.main()
             mock_list_recent_files.assert_called()
+
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_localtime_range_with_start_and_end(self, mock_walk, mock_getmtime, mock_print):
+        """Test listing files within a specified start and end datetime range in local timezone."""
+        test_path = "/path/to/directory"
+        include_hidden = False
+        filenames_only = False
+        use_localtime = True
+
+        # Set start and end datetime in local timezone
+        test_start_datetime = datetime(2024, 3, 4, 8, 0).astimezone()
+        test_end_datetime = datetime(2024, 3, 5, 18, 0).astimezone()
+
+        mock_walk.return_value = [
+            (test_path, [], ["file1.txt", "file2.txt", "file3.txt"]),
+        ]
+
+        mock_getmtime.side_effect = lambda x: {
+            "/path/to/directory/file1.txt": (test_start_datetime + timedelta(hours=1)).timestamp(),  # Within range
+            "/path/to/directory/file2.txt": (test_end_datetime - timedelta(hours=1)).timestamp(),  # Within range
+            "/path/to/directory/file3.txt": (test_end_datetime + timedelta(hours=1)).timestamp(),  # Outside range
+        }[x]
+
+        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, filenames_only, use_localtime)
+
+        expected_calls = [
+            call('{} - {}'.format((test_start_datetime + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), os.path.join(test_path, "file1.txt"))),
+            call('{} - {}'.format((test_end_datetime - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), os.path.join(test_path, "file2.txt")))
+        ]
+        mock_print.assert_has_calls(expected_calls, any_order=True)
+        self.assertEqual(mock_print.call_count, 2)
+
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_files_within_start_end_datetime_range_localtime(self, mock_walk, mock_getmtime, mock_print):
+        """Tests that files modified within the specified start and end datetime range in local timezone are listed."""
+        test_start_datetime = datetime(2024, 3, 4, 8, 0).astimezone()
+        test_end_datetime = datetime(2024, 3, 5, 18, 0).astimezone()
+        test_path = "/path/to/directory"
+        include_hidden = False
+        use_localtime = True
+
+        mock_walk.return_value = [
+            (test_path, [], ["file1.txt", "file2.txt", "file3.txt"]),
+        ]
+
+        mock_getmtime.side_effect = lambda x: {
+            "/path/to/directory/file1.txt": (test_start_datetime + timedelta(hours=1)).timestamp(),  # Within range
+            "/path/to/directory/file2.txt": (test_end_datetime - timedelta(hours=1)).timestamp(),  # Within range
+            "/path/to/directory/file3.txt": (test_end_datetime + timedelta(hours=1)).timestamp(),  # Out of range
+        }[x]
+
+        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False, use_localtime)
+
+        expected_calls = [
+            call('{} - {}'.format((test_start_datetime + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), os.path.join(test_path, "file1.txt"))),
+            call('{} - {}'.format((test_end_datetime - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), os.path.join(test_path, "file2.txt"))),
+        ]
+        mock_print.assert_has_calls(expected_calls, any_order=True)
+        self.assertEqual(mock_print.call_count, 2)
+
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_hidden_files_included_with_localtime(self, mock_walk, mock_getmtime, mock_print):
+        """Test that hidden files are included when the '-a' option is used with local timezone."""
+        test_path = "/path/to/directory"
+        include_hidden = True
+        use_localtime = True
+        test_end_datetime = datetime.now().astimezone() + timedelta(hours=1)  # Future time in local timezone
+
+        mock_walk.return_value = [
+            (test_path, [], ["visible_file.txt", ".hidden_file.txt"]),
+        ]
+
+        mock_getmtime.side_effect = lambda x: (datetime.now().astimezone() - timedelta(hours=1)).timestamp()
+
+        find_range.list_recent_files(test_path, None, test_end_datetime, include_hidden, False, use_localtime)
+
+        expected_calls = [
+            call('{} - {}'.format((datetime.now().astimezone() - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), os.path.join(test_path, "visible_file.txt"))),
+            call('{} - {}'.format((datetime.now().astimezone() - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), os.path.join(test_path, ".hidden_file.txt"))),
+        ]
+        mock_print.assert_has_calls(expected_calls, any_order=True)
+
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_filenames_only_with_localtime(self, mock_walk, mock_getmtime, mock_print):
+        """Test listing filenames only with local timezone."""
+        test_start_datetime = datetime.now().astimezone() - timedelta(hours=2)
+        test_end_datetime = datetime.now().astimezone()
+        test_path = "/path/to/directory"
+        include_hidden = False
+        filenames_only = True
+        use_localtime = True
+
+        mock_walk.return_value = [
+            (test_path, [], ["file1.txt", "file2.txt"]),
+        ]
+
+        mock_getmtime.side_effect = lambda x: {
+            os.path.join(test_path, "file1.txt"): (test_start_datetime + timedelta(hours=1)).timestamp(),  # Within range
+            os.path.join(test_path, "file2.txt"): (test_end_datetime + timedelta(hours=1)).timestamp(),  # Out of range
+        }[x]
+
+        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, filenames_only, use_localtime)
+
+        mock_print.assert_called_once_with("file1.txt")
+
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_exclude_hidden_files_and_directories(self, mock_walk, mock_getmtime, mock_print):
+        """Test that hidden files and directories are excluded by default."""
+        test_path = "/path/to/directory"
+        include_hidden = False
+        test_datetime = datetime.utcnow().replace(tzinfo=timezone.utc) - timedelta(hours=2)
+
+        mock_walk.return_value = [
+            (test_path, [".hidden_dir"], ["visible_file.txt", ".hidden_file.txt"]),
+            (os.path.join(test_path, ".hidden_dir"), [], ["hidden_file_in_hidden_dir.txt"]),
+        ]
+
+        mock_getmtime.return_value = test_datetime.timestamp()
+
+        find_range.list_recent_files(test_path, test_datetime, None, include_hidden, False, False)
+
+        expected_output = '{} - {}'.format(test_datetime.strftime('%Y-%m-%dT%H:%M:%SZ'), os.path.join(test_path, "visible_file.txt"))
+        mock_print.assert_called_once_with(expected_output)
 
 
 if __name__ == '__main__':
