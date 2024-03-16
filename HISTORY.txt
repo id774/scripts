@@ -3,10 +3,11 @@ HISTORY.txt
 
 v1.2.2 (Release Date: TBD)
 --------------------------
+- Added CI cron scripts.
+- Modified run_tests.sh to display the total number of test scripts and test cases.
 - Renamed find_recent.py to find_range.py with enhanced range options.
 - Added support for ISO format and local timezone in find_range.py.
 - Enhanced checks in existing scripts.
-- Added CI cron scripts.
 - Added several test cases to enrich the testing of new features and ensure robustness.
 
 v1.2.1 (2024-02-28)
