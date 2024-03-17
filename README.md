@@ -39,6 +39,8 @@ Run setup_scripts.sh to set appropriate file permissions:
 
 For detailed instructions on how to use each script, please refer to the documentation within each script itself.
 
+For Python scripts within this collection, we recommend using Python version 3.6 or later to ensure compatibility and take advantage of the latest language features.
+
 ## Usage
 
 Refer to the contents of the script you wish to use in an editor and review the code and its documentation. All scripts are executable from the command line, but some may require specific permissions or environment setup.
