@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2024-03-19
+#       Replaced deprecated datetime.utcnow() with datetime.now(timezone.utc) in tests.
 #  v1.4 2024-03-16
 #       Added test cases for local timezone handling.
 #       Added more specific tests for ensuring hidden directories and their files
@@ -596,7 +598,7 @@ class TestFindRecent(unittest.TestCase):
         """Test that hidden files and directories are excluded by default."""
         test_path = "/path/to/directory"
         include_hidden = False
-        test_datetime = datetime.utcnow().replace(tzinfo=timezone.utc) - timedelta(hours=2)
+        test_datetime = datetime.now(timezone.utc) - timedelta(hours=2)
 
         mock_walk.return_value = [
             (test_path, [".hidden_dir"], ["visible_file.txt", ".hidden_file.txt"]),
@@ -617,7 +619,7 @@ class TestFindRecent(unittest.TestCase):
         """Test that files in hidden directories are excluded by default."""
         test_path = "/path/to/directory"
         include_hidden = False
-        test_datetime = datetime.utcnow().replace(tzinfo=timezone.utc) - timedelta(hours=2)
+        test_datetime = datetime.now(timezone.utc) - timedelta(hours=2)
 
         mock_walk.return_value = [
             (test_path, [".hidden_dir"], ["visible_file.txt"]),
@@ -638,7 +640,7 @@ class TestFindRecent(unittest.TestCase):
         """Test that files in hidden directories are included when the '-a' option is used."""
         test_path = "/path/to/directory"
         include_hidden = True
-        test_datetime = datetime.utcnow().replace(tzinfo=timezone.utc) - timedelta(hours=2)
+        test_datetime = datetime.now(timezone.utc) - timedelta(hours=2)
 
         mock_walk.return_value = [
             (test_path, [".hidden_dir"], ["visible_file.txt"]),
