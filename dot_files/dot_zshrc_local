@@ -1,6 +1,0 @@
-if [ -d $HOME/local/anaconda3/bin ]; then
-    export PATH=$HOME/local/anaconda3/bin:$PATH
-fi
-
-export PYTHONDONTWRITEBYTECODE=1
-export FLASK_ENV=development
