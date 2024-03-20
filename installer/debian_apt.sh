@@ -14,7 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v0.4 2024-03-20
+#  v1.0 2024-03-20
 #       Refactored for POSIX compliance and improved modularity.
 #  v0.3 2011-10-03
 #       Implement smart_apt function.
