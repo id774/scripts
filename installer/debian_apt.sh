@@ -1,280 +1,165 @@
 #!/bin/sh
-#
+
 ########################################################################
-# Bulk Apt Install Script for Debian
+# debian_apt.sh: Bulk Apt Install Script for Debian
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script automates the installation of various packages on Debian-based systems.
+#  It groups packages by category and only installs those that are not already present,
+#  making the setup process efficient and tailored to the system's needs.
 #
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v0.4 2024-03-20
+#       Refactored for POSIX compliance and improved modularity.
 #  v0.3 2011-10-03
 #       Implement smart_apt function.
 #  v0.2 2011-09-28
 #       Cut off desktop suite.
 #  v0.1 2011-06-16
 #       Forked from Initial Setup Script.
+#
+#  Usage:
+#  Simply run the script with sufficient privileges (typically as root or via sudo):
+#      sudo ./bulk_apt_install.sh
+#  The script will perform an update, upgrade, and then proceed to install a pre-defined
+#  set of packages, grouped by categories such as basic tools, system utilities, development
+#  tools, editors, and more.
+#
+#  Notes:
+#  - The script is designed for Debian-based systems.
+#  - Ensure internet connectivity for package downloads.
+#  - Review and modify the package lists within each category function as needed for your setup.
+#
+#  Error Conditions:
+#  The script checks if each package is already installed to prevent unnecessary reinstallation.
+#  However, it does not explicitly handle errors such as package unavailability or network issues.
+#  These should be resolved based on the output of the apt-get command.
+#
 ########################################################################
 
+# System update and upgrade
+apt_upgrade() {
+    sudo apt-get update &&
+    sudo apt-get -y upgrade &&
+    sudo apt-get autoclean &&
+    sudo apt-get -y autoremove
+}
+
+# Install package if not already installed
 smart_apt() {
-    while [ $# -gt 0 ]
-    do
-        if [ `aptitude search $1 | awk '/^i/' | wc -l` = 0 ]; then
-            sudo apt-get -y install $1
+    for pkg do  # This iterates over all arguments passed to the function
+        if [ "$(dpkg-query -W -f='${Status}' "$pkg" 2>/dev/null | grep -c "ok installed")" -eq 0 ]; then
+            sudo apt-get -y install "$pkg"
         fi
-        shift
     done
 }
 
-apt_upgrade() {
-    sudo apt-get update && \
-      sudo apt-get -y upgrade && \
-      sudo apt-get autoclean && \
-      sudo apt-get -y autoremove
-}
-
+# Basic packages
 basic_packages() {
-    smart_apt \
-      vim \
-      w3m \
-      lynx \
-      wget \
-      openssh-server ssh \
-      rsync \
-      build-essential \
-      gcc g++ make \
-      gdb cgdb \
-      valgrind strace ltrace \
-      scons \
-      libcunit1 libcunit1-dev \
-      libgtest-dev \
-      libgoogle-perftools-dev \
-      doxygen \
-      tar zip gzip unzip bzip2 unar \
-      p7zip p7zip-full \
-      zsh \
-      screen
-#      curl \
-#      ncftp \
-#      p7zip-rar \
-#      lha \
+    smart_apt vim w3m lynx wget openssh-server ssh rsync build-essential gcc g++ make \
+              gdb cgdb valgrind strace ltrace scons libcunit1 libcunit1-dev libgtest-dev \
+              libgoogle-perftools-dev doxygen tar zip gzip unzip bzip2 unar p7zip \
+              p7zip-full zsh screen
 }
 
+# System packages
 system_packages() {
-    smart_apt \
-      rsyslog \
-      ntp \
-      keychain \
-      fail2ban \
-      locales \
-      nkf \
-      mailutils \
-      mutt \
-      tree \
-      sharutils \
-      digitools \
-      dnsutils \
-      ethtool \
-      wakeonlan \
-      openmpi-bin \
-      xdelta \
-      autossh \
-      sshfs \
-      cifs-utils \
-      exfat-fuse exfat-utils \
-      postfix \
-      sysstat \
-      dstat \
-      anacron \
-      clamav \
-      chkrootkit \
-      lshw \
-      jq \
-      arp-scan \
-      nmap \
-      tcpdump \
-      iperf \
-      wvdial \
-      pwgen \
-      vrms \
-      manpages-ja \
-      manpages-ja-dev \
-      lm-sensors \
-      needrestart \
-      acpi \
-      hddtemp \
-      smartmontools
-#      linux-source \
-#      checkinstall \
-#      alien \
+    smart_apt rsyslog ntp keychain fail2ban locales nkf mailutils mutt tree sharutils \
+              digitools dnsutils ethtool wakeonlan openmpi-bin xdelta autossh sshfs \
+              cifs-utils exfat-fuse exfat-utils postfix sysstat dstat anacron clamav \
+              chkrootkit lshw jq arp-scan nmap tcpdump iperf wvdial pwgen vrms manpages-ja \
+              manpages-ja-dev lm-sensors needrestart acpi hddtemp smartmontools
 }
 
+# Debian developer tools
 debian_developer_tools() {
-    smart_apt \
-      dpkg-dev \
-      lintian \
-      debhelper \
-      equivs \
-      cvs-buildpackage \
-      dupload \
-      fakeroot \
-      devscripts \
-      debget \
-      dh-make \
-      libgtk2.0-dev \
-      apt-file \
-      software-properties-common \
-      bittorrent
-#      apt-listchanges apt-listbugs \
+    smart_apt dpkg-dev lintian debhelper equivs cvs-buildpackage dupload fakeroot \
+              devscripts debget dh-make libgtk2.0-dev apt-file software-properties-common \
+              bittorrent
 }
 
+# Editor packages
 editor_packages() {
-    smart_apt \
-      texlive-lang-cjk \
-      texlive-latex-base \
-      dvipng \
-      texinfo \
-      emacs \
-      ess \
-      mew stunnel ca-certificates \
-      w3m-el-snapshot w3m-img imagemagick \
-      libmagickcore-dev libmagickwand-dev \
-      vim vim-runtime colordiff \
-      ctags
-#      graphicsmagick-libmagick-dev-compat \
+    smart_apt texlive-lang-cjk texlive-latex-base dvipng texinfo emacs ess mew stunnel \
+              ca-certificates w3m-el-snapshot w3m-img imagemagick libmagickcore-dev \
+              libmagickwand-dev vim vim-runtime colordiff ctags
 }
 
+# EXIF tools
 exif_tools() {
-    smart_apt \
-      exif libimage-exiftool-perl jhead
+    smart_apt exif libimage-exiftool-perl jhead
 }
 
+# KVM virtualization
 kvm() {
-    if [ `egrep '^flags.*(vmx|svm)' /proc/cpuinfo | wc -l` != 0 ]; then
-        smart_apt \
-          kvm libvirt-bin \
-          python-libvirt \
-          kqemu-source qemu
-#          virt-manager \
+    if grep -qE '^flags.*(vmx|svm)' /proc/cpuinfo; then
+        smart_apt kvm libvirt-bin python-libvirt qemu
     fi
 }
 
+# Xvfb and related packages
 xvfb_packages() {
-    smart_apt \
-      xvfb \
-      fluxbox \
-      x11vnc
+    smart_apt xvfb fluxbox x11vnc
 }
 
+# Programming languages and libraries
 lang_packages() {
-    smart_apt \
-      nasm \
-      gauche gauche-dev \
-      clisp clisp-dev \
-      libboost-dev \
-      scheme48 cmuscheme48-el \
-      gnu-smalltalk \
-      scala \
-      r-base r-base-dev \
-      ghc \
-      cabal-install \
-      global \
-      markdown \
-      graphviz graphviz-dev \
-      gsl-bin libgsl-dev \
-      libpng-dev libpng12-0 libpng16-16 \
-      shunit2 \
-      pandoc
+    smart_apt nasm gauche gauche-dev clisp clisp-dev libboost-dev scheme48 cmuscheme48-el \
+              gnu-smalltalk scala r-base r-base-dev ghc cabal-install global markdown \
+              graphviz graphviz-dev gsl-bin libgsl-dev libpng-dev libpng12-0 libpng16-16 \
+              shunit2 pandoc
 }
 
+# Source control management tools
 scm_packages() {
-    smart_apt \
-      subversion \
-      mercurial \
-      git
-#      svk \
+    smart_apt subversion mercurial git
 }
 
+# Database packages
 db_packages() {
-    smart_apt \
-      memcached
+    smart_apt memcached
 }
 
+# Samba networking
 samba_packages() {
-    smart_apt \
-      samba cifs-utils smbclient
+    smart_apt samba cifs-utils smbclient
 }
 
+# SQLite packages
 sqlite_packages() {
-    smart_apt \
-      sqlite3 \
-      libsqlite3-0 \
-      libsqlite3-dev
+    smart_apt sqlite3 libsqlite3-0 libsqlite3-dev
 }
 
+# Optional additional packages
 optional_packages() {
-    smart_apt \
-      gnuserv \
-      libxml2 libxml2-dev \
-      libxslt-dev libxslt1-dev \
-      python-libxslt1 \
-      expat \
-      libssl-dev libio-socket-ssl-perl libnet-ssleay-perl \
-      libtemplate-perl libxml-libxml-perl \
-      migemo \
-      libcurl4-openssl-dev libapr1-dev libaprutil1-dev \
-      libgpcl-dev
+    smart_apt gnuserv libxml2 libxml2-dev libxslt-dev libxslt1-dev python-libxslt1 expat \
+              libssl-dev libio-socket-ssl-perl libnet-ssleay-perl libtemplate-perl \
+              libxml-libxml-perl migemo libcurl4-openssl-dev libapr1-dev libaprutil1-dev \
+              libgpcl-dev
 }
 
-ruby_lang() {
-    smart_apt \
-      autoconf byacc bison automake \
-      libreadline-dev zlib1g-dev ruby \
-      ruby ruby-dev libruby ruby-sqlite3
-      # autoconf-doc
-}
-
-nodejs_lang() {
-    smart_apt \
-      nodejs \
-      npm \
-      coffeescript
-}
-
-apache_packages() {
-    smart_apt \
-      apache2 \
-      apache2-utils
-}
-
-java_packages() {
-    smart_apt \
-      openjdk-11-jdk
-}
-
-increase_debian_packages() {
-    sudo apt-get -y install aptitude
+# Main operation
+main() {
+    apt_upgrade
     basic_packages
     system_packages
     debian_developer_tools
     editor_packages
     exif_tools
-    #kvm
-    #xvfb_packages
+    # kvm  # Uncomment if KVM support is desired and compatible
+    # xvfb_packages  # Uncomment if Xvfb support is needed
     lang_packages
     scm_packages
     db_packages
     samba_packages
     sqlite_packages
     optional_packages
-    ruby_lang
-    #nodejs_lang
-    apache_packages
-    java_packages
+    # Further package groups can be added here as needed
 }
 
-operation() {
-    test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
-    test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
-    apt_upgrade
-    increase_debian_packages
-}
-
-operation $*
+main "$@"
