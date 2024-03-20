@@ -9,6 +9,7 @@ v1.2.2 (Release Date: TBD)
 - Added support for ISO format and local timezone in find_range.py.
 - Enhanced checks in existing scripts.
 - Added several test cases to enrich the testing of new features and ensure robustness.
+- Updated several installer scripts to modern specifications.
 
 v1.2.1 (2024-02-28)
 --------------------------
@@ -42,4 +43,3 @@ v0.1 (2008-10-31)
 First Commit (2008-08-22)
 -------------------------
 - Commemorating the first commit and push, marking the inception of the project.
-
