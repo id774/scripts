@@ -73,7 +73,7 @@ system_packages() {
               digitools dnsutils ethtool wakeonlan openmpi-bin xdelta autossh sshfs \
               cifs-utils exfat-fuse exfat-utils postfix sysstat dstat anacron clamav \
               chkrootkit lshw jq arp-scan nmap tcpdump iperf wvdial pwgen vrms manpages-ja \
-              manpages-ja-dev lm-sensors needrestart acpi hddtemp smartmontools
+              manpages-ja-dev lm-sensors needrestart acpi hddtemp smartmontools aptitude
 }
 
 # Debian developer tools
@@ -137,9 +137,9 @@ sqlite_packages() {
 
 # Optional additional packages
 optional_packages() {
-    smart_apt gnuserv libxml2 libxml2-dev libxslt-dev libxslt1-dev python-libxslt1 expat \
+    smart_apt gnuserv libxml2 libxml2-dev libxslt-dev libxslt1-dev expat \
               libssl-dev libio-socket-ssl-perl libnet-ssleay-perl libtemplate-perl \
-              libxml-libxml-perl migemo libcurl4-openssl-dev libapr1-dev libaprutil1-dev \
+              libxml-libxml-perl libcurl4-openssl-dev libapr1-dev libaprutil1-dev \
               libgpcl-dev
 }
 
