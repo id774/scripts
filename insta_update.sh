@@ -6,13 +6,13 @@
 #  Description:
 #  This script navigates to a specified directory and executes an Instagram
 #  content downloader script in each subdirectory, followed by a synchronization
-#  script. It supports an optional reset feature to clear each target directory
-#  before downloading new content. Instead of directly clearing the content,
-#  it now safely renames the target directory and only removes it after a
-#  successful update, ensuring data integrity even if the download fails.
-#  The script requires a configuration file named 'insta_update.conf' to
-#  specify necessary settings. It is designed to be run in a POSIX-compliant
-#  shell environment.
+#  script. It supports optional reset and no-sync features. The reset feature
+#  clears each target directory before downloading new content, safely renaming
+#  the directory to ensure data integrity if the download fails. The no-sync
+#  feature skips the synchronization step, allowing for faster updates when
+#  synchronization is not needed. Configuration is managed through a file named
+#  'insta_update.conf', specifying necessary settings. The script is intended
+#  for POSIX-compliant shell environments.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -20,6 +20,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-03-21
+#       Introduced the --no-sync (-n) option to skip the synchronization step.
 #  v1.2 2024-02-23
 #       Added check_commands function to verify the presence and executability
 #       of required system commands before proceeding with the main script.
@@ -30,22 +32,21 @@
 #       Initial release.
 #
 #  Usage:
-#  ./insta_update.sh [--reset]
-#  The --reset option is powerful and will now safely rename the target
-#  directory before downloading new content. The original directory will only be
-#  removed if the download succeeds, ensuring data integrity.
+#  ./insta_update.sh [--reset] [--no-sync]
+#  The --reset option safely renames the target directory before downloading new
+#  content. The original directory is only removed if the download succeeds,
+#  ensuring data integrity. The --no-sync (-n) option skips the synchronization
+#  step, useful for faster updates when synchronization is not needed.
 #
 #  Configuration file ('insta_update.conf') requirements:
 #  - PYTHON_BIN: Path to the Python binary.
 #  - DOWNLOADER_SCRIPT: Path to the Instagram downloader script.
-#  - SYNC_SCRIPT: Path to the Instagram synchronization script.
+#  - SYNC_SCRIPT: Path to the Instagram synchronization script (optional with --no-sync).
 #  - TARGET_DIR: Directory containing Instagram subdirectories.
 #  Ensure all these variables are set in 'insta_update.conf'.
 #
 #  Notes:
-#  - The --reset option now renames the target directory to a temporary one
-#    before downloading. If the download fails, the original content is restored.
-#  - Make sure 'exclude_accounts.txt' and 'include_accounts.txt' are properly
+#  - Ensure 'exclude_accounts.txt' and 'include_accounts.txt' are properly
 #    formatted, with one account name per line, if they are used.
 #  - The script supports 'exclude_accounts.txt' and 'include_accounts.txt' lists.
 #    If 'exclude_accounts.txt' is present, any subdirectories matching the names
@@ -109,12 +110,17 @@ check_commands() {
 check_commands mv mkdir rm grep
 
 RESET=false
+NO_SYNC=false
 
 # Parse options
 while [ $# -gt 0 ]; do
     case $1 in
         --reset)
         RESET=true
+        shift
+        ;;
+        --no-sync|-n)
+        NO_SYNC=true
         shift
         ;;
         *)
@@ -146,8 +152,10 @@ update_content() {
     cd "$subdir" || exit
     "$PYTHON_BIN" "$DOWNLOADER_SCRIPT" || exit
     cd "$TARGET_DIR" || exit
-    echo "Synchronizing: $SYNC_SCRIPT $(basename "$subdir")"
-    "$SYNC_SCRIPT" "$(basename "$subdir")" || exit
+    if [ "$NO_SYNC" = false ]; then
+        echo "Synchronizing: $SYNC_SCRIPT $(basename "$subdir")"
+        "$SYNC_SCRIPT" "$(basename "$subdir")" || exit
+    fi
 }
 
 should_process() {
@@ -176,4 +184,3 @@ for subdir in */ ; do
         update_content "$subdir"
     fi
 done
-
