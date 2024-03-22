@@ -6,7 +6,8 @@
 #  Description:
 #  This script flattens the directory structure by either moving, copying,
 #  or renaming files to the base directory. It supports deletion of empty
-#  directories and can operate in a quiet mode.
+#  directories and can operate in a quiet mode. If no options are specified,
+#  the script displays a help message and exits.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2024-03-22
+#       Updated to display a help message and exit if no options are specified.
 #  v1.7 2024-03-05
 #       Fixed issue with deleting directories containing subdirectories.
 #  v1.6 2024-01-20
@@ -131,7 +134,13 @@ def handle_directory(path, options):
         pass
 
 def main(options):
-    """ Main function to process directories. """
+    """ Main function to process directories. Check if any options are set; if not, display help. """
+    # Check if any option is set. If not, display help and exit.
+    if not any(vars(options).values()):
+        parser.print_help()
+        exit()
+
+    # Process each subdirectory in the current directory
     subdirectories = [d for d in os.listdir('.') if os.path.isdir(d)]
     for subdir in subdirectories:
         handle_directory(subdir, options)
