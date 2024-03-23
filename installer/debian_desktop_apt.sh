@@ -21,8 +21,11 @@
 #       Forked from Initial Setup Script.
 #
 #  Usage:
-#  Run the script with sufficient privileges:
+#  Run the script directly without explicit 'sudo', as it uses 'sudo' internally for privilege elevation:
 #      ./debian_desktop_apt.sh
+#  You may be prompted to enter your password due to 'sudo' commands within the script. Ensure that you
+#  trust the script before executing it, as it performs system updates, upgrades, and installs a pre-defined
+#  set of packages, including basic tools, system utilities, development tools, editors, and more.
 #
 #  Notes:
 #  - The script is designed for Debian-based desktop systems.
