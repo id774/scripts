@@ -25,7 +25,7 @@
 #
 #  Usage:
 #  Simply run the script with sufficient privileges (typically as root or via sudo):
-#      sudo ./bulk_apt_install.sh
+#      ./debian_apt.sh
 #  The script will perform an update, upgrade, and then proceed to install a pre-defined
 #  set of packages, grouped by categories such as basic tools, system utilities, development
 #  tools, editors, and more.
