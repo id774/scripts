@@ -4,10 +4,18 @@
 # zero_padding.py: File Renaming Script
 #
 #  Description:
-#  This script renames files in a given directory by zero-padding the numeric
-#  part of the file names to a specified number of digits. It includes
-#  a quiet mode option to suppress logging output and has improved structure
-#  with the addition of a main function and separate argument parser setup.
+#  This script is designed to rename files within a specified directory by
+#  zero-padding the numeric portions of file names to a uniform number of digits.
+#  This functionality facilitates organized and consistent naming conventions,
+#  particularly useful for sorting and managing large collections of files.
+#  For example, files named "photo1.jpg", "photo2.jpg", and "photo10.jpg"
+#  would be renamed to "photo0001.jpg", "photo0002.jpg", and "photo0010.jpg",
+#  assuming a padding target of 4 digits.
+#
+#  The script supports a quiet mode option to suppress logging output, which is
+#  beneficial for operations requiring minimal verbosity. The implementation
+#  includes a main function for structured execution and a separate function for
+#  argument parsing, enhancing readability and maintainability.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -15,6 +23,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2024-03-27
+#       Modified the rename_files function to avoid renaming files that already
+#       conform to the desired naming convention, enhancing efficiency.
 #  v1.4 2024-01-20
 #       Refactored to include a main function and separate argument parser setup function.
 #  v1.3 2024-01-11
@@ -89,19 +100,20 @@ def rename_files(dir_path, num_digits, quiet_mode):
 
         # Create a new file name and rename the file
         new_file_name = new_name_base + name_ext
+
+        # Skip renaming if the file name will remain the same
+        if new_file_name == file_name:
+            continue
+
         old_file_path = os.path.join(dir_path, file_name)
         new_file_path = os.path.join(dir_path, new_file_name)
-        os.rename(old_file_path, new_file_path)
-
-        # Display the renaming
-        if not quiet_mode:
-            logging.info("%s -> %s", file_name, new_file_name)
 
         try:
             os.rename(old_file_path, new_file_path)
+            if not quiet_mode:
+                logging.info("%s -> %s", file_name, new_file_name)
         except OSError as e:
-            logging.error("Failed to rename %s to %s: %s",
-                          old_file_path, new_file_path, e)
+            logging.error("Failed to rename %s to %s: %s", old_file_path, new_file_path, e)
 
 def main():
     """ Main function to control the flow of the program. """
