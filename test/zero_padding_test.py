@@ -8,7 +8,7 @@
 #  the functionality of the rename_files function to ensure that file names
 #  are correctly zero-padded to the specified number of digits.
 #
-#  Author: id774
+#  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
 #  Contact: idnanashi@gmail.com
