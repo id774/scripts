@@ -17,7 +17,7 @@
 #  Version History:
 #  v1.3 2024-01-11
 #       Added '-q' option for quiet mode.
-#  v1.2 2023-01-10
+#  v1.2 2024-01-10
 #       Updated with enhanced error handling, logging, and refactored functions.
 #  v1.1 2014-08-14
 #       Minor formatting revisions for readability and consistency.
