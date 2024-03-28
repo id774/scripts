@@ -18,6 +18,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2024-03-28
+#       Enhanced the output format to include timezone offset in '±hh:mm' format
+#       when using local timezone with '-l' option.
 #  v1.4 2024-03-16
 #       Fixed a bug where hidden files and directories were not properly excluded
 #       when the '-a' option was not used.
@@ -161,7 +164,10 @@ def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, fi
                 else:
                     # Format the modification time in ISO 8601 format, indicating UTC with 'Z'
                     if use_localtime:
-                        print("{} - {}".format(mtime.strftime('%Y-%m-%dT%H:%M:%S'), file_path))
+                        # Convert timezone offset to '±hh:mm' format
+                        tz_offset = mtime.strftime('%z')  # Get timezone offset, e.g., '+0900'
+                        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '±hh:mm'
+                        print("{}{} - {}".format(mtime.strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, file_path))
                     else:
                         print("{} - {}".format(mtime.strftime('%Y-%m-%dT%H:%M:%SZ'), file_path))
 
