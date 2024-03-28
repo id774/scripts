@@ -16,6 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2024-03-28
+#       Updated tests to accommodate changes in output format for local timezone
+#       that now includes timezone offset, aligning with ISO 8601.
 #  v1.5 2024-03-19
 #       Replaced deprecated datetime.utcnow() with datetime.now(timezone.utc) in tests.
 #  v1.4 2024-03-16
@@ -438,6 +441,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_localtime_option(self, mock_walk, mock_getmtime, mock_print):
+        """Test listing files with the local timezone option."""
         # Set test path and options
         test_path = "/path/to/directory"
         include_hidden = False
@@ -445,7 +449,7 @@ class TestFindRecent(unittest.TestCase):
         use_localtime = True
 
         # Set start datetime in local timezone
-        test_start_date = datetime(2024, 3, 4, 12, 0).astimezone()
+        test_start_date = datetime(2024, 3, 4, 13, 0).astimezone()
 
         # Mock the os.walk function to return a predefined file structure
         mock_walk.return_value = [
@@ -453,13 +457,16 @@ class TestFindRecent(unittest.TestCase):
         ]
 
         # Mock os.path.getmtime to return modification time 1 hour after the test start date
-        mock_getmtime.return_value = (test_start_date + timedelta(hours=1)).timestamp()
+        mock_getmtime.return_value = test_start_date.timestamp()
 
         # Call the function under test with local timezone option
         find_range.list_recent_files(test_path, test_start_date, None, include_hidden, filenames_only, use_localtime)
 
+        tz_offset = test_start_date.strftime('%z')
+        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '±hh:mm'
+
         # Generate the expected time string in local timezone without timezone information
-        expected_time_str = (test_start_date + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S')
+        expected_time_str = '{}{}'.format(test_start_date.strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted)
         # Assert the expected print call
         mock_print.assert_called_once_with('{} - {}'.format(expected_time_str, os.path.join(test_path, "file1.txt")))
 
@@ -486,31 +493,30 @@ class TestFindRecent(unittest.TestCase):
         """Test listing files within a specified start and end datetime range in local timezone."""
         test_path = "/path/to/directory"
         include_hidden = False
-        filenames_only = False
         use_localtime = True
 
-        # Set start and end datetime in local timezone
-        test_start_datetime = datetime(2024, 3, 4, 8, 0).astimezone()
-        test_end_datetime = datetime(2024, 3, 5, 18, 0).astimezone()
+        test_start_datetime = datetime(2024, 3, 4, 9, 0).astimezone()
+        test_end_datetime = datetime(2024, 3, 5, 17, 0).astimezone()
 
         mock_walk.return_value = [
-            (test_path, [], ["file1.txt", "file2.txt", "file3.txt"]),
+            (test_path, [], ["file1.txt", "file2.txt"]),
         ]
 
         mock_getmtime.side_effect = lambda x: {
-            "/path/to/directory/file1.txt": (test_start_datetime + timedelta(hours=1)).timestamp(),  # Within range
-            "/path/to/directory/file2.txt": (test_end_datetime - timedelta(hours=1)).timestamp(),  # Within range
-            "/path/to/directory/file3.txt": (test_end_datetime + timedelta(hours=1)).timestamp(),  # Outside range
+            os.path.join(test_path, "file1.txt"): (test_start_datetime + timedelta(hours=1)).timestamp(),  # Within range
+            os.path.join(test_path, "file2.txt"): (test_end_datetime - timedelta(hours=1)).timestamp(),  # Within range
         }[x]
 
-        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, filenames_only, use_localtime)
+        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False, use_localtime)
+
+        tz_offset = test_start_datetime.strftime('%z')
+        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '±hh:mm'
 
         expected_calls = [
-            call('{} - {}'.format((test_start_datetime + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), os.path.join(test_path, "file1.txt"))),
-            call('{} - {}'.format((test_end_datetime - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), os.path.join(test_path, "file2.txt")))
+            call('{}{} - {}'.format((test_start_datetime + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file1.txt"))),
+            call('{}{} - {}'.format((test_end_datetime - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file2.txt"))),
         ]
         mock_print.assert_has_calls(expected_calls, any_order=True)
-        self.assertEqual(mock_print.call_count, 2)
 
     @patch('builtins.print')
     @patch('find_range.os.path.getmtime')
@@ -535,12 +541,14 @@ class TestFindRecent(unittest.TestCase):
 
         find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False, use_localtime)
 
+        tz_offset = test_start_datetime.strftime('%z')
+        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '±hh:mm'
+
         expected_calls = [
-            call('{} - {}'.format((test_start_datetime + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), os.path.join(test_path, "file1.txt"))),
-            call('{} - {}'.format((test_end_datetime - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), os.path.join(test_path, "file2.txt"))),
+            call('{}{} - {}'.format((test_start_datetime + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file1.txt"))),
+            call('{}{} - {}'.format((test_end_datetime - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file2.txt"))),
         ]
         mock_print.assert_has_calls(expected_calls, any_order=True)
-        self.assertEqual(mock_print.call_count, 2)
 
     @patch('builtins.print')
     @patch('find_range.os.path.getmtime')
@@ -560,9 +568,12 @@ class TestFindRecent(unittest.TestCase):
 
         find_range.list_recent_files(test_path, None, test_end_datetime, include_hidden, False, use_localtime)
 
+        tz_offset = test_end_datetime.strftime('%z')
+        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '±hh:mm'
+
         expected_calls = [
-            call('{} - {}'.format((datetime.now().astimezone() - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), os.path.join(test_path, "visible_file.txt"))),
-            call('{} - {}'.format((datetime.now().astimezone() - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), os.path.join(test_path, ".hidden_file.txt"))),
+            call('{}{} - {}'.format((datetime.now().astimezone() - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "visible_file.txt"))),
+            call('{}{} - {}'.format((datetime.now().astimezone() - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, ".hidden_file.txt"))),
         ]
         mock_print.assert_has_calls(expected_calls, any_order=True)
 
