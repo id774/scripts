@@ -495,16 +495,37 @@ class TestFindRecent(unittest.TestCase):
         include_hidden = False
         use_localtime = True
 
+        # Set the start and end datetime for the test
         test_start_datetime = datetime(2024, 3, 4, 9, 0).astimezone()
         test_end_datetime = datetime(2024, 3, 5, 17, 0).astimezone()
 
         mock_walk.return_value = [
-            (test_path, [], ["file1.txt", "file2.txt"]),
+            (test_path, [], [
+                "file_far_before_start.txt",
+                "file_just_before_start.txt",
+                "file_at_start.txt",
+                "file_just_after_start.txt",
+                "file_within_range1.txt",
+                "file_within_range2.txt",
+                "file_just_before_end.txt",
+                "file_at_end.txt",
+                "file_just_after_end.txt",
+                "file_far_after_end.txt",
+            ]),
         ]
 
+        # Mock file modification times around and within the start and end datetime
         mock_getmtime.side_effect = lambda x: {
-            os.path.join(test_path, "file1.txt"): (test_start_datetime + timedelta(hours=1)).timestamp(),  # Within range
-            os.path.join(test_path, "file2.txt"): (test_end_datetime - timedelta(hours=1)).timestamp(),  # Within range
+            os.path.join(test_path, "file_far_before_start.txt"): (test_start_datetime - timedelta(days=1)).timestamp(),
+            os.path.join(test_path, "file_just_before_start.txt"): (test_start_datetime - timedelta(minutes=1)).timestamp(),
+            os.path.join(test_path, "file_at_start.txt"): test_start_datetime.timestamp(),
+            os.path.join(test_path, "file_just_after_start.txt"): (test_start_datetime + timedelta(minutes=1)).timestamp(),
+            os.path.join(test_path, "file_within_range1.txt"): (test_start_datetime + timedelta(hours=1)).timestamp(),
+            os.path.join(test_path, "file_within_range2.txt"): (test_end_datetime - timedelta(hours=1)).timestamp(),
+            os.path.join(test_path, "file_just_before_end.txt"): (test_end_datetime - timedelta(minutes=1)).timestamp(),
+            os.path.join(test_path, "file_at_end.txt"): test_end_datetime.timestamp(),
+            os.path.join(test_path, "file_just_after_end.txt"): (test_end_datetime + timedelta(minutes=1)).timestamp(),
+            os.path.join(test_path, "file_far_after_end.txt"): (test_end_datetime + timedelta(days=1)).timestamp(),
         }[x]
 
         find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False, use_localtime)
@@ -513,10 +534,25 @@ class TestFindRecent(unittest.TestCase):
         tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '±hh:mm'
 
         expected_calls = [
-            call('{}{} - {}'.format((test_start_datetime + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file1.txt"))),
-            call('{}{} - {}'.format((test_end_datetime - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file2.txt"))),
+            call('{}{} - {}'.format(test_start_datetime.strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_at_start.txt"))),
+            call('{}{} - {}'.format((test_start_datetime + timedelta(minutes=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_just_after_start.txt"))),
+            call('{}{} - {}'.format((test_start_datetime + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_within_range1.txt"))),
+            call('{}{} - {}'.format((test_end_datetime - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_within_range2.txt"))),
+            call('{}{} - {}'.format((test_end_datetime - timedelta(minutes=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_just_before_end.txt"))),
+            call('{}{} - {}'.format(test_end_datetime.strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_at_end.txt"))),
         ]
+        # Ensure expected files within and at the boundaries are printed
         mock_print.assert_has_calls(expected_calls, any_order=True)
+
+        # Ensure files outside the specified range are not printed
+        unexpected_calls = [
+            call('{}{} - {}'.format((test_start_datetime - timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_far_before_start.txt"))),
+            call('{}{} - {}'.format((test_start_datetime - timedelta(minutes=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_just_before_start.txt"))),
+            call('{}{} - {}'.format((test_end_datetime + timedelta(minutes=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_just_after_end.txt"))),
+            call('{}{} - {}'.format((test_end_datetime + timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_far_after_end.txt"))),
+        ]
+        for unexpected_call in unexpected_calls:
+            self.assertNotIn(unexpected_call, mock_print.mock_calls)
 
     @patch('builtins.print')
     @patch('find_range.os.path.getmtime')
