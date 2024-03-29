@@ -1,8 +1,8 @@
 HISTORY.txt
 ===========
 
-v1.2.2 (Release Date: TBD)
---------------------------
+v1.2.2 (2024-03-29)
+-------------------
 - Added CI cron scripts.
 - Modified run_tests.sh to display the total number of test scripts and test cases.
 - Renamed find_recent.py to find_range.py with enhanced range options.
@@ -12,7 +12,7 @@ v1.2.2 (Release Date: TBD)
 - Updated several installer scripts to modern specifications.
 
 v1.2.1 (2024-02-28)
---------------------------
+-------------------
 - Resolved a critical issue with the Python compatibility search script.
 - Significant renaming and specification changes to the Instagram download script.
 - Added the ability to specify permissions in several scripts.
