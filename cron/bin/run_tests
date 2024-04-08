@@ -8,7 +8,8 @@
 #  in Python and Ruby. It loads configuration settings from an external '.conf'
 #  file, iterates through specified versions of Python and Ruby to run tests,
 #  and performs a compatibility check using the last Python version in the loop.
-#  It is intended to be executed automatically via cron jobs.
+#  It is intended to be executed automatically via cron jobs and sends a summary
+#  email to an administrator upon completion.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -16,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2024-04-08
+#       Made ADMIN_MAIL_ADDRESS optional for email notifications.
 #  v1.0 2024-03-13
 #       Initial release. Features include dynamic version testing for Python
 #       and Ruby, external configuration loading, and compatibility checking.
@@ -23,18 +26,21 @@
 #  Usage:
 #  This script is designed to be run automatically through a cron job. Ensure
 #  that 'run_tests.conf' is properly configured with the SCRIPTS, JOBLOG,
-#  python_versions, and ruby_versions variables. For manual execution, run the script:
+#  python_versions, ruby_versions, and ADMIN_MAIL_ADDRESS variables. For manual
+#  execution, run the script:
 #      ./run_tests.sh
 #
 #  The script iterates through the specified versions, runs tests for each
-#  combination of Python and Ruby versions, and concludes with a compatibility
-#  check using the last Python version tested.
+#  combination of Python and Ruby versions, concludes with a compatibility
+#  check using the last Python version tested, and sends a summary email to
+#  the administrator.
 #
 #  Configuration file ('run_tests.conf') requirements:
 #  - SCRIPTS: Path to the scripts directory.
 #  - JOBLOG: Path to the job log file.
 #  - python_versions: Space-separated list of Python versions to test.
 #  - ruby_versions: Space-separated list of Ruby versions to test.
+#  - ADMIN_MAIL_ADDRESS: Email address of the administrator to notify.
 #  Ensure these variables are set in 'run_tests.conf'.
 #
 #  Notes:
@@ -108,3 +114,15 @@ else
 fi
 
 echo >>$JOBLOG 2>&1
+
+# Mail sending function
+send_mail_to_admin() {
+    cat -v $JOBLOG | nkf -w | \
+      mail -s "[cron][`/bin/hostname`] Test Results for Python and Ruby on Scripts Collection projects" \
+      $ADMIN_MAIL_ADDRESS
+}
+
+# Check if ADMIN_MAIL_ADDRESS is set and send summary email to admin
+if [ -n "$ADMIN_MAIL_ADDRESS" ]; then
+    send_mail_to_admin
+fi
