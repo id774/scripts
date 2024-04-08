@@ -1,6 +1,10 @@
 HISTORY.txt
 ===========
 
+v1.2.3 (Release Date: TBD)
+--------------------------
+- Added notification feature to CI scripts for sending email updates to a specified address.
+
 v1.2.2 (2024-03-29)
 -------------------
 - Added CI cron scripts.
