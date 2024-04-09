@@ -118,7 +118,7 @@ echo >>$JOBLOG 2>&1
 # Mail sending function
 send_mail_to_admin() {
     cat -v $JOBLOG | nkf -w | \
-      mail -s "[cron][`/bin/hostname`] Test Results for Python and Ruby on Scripts Collection projects" \
+      mail -s "[cron][`/bin/hostname`] CI Results Overview" \
       $ADMIN_MAIL_ADDRESS
 }
 
