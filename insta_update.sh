@@ -6,7 +6,8 @@
 #  Description:
 #  This script navigates to a specified directory and executes an Instagram
 #  content downloader script in each subdirectory, followed by a synchronization
-#  script. It supports optional reset and no-sync features. The reset feature
+#  script. It supports optional reset and no-sync features, and allows for
+#  specific account updates via the --account option. The reset feature
 #  clears each target directory before downloading new content, safely renaming
 #  the directory to ensure data integrity if the download fails. The no-sync
 #  feature skips the synchronization step, allowing for faster updates when
@@ -20,6 +21,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2024-04-25
+#       Added --account option to specify a single account for updating.
 #  v1.3 2024-03-21
 #       Introduced the --no-sync (-n) option to skip the synchronization step.
 #  v1.2 2024-02-23
@@ -32,11 +35,12 @@
 #       Initial release.
 #
 #  Usage:
-#  ./insta_update.sh [--reset] [--no-sync]
+#  ./insta_update.sh [--reset] [--no-sync] [--account ACCOUNT_NAME]
 #  The --reset option safely renames the target directory before downloading new
 #  content. The original directory is only removed if the download succeeds,
 #  ensuring data integrity. The --no-sync (-n) option skips the synchronization
-#  step, useful for faster updates when synchronization is not needed.
+#  step, useful for faster updates when synchronization is not needed. The
+#  --account option allows for updating a specific account only.
 #
 #  Configuration file ('insta_update.conf') requirements:
 #  - PYTHON_BIN: Path to the Python binary.
@@ -111,23 +115,33 @@ check_commands mv mkdir rm grep
 
 RESET=false
 NO_SYNC=false
+ACCOUNT_SPECIFIED=""
 
 # Parse options
 while [ $# -gt 0 ]; do
     case $1 in
         --reset)
-        RESET=true
-        shift
-        ;;
+            RESET=true
+            shift
+            ;;
         --no-sync|-n)
-        NO_SYNC=true
-        shift
-        ;;
+            NO_SYNC=true
+            shift
+            ;;
+        --account)
+            if [ -n "$2" ]; then
+                ACCOUNT_SPECIFIED="$2"
+                shift 2
+            else
+                echo "Error: --account option requires a value."
+                exit 2
+            fi
+            ;;
         *)
-        # Unknown option
-        echo "Error: Unknown option $1"
-        exit 2
-        ;;
+            # Unknown option
+            echo "Error: Unknown option $1"
+            exit 2
+            ;;
     esac
 done
 
@@ -163,6 +177,16 @@ should_process() {
     INCLUDE_LIST="$TARGET_DIR/include_accounts.txt"
 
     local subdir_name=$(basename "$1")
+
+    # If an account is specified in the command line, process only that account
+    if [ -n "$ACCOUNT_SPECIFIED" ]; then
+        if [ "$subdir_name" = "$ACCOUNT_SPECIFIED" ]; then
+            return 0  # Process this directory
+        else
+            return 1  # Skip this directory
+        fi
+    fi
+
     # Skip if subdir is in exclude list
     if [ -f "$EXCLUDE_LIST" ] && grep -qx "$subdir_name" "$EXCLUDE_LIST"; then
         return 1
@@ -175,7 +199,8 @@ should_process() {
             return 1  # Skip if subdir is not in include list
         fi
     fi
-    return 0  # Default to process if no include list is provided
+
+    return 0  # Default to process if no include list is provided and no account is specified
 }
 
 cd "$TARGET_DIR" || exit
