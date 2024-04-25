@@ -128,7 +128,7 @@ while [ $# -gt 0 ]; do
             NO_SYNC=true
             shift
             ;;
-        --account)
+        --account|-a)
             if [ -n "$2" ]; then
                 ACCOUNT_SPECIFIED="$2"
                 shift 2
