@@ -21,6 +21,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2024-05-04
+#       Handle trailing slashes in --account option by removing them.
 #  v1.4 2024-04-25
 #       Added --account option to specify a single account for updating.
 #  v1.3 2024-03-21
@@ -130,7 +132,8 @@ while [ $# -gt 0 ]; do
             ;;
         --account|-a)
             if [ -n "$2" ]; then
-                ACCOUNT_SPECIFIED="$2"
+                # Remove trailing slash, if any
+                ACCOUNT_SPECIFIED=$(echo "$2" | sed 's:/*$::')
                 shift 2
             else
                 echo "Error: --account option requires a value."
