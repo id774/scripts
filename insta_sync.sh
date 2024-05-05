@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-05-05
+#       Modified to remove trailing backslash from the Instagram account name argument.
 #  v1.2 2024-03-07
 #       Added configuration options for customizable file and directory
 #       permissions in 'insta_sync.conf'. Updated script to apply these
@@ -133,7 +135,8 @@ fi
 # Ensure necessary commands are available
 check_commands rsync ping chmod find
 
-ACCOUNT_NAME=$1
+# Retrieve the Instagram account name argument, remove trailing backslash if exists
+ACCOUNT_NAME=${1%\\}
 INSTA_ACCOUNT_DIR="$INSTA_DIR/$ACCOUNT_NAME"
 BACKUP_ACCOUNT_DIR="$BACKUP_DIR/"
 
