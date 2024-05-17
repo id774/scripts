@@ -111,8 +111,8 @@ permissions=${1:-$DEFAULT_PERMISSIONS}
 
 # Initialize a flag to check if any files were copied
 files_copied=false
-# Initialize an array to track files that failed to sync
-declare -a error_files
+# Initialize a variable to track files that failed to sync
+error_files=""
 
 # A temporary flag file is used instead of a variable to detect if any files have been copied.
 # This approach is necessary because the 'find ... | while read' loop runs in a subshell due to the pipeline.
@@ -144,11 +144,11 @@ sync_files() {
                 touch "$flag_file"
             else
                 echo "Error: Failed to set permissions for $dest_dir/$(basename "$file")"
-                error_files+=("$file")
+                error_files="$error_files $file"
             fi
         else
             echo "Error: Rsync failed for $file. Skipping."
-            error_files+=("$file")
+            error_files="$error_files $file"
         fi
     done
 
@@ -181,9 +181,9 @@ if [ "$files_copied" = false ]; then
 fi
 
 # If there are error files, print them and exit with a non-zero status
-if [ ${#error_files[@]} -ne 0 ]; then
+if [ -n "$error_files" ]; then
     echo "The following files failed to sync:"
-    for error_file in "${error_files[@]}"; do
+    for error_file in $error_files; do
         echo "$error_file"
     done
     exit 7
