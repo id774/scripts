@@ -8,7 +8,10 @@
 #  on SD cards to a destination directory on the local machine. It reads source
 #  directories, file patterns, the destination directory, and default file permissions
 #  from an external configuration file. The script allows overriding the default
-#  file permissions via a command-line argument.
+#  file permissions via a command-line argument. If a file copy operation fails,
+#  the script will skip the problematic file and continue with the next file. At the end
+#  of the process, the script reports the files that failed to copy and exits with a
+#  non-zero status if any errors occurred.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -16,6 +19,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2024-05-17
+#       Modified to skip files that cannot be copied due to read errors,
+#       report them at the end, and exit with a non-zero status if there were any errors.
 #  v1.3 2024-02-09
 #       Enhanced documentation, added configuration variable checks, improved error
 #       handling, and script structure. Introduced a method to check command availability.
@@ -51,10 +57,9 @@
 #  Error Conditions:
 #  1. No matching files found to copy.
 #  2. Destination directory does not exist.
-#  3. Rsync failed for a file.
-#  4. Failed to set permissions for a copied file.
 #  5. Configuration file not found.
 #  6. Configuration variables not set.
+#  7. One or more files failed to copy.
 #  126. Required command(s) not executable.
 #  127. Required command(s) not installed.
 #
@@ -106,6 +111,8 @@ permissions=${1:-$DEFAULT_PERMISSIONS}
 
 # Initialize a flag to check if any files were copied
 files_copied=false
+# Initialize an array to track files that failed to sync
+declare -a error_files
 
 # A temporary flag file is used instead of a variable to detect if any files have been copied.
 # This approach is necessary because the 'find ... | while read' loop runs in a subshell due to the pipeline.
@@ -137,11 +144,11 @@ sync_files() {
                 touch "$flag_file"
             else
                 echo "Error: Failed to set permissions for $dest_dir/$(basename "$file")"
-                exit 4
+                error_files+=("$file")
             fi
         else
-            echo "Error: Rsync failed for $file."
-            exit 3
+            echo "Error: Rsync failed for $file. Skipping."
+            error_files+=("$file")
         fi
     done
 
@@ -171,7 +178,15 @@ IFS="$OLD_IFS"
 if [ "$files_copied" = false ]; then
     echo "No matching files found to copy."
     exit 1
+fi
+
+# If there are error files, print them and exit with a non-zero status
+if [ ${#error_files[@]} -ne 0 ]; then
+    echo "The following files failed to sync:"
+    for error_file in "${error_files[@]}"; do
+        echo "$error_file"
+    done
+    exit 7
 else
     echo "Operation completed successfully."
 fi
-
