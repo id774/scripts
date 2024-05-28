@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.4 2024-05-29
+#       Added error handling for HTTP 401 Unauthorized and other HTTP errors.
 #  v2.3 2024-02-18
 #       Fixed a bug to ensure all images from multi-image posts are downloaded.
 #  v2.2 2024-02-17
@@ -49,6 +51,7 @@ import os
 import sys
 import time
 import urllib.request
+from urllib.error import HTTPError
 
 try:
     import instaloader
@@ -58,18 +61,29 @@ except ImportError:
 
 
 class InstagramPhotoDownloader:
-    def __init__(self, username, permissions=0o640):  # Set default permissions to 0o640
+    def __init__(self, username, permissions=0o640):
         if not INSTALOADER_AVAILABLE:
             print("Instaloader is not available. Functionality will be limited.")
             sys.exit(1)
         self.username = username
         self.permissions = permissions  # Store permissions
         self.loader = instaloader.Instaloader()
-        self.profile = instaloader.Profile.from_username(self.loader.context, username)
+
+        # Try to get profile information
+        try:
+            self.profile = instaloader.Profile.from_username(self.loader.context, username)
+        except instaloader.exceptions.ConnectionException as e:
+            print("Failed to get profile: {}".format(e))
+            sys.exit(1)
 
     def download(self):
         # Fetch URLs and post IDs for all Instagram photos of the specified account
-        urls_post_ids = self._get_instagram_photo_urls()
+        try:
+            urls_post_ids = self._get_instagram_photo_urls()
+        except instaloader.exceptions.ConnectionException as e:
+            print("Failed to get posts: {}".format(e))
+            sys.exit(1)
+
         total_images = len(urls_post_ids)
 
         print('This account {} has {} image posts to download.'.format(self.username, total_images))
@@ -94,8 +108,15 @@ class InstagramPhotoDownloader:
             # Print the download status with the remaining number of images and approximate time left
             print("Downloading {}... ({} of {} remaining, approx. {} minutes left)".format(filename, remaining_images, total_images, estimated_minutes_left))
 
-            # Download the image and save it with the constructed filename
-            self._download_and_save_image(url, filename)
+            try:
+                self._download_and_save_image(url, filename)
+            except HTTPError as e:
+                if e.code == 401:
+                    print("HTTP 401 Unauthorized Error. Exiting.")
+                    sys.exit(1)
+                else:
+                    print("HTTP error occurred: {}".format(e))
+                    sys.exit(1)
 
         # Print a message upon completing all downloads
         print("Download completed.")
