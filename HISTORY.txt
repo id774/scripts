@@ -6,6 +6,7 @@ v1.2.3 (Release Date: TBD)
 - Added notification feature to CI scripts for sending email updates to a specified address.
 - Enhanced insta_update.sh to process Instagram content on a per-account basis.
 - Improved error handling in SD card script to skip and report failed file copies.
+- Added error handling for HTTP 401 Unauthorized and other HTTP errors in Instagram Downloader.
 
 v1.2.2 (2024-03-29)
 -------------------
