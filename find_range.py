@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2024-06-07
+#       Fixed the issue where the local time range was not properly handled.
 #  v1.5 2024-03-28
 #       Enhanced the output format to include timezone offset in '±hh:mm' format
 #       when using local timezone with '-l' option.
@@ -119,13 +121,19 @@ def parse_datetime(args, use_localtime=False):
         # First, try parsing with both date and time
         parsed_datetime = datetime.strptime(datetime_str, "%Y-%m-%d %H:%M")
         if use_localtime:
-            return parsed_datetime.astimezone()
+            local_tz = datetime.now().astimezone().tzinfo
+            return parsed_datetime.replace(tzinfo=local_tz)
         else:
             return parsed_datetime.replace(tzinfo=timezone.utc)
     except ValueError:
         # If that fails, try parsing with date only
         try:
-            return datetime.strptime(datetime_str, "%Y-%m-%d").replace(tzinfo=timezone.utc)
+            parsed_datetime = datetime.strptime(datetime_str, "%Y-%m-%d")
+            if use_localtime:
+                local_tz = datetime.now().astimezone().tzinfo
+                return parsed_datetime.replace(tzinfo=local_tz)
+            else:
+                return parsed_datetime.replace(tzinfo=timezone.utc)
         except ValueError:
             print("Error: The datetime '{}' does not match the required format.".format(datetime_str))
             sys.exit(2)
