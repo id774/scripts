@@ -1,6 +1,10 @@
 HISTORY.txt
 ===========
 
+v1.2.4 (Release Date: TBD)
+--------------------------
+- Fixed issue with incorrect range handling when using local time option in file search script.
+
 v1.2.3 (2024-05-30)
 -------------------
 - Added notification feature to CI scripts for sending email updates to a specified address.
