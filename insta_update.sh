@@ -21,6 +21,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2024-06-15
+#       Added --help option to display help message.
 #  v1.5 2024-05-04
 #       Handle trailing slashes in --account option by removing them.
 #  v1.4 2024-04-25
@@ -72,6 +74,51 @@
 #  127. Required command(s) not installed.
 #
 ########################################################################
+
+show_help() {
+    cat << EOF
+Usage: ${0##*/} [--reset] [--no-sync] [--account ACCOUNT_NAME] [--help]
+This script navigates to a specified directory and executes an Instagram
+content downloader script in each subdirectory, followed by a synchronization
+script.
+
+Options:
+  --reset          Safely renames the target directory before downloading new content.
+                   The original directory is only removed if the download succeeds,
+                   ensuring data integrity.
+  --no-sync, -n    Skips the synchronization step, useful for faster updates when synchronization is not needed.
+  --account, -a    ACCOUNT_NAME
+                   Allows for updating a specific account only.
+  --help, -h       Display this help and exit.
+
+Configuration file ('insta_update.conf') requirements:
+  - PYTHON_BIN: Path to the Python binary.
+  - DOWNLOADER_SCRIPT: Path to the Instagram downloader script.
+  - SYNC_SCRIPT: Path to the Instagram synchronization script (optional with --no-sync).
+  - TARGET_DIR: Directory containing Instagram subdirectories.
+Ensure all these variables are set in 'insta_update.conf'.
+
+Notes:
+  - Ensure 'exclude_accounts.txt' and 'include_accounts.txt' are properly
+    formatted, with one account name per line, if they are used.
+  - The script supports 'exclude_accounts.txt' and 'include_accounts.txt' lists.
+    If 'exclude_accounts.txt' is present, any subdirectories matching the names
+    in this list will be skipped. If 'include_accounts.txt' is present, only the
+    subdirectories listed will be processed. If a subdirectory is listed in both,
+    it will be excluded.
+
+Error Conditions:
+  1. Configuration file not found or incomplete: The script will terminate if
+     it cannot find 'insta_update.conf' or if any required variables are unset.
+  2. Unknown command-line options: If any unrecognized options are provided,
+     the script will display an error message and exit.
+  3. Necessary configuration variables not set: The script checks if all
+     necessary configuration variables are set in 'insta_update.conf'.
+  4. Specified scripts or target directory do not exist or are not executable.
+  126. Required command(s) not executable.
+  127. Required command(s) not installed.
+EOF
+}
 
 # Determine the script's directory
 SCRIPT_DIR=$(dirname "$0")
@@ -139,6 +186,10 @@ while [ $# -gt 0 ]; do
                 echo "Error: --account option requires a value."
                 exit 2
             fi
+            ;;
+        --help|-h)
+            show_help
+            exit 0
             ;;
         *)
             # Unknown option
