@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2024-06-18
+#       Added --help and -h options to display help message.
 #  v1.3 2024-05-05
 #       Modified to remove trailing backslash from the Instagram account name argument.
 #  v1.2 2024-03-07
@@ -64,6 +66,43 @@
 #  127. Required command(s) not installed.
 #
 ########################################################################
+
+show_help() {
+    cat << EOF
+Usage: ${0##*/} [--help] [-h] <instagram_account_name>
+This script is designed to manage and synchronize Instagram account data.
+It updates directory permissions, syncs data with a local backup directory,
+and conditionally syncs with a remote server if reachable.
+
+Options:
+  --help, -h       Display this help and exit.
+
+Configuration file ('insta_sync.conf') requirements:
+  - INSTA_DIR: Base directory for Instagram account data.
+  - BACKUP_DIR: Local backup directory.
+  - REMOTE_USER: Username for remote server access.
+  - REMOTE_HOST: Hostname or IP address of the remote server.
+  - REMOTE_DIR: Remote directory for data synchronization.
+  - DIR_PERMISSIONS: Permissions for directories within INSTA_DIR.
+  - FILE_PERMISSIONS: Permissions for files within INSTA_DIR.
+Ensure all these variables are set in 'insta_sync.conf'.
+
+Notes:
+  - Ensure the specified Instagram account directory exists within INSTA_DIR.
+  - The script updates file permissions recursively within the account directory.
+  - Local backup directory must exist prior to running this script.
+  - Remote sync is attempted only if the remote server is reachable.
+
+Error Conditions:
+  1. No argument provided.
+  2. Instagram account directory does not exist.
+  3. Local backup directory does not exist.
+  4. Configuration file not found.
+  5. One or more configuration variables not set.
+  126. Required command(s) not executable.
+  127. Required command(s) not installed.
+EOF
+}
 
 # Determine the script's directory
 SCRIPT_DIR=$(dirname "$0")
@@ -126,6 +165,12 @@ check_remote_sync() {
 
 # Main Script
 
+# Check for help option
+if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    show_help
+    exit 0
+fi
+
 # Check for Instagram account name argument
 if [ -z "$1" ]; then
     echo "Error: No Instagram account name provided."
@@ -155,4 +200,3 @@ sync_files "$INSTA_ACCOUNT_DIR" "$BACKUP_ACCOUNT_DIR"
 check_remote_sync "$INSTA_ACCOUNT_DIR"
 
 echo "Instagram account data sync for '$ACCOUNT_NAME' completed successfully."
-
