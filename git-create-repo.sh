@@ -6,9 +6,9 @@
 #  Description:
 #  This script automates the creation and deletion of Git repositories.
 #  It allows for setting a custom path for the repository and includes options
-#  for a dry run and for deleting an existing repository. The default repository
-#  path is set to /var/lib/git if not specified. It checks for Git installation
-#  before proceeding.
+#  for a dry run, deleting an existing repository, and explicitly controlling
+#  the use of sudo. The default repository path is set to /var/lib/git if not
+#  specified. It checks for Git installation before proceeding.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-06-19
+#       Added --use-sudo and --no-sudo options to explicitly control sudo usage.
 #  v1.2 2024-01-07
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.
@@ -27,23 +29,52 @@
 #
 #  Usage:
 #  To create a new repository:
-#      git-create-repo.sh <repository_name> [repository_path] [--dry-run]
+#      git-create-repo.sh <repository_name> [repository_path] [--dry-run] [--use-sudo] [--no-sudo]
 #
 #  To delete an existing repository:
-#      git-create-repo.sh <repository_name> [repository_path] [--delete]
+#      git-create-repo.sh <repository_name> [repository_path] [--delete] [--use-sudo] [--no-sudo]
 #
 #  For help:
 #      git-create-repo.sh -h
 #
 #  Note: The script may require sudo permissions for certain operations,
-#  especially when dealing with system-wide paths like /var/lib/git.
+#  especially when dealing with system-wide paths like /var/lib/git. By default,
+#  sudo is used for system-wide paths and not used for paths within the user's
+#  home directory. This behavior can be overridden with the --use-sudo or --no-sudo options.
 #
 ########################################################################
 
 # Display script usage information
 usage() {
-    echo "Usage: $0 <repository_name> [repository_path] [--dry-run] [--delete]"
-    echo "Default repository path is /var/lib/git if not specified."
+    cat << EOF
+Usage: $0 <repository_name> [repository_path] [--dry-run] [--delete] [--use-sudo] [--no-sudo]
+
+This script automates the creation and deletion of Git repositories.
+
+Options:
+  --dry-run           Show what would be done without making any changes.
+  --delete            Delete the specified repository instead of creating it.
+  --use-sudo          Explicitly use sudo for all operations, regardless of the repository path.
+  --no-sudo           Explicitly do not use sudo for any operations, regardless of the repository path.
+
+Default Behavior:
+- The default repository path is /var/lib/git if not specified.
+- Sudo is used by default for system-wide paths like /var/lib/git.
+- Sudo is not used by default for paths within the user's home directory.
+
+Examples:
+  Create a new repository at /var/lib/git:
+    $0 myrepo
+
+  Create a new repository at a custom path without sudo:
+    $0 myrepo /home/user/myrepo --no-sudo
+
+  Delete an existing repository at /var/lib/git:
+    $0 myrepo --delete
+
+  Show what would be done without making changes:
+    $0 myrepo /custom/path --dry-run
+EOF
     exit 1
 }
 
@@ -83,12 +114,7 @@ create_git_repo() {
     local repo_name=$1
     local repo_path=$2
     local dry_run=$3
-
-    # Check if the repo path is under the home directory
-    local use_sudo="sudo"
-    if [[ "${repo_path}" == "${HOME}"* ]]; then
-        use_sudo=""
-    fi
+    local use_sudo=$4
 
     if [ "$dry_run" = true ]; then
         echo "Dry run: A new repository would be created at '${repo_path}'"
@@ -112,12 +138,7 @@ create_git_repo() {
 # Delete a Git repository
 delete_git_repo() {
     local repo_path=$1
-
-    # Check if the repo path is under the home directory
-    local use_sudo="sudo"
-    if [[ "${repo_path}" == "${HOME}"* ]]; then
-        use_sudo=""
-    fi
+    local use_sudo=$2
 
     if is_git_repository "$repo_path"; then
         $use_sudo rm -rf "${repo_path}"
@@ -132,12 +153,16 @@ delete_git_repo() {
 
 dry_run=false
 delete_repo=false
+explicit_sudo=""
 
 # Parse options
 while [ $# -gt 0 ]; do
     case "$1" in
         --dry-run) dry_run=true ;;
         --delete) delete_repo=true ;;
+        --use-sudo) explicit_sudo="sudo" ;;
+        --no-sudo) explicit_sudo="" ;;
+        -h|--help) usage ;;
         -*|--*) usage ;;
         *) break ;;
     esac
@@ -156,11 +181,21 @@ repo_name=$1
 repo_base_path=${2:-"/var/lib/git"}
 repo_full_path="${repo_base_path}/${repo_name}.git"
 
+# Determine sudo usage if not explicitly set
+if [ -z "$explicit_sudo" ]; then
+    if [[ "${repo_base_path}" == "${HOME}"* ]]; then
+        use_sudo=""
+    else
+        use_sudo="sudo"
+    fi
+else
+    use_sudo="$explicit_sudo"
+fi
+
 if [ "$delete_repo" = true ]; then
-    delete_git_repo "${repo_full_path}"
+    delete_git_repo "${repo_full_path}" "$use_sudo"
     exit 0
 fi
 
 check_directory "$repo_base_path"
-create_git_repo "${repo_name}" "${repo_full_path}" "$dry_run"
-
+create_git_repo "${repo_name}" "${repo_full_path}" "$dry_run" "$use_sudo"
