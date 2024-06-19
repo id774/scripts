@@ -18,6 +18,7 @@
 #  Version History:
 #  v1.3 2024-06-19
 #       Added --use-sudo and --no-sudo options to explicitly control sudo usage.
+#       Fixed bug where --dry-run option did not work during repository deletion.
 #  v1.2 2024-01-07
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.
@@ -32,7 +33,7 @@
 #      git-create-repo.sh <repository_name> [repository_path] [--dry-run] [--use-sudo] [--no-sudo]
 #
 #  To delete an existing repository:
-#      git-create-repo.sh <repository_name> [repository_path] [--delete] [--use-sudo] [--no-sudo]
+#      git-create-repo.sh <repository_name> [repository_path] [--delete] [--dry-run] [--use-sudo] [--no-sudo]
 #
 #  For help:
 #      git-create-repo.sh -h
@@ -138,7 +139,13 @@ create_git_repo() {
 # Delete a Git repository
 delete_git_repo() {
     repo_path=$1
-    use_sudo=$2
+    dry_run=$2
+    use_sudo=$3
+
+    if [ "$dry_run" = true ]; then
+        echo "Dry run: The repository at '${repo_path}' would be deleted."
+        return 0
+    fi
 
     if is_git_repository "$repo_path"; then
         $use_sudo rm -rf "${repo_path}"
@@ -193,7 +200,7 @@ else
 fi
 
 if [ "$delete_repo" = true ]; then
-    delete_git_repo "${repo_full_path}" "$use_sudo"
+    delete_git_repo "${repo_full_path}" "$dry_run" "$use_sudo"
     exit 0
 fi
 
