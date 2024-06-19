@@ -92,7 +92,7 @@ check_commands() {
 
 # Check if a directory exists
 check_directory() {
-    local dir=$1
+    dir=$1
     if [ ! -d "$dir" ]; then
         echo "Error: Directory '$dir' does not exist."
         exit 3
@@ -101,8 +101,8 @@ check_directory() {
 
 # Check if a directory is a Git repository
 is_git_repository() {
-    local repo_path=$1
-    if [ -d "${repo_path}/.git" ] || ( [ -f "${repo_path}/HEAD" ] && [ -d "${repo_path}/objects" ] ); then
+    repo_path=$1
+    if [ -d "${repo_path}/.git" ] || { [ -f "${repo_path}/HEAD" ] && [ -d "${repo_path}/objects" ]; }; then
         return 0
     else
         return 1
@@ -111,10 +111,10 @@ is_git_repository() {
 
 # Create a new Git repository with proper permissions
 create_git_repo() {
-    local repo_name=$1
-    local repo_path=$2
-    local dry_run=$3
-    local use_sudo=$4
+    repo_name=$1
+    repo_path=$2
+    dry_run=$3
+    use_sudo=$4
 
     if [ "$dry_run" = true ]; then
         echo "Dry run: A new repository would be created at '${repo_path}'"
@@ -137,8 +137,8 @@ create_git_repo() {
 
 # Delete a Git repository
 delete_git_repo() {
-    local repo_path=$1
-    local use_sudo=$2
+    repo_path=$1
+    use_sudo=$2
 
     if is_git_repository "$repo_path"; then
         $use_sudo rm -rf "${repo_path}"
@@ -163,7 +163,8 @@ while [ $# -gt 0 ]; do
         --use-sudo) explicit_sudo="sudo" ;;
         --no-sudo) explicit_sudo="" ;;
         -h|--help) usage ;;
-        -*|--*) usage ;;
+        --) shift; break ;;
+        -*) usage ;;
         *) break ;;
     esac
     shift
@@ -183,11 +184,10 @@ repo_full_path="${repo_base_path}/${repo_name}.git"
 
 # Determine sudo usage if not explicitly set
 if [ -z "$explicit_sudo" ]; then
-    if [[ "${repo_base_path}" == "${HOME}"* ]]; then
-        use_sudo=""
-    else
-        use_sudo="sudo"
-    fi
+    case "$repo_base_path" in
+        $HOME*) use_sudo="" ;;
+        *) use_sudo="sudo" ;;
+    esac
 else
     use_sudo="$explicit_sudo"
 fi
