@@ -17,7 +17,7 @@
 #
 #  Version History:
 #  v1.3 2024-06-19
-#       Added --use-sudo and --no-sudo options to explicitly control sudo usage.
+#       Added --sudo and --no-sudo options to explicitly control sudo usage.
 #       Fixed bug where --dry-run option did not work during repository deletion.
 #  v1.2 2024-01-07
 #       Updated command existence and execution permission checks
@@ -30,10 +30,10 @@
 #
 #  Usage:
 #  To create a new repository:
-#      git-create-repo.sh <repository_name> [repository_path] [--dry-run] [--use-sudo] [--no-sudo]
+#      git-create-repo.sh <repository_name> [repository_path] [--dry-run] [--sudo] [--no-sudo]
 #
 #  To delete an existing repository:
-#      git-create-repo.sh <repository_name> [repository_path] [--delete] [--dry-run] [--use-sudo] [--no-sudo]
+#      git-create-repo.sh <repository_name> [repository_path] [--delete] [--dry-run] [--sudo] [--no-sudo]
 #
 #  For help:
 #      git-create-repo.sh -h
@@ -41,21 +41,21 @@
 #  Note: The script may require sudo permissions for certain operations,
 #  especially when dealing with system-wide paths like /var/lib/git. By default,
 #  sudo is used for system-wide paths and not used for paths within the user's
-#  home directory. This behavior can be overridden with the --use-sudo or --no-sudo options.
+#  home directory. This behavior can be overridden with the --sudo or --no-sudo options.
 #
 ########################################################################
 
 # Display script usage information
 usage() {
     cat << EOF
-Usage: $0 <repository_name> [repository_path] [--dry-run] [--delete] [--use-sudo] [--no-sudo]
+Usage: $0 <repository_name> [repository_path] [--dry-run] [--delete] [--sudo] [--no-sudo]
 
 This script automates the creation and deletion of Git repositories.
 
 Options:
   --dry-run           Show what would be done without making any changes.
   --delete            Delete the specified repository instead of creating it.
-  --use-sudo          Explicitly use sudo for all operations, regardless of the repository path.
+  --sudo              Explicitly use sudo for all operations, regardless of the repository path.
   --no-sudo           Explicitly do not use sudo for any operations, regardless of the repository path.
 
 Default Behavior:
@@ -168,7 +168,7 @@ while [ $# -gt 0 ]; do
     case "$1" in
         --dry-run) dry_run=true ;;
         --delete) delete_repo=true ;;
-        --use-sudo) explicit_sudo="sudo" ;;
+        --sudo) explicit_sudo="sudo" ;;
         --no-sudo) explicit_sudo="" ;;
         -h|--help) usage ;;
         --) shift; break ;;
