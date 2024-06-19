@@ -103,7 +103,8 @@ check_directory() {
 # Check if a directory is a Git repository
 is_git_repository() {
     repo_path=$1
-    if [ -d "${repo_path}/.git" ] || { [ -f "${repo_path}/HEAD" ] && [ -d "${repo_path}/objects" ]; }; then
+    use_sudo=$2
+    if $use_sudo [ -d "${repo_path}/.git" ] || { $use_sudo [ -f "${repo_path}/HEAD" ] && $use_sudo [ -d "${repo_path}/objects" ]; }; then
         return 0
     else
         return 1
@@ -147,7 +148,7 @@ delete_git_repo() {
         return 0
     fi
 
-    if is_git_repository "$repo_path"; then
+    if is_git_repository "$repo_path" "$use_sudo"; then
         $use_sudo rm -rf "${repo_path}"
         echo "Repository at '${repo_path}' has been deleted."
     else
