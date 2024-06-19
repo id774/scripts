@@ -4,6 +4,7 @@ HISTORY.txt
 v1.2.4 (Release Date: TBD)
 --------------------------
 - Fixed issue with incorrect range handling when using local time option in file search script.
+- Enhanced git repository creation script with additional options and bug fixes.
 
 v1.2.3 (2024-05-30)
 -------------------
