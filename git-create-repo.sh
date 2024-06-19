@@ -19,6 +19,7 @@
 #  v1.3 2024-06-19
 #       Added --sudo and --no-sudo options to explicitly control sudo usage.
 #       Fixed bug where --dry-run option did not work during repository deletion.
+#       Added options to specify user and group for chown.
 #  v1.2 2024-01-07
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.
@@ -30,10 +31,10 @@
 #
 #  Usage:
 #  To create a new repository:
-#      git-create-repo.sh <repository_name> [repository_path] [--dry-run] [--sudo] [--no-sudo]
+#      git-create-repo.sh <repository_name> [repository_path] [--dry-run] [--sudo] [--no-sudo] [--user USER] [--group GROUP]
 #
 #  To delete an existing repository:
-#      git-create-repo.sh <repository_name> [repository_path] [--delete] [--dry-run] [--sudo] [--no-sudo]
+#      git-create-repo.sh <repository_name> [repository_path] [--delete] [--dry-run] [--sudo] [--no-sudo] [--user USER] [--group GROUP]
 #
 #  For help:
 #      git-create-repo.sh -h
@@ -48,7 +49,7 @@
 # Display script usage information
 usage() {
     cat << EOF
-Usage: $0 <repository_name> [repository_path] [--dry-run] [--delete] [--sudo] [--no-sudo]
+Usage: $0 <repository_name> [repository_path] [--dry-run] [--delete] [--sudo] [--no-sudo] [--user USER] [--group GROUP]
 
 This script automates the creation and deletion of Git repositories.
 
@@ -57,6 +58,8 @@ Options:
   --delete            Delete the specified repository instead of creating it.
   --sudo              Explicitly use sudo for all operations, regardless of the repository path.
   --no-sudo           Explicitly do not use sudo for any operations, regardless of the repository path.
+  --user USER         Specify the user for chown (default: git).
+  --group GROUP       Specify the group for chown (default: git).
 
 Default Behavior:
 - The default repository path is /var/lib/git if not specified.
@@ -117,6 +120,8 @@ create_git_repo() {
     repo_path=$2
     dry_run=$3
     use_sudo=$4
+    user=$5
+    group=$6
 
     if [ "$dry_run" = true ]; then
         echo "Dry run: A new repository would be created at '${repo_path}'"
@@ -131,7 +136,7 @@ create_git_repo() {
     if [ -z "$use_sudo" ]; then
         chmod -R u+rwX "${repo_path}"
     else
-        $use_sudo chown -R git:git "${repo_path}"
+        $use_sudo chown -R "${user}:${group}" "${repo_path}"
     fi
 
     echo "Repository '${repo_name}' created at '${repo_path}'"
@@ -162,6 +167,8 @@ delete_git_repo() {
 dry_run=false
 delete_repo=false
 explicit_sudo=""
+user="git"
+group="git"
 
 # Parse options
 while [ $# -gt 0 ]; do
@@ -170,6 +177,8 @@ while [ $# -gt 0 ]; do
         --delete) delete_repo=true ;;
         --sudo) explicit_sudo="sudo" ;;
         --no-sudo) explicit_sudo="" ;;
+        --user) user="$2"; shift ;;
+        --group) group="$2"; shift ;;
         -h|--help) usage ;;
         --) shift; break ;;
         -*) usage ;;
@@ -206,4 +215,4 @@ if [ "$delete_repo" = true ]; then
 fi
 
 check_directory "$repo_base_path"
-create_git_repo "${repo_name}" "${repo_full_path}" "$dry_run" "$use_sudo"
+create_git_repo "${repo_name}" "${repo_full_path}" "$dry_run" "$use_sudo" "$user" "$group"
