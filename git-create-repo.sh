@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2024-06-23
+#       Changed the exit code from 1 to 0 for help message display.
 #  v1.3 2024-06-19
 #       Added --sudo and --no-sudo options to explicitly control sudo usage.
 #       Fixed bug where --dry-run option did not work during repository deletion.
@@ -79,7 +81,7 @@ Examples:
   Show what would be done without making changes:
     $0 myrepo /custom/path --dry-run
 EOF
-    exit 1
+    exit 0
 }
 
 check_commands() {
