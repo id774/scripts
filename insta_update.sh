@@ -21,6 +21,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2024-07-17
+#       Updated processing order to follow include_accounts.txt as listed.
+#       Ensured consistent variable scoping throughout the script.
 #  v1.6 2024-06-15
 #       Added --help option to display help message.
 #  v1.5 2024-05-04
@@ -165,6 +168,8 @@ check_commands mv mkdir rm grep
 RESET=false
 NO_SYNC=false
 ACCOUNT_SPECIFIED=""
+EXCLUDE_LIST="$TARGET_DIR/exclude_accounts.txt"
+INCLUDE_LIST="$TARGET_DIR/include_accounts.txt"
 
 # Parse options
 while [ $# -gt 0 ]; do
@@ -227,9 +232,6 @@ update_content() {
 }
 
 should_process() {
-    EXCLUDE_LIST="$TARGET_DIR/exclude_accounts.txt"
-    INCLUDE_LIST="$TARGET_DIR/include_accounts.txt"
-
     local subdir_name=$(basename "$1")
 
     # If an account is specified in the command line, process only that account
@@ -258,8 +260,20 @@ should_process() {
 }
 
 cd "$TARGET_DIR" || exit
-for subdir in */ ; do
-    if [ -d "$subdir" ] && should_process "$subdir"; then
-        update_content "$subdir"
-    fi
-done
+
+# Check if include_accounts.txt exists and process in the order listed
+if [ -f "$INCLUDE_LIST" ]; then
+    while IFS= read -r account; do
+        subdir="${account}/"
+        if [ -d "$subdir" ] && should_process "$subdir"; then
+            update_content "$subdir"
+        fi
+    done < "$INCLUDE_LIST"
+else
+    for subdir in */ ; do
+        if [ -d "$subdir" ] && should_process "$subdir"; then
+            update_content "$subdir"
+        fi
+    done
+fi
+
