@@ -21,6 +21,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2024-07-22
+#       Added feature to ignore lines starting with '#'
+#       in include_accounts.txt and exclude_accounts.txt as comments.
 #  v1.7 2024-07-17
 #       Updated processing order to follow include_accounts.txt as listed.
 #       Ensured consistent variable scoping throughout the script.
@@ -64,6 +67,8 @@
 #    in this list will be skipped. If 'include_accounts.txt' is present, only the
 #    subdirectories listed will be processed. If a subdirectory is listed in both,
 #    it will be excluded.
+#  - Lines starting with '#' in 'exclude_accounts.txt'
+#    and 'include_accounts.txt' are treated as comments and ignored.
 #
 #  Error Conditions:
 #  1. Configuration file not found or incomplete: The script will terminate if
@@ -235,7 +240,7 @@ should_process() {
     local subdir_name=$(basename "$1")
 
     # If an account is specified in the command line, process only that account
-    if [ -n "$ACCOUNT_SPECIFIED" ]; then
+    if [ -n "$ACCOUNT_SPECIFIED" ];; then
         if [ "$subdir_name" = "$ACCOUNT_SPECIFIED" ]; then
             return 0  # Process this directory
         else
@@ -244,16 +249,30 @@ should_process() {
     fi
 
     # Skip if subdir is in exclude list
-    if [ -f "$EXCLUDE_LIST" ] && grep -qx "$subdir_name" "$EXCLUDE_LIST"; then
-        return 1
+    if [ -f "$EXCLUDE_LIST" ]; then
+        while IFS= read -r line; do
+            line=$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')  # Trim leading and trailing whitespace
+            if [ -z "$line" ] || [ "${line#\#}" != "$line" ]; then
+                continue  # Skip empty lines and comments
+            fi
+            if [ "$line" = "$subdir_name" ]; then
+                return 1
+            fi
+        done < "$EXCLUDE_LIST"
     fi
+
     # Process if subdir is in include list
     if [ -f "$INCLUDE_LIST" ]; then
-        if grep -qx "$subdir_name" "$INCLUDE_LIST"; then
-            return 0
-        else
-            return 1  # Skip if subdir is not in include list
-        fi
+        while IFS= read -r line; do
+            line=$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')  # Trim leading and trailing whitespace
+            if [ -z "$line" ] || [ "${line#\#}" != "$line" ]; then
+                continue  # Skip empty lines and comments
+            fi
+            if [ "$line" = "$subdir_name" ]; then
+                return 0
+            fi
+        done < "$INCLUDE_LIST"
+        return 1  # Skip if subdir is not in include list
     fi
 
     return 0  # Default to process if no include list is provided and no account is specified
@@ -264,6 +283,10 @@ cd "$TARGET_DIR" || exit
 # Check if include_accounts.txt exists and process in the order listed
 if [ -f "$INCLUDE_LIST" ]; then
     while IFS= read -r account; do
+        account=$(echo "$account" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')  # Trim leading and trailing whitespace
+        if [ -z "$account" ] || [ "${account#\#}" != "$account" ]; then
+            continue  # Skip empty lines and comments
+        fi
         subdir="${account}/"
         if [ -d "$subdir" ] && should_process "$subdir"; then
             update_content "$subdir"
