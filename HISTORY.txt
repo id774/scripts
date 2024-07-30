@@ -1,8 +1,8 @@
 HISTORY.txt
 ===========
 
-v1.2.4 (Release Date: TBD)
---------------------------
+v1.2.4 (2024-07-30)
+-------------------
 - Fixed issue with incorrect range handling when using local time option in file search script.
 - Enhanced git repository creation script with additional options and bug fixes.
 - Improved insta_update.sh processing order and added comment handling.
