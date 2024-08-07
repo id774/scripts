@@ -1,6 +1,10 @@
 HISTORY.txt
 ===========
 
+v1.2.5 (Release Date: TBD)
+--------------------------
+- Modified several scripts to display a help message instead of executing in the current directory when no arguments are specified.
+
 v1.2.4 (2024-07-30)
 -------------------
 - Fixed issue with incorrect range handling when using local time option in file search script.
