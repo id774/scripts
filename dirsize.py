@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2024-08-07
+#       Added -h option to display help. Modified script to show help when no directory is specified.
 #  v1.0 2023-12-19
 #       Initial release. Displays directory contents and calculates total size
 #       using binary prefixes.
@@ -33,7 +35,6 @@ import os
 import subprocess
 import sys
 from decimal import Decimal, getcontext
-
 
 def convert_size(size_bytes):
     if size_bytes == 0:
@@ -50,8 +51,27 @@ def convert_size(size_bytes):
 
     return "{:.2f} {}".format(size_bytes, prefix[i])
 
+def display_help():
+    print("""
+Usage: ./dirsize.py [options] [directory]
+
+Options:
+  -h                Display this help message and exit
+
+If no directory is specified, it displays this help message.
+To check the current directory, use:
+  ./dirsize.py .
+""")
+
 def main():
-    directory = sys.argv[1] if len(sys.argv) > 1 else "."
+    if len(sys.argv) == 1:
+        display_help()
+        sys.exit(0)
+    elif sys.argv[1] == '-h':
+        display_help()
+        sys.exit(0)
+
+    directory = sys.argv[1]
 
     # Check if the directory exists
     if not os.path.exists(directory):
