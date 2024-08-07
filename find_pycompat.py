@@ -22,6 +22,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.3 2024-08-07
+#       Added -h option to display help. Modified script to show help when no directory is specified.
 #  v3.2 2024-03-12
 #       Modified the detection pattern for the matrix multiplication operator
 #       to require spaces around it.
@@ -104,8 +106,27 @@ def search_feature(directory, feature_name, pattern):
                             print(file_path + ":" + str(i + 1) + ": " + line.strip())
                             detected_issues.append(os.path.basename(file_path))  # Store only the file name, not the entire path
 
+def display_help():
+    print("""
+Usage: ./find_pycompat.py [options] [directory]
+
+Options:
+  -h                Display this help message and exit
+
+If no directory is specified, it displays this help message.
+To check the current directory, use:
+  ./find_pycompat.py .
+""")
+
 def main():
-    target_dir = sys.argv[1] if len(sys.argv) > 1 else '.'
+    if len(sys.argv) == 1:
+        display_help()
+        sys.exit(0)
+    elif sys.argv[1] == '-h':
+        display_help()
+        sys.exit(0)
+
+    target_dir = sys.argv[1]
 
     # Check if the target directory exists
     if not os.path.isdir(target_dir):
