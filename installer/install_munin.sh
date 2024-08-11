@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.4 2024-08-11
+#       Updated to call munin_plugins_links.sh with -c option for plugin configuration.
 #  v0.3 2019-08-22
 #       Change default filename of rsyslog.
 #  v0.2 2016-12-09
@@ -32,4 +34,4 @@ sudo /etc/init.d/rsyslog restart
 sudo /etc/init.d/munin-node restart
 sudo /etc/init.d/apache2 restart
 
-$SCRIPTS/munin_plugins_links.sh
+$SCRIPTS/munin_plugins_links.sh -c
