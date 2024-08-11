@@ -53,7 +53,7 @@ EOF
 # Check for Munin installation
 if ! command -v munin-node-configure >/dev/null 2>&1; then
     echo "Munin is not installed. Please install Munin first."
-    exit 1
+    exit 2
 fi
 
 # Configuration variables
@@ -64,13 +64,13 @@ PLUGINS_DIR=/etc/munin/plugins
 # Check if the temporary directory is writable
 if [ ! -w "$TMP_SCRIPT_DIR" ]; then
     echo "Error: Temporary directory $TMP_SCRIPT_DIR is not writable."
-    exit 1
+    exit 3
 fi
 
 # Check if the plugins directory exists
 if [ ! -d "$PLUGINS_DIR" ]; then
     echo "Error: Plugins directory $PLUGINS_DIR does not exist."
-    exit 1
+    exit 4
 fi
 
 # Parse options
@@ -92,7 +92,7 @@ while getopts "hc" opt; do
       chmod +x "$SCRIPT_NAME"
 
       # Execute the script in the plugins directory
-      cd "$PLUGINS_DIR" || { echo "Error: Failed to change directory to $PLUGINS_DIR."; exit 1; }
+      cd "$PLUGINS_DIR" || { echo "Error: Failed to change directory to $PLUGINS_DIR."; exit 5; }
       sudo "$SCRIPT_NAME"
       rm "$SCRIPT_NAME"
 
