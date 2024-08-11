@@ -4,7 +4,7 @@
 # clear_chromium_cache.sh: Clear Chromium Browser Cache
 #
 #  Description:
-#  This script provides options to remove Chromium's cache files.
+#  This script provides options to remove Chromium's "Web Data" directory.
 #  It no longer forcefully terminates Chromium processes.
 #
 #  Author: id774 (More info: http://id774.net)
@@ -15,7 +15,7 @@
 #  Version History:
 #  v1.2 2024-08-11
 #       Removed forceful termination of Chromium processes.
-#       Added option to clear cache files. Display help message by default.
+#       Added option to clear "Web Data" directory. Display help message by default.
 #  v1.1 2023-12-06
 #       Refactored for clarity, added notes, and renamed the script.
 #  v1.0 2016-01-08
@@ -26,7 +26,7 @@
 #
 #  Options:
 #  -h   Display this help message.
-#  -c   Clear Chromium cache files.
+#  -c   Clear Chromium "Web Data" directory.
 #
 #  Notes:
 #  - This script no longer forcefully terminates Chromium processes.
@@ -42,7 +42,7 @@ Usage: $0 [-h] [-c]
 
 Options:
   -h   Display this help message.
-  -c   Clear Chromium cache files.
+  -c   Clear Chromium "Web Data" directory.
 
 Notes:
   - This script no longer forcefully terminates Chromium processes.
@@ -51,20 +51,16 @@ Notes:
 EOF
 }
 
-# Function to clear Chromium cache files
+# Function to clear Chromium "Web Data" directory
 clear_cache() {
-  cache_dir="$HOME/.config/chromium/Default"
-  cache_files="Web Data Cache Code Cache GPUCache"
+  cache_dir="$HOME/.config/chromium/Default/Web Data"
 
-  for file in $cache_files; do
-    file_path="$cache_dir/$file"
-    if [ -e "$file_path" ]; then
-      rm -rf "$file_path"
-      echo "Cleared: $file"
-    else
-      echo "Not found: $file"
-    fi
-  done
+  if [ -e "$cache_dir" ]; then
+    rm -rf "$cache_dir"
+    echo "Cleared: $cache_dir"
+  else
+    echo "Not found: $cache_dir"
+  fi
 }
 
 # Parse options
