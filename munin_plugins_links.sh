@@ -15,15 +15,40 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2024-08-11
+#       Added checks for required directories and write permissions.
+#       Added input validation to ensure directory is provided as an argument.
+#       Display help message if no arguments are provided.
 #  v1.1 2023-12-06
 #       Added check for Munin installation.
 #  v1.0 2019-08-16
 #       Initial release.
 #
 #  Usage:
-#  ./munin_plugins_links.sh
+#  ./munin_plugins_links.sh [-h] [-c]
+#
+#  Options:
+#  -h   Display this help message.
+#  -c   Configure and link Munin plugins.
 #
 ########################################################################
+
+# Function to display help message
+display_help() {
+    cat << EOF
+Usage: $0 [-h] [-c]
+
+Description:
+  This script automates the configuration of Munin plugins by generating
+  and executing a script with commands provided by munin-node-configure.
+  It also handles specific plugin removal and service restart.
+
+Options:
+  -h   Display this help message.
+  -c   Configure and link Munin plugins.
+
+EOF
+}
 
 # Check for Munin installation
 if ! command -v munin-node-configure >/dev/null 2>&1; then
@@ -32,22 +57,55 @@ if ! command -v munin-node-configure >/dev/null 2>&1; then
 fi
 
 # Configuration variables
-SCRIPT_NAME=$TMP/create-munin-plugins-links.sh
+TMP_SCRIPT_DIR=${TMP:-/tmp}
+SCRIPT_NAME=$TMP_SCRIPT_DIR/create-munin-plugins-links.sh
 PLUGINS_DIR=/etc/munin/plugins
 
-# Create a temporary script for Munin plugin setup
-echo "#!/bin/sh" > $SCRIPT_NAME
-sudo munin-node-configure --shell >> $SCRIPT_NAME
-chmod +x $SCRIPT_NAME
+# Check if the temporary directory is writable
+if [ ! -w "$TMP_SCRIPT_DIR" ]; then
+    echo "Error: Temporary directory $TMP_SCRIPT_DIR is not writable."
+    exit 1
+fi
 
-# Execute the script in the plugins directory
-cd $PLUGINS_DIR
-sudo $SCRIPT_NAME
-rm $SCRIPT_NAME
+# Check if the plugins directory exists
+if [ ! -d "$PLUGINS_DIR" ]; then
+    echo "Error: Plugins directory $PLUGINS_DIR does not exist."
+    exit 1
+fi
 
-# Remove specific plugins
-sudo rm ntp_[0-9]*
+# Parse options
+if [ "$#" -eq 0 ]; then
+    display_help
+    exit 0
+fi
 
-# Restart Munin node service
-sudo systemctl restart munin-node.service
+while getopts "hc" opt; do
+  case $opt in
+    h)
+      display_help
+      exit 0
+      ;;
+    c)
+      # Create a temporary script for Munin plugin setup
+      echo "#!/bin/sh" > "$SCRIPT_NAME"
+      sudo munin-node-configure --shell >> "$SCRIPT_NAME"
+      chmod +x "$SCRIPT_NAME"
 
+      # Execute the script in the plugins directory
+      cd "$PLUGINS_DIR" || { echo "Error: Failed to change directory to $PLUGINS_DIR."; exit 1; }
+      sudo "$SCRIPT_NAME"
+      rm "$SCRIPT_NAME"
+
+      # Remove specific plugins
+      sudo rm ntp_[0-9]*
+
+      # Restart Munin node service
+      sudo systemctl restart munin-node.service
+      exit 0
+      ;;
+    *)
+      display_help
+      exit 1
+      ;;
+  esac
+done
