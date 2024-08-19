@@ -21,6 +21,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.9 2024-08-19
+#       Fixed issue where --account option was not working when include_accounts.txt was present.
+#       Added logic to prioritize --account option when specified.
 #  v1.8 2024-07-22
 #       Added feature to ignore lines starting with '#'
 #       in include_accounts.txt and exclude_accounts.txt as comments.
@@ -282,7 +285,12 @@ should_process() {
 cd "$TARGET_DIR" || exit
 
 # Check if include_accounts.txt exists and process in the order listed
-if [ -f "$INCLUDE_LIST" ]; then
+if [ -n "$ACCOUNT_SPECIFIED" ]; then
+    subdir="${ACCOUNT_SPECIFIED}/"
+    if [ -d "$subdir" ] && should_process "$subdir"; then
+        update_content "$subdir"
+    fi
+elif [ -f "$INCLUDE_LIST" ]; then
     while IFS= read -r account; do
         account=$(trim_and_ignore_comments "$account")
         if [ -n "$account" ]; then
@@ -299,4 +307,3 @@ else
         fi
     done
 fi
-
