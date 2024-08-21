@@ -5,8 +5,8 @@ defkanji utf-8
 encoding utf-8 utf-8
 defencoding utf-8
 
-escape ^Tt
-bind ^Y escape ^Yy
+escape ^Yy
+bind ^T escape ^Tt
 bind ^W escape ^Ww
 bind ^Q escape ^Qq
 bind -c REGION 2 split
