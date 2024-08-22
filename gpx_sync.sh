@@ -17,6 +17,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2024-08-23
+#       Added validation to ensure that the permissions argument is a 3-digit octal number.
+#       Updated error handling with a new return code (6) for invalid permissions input.
+#       Added a note to restrict permissions argument to a 3-digit octal number.
 #  v1.7 2024-02-24
 #       Added check_commands function to ensure all required system commands
 #       are installed and executable before proceeding with file operations.
@@ -61,6 +65,7 @@
 #  - Ensure that all specified directories exist and are writable.
 #  - The script updates file permissions as needed and performs clean-up operations.
 #  - Remote synchronization is attempted only if the remote server is reachable.
+#  - The permissions argument must be a 3-digit octal number. Any other format will result in an error.
 #
 #  Error Conditions:
 #  1. No GPX files found in the specified temporary directory.
@@ -68,6 +73,7 @@
 #  3. Configuration file not found.
 #  4. Necessary configuration variable(s) not set.
 #  5. DEFAULT_PERMISSIONS not set in configuration file when no permissions argument provided.
+#  6. Invalid permissions argument (not a 3-digit octal number).
 #  126. Required command(s) not executable.
 #  127. Required command(s) not installed.
 #
@@ -117,6 +123,12 @@ check_commands chmod cp rsync rm
 
 # Set default permissions from the configuration file or use the first argument if provided
 permissions=${1:-$DEFAULT_PERMISSIONS}
+
+# Check if the permissions argument is a valid 3-digit number
+if ! echo "$permissions" | grep -Eq '^[0-7]{3}$'; then
+    echo "Error: Permissions must be a 3-digit octal number."
+    exit 6
+fi
 
 CURRENT_YEAR=$(date +"%Y")
 
