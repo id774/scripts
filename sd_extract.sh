@@ -19,6 +19,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2024-08-26
+#       Added validation to ensure that the permissions argument is a 3-digit octal number.
+#       Updated error handling with a new return code (6) for invalid permissions input.
+#       Added a note to restrict permissions argument to a 3-digit octal number.
 #  v1.4 2024-05-17
 #       Modified to skip files that cannot be copied due to read errors,
 #       report them at the end, and exit with a non-zero status if there were any errors.
@@ -53,6 +57,7 @@
 #  Notes:
 #  - Ensure 'rsync' and 'chmod' commands are available on the system.
 #  - Run this script with sufficient permissions to access source directories and write to the destination directory.
+#  - The permissions argument must be a 3-digit octal number. Any other format will result in an error.
 #
 #  Error Conditions:
 #  1. No matching files found to copy.
@@ -60,6 +65,7 @@
 #  5. Configuration file not found.
 #  6. Configuration variables not set.
 #  7. One or more files failed to copy.
+#  8. Invalid permissions argument (not a 3-digit octal number).
 #  126. Required command(s) not executable.
 #  127. Required command(s) not installed.
 #
@@ -108,6 +114,12 @@ fi
 
 # Set default permissions from configuration file or use the first argument if provided
 permissions=${1:-$DEFAULT_PERMISSIONS}
+
+# Check if the permissions argument is a valid 3-digit number
+if ! echo "$permissions" | grep -Eq '^[0-7]{3}$'; then
+    echo "Error: Permissions must be a 3-digit octal number."
+    exit 8
+fi
 
 # Initialize a flag to check if any files were copied
 files_copied=false
