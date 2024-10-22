@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2024-10-23
+#       Fixed issue with removing trailing backslash from the Instagram account name argument.
 #  v1.4 2024-06-18
 #       Added --help and -h options to display help message.
 #  v1.3 2024-05-05
@@ -181,7 +183,7 @@ fi
 check_commands rsync ping chmod find
 
 # Retrieve the Instagram account name argument, remove trailing backslash if exists
-ACCOUNT_NAME=${1%\\}
+ACCOUNT_NAME=$(echo "$1" | sed 's/\\$//')
 INSTA_ACCOUNT_DIR="$INSTA_DIR/$ACCOUNT_NAME"
 BACKUP_ACCOUNT_DIR="$BACKUP_DIR/"
 
