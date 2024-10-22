@@ -21,6 +21,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.0 2024-10-23
+#       Improved removal of trailing slashes and backslashes for
+#       the --account option in insta_update.sh.
 #  v1.9 2024-08-19
 #       Fixed issue where --account option was not working when include_accounts.txt was present.
 #       Added logic to prioritize --account option when specified.
@@ -200,7 +203,7 @@ while [ $# -gt 0 ]; do
         --account|-a)
             if [ -n "$2" ]; then
                 # Remove trailing slash, if any
-                ACCOUNT_SPECIFIED=$(echo "$2" | sed 's:/*$::')
+                ACCOUNT_SPECIFIED=$(echo "$2" | sed 's:[/\\]*$::')
                 shift 2
             else
                 echo "Error: --account option requires a value."
