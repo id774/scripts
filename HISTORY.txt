@@ -7,6 +7,7 @@ v1.2.5 (Release Date: TBD)
 - Fixed account handling in insta_update.sh when specifying an account name as an argument.
 - Refined .screenrc escape sequences: standardized to Ctrl-Y with Ctrl-T as an alternative.
 - Added validation to ensure that the permissions argument is a 3-digit octal number in relevant scripts.
+- Improved handling of trailing slashes and backslashes in account name arguments.
 
 v1.2.4 (2024-07-30)
 -------------------
