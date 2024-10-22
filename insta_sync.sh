@@ -20,6 +20,8 @@
 #  Version History:
 #  v1.5 2024-10-23
 #       Fixed issue with removing trailing backslash from the Instagram account name argument.
+#       Added 'sed' to the list of required commands in the check_commands function
+#       to ensure the script checks for its availability before execution.
 #  v1.4 2024-06-18
 #       Added --help and -h options to display help message.
 #  v1.3 2024-05-05
@@ -180,7 +182,7 @@ if [ -z "$1" ]; then
 fi
 
 # Ensure necessary commands are available
-check_commands rsync ping chmod find
+check_commands rsync ping chmod find sed
 
 # Retrieve the Instagram account name argument, remove trailing backslash if exists
 ACCOUNT_NAME=$(echo "$1" | sed 's/\\$//')
