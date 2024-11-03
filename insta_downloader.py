@@ -19,6 +19,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.5 2024-11-03
+#       Added --sleep command-line argument to allow customizable sleep time between downloads.
+#       Set default sleep time to 10 seconds to reduce request rate.
 #  v2.4 2024-05-29
 #       Added error handling for HTTP 401 Unauthorized and other HTTP errors.
 #  v2.3 2024-02-18
@@ -38,10 +41,10 @@
 #       Initial release.
 #
 #  Usage:
-#  python insta_downloader.py [Instagram username] [--permissions PERM]
-#  Example: python insta_downloader.py username --permissions 640
+#  python insta_downloader.py [Instagram username] [--permissions PERM] [--sleep TIME]
+#  Example: python insta_downloader.py username --permissions 640 --sleep 10
 #           (If no username is given, the script uses the current directory name.
-#           Default permissions are 640 if not specified.)
+#           Default permissions are 640 if not specified, and default sleep time is 10 seconds.)
 #
 ########################################################################
 
@@ -61,12 +64,14 @@ except ImportError:
 
 
 class InstagramPhotoDownloader:
-    def __init__(self, username, permissions=0o640):
+    def __init__(self, username, permissions=0o640, sleep_time=10):
+        """Initialize with username, permissions, and custom sleep time."""
         if not INSTALOADER_AVAILABLE:
             print("Instaloader is not available. Functionality will be limited.")
             sys.exit(1)
         self.username = username
         self.permissions = permissions  # Store permissions
+        self.sleep_time = sleep_time  # Store custom sleep time
         self.loader = instaloader.Instaloader()
 
         # Try to get profile information
@@ -122,6 +127,7 @@ class InstagramPhotoDownloader:
         print("Download completed.")
 
     def _get_instagram_photo_urls(self):
+        """Fetches and returns URLs and metadata for all posts in the specified account, sorted chronologically."""
         posts_data = []
         for post in self.profile.get_posts():
             if post.typename == "GraphImage":
@@ -134,19 +140,22 @@ class InstagramPhotoDownloader:
         return sorted_posts_data
 
     def _download_and_save_image(self, url, filename):
+        """Downloads an image from the specified URL and saves it with the specified filename and permissions."""
         urllib.request.urlretrieve(url, filename)
         os.chmod(filename, self.permissions)  # Set permissions for the downloaded file
-        time.sleep(1)  # Prevent too many requests in a short time
+        time.sleep(self.sleep_time)  # Use custom sleep time to prevent too many requests in a short time
 
 def main():
+    # Define command-line arguments
     parser = argparse.ArgumentParser(description='Download all photos from an Instagram account.')
     parser.add_argument('username', nargs='?', help='Instagram username', default=os.path.basename(os.getcwd()))
     parser.add_argument('--permissions', type=lambda x: int(x, 0), default=0o640, help='File permissions (octal)')
+    parser.add_argument('--sleep', type=int, default=10, help='Time to sleep between downloads in seconds')  # New sleep option
     args = parser.parse_args()
 
-    downloader = InstagramPhotoDownloader(args.username, args.permissions)
+    # Initialize the downloader with provided arguments
+    downloader = InstagramPhotoDownloader(args.username, args.permissions, args.sleep)
     downloader.download()
-
 
 if __name__ == '__main__':
     main()
