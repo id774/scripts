@@ -22,6 +22,7 @@
 #  v2.5 2024-11-03
 #       Added --sleep command-line argument to allow customizable sleep time between downloads.
 #       Set default sleep time to 10 seconds to reduce request rate.
+#       Updated remaining time calculation to include sleep time.
 #  v2.4 2024-05-29
 #       Added error handling for HTTP 401 Unauthorized and other HTTP errors.
 #  v2.3 2024-02-18
@@ -90,10 +91,13 @@ class InstagramPhotoDownloader:
             sys.exit(1)
 
         total_images = len(urls_post_ids)
+        estimated_download_time = 1  # Approximate time in seconds for each download (without sleep)
+        processing_time_per_image = estimated_download_time + self.sleep_time  # Total time per image including sleep
 
         print('This account {} has {} image posts to download.'.format(self.username, total_images))
-        # Estimate and print the total processing time in minutes
-        print('Estimated processing time is about {} minutes.'.format(int(total_images / 60) + 1))
+        # Estimate and print the total processing time in minutes with updated calculation
+        total_estimated_time_minutes = math.ceil((total_images * processing_time_per_image) / 60)
+        print('Estimated processing time is about {} minutes.'.format(total_estimated_time_minutes))
 
         # Create a set of existing filenames to avoid re-downloading images
         existing_files = {filename for filename in os.listdir('.') if filename.endswith('.jpg')}
@@ -108,10 +112,12 @@ class InstagramPhotoDownloader:
 
             # Calculate the number of remaining images and the approximate time left
             remaining_images = total_images - index
-            estimated_minutes_left = math.ceil(remaining_images / 60.0)
+            # Calculate the remaining time based on processing time per image
+            estimated_minutes_left = math.ceil((remaining_images * processing_time_per_image) / 60)
 
             # Print the download status with the remaining number of images and approximate time left
-            print("Downloading {}... ({} of {} remaining, approx. {} minutes left)".format(filename, remaining_images, total_images, estimated_minutes_left))
+            print("Downloading {}... ({} of {} remaining, approx. {} minutes left)".format(
+                filename, remaining_images, total_images, estimated_minutes_left))
 
             try:
                 self._download_and_save_image(url, filename)
