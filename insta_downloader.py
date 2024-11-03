@@ -92,7 +92,7 @@ class InstagramPhotoDownloader:
 
         total_images = len(urls_post_ids)
         estimated_download_time = 1  # Approximate time in seconds for each download (without sleep)
-        processing_time_per_image = estimated_download_time + self.sleep_time  # Total time per image including sleep
+        processing_time_per_image = max(1, estimated_download_time + self.sleep_time)  # Ensure at least 1 second per image
 
         print('This account {} has {} image posts to download.'.format(self.username, total_images))
         # Estimate and print the total processing time in minutes with updated calculation
