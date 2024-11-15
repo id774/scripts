@@ -9,7 +9,8 @@
 #  a given datetime range. By default, it displays the modification time of each file next
 #  to the filename in UTC. Hidden directories are ignored by default unless the '-a'
 #  option is used. The '-f' option can be used to list filenames only, without
-#  path or modification time. Note: By default, all input and output times are treated as UTC,
+#  path or modification time. The '-fp' option can be used to list full path with filename only,
+#  without modification time. Note: By default, all input and output times are treated as UTC,
 #  unless the '--localtime' option is used to use the local timezone instead.
 #
 #  Author: id774 (More info: http://id774.net)
@@ -18,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2024-11-15
+#       Added '-fp' option to list full path and filename only without modification time.
 #  v1.6 2024-06-07
 #       Fixed the issue where the local time range was not properly handled.
 #  v1.5 2024-03-28
@@ -49,17 +52,17 @@
 #     ./find_range.py -d "2024-03-02" -f
 #     ./find_range.py -e "2024-01-02"
 #     ./find_range.py -l -s "2024-01-01" -e "2024-01-02 13:00"
+#     ./find_range.py -fp -s "2024-11-15 00:47" -e "2024-11-15 00:48"
 #
 #  Options:
 #  -d, --datetime:  Date and optional time in ISO format (YYYY-MM-DD [HH:MM]).
 #                   Acts as the start datetime if -s is not provided.
-#  -s, --start:     Start datetime in ISO format (YYYY-MM-DD [HH:MM]).
-#                   Overrides -d if provided.
-#  -e, --end:       End datetime in ISO format (YYYY-MM-DD [HH:MM]).
-#                   Specifies the end of the datetime range.
+#  -s, --start:     Start datetime in ISO format (YYYY-MM-DD [HH:MM]). Overrides -d if provided.
+#  -e, --end:       End datetime in ISO format (YYYY-MM-DD [HH:MM]). Specifies the end of the datetime range.
 #  -p, --path:      Directory path to search, defaults to current directory.
 #  -a, --all:       Include hidden directories in the search.
 #  -f, --filenames: List filenames only, without path or modification time.
+#  -fp, --fullpath: List full path and filename only, without modification time.
 #  -l, --localtime: Use local timezone for input and output times instead of UTC.
 #
 #  Notes:
@@ -69,6 +72,7 @@
 #    all in UTC unless '--localtime' is used.
 #  - Hidden directories are ignored by default. Use the '-a' option to include them.
 #  - The '-f' option lists filenames only, without path or modification time.
+#  - The '-fp' option lists the full path and filename only, without modification time.
 #  - Either the start datetime '-s' or the end datetime '-e' can be specified independently for
 #    more flexible searches, both expected to be in UTC unless '--localtime' is used.
 #
@@ -99,6 +103,7 @@ def parse_arguments():
     parser.add_argument('-p', '--path', default='.', help='Directory path to search, defaults to current directory.')
     parser.add_argument('-a', '--all', action='store_true', help='Include hidden directories in the search.')
     parser.add_argument('-f', '--filenames', action='store_true', help='List filenames only, without path or modification time.')
+    parser.add_argument('-fp', '--fullpath', action='store_true', help='List full path and filename only, without modification time.')
     parser.add_argument('-l', '--localtime', action='store_true', help='Use local timezone for input and output times instead of UTC.')
     args = parser.parse_args()
 
@@ -146,7 +151,7 @@ def check_directory_exists(path):
         print("Error: The specified path '{}' does not exist.".format(path))
         sys.exit(1)
 
-def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, filenames_only, use_localtime=False):
+def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, filenames_only, fullpath_only, use_localtime=False):
     """
     Walks through the directory tree from the root_dir, listing files modified within the specified datetime range.
     Can optionally list filenames only and include or exclude hidden directories.
@@ -169,6 +174,8 @@ def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, fi
             if (start_datetime is None or mtime >= start_datetime) and (end_datetime is None or mtime <= end_datetime):
                 if filenames_only:
                     print(file)
+                elif fullpath_only:
+                    print(file_path)
                 else:
                     # Format the modification time in ISO 8601 format, indicating UTC with 'Z'
                     if use_localtime:
@@ -194,7 +201,7 @@ def main():
     end_datetime = parse_datetime(args.end, use_localtime=args.localtime)
 
     check_directory_exists(args.path)
-    list_recent_files(args.path, start_datetime, end_datetime, args.all, args.filenames, use_localtime=args.localtime)
+    list_recent_files(args.path, start_datetime, end_datetime, args.all, args.filenames, args.fullpath, use_localtime=args.localtime)
 
 
 if __name__ == "__main__":
