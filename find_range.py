@@ -79,8 +79,8 @@
 #  Error Conditions and Return Codes:
 #  0: Success
 #  1: Specified path does not exist or no arguments provided
-#  2: Incorrect datetime format
-#  3: Python version not supported.
+#  2: Incorrect datetime format or mutually exclusive options '-f' and '-fp' were used together
+#  3: Python version not supported
 #
 ########################################################################
 
@@ -106,6 +106,10 @@ def parse_arguments():
     parser.add_argument('-fp', '--fullpath', action='store_true', help='List full path and filename only, without modification time.')
     parser.add_argument('-l', '--localtime', action='store_true', help='Use local timezone for input and output times instead of UTC.')
     args = parser.parse_args()
+
+    # Check for invalid combination of options
+    if args.filenames and args.fullpath:
+        parser.error("Options '-f' and '-fp' cannot be used together.")
 
     # Ensure that at least one datetime argument is provided
     if not any([args.datetime, args.start, args.end]):
