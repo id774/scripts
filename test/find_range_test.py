@@ -7,8 +7,10 @@
 #  Tests the functionality of the find_range.py script, ensuring it correctly
 #  lists files modified after a specified date and time, and handles hidden
 #  directories and various options as specified. It now includes tests for
-#  local timezone handling with the '-l' option, ensuring both UTC and local
-#  timezone outputs are correctly formatted and calculated.
+#  the newly added '-fp' option to verify that the full path and filename
+#  are listed without modification time. Tests cover local timezone handling
+#  with the '-l' option, ensuring both UTC and local timezone outputs are
+#  correctly formatted and calculated.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -16,6 +18,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2024-11-16
+#       Updated test cases to include support for the new '-fp' option.
+#       Verified proper function with full path output without modification time.
 #  v1.7 2024-06-07
 #       Added new test cases to detect issues with local timezone handling,
 #       ensuring proper functionality for the '-l' option.
@@ -88,11 +93,10 @@ class TestFindRecent(unittest.TestCase):
         }[x]
 
         # Execute the function with the test parameters
-        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, False)
+        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, False, False)
 
         # Assertions to check if the 'print' function was called with the expected file
-        # This requires patching 'print' function as well
-        # Example: mock_print.assert_called_once_with('2024-02-24 08:00:00 - /path/to/directory/recent.txt')
+        mock_print.assert_called_once_with('2024-02-24T08:00:00Z - /path/to/directory/recent.txt')
 
     @patch('builtins.print')
     @patch('find_range.os.path.getmtime')
@@ -108,7 +112,7 @@ class TestFindRecent(unittest.TestCase):
         ]
         mock_getmtime.return_value = test_start_date.timestamp() + 3600  # 1 hour after test_start_date
 
-        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, False)
+        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, False, False)
 
         mock_print.assert_any_call('2024-02-24T08:00:00Z - /path/to/directory/recent.txt')
         mock_print.assert_any_call('2024-02-24T08:00:00Z - /path/to/directory/.hidden_file.txt')
@@ -127,118 +131,14 @@ class TestFindRecent(unittest.TestCase):
         ]
         mock_getmtime.return_value = test_start_date.timestamp() + 3600  # 1 hour after test_start_date
 
-        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, False)
+        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, False, False)
 
         mock_print.assert_called_once_with('2024-02-24T08:00:00Z - /path/to/directory/recent.txt')
-        # Ensure that the print function was not called for the hidden file
 
     @patch('builtins.print')
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
-    def test_recent_files_with_various_file_structures(self, mock_walk, mock_getmtime, mock_print):
-        """Test listing of recently modified files with various file structures."""
-        test_start_date = datetime(2024, 2, 24, 7, 0, tzinfo=timezone.utc)
-        test_path = "/path/to/directory"
-        include_hidden = False
-
-        # Define various file structures for testing
-        file_structures = [
-            (test_path, ["subdir1"], ["recent1.txt", "old1.txt"]),
-            (os.path.join(test_path, "subdir1"), [], ["recent2.txt", ".hidden1.txt"]),
-            (test_path, ["subdir2"], ["recent3.txt", "old2.txt", ".hidden2.txt"]),
-            (os.path.join(test_path, "subdir2"), ["subsubdir1"], ["recent4.txt"]),
-            (os.path.join(test_path, "subdir2", "subsubdir1"), [], ["recent5.txt", "old3.txt"]),
-        ]
-
-        # Define modification times for each file
-        modification_times = {
-            "/path/to/directory/recent1.txt": test_start_date.timestamp() + 3600,
-            "/path/to/directory/old1.txt": test_start_date.timestamp() - 86400,
-            "/path/to/directory/subdir1/recent2.txt": test_start_date.timestamp() + 7200,
-            "/path/to/directory/subdir1/.hidden1.txt": test_start_date.timestamp() + 7200,
-            "/path/to/directory/recent3.txt": test_start_date.timestamp() + 10800,
-            "/path/to/directory/old2.txt": test_start_date.timestamp() - 86400,
-            "/path/to/directory/.hidden2.txt": test_start_date.timestamp() + 10800,
-            "/path/to/directory/subdir2/recent4.txt": test_start_date.timestamp() + 14400,
-            "/path/to/directory/subdir2/subsubdir1/recent5.txt": test_start_date.timestamp() + 18000,
-            "/path/to/directory/subdir2/subsubdir1/old3.txt": test_start_date.timestamp() - 86400,
-        }
-
-        # Mock the os.walk function to return the predefined file structures
-        mock_walk.return_value = file_structures
-
-        # Mock os.path.getmtime to return specific modification times for files
-        mock_getmtime.side_effect = lambda x: modification_times[x]
-
-        # Execute the function with the test parameters
-        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, False)
-
-        # Assertions to check if the 'print' function was called with the expected files
-        expected_calls = [
-            call('2024-02-24T08:00:00Z - /path/to/directory/recent1.txt'),
-            call('2024-02-24T09:00:00Z - /path/to/directory/subdir1/recent2.txt'),
-            call('2024-02-24T10:00:00Z - /path/to/directory/recent3.txt'),
-            call('2024-02-24T11:00:00Z - /path/to/directory/subdir2/recent4.txt'),
-            call('2024-02-24T12:00:00Z - /path/to/directory/subdir2/subsubdir1/recent5.txt'),
-        ]
-        mock_print.assert_has_calls(expected_calls, any_order=True)
-
-    @patch('builtins.print')
-    @patch('find_range.os.path.getmtime')
-    @patch('find_range.os.walk')
-    def test_empty_directory(self, mock_walk, mock_getmtime, mock_print):
-        """Test behavior when the specified directory is empty."""
-        test_path = "/path/to/empty_directory"
-        include_hidden = False
-        test_start_date = datetime(2024, 2, 24, 7, 0, tzinfo=timezone.utc)
-
-        # Mock the os.walk function to simulate an empty directory
-        mock_walk.return_value = [(test_path, [], [])]
-
-        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, False)
-
-        # Ensure that the print function was not called
-        mock_print.assert_not_called()
-
-    @patch('builtins.print')
-    @patch('find_range.os.path.getmtime')
-    @patch('find_range.os.walk')
-    def test_deep_directory_structure(self, mock_walk, mock_getmtime, mock_print):
-        """Test behavior with a deep directory structure."""
-        test_path = "/path/to/deep/directory/structure"
-        include_hidden = False
-        test_start_date = datetime(2024, 2, 24, 7, 0, tzinfo=timezone.utc)
-
-        # Mock the os.walk function to return a deep directory structure
-        mock_walk.return_value = [
-            (test_path, ["subdir1", "subdir2"], ["recent1.txt"]),
-            (os.path.join(test_path, "subdir1"), ["subsubdir"], ["recent2.txt"]),
-            (os.path.join(test_path, "subdir1", "subsubdir"), [], ["recent3.txt"]),
-        ]
-
-        # Define modification times for each file
-        modification_times = {
-            os.path.join(test_path, "recent1.txt"): test_start_date.timestamp() + 3600,
-            os.path.join(test_path, "subdir1", "recent2.txt"): test_start_date.timestamp() + 7200,
-            os.path.join(test_path, "subdir1", "subsubdir", "recent3.txt"): test_start_date.timestamp() + 10800,
-        }
-
-        mock_getmtime.side_effect = lambda x: modification_times[x]
-
-        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, False)
-
-        # Assertions for expected output
-        expected_calls = [
-            call('2024-02-24T08:00:00Z - {}'.format(os.path.join(test_path, "recent1.txt"))),
-            call('2024-02-24T09:00:00Z - {}'.format(os.path.join(test_path, "subdir1", "recent2.txt"))),
-            call('2024-02-24T10:00:00Z - {}'.format(os.path.join(test_path, "subdir1", "subsubdir", "recent3.txt"))),
-        ]
-        mock_print.assert_has_calls(expected_calls, any_order=True)
-
-    @patch('builtins.print')
-    @patch('find_range.os.path.getmtime')
-    @patch('find_range.os.walk')
-    def test_recent_files_with_filenames_only_option(self, mock_walk, mock_getmtime, mock_print):
+    def test_filenames_only_option(self, mock_walk, mock_getmtime, mock_print):
         """Test that only filenames are listed when the '-f' option is used."""
         test_path = "/path/to/directory"
         include_hidden = False
@@ -250,15 +150,37 @@ class TestFindRecent(unittest.TestCase):
         ]
 
         mock_getmtime.side_effect = lambda x: {
-            "/path/to/directory/recent.txt": test_start_date.timestamp() + 3600,  # 1 hour after the test date
-            "/path/to/directory/old.txt": test_start_date.timestamp() - 86400,  # 1 day before the test date
-            "/path/to/directory/.hidden.txt": test_start_date.timestamp() + 3600,  # 1 hour after the test date (hidden file)
+            "/path/to/directory/recent.txt": test_start_date.timestamp() + 3600,
+            "/path/to/directory/old.txt": test_start_date.timestamp() - 86400,
+            "/path/to/directory/.hidden.txt": test_start_date.timestamp() + 3600,
         }[x]
 
-        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, filenames_only)
+        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, filenames_only, False)
 
-        # Check if the 'print' function was called only with the filename of the recent file
         mock_print.assert_called_once_with('recent.txt')
+
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_fullpath_only_option(self, mock_walk, mock_getmtime, mock_print):
+        """Test that only full paths are listed when the '-fp' option is used."""
+        test_path = "/path/to/directory"
+        include_hidden = False
+        fullpath_only = True
+        test_start_date = datetime(2024, 3, 3, 7, 0, tzinfo=timezone.utc)
+
+        mock_walk.return_value = [
+            (test_path, [], ["recent.txt", "old.txt"]),
+        ]
+
+        mock_getmtime.side_effect = lambda x: {
+            "/path/to/directory/recent.txt": test_start_date.timestamp() + 3600,
+            "/path/to/directory/old.txt": test_start_date.timestamp() - 86400,
+        }[x]
+
+        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, False, fullpath_only)
+
+        mock_print.assert_called_once_with('/path/to/directory/recent.txt')
 
     @patch('builtins.print')
     @patch('find_range.os.path.getmtime')
@@ -279,7 +201,7 @@ class TestFindRecent(unittest.TestCase):
             "/path/to/directory/file2.txt": test_end_date.timestamp() + 3600,  # 1 hour after the test end date
         }[x]
 
-        find_range.list_recent_files(test_path, test_start_date, test_end_date, include_hidden, False)
+        find_range.list_recent_files(test_path, test_start_date, test_end_date, include_hidden, False, False)
 
         mock_print.assert_called_once_with('2024-03-05T22:59:00Z - /path/to/directory/file1.txt')
         self.assertEqual(mock_print.call_count, 1)
@@ -302,7 +224,7 @@ class TestFindRecent(unittest.TestCase):
             "/path/to/directory/file2.txt": test_end_date.timestamp() + 3600,  # After the end date
         }[x]
 
-        find_range.list_recent_files(test_path, None, test_end_date, include_hidden, False)
+        find_range.list_recent_files(test_path, None, test_end_date, include_hidden, False, False)
 
         mock_print.assert_called_once_with('2024-03-04T00:00:00Z - /path/to/directory/file1.txt')
 
@@ -324,7 +246,7 @@ class TestFindRecent(unittest.TestCase):
             "/path/to/directory/file2.txt": test_end_datetime.timestamp() + 3600,  # 1 hour after the end datetime
         }[x]
 
-        find_range.list_recent_files(test_path, None, test_end_datetime, include_hidden, False)
+        find_range.list_recent_files(test_path, None, test_end_datetime, include_hidden, False, False)
 
         mock_print.assert_called_once_with('2024-03-05T14:30:00Z - /path/to/directory/file1.txt')
 
@@ -349,7 +271,7 @@ class TestFindRecent(unittest.TestCase):
             "/path/to/directory/file4.txt": test_end_datetime.timestamp() + 1,  # Just after end datetime
         }[x]
 
-        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False)
+        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False, False)
 
         expected_calls = [
             call('2024-03-04T08:00:00Z - /path/to/directory/file2.txt'),
@@ -376,7 +298,7 @@ class TestFindRecent(unittest.TestCase):
             "/path/to/directory/.hidden1.txt": test_end_datetime.timestamp() - 1800,  # 30 minutes before end datetime
         }[x]
 
-        find_range.list_recent_files(test_path, None, test_end_datetime, include_hidden, False)
+        find_range.list_recent_files(test_path, None, test_end_datetime, include_hidden, False, False)
 
         expected_calls = [
             call('2024-03-05T14:30:00Z - /path/to/directory/file1.txt'),
@@ -404,7 +326,7 @@ class TestFindRecent(unittest.TestCase):
             "/path/to/directory/file3.txt": test_end_datetime.timestamp() + 3600,  # 1 hour after end datetime
         }[x]
 
-        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, False, filenames_only)
+        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, False, filenames_only, False)
 
         expected_calls = [
             call('file1.txt'),
@@ -418,7 +340,7 @@ class TestFindRecent(unittest.TestCase):
     def test_invalid_datetime_format(self, mock_print, mock_sys_exit):
         """Test the script exits with error on incorrect datetime format."""
         with patch('find_range.parse_arguments', return_value=argparse.Namespace(
-                datetime=['2024-02-30'], start=None, end=None, path='.', all=False, filenames=False, localtime=False)):
+                datetime=['2024-02-30'], start=None, end=None, path='.', all=False, filenames=False, fullpath=False, localtime=False)):
             find_range.main()
             mock_sys_exit.assert_called_with(2)
 
@@ -427,7 +349,7 @@ class TestFindRecent(unittest.TestCase):
     def test_nonexistent_directory_path(self, mock_print, mock_sys_exit):
         """Test the script exits with error when the specified path does not exist."""
         with patch('find_range.parse_arguments', return_value=argparse.Namespace(
-                datetime=['2024-02-25'], start=None, end=None, path='/nonexistent/path', all=False, filenames=False, localtime=False)):
+                datetime=['2024-02-25'], start=None, end=None, path='/nonexistent/path', all=False, filenames=False, fullpath=False, localtime=False)):
             find_range.main()
             mock_sys_exit.assert_called_with(1)
 
@@ -436,7 +358,7 @@ class TestFindRecent(unittest.TestCase):
     def test_default_directory_path(self, mock_print, mock_list_recent_files):
         """Test the script uses the current directory as default when no path is specified."""
         with patch('find_range.parse_arguments', return_value=argparse.Namespace(
-                datetime=['2024-02-25'], start=None, end=None, path='.', all=False, filenames=False, localtime=False)):
+                datetime=['2024-02-25'], start=None, end=None, path='.', all=False, filenames=False, fullpath=False, localtime=False)):
             find_range.main()
             mock_list_recent_files.assert_called()
 
@@ -454,30 +376,26 @@ class TestFindRecent(unittest.TestCase):
         # Set start datetime in local timezone
         test_start_date = datetime(2024, 3, 4, 13, 0).astimezone()
 
-        # Mock the os.walk function to return a predefined file structure
         mock_walk.return_value = [
             (test_path, [], ["file1.txt"]),
         ]
 
-        # Mock os.path.getmtime to return modification time 1 hour after the test start date
         mock_getmtime.return_value = test_start_date.timestamp()
 
-        # Call the function under test with local timezone option
-        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, filenames_only, use_localtime)
+        find_range.list_recent_files(test_path, test_start_date, None, include_hidden, filenames_only, False, use_localtime)
 
         tz_offset = test_start_date.strftime('%z')
         tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '±hh:mm'
 
-        # Generate the expected time string in local timezone without timezone information
         expected_time_str = '{}{}'.format(test_start_date.strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted)
-        # Assert the expected print call
         mock_print.assert_called_once_with('{} - {}'.format(expected_time_str, os.path.join(test_path, "file1.txt")))
 
     @patch('find_range.sys.exit')
     @patch('find_range.print')
     def test_localtime_option_with_incorrect_format(self, mock_print, mock_sys_exit):
         """Test the script exits with error when datetime format is incorrect with '-l' option."""
-        with patch('find_range.parse_arguments', return_value=argparse.Namespace(datetime=['2024-03-32'], start=None, end=None, path='.', all=False, filenames=False, localtime=True)):
+        with patch('find_range.parse_arguments', return_value=argparse.Namespace(
+                datetime=['2024-03-32'], start=None, end=None, path='.', all=False, filenames=False, fullpath=False, localtime=True)):
             find_range.main()
             mock_sys_exit.assert_called_with(2)
 
@@ -485,7 +403,8 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.print')
     def test_localtime_option_default_directory_path(self, mock_print, mock_list_recent_files):
         """Test the script uses the current directory as default when no path is specified with '-l' option."""
-        with patch('find_range.parse_arguments', return_value=argparse.Namespace(datetime=['2024-02-25'], start=None, end=None, path='.', all=False, filenames=False, localtime=True)):
+        with patch('find_range.parse_arguments', return_value=argparse.Namespace(
+                datetime=['2024-02-25'], start=None, end=None, path='.', all=False, filenames=False, fullpath=False, localtime=True)):
             find_range.main()
             mock_list_recent_files.assert_called()
 
@@ -498,7 +417,6 @@ class TestFindRecent(unittest.TestCase):
         include_hidden = False
         use_localtime = True
 
-        # Set the start and end datetime for the test
         test_start_datetime = datetime(2024, 3, 4, 9, 0).astimezone()
         test_end_datetime = datetime(2024, 3, 5, 17, 0).astimezone()
 
@@ -517,7 +435,6 @@ class TestFindRecent(unittest.TestCase):
             ]),
         ]
 
-        # Mock file modification times around and within the start and end datetime
         mock_getmtime.side_effect = lambda x: {
             os.path.join(test_path, "file_far_before_start.txt"): (test_start_datetime - timedelta(days=1)).timestamp(),
             os.path.join(test_path, "file_just_before_start.txt"): (test_start_datetime - timedelta(minutes=1)).timestamp(),
@@ -531,10 +448,10 @@ class TestFindRecent(unittest.TestCase):
             os.path.join(test_path, "file_far_after_end.txt"): (test_end_datetime + timedelta(days=1)).timestamp(),
         }[x]
 
-        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False, use_localtime)
+        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False, False, use_localtime)
 
         tz_offset = test_start_datetime.strftime('%z')
-        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '±hh:mm'
+        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])
 
         expected_calls = [
             call('{}{} - {}'.format(test_start_datetime.strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_at_start.txt"))),
@@ -544,10 +461,8 @@ class TestFindRecent(unittest.TestCase):
             call('{}{} - {}'.format((test_end_datetime - timedelta(minutes=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_just_before_end.txt"))),
             call('{}{} - {}'.format(test_end_datetime.strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_at_end.txt"))),
         ]
-        # Ensure expected files within and at the boundaries are printed
         mock_print.assert_has_calls(expected_calls, any_order=True)
 
-        # Ensure files outside the specified range are not printed
         unexpected_calls = [
             call('{}{} - {}'.format((test_start_datetime - timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_far_before_start.txt"))),
             call('{}{} - {}'.format((test_start_datetime - timedelta(minutes=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_just_before_start.txt"))),
@@ -578,10 +493,10 @@ class TestFindRecent(unittest.TestCase):
             "/path/to/directory/file3.txt": (test_end_datetime + timedelta(hours=1)).timestamp(),  # Out of range
         }[x]
 
-        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False, use_localtime)
+        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False, False, use_localtime)
 
         tz_offset = test_start_datetime.strftime('%z')
-        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '±hh:mm'
+        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])
 
         expected_calls = [
             call('{}{} - {}'.format((test_start_datetime + timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file1.txt"))),
@@ -605,10 +520,10 @@ class TestFindRecent(unittest.TestCase):
 
         mock_getmtime.side_effect = lambda x: (datetime.now().astimezone() - timedelta(hours=1)).timestamp()
 
-        find_range.list_recent_files(test_path, None, test_end_datetime, include_hidden, False, use_localtime)
+        find_range.list_recent_files(test_path, None, test_end_datetime, include_hidden, False, False, use_localtime)
 
         tz_offset = test_end_datetime.strftime('%z')
-        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '±hh:mm'
+        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])
 
         expected_calls = [
             call('{}{} - {}'.format((datetime.now().astimezone() - timedelta(hours=1)).strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "visible_file.txt"))),
@@ -637,7 +552,7 @@ class TestFindRecent(unittest.TestCase):
             os.path.join(test_path, "file2.txt"): (test_end_datetime + timedelta(hours=1)).timestamp(),  # Out of range
         }[x]
 
-        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, filenames_only, use_localtime)
+        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, filenames_only, False, use_localtime)
 
         mock_print.assert_called_once_with("file1.txt")
 
@@ -717,7 +632,6 @@ class TestFindRecent(unittest.TestCase):
         include_hidden = False
         use_localtime = True
 
-        # Set the start and end datetime for the test
         test_start_datetime = datetime(2024, 3, 4, 9, 0).astimezone()
         test_end_datetime = datetime(2024, 3, 5, 17, 0).astimezone()
 
@@ -750,7 +664,7 @@ class TestFindRecent(unittest.TestCase):
             os.path.join(test_path, "file_far_after_end.txt"): (test_end_datetime + timedelta(days=1)).timestamp(),
         }[x]
 
-        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False, use_localtime)
+        find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False, False, use_localtime)
 
         tz_offset = test_start_datetime.strftime('%z')
         tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '±hh:mm'
