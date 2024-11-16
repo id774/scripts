@@ -690,6 +690,84 @@ class TestFindRecent(unittest.TestCase):
         for unexpected_call in unexpected_calls:
             self.assertNotIn(unexpected_call, mock_print.mock_calls)
 
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_fp_option_with_localtime(self, mock_walk, mock_getmtime, mock_print):
+        """Test that the '-fp' option works correctly with local timezone."""
+        test_path = "/path/to/directory"
+        include_hidden = False
+        fullpath_only = True
+        use_localtime = True
+        test_start_datetime = datetime(2024, 3, 4, 8, 0).astimezone()
+
+        mock_walk.return_value = [
+            (test_path, [], ["file1.txt", "file2.txt"]),
+        ]
+
+        mock_getmtime.side_effect = lambda x: {
+            "/path/to/directory/file1.txt": test_start_datetime.timestamp() + 3600,
+            "/path/to/directory/file2.txt": test_start_datetime.timestamp() - 3600,
+        }[x]
+
+        find_range.list_recent_files(test_path, test_start_datetime, None, include_hidden, False, fullpath_only, use_localtime)
+
+        mock_print.assert_called_once_with('/path/to/directory/file1.txt')
+
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_fp_option_with_hidden_files(self, mock_walk, mock_getmtime, mock_print):
+        """Test that the '-fp' option includes hidden files when '-a' is specified."""
+        test_path = "/path/to/directory"
+        include_hidden = True
+        fullpath_only = True
+        test_start_datetime = datetime(2024, 3, 4, 7, 0, tzinfo=timezone.utc)
+
+        mock_walk.return_value = [
+            (test_path, [], ["file1.txt", ".hidden_file.txt"]),
+        ]
+
+        mock_getmtime.side_effect = lambda x: {
+            "/path/to/directory/file1.txt": test_start_datetime.timestamp() + 3600,
+            "/path/to/directory/.hidden_file.txt": test_start_datetime.timestamp() + 7200,
+        }[x]
+
+        find_range.list_recent_files(test_path, test_start_datetime, None, include_hidden, False, fullpath_only)
+
+        expected_calls = [
+            call('/path/to/directory/file1.txt'),
+            call('/path/to/directory/.hidden_file.txt')
+        ]
+        mock_print.assert_has_calls(expected_calls, any_order=True)
+
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_fp_option_with_complex_path_structure(self, mock_walk, mock_getmtime, mock_print):
+        """Test that the '-fp' option outputs full paths correctly for complex path structures."""
+        test_path = "/path/to/directory"
+        fullpath_only = True
+        test_start_datetime = datetime(2024, 3, 4, 8, 0, tzinfo=timezone.utc)
+
+        mock_walk.return_value = [
+            (test_path, ["subdir"], ["file1.txt"]),
+            (os.path.join(test_path, "subdir"), [], ["file2.txt"]),
+        ]
+
+        mock_getmtime.side_effect = lambda x: {
+            "/path/to/directory/file1.txt": test_start_datetime.timestamp() + 3600,
+            "/path/to/directory/subdir/file2.txt": test_start_datetime.timestamp() + 7200,
+        }[x]
+
+        find_range.list_recent_files(test_path, test_start_datetime, None, False, False, fullpath_only)
+
+        expected_calls = [
+            call('/path/to/directory/file1.txt'),
+            call('/path/to/directory/subdir/file2.txt')
+        ]
+        mock_print.assert_has_calls(expected_calls, any_order=True)
+
 
 if __name__ == '__main__':
     unittest.main()
