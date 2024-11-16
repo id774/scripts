@@ -768,6 +768,84 @@ class TestFindRecent(unittest.TestCase):
         ]
         mock_print.assert_has_calls(expected_calls, any_order=True)
 
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_empty_directory(self, mock_walk, mock_getmtime, mock_print):
+        """Test that an empty directory does not produce any output."""
+        test_path = "/path/to/empty_directory"
+        mock_walk.return_value = [
+            (test_path, [], [])  # No files or subdirectories
+        ]
+
+        find_range.list_recent_files(test_path, datetime(2024, 3, 1, 7, 0, tzinfo=timezone.utc), None, False, False, False)
+        mock_print.assert_not_called()
+
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_recent_files_with_various_file_structures(self, mock_walk, mock_getmtime, mock_print):
+        """Test listing recent files in a directory with various file structures."""
+        test_path = "/path/to/directory"
+        mock_walk.return_value = [
+            (test_path, ["subdir"], ["recent1.txt", "old1.txt"]),
+            (os.path.join(test_path, "subdir"), [], ["recent2.txt", "old2.txt"])
+        ]
+
+        test_datetime = datetime(2024, 3, 1, 7, 0, tzinfo=timezone.utc)
+        mock_getmtime.side_effect = lambda x: {
+            "/path/to/directory/recent1.txt": test_datetime.timestamp() + 3600,
+            "/path/to/directory/old1.txt": test_datetime.timestamp() - 86400,
+            "/path/to/directory/subdir/recent2.txt": test_datetime.timestamp() + 7200,
+            "/path/to/directory/subdir/old2.txt": test_datetime.timestamp() - 172800
+        }[x]
+
+        find_range.list_recent_files(test_path, test_datetime, None, False, False, False)
+        mock_print.assert_any_call('2024-03-01T08:00:00Z - /path/to/directory/recent1.txt')
+        mock_print.assert_any_call('2024-03-01T09:00:00Z - /path/to/directory/subdir/recent2.txt')
+        self.assertEqual(mock_print.call_count, 2)
+
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_recent_files_with_filenames_only_option(self, mock_walk, mock_getmtime, mock_print):
+        """Test that only filenames are listed when the '-f' option is used."""
+        test_path = "/path/to/directory"
+        filenames_only = True
+        test_datetime = datetime(2024, 3, 1, 7, 0, tzinfo=timezone.utc)
+
+        mock_walk.return_value = [
+            (test_path, [], ["file1.txt", "file2.txt"])
+        ]
+        mock_getmtime.side_effect = lambda x: {
+            "/path/to/directory/file1.txt": test_datetime.timestamp() + 3600,
+            "/path/to/directory/file2.txt": test_datetime.timestamp() - 86400
+        }[x]
+
+        find_range.list_recent_files(test_path, test_datetime, None, False, filenames_only, False)
+        mock_print.assert_called_once_with('file1.txt')
+
+    @patch('builtins.print')
+    @patch('find_range.os.path.getmtime')
+    @patch('find_range.os.walk')
+    def test_deep_directory_structure(self, mock_walk, mock_getmtime, mock_print):
+        """Test listing recent files in a deep directory structure."""
+        test_path = "/path/to/deep_directory"
+        mock_walk.return_value = [
+            (test_path, ["level1"], []),
+            (os.path.join(test_path, "level1"), ["level2"], ["file1.txt"]),
+            (os.path.join(test_path, "level1", "level2"), [], ["file2.txt"])
+        ]
+
+        test_datetime = datetime(2024, 3, 1, 7, 0, tzinfo=timezone.utc)
+        mock_getmtime.side_effect = lambda x: {
+            "/path/to/deep_directory/level1/file1.txt": test_datetime.timestamp() + 3600,
+            "/path/to/deep_directory/level1/level2/file2.txt": test_datetime.timestamp() - 86400
+        }[x]
+
+        find_range.list_recent_files(test_path, test_datetime, None, False, False, False)
+        mock_print.assert_called_once_with('2024-03-01T08:00:00Z - /path/to/deep_directory/level1/file1.txt')
+
 
 if __name__ == '__main__':
     unittest.main()
