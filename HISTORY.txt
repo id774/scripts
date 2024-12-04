@@ -6,6 +6,7 @@ v1.2.6 (Release Date: TBD)
 --------------------------
 - Add customizable --sleep option with default 10 seconds between downloads in instagram downloader.
 - Added '-fp' option to list only the full path and filename without modification time in find_range.py.
+- Added error handling for command execution and fail2ban status checks in get_resources.sh.
 
 v1.2.5 (2024-11-02)
 -------------------
