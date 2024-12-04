@@ -102,6 +102,12 @@ execute_command lsmod
 execute_command netstat -tan | grep ':80 ' | awk '{print $6}' | sort | uniq -c
 execute_command ntpq -pn
 
+# Status of fail2ban
+if [ "$(uname)" = "Darwin" ]; then :;else
+    execute_command fail2ban-client status
+    execute_command fail2ban-client status sshd
+fi
+
 # Log files with specific patterns
 display_log "/var/log/auth.log" "Accepted"
 display_log "/var/log/messages" "attack"
