@@ -46,7 +46,9 @@ if [ "$os" = "Darwin" ]; then
     done
     clean_dir "$HOME/tmp" 3
 elif [ "$os" = "Linux" ]; then
-    rm -vrf /root/.cache
+    if [ "$(id -u)" -eq 0 ]; then
+        rm -vrf /root/.cache
+    fi
     rm -vf "$HOME/hardcopy.*"
     clean_dir "$HOME/tmp" 1
 fi
