@@ -14,8 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  20241204 - Fixed incorrect directory reference in cleanup logic for $HOME/Documents.
+#             Refactored cleanup logic using clean_dir() function for better maintainability.
 #  20230827 - Latest update with specific cleanup operations for macOS and Linux.
-#  [Further version history truncated for brevity]
 #
 #  Usage:
 #  Run the script without any arguments:
@@ -28,54 +29,62 @@
 
 os=$(uname)
 
+# Function to clean a directory with specified conditions
+clean_dir() {
+    dir=$1
+    days=$2
+    cmd=${3:-rm}
+    if [ -d "$dir" ]; then
+        find "$dir" -type f -mtime "+$days" -exec $cmd -vf {} \;
+    fi
+}
+
 if [ "$os" = "Darwin" ]; then
-  test -L "$HOME/Desktop/場所が変更された項目" && rm -f "$HOME/Desktop/場所が変更された項目"
-  test -d $HOME/Pictures && touch $HOME/Pictures/.localized
-  test -d $HOME/Documents && touch $HOME/Documents/.localized
-  test -d $HOME/Downloads && touch $HOME/Downloads/.localized
-  test -d $HOME/Desktop && touch $HOME/Desktop/.localized
-  test -d $HOME/tmp && find $HOME/tmp -type f -mtime +3 -exec rm -vf {} \;
+    test -L "$HOME/Desktop/場所が変更された項目" && rm -f "$HOME/Desktop/場所が変更された項目"
+    for dir in "$HOME/Pictures" "$HOME/Documents" "$HOME/Downloads" "$HOME/Desktop"; do
+        test -d "$dir" && touch "$dir/.localized"
+    done
+    clean_dir "$HOME/tmp" 3
 elif [ "$os" = "Linux" ]; then
-  test -d /root/.cache && rm -vrf /root/.cache
-  rm -vf $HOME/hardcopy.*
-  test -d $HOME/tmp && find $HOME/tmp -type f -mtime +1 -exec rm -vf {} \;
+    rm -vrf /root/.cache
+    rm -vf "$HOME/hardcopy.*"
+    clean_dir "$HOME/tmp" 1
 fi
 
 rm -vf "$HOME/wget-log*"
-rm -vf "$HOME/.emacs.d/%backup%$HOME"
-rm -vf "$HOME/%backup%$HOME"
-test -d $HOME/.gem && rm -vrf $HOME/.gem
-test -d $HOME/.pip && rm -vrf $HOME/.pip
-test -d $HOME/.npm && rm -vrf $HOME/.npm
-test -d $HOME/.tmp && find $HOME/.tmp -type f -mtime +7 -exec rm -vf {} \;
-test -d $HOME/.emacs.d/tmp && find $HOME/.emacs.d/tmp -type f -mtime +30 -exec rm -vf {} \;
-test -d $HOME/.emacs.d/backups && find $HOME/.emacs.d/backups -type f -mtime +30 -exec rm -vf {} \;
-test -d $HOME/.emacs.d/auto-save-list && find $HOME/.emacs.d/auto-save-list -type f -mtime +30 -exec rm -vf {} \;
-test -d $HOME/.emacs.d/tramp-auto-save && find $HOME/.emacs.d/tramp-auto-save -type f -mtime +30 -exec rm -vf {} \;
-test -d $HOME/twitter_viewer/log && find $HOME/twitter_viewer/log -type f -mtime +7 -exec rm -vf {} \;
-test -d $HOME/fastladder/log && find $HOME/fastladder/log -type f -mtime +7 -exec rm -vf {} \;
+rm -vf "$HOME/.emacs.d/%backup%$HOME" "$HOME/%backup%$HOME"
+for dir in "$HOME/.gem" "$HOME/.pip" "$HOME/.npm"; do
+    rm -vrf "$dir"
+done
+
+clean_dir "$HOME/.tmp" 7
+clean_dir "$HOME/.emacs.d/tmp" 30
+clean_dir "$HOME/.emacs.d/backups" 30
+clean_dir "$HOME/.emacs.d/auto-save-list" 30
+clean_dir "$HOME/.emacs.d/tramp-auto-save" 30
+clean_dir "$HOME/twitter_viewer/log" 7
+clean_dir "$HOME/fastladder/log" 7
 
 if [ "$os" = "Darwin" ]; then
-  if type trash &> /dev/null
-  then
-    trash -ev
-    test -d $HOME/Pictures && find $HOME/Pictures -type f -mtime +7 -exec trash -v {} \;
-    test -d $HOME/Downloads && find $HOME/Documents -type f -mtime +7 -exec trash -v {} \;
-    test -d $HOME/Downloads && find $HOME/Downloads -type f -mtime +3 -exec trash -v {} \;
-    test -d $HOME/Desktop && find $HOME/Desktop -type f -mtime +3 -exec trash -v {} \;
-    echo "Show trash contents..."
-    trash -lv
-  else
-    test -d $HOME/Pictures && find $HOME/Pictures -type f -mtime +30 -exec rm -vf {} \;
-    test -d $HOME/Pictures && find $HOME/Documents -type f -mtime +30 -exec rm -vf {} \;
-    test -d $HOME/Downloads && find $HOME/Downloads -type f -mtime +7 -exec rm -vf {} \;
-    test -d $HOME/Desktop && find $HOME/Desktop -type f -mtime +7 -exec rm -vf {} \;
-  fi
+    if type trash &> /dev/null; then
+        trash -ev
+        clean_dir "$HOME/Pictures" 7 trash
+        clean_dir "$HOME/Documents" 7 trash
+        clean_dir "$HOME/Downloads" 3 trash
+        clean_dir "$HOME/Desktop" 3 trash
+        echo "Show trash contents..."
+        trash -lv
+    else
+        clean_dir "$HOME/Pictures" 30
+        clean_dir "$HOME/Documents" 30
+        clean_dir "$HOME/Downloads" 7
+        clean_dir "$HOME/Desktop" 7
+    fi
 else
-  test -d $HOME/Pictures && find $HOME/Pictures -type f -mtime +30 -exec rm -vf {} \;
-  test -d $HOME/Documents && find $HOME/Documents -type f -mtime +30 -exec rm -vf {} \;
-  test -d $HOME/Downloads && find $HOME/Downloads -type f -mtime +7 -exec rm -vf {} \;
-  test -d $HOME/Desktop && find $HOME/Desktop -type f -mtime +7 -exec rm -vf {} \;
+    clean_dir "$HOME/Pictures" 30
+    clean_dir "$HOME/Documents" 30
+    clean_dir "$HOME/Downloads" 7
+    clean_dir "$HOME/Desktop" 7
 fi
-echo "cltmp (20230827) done."
 
+echo "cltmp (20241204) done."
