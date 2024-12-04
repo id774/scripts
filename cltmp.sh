@@ -33,9 +33,9 @@ os=$(uname)
 clean_dir() {
     dir=$1
     days=$2
-    cmd=${3:-rm}
+    cmd=${3:-"rm -vf"}
     if [ -d "$dir" ]; then
-        find "$dir" -type f -mtime "+$days" -exec $cmd -vf {} \;
+        find "$dir" -type f -mtime "+$days" -exec $cmd {} \;
     fi
 }
 
@@ -44,49 +44,60 @@ if [ "$os" = "Darwin" ]; then
     for dir in "$HOME/Pictures" "$HOME/Documents" "$HOME/Downloads" "$HOME/Desktop"; do
         test -d "$dir" && touch "$dir/.localized"
     done
-    clean_dir "$HOME/tmp" 3
+    clean_dir "$HOME/tmp" 3 "rm -vf"
 elif [ "$os" = "Linux" ]; then
     if [ "$(id -u)" -eq 0 ]; then
-        rm -vrf /root/.cache
+        clean_dir /root/.cache 0 "rm -vrf"
     fi
     rm -vf "$HOME/hardcopy.*"
-    clean_dir "$HOME/tmp" 1
+    clean_dir "$HOME/tmp" 1 "rm -vf"
 fi
 
 rm -vf "$HOME/wget-log*"
 rm -vf "$HOME/.emacs.d/%backup%$HOME" "$HOME/%backup%$HOME"
+
 for dir in "$HOME/.gem" "$HOME/.pip" "$HOME/.npm"; do
-    rm -vrf "$dir"
+    clean_dir "$dir" 0 "rm -vrf"
 done
 
-clean_dir "$HOME/.tmp" 7
-clean_dir "$HOME/.emacs.d/tmp" 30
-clean_dir "$HOME/.emacs.d/backups" 30
-clean_dir "$HOME/.emacs.d/auto-save-list" 30
-clean_dir "$HOME/.emacs.d/tramp-auto-save" 30
-clean_dir "$HOME/twitter_viewer/log" 7
-clean_dir "$HOME/fastladder/log" 7
+# Common clean-up for 7 days
+for dir in "$HOME/.tmp" "$HOME/twitter_viewer/log" "$HOME/fastladder/log"; do
+    clean_dir "$dir" 7 "rm -vf"
+done
+
+# Common clean-up for 30 days
+for dir in "$HOME/.emacs.d/tmp" "$HOME/.emacs.d/backups" "$HOME/.emacs.d/auto-save-list" "$HOME/.emacs.d/tramp-auto-save"; do
+    clean_dir "$dir" 30 "rm -vf"
+done
 
 if [ "$os" = "Darwin" ]; then
-    if type trash &> /dev/null; then
+    if [ "$(id -u)" -eq 0 ] || ! type trash &> /dev/null; then
+        # Use rm for root or if trash is unavailable
+        for dir in "$HOME/Pictures" "$HOME/Documents"; do
+            clean_dir "$dir" 30 "rm -vf"
+        done
+        for dir in "$HOME/Downloads" "$HOME/Desktop"; do
+            clean_dir "$dir" 7 "rm -vf"
+        done
+    else
+        # Use trash for non-root users
         trash -ev
-        clean_dir "$HOME/Pictures" 7 trash
-        clean_dir "$HOME/Documents" 7 trash
-        clean_dir "$HOME/Downloads" 3 trash
-        clean_dir "$HOME/Desktop" 3 trash
+        for dir in "$HOME/Pictures" "$HOME/Documents"; do
+            clean_dir "$dir" 7 trash
+        done
+        for dir in "$HOME/Downloads" "$HOME/Desktop"; do
+            clean_dir "$dir" 3 trash
+        done
         echo "Show trash contents..."
         trash -lv
-    else
-        clean_dir "$HOME/Pictures" 30
-        clean_dir "$HOME/Documents" 30
-        clean_dir "$HOME/Downloads" 7
-        clean_dir "$HOME/Desktop" 7
     fi
 else
-    clean_dir "$HOME/Pictures" 30
-    clean_dir "$HOME/Documents" 30
-    clean_dir "$HOME/Downloads" 7
-    clean_dir "$HOME/Desktop" 7
+    for dir in "$HOME/Pictures" "$HOME/Documents"; do
+        clean_dir "$dir" 30 "rm -vf"
+    done
+    for dir in "$HOME/Downloads" "$HOME/Desktop"; do
+        clean_dir "$dir" 7 "rm -vf"
+    done
 fi
 
 echo "cltmp (20241204) done."
