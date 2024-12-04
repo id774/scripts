@@ -54,7 +54,6 @@ elif [ "$os" = "Linux" ]; then
 fi
 
 rm -vf "$HOME/wget-log*"
-rm -vf "$HOME/.emacs.d/%backup%$HOME" "$HOME/%backup%$HOME"
 
 for dir in "$HOME/.gem" "$HOME/.pip" "$HOME/.npm"; do
     clean_dir "$dir" 0 "rm -vrf"
