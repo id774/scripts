@@ -14,8 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  20241204 - Fixed incorrect directory reference in cleanup logic for $HOME/Documents.
-#             Refactored cleanup logic using clean_dir() function for better maintainability.
+#  20241204 - Refactored cleanup logic using clean_dir() function for better maintainability.
 #  20230827 - Latest update with specific cleanup operations for macOS and Linux.
 #
 #  Usage:
