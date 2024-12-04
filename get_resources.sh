@@ -14,6 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2024-12-04
+#       Added error handling for command execution to display error messages when commands fail.
+#       Added fail2ban status checks for non-Darwin environments.
 #  v1.1 2023-12-05
 #       Refactored for macOS compatibility and command availability checks.
 #  v1.0 2008-08-22
@@ -41,7 +44,7 @@ execute_command() {
     if command_exists "$cmd"; then
         if [ -n "$args" ]; then
             echo "[$cmd $args]"
-            "$cmd" $args
+            "$cmd" $args || echo "Error executing: $cmd $args"
         else
             echo "[$cmd]"
             "$cmd"
