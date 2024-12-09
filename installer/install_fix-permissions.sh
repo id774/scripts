@@ -68,7 +68,7 @@ if [ ! -f /etc/logrotate.d/fix-permissions ]; then
 fi
 
 # Deploy the get_fix-permissions script and cron job
-sudo cp "$SCRIPTS/cron/bin/fix-permissions" /etc/cron.daily/
+sudo cp "$SCRIPTS/cron/bin/fix-permissions.sh" /etc/cron.daily/fix-permissions
 sudo chmod 744 /etc/cron.daily/fix-permissions
 sudo chown root:adm /etc/cron.daily/fix-permissions
 
