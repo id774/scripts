@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#   v1.1 2024-12-09
+#        Added support for apt-upgrade script in installation and uninstallation processes.
 #   v1.0 2023-12-23
 #        Refactored for POSIX compliance. Replaced Bash-specific syntax
 #        with POSIX standard commands and structures. Enhanced portability
@@ -101,6 +103,7 @@ uninstall_sysadmin_scripts() {
         pyck \
         autopyck \
         get_resources \
+        apt-upgrade \
         dpkg-hold \
         gpg-import \
         tcmount \
@@ -133,6 +136,7 @@ setup_darwin_scripts() {
 }
 
 setup_debian_scripts() {
+    install_scripts 755 apt-upgrade.sh apt-upgrade
     install_scripts 755 dpkg-hold.sh dpkg-hold
     install_scripts 755 gpg-import.sh gpg-import
     install_scripts 755 tcmount.py tcmount
