@@ -72,4 +72,4 @@ sudo cp "$SCRIPTS/cron/bin/fix-permissions" /etc/cron.daily/
 sudo chmod 744 /etc/cron.daily/fix-permissions
 sudo chown root:adm /etc/cron.daily/fix-permissions
 
-echo "Server resource report setup completed successfully."
+echo "Fix-permissions script setup completed successfully."
