@@ -5,7 +5,7 @@
 #
 #  Description:
 #  This script automates the setup of the `fix-permissions` script by:
-#    - Ensuring the required logging directory and file exist with 
+#    - Ensuring the required logging directory and file exist with
 #      appropriate permissions.
 #    - Deploying a log rotation configuration to manage log size.
 #    - Installing the `fix-permissions` script as a daily cron job.
@@ -24,18 +24,18 @@
 #      ./install_fix-permissions.sh
 #
 #  Requirements:
-#  - The `SCRIPTS` environment variable must be set to the directory 
+#  - The `SCRIPTS` environment variable must be set to the directory
 #    containing the `fix-permissions` script and its configurations.
-#  - Must be executed with sufficient permissions to modify system 
+#  - Must be executed with sufficient permissions to modify system
 #    directories (typically as root or with sudo).
 #  - Requires `logrotate` to be installed for log rotation setup.
 #
 #  Note:
-#  - The script ensures that `/var/log/sysadmin` is created if it does 
+#  - The script ensures that `/var/log/sysadmin` is created if it does
 #    not exist and configures it securely.
-#  - If a log rotation configuration for `fix-permissions` already exists, 
+#  - If a log rotation configuration for `fix-permissions` already exists,
 #    it will not be overwritten.
-#  - The `fix-permissions` script is deployed to `/etc/cron.daily` with 
+#  - The `fix-permissions` script is deployed to `/etc/cron.daily` with
 #    appropriate permissions.
 #
 ########################################################################
