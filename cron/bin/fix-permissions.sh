@@ -10,10 +10,10 @@
 #  email.
 #
 #  Key Features:
-#    - Recursively changes ownership of specific directories to root.
-#    - Sets appropriate permissions for cron directories and files.
-#    - Logs all operations with timestamps and host details.
-#    - Sends a summary of operations to a specified admin email.
+#  - Recursively changes ownership of specific directories to root.
+#  - Sets appropriate permissions for cron directories and files.
+#  - Logs all operations with timestamps and host details.
+#  - Sends a summary of operations to a specified admin email.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
