@@ -4,9 +4,9 @@
 # fix-permissions.sh: Fix File and Directory Permissions
 #
 #  Description:
-#  This script adjusts the permissions and ownership of critical system 
-#  directories and files to ensure they are set correctly. It also logs 
-#  all operations and sends the log file to the system administrator via 
+#  This script adjusts the permissions and ownership of critical system
+#  directories and files to ensure they are set correctly. It also logs
+#  all operations and sends the log file to the system administrator via
 #  email.
 #
 #  Key Features:
