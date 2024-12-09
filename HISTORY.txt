@@ -8,6 +8,7 @@ v1.2.6 (Release Date: TBD)
 - Added error handling for command execution and fail2ban status checks in get_resources.sh.
 - Refactored cltmp.sh to simplify cleanup logic using loops and improve maintainability.
 - Added apt-upgrade.sh script for automating Debian-based system updates and upgrades with environment checks.
+- Added fix-permissions.sh script for managing file and directory permissions with logging and email notifications.
 
 v1.2.5 (2024-11-02)
 -------------------
