@@ -5,10 +5,10 @@
 #
 #  Description:
 #  This script automates the setup of the `fix-permissions` script by:
-#    - Ensuring the required logging directory and file exist with
-#      appropriate permissions.
-#    - Deploying a log rotation configuration to manage log size.
-#    - Installing the `fix-permissions` script as a daily cron job.
+#  - Ensuring the required logging directory and file exist with
+#    appropriate permissions.
+#  - Deploying a log rotation configuration to manage log size.
+#  - Installing the `fix-permissions` script as a daily cron job.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
