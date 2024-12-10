@@ -14,6 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  20241210 - Enhanced wget-log cleanup to include related files.
 #  20241204 - Refactored cleanup logic using clean_dir() function for better maintainability.
 #  20230827 - Latest update with specific cleanup operations for macOS and Linux.
 #
@@ -52,7 +53,7 @@ elif [ "$os" = "Linux" ]; then
     clean_dir "$HOME/tmp" 1 "rm -vf"
 fi
 
-rm -vf "$HOME/wget-log*"
+rm -vf "$HOME/wget-log" "$HOME/wget-log.*"
 
 for dir in "$HOME/.gem" "$HOME/.pip" "$HOME/.npm"; do
     clean_dir "$dir" 0 "rm -vrf"
@@ -98,4 +99,4 @@ else
     done
 fi
 
-echo "cltmp (20241204) done."
+echo "cltmp (20241210) done."
