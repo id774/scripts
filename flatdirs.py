@@ -7,8 +7,7 @@
 #  This script flattens the directory structure by either moving, copying,
 #  or renaming files to the base directory. It supports deletion of empty
 #  directories and can operate in a quiet mode. If no options are specified,
-#  the script displays a help message and exits. A target directory must be
-#  explicitly specified using the --target option.
+#  the script displays a help message and exits.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -16,8 +15,6 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.9 2024-12-12
-#       Added --target option to require explicit target directory specification.
 #  v1.8 2024-03-22
 #       Updated to display a help message and exit if no options are specified.
 #  v1.7 2024-03-05
@@ -39,7 +36,7 @@
 #       Initial release.
 #
 #  Usage:
-#  python flatdirs.py --target <directory> [options]
+#  python flatdirs.py [options]
 #  Options:
 #    -m, --move         Move files instead of copying (default if no option is provided)
 #    -c, --copy         Copy files instead of moving
@@ -47,7 +44,6 @@
 #    -q, --quiet        Suppress operation info
 #    -x, --execute      Execute file operations (default is dry run)
 #    -r, --rename-only  Only rename files, without moving or copying
-#    -t, --target       Specify the target directory to flatten (required)
 #
 #  Notes:
 #  - Use with caution as it can significantly modify directory contents.
@@ -58,6 +54,7 @@
 import os
 import shutil
 from optparse import OptionParser
+
 
 def setup_option_parser():
     """ Set up command-line options using OptionParser. """
@@ -74,12 +71,11 @@ def setup_option_parser():
                       help="execute file operations (default is dry run)")
     parser.add_option("-r", "--rename-only", action="store_true", dest="rename_only_mode", default=False,
                       help="only rename the files by adding directory name, without moving or copying")
-    parser.add_option("-t", "--target", dest="target_dir", help="specify the target directory to flatten")
     return parser
 
 def print_action(action, source, destination=None, options=None):
     """ Prints the action being performed or simulated. """
-    action_message = "{}".format(action) + " {}".format(source)
+    action_message = "{} {}".format(action, source)
     if destination:
         action_message += " -> {}".format(destination)
 
@@ -106,49 +102,49 @@ def handle_directory(path, options):
                     if not options.quiet_mode:
                         print_action("Deleted empty directory", old_path, options=options)
             except FileNotFoundError:
-                print("Warning: Directory not found during deletion - {}".format(old_path))
+                pass
         else:
-            try:
-                new_filename = "{}_{}".format(path.replace('/', '_'), entry)
-                new_path = os.path.join(options.target_dir, new_filename)
+            dir_empty = False
+            new_filename = "{}_{}".format(path.replace('/', '_'), entry)
+            new_path = os.path.join(path, new_filename)
 
-                if options.rename_only_mode:
-                    if options.execute_mode:
-                        os.rename(old_path, new_path)
-                    if not options.quiet_mode:
-                        print_action("Renamed", old_path, new_path, options)
-                elif options.copy_mode or (not options.move_mode and not options.copy_mode):
-                    if options.execute_mode:
-                        shutil.copy(old_path, new_path)
-                    if not options.quiet_mode:
-                        print_action("Copied", old_path, new_path, options)
-                elif options.move_mode:
-                    if options.execute_mode:
-                        shutil.move(old_path, new_path)
-                    if not options.quiet_mode:
-                        print_action("Moved", old_path, new_path, options)
-            except FileNotFoundError:
-                print("Warning: File not found during operation - {}".format(old_path))
-            except PermissionError:
-                print("Warning: Permission denied - {}".format(old_path))
+            if options.rename_only_mode:
+                if options.execute_mode:
+                    os.rename(old_path, new_path)
+                if not options.quiet_mode:
+                    print_action("Renamed", old_path, new_path, options)
+            elif options.copy_mode or (not options.move_mode and not options.copy_mode):
+                if options.execute_mode:
+                    shutil.copy(old_path, new_filename)
+                if not options.quiet_mode:
+                    print_action("Copied", old_path, new_filename, options)
+            elif options.move_mode:
+                if options.execute_mode:
+                    shutil.move(old_path, new_filename)
+                if not options.quiet_mode:
+                    print_action("Moved", old_path, new_filename, options)
+
+    try:
+        if options.delete_mode and not os.listdir(path):
+            if options.execute_mode:
+                os.rmdir(path)
+            if not options.quiet_mode:
+                print_action("Deleted empty directory", path, options=options)
+    except FileNotFoundError:
+        pass
 
 def main(options):
     """ Main function to process directories. Check if any options are set; if not, display help. """
-    # Ensure target directory is specified
-    if not options.target_dir:
-        print("Error: The --target option is required.")
+    # Check if any option is set. If not, display help and exit.
+    if not any(vars(options).values()):
         parser.print_help()
-        exit(1)
+        exit()
 
-    # Ensure the target directory exists
-    if not os.path.exists(options.target_dir):
-        print("Error: The target directory '{}' does not exist.".format(options.target_dir))
-        exit(1)
-
-    # Process each subdirectory in the target directory
-    subdirectories = [d for d in os.listdir(options.target_dir) if os.path.isdir(os.path.join(options.target_dir, d))]
+    # Process each subdirectory in the current directory
+    subdirectories = [d for d in os.listdir('.') if os.path.isdir(d)]
     for subdir in subdirectories:
-        handle_directory(os.path.join(options.target_dir, subdir), options)
+        handle_directory(subdir, options)
+
 
 if __name__ == '__main__':
     parser = setup_option_parser()
