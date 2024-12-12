@@ -59,6 +59,7 @@ import os
 import shutil
 from optparse import OptionParser
 
+
 def setup_option_parser():
     """ Set up command-line options using OptionParser. """
     parser = OptionParser()
@@ -149,6 +150,7 @@ def main(options):
     subdirectories = [d for d in os.listdir(options.target_dir) if os.path.isdir(os.path.join(options.target_dir, d))]
     for subdir in subdirectories:
         handle_directory(os.path.join(options.target_dir, subdir), options)
+
 
 if __name__ == '__main__':
     parser = setup_option_parser()
