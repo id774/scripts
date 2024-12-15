@@ -146,7 +146,7 @@ def handle_directory(path, options):
 def confirm_execution():
     """Prompt the user to confirm execution when the -x option is used."""
     current_dir = os.getcwd()
-    print(f"Current directory: {current_dir}")
+    print("Current directory: {}".format(current_dir))
     confirmation = input("Are you sure you want to execute operations in this directory? (yes/no): ").strip().lower()
     return confirmation in ('yes', 'y')
 
