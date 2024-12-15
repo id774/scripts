@@ -9,12 +9,19 @@
 #  directories and can operate in a quiet mode. If no options are specified,
 #  the script displays a help message and exits.
 #
+#  When using the `-x` option to execute file operations, the script will
+#  display the current working directory and prompt the user for confirmation
+#  to prevent accidental execution. Make sure to review the displayed directory
+#  before proceeding.
+#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.9 2024-12-15
+#       Added confirmation prompt for `-x` option to prevent unintended execution.
 #  v1.8 2024-03-22
 #       Updated to display a help message and exit if no options are specified.
 #  v1.7 2024-03-05
@@ -43,10 +50,13 @@
 #    -d, --delete       Delete empty directories
 #    -q, --quiet        Suppress operation info
 #    -x, --execute      Execute file operations (default is dry run)
+#                       Note: Displays a confirmation prompt showing the current
+#                       directory. Review carefully before proceeding.
 #    -r, --rename-only  Only rename files, without moving or copying
 #
 #  Notes:
 #  - Use with caution as it can significantly modify directory contents.
+#  - When using `-x`, review the displayed current directory and confirm before proceeding.
 #  - It's recommended to backup data before executing with the --execute option.
 #
 ########################################################################
@@ -133,8 +143,20 @@ def handle_directory(path, options):
     except FileNotFoundError:
         pass
 
+def confirm_execution():
+    """Prompt the user to confirm execution when the -x option is used."""
+    current_dir = os.getcwd()
+    print(f"Current directory: {current_dir}")
+    confirmation = input("Are you sure you want to execute operations in this directory? (yes/no): ").strip().lower()
+    return confirmation in ('yes', 'y')
+
 def main(options):
-    """ Main function to process directories. Check if any options are set; if not, display help. """
+    """Main function to process directories. Check if any options are set; if not, display help."""
+    if options.execute_mode:
+        if not confirm_execution():
+            print("Execution cancelled.")
+            exit(0)
+
     # Check if any option is set. If not, display help and exit.
     if not any(vars(options).values()):
         parser.print_help()

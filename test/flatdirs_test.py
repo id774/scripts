@@ -18,6 +18,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2024-12-15
+#       Updated tests to mock `input` and suppress print output
+#       for confirmation prompt.
 #  v1.2 2024-03-11
 #       Added new test cases to enhance coverage and ensure the script's
 #       robustness in handling various file system operations.
@@ -36,6 +39,8 @@ from unittest.mock import MagicMock, call, patch
 
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from unittest.mock import patch
+
 import flatdirs
 
 
@@ -51,6 +56,8 @@ class TestFlatDirs(unittest.TestCase):
         self.mock_copy = patch('flatdirs.shutil.copy').start()
         self.mock_move = patch('flatdirs.shutil.move').start()
         self.mock_print_action = patch('flatdirs.print_action').start()
+        self.mock_input = patch('builtins.input', return_value='yes').start()  # Mock input to always return "yes"
+        self.mock_print = patch('builtins.print').start()  # Mock print to suppress output
 
         self.mock_print_action.side_effect = lambda *args, **kwargs: None
         self.dir_contents = {
@@ -58,8 +65,8 @@ class TestFlatDirs(unittest.TestCase):
             'subdir1': ['file3.txt'],
             'subdir2': ['file4.txt']
         }
-        self.mock_listdir.side_effect = lambda path: self.dir_contents.get(path, [
-        ])
+        # Simulate directory contents and behaviors
+        self.mock_listdir.side_effect = lambda path: self.dir_contents.get(path, [])
         self.mock_isdir.side_effect = lambda path: path in self.dir_contents
         self.mock_copy.side_effect = lambda src, dest: None
         self.mock_rename.side_effect = lambda src, dest: None
@@ -67,7 +74,7 @@ class TestFlatDirs(unittest.TestCase):
         self.mock_rmdir.side_effect = lambda path: None
 
     def tearDown(self):
-        """Tear down mocks after each test."""
+        """Tear down all mocks after each test."""
         patch.stopall()
 
     def test_move_files(self):
