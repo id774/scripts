@@ -163,5 +163,6 @@ def main():
     downloader = InstagramPhotoDownloader(args.username, args.permissions, args.sleep)
     downloader.download()
 
+
 if __name__ == '__main__':
     main()
