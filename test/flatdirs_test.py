@@ -183,6 +183,62 @@ class TestFlatDirs(unittest.TestCase):
         # The special character file is moved to the base directory with its directory prefix
         self.mock_move.assert_any_call(os.path.join('subdir2', 'special@file$.txt'), 'subdir2_special@file$.txt')
 
+    @patch('builtins.input', return_value='yes')
+    def test_confirmation_prompt_yes(self, mock_input):
+        """Test confirmation prompt with 'yes' response."""
+        test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
+                                 quiet_mode=False, execute_mode=True, rename_only_mode=False)
+        flatdirs.main(test_options)
+        self.mock_move.assert_called()  # File operations should proceed
+
+    @patch('builtins.input', return_value='y')
+    def test_confirmation_prompt_y(self, mock_input):
+        """Test confirmation prompt with 'y' response."""
+        test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
+                                 quiet_mode=False, execute_mode=True, rename_only_mode=False)
+        flatdirs.main(test_options)
+        self.mock_move.assert_called()  # File operations should proceed
+
+    @patch('builtins.input', return_value='no')
+    def test_confirmation_prompt_no(self, mock_input):
+        """Test confirmation prompt with 'no' response."""
+        test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
+                                 quiet_mode=False, execute_mode=True, rename_only_mode=False)
+        with self.assertRaises(SystemExit):  # Script should exit
+            flatdirs.main(test_options)
+        self.mock_move.assert_not_called()  # No file operations should occur
+
+    @patch('builtins.input', return_value='unexpected')
+    def test_confirmation_prompt_unexpected(self, mock_input):
+        """Test confirmation prompt with an unexpected response."""
+        test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
+                                 quiet_mode=False, execute_mode=True, rename_only_mode=False)
+        with self.assertRaises(SystemExit):  # Script should exit
+            flatdirs.main(test_options)
+        self.mock_move.assert_not_called()  # No file operations should occur
+
+    @patch('builtins.input', return_value='yes')
+    def test_no_confirmation_without_execute_mode(self, mock_input):
+        """Test that confirmation prompt is skipped and no execution occurs without execute mode."""
+        # Prepare test options with execute_mode=False
+        test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
+                                 quiet_mode=False, execute_mode=False, rename_only_mode=False)
+
+        # Simulate directory contents and behaviors
+        self.dir_contents = {
+            '.': ['subdir1'],
+            'subdir1': ['file1.txt']
+        }
+        self.mock_listdir.side_effect = lambda path: self.dir_contents.get(path, [])
+        self.mock_isdir.side_effect = lambda path: path in self.dir_contents
+
+        # Execute the main function
+        flatdirs.main(test_options)
+
+        # Assertions
+        mock_input.assert_not_called()  # Ensure no prompt was shown
+        self.mock_move.assert_not_called()  # Ensure no file operations occurred
+
 
 if __name__ == '__main__':
     unittest.main()
