@@ -9,6 +9,7 @@ v1.2.6 (Release Date: TBD)
 - Refactored cltmp.sh to simplify cleanup logic using loops and improve maintainability.
 - Added apt-upgrade.sh script for automating Debian-based system updates and upgrades with environment checks.
 - Added fix-permissions.sh script for managing file and directory permissions with logging and email notifications.
+- Added runtime confirmation feature to flatdirs.py to enhance execution safety.
 
 v1.2.5 (2024-11-02)
 -------------------
