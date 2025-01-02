@@ -21,6 +21,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2025-01-02
+#       Improved the "Running:" message to display the full absolute path
+#       of the target subdirectory for better clarity.
 #  v2.0 2024-10-23
 #       Improved removal of trailing slashes and backslashes for
 #       the --account option in insta_update.sh.
@@ -241,7 +244,7 @@ update_content() {
         mkdir -p "$subdir"  # Create a new directory with the original name
     fi
 
-    echo "Running: $PYTHON_BIN $DOWNLOADER_SCRIPT in $subdir"
+    echo "Running: $PYTHON_BIN $DOWNLOADER_SCRIPT in $(cd "$subdir" && pwd)"
     cd "$subdir" || exit
     "$PYTHON_BIN" "$DOWNLOADER_SCRIPT" || exit
     cd "$TARGET_DIR" || exit
