@@ -4,7 +4,7 @@ Repository Update History
 v1.3.1 (Release Date: TBD)
 --------------------------
 - Improved the "Running:" message in insta_update.sh to display the absolute path of the target subdirectory.
- 
+
 v1.3 (2024-12-25)
 -----------------
 - Add customizable --sleep option with default 10 seconds between downloads in instagram downloader.
