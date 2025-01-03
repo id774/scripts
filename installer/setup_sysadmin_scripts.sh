@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-01-03
+#       Added restart-sshd.sh script to the installation and uninstallation processes.
 #  v1.1 2024-12-09
 #       Added support for apt-upgrade script in installation and uninstallation processes.
 #  v1.0 2023-12-23
@@ -112,7 +114,8 @@ uninstall_sysadmin_scripts() {
         userlist \
         usershells \
         port-upgrade \
-        port-cleanup
+        port-cleanup \
+        restart-sshd
 }
 
 install_scripts() {
@@ -128,6 +131,7 @@ setup_scripts() {
     install_scripts 755 userlist.py userlist
     install_scripts 755 usershells.py usershells
     install_scripts 755 pyck.py pyck
+    install_scripts 755 restart-sshd.sh restart-sshd
 }
 
 setup_darwin_scripts() {
