@@ -13,6 +13,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-01-03
+#       Added existence check for launchctl command in macOS environment
+#       to improve error handling and reliability.
 #  v1.2 2023-12-23
 #       Refactored for POSIX compliance. Replaced Bash-specific syntax
 #       with POSIX standard commands and structures. Enhanced portability
@@ -34,6 +37,11 @@ command_exists() {
 
 restart_macos_sshd() {
     SSH_PLIST="/System/Library/LaunchDaemons/ssh.plist"
+    if ! command_exists launchctl; then
+        echo "launchctl command not found. Unable to restart SSH on macOS."
+        exit 1
+    fi
+
     if [ -f "$SSH_PLIST" ]; then
         sudo launchctl unload -w "$SSH_PLIST" && sudo launchctl load -w "$SSH_PLIST"
     else
