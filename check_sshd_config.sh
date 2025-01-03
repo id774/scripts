@@ -11,12 +11,25 @@
 #  For Linux, it displays key SSHD configuration parameters from the main
 #  configuration file.
 #
+#  Features:
+#  - Ensures required commands are installed and executable.
+#  - Displays key SSHD configuration parameters, including:
+#    - Port
+#    - PermitRootLogin
+#    - PasswordAuthentication
+#    - ChallengeResponseAuthentication
+#    - AllowUsers (newly added in v1.6)
+#  - Detects and supports both macOS and Linux environments.
+#  - Automatically copies and configures default SSHD settings on macOS.
+#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-01-03
+#       Added support for detecting and displaying AllowUsers configuration.
 #  v1.5 2024-03-04
 #       Added command check functionality to ensure all required commands
 #       are available before script execution.
@@ -66,6 +79,7 @@ check_sshd_config() {
   grep PermitRootLogin "$1" | grep -v "#"
   grep PasswordAuthentication "$1" | grep -v "#"
   grep ChallengeResponseAuthentication "$1" | grep -v "#"
+  grep AllowUsers "$1" | grep -v "#"
 }
 
 # Detect the operating system
