@@ -4,6 +4,7 @@ Repository Update History
 v1.3.1 (Release Date: TBD)
 --------------------------
 - Improved the "Running:" message in insta_update.sh to display the absolute path of the target subdirectory.
+- Added support for detecting and displaying AllowUsers configuration in check_sshd_config.sh.
 
 v1.3 (2024-12-25)
 -----------------
