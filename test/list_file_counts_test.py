@@ -47,11 +47,11 @@ class TestListFileCounts(unittest.TestCase):
         os.mkdir(os.path.join(cls.test_dir, "subdir_empty"))
 
         for i in range(5):
-            with open(os.path.join(cls.test_dir, "subdir1", f"file{i}.txt"), "w") as f:
+            with open(os.path.join(cls.test_dir, "subdir1", "file{}.txt".format(i)), "w") as f:
                 f.write("Test content")
 
         for i in range(3):
-            with open(os.path.join(cls.test_dir, "subdir2", f"file{i}.txt"), "w") as f:
+            with open(os.path.join(cls.test_dir, "subdir2", "file{}.txt".format(i)), "w") as f:
                 f.write("Test content")
 
     @classmethod
