@@ -103,6 +103,24 @@ class TestListFileCounts(unittest.TestCase):
             ("subdir_empty", 0)
         ])
 
+    def test_invalid_directory_get_subdirectories(self):
+        """Test handling invalid directory in get_subdirectories."""
+        with self.assertRaises(ValueError) as context:
+            get_subdirectories("invalid_dir")
+        self.assertIn("Error accessing directory", str(context.exception))
+
+    def test_invalid_directory_count_files_in_directory(self):
+        """Test handling invalid directory in count_files_in_directory."""
+        with self.assertRaises(ValueError) as context:
+            count_files_in_directory("invalid_dir")
+        self.assertIn("Error accessing directory", str(context.exception))
+
+    def test_invalid_directory_count_files_in_subdirectories(self):
+        """Test handling invalid directory in count_files_in_subdirectories."""
+        with self.assertRaises(ValueError) as context:
+            count_files_in_subdirectories("invalid_dir")
+        self.assertIn("Error accessing directory", str(context.exception))
+
 
 if __name__ == "__main__":
     unittest.main()
