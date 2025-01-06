@@ -28,7 +28,6 @@ import os
 import subprocess
 import sys
 import unittest
-from io import StringIO
 from unittest.mock import patch
 
 # Adjust the path to import script from the parent directory
@@ -43,16 +42,16 @@ class TestPyPing(unittest.TestCase):
     def test_ping_alive(self, mock_check_output):
         """Test if an IP address responds as alive."""
         mock_check_output.return_value = b''
-        with patch('sys.stdout', new=StringIO()) as fake_output:
-            pyping.ping('192.168.11.1')
-            self.assertIn('192.168.11.1 --> alive', fake_output.getvalue())
+        results = {}
+        pyping.ping('192.168.11.1', results)
+        self.assertEqual(results['192.168.11.1'], 'alive')
 
     @patch('subprocess.check_output', side_effect=subprocess.CalledProcessError(1, 'ping'))
     def test_ping_no_response(self, mock_check_output):
         """Test if an unresponsive IP address is marked correctly."""
-        with patch('sys.stdout', new=StringIO()) as fake_output:
-            pyping.ping('192.168.11.2')
-            self.assertIn('192.168.11.2 --> -----', fake_output.getvalue())
+        results = {}
+        pyping.ping('192.168.11.2', results)
+        self.assertEqual(results['192.168.11.2'], '-----')
 
 
 if __name__ == '__main__':
