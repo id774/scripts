@@ -7,6 +7,7 @@ v1.3.1 (Release Date: TBD)
 - Added support for detecting and displaying AllowUsers configuration in check_sshd_config.sh.
 - Added restart-sshd as a system command in setup_sysadmin_scripts.sh.
 - Added list_file_counts.py for calculating file counts in subdirectories and its corresponding test code.
+- Added --ordered option in pyping.py to display ping results in ascending IP order.
 
 v1.3 (2024-12-25)
 -----------------
