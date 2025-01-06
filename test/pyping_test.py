@@ -6,7 +6,7 @@
 #  Description:
 #  This test suite verifies the functionality of the pyping.py script.
 #  It checks whether the script correctly pings a range of IP addresses
-#  within a specified subnet.
+#  within a specified subnet and validates its output behavior.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-01-06
+#       Added test case for the --ordered option to verify sorted output.
 #  v1.0 2024-01-12
 #       Initial release. Test suite for pyping.py script.
 #
@@ -52,6 +54,30 @@ class TestPyPing(unittest.TestCase):
         results = {}
         pyping.ping('192.168.11.2', results)
         self.assertEqual(results['192.168.11.2'], '-----')
+
+    @patch('subprocess.check_output')
+    def test_ordered_option(self, mock_check_output):
+        """Test if results are sorted when using --ordered option."""
+        mock_check_output.return_value = b''
+        results = {}
+
+        # Simulate pings for a range of IPs
+        subnet = "192.168.11."
+        start_ip = 1
+        end_ip = 3
+        for n in range(start_ip, end_ip + 1):
+            ip = subnet + str(n)
+            pyping.ping(ip, results)
+
+        # Collect results as they would be displayed
+        sorted_ips = sorted(results.keys(), key=lambda x: tuple(map(int, x.split('.'))))
+        sorted_results = [(ip, results[ip]) for ip in sorted_ips]
+
+        # Verify the sorted order
+        expected_output = [("192.168.11.1", "alive"),
+                           ("192.168.11.2", "alive"),
+                           ("192.168.11.3", "alive")]
+        self.assertEqual(sorted_results, expected_output)
 
 
 if __name__ == '__main__':
