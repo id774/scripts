@@ -36,10 +36,11 @@ from insta_downloader import InstagramPhotoDownloader
 class TestInstagramPhotoDownloader(unittest.TestCase):
     """Test suite for InstagramPhotoDownloader."""
 
-    @patch('insta_downloader.instaloader.Profile.from_username')
-    @patch('insta_downloader.urllib.request.urlretrieve')
+    @patch('insta_downloader.time.sleep', return_value=None)
     @patch('insta_downloader.os.chmod')
-    def test_download_images(self, mock_chmod, mock_urlretrieve, mock_from_username):
+    @patch('insta_downloader.urllib.request.urlretrieve')
+    @patch('insta_downloader.instaloader.Profile.from_username')
+    def test_download_images(self, mock_from_username, mock_urlretrieve, mock_chmod, mock_sleep):
         """
         Test downloading a single image post.
         Simulates a profile with one post and verifies the download logic.
@@ -69,8 +70,9 @@ class TestInstagramPhotoDownloader(unittest.TestCase):
         mock_urlretrieve.assert_called_with("http://example.com/image1.jpg", "test_user_ABC_01.jpg")
         mock_chmod.assert_called_with("test_user_ABC_01.jpg", 0o644)
 
+    @patch('insta_downloader.time.sleep', return_value=None)
     @patch('insta_downloader.instaloader.Profile.from_username')
-    def test_no_posts(self, mock_from_username):
+    def test_no_posts(self, mock_from_username, mock_sleep):
         """
         Test behavior when no posts are available.
         Ensures the script exits gracefully without attempting downloads.
@@ -91,10 +93,11 @@ class TestInstagramPhotoDownloader(unittest.TestCase):
             with patch('os.listdir', return_value=[]):
                 downloader.download()
 
-    @patch('insta_downloader.instaloader.Profile.from_username')
-    @patch('insta_downloader.urllib.request.urlretrieve')
+    @patch('insta_downloader.time.sleep', return_value=None)
     @patch('insta_downloader.InstagramPhotoDownloader._download_and_save_image')
-    def test_multiple_images_in_post(self, mock_download_and_save_image, mock_urlretrieve, mock_from_username):
+    @patch('insta_downloader.urllib.request.urlretrieve')
+    @patch('insta_downloader.instaloader.Profile.from_username')
+    def test_multiple_images_in_post(self, mock_from_username, mock_urlretrieve, mock_download_and_save_image, mock_sleep):
         """
         Test handling of a post with multiple images.
         Ensures each image in the post is processed and downloaded correctly.
@@ -126,6 +129,78 @@ class TestInstagramPhotoDownloader(unittest.TestCase):
         # Verify _download_and_save_image was called for each image
         mock_download_and_save_image.assert_any_call("http://example.com/image1.jpg", "test_user_DEF_01.jpg")
         mock_download_and_save_image.assert_any_call("http://example.com/image2.jpg", "test_user_DEF_02.jpg")
+
+    @patch('insta_downloader.time.sleep', return_value=None)
+    @patch('insta_downloader.os.listdir')
+    def test_skip_existing_files(self, mock_listdir, mock_sleep):
+        """
+        Test that existing files are skipped during the download process.
+        """
+        # Simulate existing files
+        mock_listdir.return_value = ["test_user_ABC_01.jpg"]
+
+        # Mock downloader methods
+        downloader = InstagramPhotoDownloader("test_user")
+        downloader._get_instagram_photo_urls = MagicMock(return_value=[
+            ("http://example.com/image1.jpg", "2024-01-01", "ABC", 1)
+        ])
+
+        with patch('sys.stdout', new_callable=MagicMock()):
+            with patch('insta_downloader.urllib.request.urlretrieve') as mock_urlretrieve:
+                downloader.download()
+                # Verify that urlretrieve was not called for the existing file
+                mock_urlretrieve.assert_not_called()
+
+    @patch('insta_downloader.time.sleep', return_value=None)
+    @patch('insta_downloader.os.chmod')
+    def test_apply_custom_permissions(self, mock_chmod, mock_sleep):
+        """
+        Test that custom file permissions are applied correctly.
+        """
+        downloader = InstagramPhotoDownloader("test_user", permissions=0o600)
+        downloader._get_instagram_photo_urls = MagicMock(return_value=[
+            ("http://example.com/image1.jpg", "2024-01-01", "ABC", 1)
+        ])
+
+        with patch('sys.stdout', new_callable=MagicMock()):
+            with patch('insta_downloader.urllib.request.urlretrieve'):
+                downloader.download()
+                # Verify chmod is called with the correct permissions
+                mock_chmod.assert_called_with("test_user_ABC_01.jpg", 0o600)
+
+    @patch('insta_downloader.time.sleep', return_value=None)
+    @patch('insta_downloader.InstagramPhotoDownloader._download_and_save_image')
+    def test_sorting_posts(self, mock_download_and_save_image, mock_sleep):
+        """
+        Test that posts are sorted chronologically before downloading.
+        """
+        downloader = InstagramPhotoDownloader("test_user")
+        downloader._get_instagram_photo_urls = MagicMock(return_value=[
+            ("http://example.com/image2.jpg", "2024-01-02", "DEF", 1),
+            ("http://example.com/image1.jpg", "2024-01-01", "ABC", 1)
+        ])
+
+        with patch('sys.stdout', new_callable=MagicMock()):
+            downloader.download()
+            # Verify that downloads occur in chronological order
+            mock_download_and_save_image.assert_any_call("http://example.com/image1.jpg", "test_user_ABC_01.jpg")
+            mock_download_and_save_image.assert_any_call("http://example.com/image2.jpg", "test_user_DEF_01.jpg")
+
+    @patch('insta_downloader.time.sleep', return_value=None)
+    @patch('insta_downloader.os.listdir')
+    def test_empty_directory(self, mock_listdir, mock_sleep):
+        """
+        Test behavior when the source directory is empty.
+        """
+        mock_listdir.return_value = []
+
+        downloader = InstagramPhotoDownloader("test_user")
+        downloader._get_instagram_photo_urls = MagicMock(return_value=[])
+
+        with patch('sys.stdout', new_callable=MagicMock()) as mock_stdout:
+            downloader.download()
+            # Verify that an appropriate message is printed
+            self.assertIn("This account test_user has 0 image posts to download.", mock_stdout.mock_calls[0][1][0])
 
 
 if __name__ == '__main__':
