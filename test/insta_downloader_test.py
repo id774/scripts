@@ -43,6 +43,10 @@ except ImportError:
 class TestInstagramPhotoDownloader(unittest.TestCase):
     """Test suite for InstagramPhotoDownloader."""
 
+    def setUp(self):
+        if not HAS_INSTA_DOWNLOADER:
+            self.skipTest("insta_downloader module is not available")
+
     @patch('insta_downloader.time.sleep', return_value=None)
     @patch('insta_downloader.os.chmod')
     @patch('insta_downloader.urllib.request.urlretrieve')
