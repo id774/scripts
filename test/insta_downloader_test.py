@@ -44,8 +44,26 @@ class TestInstagramPhotoDownloader(unittest.TestCase):
     """Test suite for InstagramPhotoDownloader."""
 
     def setUp(self):
+        """Set up mocks for all tests."""
         if not HAS_INSTA_DOWNLOADER:
             self.skipTest("insta_downloader module is not available")
+
+        # Mock Profile.from_username globally for all tests
+        patcher_profile = patch('insta_downloader.instaloader.Profile.from_username', autospec=True)
+        self.addCleanup(patcher_profile.stop)
+        self.mock_from_username = patcher_profile.start()
+        self.mock_profile = MagicMock()
+        self.mock_profile.get_posts.return_value = []
+        self.mock_from_username.return_value = self.mock_profile
+
+        # Mock instaloader.Instaloader globally for all tests
+        patcher_loader = patch('insta_downloader.instaloader.Instaloader', autospec=True)
+        self.addCleanup(patcher_loader.stop)
+        self.mock_instaloader = patcher_loader.start()
+        self.mock_loader = self.mock_instaloader.return_value
+
+        # Set default behavior for the mock loader
+        self.mock_loader.context = MagicMock()
 
     @patch('insta_downloader.time.sleep', return_value=None)
     @patch('insta_downloader.os.chmod')
