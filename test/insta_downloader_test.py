@@ -48,8 +48,13 @@ class TestInstagramPhotoDownloader(unittest.TestCase):
         if not HAS_INSTA_DOWNLOADER:
             self.skipTest("insta_downloader module is not available")
 
+        try:
+            import instaloader
+        except ModuleNotFoundError:
+            self.skipTest("instaloader module is not installed")
+
         # Mock Profile.from_username globally for all tests
-        patcher_profile = patch('insta_downloader.instaloader.Profile.from_username', autospec=True)
+        patcher_profile = patch('instaloader.Profile.from_username', autospec=True)
         self.addCleanup(patcher_profile.stop)
         self.mock_from_username = patcher_profile.start()
         self.mock_profile = MagicMock()
@@ -57,7 +62,7 @@ class TestInstagramPhotoDownloader(unittest.TestCase):
         self.mock_from_username.return_value = self.mock_profile
 
         # Mock instaloader.Instaloader globally for all tests
-        patcher_loader = patch('insta_downloader.instaloader.Instaloader', autospec=True)
+        patcher_loader = patch('instaloader.Instaloader', autospec=True)
         self.addCleanup(patcher_loader.stop)
         self.mock_instaloader = patcher_loader.start()
         self.mock_loader = self.mock_instaloader.return_value
