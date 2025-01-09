@@ -18,7 +18,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.0 2025-01-06
+#  v1.0 2025-01-09
 #       Initial release. Test suite for insta_downloader.py script.
 #
 ########################################################################
