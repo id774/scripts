@@ -104,6 +104,32 @@ class TestWget(unittest.TestCase):
         # Verify that the correct usage message is printed
         mock_print.assert_called_once_with("Usage: {} <URL>".format(sys.argv[0]))
 
+    @patch('wget.requests.get')
+    @patch('builtins.open', new_callable=mock_open)
+    def test_file_overwrite(self, mock_open_file, mock_requests_get):
+        """
+        Test case: File overwrite.
+        Verifies that existing files are overwritten with new content.
+        """
+        mock_requests_get.return_value.content = b'New content'
+        mock_requests_get.return_value.status_code = 200
+
+        download_file("http://example.com/testfile.txt")
+
+        mock_open_file.assert_called_once_with("testfile.txt", 'wb')
+        mock_open_file().write.assert_called_once_with(b'New content')
+
+    @patch('wget.requests.get')
+    def test_network_timeout(self, mock_requests_get):
+        """
+        Test case: Network timeout during download.
+        Ensures the script handles timeouts gracefully.
+        """
+        mock_requests_get.side_effect = requests.exceptions.Timeout
+
+        with self.assertRaises(requests.exceptions.Timeout):
+            download_file("http://example.com/timeoutfile.txt")
+
 
 if __name__ == '__main__':
     unittest.main()
