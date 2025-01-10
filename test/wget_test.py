@@ -7,10 +7,10 @@
 #  This test suite verifies the functionality of the wget.py script.
 #  It uses mocking to simulate network requests and file operations
 #  to avoid actual downloads during testing. The suite covers various
-#  edge cases, such as normal downloads, HTTP errors, invalid URLs, and
-#  missing arguments, ensuring that the script behaves as expected in
-#  different scenarios without accessing external resources or modifying
-#  the real file system.
+#  edge cases, such as normal downloads, HTTP errors, missing arguments,
+#  file overwrites, and network timeouts, ensuring that the script behaves
+#  as expected in different scenarios without accessing external resources
+#  or modifying the real file system.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
