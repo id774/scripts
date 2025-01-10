@@ -31,13 +31,21 @@ from unittest.mock import MagicMock, mock_open, patch
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-import requests
+try:
+    import requests
 
-from wget import download_file, usage
+    from wget import download_file, usage
+    HAS_REQUESTS = True
+except ImportError:
+    HAS_REQUESTS = False
 
 
 class TestWget(unittest.TestCase):
     """Test suite for wget.py"""
+
+    def setUp(self):
+        if not HAS_REQUESTS:
+            self.skipTest("requests module is not installed")
 
     @patch('wget.requests.get')
     @patch('builtins.open', new_callable=mock_open)
