@@ -9,6 +9,7 @@ v1.3.1 (Release Date: TBD)
 - Added list_file_counts.py for calculating file counts in subdirectories and its corresponding test code.
 - Added --ordered option in pyping.py to display ping results in ascending IP order.
 - Added test cases and enhancements to multiple scripts, including support for additional scenarios and improved test coverage.
+- Enhanced run_tests.sh to display skipped test cases for Python and Ruby tests.
 
 v1.3 (2024-12-25)
 -----------------
