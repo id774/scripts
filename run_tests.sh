@@ -15,7 +15,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.6 2025-01-10
+#  v1.6 2025-01-11
 #       Added support for counting skipped test cases in both Python and Ruby.
 #  v1.5 2024-03-15
 #       Added functionality to display total number of test scripts
