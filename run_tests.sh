@@ -15,6 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-01-13
+#       Added display of Python and Ruby versions in both initial setup
+#       and final test reports for enhanced visibility.
 #  v1.6 2025-01-11
 #       Added support for counting skipped test cases in both Python and Ruby.
 #  v1.5 2024-03-15
@@ -122,7 +125,8 @@ else
         exit 1
     fi
     echo "Python path: $python_path"
-    "$python_path" --version
+    python_version=$("$python_path" --version 2>&1)
+    echo "$python_version"
 
     # Execute Python tests
     for file in test/*_test.py; do
@@ -139,6 +143,8 @@ else
     done
     total_scripts=$((total_scripts + python_scripts))
     echo "All Python tests completed."
+    echo "  Python path: $python_path"
+    echo "  $python_version"
     echo "  Total Python test scripts: $python_scripts"
     echo "  Total Python test cases: $total_tests"
     echo "  Skipped Python test cases: $python_skipped_tests"
@@ -159,8 +165,10 @@ else
     echo "RSpec path: $rspec_path"
     ruby_dir="$(dirname "$rspec_path")"
     ruby_command="$ruby_dir/ruby"
-    "$ruby_command" --version
-    "$rspec_path" --version
+    ruby_version=$("$ruby_command" --version 2>&1)
+    echo "$ruby_version"
+    rspec_version=$("$rspec_path" --version)
+    echo "$rspec_version"
 
     # Execute Ruby tests
     for file in test/*_test.rb; do
@@ -177,6 +185,9 @@ else
     done
     total_scripts=$((total_scripts + ruby_scripts))
     echo "All Ruby tests completed."
+    echo "  RSpec path: $rspec_path"
+    echo "  $ruby_version"
+    echo "  $rspec_version"
     echo "  Total Ruby test scripts: $ruby_scripts"
     echo "  Total Ruby test cases: $ruby_tests"
     echo "  Skipped Ruby test cases: $ruby_skipped_tests"
