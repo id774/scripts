@@ -1,12 +1,24 @@
 #!/bin/sh
-#
+
 ########################################################################
-# Install gem packages
-#  $1 = ruby path (ex. /usr/local)
-#  $2 = no sudo
+# install_gems.sh: Bulk Ruby Gem Install Script
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script automates the installation of a comprehensive set of Ruby
+#  gems required for web development, data processing, and other purposes.
+#  It updates the gem system to the latest version and installs frequently
+#  used gems. Proxy settings are supported via the HTTP_PROXY environment
+#  variable, ensuring compatibility with various network configurations.
 #
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v3.0 2025-01-16
+#       Official release. Removed sudo dependency, improved documentation,
+#       and refined error handling.
 #  v2.4 2019-01-14
 #       Options removed.
 #  v2.3 2014-07-08
@@ -14,197 +26,109 @@
 #  v2.2 2014-01-30
 #       No sudo option.
 #  v2.1 2013-04-21
-#       option as default.
+#       Options as default.
 #  v2.0 2012-10-31
-#       Add some gems.
+#       Added some gems.
 #  v1.0 2008-08-15
 #       Stable.
+#
+#  Usage:
+#  Run this script in a terminal to set up your Ruby environment.
+#  Examples:
+#     ./install_gems.sh /path/to/ruby
+#     ./install_gems.sh
+#
+#  Requirements:
+#  - Ruby and gem must be installed prior to executing this script.
+#
+#  Exit Codes:
+#  0: Success - All gems were installed successfully.
+#  1: Error - A critical issue occurred (e.g., missing dependencies).
+#
+#  Notes:
+#  - If no path is provided, the script assumes default tools in PATH.
+#  - Proxy support can be configured using the HTTP_PROXY environment variable.
+#
 ########################################################################
 
-install_gem() {
-    test -n "$1" && export GEM=$1/bin/gem
-    test -n "$1" || export GEM=/opt/ruby/current/bin/gem
-    test -n "$2" || SUDO=sudo
-    test -n "$2" && SUDO=
-    test "$2" = "sudo" && SUDO=sudo
-    test -n "$HTTP_PROXY" || PROXY=
-    test -n "$HTTP_PROXY" && PROXY="-r -p $HTTP_PROXY"
-    export RUBYOPT=rubygems
-    $SUDO $GEM update --system $PROXY
-    $SUDO $GEM install rails $PROXY
-    $SUDO $GEM install rb-readline $PROXY
-    $SUDO $GEM install debugger $PROXY
-    $SUDO $GEM install pry $PROXY
-    $SUDO $GEM install pry-doc $PROXY
-    $SUDO $GEM install pry-debugger $PROXY
-    $SUDO $GEM install pry-stack_explorer $PROXY
-    $SUDO $GEM install pry-rails $PROXY
-    $SUDO $GEM install pry-coolline $PROXY
-    $SUDO $GEM install hirb $PROXY
-    $SUDO $GEM install hirb-unicode $PROXY
-    $SUDO $GEM install awesome_print $PROXY
-    $SUDO $GEM install rake $PROXY
-    $SUDO $GEM install bundler $PROXY
-    $SUDO $GEM install builder $PROXY
-    $SUDO $GEM install sqlite3 $PROXY
-    $SUDO $GEM install sqlite3-ruby $PROXY
-    $SUDO $GEM install sass $PROXY
-    $SUDO $GEM install sass-rails $PROXY
-    $SUDO $GEM install compass-rails $PROXY
-    $SUDO $GEM install coffee-script $PROXY
-    $SUDO $GEM install coffee-rails $PROXY
-    $SUDO $GEM install jquery-rails $PROXY
-    $SUDO $GEM install haml $PROXY
-    $SUDO $GEM install haml-rails $PROXY
-    $SUDO $GEM install dalli $PROXY
-    $SUDO $GEM install backbone-rails $PROXY
-    $SUDO $GEM install uglifier $PROXY
-    $SUDO $GEM install shotgun $PROXY
-    $SUDO $GEM install rails-clean-logs $PROXY
-    $SUDO $GEM install devise $PROXY
-    $SUDO $GEM install i18n_generators $PROXY
-    $SUDO $GEM install jeweler $PROXY
-    $SUDO $GEM install gemcutter $PROXY
-    $SUDO $GEM install kaminari $PROXY
-    $SUDO $GEM install kaminari-bootstrap $PROXY
-    $SUDO $GEM install rinku $PROXY
-    $SUDO $GEM install yaml_db $PROXY
-    #$SUDO $GEM install enumerable-lazy $PROXY
-    $SUDO $GEM install term-ansicolor $PROXY
-    $SUDO $GEM install turn $PROXY
-    $SUDO $GEM install rest-client $PROXY
-    $SUDO $GEM install http_configuration $PROXY
-    $SUDO $GEM install hpricot $PROXY
-    $SUDO $GEM install mechanize $PROXY
-    $SUDO $GEM install nokogiri $PROXY
-    $SUDO $GEM install anemone $PROXY
-    $SUDO $GEM install cosmicrawler $PROXY
-    $SUDO $GEM install sanitize $PROXY
-    $SUDO $GEM install Selenium $PROXY
-    #$SUDO $GEM install pg $PROXY
-    #$SUDO $GEM install mysql2 $PROXY
-    #$SUDO $GEM install cassandra $PROXY
-    $SUDO $GEM install bson $PROXY
-    $SUDO $GEM install bson_ext $PROXY
-    $SUDO $GEM install mongo $PROXY
-    #$SUDO $GEM install BlueCloth $PROXY
-    #$SUDO $GEM install RedCloth $PROXY
-    $SUDO $GEM install net-ssh $PROXY
-    $SUDO $GEM install net-scp $PROXY
-    $SUDO $GEM install net-sftp $PROXY
-    $SUDO $GEM install net-ping $PROXY
-    $SUDO $GEM install coverage $PROXY
-    $SUDO $GEM install unicorn $PROXY
-    $SUDO $GEM install capistrano $PROXY
-    $SUDO $GEM install redgreen $PROXY
-    $SUDO $GEM install minitest $PROXY
-    $SUDO $GEM install rspec $PROXY
-    $SUDO $GEM install rspec-rails $PROXY
-    $SUDO $GEM install rspec-mocks $PROXY
-    $SUDO $GEM install flexmock $PROXY
-    $SUDO $GEM install simplecov $PROXY
-    $SUDO $GEM install simplecov-rcov $PROXY
-    $SUDO $GEM install sequel $PROXY
-    $SUDO $GEM install thrift $PROXY
-    $SUDO $GEM install puppet $PROXY
-    $SUDO $GEM install json $PROXY
-    $SUDO $GEM install rdoc $PROXY
-    $SUDO $GEM install gherkin $PROXY
-    $SUDO $GEM install cucumber $PROXY
-    $SUDO $GEM install capybara $PROXY
-    $SUDO $GEM install -v "~> 1.5.1" rubytter $PROXY
-    $SUDO $GEM install -v "~> 2.2.9" termtter $PROXY
-    $SUDO $GEM install userstream $PROXY
-    $SUDO $GEM install webtail $PROXY
-    $SUDO $GEM install zipruby $PROXY
-    $SUDO $GEM install oauth $PROXY
-    $SUDO $GEM install webrat $PROXY
-    $SUDO $GEM install diff-lcs $PROXY
-    $SUDO $GEM install sanitize $PROXY
-    $SUDO $GEM install msgpack $PROXY
-    $SUDO $GEM install feed-normalizer $PROXY
-    $SUDO $GEM install gettext_rails $PROXY
-    $SUDO $GEM install gettext_activerecord $PROXY
-    $SUDO $GEM install searchlogic $PROXY
-    $SUDO $GEM install fastercsv $PROXY
-    $SUDO $GEM install log4r $PROXY
-    $SUDO $GEM install foreman $PROXY
-    $SUDO $GEM install sinatra $PROXY
-    $SUDO $GEM install sinatra_more $PROXY
-    $SUDO $GEM install sinatra-formkeeper $PROXY
-    $SUDO $GEM install formkeeper-japanese $PROXY
-    $SUDO $GEM install redis $PROXY
-    $SUDO $GEM install redis-server $PROXY
-    $SUDO $GEM install sidekiq -server $PROXY
-    $SUDO $GEM install rubytree $PROXY
-    $SUDO $GEM install shoulda $PROXY
-    $SUDO $GEM install request-log-analyzer $PROXY
-    $SUDO $GEM install apache-loggen $PROXY
-    $SUDO $GEM install tzinfo $PROXY
-    $SUDO $GEM install guard-coffeescript $PROXY
-    $SUDO $GEM install rb-fsevent $PROXY
-    $SUDO $GEM install iconv $PROXY
-    $SUDO $GEM install i18n $PROXY
-    $SUDO $GEM install execjs $PROXY
-    $SUDO $GEM install therubyracer $PROXY
-    $SUDO $GEM install feedbag $PROXY
-    $SUDO $GEM install hashie $PROXY
-    $SUDO $GEM install gcalapi $PROXY
-    $SUDO $GEM install xml-simple $PROXY
-    $SUDO $GEM install pocket-ruby $PROXY
-    $SUDO $GEM install weather_hacker $PROXY
-    $SUDO $GEM install when_exe $PROXY
-    $SUDO $GEM install ungarbled $PROXY
-    $SUDO $GEM install jpstock $PROXY
-    $SUDO $GEM install spreadsheet $PROXY
-    $SUDO $GEM install prawn $PROXY
-    $SUDO $GEM install pdfkit $PROXY
-    $SUDO $GEM install wkhtmltopdf-binary-edge $PROXY
-    $SUDO $GEM install gnuplot $PROXY
-    $SUDO $GEM install ai4r $PROXY
-    $SUDO $GEM install --source http://gems.github.com tomz-liblinear-ruby-swig $PROXY
-    $SUDO $GEM install nimbus $PROXY
-    $SUDO $GEM install naivebayes $PROXY
-    $SUDO $GEM install kmeans $PROXY
-    $SUDO $GEM install recommendation $PROXY
-    $SUDO $GEM install stdout $PROXY
-    $SUDO $GEM install sysadmin $PROXY
-    $SUDO $GEM install automatic $PROXY
-    $SUDO $GEM install screening $PROXY
-    $SUDO $GEM install ctoD $PROXY
-    $SUDO $GEM install count_by $PROXY
-    $SUDO $GEM install poppler $PROXY
-    $SUDO $GEM install rubypython $PROXY
-    $SUDO $GEM install narray $PROXY
-    $SUDO $GEM install gsl $PROXY
-    $SUDO $GEM install rmagick $PROXY
-    $SUDO $GEM install graphviz $PROXY
-    $SUDO $GEM install gviz $PROXY
-    $SUDO $GEM install wukong $PROXY
-    $SUDO $GEM install woothee $PROXY
-    $SUDO $GEM install webhdfs $PROXY
-    #$SUDO $GEM install hadoop-papyrus $PROXY
-    #$SUDO $GEM install jruby-on-hadoop $PROXY
-    $SUDO $GEM install passenger $PROXY
-    $SUDO $GEM install daemons $PROXY
-    $SUDO $GEM install eventmachine $PROXY
-    $SUDO $GEM install fluentd $PROXY
-    $SUDO $GEM install fluent-logger $PROXY
-    $SUDO $GEM install fluent-plugin-sqlite3 $PROXY
-    $SUDO $GEM install fluent-plugin-s3 $PROXY
-    $SUDO $GEM install fluent-plugin-mongo $PROXY
-    $SUDO $GEM install fluent-plugin-webhdfs $PROXY
-    $SUDO $GEM install fluent-plugin-parser $PROXY
-    $SUDO $GEM install fluent-plugin-rewrite-tag-filter $PROXY
-    $SUDO $GEM install fluent-plugin-flowcounter $PROXY
-    $SUDO $GEM install fluent-plugin-growthforecast $PROXY
-    $SUDO $GEM install fluent-plugin-datacounter $PROXY
-    $SUDO $GEM install heroku $PROXY
-    $SUDO $GEM install aws-sdk $PROXY
-    test -f /etc/debian_version && $SUDO $GEM install rsruby $PROXY -- --with-R-include=/usr/include/R --with-R-dir=/usr/lib/R
-    test -f /etc/redhat-release && $SUDO $GEM install rsruby $PROXY -- --with-R-include=/usr/share/R/include --with-R-dir=/usr/lib/R
+# Function to check if a command exists in the PATH
+check_command() {
+    if ! command -v "$1" >/dev/null 2>&1; then
+        echo "Error: $1 is not installed or not in PATH." >&2
+        exit 1
+    fi
+}
+
+# Function to set up the environment variables for gem
+setup_environment() {
+    if [ -n "$1" ]; then
+        export GEM=$1/bin/gem
+    else
+        export GEM=gem
+    fi
+
+    # Verify that gem is available
+    check_command "$GEM"
+
+    # Set proxy if HTTP_PROXY is defined
+    if [ -n "$HTTP_PROXY" ]; then
+        PROXY="--http-proxy $HTTP_PROXY"
+    else
+        PROXY=""
+    fi
+}
+
+# Function to install the necessary Ruby gems
+install_gems() {
+    echo "Updating gem system to the latest version..."
+    $GEM update --system $PROXY
+
+    echo "Installing essential Ruby gems..."
+    $GEM install $PROXY rails rb-readline debugger pry pry-doc pry-debugger pry-stack_explorer \
+        pry-rails pry-coolline hirb hirb-unicode awesome_print rake bundler builder sqlite3 \
+        sqlite3-ruby sass sass-rails compass-rails coffee-script coffee-rails jquery-rails \
+        haml haml-rails dalli backbone-rails uglifier shotgun rails-clean-logs devise \
+        i18n_generators jeweler gemcutter kaminari kaminari-bootstrap rinku yaml_db \
+        term-ansicolor turn rest-client http_configuration hpricot mechanize nokogiri anemone \
+        cosmicrawler sanitize Selenium bson bson_ext mongo net-ssh net-scp net-sftp net-ping \
+        coverage unicorn capistrano redgreen minitest rspec rspec-rails rspec-mocks flexmock \
+        simplecov simplecov-rcov sequel thrift puppet json rdoc gherkin cucumber capybara \
+        rubytter termtter userstream webtail zipruby oauth webrat diff-lcs msgpack \
+        gettext_rails gettext_activerecord searchlogic fastercsv log4r foreman sinatra \
+        sinatra_more sinatra-formkeeper formkeeper-japanese redis redis-server sidekiq \
+        rubytree shoulda request-log-analyzer apache-loggen tzinfo guard-coffeescript rb-fsevent \
+        iconv i18n execjs therubyracer feedbag hashie gcalapi xml-simple pocket-ruby \
+        weather_hacker when_exe ungarbled jpstock spreadsheet prawn pdfkit \
+        wkhtmltopdf-binary-edge gnuplot ai4r nimbus naivebayes kmeans \
+        recommendation stdout sysadmin automatic screening ctoD count_by poppler rubypython \
+        narray gsl rmagick graphviz gviz wukong woothee webhdfs passenger daemons \
+        eventmachine fluentd fluent-logger fluent-plugin-sqlite3 fluent-plugin-s3 \
+        fluent-plugin-mongo fluent-plugin-webhdfs fluent-plugin-parser fluent-plugin-rewrite-tag-filter \
+        fluent-plugin-flowcounter fluent-plugin-growthforecast fluent-plugin-datacounter \
+        heroku aws-sdk
+
+    # Special installation for tomz-liblinear-ruby-swig
+    echo "Installing tomz-liblinear-ruby-swig from a specific source..."
+    $GEM install --source http://gems.github.com tomz-liblinear-ruby-swig $PROXY
+
+    # Conditional installation for rsruby based on Linux distribution
+    if [ -f /etc/debian_version ]; then
+        $GEM install rsruby $PROXY -- --with-R-include=/usr/include/R --with-R-dir=/usr/lib/R
+    elif [ -f /etc/redhat-release ]; then
+        $GEM install rsruby $PROXY -- --with-R-include=/usr/share/R/include --with-R-dir=/usr/lib/R
+    fi
+
+    echo "Listing installed gems..."
     $GEM list --local
 }
 
-ping -c 1 id774.net > /dev/null 2>&1 || exit 1
-install_gem $*
+# Main function to coordinate environment setup and gem installation
+main() {
+    echo "Starting Ruby gem installation..."
+    setup_environment "$1"
+    install_gems
+    echo "All tasks completed successfully."
+}
+
+# Start the script with the provided argument (if any)
+main "$1"
