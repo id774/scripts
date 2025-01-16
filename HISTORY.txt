@@ -10,6 +10,7 @@ v1.3.1 (Release Date: TBD)
 - Added --ordered option in pyping.py to display ping results in ascending IP order.
 - Added test cases and enhancements to multiple scripts, including support for additional scenarios and improved test coverage.
 - Enhanced run_tests.sh to display Python and Ruby versions and skipped test cases in reports.
+- Enabled GNU-style file listing on macOS by adding Coreutils to Homebrew defaults.
 
 v1.3 (2024-12-25)
 -----------------
