@@ -11,6 +11,8 @@ v1.3.1 (Release Date: TBD)
 - Added test cases and enhancements to multiple scripts, including support for additional scenarios and improved test coverage.
 - Enhanced run_tests.sh to display Python and Ruby versions and skipped test cases in reports.
 - Enabled GNU-style file listing on macOS by adding Coreutils to Homebrew defaults.
+- Refactored several scripts for bulk installation of packages, improving maintainability and efficiency.
+- Removed multiple macports-related scripts following the transition to Homebrew as the default package manager.
 
 v1.3 (2024-12-25)
 -----------------
