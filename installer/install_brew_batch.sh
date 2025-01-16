@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# install_brew_batch.sh
+# install_brew_batch.sh: Bulk Homebrew Library Install Script
 #
 #  Description:
 #  This script installs a set of essential tools and libraries on macOS
@@ -69,4 +69,3 @@ brew install cabocha
 brew install ta-lib
 
 echo "All specified packages have been successfully installed."
-exit 0

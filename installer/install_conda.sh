@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# install_conda.sh
+# install_conda.sh: Bulk Python Library Install Script
 #
 #  Description:
 #  This script sets up a Python development environment by installing
@@ -113,5 +113,3 @@ main() {
 
 # Start the script with the provided argument (if any)
 main "$1"
-
-exit 0

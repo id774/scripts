@@ -1,125 +1,126 @@
 #!/bin/sh
-#
+
 ########################################################################
-# Install Python Libraries.
-#  $1 = python path (ex. /usr/local)
-#  $2 = no sudo
+# install_pip.sh: Bulk Python Library Install Script
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script automates the installation of a wide range of Python
+#  libraries that are essential for data analysis, machine learning,
+#  scientific computing, and web development. It ensures that these
+#  libraries are updated to their latest versions for optimal
+#  performance and compatibility. Additionally, the script supports
+#  environments with or without proxy settings, making it suitable for
+#  various network configurations. Easy Install support is included
+#  where available for certain libraries.
 #
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 2025-01-16
+#       Official release. Removed sudo dependency, improved documentation,
+#       and refined error handling.
 #  v0.4 2014-08-12
-#       Add pip, pyflakes. Upgrade option as default.
+#       Added pip and pyflakes. Set upgrade as default.
 #  v0.3 2014-06-27
 #       Auto proxy detection.
 #  v0.2 2014-02-10
-#       Enable proxy.
+#       Enabled proxy support.
 #  v0.1 2014-02-09
-#       First.
+#       Initial version.
+#
+#  Usage:
+#  Run this script in a terminal to set up your Python environment.
+#  Examples:
+#     ./install_pip.sh /path/to/python
+#     ./install_pip.sh
+#
+#  Requirements:
+#  - pip must be installed prior to executing this script.
+#
+#  Exit Codes:
+#  0: Success - All libraries were installed successfully.
+#  1: Error - A critical issue occurred (e.g., missing dependencies).
+#
+#  Notes:
+#  - If no path is provided, the script assumes default tools in PATH.
+#  - Proxy support can be configured using the HTTP_PROXY environment variable.
+#
 ########################################################################
 
+# Function to check if a command exists in the PATH
+check_command() {
+    if ! command -v "$1" >/dev/null 2>&1; then
+        echo "Error: $1 is not installed or not in PATH." >&2
+        exit 1
+    fi
+}
+
+# Function to set up the environment variables for pip and Easy Install
 setup_environment() {
-    test -n "$1" && export EASY_INSTALL=$1/bin/easy_install
-    test -n "$1" || export EASY_INSTALL=easy_install
-    test -n "$1" && export PIP=$1/bin/pip
-    test -n "$1" || export PIP=/opt/python/current/bin/pip
-    test -n "$2" || SUDO='sudo -H'
-    test -n "$2" && SUDO=
-    test "$2" = "sudo" && SUDO='sudo -H'
-    test -n "$HTTP_PROXY" || PROXY=
-    test -n "$HTTP_PROXY" && PROXY="--proxy $HTTP_PROXY"
+    if [ -n "$1" ]; then
+        export EASY_INSTALL=$1/bin/easy_install
+        export PIP=$1/bin/pip
+    else
+        export EASY_INSTALL=easy_install
+        export PIP=pip
+    fi
+
+    # Verify that pip is available
+    check_command "$PIP"
+
+    # Warn if Easy Install is not available
+    if ! command -v "$EASY_INSTALL" >/dev/null 2>&1; then
+        echo "Warning: Easy Install (easy_install) is not found in PATH. Skipping Easy Install steps." >&2
+        EASY_INSTALL=""
+    fi
+
+    # Set proxy if HTTP_PROXY is defined
+    if [ -n "$HTTP_PROXY" ]; then
+        PROXY="--proxy $HTTP_PROXY"
+    else
+        PROXY=""
+    fi
 }
 
+# Function to install the necessary Python libraries using pip and Easy Install
 install_libs() {
-    $SUDO $PIP install $PROXY -U pip
-    $SUDO $PIP install $PROXY -U IPython
-    $SUDO $PIP install $PROXY -U jupyter
-    $SUDO $PIP install $PROXY -U notebook
-    $SUDO $PIP install $PROXY -U pyflakes
-    $SUDO $PIP install $PROXY -U flake8
-    $SUDO $PIP install $PROXY -U pytest
-    $SUDO $PIP install $PROXY -U pytest-pep8
-    $SUDO $PIP install $PROXY -U autopep8
-    $SUDO $PIP install $PROXY -U autoflake
-    $SUDO $PIP install $PROXY -U isort
-    $SUDO $PIP install $PROXY -U Cython
-    $SUDO $PIP install $PROXY -U docutils
-    $SUDO $PIP install $PROXY -U nose
-    $SUDO $PIP install $PROXY -U docopt
-    $SUDO $PIP install $PROXY -U simplejson
-    $SUDO $PIP install $PROXY -U sgpack-python
-    $SUDO $PIP install $PROXY -U numpy
-    $SUDO $PIP install $PROXY -U scipy
-    $SUDO $PIP install $PROXY -U scikit-learn
-    $SUDO $PIP install $PROXY -U japandas
-    $SUDO $PIP install $PROXY -U pandas-datareader
-    $SUDO $PIP install $PROXY -U chainer
-    $SUDO $PIP install $PROXY -U joblib
-    $SUDO $PIP install $PROXY -U dask
-    $SUDO $PIP install $PROXY -U patsy
-    $SUDO $PIP install $PROXY -U statsmodels
-    $SUDO $PIP install $PROXY -U sympy
-    #$SUDO $PIP install $PROXY -U pystan
-    $SUDO $PIP install $PROXY seaborn
-    $SUDO $PIP install $PROXY bokeh
-    $SUDO $PIP install $PROXY -U twisted
-    $SUDO $PIP install $PROXY -U Flask
-    $SUDO $PIP install $PROXY -U Flask-Assets
-    $SUDO $PIP install $PROXY -U Flask-Bootstrap
-    $SUDO $PIP install $PROXY -U Hamlish-Jinja
-    $SUDO $PIP install $PROXY -U gunicorn
-    $SUDO $PIP install $PROXY -U django
-    $SUDO $PIP install $PROXY -U SQLAlchemy
-    $SUDO $PIP install $PROXY -U lmdb
-    $SUDO $PIP install $PROXY -U migrate
-    $SUDO $PIP install $PROXY -U readline
-    $SUDO $PIP install $PROXY -U Pygments
-    $SUDO $PIP install $PROXY -U Babel
-    $SUDO $PIP install $PROXY -U Genshi
-    $SUDO $PIP install $PROXY -U bottle
-    $SUDO $PIP install $PROXY -U cherrypy
-    $SUDO $PIP install $PROXY -U beautifulsoup4
-    $SUDO $PIP install $PROXY -U lxml
-    $SUDO $PIP install $PROXY -U requests
-    $SUDO $PIP install $PROXY -U pysolr
-    $SUDO $PIP install $PROXY -U watson-developer-cloud
-    $SUDO $PIP install $PROXY -U html5lib
-    $SUDO $PIP install $PROXY husl
-    $SUDO $PIP install $PROXY -U pillow
-    $SUDO $PIP install $PROXY -U ggplot
-    $SUDO $PIP install $PROXY -U pyper
-    $SUDO $PIP install $PROXY -U jinja2 tornado pyzmq
-    $SUDO $PIP install $PROXY -U awscli
-    $SUDO $PIP install $PROXY -U cchardet
-    $SUDO $PIP install $PROXY -U openpyxl
-    $SUDO $PIP install $PROXY -U xlrd
-    $SUDO $PIP install $PROXY -U simpy
-    $SUDO $PIP install $PROXY -U networkx
-    $SUDO $PIP install $PROXY -U pdfminer3k
-    $SUDO $PIP install $PROXY -U pybrain
-    $SUDO $PIP install $PROXY -U uwsgi
-    $SUDO $PIP install $PROXY -U pypandoc
-    $SUDO $PIP install $PROXY -U zipline
-    $SUDO $PIP install $PROXY -U DocumentFeatureSelection
-    $SUDO $PIP install $PROXY -U python-tr
-    $SUDO $PIP install $PROXY -U mod_wsgi
-    $SUDO $PIP install $PROXY -U beaker
-    $SUDO $PIP install $PROXY -U python-memcached
-    $SUDO $PIP install $PROXY -U psycopg2-binary
-    $SUDO $PIP install $PROXY -U mpi4py
-    $SUDO $PIP install $PROXY -U keras
-    $SUDO $PIP install $PROXY -U tensorflow
-    $SUDO $PIP install $PROXY -U matplotlib
-    $SUDO $PIP install $PROXY -U pandas
-    $SUDO $PIP install $PROXY -U pep8
-    $SUDO $PIP install $PROXY -U instaloader
-    $SUDO $EASY_INSTALL -U TA-Lib
-    $SUDO $EASY_INSTALL -U nltk
+    echo "Updating pip to the latest version..."
+    $PIP install $PROXY -U pip
+
+    echo "Installing essential Python libraries..."
+    $PIP install $PROXY -U \
+        IPython jupyter notebook pyflakes flake8 pytest pytest-pep8 autopep8 \
+        autoflake isort Cython docutils nose docopt simplejson msgpack-python \
+        numpy scipy scikit-learn japandas pandas-datareader chainer joblib \
+        dask patsy statsmodels sympy seaborn bokeh twisted Flask Flask-Assets \
+        Flask-Bootstrap Hamlish-Jinja gunicorn django SQLAlchemy lmdb migrate \
+        readline Pygments Babel Genshi bottle cherrypy beautifulsoup4 lxml \
+        requests pysolr watson-developer-cloud html5lib husl pillow ggplot \
+        pyper jinja2 tornado pyzmq awscli cchardet openpyxl xlrd simpy \
+        networkx pdfminer3k pybrain uwsgi pypandoc zipline DocumentFeatureSelection \
+        python-tr mod_wsgi beaker python-memcached psycopg2-binary mpi4py keras \
+        tensorflow matplotlib pandas pep8 instaloader
+
+    # Install additional libraries using Easy Install if available
+    if [ -n "$EASY_INSTALL" ]; then
+        echo "Installing additional libraries using Easy Install..."
+        $EASY_INSTALL -U TA-Lib
+        $EASY_INSTALL -U nltk
+    else
+        echo "Skipping Easy Install steps as Easy Install is not available."
+    fi
 }
 
+# Main function to coordinate environment setup and library installation
 main() {
-    setup_environment $*
-    install_libs $*
+    echo "Starting Python library installation..."
+    setup_environment "$1"
+    install_libs
+    echo "All tasks completed successfully."
 }
 
-ping -c 1 id774.net > /dev/null 2>&1 || exit 1
-main $*
+# Start the script with the provided argument (if any)
+main "$1"
