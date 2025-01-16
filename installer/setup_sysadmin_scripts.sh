@@ -134,11 +134,6 @@ setup_scripts() {
     install_scripts 755 restart-sshd.sh restart-sshd
 }
 
-setup_darwin_scripts() {
-    install_scripts 755 port-upgrade.sh port-upgrade
-    install_scripts 755 port-cleanup.sh port-cleanup
-}
-
 setup_debian_scripts() {
     install_scripts 755 apt-upgrade.sh apt-upgrade
     install_scripts 755 dpkg-hold.sh dpkg-hold
@@ -149,11 +144,6 @@ setup_debian_scripts() {
 install_sysadmin_scripts() {
     setup_scripts
     test -f /etc/debian_version && setup_debian_scripts
-    case $OSTYPE in
-      *darwin*)
-        setup_darwin_scripts
-        ;;
-    esac
 }
 
 setup_sysadmin_scripts() {
