@@ -61,7 +61,7 @@ check_command() {
 
 # Function to set up the environment variables for gem
 setup_environment() {
-    if [ -n "$1" ];then
+    if [ -n "$1" ]; then
         export GEM=$1/bin/gem
     else
         export GEM=gem
