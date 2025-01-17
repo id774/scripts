@@ -50,29 +50,29 @@ check_directory() {
 # Determine the operating system
 os=$(uname)
 
-if [ "$os" = "Darwin" ]; then
-  echo "Fixing ownership and permissions for Zsh directories on macOS..."
-
-  # Check if directories exist before proceeding
-  check_directory /usr/local/Homebrew/completions/zsh/
-  check_directory /usr/local/share/zsh/
-
-  # Change ownership to root:wheel
-  sudo chown -R root:wheel /usr/local/Homebrew/completions/zsh/
-  sudo chown -R root:wheel /usr/local/share/zsh/
-
-  # Set secure permissions
-  sudo chmod -R 755 /usr/local/Homebrew/completions/zsh/
-  sudo chmod -R 755 /usr/local/share/zsh/
-
-  # Verify changes
-  echo "Ownership and permissions have been updated:"
-  ls -ld /usr/local/Homebrew/completions/zsh/
-  ls -ld /usr/local/share/zsh/
-
-else
+# Exit if not macOS
+if [ "$os" != "Darwin" ]; then
   echo "This script is designed for macOS only." >&2
   exit 1
 fi
+
+echo "Fixing ownership and permissions for Zsh directories on macOS..."
+
+# Check if directories exist before proceeding
+check_directory /usr/local/Homebrew/completions/zsh/
+check_directory /usr/local/share/zsh/
+
+# Change ownership to root:wheel
+sudo chown -R root:wheel /usr/local/Homebrew/completions/zsh/
+sudo chown -R root:wheel /usr/local/share/zsh/
+
+# Set secure permissions
+sudo chmod -R 755 /usr/local/Homebrew/completions/zsh/
+sudo chmod -R 755 /usr/local/share/zsh/
+
+# Verify changes
+echo "Ownership and permissions have been updated:"
+ls -Tld /usr/local/Homebrew/completions/zsh/
+ls -Tld /usr/local/share/zsh/
 
 exit 0
