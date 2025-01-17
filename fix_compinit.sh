@@ -39,11 +39,23 @@
 #
 ########################################################################
 
+# Check if a directory exists
+check_directory() {
+  if [ ! -d "$1" ]; then
+    echo "Error: Directory $1 does not exist." >&2
+    exit 1
+  fi
+}
+
 # Determine the operating system
 os=$(uname)
 
 if [ "$os" = "Darwin" ]; then
   echo "Fixing ownership and permissions for Zsh directories on macOS..."
+
+  # Check if directories exist before proceeding
+  check_directory /usr/local/Homebrew/completions/zsh/
+  check_directory /usr/local/share/zsh/
 
   # Change ownership to root:wheel
   sudo chown -R root:wheel /usr/local/Homebrew/completions/zsh/

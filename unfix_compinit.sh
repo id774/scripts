@@ -37,6 +37,14 @@
 #
 ########################################################################
 
+# Check if a directory exists
+check_directory() {
+  if [ ! -d "$1" ]; then
+    echo "Error: Directory $1 does not exist." >&2
+    exit 1
+  fi
+}
+
 # Determine the operating system
 os=$(uname)
 
@@ -46,6 +54,11 @@ if [ "$os" = "Darwin" ]; then
   # Get the current user and their primary group
   current_user=$(whoami)
   current_group=$(id -gn "$current_user")
+
+  # Check if directories exist
+  check_directory /usr/local/Homebrew
+  check_directory /usr/local/share/zsh/
+  check_directory /usr/local/share/zsh/site-functions
 
   # Change ownership to the current user and their primary group
   sudo chown -R "$current_user":"$current_group" /usr/local/Homebrew
