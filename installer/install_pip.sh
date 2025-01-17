@@ -70,6 +70,7 @@ setup_environment() {
 
     # Verify that pip is available
     check_command "$PIP"
+    check_command sed
 
     # Warn if Easy Install is not available
     if ! command -v "$EASY_INSTALL" >/dev/null 2>&1; then
@@ -98,92 +99,97 @@ install_libs() {
     $PIP install $PROXY -U pip
 
     echo "Installing essential Python libraries..."
-    libs=(
-        "IPython"
-        "jupyter"
-        "notebook"
-        "pyflakes"
-        "flake8"
-        "pytest"
-        "pytest-pep8"
-        "autopep8"
-        "autoflake"
-        "isort"
-        "Cython"
-        "docutils"
-        "nose"
-        "docopt"
-        "simplejson"
-        "msgpack-python"
-        "numpy"
-        "scipy"
-        "scikit-learn"
-        "japandas"
-        "pandas-datareader"
-        "chainer"
-        "joblib"
-        "dask"
-        "patsy"
-        "statsmodels"
-        "sympy"
-        "seaborn"
-        "bokeh"
-        "twisted"
-        "Flask"
-        "Flask-Assets"
-        "Flask-Bootstrap"
-        "Hamlish-Jinja"
-        "gunicorn"
-        "django"
-        "SQLAlchemy"
-        "lmdb"
-        "migrate"
-        "readline"
-        "Pygments"
-        "Babel"
-        "Genshi"
-        "bottle"
-        "cherrypy"
-        "beautifulsoup4"
-        "lxml"
-        "requests"
-        "pysolr"
-        "watson-developer-cloud"
-        "html5lib"
-        "husl"
-        "pillow"
-        "ggplot"
-        "pyper"
-        "jinja2"
-        "tornado"
-        "pyzmq"
-        "awscli"
-        "cchardet"
-        "openpyxl"
-        "xlrd"
-        "simpy"
-        "networkx"
-        "pdfminer3k"
-        "pybrain"
-        "uwsgi"
-        "pypandoc"
-        "zipline"
-        "DocumentFeatureSelection"
-        "python-tr"
-        "mod_wsgi"
-        "beaker"
-        "python-memcached"
-        "psycopg2-binary"
-        "mpi4py"
-        "keras"
-        "tensorflow"
-        "matplotlib"
-        "pandas"
-        "pep8"
-        "instaloader"
-    )
+    # Define the list of libraries as a multi-line string
+    libs="
+    IPython
+    jupyter
+    notebook
+    pyflakes
+    flake8
+    pytest
+    pytest-pep8
+    autopep8
+    autoflake
+    isort
+    Cython
+    docutils
+    nose
+    docopt
+    simplejson
+    msgpack-python
+    numpy
+    scipy
+    scikit-learn
+    japandas
+    pandas-datareader
+    chainer
+    joblib
+    dask
+    patsy
+    statsmodels
+    sympy
+    seaborn
+    bokeh
+    twisted
+    Flask
+    Flask-Assets
+    Flask-Bootstrap
+    Hamlish-Jinja
+    gunicorn
+    django
+    SQLAlchemy
+    lmdb
+    migrate
+    readline
+    Pygments
+    Babel
+    Genshi
+    bottle
+    cherrypy
+    beautifulsoup4
+    lxml
+    requests
+    pysolr
+    watson-developer-cloud
+    html5lib
+    husl
+    pillow
+    ggplot
+    pyper
+    jinja2
+    tornado
+    pyzmq
+    awscli
+    cchardet
+    openpyxl
+    xlrd
+    simpy
+    networkx
+    pdfminer3k
+    pybrain
+    uwsgi
+    pypandoc
+    zipline
+    DocumentFeatureSelection
+    python-tr
+    mod_wsgi
+    beaker
+    python-memcached
+    psycopg2-binary
+    mpi4py
+    keras
+    tensorflow
+    matplotlib
+    pandas
+    pep8
+    instaloader
+    "
 
-    for lib in "${libs[@]}"; do
+    # Loop through each library and install it
+    for lib in $libs; do
+        # Remove leading and trailing spaces/tabs
+        lib=$(echo "$lib" | sed 's/^[ \t]*//;s/[ \t]*$//')
+        echo "Installing $lib..."
         install_lib "$lib"
     done
 
