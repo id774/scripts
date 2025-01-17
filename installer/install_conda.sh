@@ -74,24 +74,108 @@ setup_environment() {
     fi
 }
 
-# Function to install the necessary libraries using Conda and Easy Install
+# Function to install a single Python library using Conda
+install_lib() {
+    local lib=$1
+    echo "Installing $lib..."
+    $CONDA install -y "$lib"
+}
+
+# Function to install the necessary libraries using Conda
 install_libs() {
     echo "Updating Conda base environment..."
     $CONDA update -n base -y conda
 
     echo "Installing essential libraries using Conda..."
-    $CONDA install -y \
-        pip IPython jupyter notebook pyflakes flake8 pytest pytest-pep8 autopep8 \
-        autoflake isort Cython docutils nose docopt simplejson msgpack-python \
-        numpy scipy scikit-learn japandas pandas-datareader chainer joblib \
-        dask patsy statsmodels sympy seaborn bokeh twisted Flask Flask-Assets \
-        Flask-Bootstrap Hamlish-Jinja gunicorn django SQLAlchemy lmdb migrate \
-        readline Pygments Babel Genshi bottle cherrypy beautifulsoup4 lxml \
-        requests pysolr watson-developer-cloud html5lib husl pillow ggplot \
-        pyper jinja2 tornado pyzmq awscli cchardet openpyxl xlrd simpy \
-        networkx pdfminer3k pybrain uwsgi pypandoc zipline DocumentFeatureSelection \
-        python-tr mod_wsgi beaker python-memcached psycopg2-binary mpi4py keras \
-        tensorflow matplotlib pandas pep8 instaloader
+    libs=(
+        "pip"
+        "IPython"
+        "jupyter"
+        "notebook"
+        "pyflakes"
+        "flake8"
+        "pytest"
+        "pytest-pep8"
+        "autopep8"
+        "autoflake"
+        "isort"
+        "Cython"
+        "docutils"
+        "nose"
+        "docopt"
+        "simplejson"
+        "msgpack-python"
+        "numpy"
+        "scipy"
+        "scikit-learn"
+        "japandas"
+        "pandas-datareader"
+        "chainer"
+        "joblib"
+        "dask"
+        "patsy"
+        "statsmodels"
+        "sympy"
+        "seaborn"
+        "bokeh"
+        "twisted"
+        "Flask"
+        "Flask-Assets"
+        "Flask-Bootstrap"
+        "Hamlish-Jinja"
+        "gunicorn"
+        "django"
+        "SQLAlchemy"
+        "lmdb"
+        "migrate"
+        "readline"
+        "Pygments"
+        "Babel"
+        "Genshi"
+        "bottle"
+        "cherrypy"
+        "beautifulsoup4"
+        "lxml"
+        "requests"
+        "pysolr"
+        "watson-developer-cloud"
+        "html5lib"
+        "husl"
+        "pillow"
+        "ggplot"
+        "pyper"
+        "jinja2"
+        "tornado"
+        "pyzmq"
+        "awscli"
+        "cchardet"
+        "openpyxl"
+        "xlrd"
+        "simpy"
+        "networkx"
+        "pdfminer3k"
+        "pybrain"
+        "uwsgi"
+        "pypandoc"
+        "zipline"
+        "DocumentFeatureSelection"
+        "python-tr"
+        "mod_wsgi"
+        "beaker"
+        "python-memcached"
+        "psycopg2-binary"
+        "mpi4py"
+        "keras"
+        "tensorflow"
+        "matplotlib"
+        "pandas"
+        "pep8"
+        "instaloader"
+    )
+
+    for lib in "${libs[@]}"; do
+        install_lib "$lib"
+    done
 
     # Install additional libraries using Easy Install if available
     if [ -n "$EASY_INSTALL" ]; then

@@ -61,7 +61,7 @@ check_command() {
 
 # Function to set up the environment variables for gem
 setup_environment() {
-    if [ -n "$1" ]; then
+    if [ -n "$1" ];then
         export GEM=$1/bin/gem
     else
         export GEM=gem
@@ -78,34 +78,179 @@ setup_environment() {
     fi
 }
 
+# Function to install a single Ruby gem
+install_gem() {
+    local gem=$1
+    echo "Installing $gem..."
+    $GEM install $PROXY "$gem"
+}
+
 # Function to install the necessary Ruby gems
 install_gems() {
     echo "Updating gem system to the latest version..."
     $GEM update --system $PROXY
 
     echo "Installing essential Ruby gems..."
-    $GEM install $PROXY rails rb-readline debugger pry pry-doc pry-debugger pry-stack_explorer \
-        pry-rails pry-coolline hirb hirb-unicode awesome_print rake bundler builder sqlite3 \
-        sqlite3-ruby sass sass-rails compass-rails coffee-script coffee-rails jquery-rails \
-        haml haml-rails dalli backbone-rails uglifier shotgun rails-clean-logs devise \
-        i18n_generators jeweler gemcutter kaminari kaminari-bootstrap rinku yaml_db \
-        term-ansicolor turn rest-client http_configuration hpricot mechanize nokogiri anemone \
-        cosmicrawler sanitize Selenium bson bson_ext mongo net-ssh net-scp net-sftp net-ping \
-        coverage unicorn capistrano redgreen minitest rspec rspec-rails rspec-mocks flexmock \
-        simplecov simplecov-rcov sequel thrift puppet json rdoc gherkin cucumber capybara \
-        rubytter termtter userstream webtail zipruby oauth webrat diff-lcs msgpack \
-        gettext_rails gettext_activerecord searchlogic fastercsv log4r foreman sinatra \
-        sinatra_more sinatra-formkeeper formkeeper-japanese redis redis-server sidekiq \
-        rubytree shoulda request-log-analyzer apache-loggen tzinfo guard-coffeescript rb-fsevent \
-        iconv i18n execjs therubyracer feedbag hashie gcalapi xml-simple pocket-ruby \
-        weather_hacker when_exe ungarbled jpstock spreadsheet prawn pdfkit \
-        wkhtmltopdf-binary-edge gnuplot ai4r nimbus naivebayes kmeans \
-        recommendation stdout sysadmin automatic screening ctoD count_by poppler rubypython \
-        narray gsl rmagick graphviz gviz wukong woothee webhdfs passenger daemons \
-        eventmachine fluentd fluent-logger fluent-plugin-sqlite3 fluent-plugin-s3 \
-        fluent-plugin-mongo fluent-plugin-webhdfs fluent-plugin-parser fluent-plugin-rewrite-tag-filter \
-        fluent-plugin-flowcounter fluent-plugin-growthforecast fluent-plugin-datacounter \
-        heroku aws-sdk
+    gems=(
+        "rails"
+        "rb-readline"
+        "debugger"
+        "pry"
+        "pry-doc"
+        "pry-debugger"
+        "pry-stack_explorer"
+        "pry-rails"
+        "pry-coolline"
+        "hirb"
+        "hirb-unicode"
+        "awesome_print"
+        "rake"
+        "bundler"
+        "builder"
+        "sqlite3"
+        "sass"
+        "sass-rails"
+        "compass-rails"
+        "coffee-script"
+        "coffee-rails"
+        "jquery-rails"
+        "haml"
+        "haml-rails"
+        "dalli"
+        "backbone-rails"
+        "uglifier"
+        "shotgun"
+        "rails-clean-logs"
+        "devise"
+        "i18n_generators"
+        "jeweler"
+        "gemcutter"
+        "kaminari"
+        "kaminari-bootstrap"
+        "rinku"
+        "yaml_db"
+        "term-ansicolor"
+        "turn"
+        "rest-client"
+        "http_configuration"
+        "hpricot"
+        "mechanize"
+        "nokogiri"
+        "anemone"
+        "cosmicrawler"
+        "sanitize"
+        "Selenium"
+        "bson"
+        "bson_ext"
+        "mongo"
+        "net-ssh"
+        "net-scp"
+        "net-sftp"
+        "net-ping"
+        "coverage"
+        "unicorn"
+        "capistrano"
+        "redgreen"
+        "minitest"
+        "rspec"
+        "rspec-rails"
+        "rspec-mocks"
+        "flexmock"
+        "simplecov"
+        "simplecov-rcov"
+        "sequel"
+        "thrift"
+        "puppet"
+        "json"
+        "rdoc"
+        "gherkin"
+        "cucumber"
+        "capybara"
+        "rubytter"
+        "termtter"
+        "userstream"
+        "webtail"
+        "zipruby"
+        "oauth"
+        "webrat"
+        "diff-lcs"
+        "msgpack"
+        "gettext_rails"
+        "gettext_activerecord"
+        "searchlogic"
+        "fastercsv"
+        "log4r"
+        "foreman"
+        "sinatra"
+        "sinatra_more"
+        "sinatra-formkeeper"
+        "formkeeper-japanese"
+        "redis"
+        "sidekiq"
+        "rubytree"
+        "shoulda"
+        "request-log-analyzer"
+        "apache-loggen"
+        "tzinfo"
+        "guard-coffeescript"
+        "rb-fsevent"
+        "iconv"
+        "i18n"
+        "execjs"
+        "therubyracer"
+        "feedbag"
+        "hashie"
+        "gcalapi"
+        "xml-simple"
+        "pocket-ruby"
+        "weather_hacker"
+        "jpstock"
+        "spreadsheet"
+        "prawn"
+        "pdfkit"
+        "wkhtmltopdf-binary-edge"
+        "gnuplot"
+        "ai4r"
+        "nimbus"
+        "naivebayes"
+        "kmeans"
+        "recommendation"
+        "stdout"
+        "sysadmin"
+        "automatic"
+        "screening"
+        "ctoD"
+        "count_by"
+        "poppler"
+        "rubypython"
+        "narray"
+        "gsl"
+        "rmagick"
+        "graphviz"
+        "wukong"
+        "woothee"
+        "webhdfs"
+        "passenger"
+        "daemons"
+        "eventmachine"
+        "fluentd"
+        "fluent-logger"
+        "fluent-plugin-sqlite3"
+        "fluent-plugin-s3"
+        "fluent-plugin-mongo"
+        "fluent-plugin-webhdfs"
+        "fluent-plugin-parser"
+        "fluent-plugin-rewrite-tag-filter"
+        "fluent-plugin-flowcounter"
+        "fluent-plugin-growthforecast"
+        "fluent-plugin-datacounter"
+        "heroku"
+        "aws-sdk"
+    )
+
+    for gem in "${gems[@]}"; do
+        install_gem "$gem"
+    done
 
     # Special installation for tomz-liblinear-ruby-swig
     echo "Installing tomz-liblinear-ruby-swig from a specific source..."
