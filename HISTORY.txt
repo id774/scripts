@@ -13,6 +13,7 @@ v1.3.1 (Release Date: TBD)
 - Enabled GNU-style file listing on macOS by adding Coreutils to Homebrew defaults.
 - Refactored several scripts for bulk installation of packages, improving maintainability and efficiency.
 - Removed multiple macports-related scripts following the transition to Homebrew as the default package manager.
+- Updated fix_compinit.sh for Zsh security settings and created unfix_compinit.sh for Homebrew permissions.
 
 v1.3 (2024-12-25)
 -----------------
