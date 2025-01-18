@@ -100,7 +100,8 @@ This repository is licensed under [LGPLv3](https://www.gnu.org/licenses/lgpl-3.0
 
 ## 7. Contact
 
-- **Email**: [idnanashi@gmail.com](mailto:idnanashi@gmail.com)
-- **GitHub Issues**: [Open an Issue](https://github.com/id774/scripts/issues)
+**774**
+- [Website](http://id774.net)
+- [GitHub](http://github.com/id774)
 
 Thank you for using and contributing to this repository!
