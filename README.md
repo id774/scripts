@@ -4,13 +4,13 @@ Welcome to the `scripts` repository! This is a curated collection of scripts in 
 
 ## Contents
 
-1. About
-2. Installation
-3. Usage
-4. Testing
-5. Contribution
-6. License
-7. Contact
+1. [About](#1-about)
+2. [Installation](#2-installation)
+3. [Usage](#3-usage)
+4. [Testing](#4-testing)
+5. [Contribution](#5-contribution)
+6. [License](#6-license)
+7. [Contact](#7-contact)
 
 ---
 
