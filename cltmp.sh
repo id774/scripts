@@ -14,6 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  20250119 - Fix wildcard handling in rm commands to ensure proper file deletion.
 #  20241212 - Refined hardcopy cleanup to target numbered files explicitly.
 #  20241210 - Enhanced wget-log cleanup to include related files.
 #  20241204 - Refactored cleanup logic using clean_dir() function for better maintainability.
@@ -50,11 +51,11 @@ elif [ "$os" = "Linux" ]; then
     if [ "$(id -u)" -eq 0 ]; then
         clean_dir /root/.cache 0 "rm -vrf"
     fi
-    rm -vf "$HOME/hardcopy.[0-9]*"
+    rm -vf $HOME/hardcopy.[0-9]*
     clean_dir "$HOME/tmp" 1 "rm -vf"
 fi
 
-rm -vf "$HOME/wget-log" "$HOME/wget-log.*"
+rm -vf "$HOME/wget-log" $HOME/wget-log.[0-9]*
 
 for dir in "$HOME/.gem" "$HOME/.pip" "$HOME/.npm"; do
     clean_dir "$dir" 0 "rm -vrf"
@@ -100,4 +101,4 @@ else
     done
 fi
 
-echo "cltmp (20241212) done."
+echo "cltmp (20250119) done."
