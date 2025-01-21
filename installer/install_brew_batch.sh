@@ -63,6 +63,8 @@ brew install nkf
 brew install vim
 brew install coreutils
 brew install findutils
+brew install moreutils
+brew install binutils
 brew install trash
 brew install freetype
 brew install mecab
