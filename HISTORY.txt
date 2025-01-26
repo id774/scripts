@@ -4,6 +4,7 @@ Repository Update History
 v1.3.2 (Release Date: TBD)
 --------------------------
 - Added brew-upgrade.sh for Homebrew maintenance automation.
+- Added create_ubygems.sh for compatibility with older Vim plugins.
 
 v1.3.1 (2025-01-24)
 -------------------
