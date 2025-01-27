@@ -39,10 +39,11 @@
 ########################################################################
 
 # Define the Ruby binary path
-RUBY_BIN="/usr/local/opt/ruby/bin/ruby"
-
-# Check if Ruby is installed via Homebrew
-if ! [ -x "$RUBY_BIN" ]; then
+if [ -x "/opt/homebrew/opt/ruby/bin/ruby" ]; then
+    RUBY_BIN="/opt/homebrew/opt/ruby/bin/ruby"
+elif [ -x "/usr/local/opt/ruby/bin/ruby" ]; then
+    RUBY_BIN="/usr/local/opt/ruby/bin/ruby"
+else
     echo "Error: Ruby is not installed via Homebrew or the expected path is incorrect." >&2
     exit 1
 fi
