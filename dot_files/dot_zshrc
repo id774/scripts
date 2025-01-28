@@ -1,5 +1,5 @@
 # .zshrc
-# Last Change: 08-Nov-2017.
+# Last Change: 28-Jan-2025.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 main() {
@@ -13,4 +13,5 @@ main() {
 }
 
 main
+unset -f main
 test -f $HOME/.zshrc_local && source $HOME/.zshrc_local
