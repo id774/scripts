@@ -26,6 +26,9 @@
 #  Specify a directory path to list its contents:
 #      ./els.py /path/to/directory
 #
+#  Specify a file path to show its detailed information:
+#      ./els.py /path/to/file
+#
 #  Requirements:
 #  - Python 3.x must be installed.
 #  - The script must have execution permissions (`chmod +x els.py`).
@@ -37,7 +40,7 @@
 #    is not found, the UID/GID is displayed instead.
 #  - The file mode (permissions) is formatted using `stat.filemode()`, matching
 #    the style of `ls -l`.
-#  - The output is sorted by filename in ascending order.
+#  - The output is sorted by filename in ascending order when listing a directory.
 #  - Symbolic links are listed as regular files without following the link.
 #  - Large directories may take longer to process due to multiple system calls.
 #  - If a directory is not readable due to permissions, the script will display an error.
@@ -56,14 +59,12 @@ def format_time(timestamp):
     """ Convert timestamp to 'YYYY-MM-DD HH:MM:SS' format """
     return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(timestamp))
 
-
 def get_owner(uid):
     """ Convert UID to username """
     try:
         return pwd.getpwuid(uid).pw_name
     except KeyError:
         return str(uid)
-
 
 def get_group(gid):
     """ Convert GID to group name """
@@ -72,10 +73,9 @@ def get_group(gid):
     except KeyError:
         return str(gid)
 
-
-def format_file_entry(entry):
-    """ Retrieve and format file metadata """
-    st = entry.stat()
+def format_file_entry(path):
+    """ Retrieve and format file metadata for a given file or directory """
+    st = os.stat(path)
 
     return {
         "mode": stat.filemode(st.st_mode),
@@ -86,29 +86,31 @@ def format_file_entry(entry):
         "mtime": format_time(st.st_mtime),  # Last modification time
         "ctime": format_time(st.st_ctime),  # Last metadata change time
         "birth": format_time(st.st_birthtime) if hasattr(st, "st_birthtime") else "N/A",
-        "name": entry.name
+        "name": os.path.basename(path)
     }
 
-
-def list_directory(path="."):
-    """ List files in the specified directory with detailed information """
-    try:
-        with os.scandir(path) as entries:
-            return [format_file_entry(entry) for entry in sorted(entries, key=lambda e: e.name)]
-    except FileNotFoundError:
-        return "Error: '{}' does not exist.".format(path)
-    except PermissionError:
-        return "Error: Permission denied for '{}'.".format(path)
-
+def list_files(paths):
+    """ List details of the given files or directories """
+    results = []
+    for path in paths:
+        if os.path.isfile(path):
+            results.append(format_file_entry(path))
+        elif os.path.isdir(path):
+            try:
+                with os.scandir(path) as entries:
+                    results.extend([format_file_entry(entry.path) for entry in sorted(entries, key=lambda e: e.name)])
+            except PermissionError:
+                results.append({"error": "Permission denied: {}".format(path)})
+            except FileNotFoundError:
+                results.append({"error": "File or directory not found: {}".format(path)})
+        else:
+            results.append({"error": "Invalid path: {}".format(path)})
+    return results
 
 def main():
     """ Main function to handle CLI execution """
-    target_dir = sys.argv[1] if len(sys.argv) > 1 else "."
-    result = list_directory(target_dir)
-
-    if isinstance(result, str):
-        print(result)
-        sys.exit(1)
+    target_paths = sys.argv[1:] if len(sys.argv) > 1 else ["."]
+    results = list_files(target_paths)
 
     # Print header
     print("{:<10} {:>10} {:<10} {:<10} {:<19} {:<19} {:<19} {:<19} {}".format(
@@ -117,11 +119,14 @@ def main():
     print("-" * 150)
 
     # Print file entries
-    for entry in result:
-        print("{:<10} {:>10} {:<10} {:<10} {:<19} {:<19} {:<19} {:<19} {}".format(
-            entry["mode"], entry["size"], entry["owner"], entry["group"],
-            entry["atime"], entry["mtime"], entry["ctime"], entry["birth"], entry["name"]
-        ))
+    for entry in results:
+        if "error" in entry:
+            print(entry["error"])
+        else:
+            print("{:<10} {:>10} {:<10} {:<10} {:<19} {:<19} {:<19} {:<19} {}".format(
+                entry["mode"], entry["size"], entry["owner"], entry["group"],
+                entry["atime"], entry["mtime"], entry["ctime"], entry["birth"], entry["name"]
+            ))
 
 
 if __name__ == "__main__":
