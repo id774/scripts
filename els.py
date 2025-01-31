@@ -99,7 +99,7 @@ def get_file_info(path="."):
         if os.path.isfile(path):
             return [format_file_entry(path)]  # Return as a list for consistency
         elif os.path.isdir(path):
-            if hasattr(os, "scandir"):
+            if hasattr(os.scandir("."), "__exit__"):
                 with os.scandir(path) as entries:
                     return [format_file_entry(entry.path) for entry in sorted(entries, key=lambda e: e.name)]
             else:
