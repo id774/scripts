@@ -99,8 +99,11 @@ def get_file_info(path="."):
         if os.path.isfile(path):
             return [format_file_entry(path)]  # Return as a list for consistency
         elif os.path.isdir(path):
-            with os.scandir(path) as entries:
-                return [format_file_entry(entry.path) for entry in sorted(entries, key=lambda e: e.name)]
+            if hasattr(os, "scandir"):
+                with os.scandir(path) as entries:
+                    return [format_file_entry(entry.path) for entry in sorted(entries, key=lambda e: e.name)]
+            else:
+                return [format_file_entry(os.path.join(path, entry)) for entry in sorted(os.listdir(path))]
         else:
             return "Error: '{}' is neither a file nor a directory.".format(path)
     except PermissionError:
