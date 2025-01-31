@@ -35,32 +35,6 @@ import els
 class TestEls(unittest.TestCase):
     """Test suite for els.py"""
 
-    def test_format_time(self):
-        """Ensure timestamps are converted to 'YYYY-MM-DD HH:MM:SS' in local time."""
-        test_timestamp = 1706700000  # Corresponds to 2024-02-01 00:00:00 UTC
-        expected_output = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(test_timestamp))
-        self.assertEqual(els.format_time(test_timestamp), expected_output)
-
-    @patch('os.scandir')
-    @patch('os.path.exists', return_value=True)
-    @patch('os.path.isdir', return_value=True)
-    def test_get_file_info_directory(self, mock_isdir, mock_exists, mock_scandir):
-        """Ensure get_file_info() returns correct metadata for a directory."""
-        mock_entry = MagicMock()
-        mock_entry.path = "/fake/path/file.txt"
-        mock_scandir.return_value.__enter__.return_value = [mock_entry]
-
-        with patch('els.format_file_entry', return_value={"name": "file.txt"}):
-            result = els.get_file_info("/fake/path")
-
-        self.assertEqual(result, [{"name": "file.txt"}])
-
-    @patch('os.path.exists', return_value=False)
-    def test_get_file_info_not_found(self, mock_exists):
-        """Ensure get_file_info() handles nonexistent paths correctly."""
-        result = els.get_file_info("/nonexistent")
-        self.assertEqual(result, "Error: '/nonexistent' does not exist.")
-
     # Test Cases for format_time()
     def test_format_time(self):
         """Ensure timestamps are converted to 'YYYY-MM-DD HH:MM:SS' in local time."""
