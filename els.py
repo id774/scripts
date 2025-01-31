@@ -99,11 +99,14 @@ def get_file_info(path="."):
         if os.path.isfile(path):
             return [format_file_entry(path)]  # Return as a list for consistency
         elif os.path.isdir(path):
-            if hasattr(os.scandir("."), "__exit__"):
-                with os.scandir(path) as entries:
-                    return [format_file_entry(entry.path) for entry in sorted(entries, key=lambda e: e.name)]
-            else:
-                return [format_file_entry(os.path.join(path, entry)) for entry in sorted(os.listdir(path))]
+            # Check if os.scandir() exists before trying to use it
+            if hasattr(os, "scandir"):
+                entry = os.scandir(path)  # Call to test existence
+                if hasattr(entry, "__exit__"):  # Check if context manager is supported
+                    with os.scandir(path) as entries:
+                        return [format_file_entry(entry.path) for entry in sorted(entries, key=lambda e: e.name)]
+            # If os.scandir() is unavailable or lacks __exit__, fallback to os.listdir()
+            return [format_file_entry(os.path.join(path, entry)) for entry in sorted(os.listdir(path))]
         else:
             return "Error: '{}' is neither a file nor a directory.".format(path)
     except PermissionError:
