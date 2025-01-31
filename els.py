@@ -56,6 +56,8 @@ __all__ = ["format_time", "get_owner", "get_group", "format_file_entry", "get_fi
 
 def format_time(timestamp):
     """ Convert timestamp to 'YYYY-MM-DD HH:MM:SS' format in local time """
+    if timestamp is None:
+        raise ValueError("Timestamp cannot be None")
     return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(timestamp))
 
 def get_owner(uid):
