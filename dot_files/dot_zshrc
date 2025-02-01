@@ -1,17 +1,24 @@
 # .zshrc
-# Last Change: 28-Jan-2025.
+# Last Change: 01-Feb-2025.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 main() {
-    if [ -f $HOME/.zsh/lib/load.zsh ]; then
-        source $HOME/.zsh/lib/load.zsh
-    elif [ -f /usr/local/etc/zsh/lib/load.zsh ]; then
-        source /usr/local/etc/zsh/lib/load.zsh
-    elif [ -f /etc/zsh/lib/load.zsh ]; then
-        source /etc/zsh/lib/load.zsh
-    fi
+    for ZSH_SEARCH_PATH in \
+        "$HOME/.zsh" \
+        "$HOME/.config/zsh" \
+        "$HOME/.local/share/zsh" \
+        "/usr/local/etc/zsh" \
+        "/usr/local/share/zsh" \
+        "/etc/zsh" \
+        "/usr/share/zsh" \
+        "/opt/zsh"; do
+        if [ -f "$ZSH_SEARCH_PATH/lib/load.zsh" ]; then
+            source "$ZSH_SEARCH_PATH/lib/load.zsh"
+            break
+        fi
+    done
 }
 
 main
 unset -f main
-test -f $HOME/.zshrc_local && source $HOME/.zshrc_local
+test -f "$HOME/.zshrc_local" && source "$HOME/.zshrc_local"
