@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.18 2025-02-02
+#       Add .local and .config dir.
 # v1.17 2022-10-17
 #       Remove .toprc.
 # v1.16 2016-07-28
@@ -118,6 +120,8 @@ setup_dotemacs() {
 mkdir_skelton() {
     mkdir_if_not_exist \
       $1/.tmp \
+      $1/.local \
+      $1/.config \
       $1/tmp \
       $1/mnt \
       $1/local \
@@ -126,6 +130,8 @@ mkdir_skelton() {
       $1/bin \
       $1/arc
     sudo chmod 700 $1/.tmp
+    sudo chmod 700 $1/.local
+    sudo chmod 700 $1/.config
     sudo chmod 700 $1/tmp
     sudo chmod 700 $1/mnt
     sudo chmod 700 $1/var
