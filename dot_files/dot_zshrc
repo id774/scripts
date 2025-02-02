@@ -1,5 +1,5 @@
 # .zshrc
-# Last Change: 01-Feb-2025.
+# Last Change: 02-Feb-2025.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 main() {
@@ -13,7 +13,8 @@ main() {
         "/usr/share/zsh" \
         "/opt/zsh"; do
         if [ -f "$ZSH_SEARCH_PATH/lib/load.zsh" ]; then
-            source "$ZSH_SEARCH_PATH/lib/load.zsh"
+            export ZSH_ROOT="$ZSH_SEARCH_PATH"
+            . "$ZSH_ROOT/lib/load.zsh"
             break
         fi
     done
@@ -22,4 +23,4 @@ main() {
 main
 unset -f main
 unset ZSH_SEARCH_PATH
-test -f "$HOME/.zshrc_local" && source "$HOME/.zshrc_local"
+test -f "$HOME/.zshrc_local" && . "$HOME/.zshrc_local"
