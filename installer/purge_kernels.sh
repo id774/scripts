@@ -5,8 +5,14 @@
 #
 #  Description:
 #  This script removes old kernels from an Ubuntu or Ubuntu-based system,
-#  keeping the currently running kernel. It checks for system compatibility
-#  and only runs on Ubuntu or Ubuntu-based distributions.
+#  keeping the currently running kernel. It ensures system compatibility
+#  and prevents accidental removal of the active kernel.
+#
+#  The script performs the following operations:
+#  - Checks if the system is Ubuntu-based before execution.
+#  - Identifies and lists installed kernel packages.
+#  - Excludes the currently running kernel from the removal list.
+#  - Safely removes only outdated kernels while preserving system stability.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,30 +20,47 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-02-04
+#       Switched from aptitude to apt for broader compatibility.
+#       Improved kernel identification using dpkg --list.
+#       Added a check to ensure old kernels exist before attempting removal.
 #  v1.1 2023-12-06
 #       Refactored for improved readability, naming, and system checking.
 #  v1.0 2013-11-29
 #       Initial release.
 #
 #  Usage:
-#  ./purge_kernels.sh
+#  Run the script directly without any arguments:
+#      ./purge_kernels.sh
+#
+#  Notes:
+#  - This script is intended for Ubuntu-based systems only.
+#  - The currently running kernel will always be preserved.
+#  - If no old kernels are found, the script exits without making changes.
+#  - Ensure to review the listed kernels before executing the script.
 #
 ########################################################################
 
-# Check if the system is Ubuntu or Ubuntu-based
+# Ensure the system is Ubuntu-based
 if [ ! -f /etc/lsb-release ] || [ ! -f /etc/debian_version ]; then
-  echo "This script only runs on Ubuntu or Ubuntu-based systems."
-  exit 1
+    echo "This script only runs on Ubuntu or Ubuntu-based systems."
+    exit 1
 fi
 
 # Get the current kernel version
 CURKERNEL=$(uname -r | sed 's/-*[a-z]//g' | sed 's/-386//g')
-LINUXPKG="linux-(image|headers|ubuntu-modules|restricted-modules)"
-METALINUXPKG="linux-(image|headers|restricted-modules)-(generic|i386|server|common|rt|xen)"
 
-# Find old kernels except the current one
-OLDKERNELS=$(dpkg -l | awk '{print $2}' | grep -E $LINUXPKG | grep -vE $METALINUXPKG | grep -v $CURKERNEL)
+# Find installed kernel packages
+OLDKERNELS=$(dpkg --list | awk '/^ii/ && /linux-image-[0-9]/ {print $2}' | grep -v "$CURKERNEL")
 
-# Purge old kernels
-sudo aptitude purge $OLDKERNELS
+# Ensure there are old kernels to remove
+if [ -z "$OLDKERNELS" ]; then
+    echo "No old kernels to remove."
+    exit 0
+fi
 
+# Remove old kernels safely
+echo "Purging old kernels: $OLDKERNELS"
+sudo apt purge -y $OLDKERNELS
+
+echo "Kernel cleanup completed."
