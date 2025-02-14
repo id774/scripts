@@ -8,6 +8,7 @@ v1.3.2 (Release Date: TBD)
 - Added els.py and its test suite els_test.py for extended file listing with timestamps.
 - Added remove-tracker.sh to forcibly stop and remove Tracker from Debian.
 - Moved one-time setup scripts to the installer directory.
+- Added insta_video_downloader.py for downloading Instagram videos only.
 
 v1.3.1 (2025-01-24)
 -------------------
