@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-02-14
+#       Add els command to installation and uninstallation process.
 #  v1.2 2025-01-03
 #       Added restart-sshd.sh script to the installation and uninstallation processes.
 #  v1.1 2024-12-09
@@ -99,6 +101,7 @@ uninstall_sysadmin_scripts() {
         now \
         waitlock \
         swapext \
+        els \
         git-follow-origin \
         git-co-remote-branch \
         git-ignore \
@@ -128,6 +131,7 @@ setup_scripts() {
     install_scripts 755 md5.py md5
     install_scripts 755 chmodtree.py chmodtree
     install_scripts 755 cltmp.sh cltmp
+    install_scripts 755 els.py els
     install_scripts 755 userlist.py userlist
     install_scripts 755 usershells.py usershells
     install_scripts 755 pyck.py pyck
