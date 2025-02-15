@@ -26,6 +26,7 @@
 import os
 import sys
 import unittest
+from datetime import datetime
 from unittest.mock import MagicMock, patch
 
 # Adjust the path to import script from the parent directory
@@ -83,7 +84,7 @@ class TestInstagramPhotoDownloader(unittest.TestCase):
         mock_profile = MagicMock()
         mock_profile.get_posts.return_value = [
             MagicMock(typename="GraphImage", url="http://example.com/image1.jpg",
-                      date="2024-01-01", shortcode="ABC", get_sidecar_nodes=MagicMock(return_value=[]))
+                      date=datetime(2024, 1, 1), shortcode="ABC", get_sidecar_nodes=MagicMock(return_value=[]))
         ]
         mock_from_username.return_value = mock_profile
 
