@@ -82,6 +82,7 @@ deploy_dotfile() {
 }
 
 setup_dotemacs() {
+    sudo rm -rf $1/.emacs.d/site-lisp
     mkdir_if_not_exist \
       $1/.emacs.d \
       $1/.emacs.d/site-lisp \
@@ -92,14 +93,6 @@ setup_dotemacs() {
       $1/.emacs.d/auto-save-list
     sudo chmod 750 $1/.emacs.d
     sudo chmod 750 $1/.emacs.d/site-lisp
-    test -f $1/.emacs.d/site-lisp/auto-install.el && \
-        sudo rm $1/.emacs.d/site-lisp/auto-install.el
-    test -f $1/.emacs.d/site-lisp/auto-install.elc && \
-        sudo rm $1/.emacs.d/site-lisp/auto-install.elc
-    test -f $1/.emacs.d/site-lisp/loader.el && \
-        sudo rm $1/.emacs.d/site-lisp/loader.el
-    test -f $1/.emacs.d/site-lisp/loader.elc && \
-        sudo rm $1/.emacs.d/site-lisp/loader.elc
     sudo chmod 750 $1/.emacs.d/anything
     sudo chmod 750 $1/.emacs.d/backups
     sudo chmod 750 $1/.emacs.d/tmp
