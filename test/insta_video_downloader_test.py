@@ -131,6 +131,53 @@ class TestInstagramVideoDownloader(unittest.TestCase):
         mock_download_and_save_video.assert_any_call("http://example.com/video1.mp4", "test_user_VID1_01.mp4")
         mock_download_and_save_video.assert_any_call("http://example.com/video2.mp4", "test_user_VID1_02.mp4")
 
+    @patch('insta_video_downloader.time.sleep', return_value=None)
+    @patch('insta_video_downloader.os.listdir')
+    def test_skip_existing_files(self, mock_listdir, mock_sleep):
+        """
+        Test that existing video files are skipped during the download process.
+        """
+        mock_listdir.return_value = ["test_user_VID1_01.mp4"]
+        downloader = InstagramVideoDownloader("test_user")
+        downloader._get_instagram_video_urls = MagicMock(return_value=[
+            ("http://example.com/video1.mp4", datetime(2024, 1, 1), "VID1", 1)
+        ])
+        with patch('sys.stdout', new_callable=MagicMock()):
+            with patch('insta_video_downloader.urllib.request.urlretrieve') as mock_urlretrieve:
+                downloader.download()
+                mock_urlretrieve.assert_not_called()
+
+    @patch('insta_video_downloader.time.sleep', return_value=None)
+    @patch('insta_video_downloader.os.chmod')
+    def test_apply_custom_permissions(self, mock_chmod, mock_sleep):
+        """
+        Test that custom file permissions are applied correctly.
+        """
+        downloader = InstagramVideoDownloader("test_user", permissions=0o600)
+        downloader._get_instagram_video_urls = MagicMock(return_value=[
+            ("http://example.com/video1.mp4", datetime(2024, 1, 1), "VID1", 1)
+        ])
+        with patch('sys.stdout', new_callable=MagicMock()):
+            with patch('insta_video_downloader.urllib.request.urlretrieve'):
+                downloader.download()
+                mock_chmod.assert_called_once_with("test_user_VID1_01.mp4", 0o600)
+
+    @patch('insta_video_downloader.time.sleep', return_value=None)
+    @patch('insta_video_downloader.InstagramVideoDownloader._download_and_save_video')
+    def test_sorting_videos(self, mock_download_and_save_video, mock_sleep):
+        """
+        Test that videos are sorted chronologically before downloading.
+        """
+        downloader = InstagramVideoDownloader("test_user")
+        downloader._get_instagram_video_urls = MagicMock(return_value=[
+            ("http://example.com/video2.mp4", datetime(2024, 1, 2), "VID2", 1),
+            ("http://example.com/video1.mp4", datetime(2024, 1, 1), "VID1", 1)
+        ])
+        with patch('sys.stdout', new_callable=MagicMock()):
+            downloader.download()
+            mock_download_and_save_video.assert_any_call("http://example.com/video1.mp4", "test_user_VID1_01.mp4")
+            mock_download_and_save_video.assert_any_call("http://example.com/video2.mp4", "test_user_VID2_01.mp4")
+
 
 if __name__ == '__main__':
     unittest.main()
