@@ -202,7 +202,7 @@ class TestInstagramPhotoDownloader(unittest.TestCase):
             with patch('insta_downloader.urllib.request.urlretrieve'):
                 downloader.download()
                 # Verify chmod is called with the correct permissions
-                mock_chmod.assert_called_with("test_user_ABC_01.jpg", 0o600)
+                mock_chmod.assert_called_once_with("test_user_ABC_01.jpg", 0o600)
 
     @patch('insta_downloader.time.sleep', return_value=None)
     @patch('insta_downloader.InstagramPhotoDownloader._download_and_save_image')
