@@ -2,7 +2,7 @@
   email = idnanashi@gmail.com
   name = id774
 [core]
-  excludesfile = /home/ubuntu/.gitignore
+  excludesfile = ~/.gitignore
   quotepath = false
 [github]
   user = id774
@@ -37,6 +37,6 @@
   grep = auto
 [color "diff"]
   meta = magenta
-  frag = blue bold
+  frag = white bold
   old = red
   new = cyan
