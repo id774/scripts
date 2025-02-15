@@ -29,10 +29,8 @@ import unittest
 from datetime import datetime
 from unittest.mock import MagicMock, patch
 
-# Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Attempt to import insta_video_downloader and set a flag if unavailable
 try:
     from insta_video_downloader import InstagramVideoDownloader
     HAS_INSTA_VIDEO_DOWNLOADER = True
@@ -41,13 +39,18 @@ except ImportError:
 
 @unittest.skipIf(not HAS_INSTA_VIDEO_DOWNLOADER, "insta_video_downloader module is not available")
 class TestInstagramVideoDownloader(unittest.TestCase):
-    """Test suite for InstagramVideoDownloader."""
+    """
+    Test suite for InstagramVideoDownloader.
+    Ensures correct behavior for various scenarios including empty profiles,
+    single video downloads, multiple video downloads, and file skipping.
+    """
 
     def setUp(self):
-        """Set up mocks for all tests."""
+        """
+        Set up mock objects to replace actual network requests and file operations.
+        """
         if not HAS_INSTA_VIDEO_DOWNLOADER:
             self.skipTest("insta_video_downloader module is not available")
-
         try:
             import instaloader
         except ModuleNotFoundError:
@@ -73,7 +76,7 @@ class TestInstagramVideoDownloader(unittest.TestCase):
     @patch('insta_video_downloader.instaloader.Profile.from_username')
     def test_download_videos(self, mock_from_username, mock_urlretrieve, mock_chmod, mock_sleep):
         """
-        Test downloading a single video post.
+        Test that a single video post (GraphVideo) is correctly downloaded.
         """
         mock_profile = MagicMock()
         mock_profile.get_posts.return_value = [
@@ -93,6 +96,40 @@ class TestInstagramVideoDownloader(unittest.TestCase):
 
         mock_urlretrieve.assert_called_with("http://example.com/video1.mp4", "test_user_VID1_01.mp4")
         mock_chmod.assert_called_once_with("test_user_VID1_01.mp4", 0o644)
+
+    @patch('insta_video_downloader.time.sleep', return_value=None)
+    @patch('insta_video_downloader.instaloader.Profile.from_username')
+    def test_no_videos(self, mock_from_username, mock_sleep):
+        """
+        Test behavior when no videos are available.
+        Ensures the script exits gracefully without attempting downloads.
+        """
+        mock_profile = MagicMock()
+        mock_profile.get_posts.return_value = []
+        mock_from_username.return_value = mock_profile
+
+        downloader = InstagramVideoDownloader("test_user")
+        with patch('sys.stdout', new_callable=MagicMock()):
+            downloader.download()
+
+    @patch('insta_video_downloader.time.sleep', return_value=None)
+    @patch('insta_video_downloader.InstagramVideoDownloader._download_and_save_video')
+    def test_multiple_videos_in_post(self, mock_download_and_save_video, mock_sleep):
+        """
+        Test handling of a post with multiple videos.
+        Ensures each video in a post (GraphSidecar) is processed and downloaded correctly.
+        """
+        downloader = InstagramVideoDownloader("test_user")
+        downloader._get_instagram_video_urls = MagicMock(return_value=[
+            ("http://example.com/video1.mp4", datetime(2024, 1, 1), "VID1", 1),
+            ("http://example.com/video2.mp4", datetime(2024, 1, 1), "VID1", 2)
+        ])
+        with patch('sys.stdout', new_callable=MagicMock()):
+            downloader.download()
+
+        self.assertEqual(mock_download_and_save_video.call_count, 2)
+        mock_download_and_save_video.assert_any_call("http://example.com/video1.mp4", "test_user_VID1_01.mp4")
+        mock_download_and_save_video.assert_any_call("http://example.com/video2.mp4", "test_user_VID1_02.mp4")
 
 
 if __name__ == '__main__':
