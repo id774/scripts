@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.19 2025-02-15
+#       Remove outdated auto-install.el and unnecessary byte-compilation logic.
 # v1.18 2025-02-02
 #       Add .local and .config dir.
 # v1.17 2022-10-17
@@ -69,14 +71,6 @@ mkdir_if_not_exist() {
     done
 }
 
-emacs_batch_byte_compile() {
-    while [ $# -gt 0 ]
-    do
-        sudo emacs --batch -Q -f batch-byte-compile $1
-        shift
-    done
-}
-
 deploy_dotfile() {
     for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore condarc gemrc Rprofile emacs
     do
@@ -99,12 +93,6 @@ setup_dotemacs() {
       $1/.emacs.d/auto-save-list
     sudo chmod 750 $1/.emacs.d
     sudo chmod 750 $1/.emacs.d/site-lisp
-    test -f $DOT_EMACS/emacs.d/site-lisp/loader.el && \
-      sudo cp $DOT_EMACS/emacs.d/site-lisp/loader.el $1/.emacs.d/site-lisp/ && \
-      emacs_batch_byte_compile $1/.emacs.d/site-lisp/loader.el
-    test -f $DOT_EMACS/emacs.d/site-lisp/auto-install.el && \
-      sudo cp $DOT_EMACS/emacs.d/site-lisp/auto-install.el $1/.emacs.d/site-lisp/ && \
-      emacs_batch_byte_compile $1/.emacs.d/site-lisp/auto-install.el
     sudo chmod 750 $1/.emacs.d/anything
     sudo chmod 750 $1/.emacs.d/backups
     sudo chmod 750 $1/.emacs.d/tmp
