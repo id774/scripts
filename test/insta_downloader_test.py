@@ -162,6 +162,7 @@ class TestInstagramPhotoDownloader(unittest.TestCase):
                 downloader.download()
 
         # Verify _download_and_save_image was called for each image
+        self.assertEqual(mock_download_and_save_image.call_count, 2)
         mock_download_and_save_image.assert_any_call("http://example.com/image1.jpg", "test_user_DEF_01.jpg")
         mock_download_and_save_image.assert_any_call("http://example.com/image2.jpg", "test_user_DEF_02.jpg")
 
