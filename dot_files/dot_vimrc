@@ -283,4 +283,4 @@ if exists('&ambiwidth')
   set ambiwidth=double
 endif
 
-" Copyright (C) 2008-2016 id774 <idnanashi@gmail.com>
+" Copyright (C) 2008-2025 id774 <idnanashi@gmail.com>

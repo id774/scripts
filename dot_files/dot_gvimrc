@@ -84,4 +84,4 @@ match ZenkakuSpace /　/
 gui
 set transparency=192
 
-" Copyright (C) 2008 id774 <idnanashi@gmail.com>
+" Copyright (C) 2008-2011 id774 <idnanashi@gmail.com>
