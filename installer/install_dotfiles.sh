@@ -83,6 +83,7 @@ deploy_dotfile() {
 
 setup_dotemacs() {
     sudo rm -rf $1/.emacs.d/site-lisp
+    sudo rm -f $1/.vim/.netrwhist
     mkdir_if_not_exist \
       $1/.emacs.d \
       $1/.emacs.d/site-lisp \
