@@ -83,7 +83,6 @@ deploy_dotfile() {
 
 setup_dotemacs() {
     sudo rm -rf $1/.emacs.d/site-lisp
-    sudo rm -f $1/.vim/.netrwhist
     mkdir_if_not_exist \
       $1/.emacs.d \
       $1/.emacs.d/site-lisp \
@@ -128,6 +127,7 @@ mkdir_skelton() {
     sudo chmod 750 $1/bin
     sudo chmod 750 $1/arc
     sudo chmod 750 $1/local
+    sudo rm -f $1/.vim/.netrwhist
     which emacs > /dev/null && setup_dotemacs $1
 }
 
