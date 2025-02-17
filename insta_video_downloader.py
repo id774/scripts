@@ -18,6 +18,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-02-17
+#       Replaced f-strings with format() method for compatibility with older Python versions.
+#       Enhanced code comments for better readability and maintainability.
 #  v1.0 2025-02-15
 #       Initial release: Separate script for video downloading.
 #
@@ -41,6 +44,11 @@ except ImportError:
     INSTALOADER_AVAILABLE = False
 
 class InstagramVideoDownloader:
+    """
+    This class handles downloading videos from an Instagram account.
+    It utilizes the instaloader library to fetch video URLs and metadata.
+    """
+
     def __init__(self, username, permissions=0o640, sleep_time=10):
         if not INSTALOADER_AVAILABLE:
             print("Instaloader is not available. Functionality will be limited.")
@@ -54,37 +62,45 @@ class InstagramVideoDownloader:
         try:
             self.profile = instaloader.Profile.from_username(self.loader.context, username)
         except instaloader.exceptions.ConnectionException as e:
-            print(f"Failed to get profile: {e}")
+            print("Failed to get profile: {}".format(e))
             sys.exit(1)
 
     def download(self):
+        """
+        Download all video posts from the specified Instagram account.
+        Videos are stored with filenames containing the post ID and index.
+        """
         video_posts = self._get_instagram_video_urls()
         total_videos = len(video_posts)
 
         if total_videos == 0:
-            print(f"No videos found for {self.username}. Exiting.")
+            print("No videos found for {}. Exiting.".format(self.username))
             return
 
-        print(f'This account {self.username} has {total_videos} video posts to download.')
+        print("This account {} has {} video posts to download.".format(self.username, total_videos))
         existing_files = {filename for filename in os.listdir('.') if filename.endswith('.mp4')}
 
         for index, (url, _, post_id, video_index) in enumerate(video_posts, start=1):
-            filename = f"{self.username}_{post_id}_{str(video_index).zfill(2)}.mp4"
+            filename = "{}_{}_{}.mp4".format(self.username, post_id, str(video_index).zfill(2))
 
             if filename in existing_files:
                 continue
 
-            print(f"Downloading {filename}... ({index}/{total_videos})")
+            print("Downloading {}... ({}/{})".format(filename, index, total_videos))
 
             try:
                 self._download_and_save_video(url, filename)
             except HTTPError as e:
-                print(f"HTTP error occurred: {e}")
+                print("HTTP error occurred: {}".format(e))
                 sys.exit(1)
 
         print("Download completed.")
 
     def _get_instagram_video_urls(self):
+        """
+        Retrieve video URLs from the user's Instagram profile.
+        Returns a sorted list of video metadata including URLs and post IDs.
+        """
         video_data = []
         for post in self.profile.get_posts():
             if post.typename == "GraphVideo":
@@ -98,11 +114,18 @@ class InstagramVideoDownloader:
         return sorted_video_data
 
     def _download_and_save_video(self, url, filename):
+        """
+        Download the video from the given URL and save it to disk.
+        The file is also assigned the specified permissions.
+        """
         urllib.request.urlretrieve(url, filename)
         os.chmod(filename, self.permissions)
         time.sleep(self.sleep_time)
 
 def main():
+    """
+    Parse command-line arguments and initiate the video download process.
+    """
     parser = argparse.ArgumentParser(description='Download all videos from an Instagram account.')
     parser.add_argument('username', nargs='?', help='Instagram username', default=os.path.basename(os.getcwd()))
     parser.add_argument('--permissions', type=lambda x: int(x, 0), default=0o640, help='File permissions (octal)')
