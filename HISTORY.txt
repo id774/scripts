@@ -12,6 +12,8 @@ v1.3.2 (Release Date: TBD)
 - Improved .gitconfig by replacing hardcoded paths with ~/.gitignore and adjusting diff colors.
 - Disabled netrw history file creation by setting g:netrw_dirhistmax to 0.
 - Improved install_dotfiles.sh to ensure idempotency.
+- Added toggle_ipv6_macos.sh for enabling/disabling IPv6 on macOS.
+- Added disable_ipv6_linux.sh for disabling IPv6 on GNU/Linux.
 
 v1.3.1 (2025-01-24)
 -------------------
