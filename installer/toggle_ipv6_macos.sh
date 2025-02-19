@@ -55,23 +55,23 @@ if [ "$1" = "--enable" ]; then
             echo "IPv6 is already enabled on $SERVICE. Skipping..."
         fi
     done
-    
+
     # Verify IPv6 settings after modification
     echo "Verification of IPv6 settings:"
     for SERVICE in Wi-Fi Ethernet; do
         echo "$SERVICE: $(networksetup -getinfo "$SERVICE" | awk -F': ' '/IPv6/{print $2}' | head -n 1)"
     done
-    
+
     echo "IPv6 has been enabled where necessary."
     exit 0
 fi
 
 if [ "$1" = "--disable" ]; then
     echo "Disabling IPv6 on all network services..."
-    
+
     # Get all network services
     SERVICES=$(networksetup -listallnetworkservices | tail -n +2)
-    
+
     for SERVICE in $SERVICES; do
         # Check if the service is valid
         if ! networksetup -getinfo "$SERVICE" >/dev/null 2>&1; then
@@ -81,7 +81,7 @@ if [ "$1" = "--disable" ]; then
 
         # Get the current IPv6 setting for the service
         CURRENT_SETTING=$(networksetup -getinfo "$SERVICE" | awk -F': ' '/IPv6/{print $2}' | head -n 1)
-        
+
         if [ "$CURRENT_SETTING" != "Off" ]; then
             echo "Disabling IPv6 on $SERVICE..."
             sudo networksetup -setv6off "$SERVICE" || echo "Error: Failed to disable IPv6 on $SERVICE." >&2
@@ -94,7 +94,7 @@ if [ "$1" = "--disable" ]; then
     for SERVICE in $SERVICES; do
         echo "$SERVICE: $(networksetup -getinfo "$SERVICE" | awk -F': ' '/IPv6/{print $2}' | head -n 1)"
     done
-    
+
     echo "IPv6 has been modified where necessary."
     exit 0
 fi
