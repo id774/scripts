@@ -5,9 +5,10 @@
 #
 #  Description:
 #  This script configures IPv6 and network security settings on GNU/Linux
-#  by modifying /etc/sysctl.conf. If the required settings are already present,
-#  they will not be duplicated. After modification, it applies the changes and
-#  verifies the configuration.
+#  by modifying separate configuration files in /etc/sysctl.d/.
+#  IPv6 disabling settings are stored in 98-disable-ipv6.conf,
+#  and IPv4 security hardening settings are stored in 97-secure-ipv4.conf.
+#  This ensures better compatibility and avoids conflicts with system-managed settings.
 #
 #  Features:
 #  - Configures IPv6 settings by modifying sysctl parameters.
@@ -16,8 +17,8 @@
 #  - Ensures changes are applied using sysctl only if needed.
 #  - Verifies the applied configuration.
 #  - Checks for necessary commands before execution.
-#  - Ensures /etc/sysctl.conf exists before modification.
-#  - Dynamically detects network interfaces to avoid setting non-existent ones.
+#  - Ensures /etc/sysctl.d/ exists before modification.
+#  - Uses separate configuration files for IPv6 disabling and IPv4 security hardening.
 #
 #  Security Settings:
 #  - IPv6 disabling to prevent unintended network exposure.
@@ -36,14 +37,15 @@
 #
 #  Version History:
 #  v1.1 2025-02-20
-#       Added IPv4 security hardening, including SYN flood protection, ICMP rate limiting,
-#       source routing prevention, ASLR enforcement, and TCP timeout tuning.
+#       Added IPv4 security hardening and separated configuration into two files:
+#       - 98-disable-ipv6.conf for IPv6 settings.
+#       - 97-secure-ipv4.conf for IPv4 security settings.
 #  v1.0 2025-02-19
 #       Initial release with IPv6 disabling functionality.
 #
 #  Usage:
 #  ./configure_sysctl.sh --apply
-#  --apply: Configures IPv6 and applies security settings by modifying /etc/sysctl.conf.
+#  --apply: Configures IPv6 and applies security settings by modifying /etc/sysctl.d/.
 #
 ########################################################################
 
@@ -55,7 +57,24 @@ fi
 
 # Check for required argument
 if [ "$1" != "--apply" ]; then
-    echo "Usage: $0 --apply" >&2
+    echo "\n### GNU/Linux Network Security Configuration Tool ###"
+    echo "This script configures IPv6 and network security settings on your system."
+    echo "It modifies settings in /etc/sysctl.d/ to enhance security against network-based attacks."
+    echo "\n### Features:"
+    echo "- Disables IPv6 globally to prevent unintended exposure."
+    echo "- Applies strict TCP SYN cookie settings to mitigate SYN flood attacks."
+    echo "- Enables ICMP protection measures to prevent abuse and spoofing."
+    echo "- Implements ASLR (Address Space Layout Randomization) to enhance memory security."
+    echo "- Configures system-wide TCP timeout settings to prevent DoS impact."
+    echo "- Prevents source routing and IP spoofing for safer networking."
+    echo "\n### Warning:"
+    echo "- This script makes permanent changes to your system settings by modifying /etc/sysctl.d/"
+    echo "- If your system relies on IPv6, ensure disabling it does not impact functionality."
+    echo "- Verify that your firewall settings do not conflict with these configurations."
+    echo "\n### Usage:"
+    echo "To apply these settings, run the following command:"
+    echo "  $0 --apply"
+    echo "\nThis will modify /etc/sysctl.d/ and apply security configurations immediately."
     exit 1
 fi
 
@@ -75,14 +94,27 @@ check_commands() {
 # Check required commands
 check_commands sudo sysctl ip grep cat awk
 
-# Define sysctl parameters
-SYSCTL_CONF="/etc/sysctl.conf"
-STATIC_PARAMS="
+# Define sysctl parameters and configuration file paths
+SYSCTL_DIR="/etc/sysctl.d"
+IPV6_CONF="$SYSCTL_DIR/98-disable-ipv6.conf"
+IPV4_CONF="$SYSCTL_DIR/97-secure-ipv4.conf"
+
+# Ensure /etc/sysctl.d/ exists
+if [ ! -d "$SYSCTL_DIR" ]; then
+    echo "Error: $SYSCTL_DIR does not exist. Please create it manually and retry." >&2
+    exit 1
+fi
+
+# Define IPv6 disabling settings
+IPV6_PARAMS="
 # Disable IPv6 globally to prevent unintended network exposure
 net.ipv6.conf.all.disable_ipv6 = 1
 net.ipv6.conf.default.disable_ipv6 = 1
 net.ipv6.conf.lo.disable_ipv6 = 1
+"
 
+# Define IPv4 security settings
+IPV4_PARAMS="
 # Enable TCP SYN Cookies to prevent SYN flood attacks
 net.ipv4.tcp_syncookies = 1
 
@@ -115,36 +147,12 @@ net.ipv4.conf.lo.accept_redirects = 0
 # Disable source routing to prevent malicious packet manipulation
 net.ipv4.conf.all.accept_source_route = 0
 net.ipv4.conf.default.accept_source_route = 0
-net.ipv4.conf.lo.accept_source_route = 0"
+net.ipv4.conf.lo.accept_source_route = 0
+"
 
-# Get available network interfaces
-INTERFACES=$(ip -o link show | awk -F': ' '{print $2}')
-
-# Ensure /etc/sysctl.conf exists
-if [ ! -f "$SYSCTL_CONF" ]; then
-    echo "Error: $SYSCTL_CONF does not exist. Please create it and try again." >&2
-    exit 1
-fi
-
-# Apply static parameters
-echo "$STATIC_PARAMS" | while IFS='=' read -r KEY VALUE; do
-    KEY=$(echo "$KEY" | tr -d ' ')
-    VALUE=$(echo "$VALUE" | tr -d ' ')
-
-    if [ -z "$KEY" ] || [ -z "$VALUE" ]; then
-        continue
-    fi
-
-    if ! grep -q "^$KEY = $VALUE" "$SYSCTL_CONF"; then
-        echo "Adding $KEY to $SYSCTL_CONF"
-        echo "$KEY = $VALUE" | sudo tee -a "$SYSCTL_CONF" >/dev/null
-        echo "Applying sysctl setting for $KEY..."
-        sudo sysctl -w "$KEY=$VALUE"
-    else
-        echo "$KEY is already set in $SYSCTL_CONF. Skipping..."
-    fi
-
-done
+# Apply settings
+echo "Applying sysctl settings..."
+sudo sysctl --system
 
 # Verify changes
 echo "\n### IPv6 & Security Configuration Verification ###"
