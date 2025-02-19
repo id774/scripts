@@ -18,6 +18,7 @@
 #    - PermitRootLogin
 #    - PasswordAuthentication
 #    - ChallengeResponseAuthentication
+#    - AddressFamily (added in v1.7)
 #    - AllowUsers (newly added in v1.6)
 #  - Detects and supports both macOS and Linux environments.
 #  - Automatically copies and configures default SSHD settings on macOS.
@@ -28,6 +29,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-02-19
+#       Added support for detecting and displaying AddressFamily configuration.
 #  v1.6 2025-01-03
 #       Added support for detecting and displaying AllowUsers configuration.
 #  v1.5 2024-03-04
@@ -79,6 +82,7 @@ check_sshd_config() {
   grep PermitRootLogin "$1" | grep -v "#"
   grep PasswordAuthentication "$1" | grep -v "#"
   grep ChallengeResponseAuthentication "$1" | grep -v "#"
+  grep AddressFamily "$1" | grep -v "#"
   grep AllowUsers "$1" | grep -v "#"
 }
 
