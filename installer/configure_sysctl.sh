@@ -92,7 +92,7 @@ check_commands() {
 }
 
 # Check required commands
-check_commands sudo sysctl ip grep cat awk
+check_commands sudo sysctl ip grep cat awk tee
 
 # Define sysctl parameters and configuration file paths
 SYSCTL_DIR="/etc/sysctl.d"
@@ -105,61 +105,57 @@ if [ ! -d "$SYSCTL_DIR" ]; then
     exit 1
 fi
 
-# Define IPv6 disabling settings
+# Define IPv6 parameters
 IPV6_PARAMS="
-# Disable IPv6 globally to prevent unintended network exposure
 net.ipv6.conf.all.disable_ipv6 = 1
 net.ipv6.conf.default.disable_ipv6 = 1
 net.ipv6.conf.lo.disable_ipv6 = 1
 "
 
-# Define IPv4 security settings
+# Define IPv4 security parameters
 IPV4_PARAMS="
-# Enable TCP SYN Cookies to prevent SYN flood attacks
 net.ipv4.tcp_syncookies = 1
-
-# Ignore bogus ICMP error responses and apply rate limiting to mitigate ICMP-based attacks
 net.ipv4.icmp_ignore_bogus_error_responses = 1
 net.ipv4.icmp_ratelimit = 100
 net.ipv4.icmp_ratemask = 88089
-
-# Prevent source routing and IP spoofing to enhance network security
 net.ipv4.conf.all.rp_filter = 1
 net.ipv4.conf.default.rp_filter = 1
-
-# Enable Address Space Layout Randomization (ASLR) to protect against memory attacks
 kernel.randomize_va_space = 2
-
-# Reduce TCP timeout values to mitigate the impact of DoS attacks
 net.ipv4.tcp_fin_timeout = 15
 net.ipv4.tcp_keepalive_time = 300
 net.ipv4.tcp_keepalive_probes = 5
 net.ipv4.tcp_keepalive_intvl = 30
-
-# Enable RFC 1337 protection against TIME-WAIT assassination attacks
 net.ipv4.tcp_rfc1337 = 1
-
-# Disable ICMP redirects to prevent MITM attacks and unauthorized routing changes
 net.ipv4.conf.all.accept_redirects = 0
 net.ipv4.conf.default.accept_redirects = 0
 net.ipv4.conf.lo.accept_redirects = 0
-
-# Disable source routing to prevent malicious packet manipulation
 net.ipv4.conf.all.accept_source_route = 0
 net.ipv4.conf.default.accept_source_route = 0
 net.ipv4.conf.lo.accept_source_route = 0
 "
 
+# Apply IPv6 settings
+if [ -f "$IPV6_CONF" ]; then
+    echo "$IPV6_CONF already exists. Skipping creation."
+else
+    echo "Applying IPv6 settings to $IPV6_CONF"
+    echo "# IPv6 Configuration: Disables IPv6 to prevent unintended exposure."
+echo "# This setting is useful for environments that do not rely on IPv6 connectivity." | sudo tee "$IPV6_CONF" >/dev/null
+    echo "$IPV6_PARAMS" | sudo tee -a "$IPV6_CONF" >/dev/null
+fi
+
+# Apply IPv4 security settings
+if [ -f "$IPV4_CONF" ]; then
+    echo "$IPV4_CONF already exists. Skipping creation."
+else
+    echo "Applying IPv4 security settings to $IPV4_CONF"
+    echo "# IPv4 Security Configuration: Enhances network security by applying strict policies."
+echo "# Includes protections against SYN flood attacks, source routing, and ICMP abuse." | sudo tee "$IPV4_CONF" >/dev/null
+    echo "$IPV4_PARAMS" | sudo tee -a "$IPV4_CONF" >/dev/null
+fi
+
 # Apply settings
 echo "Applying sysctl settings..."
 sudo sysctl --system
-
-# Verify changes
-echo "\n### IPv6 & Security Configuration Verification ###"
-echo "Checking current IPv6 addresses:"
-ip a | grep inet6 || echo "No IPv6 addresses found."
-
-echo "Checking IPv6 disable status:"
-cat /proc/sys/net/ipv6/conf/all/disable_ipv6
 
 echo "\nIPv6 and IPv4 security settings have been successfully applied."
