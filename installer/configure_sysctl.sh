@@ -158,4 +158,14 @@ fi
 echo "Applying sysctl settings..."
 sudo sysctl --system
 
-echo "\nIPv6 and IPv4 security settings have been successfully applied."
+# Verify changes
+echo "
+### IPv6 & Security Configuration Verification ###"
+echo "Checking current IPv6 addresses:"
+ip a | grep inet6 || echo "No IPv6 addresses found."
+
+echo "Checking IPv6 disable status:"
+cat /proc/sys/net/ipv6/conf/all/disable_ipv6
+
+echo "
+IPv6 and IPv4 security settings have been successfully applied."
