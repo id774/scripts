@@ -140,7 +140,8 @@ if [ -f "$IPV6_CONF" ]; then
 else
     echo "Applying IPv6 settings to $IPV6_CONF"
     echo "# IPv6 Configuration: Disables IPv6 to prevent unintended exposure."
-echo "# This setting is useful for environments that do not rely on IPv6 connectivity." | sudo tee "$IPV6_CONF" >/dev/null
+    echo "# IPv6 Configuration: Disables IPv6 to prevent unintended exposure." | sudo tee "$IPV6_CONF" >/dev/null
+    echo "# This setting is useful for environments that do not rely on IPv6 connectivity." | sudo tee -a "$IPV6_CONF" >/dev/null
     echo "$IPV6_PARAMS" | sudo tee -a "$IPV6_CONF" >/dev/null
 fi
 
@@ -150,7 +151,8 @@ if [ -f "$IPV4_CONF" ]; then
 else
     echo "Applying IPv4 security settings to $IPV4_CONF"
     echo "# IPv4 Security Configuration: Enhances network security by applying strict policies."
-echo "# Includes protections against SYN flood attacks, source routing, and ICMP abuse." | sudo tee "$IPV4_CONF" >/dev/null
+    echo "# IPv4 Security Configuration: Enhances network security by applying strict policies." | sudo tee "$IPV4_CONF" >/dev/null
+    echo "# Includes protections against SYN flood attacks, source routing, and ICMP abuse." | sudo tee -a "$IPV4_CONF" >/dev/null
     echo "$IPV4_PARAMS" | sudo tee -a "$IPV4_CONF" >/dev/null
 fi
 
