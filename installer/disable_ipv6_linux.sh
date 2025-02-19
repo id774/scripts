@@ -10,7 +10,7 @@
 #
 #  Features:
 #  - Checks for existing IPv6 disable settings before adding them.
-#  - Ensures changes are applied using sysctl.
+#  - Ensures changes are applied using sysctl only if needed.
 #  - Verifies the applied configuration.
 #  - Checks for necessary commands before execution.
 #  - Ensures /etc/sysctl.conf exists before modification.
@@ -68,21 +68,20 @@ if [ ! -f "$SYSCTL_CONF" ]; then
     exit 1
 fi
 
-# Add parameters if not already present
+# Add parameters if not already present and apply changes immediately
 for PARAM in "net.ipv6.conf.all.disable_ipv6" \
              "net.ipv6.conf.default.disable_ipv6" \
              "net.ipv6.conf.lo.disable_ipv6"; do
     if ! grep -q "^$PARAM = 1" "$SYSCTL_CONF"; then
         echo "Adding $PARAM to $SYSCTL_CONF"
         echo "$PARAM = 1" | sudo tee -a "$SYSCTL_CONF" >/dev/null
+        echo "Applying sysctl setting for $PARAM..."
+        sudo sysctl -w "$PARAM=1"
     else
         echo "$PARAM is already set in $SYSCTL_CONF. Skipping..."
     fi
 
 done
-
-# Apply changes
-sudo sysctl -p
 
 # Verify changes
 echo "\n### IPv6 Configuration Verification ###"
