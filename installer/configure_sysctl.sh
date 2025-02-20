@@ -90,13 +90,15 @@ if [ "$1" != "--apply" ]; then
     exit 1
 fi
 
-
 # Function to check required commands
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            echo "Error: '$cmd' is not installed. This script only works on Debian-based systems."
             exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 126
         fi
     done
 }
