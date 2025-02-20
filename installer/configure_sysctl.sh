@@ -102,7 +102,7 @@ check_commands() {
 }
 
 # Check required commands
-check_commands sudo sysctl ip grep cat
+check_commands sudo sysctl uname tee cat ip grep
 
 # Define sysctl parameters and configuration file paths
 SYSCTL_DIR="/etc/sysctl.d"
