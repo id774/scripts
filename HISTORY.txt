@@ -13,7 +13,7 @@ v1.3.2 (Release Date: TBD)
 - Disabled netrw history file creation by setting g:netrw_dirhistmax to 0.
 - Improved install_dotfiles.sh to ensure idempotency.
 - Added toggle_ipv6_macos.sh for enabling/disabling IPv6 on macOS.
-- Added disable_ipv6_linux.sh for disabling IPv6 on GNU/Linux.
+- Added configure_sysctl.sh for disabling IPv6 and enhancing security settings on GNU/Linux.
 
 v1.3.1 (2025-01-24)
 -------------------
