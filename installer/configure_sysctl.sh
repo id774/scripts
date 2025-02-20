@@ -30,6 +30,13 @@
 #  - TIME-WAIT assassination attack protection (RFC 1337).
 #  - ICMP redirect and source routing protection against MITM attacks.
 #  - Martian packet logging for better network monitoring.
+#  - Prevents ARP spoofing attacks.
+#  - Enables TCP window scaling for better network performance.
+#  - Enables TCP Fast Open (TFO) for improved connection latency.
+#  - Disables IPv6 anycast addresses.
+#  - Prevents binding to non-local IPv6 addresses.
+#  - Disables DHCPv6 auto-configuration.
+#  - Disables IPv6 tunneling.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -66,9 +73,13 @@ if [ "$1" != "--apply" ]; then
     echo "- Applies strict TCP SYN cookie settings to mitigate SYN flood attacks."
     echo "- Enables ICMP protection measures to prevent abuse and spoofing."
     echo "- Implements ASLR (Address Space Layout Randomization) to enhance memory security."
-    echo "- Configures system-wide TCP timeout settings to prevent DoS impact."
+    echo "- Configures system-wide TCP timeout and keepalive settings to prevent DoS impact."
     echo "- Prevents source routing and IP spoofing for safer networking."
     echo "- Logs abnormal packets for better monitoring."
+    echo "- Enables TCP Fast Open (TFO) to improve connection latency."
+    echo "- Expands local port range for better network scalability."
+    echo "- Protects against ARP spoofing and enforces reverse path filtering."
+    echo "- Enhances TCP retransmission and keepalive settings for better stability."
     echo "\n### Warning:"
     echo "- This script makes permanent changes to your system settings by modifying /etc/sysctl.d/"
     echo "- If your system relies on IPv6, ensure disabling it does not impact functionality."
@@ -105,7 +116,7 @@ if [ ! -d "$SYSCTL_DIR" ]; then
 fi
 
 # Define IPv6 parameters
-cat <<EOF | sudo tee "$IPV6_CONF" > /dev/null
+sudo tee "$IPV6_CONF" > /dev/null <<EOF
 # IPv6 Configuration: Disables IPv6 to prevent unintended exposure.
 # This setting is useful for environments that do not rely on IPv6 connectivity.
 net.ipv6.conf.all.disable_ipv6 = 1
@@ -114,27 +125,176 @@ net.ipv6.conf.lo.disable_ipv6 = 1
 
 # Prevent IPv6 routing to enhance security.
 net.ipv6.conf.all.forwarding = 0
+
+# Disable IPv6 auto-configuration and router advertisements.
+net.ipv6.conf.all.accept_ra = 0
+net.ipv6.conf.default.accept_ra = 0
+net.ipv6.conf.all.autoconf = 0
+net.ipv6.conf.default.autoconf = 0
+
+# Enable temporary IPv6 addresses for better privacy.
+net.ipv6.conf.all.use_tempaddr = 2
+net.ipv6.conf.default.use_tempaddr = 2
+
+# Limit the number of IPv6 addresses per interface.
+net.ipv6.conf.all.max_addresses = 2
+net.ipv6.conf.default.max_addresses = 2
+
+# Disable ICMP redirects globally (IPv6).
+net.ipv6.conf.all.accept_redirects = 0
+net.ipv6.conf.default.accept_redirects = 0
+
+# Prevent binding to non-local IPv6 addresses
+net.ipv6.ip_nonlocal_bind = 0
+
+# Disable Duplicate Address Detection (DAD) in IPv6
+net.ipv6.conf.all.dad_transmits = 0
+
+# Disable DHCPv6 Auto-Configuration
+net.ipv6.conf.all.dhcpv6_autoconf = 0
+
+# Disable IPv6 Tunneling
+net.ipv6.conf.all.disable_xfrm = 1
+net.ipv6.conf.all.disable_tunnel = 1
+
 EOF
 
 # Define IPv4 security parameters
-cat <<EOF | sudo tee "$IPV4_CONF" > /dev/null
+sudo tee "$IPV4_CONF" > /dev/null <<EOF
 # IPv4 Security Configuration: Enhances network security by applying strict policies.
 # Includes protections against SYN flood attacks, source routing, and ICMP abuse.
 net.ipv4.tcp_syncookies = 1
+net.ipv4.tcp_abort_on_overflow = 1
 net.ipv4.icmp_ignore_bogus_error_responses = 1
-net.ipv4.icmp_ratelimit = 100
+net.ipv4.icmp_ratelimit = 10
 net.ipv4.icmp_ratemask = 88089
 
 # Prevent source routing and IP spoofing.
 net.ipv4.conf.all.rp_filter = 1
 net.ipv4.conf.default.rp_filter = 1
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv4.conf.default.accept_source_route = 0
+
+# Adjust TCP timeout and keepalive settings for enhanced security.
+net.ipv4.tcp_fin_timeout = 15
+net.ipv4.tcp_keepalive_time = 300
+net.ipv4.tcp_keepalive_probes = 5
+net.ipv4.tcp_keepalive_intvl = 30
+net.ipv4.tcp_rfc1337 = 1
 
 # Enable logging for abnormal packets.
 net.ipv4.conf.all.log_martians = 1
 net.ipv4.conf.default.log_martians = 1
 
+# Disable ICMP echo requests for better security.
+net.ipv4.icmp_echo_ignore_all = 1
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+
+# Strengthen TCP/IP security against SYN flood attacks.
+net.ipv4.tcp_max_syn_backlog = 4096
+net.ipv4.tcp_synack_retries = 2
+net.ipv4.tcp_retries2 = 5
+net.ipv4.tcp_syn_retries = 2
+
+# Prevent ARP spoofing attacks.
+net.ipv4.conf.all.arp_ignore = 2
+net.ipv4.conf.default.arp_ignore = 2
+net.ipv4.conf.all.arp_filter = 1
+net.ipv4.conf.default.arp_filter = 1
+net.ipv4.conf.all.arp_notify = 1
+net.ipv4.conf.default.arp_notify = 1
+
 # Enable ASLR to enhance memory security.
 kernel.randomize_va_space = 2
+
+# Protect kernel information leakage.
+kernel.kptr_restrict = 2
+kernel.dmesg_restrict = 1
+
+# Protect against NULL pointer dereference attacks.
+vm.mmap_min_addr = 65536
+
+# Disable TCP timestamps to mitigate certain DoS attacks.
+net.ipv4.tcp_timestamps = 0
+
+# Disable ICMP redirects globally.
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+net.ipv4.conf.lo.accept_redirects = 0
+net.ipv4.conf.all.secure_redirects = 0
+
+# Prevent the system from being used as a router.
+net.ipv4.ip_forward = 0
+
+# Set minimum MTU for path MTU discovery (helps prevent fragmentation attacks).
+net.ipv4.route.min_adv_mss = 1480
+
+# Expand local port range for better network scalability.
+net.ipv4.ip_local_port_range = 1024 65535
+
+# Enable TCP window scaling for better network performance.
+net.ipv4.tcp_window_scaling = 1
+
+# Enable TCP selective acknowledgment (SACK).
+net.ipv4.tcp_sack = 1
+
+# Enable Forward Acknowledgment (FACK) for congestion control.
+net.ipv4.tcp_fack = 1
+
+# Optimize TCP for low latency environments.
+net.ipv4.tcp_low_latency = 1
+
+# Prevent saving of old TCP connection metrics.
+net.ipv4.tcp_no_metrics_save = 1
+
+# Prevent sending of ICMP redirects
+net.ipv4.conf.all.send_redirects = 0
+net.ipv4.conf.default.send_redirects = 0
+
+# Enable Early Retransmit for TCP
+net.ipv4.tcp_early_retrans = 1
+
+# Increase network buffer sizes
+net.core.rmem_max = 16777216
+net.core.wmem_max = 16777216
+
+# Increase network device backlog
+net.core.netdev_max_backlog = 5000
+
+# Prevent IP source route spoofing
+net.ipv4.conf.all.src_valid_mark = 1
+
+# Enable TCP Fast Open (TFO) for improved connection latency
+net.ipv4.tcp_fastopen = 3
+
+# Adjust TCP Keepalive settings
+net.ipv4.tcp_keepalive_probes = 9
+net.ipv4.tcp_keepalive_intvl = 75
+
+# Optimize TCP Retransmission Timeout (RTO)
+net.ipv4.tcp_frto = 2
+
+# Set default TTL for IPv4
+net.ipv4.ip_default_ttl = 64
+
+# Optimize TCP Retransmission Timeout (RTO)
+net.ipv4.tcp_reordering = 3
+
+# Reduce IPv4 Fragment Timeout
+net.ipv4.ipfrag_time = 60
+
+# Optimize TCP Path MTU Discovery
+net.ipv4.tcp_mtu_probing = 1
+
+# Enable TCP Duplicate SACK (DSACK)
+net.ipv4.tcp_dsack = 1
+
+# Enable TCP Receive Buffer Auto-Tuning
+net.ipv4.tcp_moderate_rcvbuf = 1
+
+# Increase max connections queue
+net.core.somaxconn = 4096
+
 EOF
 
 # Apply settings
