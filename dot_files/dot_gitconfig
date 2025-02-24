@@ -14,6 +14,7 @@
   c = commit -a -v -m
   ci = commit -v
   a = add
+  aa = add --all
   all = add --all
   d = diff
   di = diff
