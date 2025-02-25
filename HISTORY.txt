@@ -14,6 +14,7 @@ v1.3.2 (Release Date: TBD)
 - Improved install_dotfiles.sh to ensure idempotency.
 - Added toggle_ipv6_macos.sh for enabling/disabling IPv6 on macOS.
 - Added configure_sysctl.sh for disabling IPv6 and enhancing security settings on GNU/Linux.
+- Added filter_history.sh to remove specific entries from Zsh history with backup and diff support.
 
 v1.3.1 (2025-01-24)
 -------------------
