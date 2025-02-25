@@ -32,6 +32,7 @@
 #  - Martian packet logging for better network monitoring.
 #  - TCP SYN Cookies to mitigate SYN flood attacks.
 #  - ICMP rate limiting and bogus error ignoring for enhanced security.
+#  - Allows ICMP echo requests (ping) while enforcing rate limits to mitigate abuse.
 #  - Optimized TCP timeout settings to mitigate DoS impact.
 #  - TIME-WAIT assassination attack protection (RFC 1337).
 #  - Enables TCP window scaling for better network performance.
@@ -43,6 +44,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-02-26
+#       - Enabled ICMP echo requests (ping) while enforcing rate limits.
+#       - Adjusted ICMP rate limiting for improved security.
 #  v1.1 2025-02-20
 #       - Added IPv4 security hardening and separated configuration into two files:
 #         - 98-disable-ipv6.conf for IPv6 settings.
@@ -176,9 +180,9 @@ net.ipv4.tcp_syn_retries = 2
 
 # Improve ICMP security.
 net.ipv4.icmp_ignore_bogus_error_responses = 1
-net.ipv4.icmp_ratelimit = 10
+net.ipv4.icmp_ratelimit = 100
 net.ipv4.icmp_ratemask = 88089
-net.ipv4.icmp_echo_ignore_all = 1
+net.ipv4.icmp_echo_ignore_all = 0
 net.ipv4.icmp_echo_ignore_broadcasts = 1
 
 # Prevent source routing and IP spoofing.
