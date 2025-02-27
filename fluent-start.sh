@@ -57,6 +57,14 @@ else
     FLUENT_CONF=~/.fluent
 fi
 
+# Ensure Fluentd and Fluent-Cat exist before execution
+for cmd in "$FLUENTD" "$FLUENT_CAT"; do
+    if [ ! -x "$cmd" ]; then
+        echo "Error: Command not found or not executable: $cmd" >&2
+        exit 1
+    fi
+done
+
 # Setup Fluentd configuration if needed
 $FLUENTD --setup "$FLUENT_CONF"
 

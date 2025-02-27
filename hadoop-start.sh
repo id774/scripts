@@ -35,6 +35,14 @@ fi
 HADOOP_VER=${2:-0.20}
 export JAVA_HOME=/opt/java/jdk
 
+# Ensure required Hadoop service scripts exist before execution
+for service in namenode jobtracker datanode tasktracker; do
+    if [ ! -x "/etc/init.d/hadoop-${HADOOP_VER}-$service" ]; then
+        echo "Error: Hadoop service script not found or not executable: /etc/init.d/hadoop-${HADOOP_VER}-$service" >&2
+        exit 1
+    fi
+done
+
 # Control Hadoop services
 sudo /etc/init.d/hadoop-${HADOOP_VER}-namenode "$1"
 sudo /etc/init.d/hadoop-${HADOOP_VER}-jobtracker "$1"
