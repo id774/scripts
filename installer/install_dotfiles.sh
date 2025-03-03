@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.20 2025-03-03
+#       Restrict chmod in /home to existing user directories.
 # v1.19 2025-02-15
 #       Remove outdated auto-install.el and unnecessary byte-compilation logic.
 # v1.18 2025-02-02
@@ -165,7 +167,7 @@ deploy_dotfiles_to_linux() {
 }
 
 bulk_deploy() {
-    test -d /home && \
+    test -d /home && test -d /home/$USER && \
       sudo chmod 750 /home/*
     deploy_dotfiles_to_linux \
       debian \
