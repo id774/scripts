@@ -1,6 +1,10 @@
 Repository Update History
 =========================
 
+v1.3.3 (Release Date: TBD)
+--------------------------
+- Added home directory cleanup and command check in cltmp.sh.
+
 v1.3.2 (2025-02-27)
 -------------------
 - Added brew-upgrade.sh for Homebrew maintenance automation.
