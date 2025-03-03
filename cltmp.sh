@@ -14,6 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  20250303 - Added removal of unnecessary files in the home directory.
 #  20250119 - Fix wildcard handling in rm commands to ensure proper file deletion.
 #  20241212 - Refined hardcopy cleanup to target numbered files explicitly.
 #  20241210 - Enhanced wget-log cleanup to include related files.
@@ -28,6 +29,22 @@
 #  cleanup actions. Ensure to have the necessary permissions before running.
 #
 ########################################################################
+
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 126
+        fi
+    done
+}
+
+# Check required commands
+check_commands find rm uname
 
 os=$(uname)
 
@@ -101,4 +118,12 @@ else
     done
 fi
 
-echo "cltmp (20250119) done."
+# Additional cleanup
+rm -vf "$HOME/.bash_history"
+rm -vf "$HOME/.recentf~"
+rm -vf "$HOME/.xsession-errors"
+rm -vrf "$HOME/.cache/*"
+rm -vrf "$HOME/.local/share/Trash/*"
+rm -vf "$HOME"/*.swp "$HOME"/*.swo "$HOME"/*.bak "$HOME"/*.~ "$HOME"/*.old
+
+echo "cltmp (20250303) done."
