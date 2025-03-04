@@ -124,6 +124,7 @@ rm -vf "$HOME/.recentf~"
 rm -vf "$HOME/.xsession-errors"
 rm -vrf "$HOME/.cache/*"
 rm -vrf "$HOME/.local/share/Trash/*"
+rm -vf "$HOME"/.vim/.netrwhist
 rm -vf "$HOME"/*.swp "$HOME"/*.swo "$HOME"/*.bak "$HOME"/*.~ "$HOME"/*.old
 rm -vf "$HOME"/.*.swp "$HOME"/.*.swo "$HOME"/.*.bak "$HOME"/.*.~ "$HOME"/.*.old
 
