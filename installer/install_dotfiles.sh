@@ -40,8 +40,6 @@
 
 setup_environment() {
     SCRIPTS="$HOME/scripts"
-    test -n "$1" && DEFAULT_KEYMAPFILE="$1"
-    test -n "$1" || DEFAULT_KEYMAPFILE="dot_xmodmaprc_hhklite2"
 
     case "$OSTYPE" in
       *darwin*)
@@ -93,9 +91,8 @@ mkdir_skelton() {
     mkdir_if_not_exist \
       "$1/.tmp" "$1/.local" "$1/.config" "$1/tmp" "$1/mnt" "$1/local" "$1/var" "$1/etc" "$1/bin" "$1/arc"
     sudo chmod 700 "$1/.tmp" "$1/.local" "$1/.config" "$1/tmp" "$1/mnt" "$1/var"
-    sudo chmod 750 "$1/etc" "$1/bin" "$1/arc" "$1/local"
-    sudo rm -f "$1/.vim/.netrwhist"
-    which emacs > /dev/null && setup_dotemacs "$1"
+    sudo chmod 750 "$1/local" "$1/etc" "$1/bin" "$1/arc"
+    command -v emacs >/dev/null 2>&1 && setup_dotemacs "$1"
 }
 
 deploy_dotfiles() {
@@ -174,17 +171,9 @@ install_dotfiles() {
     cd || exit 1
     zsh -c 'zcompile "$HOME/.zshrc"'
 
-    if [ -d "/etc/xdg/xfce4" ]; then
-        sudo cp "$SCRIPTS/dot_files/$DEFAULT_KEYMAPFILE" "/etc/xdg/xfce4/xmodmaprc"
-        test -f "$HOME/etc/config.local/dot_xmodmaprc" && \
-          sudo cp "$OPTIONS" "$HOME/etc/config.local/dot_xmodmaprc" \
-          "/etc/xdg/xfce4/xmodmaprc"
-    fi
-
     test -f "$HOME/etc/config.local/dot_gitconfig" && \
       cp "$OPTIONS" "$HOME/etc/config.local/dot_gitconfig" "$HOME/.gitconfig"
 
-    test -f "$HOME/.tmp/.gitconfig.bak" && rm -f "$HOME/.tmp/.gitconfig.bak"
     test -f "$HOME/.viminfo" && sudo chown "$USER" "$HOME/.viminfo"
 }
 
