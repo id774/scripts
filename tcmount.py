@@ -87,7 +87,7 @@ def check_sudo():
                 print("Error: This script requires sudo privileges. Please run as a user with sudo access.", file=sys.stderr)
                 sys.exit(1)
     except Exception as e:
-        print(f"Error: Failed to check sudo privileges: {e}", file=sys.stderr)
+        print("Error: Failed to check sudo privileges: {}".format(e), file=sys.stderr)
         sys.exit(1)
 
 def os_exec(cmd):
