@@ -71,6 +71,18 @@ import sys
 from optparse import OptionParser
 
 
+def check_sudo():
+    """Check if the user has sudo privileges (password may be required)."""
+    try:
+        with open(os.devnull, 'w') as devnull:
+            result = subprocess.call(["sudo", "-v"], stdout=devnull, stderr=devnull)
+            if result != 0:
+                print("Error: This script requires sudo privileges. Please run as a user with sudo access.", file=sys.stderr)
+                sys.exit(1)
+    except Exception as e:
+        print("Error: Failed to check sudo privileges: {}".format(e), file=sys.stderr)
+        sys.exit(1)
+
 def setup_option_parser():
     """ Initialize and return an argument parser for command-line options. """
     parser = OptionParser("usage: %prog [options] dir")
@@ -146,6 +158,8 @@ def main():
     if len(args) != 1:
         parser.print_help()
     else:
+        if options.sudo:
+            check_sudo()
         chmodtree(options, args[0])
 
 
