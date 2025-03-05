@@ -38,8 +38,34 @@
 #
 ########################################################################
 
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 126
+        fi
+    done
+}
+
+# Check required commands
+check_commands sudo cp mkdir chmod rm ln zsh
+
+# Check if the user can run sudo without password
+if ! sudo -v 2>/dev/null; then
+    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+    exit 1
+fi
+
 setup_environment() {
     SCRIPTS="$HOME/scripts"
+    if [ ! -d "$SCRIPTS" ]; then
+        echo "Error: Directory '$SCRIPTS' does not exist. Please create it or specify the correct path."
+        exit 1
+    fi
 
     case "$OSTYPE" in
       *darwin*)
