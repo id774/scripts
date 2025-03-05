@@ -31,6 +31,12 @@
 #
 ########################################################################
 
+# Check if the user has sudo privileges (password may be required)
+if ! sudo -v 2>/dev/null; then
+    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+    exit 1
+fi
+
 # Check if the system supports apt-get
 check_environment() {
     if ! command -v apt-get >/dev/null 2>&1; then

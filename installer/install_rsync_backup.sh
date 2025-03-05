@@ -34,6 +34,12 @@ if [ -z "$SCRIPTS" ]; then
     exit 1
 fi
 
+# Check if the user has sudo privileges (password may be required)
+if ! sudo -v 2>/dev/null; then
+    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+    exit 1
+fi
+
 # Make Directory if it doesn't exist and set permissions
 if [ ! -d /var/log/sysadmin ]; then
     sudo mkdir -p /var/log/sysadmin

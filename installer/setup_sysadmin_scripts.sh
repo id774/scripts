@@ -56,6 +56,12 @@
 #
 ########################################################################
 
+# Check if the user has sudo privileges (password may be required)
+if ! sudo -v 2>/dev/null; then
+    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+    exit 1
+fi
+
 # Check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then

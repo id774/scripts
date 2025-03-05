@@ -86,6 +86,12 @@ while getopts "hc" opt; do
       exit 0
       ;;
     c)
+      # Check if the user has sudo privileges (password may be required)
+      if ! sudo -v 2>/dev/null; then
+          echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+          exit 1
+      fi
+
       # Create a temporary script for Munin plugin setup
       echo "#!/bin/sh" > "$SCRIPT_NAME"
       sudo munin-node-configure --shell >> "$SCRIPT_NAME"

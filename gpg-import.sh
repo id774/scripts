@@ -40,7 +40,13 @@ check_commands() {
 }
 
 # Check if required commands are installed
-check_commands gpg apt-key
+check_commands gpg apt-key sudo
+
+# Check if the user has sudo privileges (password may be required)
+if ! sudo -v 2>/dev/null; then
+    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+    exit 1
+fi
 
 # Check if both arguments are provided
 if [ -n "$2" ]; then

@@ -110,6 +110,12 @@ check_commands() {
 # Check required commands
 check_commands sudo sysctl uname tee cat ip grep
 
+# Check if the user has sudo privileges (password may be required)
+if ! sudo -v 2>/dev/null; then
+    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+    exit 1
+fi
+
 # Define sysctl parameters and configuration file paths
 SYSCTL_DIR="/etc/sysctl.d"
 IPV6_CONF="$SYSCTL_DIR/98-disable-ipv6.conf"

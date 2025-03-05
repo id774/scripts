@@ -43,6 +43,12 @@ for service in namenode jobtracker datanode tasktracker; do
     fi
 done
 
+# Check if the user has sudo privileges (password may be required)
+if ! sudo -v 2>/dev/null; then
+    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+    exit 1
+fi
+
 # Control Hadoop services
 sudo /etc/init.d/hadoop-${HADOOP_VER}-namenode "$1"
 sudo /etc/init.d/hadoop-${HADOOP_VER}-jobtracker "$1"

@@ -62,6 +62,12 @@ echo "Fixing ownership and permissions for Zsh directories on macOS..."
 check_directory /usr/local/Homebrew/completions/zsh/
 check_directory /usr/local/share/zsh/
 
+# Check if the user has sudo privileges (password may be required)
+if ! sudo -v 2>/dev/null; then
+    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+    exit 1
+fi
+
 # Change ownership to root:wheel
 sudo chown -R root:wheel /usr/local/Homebrew/completions/zsh/
 sudo chown -R root:wheel /usr/local/share/zsh/

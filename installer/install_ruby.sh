@@ -135,6 +135,15 @@ setup_environment() {
     test -n "$3" || SUDO=sudo
     test -n "$3" && SUDO=
     test "$3" = "sudo" && SUDO=sudo
+
+    # Check if the user has sudo privileges (password may be required)
+    if [ "$SUDO" = "sudo" ]; then
+        if ! sudo -v 2>/dev/null; then
+            echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+            exit 1
+        fi
+    fi
+
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR

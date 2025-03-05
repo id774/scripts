@@ -54,7 +54,7 @@ check_commands() {
 # Check required commands
 check_commands sudo cp mkdir chmod rm ln zsh
 
-# Check if the user can run sudo without password
+# Check if the user has sudo privileges (password may be required)
 if ! sudo -v 2>/dev/null; then
     echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
     exit 1

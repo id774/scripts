@@ -65,6 +65,12 @@ check_directory /usr/local/Homebrew
 check_directory /usr/local/share/zsh/
 check_directory /usr/local/share/zsh/site-functions
 
+# Check if the user has sudo privileges (password may be required)
+if ! sudo -v 2>/dev/null; then
+    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+    exit 1
+fi
+
 # Change ownership to the current user and their primary group
 sudo chown -R "$current_user":"$current_group" /usr/local/Homebrew
 sudo chown -R "$current_user":"$current_group" /usr/local/share/zsh/

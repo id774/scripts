@@ -15,6 +15,12 @@
 #       First version.
 ########################################################################
 
+# Check if the user can run sudo without password
+if ! sudo -v 2>/dev/null; then
+    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+    exit 1
+fi
+
 set_zsh_to_default() {
     chsh -s /bin/zsh
     sudo chsh -s /bin/sh root
