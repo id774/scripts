@@ -25,6 +25,14 @@
 #
 ########################################################################
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        exit 1
+    fi
+}
+
 # Check if argument is provided
 if [ -z "$1" ]; then
     echo "Error: No command provided. Usage: $0 [start|stop]" >&2
@@ -43,11 +51,7 @@ for service in namenode jobtracker datanode tasktracker; do
     fi
 done
 
-# Check if the user has sudo privileges (password may be required)
-if ! sudo -v 2>/dev/null; then
-    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
-    exit 1
-fi
+check_sudo
 
 # Control Hadoop services
 sudo /etc/init.d/hadoop-${HADOOP_VER}-namenode "$1"

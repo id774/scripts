@@ -43,10 +43,12 @@
 ########################################################################
 
 # Check if the user has sudo privileges (password may be required)
-if ! sudo -v 2>/dev/null; then
-    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
-    exit 1
-fi
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        exit 1
+    fi
+}
 
 # System update and upgrade
 apt_upgrade() {
@@ -151,6 +153,7 @@ optional_packages() {
 
 # Main operation
 main() {
+    check_sudo
     apt_upgrade
     basic_packages
     system_packages

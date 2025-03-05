@@ -30,6 +30,14 @@
 #
 ########################################################################
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        exit 1
+    fi
+}
+
 # Check for necessary commands and files before execution
 command_exists() {
     command -v "$1" >/dev/null 2>&1
@@ -43,6 +51,7 @@ restart_macos_sshd() {
     fi
 
     if [ -f "$SSH_PLIST" ]; then
+        check_sudo
         sudo launchctl unload -w "$SSH_PLIST" && sudo launchctl load -w "$SSH_PLIST"
     else
         echo "SSH plist file not found: $SSH_PLIST"
@@ -52,6 +61,7 @@ restart_macos_sshd() {
 
 restart_linux_sshd() {
     if command_exists systemctl; then
+        check_sudo
         sudo systemctl restart ssh.service
     else
         echo "systemctl not found. Unable to restart SSH."

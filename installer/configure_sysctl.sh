@@ -60,11 +60,13 @@
 #
 ########################################################################
 
-# Check if running on GNU/Linux
-if [ "$(uname -s)" != "Linux" ]; then
-    echo "Error: This script is only for GNU/Linux." >&2
-    exit 1
-fi
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        exit 1
+    fi
+}
 
 # Check for required argument
 if [ "$1" != "--apply" ]; then
@@ -110,11 +112,7 @@ check_commands() {
 # Check required commands
 check_commands sudo sysctl uname tee cat ip grep
 
-# Check if the user has sudo privileges (password may be required)
-if ! sudo -v 2>/dev/null; then
-    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
-    exit 1
-fi
+check_sudo
 
 # Define sysctl parameters and configuration file paths
 SYSCTL_DIR="/etc/sysctl.d"

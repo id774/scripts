@@ -56,6 +56,14 @@
 #
 ########################################################################
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        exit 1
+    fi
+}
+
 # Parse options
 FORCE_REMOVE=0
 while getopts "f" opt; do
@@ -72,11 +80,7 @@ if [ "$FORCE_REMOVE" -eq 0 ] && ! command -v tracker3 >/dev/null 2>&1 && ! comma
     exit 1
 fi
 
-# Check if the user has sudo privileges (password may be required)
-if ! sudo -v 2>/dev/null; then
-    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
-    exit 1
-fi
+check_sudo
 
 echo "Stopping all tracker-related processes..."
 

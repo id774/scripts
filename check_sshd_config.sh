@@ -58,6 +58,14 @@
 #
 ########################################################################
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        exit 1
+    fi
+}
+
 # Check for required commands
 check_commands() {
     for cmd in "$@"; do
@@ -94,6 +102,7 @@ if [ "$os" = "Darwin" ]; then
   # Copy the default sshd configuration file if it does not exist
   sshd_config_file="/etc/ssh/sshd_config.d/000-sshdconfig.conf"
   if [ ! -f "$sshd_config_file" ]; then
+    check_sudo
     sudo cp -v "$SCRIPTS/etc/sshd_config.d/000-sshdconfig.conf" "$sshd_config_file"
     sudo chown root:wheel "$sshd_config_file"
   fi

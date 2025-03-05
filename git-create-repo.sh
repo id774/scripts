@@ -84,6 +84,14 @@ EOF
     exit 0
 }
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        exit 1
+    fi
+}
+
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -209,6 +217,10 @@ if [ -z "$explicit_sudo" ]; then
     esac
 else
     use_sudo="$explicit_sudo"
+fi
+
+if [ "$use_sudo" = "sudo" ]; then
+    check_sudo
 fi
 
 if [ "$delete_repo" = true ]; then

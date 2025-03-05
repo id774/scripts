@@ -50,11 +50,13 @@ Options:
 EOF
 }
 
-# Check for Munin installation
-if ! command -v munin-node-configure >/dev/null 2>&1; then
-    echo "Munin is not installed. Please install Munin first."
-    exit 2
-fi
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        exit 1
+    fi
+}
 
 # Configuration variables
 TMP_SCRIPT_DIR=${TMP:-/tmp}
@@ -86,11 +88,7 @@ while getopts "hc" opt; do
       exit 0
       ;;
     c)
-      # Check if the user has sudo privileges (password may be required)
-      if ! sudo -v 2>/dev/null; then
-          echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
-          exit 1
-      fi
+      check_sudo
 
       # Create a temporary script for Munin plugin setup
       echo "#!/bin/sh" > "$SCRIPT_NAME"

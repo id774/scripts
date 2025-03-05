@@ -32,10 +32,12 @@
 ########################################################################
 
 # Check if the user has sudo privileges (password may be required)
-if ! sudo -v 2>/dev/null; then
-    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
-    exit 1
-fi
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        exit 1
+    fi
+}
 
 # Check if the system supports apt-get
 check_environment() {
@@ -56,6 +58,7 @@ apt_upgrade() {
 # Main operation
 main() {
     check_environment
+    check_sudo
     apt_upgrade
 }
 

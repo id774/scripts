@@ -27,6 +27,14 @@
 #
 ########################################################################
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        exit 1
+    fi
+}
+
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -42,11 +50,7 @@ check_commands() {
 # Check if required commands are installed
 check_commands gpg apt-key sudo
 
-# Check if the user has sudo privileges (password may be required)
-if ! sudo -v 2>/dev/null; then
-    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
-    exit 1
-fi
+check_sudo
 
 # Check if both arguments are provided
 if [ -n "$2" ]; then

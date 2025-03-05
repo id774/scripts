@@ -57,10 +57,12 @@
 ########################################################################
 
 # Check if the user has sudo privileges (password may be required)
-if ! sudo -v 2>/dev/null; then
-    echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
-    exit 1
-fi
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        exit 1
+    fi
+}
 
 # Check if SCRIPTS variable is set
 check_scripts() {
@@ -158,6 +160,7 @@ install_sysadmin_scripts() {
 
 setup_sysadmin_scripts() {
     check_scripts
+    check_sudo
     setup_environment $*
     test -n "$1" && uninstall_sysadmin_scripts
     test -n "$1" || install_sysadmin_scripts
