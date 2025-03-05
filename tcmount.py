@@ -78,6 +78,18 @@ import sys
 from optparse import OptionParser
 
 
+def check_sudo():
+    """Check if the user has sudo privileges (password may be required)."""
+    try:
+        with open(os.devnull, 'w') as devnull:
+            result = subprocess.call(["sudo", "-v"], stdout=devnull, stderr=devnull)
+            if result != 0:
+                print("Error: This script requires sudo privileges. Please run as a user with sudo access.", file=sys.stderr)
+                sys.exit(1)
+    except Exception as e:
+        print(f"Error: Failed to check sudo privileges: {e}", file=sys.stderr)
+        sys.exit(1)
+
 def os_exec(cmd):
     """
     Executes a system command using subprocess.
@@ -255,6 +267,11 @@ def main():
                       type="string")
 
     (options, args) = parser.parse_args()
+
+    if "-h" in sys.argv or "--help" in sys.argv or "-V" in sys.argv or "--version" in sys.argv:
+        parser.print_help()
+        sys.exit(0)
+    check_sudo()
 
     process_mounting(options, args)
 
