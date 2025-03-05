@@ -54,7 +54,7 @@ class TestExecOnPosix(unittest.TestCase):
     @patch('smb.check_sudo')
     @patch('os.system', return_value=0)
     @patch('subprocess.getoutput', return_value="")
-    def test_run_posix(self, mock_getoutput, mock_system):
+    def test_run_posix(self, mock_getoutput, mock_system, mock_check_sudo):
         """Test the command generation for POSIX system."""
         smb.logger.setLevel(logging.CRITICAL)
         executor = smb.ExecOnPosix()
