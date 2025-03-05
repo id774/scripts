@@ -51,6 +51,7 @@ class TestExecOnWin(unittest.TestCase):
 class TestExecOnPosix(unittest.TestCase):
     """Test cases for ExecOnPosix class in smb.py."""
 
+    @patch('smb.check_sudo')
     @patch('os.system', return_value=0)
     @patch('subprocess.getoutput', return_value="")
     def test_run_posix(self, mock_getoutput, mock_system):
