@@ -49,6 +49,19 @@ from optparse import OptionParser
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
+def check_sudo():
+    """Check if the user has sudo privileges (password may be required)."""
+    try:
+        with open(os.devnull, 'w') as devnull:
+            result = subprocess.call(["sudo", "-v"], stdout=devnull, stderr=devnull)
+            if result != 0:
+                print("Error: This script requires sudo privileges. Please run as a user with sudo access.", file=sys.stderr)
+                sys.exit(1)
+    except Exception as e:
+        print(f"Error: Failed to check sudo privileges: {e}", file=sys.stderr)
+        sys.exit(1)
+
 class ExecOnWin:
     def run(self, mount, share, ipaddr, user, passw):
         bs = "\\\\"
@@ -66,6 +79,7 @@ class ExecOnWin:
 class ExecOnPosix:
     def run(self, mount, share, ipaddr, user, passw):
         if self.ping(ipaddr):
+            check_sudo()
             cmd = "sudo mount -t cifs -o rw,uid={},username={},password={},iocharset=utf8 //{}/{} {}".format(
                 user, user, passw, ipaddr, share, mount)
             logger.info(subprocess.getoutput(cmd))
