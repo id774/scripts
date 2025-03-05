@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.3 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v0.2 2025-02-26
 #       Improved POSIX compatibility by replacing `test -n` with `[ -n ]`.
 #       Added error handling for missing arguments.

@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.5 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v0.4 2012-05-07
 #       Correspond to Ubuntu Precise.
 #  v0.3 2012-04-16

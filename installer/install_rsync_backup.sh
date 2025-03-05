@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.0 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v1.9 2024-03-17
 #       Refactored script for improved readability and maintainability.
 #  v1.8 2023-12-17

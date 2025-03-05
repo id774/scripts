@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v4.3 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v4.2 2024-01-26
 #       Updated documentation to include notes on custom return codes.
 #  v4.1 2023-12-17
@@ -224,7 +226,7 @@ def main():
     """
     Main function to handle the mounting process based on user inputs.
     """
-    tcmount_version = "4.2"
+    tcmount_version = "4.3"
 
     versions = []
     if is_truecrypt_installed():

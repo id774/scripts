@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v1.9 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v1.8 2014-06-26
 #       Change address of pip.
 #  v1.7 2014-03-12

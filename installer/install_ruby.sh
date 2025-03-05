@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v2.3 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v2.2 2023-03-12
 #       Remove obsolete versions.
 #  v2.1 2019-01-14

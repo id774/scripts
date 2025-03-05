@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v1.3 2025-02-14
 #       Add els command to installation and uninstallation process.
 #  v1.2 2025-01-03

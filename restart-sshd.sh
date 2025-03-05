@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v1.3 2025-01-03
 #       Added existence check for launchctl command in macOS environment
 #       to improve error handling and reliability.

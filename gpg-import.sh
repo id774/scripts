@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v1.2 2024-01-18
 #       Standardized command existence checks using a common function.
 #  v1.1 2023-12-05

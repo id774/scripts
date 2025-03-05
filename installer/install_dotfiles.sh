@@ -22,6 +22,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v2.0 2025-03-04
 #       Improved POSIX compliance by quoting variables and using safer constructs.
 #       Ensured robust directory creation and permission handling.

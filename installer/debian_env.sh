@@ -5,6 +5,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+#  v0.3 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v0.2 2012-04-16
 #       Shape up unnecessary functions.
 #  v0.1 2011-09-28

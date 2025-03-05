@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v1.2 2024-08-11
 #       Added checks for required directories and write permissions.
 #       Added input validation to ensure directory is provided as an argument.

@@ -44,15 +44,17 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v1.2 2025-02-26
-#       - Enabled ICMP echo requests (ping) while enforcing rate limits.
-#       - Adjusted ICMP rate limiting for improved security.
+#       Enabled ICMP echo requests (ping) while enforcing rate limits.
+#       Adjusted ICMP rate limiting for improved security.
 #  v1.1 2025-02-20
-#       - Added IPv4 security hardening and separated configuration into two files:
+#       Added IPv4 security hardening and separated configuration into two files:
 #         - 98-disable-ipv6.conf for IPv6 settings.
 #         - 97-secure-ipv4.conf for IPv4 security settings.
 #  v1.0 2025-02-19
-#       - Initial release with IPv6 disabling functionality.
+#       Initial release with IPv6 disabling functionality.
 #
 #  Usage:
 #  ./configure_sysctl.sh --apply

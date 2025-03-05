@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v1.0 2024-01-06
 #      Initial version ported from Ruby to Python. Added compatibility for
 #      both Windows and POSIX systems. Implemented command-line options for

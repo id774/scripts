@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.5 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v2.4 2024-01-28
 #       Replaced shutil.which with a custom which function to ensure compatibility
 #       with Python versions prior to 3.3.

@@ -29,6 +29,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
 #  v1.7 2025-02-19
 #       Added support for detecting and displaying AddressFamily configuration.
 #  v1.6 2025-01-03
