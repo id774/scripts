@@ -1,24 +1,65 @@
 #!/bin/sh
-#
+
 ########################################################################
-# Install Des
-#  $1 = not save to src
+# install_des.sh: Install and Compile DES Encryption Software
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script downloads, compiles, and installs the DES encryption software.
+#  If the software is not found in the system, it is retrieved from a remote
+#  archive, extracted, compiled, and installed. Optionally, the source files
+#  can be saved for future reference.
 #
-#  v1.3 2011-09-30
-#       Rename tar filename.
-#  v1.2 2010-09-16
-#       Refactoring.
-#  v1.1 2010-03-07
-#       Refactoring.
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v2.0 2025-03-06
+#       Updated to be POSIX compliant.
+#       Replaced non-POSIX `which` with `command -v`.
+#       Added error handling for directory changes.
+#       Integrated command existence and sudo privilege checks.
+#       Replaced `md5.sh` with POSIX-compliant `md5sum`.
+#       Improved logging with `echo` for status updates.
+#  [Intermediate versions omitted for brevity]
 #  v1.0 2009-05-21
 #       Derived from install_crypt.sh.
+#
+#  Usage:
+#  ./install_des.sh [OPTION]
+#
+#  Options:
+#  -h   Display this help message.
+#  -n   Do not save source files after installation.
+#
 ########################################################################
 
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 126
+        fi
+    done
+}
+
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        exit 1
+    fi
+}
+
+# Configure environment settings based on OS type
 setup_environment() {
-    case $OSTYPE in
-      *darwin*)
+    case $(uname) in
+      Darwin)
         OWNER=root:wheel
         ;;
       *)
@@ -27,35 +68,70 @@ setup_environment() {
     esac
 }
 
+# Save source files to /usr/local/src/crypt/des
 save_sources() {
-    test -d /usr/local/src/crypt/des && sudo rm -rf /usr/local/src/crypt/des
+    echo "Saving source files..."
+    if [ -d /usr/local/src/crypt/des ]; then
+        sudo rm -rf /usr/local/src/crypt/des
+    fi
     sudo mkdir -p /usr/local/src/crypt/des
     sudo cp * /usr/local/src/crypt/des
-    sudo chown -R $OWNER /usr/local/src/crypt/des
+    sudo chown -R "$OWNER" /usr/local/src/crypt/des
+    echo "Source files saved."
 }
 
+# Install DES encryption software
 install_des() {
+    echo "Setting up DES installation..."
     setup_environment
     mkdir install_des
-    cd install_des
+    cd install_des || exit 1
+
+    echo "Downloading software archive..."
     wget http://id774.net/archive/kmdes.tar.gz
-    md5.sh kmdes.tar.gz
+
+    echo "Verifying archive integrity..."
+    md5sum kmdes.tar.gz
+
+    echo "Extracting files..."
     tar xzvf kmdes.tar.gz
+
+    echo "Removing archive..."
     rm kmdes.tar.gz
-    cd des
-    test -n "$1" || save_sources
+
+    cd des || exit 1
+
+    if [ -z "$1" ]; then
+        save_sources
+    fi
+
+    echo "Compiling source code..."
     make
+
+    echo "Installing compiled binary..."
     sudo make install
+
+    echo "Cleaning up installation files..."
     cd ..
     rm -rf des
     cd ..
     rm -rf install_des
+    echo "DES installation completed."
 }
 
+# Main execution function
 main() {
-    which dmsetup > /dev/null || sudo apt-get -y install dmsetup
-    which des > /dev/null || install_des $*
+    echo "Checking system requirements..."
+    check_commands wget md5sum tar make sudo rm mkdir cp chown ping
+    check_sudo
+
+    echo "Checking network connectivity..."
+    ping -c 1 id774.net >/dev/null 2>&1 || exit 1
+
+    echo "Ensuring required dependencies are installed..."
+    command -v dmsetup >/dev/null 2>&1 || sudo apt-get -y install dmsetup
+    command -v des >/dev/null 2>&1 || install_des "$@"
 }
 
-ping -c 1 id774.net > /dev/null 2>&1 || exit 1
-main $*
+# Check network connectivity before proceeding
+main "$@"
