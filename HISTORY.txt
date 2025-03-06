@@ -4,7 +4,7 @@ Repository Update History
 v1.3.3 (Release Date: TBD)
 --------------------------
 - Added home directory cleanup and command check in cltmp.sh.
-- Refactored install_dotfiles.sh for POSIX compliance and improved maintainability.
+- Refactored several scripts for POSIX compliance and improved maintainability.
 - Added sudo privilege checks to numerous scripts for improved security.
 
 v1.3.2 (2025-02-27)
