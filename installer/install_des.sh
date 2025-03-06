@@ -121,6 +121,16 @@ install_des() {
 
 # Main execution function
 main() {
+    # Check if -h is provided as an argument
+    if [ "$1" = "-h" ]; then
+        echo "Usage: ./install_des.sh [OPTION]"
+        echo ""
+        echo "Options:"
+        echo "  -h   Display this help message."
+        echo "  -n   Do not save source files after installation."
+        exit 0
+    fi
+
     echo "Checking system requirements..."
     check_commands wget md5sum tar make sudo rm mkdir cp chown ping
     check_sudo
