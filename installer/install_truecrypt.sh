@@ -26,7 +26,7 @@
 #       Stable release.
 #
 #  Usage:
-#  ./install_truecrypt.sh VERSION [OPTION]
+#  ./install_truecrypt.sh [VERSION] [OPTION]
 #
 #  Options:
 #  -h   Display this help message.
@@ -75,6 +75,22 @@ get_architecture() {
     esac
 }
 
+# Validate version input
+validate_version() {
+    case "$1" in
+        "7.0"|"7.0a"|"7.1"|"7.1a")
+            ;;
+        "")
+            echo "No version specified. Defaulting to 7.1a."
+            VERSION="7.1a"
+            ;;
+        *)
+            echo "Error: Unsupported TrueCrypt version specified. Allowed versions: 7.0, 7.0a, 7.1, 7.1a."
+            exit 1
+            ;;
+    esac
+}
+
 # Configure environment settings based on OS type
 setup_environment() {
     echo "Setting up environment..."
@@ -114,12 +130,13 @@ set_truecrypt_permission() {
 # Install TrueCrypt
 install_truecrypt() {
     get_architecture
-    echo "Installing TrueCrypt version: $1 for architecture: $ARCH"
+    validate_version "$1"
+    echo "Installing TrueCrypt version: $VERSION for architecture: $ARCH"
     mkdir install_truecrypt
     cd install_truecrypt || exit 1
 
-    TAR_NAME="truecrypt-$1-linux-console-$ARCH.tar.gz"
-    EXEC_NAME="truecrypt-$1-setup-console-$ARCH"
+    TAR_NAME="truecrypt-$VERSION-linux-console-$ARCH.tar.gz"
+    EXEC_NAME="truecrypt-$VERSION-setup-console-$ARCH"
     echo "Downloading $TAR_NAME..."
     wget "http://id774.net/truecrypt/$TAR_NAME"
     tar xzvf "$TAR_NAME"
@@ -136,7 +153,7 @@ install_truecrypt() {
 # Main function
 main() {
     if [ "$1" = "-h" ]; then
-        echo "Usage: ./install_truecrypt.sh VERSION [OPTION]"
+        echo "Usage: ./install_truecrypt.sh [VERSION] [OPTION]"
         echo ""
         echo "Options:"
         echo "  -h   Display this help message."
