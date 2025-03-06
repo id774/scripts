@@ -78,7 +78,7 @@ get_architecture() {
 # Validate version input
 validate_version() {
     case "$1" in
-        "7.0"|"7.0a"|"7.1"|"7.1a")
+        "7.0a"|"7.1"|"7.1a")
             VERSION="$1"
             ;;
         "")
@@ -86,7 +86,7 @@ validate_version() {
             VERSION="7.1a"
             ;;
         *)
-            echo "Error: Unsupported TrueCrypt version specified. Allowed versions: 7.0, 7.0a, 7.1, 7.1a."
+            echo "Error: Unsupported TrueCrypt version specified. Allowed versions: 7.0a, 7.1, 7.1a."
             exit 1
             ;;
     esac
