@@ -14,7 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.0 2025-03-06
+#  v1.0 2025-03-07
 #       Updated to be POSIX compliant.
 #       Replaced non-POSIX `which` with `command -v`.
 #       Added error handling for directory changes.
