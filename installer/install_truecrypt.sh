@@ -79,6 +79,7 @@ get_architecture() {
 validate_version() {
     case "$1" in
         "7.0"|"7.0a"|"7.1"|"7.1a")
+            VERSION="$1"
             ;;
         "")
             echo "No version specified. Defaulting to 7.1a."
