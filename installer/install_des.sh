@@ -130,7 +130,12 @@ main() {
 
     echo "Ensuring required dependencies are installed..."
     command -v dmsetup >/dev/null 2>&1 || sudo apt-get -y install dmsetup
-    command -v des >/dev/null 2>&1 || install_des "$@"
+
+    if command -v des >/dev/null 2>&1; then
+        echo "DES is already installed."
+    else
+        install_des "$@"
+    fi
 }
 
 # Check network connectivity before proceeding
