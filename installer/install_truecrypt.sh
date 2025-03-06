@@ -26,7 +26,7 @@
 #       Stable release.
 #
 #  Usage:
-#  ./install_truecrypt.sh ARCH VERSION [OPTION]
+#  ./install_truecrypt.sh VERSION [OPTION]
 #
 #  Options:
 #  -h   Display this help message.
@@ -36,7 +36,7 @@
 
 # Function to check required commands
 check_commands() {
-    for cmd in wget tar sudo rm mkdir cp chown ping file; do
+    for cmd in wget tar sudo rm mkdir cp chown ping file uname; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
             echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
             exit 127
@@ -55,10 +55,30 @@ check_sudo() {
     fi
 }
 
+# Determine system architecture
+get_architecture() {
+    case $(uname -m) in
+        i386|i686)
+            ARCH="x86"
+            ;;
+        x86_64|amd64)
+            ARCH="x64"
+            ;;
+        arm*|aarch64)
+            echo "Error: TrueCrypt does not support ARM architectures."
+            exit 1
+            ;;
+        *)
+            echo "Error: Unsupported architecture."
+            exit 1
+            ;;
+    esac
+}
+
 # Configure environment settings based on OS type
 setup_environment() {
     echo "Setting up environment..."
-    check_commands wget tar sudo rm mkdir cp chown ping file
+    check_commands wget tar sudo rm mkdir cp chown ping file uname
     check_sudo
 
     command -v dmsetup >/dev/null 2>&1 || sudo apt-get -y install dmsetup
@@ -75,6 +95,12 @@ setup_environment() {
     esac
 }
 
+# Save downloaded packages
+save_packages() {
+    sudo cp "$1" "$2"
+    sudo chown "$OWNER" "$2/$1"
+}
+
 # Set proper permissions for TrueCrypt files
 set_truecrypt_permission() {
     echo "Setting file permissions..."
@@ -85,63 +111,23 @@ set_truecrypt_permission() {
     done
 }
 
-# Save downloaded packages
-save_packages() {
-    sudo cp "$1" "$2"
-    sudo chown "$OWNER" "$2/$1"
-}
-
-# Save source files to /usr/local/src/crypt/truecrypt
-save_sources() {
-    sudo mv * /usr/local/src/crypt/truecrypt
-    sudo chown -R "$OWNER" /usr/local/src/crypt/truecrypt
-}
-
 # Install TrueCrypt
 install_truecrypt() {
-    echo "Installing TrueCrypt for architecture: $1, version: $2"
+    get_architecture
+    echo "Installing TrueCrypt version: $1 for architecture: $ARCH"
     mkdir install_truecrypt
     cd install_truecrypt || exit 1
 
-    case "$1" in
-      linux-i386 | linux-i686)
-        FILE_NAME="truecrypt-$2-linux-console-x86.tar.gz"
-        ;;
-      linux-amd64 | linux-x86_64)
-        FILE_NAME="truecrypt-$2-linux-console-x64.tar.gz"
-        ;;
-      win)
-        FILE_NAME="TrueCrypt Setup $2.exe"
-        ;;
-      mac)
-        FILE_NAME="TrueCrypt $2 Mac OS X.dmg"
-        ;;
-      src)
-        FILE_NAME="TrueCrypt $2 Source.tar.gz"
-        ;;
-    esac
+    TAR_NAME="truecrypt-$1-linux-console-$ARCH.tar.gz"
+    EXEC_NAME="truecrypt-$1-setup-console-$ARCH"
+    echo "Downloading $TAR_NAME..."
+    wget "http://id774.net/truecrypt/$TAR_NAME"
+    tar xzvf "$TAR_NAME"
+    [ -n "$2" ] || save_packages "$TAR_NAME" /usr/local/src/crypt/truecrypt
 
-    echo "Downloading $FILE_NAME..."
-    wget "http://id774.net/truecrypt/$FILE_NAME"
-    [ -n "$3" ] || save_packages "$FILE_NAME" /usr/local/src/crypt/truecrypt
-
-    if [ "$1" = "linux-i386" ] || [ "$1" = "linux-i686" ] || [ "$1" = "linux-amd64" ] || [ "$1" = "linux-x86_64" ]; then
-        tar xzvf "$FILE_NAME"
-        ./truecrypt-$2-setup-console-$(echo "$1" | awk -F'-' '{print $2}')
-
-        if [ -f "$HOME/.tmp/truecrypt_$2_console_$(echo "$1" | awk -F'-' '{print $2}').tar.gz" ]; then
-            cd "$HOME/.tmp" || exit 1
-            tar xzvf "truecrypt_$2_console_$(echo "$1" | awk -F'-' '{print $2}').tar.gz"
-            rm "truecrypt_$2_console_$(echo "$1" | awk -F'-' '{print $2}').tar.gz"
-            [ -d usr ] || exit 1
-            sudo cp -Rv usr /
-            rm -rf usr
-        fi
-        file /usr/bin/truecrypt
-        set_truecrypt_permission
-    else
-        save_sources
-    fi
+    chmod +x "./$EXEC_NAME" && "./$EXEC_NAME"
+    file /usr/bin/truecrypt
+    set_truecrypt_permission
 
     cd ..
     rm -rf install_truecrypt
@@ -150,7 +136,7 @@ install_truecrypt() {
 # Main function
 main() {
     if [ "$1" = "-h" ]; then
-        echo "Usage: ./install_truecrypt.sh ARCH VERSION [OPTION]"
+        echo "Usage: ./install_truecrypt.sh VERSION [OPTION]"
         echo ""
         echo "Options:"
         echo "  -h   Display this help message."
