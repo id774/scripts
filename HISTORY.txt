@@ -6,6 +6,7 @@ v1.3.3 (Release Date: TBD)
 - Added home directory cleanup and command check in cltmp.sh.
 - Refactored several scripts for POSIX compliance and improved maintainability.
 - Added sudo privilege checks to numerous scripts for improved security.
+- Major version upgrade with significant changes to several installation scripts.
 
 v1.3.2 (2025-02-27)
 -------------------
