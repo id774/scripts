@@ -21,6 +21,7 @@
 #       Integrated command existence and sudo privilege checks.
 #       Improved logging with `echo` for status updates.
 #       Standardized environment setup and permission handling.
+#       Automatically detect system architecture.
 #  [Intermediate versions omitted for brevity]
 #  v0.1 2010-08-07
 #       Stable release.
