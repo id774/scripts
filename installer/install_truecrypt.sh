@@ -97,6 +97,13 @@ validate_version() {
 setup_environment() {
     echo "Setting up environment..."
     check_commands wget tar sudo rm mkdir cp chown ping file uname dmsetup
+
+    # Ensure the script is running on Linux
+    if [ "$(uname)" != "Linux" ]; then
+        echo "Error: This script can only be run on Linux."
+        exit 1
+    fi
+
     check_sudo
 
     [ -d /usr/local/src/crypt/truecrypt ] || sudo mkdir -p /usr/local/src/crypt/truecrypt
