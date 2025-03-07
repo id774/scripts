@@ -4,9 +4,10 @@
 # install_veracrypt.sh: Install and Configure VeraCrypt
 #
 #  Description:
-#  This script downloads, installs, and configures VeraCrypt for different
-#  platforms (Linux, Windows, macOS, and source builds). It ensures that the
-#  necessary dependencies and directories exist and properly sets permissions.
+#  This script downloads, installs, and configures VeraCrypt for Linux.
+#  It ensures that the necessary dependencies and directories exist and
+#  properly sets permissions. The script automatically determines the system
+#  architecture and installs the predefined version (1.25.9).
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -21,11 +22,14 @@
 #       Integrated command existence and sudo privilege checks.
 #       Improved logging with `echo` for status updates.
 #       Standardized environment setup and permission handling.
+#       Automatically detect system architecture.
+#       Fixed VeraCrypt version to 1.25.9 (no longer user-specified).
+#       Simplified script by removing version argument.
 #  v0.1 2023-01-18
 #       Forked from TrueCrypt Installer.
 #
 #  Usage:
-#  ./install_veracrypt.sh ARCH VERSION [OPTION]
+#  ./install_veracrypt.sh [OPTION]
 #
 #  Options:
 #  -h   Display this help message.
@@ -35,7 +39,7 @@
 
 # Function to check required commands
 check_commands() {
-    for cmd in wget tar sudo rm mkdir cp chown ping file; do
+    for cmd in wget tar sudo rm mkdir cp chown ping file uname; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
             echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
             exit 127
@@ -54,10 +58,30 @@ check_sudo() {
     fi
 }
 
+# Determine system architecture
+get_architecture() {
+    case $(uname -m) in
+        i386|i686)
+            ARCH="x86"
+            ;;
+        x86_64|amd64)
+            ARCH="x64"
+            ;;
+        arm*|aarch64)
+            echo "Error: VeraCrypt does not support ARM architectures."
+            exit 1
+            ;;
+        *)
+            echo "Error: Unsupported architecture."
+            exit 1
+            ;;
+    esac
+}
+
 # Configure environment settings based on OS type
 setup_environment() {
     echo "Setting up environment..."
-    check_commands wget tar sudo rm mkdir cp chown ping file
+    check_commands wget tar sudo rm mkdir cp chown ping file uname
     check_sudo
 
     command -v dmsetup >/dev/null 2>&1 || sudo apt-get -y install dmsetup
@@ -74,6 +98,12 @@ setup_environment() {
     esac
 }
 
+# Save downloaded packages
+save_packages() {
+    sudo cp "$1" "$2"
+    sudo chown "$OWNER" "$2/$1"
+}
+
 # Set proper permissions for VeraCrypt files
 set_veracrypt_permission() {
     echo "Setting file permissions..."
@@ -84,28 +114,17 @@ set_veracrypt_permission() {
     done
 }
 
-# Save downloaded packages
-save_packages() {
-    sudo cp "$1" "$2"
-    sudo chown "$OWNER" "$2/$1"
-}
-
-# Save source files to /usr/local/src/crypt/veracrypt
-save_sources() {
-    sudo mv * /usr/local/src/crypt/veracrypt
-    sudo chown -R "$OWNER" /usr/local/src/crypt/veracrypt
-}
-
 # Install VeraCrypt
 install_veracrypt() {
-    echo "Installing VeraCrypt for architecture: $1, version: $2"
+    get_architecture
+    echo "Installing VeraCrypt version 1.25.9 for architecture: $ARCH"
     mkdir install_veracrypt
     cd install_veracrypt || exit 1
 
-    FILE_NAME="veracrypt-$2-setup-console-$(echo "$1" | awk -F'-' '{print $2}')"
+    FILE_NAME="veracrypt-1.25.9-setup-console-$ARCH"
     echo "Downloading $FILE_NAME..."
     wget "http://id774.net/veracrypt/$FILE_NAME"
-    [ -n "$3" ] || save_packages "$FILE_NAME" /usr/local/src/crypt/veracrypt
+    [ "$1" != "-n" ] && save_packages "$FILE_NAME" /usr/local/src/crypt/veracrypt
 
     chmod +x "./$FILE_NAME" && "./$FILE_NAME"
     file /usr/bin/veracrypt
@@ -118,7 +137,7 @@ install_veracrypt() {
 # Main function
 main() {
     if [ "$1" = "-h" ]; then
-        echo "Usage: ./install_veracrypt.sh ARCH VERSION [OPTION]"
+        echo "Usage: ./install_veracrypt.sh [OPTION]"
         echo ""
         echo "Options:"
         echo "  -h   Display this help message."
