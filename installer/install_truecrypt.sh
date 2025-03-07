@@ -95,10 +95,9 @@ validate_version() {
 # Configure environment settings based on OS type
 setup_environment() {
     echo "Setting up environment..."
-    check_commands wget tar sudo rm mkdir cp chown ping file uname
+    check_commands wget tar sudo rm mkdir cp chown ping file uname dmsetup
     check_sudo
 
-    command -v dmsetup >/dev/null 2>&1 || sudo apt-get -y install dmsetup
     [ -d /usr/local/src/crypt/truecrypt ] || sudo mkdir -p /usr/local/src/crypt/truecrypt
     [ -d "$HOME/.tmp" ] || mkdir "$HOME/.tmp"
 
