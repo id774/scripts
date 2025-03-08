@@ -58,12 +58,17 @@ check_sudo() {
 
 # Configure environment settings (Linux only)
 setup_environment() {
+    echo "Checking system requirements..."
+    check_commands wget md5sum tar make sudo rm mkdir cp chown ping dmsetup
+
     echo "Setting up environment..."
     # Ensure the script is running on Linux
     if [ "$(uname)" != "Linux" ]; then
         echo "Error: This script can only be run on Linux."
         exit 1
     fi
+
+    check_sudo
 
     OWNER=root:root
 }
@@ -131,15 +136,8 @@ main() {
         exit 0
     fi
 
-    echo "Checking system requirements..."
-    check_commands wget md5sum tar make sudo rm mkdir cp chown ping
-    check_sudo
-
     echo "Checking network connectivity..."
     ping -c 1 id774.net >/dev/null 2>&1 || exit 1
-
-    echo "Ensuring required dependencies are installed..."
-    command -v dmsetup >/dev/null 2>&1 || sudo apt-get -y install dmsetup
 
     if command -v des >/dev/null 2>&1; then
         echo "DES is already installed."
