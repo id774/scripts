@@ -94,6 +94,12 @@ setup_environment() {
     [ -d /usr/local/src/crypt/veracrypt ] || sudo mkdir -p /usr/local/src/crypt/veracrypt
     [ -d "$HOME/.tmp" ] || mkdir "$HOME/.tmp"
 
+    # Ensure TMP is correctly set to $HOME/.tmp
+    if [ "${TMP:-}" != "$HOME/.tmp" ]; then
+        echo "Error: TMP environment variable is not set correctly. Expected '$HOME/.tmp', but got '${TMP:-unset}'."
+        exit 1
+    fi
+
     OWNER=root:root
 }
 
