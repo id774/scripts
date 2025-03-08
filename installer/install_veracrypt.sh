@@ -80,6 +80,9 @@ get_architecture() {
 
 # Configure environment settings (Linux only)
 setup_environment() {
+    echo "Checking network connectivity..."
+    ping -c 1 id774.net >/dev/null 2>&1 || exit 1
+
     echo "Setting up environment..."
     check_commands wget tar sudo rm mkdir cp chown ping file uname dmsetup
 
@@ -121,6 +124,8 @@ set_veracrypt_permission() {
 
 # Install VeraCrypt
 install_veracrypt() {
+    setup_environment
+
     get_architecture
     echo "Installing VeraCrypt version 1.25.9 for architecture: $ARCH"
     mkdir install_veracrypt
@@ -150,10 +155,6 @@ main() {
         exit 0
     fi
 
-    echo "Checking network connectivity..."
-    ping -c 1 id774.net >/dev/null 2>&1 || exit 1
-
-    setup_environment
     install_veracrypt "$@"
 }
 

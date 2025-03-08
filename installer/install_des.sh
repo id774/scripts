@@ -68,6 +68,9 @@ setup_environment() {
         exit 1
     fi
 
+    echo "Checking network connectivity..."
+    ping -c 1 id774.net >/dev/null 2>&1 || exit 1
+
     check_sudo
 
     OWNER=root:root
@@ -89,6 +92,7 @@ save_sources() {
 install_des() {
     echo "Setting up DES installation..."
     setup_environment
+
     mkdir install_des
     cd install_des || exit 1
 
@@ -135,9 +139,6 @@ main() {
         echo "  -n   Do not save source files after installation."
         exit 0
     fi
-
-    echo "Checking network connectivity..."
-    ping -c 1 id774.net >/dev/null 2>&1 || exit 1
 
     if command -v des >/dev/null 2>&1; then
         echo "DES is already installed."

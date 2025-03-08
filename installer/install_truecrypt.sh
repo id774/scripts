@@ -105,6 +105,9 @@ setup_environment() {
         exit 1
     fi
 
+    echo "Checking network connectivity..."
+    ping -c 1 id774.net >/dev/null 2>&1 || exit 1
+
     check_sudo
 
     [ -d /usr/local/src/crypt/truecrypt ] || sudo mkdir -p /usr/local/src/crypt/truecrypt
@@ -137,6 +140,8 @@ set_truecrypt_permission() {
 
 # Install TrueCrypt
 install_truecrypt() {
+    setup_environment
+
     get_architecture
     validate_version "$1"
     echo "Installing TrueCrypt version: $VERSION for architecture: $ARCH"
@@ -169,10 +174,6 @@ main() {
         exit 0
     fi
 
-    echo "Checking network connectivity..."
-    ping -c 1 id774.net >/dev/null 2>&1 || exit 1
-
-    setup_environment
     install_truecrypt "$@"
 }
 
