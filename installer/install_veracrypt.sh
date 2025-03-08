@@ -94,14 +94,7 @@ setup_environment() {
     [ -d /usr/local/src/crypt/veracrypt ] || sudo mkdir -p /usr/local/src/crypt/veracrypt
     [ -d "$HOME/.tmp" ] || mkdir "$HOME/.tmp"
 
-    case $(uname) in
-      Darwin)
-        OWNER=root:wheel
-        ;;
-      *)
-        OWNER=root:root
-        ;;
-    esac
+    OWNER=root:root
 }
 
 # Save downloaded packages

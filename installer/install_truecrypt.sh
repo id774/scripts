@@ -109,14 +109,7 @@ setup_environment() {
     [ -d /usr/local/src/crypt/truecrypt ] || sudo mkdir -p /usr/local/src/crypt/truecrypt
     [ -d "$HOME/.tmp" ] || mkdir "$HOME/.tmp"
 
-    case $(uname) in
-      Darwin)
-        OWNER=root:wheel
-        ;;
-      *)
-        OWNER=root:root
-        ;;
-    esac
+    OWNER=root:root
 }
 
 # Save downloaded packages
