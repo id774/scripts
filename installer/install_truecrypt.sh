@@ -4,9 +4,10 @@
 # install_truecrypt.sh: Install and Configure TrueCrypt 7
 #
 #  Description:
-#  This script downloads, installs, and configures TrueCrypt 7 for different
-#  platforms (Linux, Windows, macOS, and source builds). It ensures that the
-#  necessary dependencies and directories exist and properly sets permissions.
+#  This script downloads, installs, and configures TrueCrypt 7 for Linux.
+#  It ensures that the necessary dependencies and directories exist and 
+#  properly sets permissions. The script is designed specifically for Linux
+#  systems and does not support Windows or macOS.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
