@@ -80,9 +80,6 @@ get_architecture() {
 
 # Configure environment settings (Linux only)
 setup_environment() {
-    echo "Checking network connectivity..."
-    ping -c 1 id774.net >/dev/null 2>&1 || exit 1
-
     echo "Setting up environment..."
     check_commands wget tar sudo rm mkdir cp chown ping file uname dmsetup
 
@@ -91,6 +88,9 @@ setup_environment() {
         echo "Error: This script can only be run on Linux."
         exit 1
     fi
+
+    echo "Checking network connectivity..."
+    ping -c 1 id774.net >/dev/null 2>&1 || exit 1
 
     check_sudo
 
@@ -116,6 +116,7 @@ save_packages() {
 set_veracrypt_permission() {
     echo "Setting file permissions..."
     for path in /usr/local/src/crypt/veracrypt /usr/share/veracrypt \
+                /usr/share/doc/veracrypt /usr/sbin/mount.veracrypt \
                 /usr/local/src/crypt /usr/local/src /usr/bin/veracrypt \
                 /usr/bin/veracrypt-uninstall.sh; do
         sudo chown -R "$OWNER" "$path" 2>/dev/null
