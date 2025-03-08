@@ -56,7 +56,7 @@ check_sudo() {
     fi
 }
 
-# Configure environment settings based on OS type
+# Configure environment settings (Linux only)
 setup_environment() {
     echo "Setting up environment..."
     # Ensure the script is running on Linux

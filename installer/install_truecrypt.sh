@@ -94,7 +94,7 @@ validate_version() {
     esac
 }
 
-# Configure environment settings based on OS type
+# Configure environment settings (Linux only)
 setup_environment() {
     echo "Setting up environment..."
     check_commands wget tar sudo rm mkdir cp chown ping file uname dmsetup
