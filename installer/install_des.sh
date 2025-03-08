@@ -58,14 +58,14 @@ check_sudo() {
 
 # Configure environment settings based on OS type
 setup_environment() {
-    case $(uname) in
-      Darwin)
-        OWNER=root:wheel
-        ;;
-      *)
-        OWNER=root:root
-        ;;
-    esac
+    echo "Setting up environment..."
+    # Ensure the script is running on Linux
+    if [ "$(uname)" != "Linux" ]; then
+        echo "Error: This script can only be run on Linux."
+        exit 1
+    fi
+
+    OWNER=root:root
 }
 
 # Save source files to /usr/local/src/crypt/des
