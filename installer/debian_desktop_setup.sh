@@ -107,9 +107,9 @@ restart_lightdm() {
 main() {
     check_system
     check_commands sudo dpkg-query grep tee systemctl tasksel
-    check_sudo
     check_desktop_installed
     check_lightdm
+    check_sudo
     disable_guest_session
     restart_lightdm
 }

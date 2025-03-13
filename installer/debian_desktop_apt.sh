@@ -145,8 +145,8 @@ optional_packages() {
 main() {
     check_environment
     check_commands sudo dpkg-query grep tasksel
-    check_sudo
     check_desktop_installed
+    check_sudo
     apt_upgrade
     desktop_environment
     fonts_packages
