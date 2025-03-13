@@ -14,6 +14,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-13
+#       Added progress output for better visibility.
+#       Added system compatibility check for Linux.
+#       Ensured tune2fs is installed before execution.
 #  v1.0 2025-03-13
 #       Improved POSIX compliance and modularization.
 #       Enhanced loop structures and variable handling.
@@ -32,11 +36,20 @@
 #  - Modifications apply to system partitions; review configurations beforehand.
 #
 #  Error Conditions:
+#  - If the system is not Linux, the script exits with an error.
 #  - If required commands are missing, the script exits with an error.
 #  - If no applicable devices are found, execution halts.
 #  - Errors from tune2fs should be resolved based on their output.
 #
 ########################################################################
+
+# Check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
 
 # Function to check required commands
 check_commands() {
@@ -53,14 +66,18 @@ check_commands() {
 
 # Apply tune2fs settings if device is a block device
 exec_tune2fs() {
+    echo "Checking device: $1"
     if [ -b "$1" ]; then
         echo "Applying tune2fs settings to $1"
         sudo tune2fs -i 0 -c 0 -m 1 "$1"
+    else
+        echo "Skipping: $1 is not a block device"
     fi
 }
 
 # Apply tune2fs to standard /dev/sda partitions
 set_sda() {
+    echo "Processing /dev/sda partitions..."
     for i in $(seq 0 9); do
         exec_tune2fs "/dev/sda$i"
     done
@@ -77,23 +94,27 @@ set_for_mapper() {
 # Configure LVM partitions for Debian
 set_lvm_debian() {
     mapper="/dev/mapper/$HOSTNAME_S"
+    echo "Configuring LVM for Debian: $mapper"
     set_for_mapper
 }
 
 # Configure LVM partitions for RHEL
 set_lvm_rhel() {
     mapper="/dev/mapper/vg_$HOSTNAME_S-lv_$HOSTNAME_S"
+    echo "Configuring LVM for RHEL: $mapper"
     set_for_mapper
 }
 
 # Configure custom LVM layout
 set_lvm_custom() {
     mapper="/dev/mapper/lv_$HOSTNAME_S"
+    echo "Configuring custom LVM: $mapper"
     set_for_mapper
 }
 
 # Configure log-based volume names
 set_lvm_logvol() {
+    echo "Processing log-based LVM volumes..."
     for i in $(seq 0 9); do
         exec_tune2fs "/dev/mapper/vg_$HOSTNAME_S-LogVol0$i"
     done
@@ -101,13 +122,17 @@ set_lvm_logvol() {
 
 # Main function to apply all tune2fs settings
 setup_tune2fs() {
+    echo "Starting tune2fs configuration..."
+    check_system
     check_commands sudo tune2fs hostname
     HOSTNAME_S=$(hostname -s)
+    echo "Detected hostname: $HOSTNAME_S"
     set_sda
     set_lvm_debian
     set_lvm_rhel
     set_lvm_custom
     set_lvm_logvol
+    echo "tune2fs configuration completed."
 }
 
 # Execute main operations
