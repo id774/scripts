@@ -44,7 +44,7 @@
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }
@@ -53,6 +53,29 @@ check_sudo() {
 check_environment() {
     if ! command -v apt-get >/dev/null 2>&1; then
         echo "Error: apt-get is not available on this system. This script requires a Debian-based environment." >&2
+        exit 1
+    fi
+}
+
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Check if a desktop environment is installed
+check_desktop_installed() {
+    if tasksel --list-tasks | grep -q '^i.*desktop'; then
+        echo "Desktop environment detected."
+    else
+        echo "No desktop environment found. Please install a desktop environment before running this script." >&2
         exit 1
     fi
 }
@@ -119,7 +142,9 @@ optional_packages() {
 # Main operation
 main() {
     check_environment
+    check_commands sudo dpkg-query grep tasksel
     check_sudo
+    check_desktop_installed
     apt_upgrade
     desktop_environment
     fonts_packages

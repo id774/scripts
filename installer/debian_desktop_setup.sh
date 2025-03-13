@@ -45,6 +45,14 @@ check_system() {
     fi
 }
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
 # Function to check required commands
 check_commands() {
     for cmd in "$@"; do
@@ -56,6 +64,16 @@ check_commands() {
             exit 126
         fi
     done
+}
+
+# Check if a desktop environment is installed
+check_desktop_installed() {
+    if tasksel --list-tasks | grep -q '^i.*desktop'; then
+        echo "Desktop environment detected."
+    else
+        echo "No desktop environment found. Please install a desktop environment before running this script." >&2
+        exit 1
+    fi
 }
 
 # Function to check if LightDM is installed
@@ -87,7 +105,9 @@ restart_lightdm() {
 # Main operation function
 main() {
     check_system
-    check_commands sudo dpkg-query grep tee systemctl
+    check_commands sudo dpkg-query grep tee systemctl tasksel
+    check_sudo
+    check_desktop_installed
     check_lightdm
     disable_guest_session
     restart_lightdm
