@@ -83,7 +83,7 @@ check_sudo() {
 # Set zsh as the default shell for the user and root
 set_zsh_to_default() {
     chsh -s /bin/zsh
-    sudo chsh -s /bin/sh root
+    sudo chsh -s /bin/zsh root
 }
 
 # Install various dotfiles configurations
@@ -121,19 +121,6 @@ install_crypt() {
     "$SCRIPTS/installer/install_veracrypt.sh"
 }
 
-# Configure system settings
-configure_sysstat() {
-    sudo dpkg-reconfigure sysstat
-}
-
-configure_hddtemp() {
-    sudo dpkg-reconfigure hddtemp
-}
-
-configure_sysctl() {
-    "$SCRIPTS/installer/configure_sysctl.sh" --apply
-}
-
 # Setup various system utilities
 setup_sysadmin_scripts() {
     "$SCRIPTS/installer/setup_sysadmin_scripts.sh"
@@ -157,6 +144,19 @@ permission_for_src() {
     sudo chown -R root:root /usr/local/src
 }
 
+# Configure system settings
+configure_sysctl() {
+    "$SCRIPTS/installer/configure_sysctl.sh" --apply
+}
+
+configure_sysstat() {
+    sudo dpkg-reconfigure sysstat
+}
+
+configure_hddtemp() {
+    sudo dpkg-reconfigure hddtemp
+}
+
 # Erase history files
 erase_history() {
     test -f "$HOME/.bash_history" && sudo rm "$HOME/.bash_history"
@@ -176,14 +176,14 @@ main() {
     test -d "$HOME/local/github/dot_emacs" || install_dot_emacs
     install_dot_files
     install_crypt
-    configure_sysstat
-    configure_hddtemp
     setup_sysadmin_scripts
     setup_get_resources
     setup_munin
     setup_securetty
-    configure_sysctl
     permission_for_src
+    configure_sysctl
+    configure_sysstat
+    configure_hddtemp
     erase_history
 }
 
