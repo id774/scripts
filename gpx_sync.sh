@@ -119,13 +119,15 @@ check_commands() {
 }
 
 # Ensure necessary commands are available
-check_commands chmod cp rsync rm
+check_commands chmod cp rsync rm find
 
 # Set default permissions from the configuration file or use the first argument if provided
 permissions=${1:-$DEFAULT_PERMISSIONS}
 
 # Check if the permissions argument is a valid 3-digit number
-if ! echo "$permissions" | grep -Eq '^[0-7]{3}$'; then
+if echo "$permissions" | grep -e '^[0-7][0-7][0-7]$' >/dev/null 2>&1; then
+    :
+else
     echo "Error: Permissions must be a 3-digit octal number." >&2
     exit 6
 fi
@@ -134,8 +136,8 @@ CURRENT_YEAR=$(date +"%Y")
 
 # Function to check if GPX files exist in a directory
 check_gpx_files() {
-    local dir=$1
-    if [ -z "$(ls -A $dir/*.gpx 2>/dev/null)" ]; then
+    dir="$1"
+    if ! find "$dir" -maxdepth 1 -name '*.gpx' -type f | grep -q .; then
         echo "No GPX files found in $dir. Exiting." >&2
         return 1
     fi
@@ -144,25 +146,22 @@ check_gpx_files() {
 
 # Function to set permissions and copy files to a directory, returning an error if the directory does not exist
 copy_files() {
-    local source_dir=$1
-    local destination=$2
-    local permissions=$3
+    source_dir="$1"
+    destination="$2"
+    permissions="$3"
     if [ ! -d "$destination" ]; then
         echo "Error: Destination directory $destination does not exist." >&2
         return 2
     fi
     echo "Copying files from $source_dir to $destination"
-    for file in "$source_dir"/*.gpx; do
-        chmod "$permissions" "$file"
-        cp "$file" "$destination" || return $?
-    done
+    find "$source_dir" -maxdepth 1 -name '*.gpx' -type f -exec chmod "$permissions" {} \; -exec cp {} "$destination" \;
 }
 
 # Function to perform rsync
 sync_files() {
-    local source=$1
-    local destination_user=$2
-    local destination_host=$3
+    source="$1"
+    destination_user="$2"
+    destination_host="$3"
     echo "rsync -avz --delete $source $destination_user@$destination_host:~/gpx/"
     rsync -avz --delete "$source" "$destination_user@$destination_host:~/gpx/" || return $?
 }
@@ -187,4 +186,3 @@ sync_files "$HOME/$USER_GPX_DIR" "$RSYNC_USER" "$RSYNC_HOST" || exit $?
 remove_files "$TMP_DIR"/*.gpx || exit $?
 
 echo "All operations completed successfully."
-
