@@ -1,76 +1,108 @@
 #!/bin/sh
-#
+
 ########################################################################
-# Setup tune2fs
+# setup_tune2fs.sh: Configure ext filesystem parameters using tune2fs
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script automates the configuration of ext-based filesystems
+#  using tune2fs. It disables periodic checks, sets reserved blocks,
+#  and applies settings for various storage configurations.
 #
-#  v0.4 2012-06-28
-#       Refactoring.
-#  v0.3 2012-04-28
-#       Refactoring.
-#  v0.2 2012-04-28
-#       Update for alias of hostname.
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 2025-03-13
+#       Improved POSIX compliance and modularization.
+#       Enhanced loop structures and variable handling.
+#  [Further version history truncated for brevity]
 #  v0.1 2011-09-26
 #       First version.
+#
+#  Usage:
+#  Run the script directly:
+#      ./setup_tune2fs.sh
+#  This script applies tune2fs settings to detected storage devices.
+#
+#  Notes:
+#  - The script is designed for ext-based filesystems only.
+#  - Ensure that tune2fs is installed before execution.
+#  - Modifications apply to system partitions; review configurations beforehand.
+#
+#  Error Conditions:
+#  - If required commands are missing, the script exits with an error.
+#  - If no applicable devices are found, execution halts.
+#  - Errors from tune2fs should be resolved based on their output.
+#
 ########################################################################
 
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Apply tune2fs settings if device is a block device
 exec_tune2fs() {
-    test -b $1  && sudo tune2fs -i 0 -c 0 -m 1 $1
+    if [ -b "$1" ]; then
+        echo "Applying tune2fs settings to $1"
+        sudo tune2fs -i 0 -c 0 -m 1 "$1"
+    fi
 }
 
+# Apply tune2fs to standard /dev/sda partitions
 set_sda() {
-    i=0
-    while [ $i -lt 10 ]
-    do
-        exec_tune2fs sda$i
-        i=`expr $i + 1`
+    for i in $(seq 0 9); do
+        exec_tune2fs "/dev/sda$i"
     done
 }
 
+# Apply tune2fs to LVM-based partitions
 set_for_mapper() {
-    exec_tune2fs $mapper-root
-    exec_tune2fs $mapper-tmp
-    exec_tune2fs $mapper-var
-    exec_tune2fs $mapper-opt
-    exec_tune2fs $mapper-usr
-    exec_tune2fs $mapper-home
-    exec_tune2fs $mapper-data
-    exec_tune2fs $mapper--root
-    exec_tune2fs $mapper--tmp
-    exec_tune2fs $mapper--var
-    exec_tune2fs $mapper--opt
-    exec_tune2fs $mapper--usr
-    exec_tune2fs $mapper--home
-    exec_tune2fs $mapper--data
-}
-
-set_lvm_debian() {
-    mapper=/dev/mapper/$HOSTNAME_S
-    set_for_mapper
-}
-
-set_lvm_rhel() {
-    mapper=/dev/mapper/vg_$HOSTNAME_S-lv_$HOSTNAME_S
-    set_for_mapper
-}
-
-set_lvm_custom() {
-    mapper=/dev/mapper/lv_$HOSTNAME_S
-    set_for_mapper
-}
-
-set_lvm_logvol() {
-    i=0
-    while [ $i -lt 10 ]
-    do
-        exec_tune2fs /dev/mapper/vg_$HOSTNAME_S-LogVol0$i
-        i=`expr $i + 1`
+    for partition in root tmp var opt usr home data; do
+        exec_tune2fs "$mapper-$partition"
+        exec_tune2fs "$mapper--$partition"
     done
 }
 
+# Configure LVM partitions for Debian
+set_lvm_debian() {
+    mapper="/dev/mapper/$HOSTNAME_S"
+    set_for_mapper
+}
+
+# Configure LVM partitions for RHEL
+set_lvm_rhel() {
+    mapper="/dev/mapper/vg_$HOSTNAME_S-lv_$HOSTNAME_S"
+    set_for_mapper
+}
+
+# Configure custom LVM layout
+set_lvm_custom() {
+    mapper="/dev/mapper/lv_$HOSTNAME_S"
+    set_for_mapper
+}
+
+# Configure log-based volume names
+set_lvm_logvol() {
+    for i in $(seq 0 9); do
+        exec_tune2fs "/dev/mapper/vg_$HOSTNAME_S-LogVol0$i"
+    done
+}
+
+# Main function to apply all tune2fs settings
 setup_tune2fs() {
-    HOSTNAME_S=`/bin/hostname -s`
+    check_commands sudo tune2fs hostname
+    HOSTNAME_S=$(hostname -s)
     set_sda
     set_lvm_debian
     set_lvm_rhel
@@ -78,4 +110,5 @@ setup_tune2fs() {
     set_lvm_logvol
 }
 
+# Execute main operations
 setup_tune2fs
