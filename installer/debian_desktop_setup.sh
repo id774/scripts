@@ -37,6 +37,14 @@
 #
 ########################################################################
 
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
+
 # Function to check required commands
 check_commands() {
     for cmd in "$@"; do
@@ -78,6 +86,7 @@ restart_lightdm() {
 
 # Main operation function
 main() {
+    check_system
     check_commands sudo dpkg-query grep tee systemctl
     check_lightdm
     disable_guest_session

@@ -49,6 +49,14 @@ check_sudo() {
     fi
 }
 
+# Check if the system supports apt-get
+check_environment() {
+    if ! command -v apt-get >/dev/null 2>&1; then
+        echo "Error: apt-get is not available on this system. This script requires a Debian-based environment." >&2
+        exit 1
+    fi
+}
+
 # System update and upgrade
 apt_upgrade() {
     sudo apt-get update &&
@@ -110,6 +118,7 @@ optional_packages() {
 
 # Main operation
 main() {
+    check_environment
     check_sudo
     apt_upgrade
     desktop_environment
