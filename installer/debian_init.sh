@@ -1,124 +1,114 @@
 #!/bin/sh
 #
 ########################################################################
-# Initial Setup Script for Ubuntu/Debian
+# debian_init.sh: Initial Setup Script for Ubuntu/Debian
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script automates the initial setup of Debian-based systems, ensuring
+#  a consistent environment configuration. It verifies the system type,
+#  sets up necessary directories, and executes predefined installation scripts.
 #
-#  v4.0 2011-09-28
-#       Reconstruction.
-#  v3.2 2011-09-09
-#       Remove truecrypt version number.
-#  v3.1 2011-07-11
-#       Packed off ruby and frameworks.
-#  v3.0 2011-06-16
-#       Fork from Initial Setup Script, cut off debian apt.
-#  v2.5 2011-05-24
-#       For zsh framework.
-#  v2.4 2011-03-28
-#       Remove building ruby 1.9 from default.
-#  v2.3 2011-02-28
-#       Switch aptitude to apt-get.
-#  v2.2 2010-08-30
-#       Add KVM.
-#  v2.1 2010-08-07
-#       Update to truecrypt 7.
-#  v2.0 2010-07-21
-#       Correspond to Lucid.
-# v1.27 2010-06-29
-#       Update to ruby 1.8.7-p299.
-# v1.26 2010-06-07
-#       Add sysvconfig.
-# v1.25 2010-05-07
-#       Update to ruby 1.9 as default.
-# v1.24 2010-03-03
-#       Add Debian Developer Tools.
-# v1.23 2010-02-17
-#       Update to ruby 1.8.7-p249, 1.9.1-p378.
-#       Add python install.
-# v1.22 2010-02-02
-#       Add sysklogd.
-# v1.21 2009-12-26
-#       Update to ruby 1.8.7-p248, 1.9.1-p376.
-# v1.20 2009-12-17
-#       Add xfwm4-themes.
-# v1.19 2009-10-05
-#       Add exiftool.
-# v1.18 2009-08-27
-#       Update to rails 2.3.3.
-# v1.17 2009-07-31
-#       Remove opera.
-# v1.16 2009-05-18
-#       Remove uim-el, and update misc setup.
-# v1.15 2009-05-13
-#       Add ubuntu-ja, OpenOffice.org, codec, icons.
-#       Setting reserved blocks percentage of ext3 filesystem to 1%.
-# v1.14 2009-04-29
-#       Add GNU GLOBAL.
-# v1.13 2009-03-11
-#       Disable local build vim.
-# v1.12 2009-01-19
-#       Add monitoring tools.
-# v1.11 2009-01-18
-#       Update to truecrypt 6.1a.
-# v1.10 2008-12-31
-#       Add emacs-w3m.
-#  v1.9 2008-12-26
-#       Add paco.
-#  v1.8 2008-12-11
-#       Add Bitstream Vera Sans Mono, set emacs default, purge vim-gnome.
-#  v1.7 2008-11-06
-#       Change root shell from zsh to bash.
-#  v1.6 2008-10-30
-#       Emacs snapshot as default.
-#  v1.5 2008-10-24
-#       Add sysstat.
-#  v1.4 2008-10-14
-#       Splash various problems of initial setup and set debian as default.
-#  v1.3 2008-09-25
-#       Auto tune2fs when using LVM.
-#  v1.2 2008-09-23
-#       Add curl.
-#  v1.1 2008-08-14
-#       Automatic Install for gpg,browser,iptable,trac,passenger,
-#       and Install Xfce4.
-#  v1.0 2008-05-12
-#       Stable, for Ubuntu Hardy.
-#  v0.6 2008-04-17
-#       Remove samba, adding sshfs.
-#  v0.5 2008-01-28
-#       Last setup added.
-#  v0.4 2007-11-23
-#       PostgreSQL added.
-#  v0.3 2007-10-16
-#       Save source code.
-#  v0.2 2007-09-04
-#       Add Optional Application Install.
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v5.0 2025-03-13
+#       Improved system detection for Debian and Ubuntu.
+#       Enhanced documentation and comments for better maintainability.
+#       Ensured strict POSIX compliance.
+#  [Further version history truncated for brevity]
 #  v0.1 2007-08-27
 #       First version.
+#
+#  Usage:
+#  Run the script directly:
+#      ./debian_init.sh
+#  Ensure that the required setup scripts exist in the designated directory.
+#  This script verifies system compatibility before proceeding.
+#
+#  Notes:
+#  - The script is designed for Debian-based systems (Debian, Ubuntu, etc.).
+#  - Internet connectivity is required for package installations.
+#  - Review and modify the installation scripts as needed before execution.
+#
+#  Error Conditions:
+#  - If the system is not Debian-based, the script exits with an error.
+#  - If the required directory does not exist, an error message is displayed.
+#  - Errors from underlying scripts should be resolved based on their output.
+#
 ########################################################################
 
-test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
-test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
-
-operation() {
-    # Environment
-    $SCRIPTS/installer/debian_env.sh
-
-    # Packages
-    $SCRIPTS/installer/debian_apt.sh
-
-    # Customize
-    $SCRIPTS/installer/debian_batch_installers.sh
-
-    # Desktop Packages
-    #$SCRIPTS/installer/debian_desktop_apt.sh
-
-    # Desktop Customize
-    #$SCRIPTS/installer/debian_desktop_installers.sh
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
 }
 
-# debian?
-test -f /etc/debian_version || exit 1
+# Function to verify if the system is Debian-based
+check_debian_based() {
+    if [ ! -f /etc/os-release ]; then
+        echo "Error: Unable to determine the operating system." >&2
+        exit 1
+    fi
 
-operation $*
+    # Extracting OS information
+    OS_ID=$(awk -F= '/^ID=/{print $2}' /etc/os-release | tr -d '"')
+    OS_LIKE=$(awk -F= '/^ID_LIKE=/{print $2}' /etc/os-release | tr -d '"')
+
+    # Checking if the system is Debian-based
+    case "$OS_ID" in
+        debian|ubuntu) return 0 ;;
+        *)
+            case "$OS_LIKE" in
+                *debian*) return 0 ;;
+                *)
+                    echo "Error: This script is intended for Debian or Ubuntu systems only." >&2
+                    exit 1
+                    ;;
+            esac
+            ;;
+    esac
+}
+
+# Function to verify script environment
+setup_environment() {
+    SCRIPTS="$HOME/scripts"
+    if [ ! -d "$SCRIPTS" ]; then
+        echo "Error: Directory '$SCRIPTS' does not exist. Please create it or specify the correct path." >&2
+        exit 1
+    fi
+}
+
+# Main operation function
+operation() {
+    setup_environment
+    check_commands awk tr
+
+    # Environment setup
+    "$SCRIPTS/installer/debian_env.sh"
+
+    # Package installation
+    "$SCRIPTS/installer/debian_apt.sh"
+
+    # System customization
+    "$SCRIPTS/installer/debian_setup.sh"
+
+    # Optional: Install desktop-related packages and customization
+    #"$SCRIPTS/installer/debian_desktop_apt.sh"
+    #"$SCRIPTS/installer/debian_desktop_setup.sh"
+}
+
+# Check if the system is Debian-based before proceeding
+check_debian_based
+
+# Execute main operations
+operation "$@"

@@ -13,6 +13,35 @@
 #       First version.
 ########################################################################
 
+# Check if the system supports apt-get
+check_environment() {
+    if ! command -v apt-get >/dev/null 2>&1; then
+        echo "Error: apt-get is not available on this system. This script requires a Debian-based environment."
+        exit 1
+    fi
+}
+
+setup_environment() {
+    SCRIPTS="$HOME/scripts"
+    if [ ! -d "$SCRIPTS" ]; then
+        echo "Error: Directory '$SCRIPTS' does not exist. Please create it or specify the correct path."
+        exit 1
+    fi
+}
+
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            exit 126
+        fi
+    done
+}
+
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
@@ -21,9 +50,11 @@ check_sudo() {
     fi
 }
 
-show_hw_info() {
-    cat /proc/meminfo
-    cat /proc/cpuinfo
+apt_upgrade() {
+    sudo apt-get update &&
+    sudo apt-get -y upgrade &&
+    sudo apt-get autoclean &&
+    sudo apt-get -y autoremove
 }
 
 create_admin_group() {
@@ -31,42 +62,21 @@ create_admin_group() {
     sudo groupadd wheel
 }
 
-setup_apt_source() {
-    SOURCESLIST=sources-$DISTRIB_CODENAME.list
-    sudo cp $SCRIPTS/etc/$SOURCESLIST /etc/apt/sources.list
-    sudo vi /etc/apt/sources.list
-    sudo apt-get update
-}
-
-chromium_daily_gpg() {
-    sudo apt-key adv --recv-keys --keyserver keyserver.ubuntu.com \
-      0xfbef0d696de1c72ba5a835fe5a9bf3bb4e5e17b5
-}
-
-opt_bin_and_sbin() {
-    sudo mkdir -p /opt/sbin
-    sudo mkdir -p /opt/bin
-}
-
-home_permission() {
-    sudo chmod 750 /home/*
-}
-
-operation() {
-    show_hw_info
-    check_sudo
-    create_admin_group
-
-    # tune2fs
+setup_tune2fs() {
     $SCRIPTS/installer/setup_tune2fs.sh
-
-    test -f /etc/lsb-release && DISTRIB_CODENAME=bionic
-    test -f /etc/lsb-release || DISTRIB_CODENAME=buster
-    setup_apt_source
-    #chromium_daily_gpg
-
-    opt_bin_and_sbin
-    home_permission
 }
 
-operation $*
+# Main operation
+main() {
+    check_environment
+    setup_environment
+    check_commands sudo vi
+    check_sudo
+
+    sudo vi /etc/apt/sources.list
+    apt_upgrade
+
+    setup_tune2fs
+}
+
+main "$@"
