@@ -8,6 +8,7 @@ v1.3.3 (Release Date: TBD)
 - Added sudo privilege checks to numerous scripts for improved security.
 - Major version upgrade with significant changes to several installation scripts.
 - Revamped Debian initial setup scripts.
+- Improved error messages in multiple scripts by redirecting them to stderr for better logging and debugging.
 
 v1.3.2 (2025-02-27)
 -------------------
