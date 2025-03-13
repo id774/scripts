@@ -176,7 +176,7 @@ main() {
     lang_packages
     scm_packages
     db_packages
-    samba_packages
+    # samba_packages
     sqlite_packages
     optional_packages
     # Further package groups can be added here as needed
