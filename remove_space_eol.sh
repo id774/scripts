@@ -32,12 +32,12 @@ do
     if sed -e 's/[[:blank:]]*$//' "$1.tmp" > "$1"; then
       echo "Removed trailing whitespace from '$1'"
     else
-      echo "Error processing '$1'"
+      echo "Error processing '$1'" >&2
     fi
     # Remove the temporary file
     rm "$1.tmp"
   else
-    echo "Error moving '$1' to temporary file"
+    echo "Error moving '$1' to temporary file" >&2
   fi
 
   # Move to the next file

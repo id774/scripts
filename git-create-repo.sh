@@ -89,7 +89,7 @@ EOF
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }
@@ -97,10 +97,10 @@ check_sudo() {
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "Error: Git is not installed. This script requires Git for managing Git repositories. Please install Git and try again."
+            echo "Error: Git is not installed. This script requires Git for managing Git repositories. Please install Git and try again." >&2
             exit 127
         elif ! [ -x "$(command -v "$cmd")" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -110,7 +110,7 @@ check_commands() {
 check_directory() {
     dir=$1
     if [ ! -d "$dir" ]; then
-        echo "Error: Directory '$dir' does not exist."
+        echo "Error: Directory '$dir' does not exist." >&2
         exit 3
     fi
 }
@@ -169,7 +169,7 @@ delete_git_repo() {
         $use_sudo rm -rf "${repo_path}"
         echo "Repository at '${repo_path}' has been deleted."
     else
-        echo "Error: '${repo_path}' is not a Git repository."
+        echo "Error: '${repo_path}' is not a Git repository." >&2
         exit 4
     fi
 }

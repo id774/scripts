@@ -64,7 +64,7 @@ CONF_FILE="$SCRIPT_DIR/etc/run_tests.conf"
 if [ ! -f "$CONF_FILE" ]; then
     CONF_FILE="$SCRIPT_DIR/../etc/run_tests.conf"
     if [ ! -f "$CONF_FILE" ]; then
-        echo "Configuration file not found."
+        echo "Configuration file not found." >>$JOBLOG 2>&1
         exit 3
     fi
 fi
@@ -72,7 +72,7 @@ fi
 
 # Check if necessary variables are set
 if [ -z "$SCRIPTS" ] || [ -z "$JOBLOG" ] || [ -z "$python_versions" ] || [ -z "$ruby_versions" ]; then
-    echo "Error: Configuration variables not set. Check run_tests.conf."
+    echo "Error: Configuration variables not set. Check run_tests.conf." >>$JOBLOG 2>&1
     exit 4
 fi
 

@@ -29,7 +29,7 @@
 
 # Check if the system is GNU/Linux and 'apt' command exists
 if [ "$(uname)" != "Linux" ] || ! command -v apt > /dev/null; then
-    echo "This script requires a GNU/Linux system with the 'apt' command installed."
+    echo "This script requires a GNU/Linux system with the 'apt' command installed." >&2
     exit 1
 fi
 

@@ -87,7 +87,7 @@ CONF_FILE="$SCRIPT_DIR/etc/gpx_sync.conf"
 if [ ! -f "$CONF_FILE" ]; then
     CONF_FILE="$SCRIPT_DIR/../etc/gpx_sync.conf"
     if [ ! -f "$CONF_FILE" ]; then
-        echo "Error: Configuration file not found."
+        echo "Error: Configuration file not found." >&2
         exit 3
     fi
 fi
@@ -95,13 +95,13 @@ fi
 
 # Check if necessary variables are set
 if [ -z "$TMP_DIR" ] || [ -z "$USER_GPX_DIR" ] || [ -z "$MOUNTED_DIR" ] || [ -z "$RSYNC_USER" ] || [ -z "$RSYNC_HOST" ]; then
-    echo "Error: One or more configuration variables are not set. Please check your gpx_sync.conf."
+    echo "Error: One or more configuration variables are not set. Please check your gpx_sync.conf." >&2
     exit 4
 fi
 
 # Check if DEFAULT_PERMISSIONS is set in the configuration file if no permissions are provided as an argument
 if [ -z "$1" ] && [ -z "$DEFAULT_PERMISSIONS" ]; then
-    echo "Error: DEFAULT_PERMISSIONS is not set in the configuration file and no permissions argument was provided."
+    echo "Error: DEFAULT_PERMISSIONS is not set in the configuration file and no permissions argument was provided." >&2
     exit 5
 fi
 
@@ -109,10 +109,10 @@ fi
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif ! [ -x "$(command -v "$cmd")" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -126,7 +126,7 @@ permissions=${1:-$DEFAULT_PERMISSIONS}
 
 # Check if the permissions argument is a valid 3-digit number
 if ! echo "$permissions" | grep -Eq '^[0-7]{3}$'; then
-    echo "Error: Permissions must be a 3-digit octal number."
+    echo "Error: Permissions must be a 3-digit octal number." >&2
     exit 6
 fi
 
@@ -136,7 +136,7 @@ CURRENT_YEAR=$(date +"%Y")
 check_gpx_files() {
     local dir=$1
     if [ -z "$(ls -A $dir/*.gpx 2>/dev/null)" ]; then
-        echo "No GPX files found in $dir. Exiting."
+        echo "No GPX files found in $dir. Exiting." >&2
         return 1
     fi
     return 0
@@ -148,7 +148,7 @@ copy_files() {
     local destination=$2
     local permissions=$3
     if [ ! -d "$destination" ]; then
-        echo "Error: Destination directory $destination does not exist."
+        echo "Error: Destination directory $destination does not exist." >&2
         return 2
     fi
     echo "Copying files from $source_dir to $destination"

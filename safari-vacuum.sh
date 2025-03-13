@@ -28,7 +28,7 @@
 
 # Check if sqlite3 command is available
 if ! command -v sqlite3 >/dev/null 2>&1; then
-    echo "sqlite3 command not found. Please install sqlite3."
+    echo "sqlite3 command not found. Please install sqlite3." >&2
     exit 1
 fi
 
@@ -39,7 +39,7 @@ if [ -d "$SAFARI_CACHE_DIR" ] && [ -w "$SAFARI_CACHE_DIR/Cache.db" ]; then
     sqlite3 Cache.db vacuum
     echo "Safari cache database vacuumed."
 else
-    echo "Safari cache directory or Cache.db not found or not writable."
+    echo "Safari cache directory or Cache.db not found or not writable." >&2
     exit 1
 fi
 

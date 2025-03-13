@@ -30,7 +30,7 @@
 
 # Check if the system is Debian-based
 if [ ! -f /etc/debian_version ]; then
-  echo "This script only runs on Debian-based systems."
+  echo "This script only runs on Debian-based systems." >&2
   exit 1
 fi
 

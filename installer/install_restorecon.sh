@@ -28,7 +28,7 @@
 
 # Ensure SCRIPTS environment variable is set
 if [ -z "$SCRIPTS" ]; then
-    echo "SCRIPTS environment variable is not set. Please set it to the directory containing the restorecon script."
+    echo "SCRIPTS environment variable is not set. Please set it to the directory containing the restorecon script." >&2
     exit 1
 fi
 

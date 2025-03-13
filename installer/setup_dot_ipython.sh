@@ -37,8 +37,8 @@
 # Check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
-        echo "Error: SCRIPTS environment variable is not set."
-        echo "Please set the SCRIPTS variable to the path of your IPython startup files."
+        echo "Error: SCRIPTS environment variable is not set." >&2
+        echo "Please set the SCRIPTS variable to the path of your IPython startup files." >&2
         exit 1
     fi
 }
@@ -48,7 +48,7 @@ check_ipython() {
     IPYTHON_PATH=$(command -v ipython)
 
     if [ -z "$IPYTHON_PATH" ]; then
-        echo "Error: IPython is not installed."
+        echo "Error: IPython is not installed." >&2
         exit 1
     else
         echo "IPython found at: $IPYTHON_PATH"

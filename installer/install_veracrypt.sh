@@ -41,10 +41,10 @@
 check_commands() {
     for cmd in wget tar sudo rm mkdir cp chown ping file uname; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif ! [ -x "$(command -v "$cmd")" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -53,7 +53,7 @@ check_commands() {
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }
@@ -68,11 +68,11 @@ get_architecture() {
             ARCH="x64"
             ;;
         arm*|aarch64)
-            echo "Error: VeraCrypt does not support ARM architectures."
+            echo "Error: VeraCrypt does not support ARM architectures." >&2
             exit 1
             ;;
         *)
-            echo "Error: Unsupported architecture."
+            echo "Error: Unsupported architecture." >&2
             exit 1
             ;;
     esac
@@ -85,7 +85,7 @@ setup_environment() {
 
     # Ensure the script is running on Linux
     if [ "$(uname)" != "Linux" ]; then
-        echo "Error: This script can only be run on Linux."
+        echo "Error: This script can only be run on Linux." >&2
         exit 1
     fi
 

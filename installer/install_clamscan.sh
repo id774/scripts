@@ -28,7 +28,7 @@
 
 # Ensure SCRIPTS environment variable is set
 if [ -z "$SCRIPTS" ]; then
-    echo "SCRIPTS environment variable is not set. Please set it to the directory containing the clamscan related files."
+    echo "SCRIPTS environment variable is not set. Please set it to the directory containing the clamscan related files." >&2
     exit 1
 fi
 

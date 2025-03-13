@@ -44,10 +44,10 @@
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif ! [ -x "$(command -v "$cmd")" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -68,7 +68,7 @@ LOG_FILE=$1
 
 # Check if log file exists
 if [ ! -f "$LOG_FILE" ]; then
-    echo "Error: Log file not found at $LOG_FILE"
+    echo "Error: Log file not found at $LOG_FILE" >&2
     exit 1
 fi
 

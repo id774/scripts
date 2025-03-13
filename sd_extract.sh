@@ -74,10 +74,10 @@
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif ! [ -x "$(command -v "$cmd")" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -94,7 +94,7 @@ CONF_FILE="$SCRIPT_DIR/etc/sd_extract.conf"
 if [ ! -f "$CONF_FILE" ]; then
     CONF_FILE="$SCRIPT_DIR/../etc/sd_extract.conf"
     if [ ! -f "$CONF_FILE" ]; then
-        echo "Configuration file not found."
+        echo "Configuration file not found." >&2
         exit 5
     fi
 fi
@@ -102,13 +102,13 @@ fi
 
 # Check if necessary variables are set
 if [ -z "$SOURCE_DIRS" ] || [ -z "$FILE_PATTERNS" ] || [ -z "$DEST_DIR" ] || [ -z "$DEFAULT_PERMISSIONS" ]; then
-    echo "Error: Configuration variables not set. Check sd_extract.conf."
+    echo "Error: Configuration variables not set. Check sd_extract.conf." >&2
     exit 6
 fi
 
 # Check if destination directory exists
 if [ ! -d "$DEST_DIR" ]; then
-    echo "Error: Destination directory $DEST_DIR does not exist."
+    echo "Error: Destination directory $DEST_DIR does not exist." >&2
     exit 2
 fi
 
@@ -117,7 +117,7 @@ permissions=${1:-$DEFAULT_PERMISSIONS}
 
 # Check if the permissions argument is a valid 3-digit number
 if ! echo "$permissions" | grep -Eq '^[0-7]{3}$'; then
-    echo "Error: Permissions must be a 3-digit octal number."
+    echo "Error: Permissions must be a 3-digit octal number." >&2
     exit 8
 fi
 

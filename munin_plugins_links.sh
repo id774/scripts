@@ -55,7 +55,7 @@ EOF
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }
@@ -67,13 +67,13 @@ PLUGINS_DIR=/etc/munin/plugins
 
 # Check if the temporary directory is writable
 if [ ! -w "$TMP_SCRIPT_DIR" ]; then
-    echo "Error: Temporary directory $TMP_SCRIPT_DIR is not writable."
+    echo "Error: Temporary directory $TMP_SCRIPT_DIR is not writable." >&2
     exit 3
 fi
 
 # Check if the plugins directory exists
 if [ ! -d "$PLUGINS_DIR" ]; then
-    echo "Error: Plugins directory $PLUGINS_DIR does not exist."
+    echo "Error: Plugins directory $PLUGINS_DIR does not exist." >&2
     exit 4
 fi
 
@@ -98,7 +98,7 @@ while getopts "hc" opt; do
       chmod +x "$SCRIPT_NAME"
 
       # Execute the script in the plugins directory
-      cd "$PLUGINS_DIR" || { echo "Error: Failed to change directory to $PLUGINS_DIR."; exit 5; }
+      cd "$PLUGINS_DIR" || { echo "Error: Failed to change directory to $PLUGINS_DIR." >&2; exit 5; }
       sudo "$SCRIPT_NAME"
       rm "$SCRIPT_NAME"
 

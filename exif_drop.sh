@@ -62,7 +62,7 @@ fi
 # Validate the directory path argument
 PATH=$1
 if [ ! -d "$PATH" ]; then
-  echo "Error: '$PATH' is not a valid directory."
+  echo "Error: '$PATH' is not a valid directory." >&2
   exit 1
 fi
 

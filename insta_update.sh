@@ -154,7 +154,7 @@ CONF_FILE="$SCRIPT_DIR/etc/insta_update.conf"
 if [ ! -f "$CONF_FILE" ]; then
     CONF_FILE="$SCRIPT_DIR/../etc/insta_update.conf"
     if [ ! -f "$CONF_FILE" ]; then
-        echo "Error: Configuration file not found."
+        echo "Error: Configuration file not found." >&2
         exit 1
     fi
 fi
@@ -162,13 +162,13 @@ fi
 
 # Check if necessary variables are set
 if [ -z "$PYTHON_BIN" ] || [ -z "$DOWNLOADER_SCRIPT" ] || [ -z "$SYNC_SCRIPT" ] || [ -z "$TARGET_DIR" ]; then
-    echo "Error: One or more configuration variables are not set. Please check your insta_update.conf."
+    echo "Error: One or more configuration variables are not set. Please check your insta_update.conf." >&2
     exit 3
 fi
 
 # Check if specified scripts and target directory exist and are executable
 if [ ! -x "$PYTHON_BIN" ] || [ ! -f "$DOWNLOADER_SCRIPT" ] || [ ! -x "$DOWNLOADER_SCRIPT" ] || [ ! -f "$SYNC_SCRIPT" ] || [ ! -x "$SYNC_SCRIPT" ] || [ ! -d "$TARGET_DIR" ]; then
-    echo "Error: Specified scripts or target directory do not exist or are not executable."
+    echo "Error: Specified scripts or target directory do not exist or are not executable." >&2
     exit 4
 fi
 
@@ -176,10 +176,10 @@ fi
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif ! [ -x "$(command -v "$cmd")" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -211,7 +211,7 @@ while [ $# -gt 0 ]; do
                 ACCOUNT_SPECIFIED=$(echo "$2" | sed 's:[/\\]*$::')
                 shift 2
             else
-                echo "Error: --account option requires a value."
+                echo "Error: --account option requires a value." >&2
                 exit 2
             fi
             ;;
@@ -221,7 +221,7 @@ while [ $# -gt 0 ]; do
             ;;
         *)
             # Unknown option
-            echo "Error: Unknown option $1"
+            echo "Error: Unknown option $1" >&2
             exit 2
             ;;
     esac

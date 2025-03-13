@@ -58,7 +58,7 @@ CONF_FILE="$SCRIPT_DIR/etc/dashcam_sync.conf"
 if [ ! -f "$CONF_FILE" ]; then
     CONF_FILE="$SCRIPT_DIR/../etc/dashcam_sync.conf"
     if [ ! -f "$CONF_FILE" ]; then
-        echo "Configuration file not found."
+        echo "Configuration file not found." >&2
         exit 4
     fi
 fi
@@ -66,7 +66,7 @@ fi
 
 # Check if necessary variables are set
 if [ -z "$SOURCE_DIR" ] || [ -z "$DEST_DIR" ]; then
-    echo "Error: SOURCE_DIR or DEST_DIR not set in configuration."
+    echo "Error: SOURCE_DIR or DEST_DIR not set in configuration." >&2
     exit 5
 fi
 
@@ -74,7 +74,7 @@ YEAR_DIR="$(date +"%Y")"
 
 # Check if source and destination directories exist
 if [ ! -d "$SOURCE_DIR" ] || [ ! -d "$DEST_DIR" ]; then
-    echo "Error: Source or destination directory does not exist."
+    echo "Error: Source or destination directory does not exist." >&2
     exit 1
 fi
 
@@ -82,7 +82,7 @@ fi
 echo "Synchronizing files to $DEST_DIR..."
 rsync -avz --delete "$SOURCE_DIR/" "$DEST_DIR/daily/"
 if [ $? -ne 0 ]; then
-    echo "Error: Rsync failed."
+    echo "Error: Rsync failed." >&2
     exit 2
 fi
 
@@ -100,7 +100,7 @@ move_files() {
     echo "Moving files from $from_dir to $to_dir..."
     mv "$from_dir"/* "$to_dir/"
     if [ $? -ne 0 ]; then
-        echo "Error: Moving files failed."
+        echo "Error: Moving files failed." >&2
         exit 3
     fi
 }

@@ -43,7 +43,7 @@
 
 # Ensure the system is Ubuntu-based
 if [ ! -f /etc/lsb-release ] || [ ! -f /etc/debian_version ]; then
-    echo "This script only runs on Ubuntu or Ubuntu-based systems."
+    echo "This script only runs on Ubuntu or Ubuntu-based systems." >&2
     exit 1
 fi
 

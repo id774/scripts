@@ -33,14 +33,14 @@
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }
 
 # Ensure SCRIPTS environment variable is set
 if [ -z "$SCRIPTS" ]; then
-    echo "SCRIPTS environment variable is not set. Please set it to the directory containing the rsync backup related files."
+    echo "SCRIPTS environment variable is not set. Please set it to the directory containing the rsync backup related files." >&2
     exit 1
 fi
 
