@@ -50,6 +50,14 @@ check_system() {
     fi
 }
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
 # Function to check required commands
 check_commands() {
     for cmd in "$@"; do
@@ -69,8 +77,6 @@ exec_tune2fs() {
     if [ -b "$1" ]; then
         echo "Applying tune2fs settings to $1"
         sudo tune2fs -i 0 -c 0 -m 1 "$1"
-    else
-        echo "Skipping: $1 is not a block device"
     fi
 }
 
@@ -124,6 +130,7 @@ setup_tune2fs() {
     echo "Starting tune2fs configuration..."
     check_system
     check_commands sudo tune2fs hostname
+    check_sudo
     HOSTNAME_S=$(hostname -s)
     echo "Detected hostname: $HOSTNAME_S"
     set_sda
