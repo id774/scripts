@@ -1,89 +1,117 @@
 #!/bin/sh
-#
+
 ########################################################################
-# Batch Installers for Debian
+# debian_setup.sh: Debian batch setup script
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script automates the installation and configuration of essential
+#  system utilities, dotfiles, cryptographic tools, and system security
+#  settings on Debian-based systems. It ensures a consistent setup
+#  for system administration and development environments.
 #
-#  v0.5 2025-03-05
-#       Added sudo privilege check when --sudo option is specified.
-#  v0.4 2012-05-07
-#       Correspond to Ubuntu Precise.
-#  v0.3 2012-04-16
-#       Shape up unnecessary functions.
-#  v0.2 2012-01-23
-#       Reconstruction CoffeeScript Environment.
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 2025-03-13
+#       Enhanced documentation and comments for better maintainability.
+#       Ensured strict POSIX compliance.
+#  [Further version history truncated for brevity]
 #  v0.1 2011-09-28
 #       First version.
+#
+#  Usage:
+#  Run the script directly:
+#      ./debian_setup.sh
+#  Ensure that required setup scripts exist in the designated directory.
+#  This script verifies system compatibility and necessary privileges before execution.
+#
+#  Notes:
+#  - The script is designed for Debian-based systems (Debian, Ubuntu, etc.).
+#  - Internet connectivity is required for downloading dotfiles and system utilities.
+#  - Review and modify the installation scripts as needed before execution.
+#
+#  Error Conditions:
+#  - If required commands are missing, the script exits with an error.
+#  - If the user lacks sudo privileges, execution is halted.
+#  - Errors from underlying scripts should be resolved based on their output.
+#
 ########################################################################
-
-setup_environment() {
-    SCRIPTS="$HOME/scripts"
-    if [ ! -d "$SCRIPTS" ]; then
-        echo "Error: Directory '$SCRIPTS' does not exist. Please create it or specify the correct path."
-        exit 1
-    fi
-}
 
 # Function to check required commands
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again."
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif ! [ -x "$(command -v "$cmd")" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions."
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
 }
 
-# Check if the user has sudo privileges (password may be required)
-check_sudo() {
-    if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access."
+# Function to verify script environment
+setup_environment() {
+    SCRIPTS="$HOME/scripts"
+    if [ ! -d "$SCRIPTS" ]; then
+        echo "Error: Directory '$SCRIPTS' does not exist. Please create it or specify the correct path." >&2
         exit 1
     fi
 }
 
+# Check if the user has sudo privileges
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
+# Set zsh as the default shell for the user and root
 set_zsh_to_default() {
     chsh -s /bin/zsh
     sudo chsh -s /bin/sh root
 }
 
+# Install various dotfiles configurations
 install_dot_vim() {
     sudo locale-gen ja_JP.UTF-8
-    $SCRIPTS/installer/install_dotvim.sh
+    "$SCRIPTS/installer/install_dotvim.sh"
 }
 
 install_dot_zsh() {
-    test -d $HOME/local/github || mkdir -p $HOME/local/github
-    cd $HOME/local/github
+    test -d "$HOME/local/github" || mkdir -p "$HOME/local/github"
+    cd "$HOME/local/github"
     git clone https://github.com/id774/dot_zsh.git
     cd
-    ln -s $HOME/local/github/dot_zsh
-    $HOME/local/github/dot_zsh/install_dotzsh.sh
+    ln -s "$HOME/local/github/dot_zsh"
+    "$HOME/local/github/dot_zsh/install_dotzsh.sh"
 }
 
 install_dot_emacs() {
-    test -d $HOME/local/github || mkdir -p $HOME/local/github
-    cd $HOME/local/github
+    test -d "$HOME/local/github" || mkdir -p "$HOME/local/github"
+    cd "$HOME/local/github"
     git clone https://github.com/id774/dot_emacs.git
     cd
-    ln -s $HOME/local/github/dot_emacs
-    $HOME/local/github/dot_emacs/install_dotemacs.sh
+    ln -s "$HOME/local/github/dot_emacs"
+    "$HOME/local/github/dot_emacs/install_dotemacs.sh"
 }
 
 install_dot_files() {
-    $SCRIPTS/installer/install_dotfiles.sh
+    "$SCRIPTS/installer/install_dotfiles.sh"
 }
 
+# Install cryptographic tools
 install_crypt() {
-    $SCRIPTS/installer/install_des.sh
-    $SCRIPTS/installer/install_truecrypt.sh
-    $SCRIPTS/installer/install_veracrypt.sh
+    "$SCRIPTS/installer/install_des.sh"
+    "$SCRIPTS/installer/install_truecrypt.sh"
+    "$SCRIPTS/installer/install_veracrypt.sh"
 }
 
+# Configure system settings
 configure_sysstat() {
     sudo dpkg-reconfigure sysstat
 }
@@ -92,45 +120,49 @@ configure_hddtemp() {
     sudo dpkg-reconfigure hddtemp
 }
 
+configure_sysctl() {
+    "$SCRIPTS/installer/configure_sysctl.sh" --apply
+}
+
+# Setup various system utilities
 setup_sysadmin_scripts() {
-    $SCRIPTS/installer/setup_sysadmin_scripts.sh
+    "$SCRIPTS/installer/setup_sysadmin_scripts.sh"
 }
 
 setup_get_resources() {
-    $SCRIPTS/installer/install_get_resources.sh
+    "$SCRIPTS/installer/install_get_resources.sh"
 }
 
 setup_munin() {
-    $SCRIPTS/installer/install_munin.sh
+    "$SCRIPTS/installer/install_munin.sh"
 }
 
 setup_securetty() {
-    $SCRIPTS/securetty.sh
+    "$SCRIPTS/securetty.sh"
 }
 
-configure_sysctl() {
-    $SCRIPTS/installer/configure_sysctl.sh --apply
-}
-
+# Set permissions for /usr/src
 permission_for_src() {
     sudo chown -R root:root /usr/src
     sudo chown -R root:root /usr/local/src
 }
 
+# Erase history files
 erase_history() {
-    test -f $HOME/.bash_history && sudo rm $HOME/.bash_history
-    test -f $HOME/.mysql_history && sudo rm $HOME/.mysql_history
-    test -f $HOME/.viminfo && sudo rm $HOME/.viminfo
+    test -f "$HOME/.bash_history" && sudo rm "$HOME/.bash_history"
+    test -f "$HOME/.mysql_history" && sudo rm "$HOME/.mysql_history"
+    test -f "$HOME/.viminfo" && sudo rm "$HOME/.viminfo"
 }
 
+# Main operation function
 main() {
     setup_environment
     check_commands sudo vi zsh git
     check_sudo
     set_zsh_to_default
-    test -d ~/.vim || install_dot_vim
-    test -d ~/local/github/dot_zsh || install_dot_zsh
-    test -d ~/local/github/dot_emacs || install_dot_emacs
+    test -d "$HOME/.vim" || install_dot_vim
+    test -d "$HOME/local/github/dot_zsh" || install_dot_zsh
+    test -d "$HOME/local/github/dot_emacs" || install_dot_emacs
     install_dot_files
     install_crypt
     configure_sysstat
@@ -144,4 +176,5 @@ main() {
     erase_history
 }
 
+# Execute main operations
 main "$@"
