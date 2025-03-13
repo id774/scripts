@@ -14,13 +14,12 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.1 2025-03-13
-#       Added progress output for better visibility.
-#       Added system compatibility check for Linux.
-#       Ensured tune2fs is installed before execution.
 #  v1.0 2025-03-13
 #       Improved POSIX compliance and modularization.
 #       Enhanced loop structures and variable handling.
+#       Added progress output for better visibility.
+#       Added system compatibility check for Linux.
+#       Ensured tune2fs is installed before execution.
 #  [Further version history truncated for brevity]
 #  v0.1 2011-09-26
 #       First version.

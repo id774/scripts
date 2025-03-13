@@ -16,6 +16,7 @@
 #  v1.0 2025-03-13
 #       Automated guest session disabling in LightDM.
 #       Improved script automation and removed manual editing step.
+#       Added system checks and improved error handling.
 #  [Further version history truncated for brevity]
 #  v0.1 2011-09-28
 #       First version.
