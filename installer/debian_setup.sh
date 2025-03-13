@@ -18,6 +18,7 @@
 #  v1.0 2025-03-13
 #       Enhanced documentation and comments for better maintainability.
 #       Ensured strict POSIX compliance.
+#       Added system compatibility check for Linux.
 #  [Further version history truncated for brevity]
 #  v0.1 2011-09-28
 #       First version.
@@ -34,11 +35,20 @@
 #  - Review and modify the installation scripts as needed before execution.
 #
 #  Error Conditions:
+#  - If the system is not Linux, the script exits with an error.
 #  - If required commands are missing, the script exits with an error.
 #  - If the user lacks sudo privileges, execution is halted.
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 ########################################################################
+
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
 
 # Function to check required commands
 check_commands() {
@@ -156,8 +166,9 @@ erase_history() {
 
 # Main operation function
 main() {
+    check_system
     setup_environment
-    check_commands sudo vi zsh git
+    check_commands sudo vi zsh git dpkg-reconfigure
     check_sudo
     set_zsh_to_default
     test -d "$HOME/.vim" || install_dot_vim
