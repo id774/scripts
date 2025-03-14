@@ -21,6 +21,7 @@
 #  Version History:
 #  v1.6 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
+#       Refactored for POSIX compliance by removing non-standard syntax.
 #  v1.5 2024-08-26
 #       Added validation to ensure that the permissions argument is a 3-digit octal number.
 #       Updated error handling with a new return code (6) for invalid permissions input.
@@ -133,12 +134,12 @@ error_files=""
 # Variables set in a subshell are not visible in the parent shell, so changes to variables inside the loop do not persist outside of it.
 # By using a flag file, we can create a persistent indicator that can be checked outside of the subshell.
 sync_files() {
-    local source_dir=$1
-    local file_pattern=$2
-    local dest_dir=$3
-    local permissions=$4
+    source_dir=$1
+    file_pattern=$2
+    dest_dir=$3
+    permissions=$4
     # Create a temporary flag file to detect if any files have been copied
-    local flag_file="/tmp/files_copied_$$"
+    flag_file="/tmp/files_copied_$$"
 
     # Check if the source directory exists
     if [ ! -d "$source_dir" ]; then
