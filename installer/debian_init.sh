@@ -1,5 +1,5 @@
 #!/bin/sh
-#
+
 ########################################################################
 # debian_init.sh: Initial Setup Script for Ubuntu/Debian
 #
@@ -90,7 +90,7 @@ setup_environment() {
 }
 
 # Main operation function
-operation() {
+main() {
     setup_environment
     check_commands awk tr
 
@@ -112,4 +112,4 @@ operation() {
 check_debian_based
 
 # Execute main operations
-operation "$@"
+main "$@"
