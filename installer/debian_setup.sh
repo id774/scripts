@@ -118,9 +118,6 @@ install_dot_zsh() {
 
 install_dot_vim() {
     if [ ! -d "$HOME/.vim" ] && command -v vim >/dev/null 2>&1; then
-        if ! locale -a | grep -q '^ja_JP\.UTF-8$'; then
-            sudo locale-gen ja_JP.UTF-8
-        fi
         "$SCRIPTS/installer/install_dotvim.sh"
     fi
 }
@@ -199,7 +196,7 @@ erase_history() {
 main() {
     check_system
     setup_environment
-    check_commands sudo vi zsh git cut getent locale locale-gen dpkg-reconfigure
+    check_commands sudo vi zsh git cut getent dpkg-reconfigure
     check_sudo
     set_zsh_to_default
     install_dot_files

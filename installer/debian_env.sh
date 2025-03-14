@@ -77,6 +77,13 @@ check_sudo() {
     fi
 }
 
+# Set locale ja_JP.UTF-8
+set_locale_jp() {
+    if ! locale -a | grep -q '^ja_JP\.UTF-8$'; then
+        sudo locale-gen ja_JP.UTF-8
+    fi
+}
+
 # Perform system update and upgrade
 apt_upgrade() {
     sudo apt-get update &&
@@ -100,9 +107,10 @@ setup_tune2fs() {
 main() {
     check_environment
     setup_environment
-    check_commands sudo vi
+    check_commands sudo vi locale locale-gen
     check_sudo
 
+    set_locale_jp
     sudo vi /etc/apt/sources.list
     apt_upgrade
     create_admin_group
