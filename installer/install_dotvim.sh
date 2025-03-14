@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# install_dot_vim.sh: Installer for dot_vim Configuration
+# install_dotvim.sh: Installer for dot_vim Configuration
 #
 #  Description:
 #  This script automates the setup of the `.vim` directory by:
@@ -23,9 +23,9 @@
 #
 #  Usage:
 #  Run this script directly without any arguments for default installation:
-#      ./install_dot_vim.sh
+#      ./install_dotvim.sh
 #  Specify a custom installation path:
-#      ./install_dot_vim.sh /custom/path/to/.vim
+#      ./install_dotvim.sh /custom/path/to/.vim
 #
 #  Requirements:
 #  - The `SCRIPTS` environment variable must be set to the directory
