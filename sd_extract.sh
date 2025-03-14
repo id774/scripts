@@ -191,7 +191,7 @@ IFS="$OLD_IFS"
 
 # Check if any files were copied
 if [ "$files_copied" = false ]; then
-    echo "No matching files found to copy."
+    echo "No matching files found to copy." >&2
     exit 1
 fi
 
