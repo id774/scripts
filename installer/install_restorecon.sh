@@ -16,7 +16,7 @@
 #
 #  Version History:
 #  v0.4 2025-03-14
-#       Added network connection check, Linux system validation, command validation, and improved error handling.
+#       Added Linux system validation, command validation, and improved error handling.
 #  v0.3 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v0.2 2024-03-17
@@ -51,14 +51,6 @@ check_commands() {
     done
 }
 
-# Function to check network connectivity
-check_network() {
-    if ! ping -c 1 id774.net >/dev/null 2>&1; then
-        echo "Error: No network connection detected. Please check your internet access." >&2
-        exit 1
-    fi
-}
-
 # Function to check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
@@ -70,8 +62,7 @@ check_scripts() {
 
 # Perform initial checks
 check_system
-check_commands sudo cp chmod chown touch mkdir ping
-check_network
+check_commands sudo cp chmod chown touch mkdir
 check_scripts
 
 # Ensure required directory exists
