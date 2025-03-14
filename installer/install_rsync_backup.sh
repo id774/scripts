@@ -74,7 +74,7 @@ check_sudo() {
 
 # Perform initial checks
 check_system
-check_commands sudo rsync cp chmod chown mkdir touch cmp uname
+check_commands sudo rsync cp chmod chown mkdir touch
 check_scripts
 check_sudo
 
