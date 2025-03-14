@@ -65,7 +65,7 @@ check_commands() {
 }
 
 # Check required commands
-check_commands sudo cp mkdir chmod chown rm ln find zsh
+check_commands sudo cp mkdir chmod chown id rm ln find zsh
 
 check_sudo
 
@@ -138,7 +138,7 @@ deploy_dotfiles() {
 deploy_dotfiles_to_others() {
     if [ -d "$1" ]; then
         deploy_dotfiles "$1"
-        sudo chown -R "$2" "$1"
+        sudo chown -R "$2:$(id -gn "$2")" "$1"
     fi
 }
 
@@ -157,8 +157,8 @@ deploy_dotfiles_to_linux() {
     do
         if [ -d "/home/$1" ]; then
             deploy_dotfiles "/home/$1"
-            sudo chown "$1:$1" "/home/$1"
-            sudo find "/home/$1" -maxdepth 1 -mindepth 1 -exec chown "$1:$1" {} +
+            sudo chown "$1:$(id -gn "$1")" "/home/$1"
+            sudo find "/home/$1" -maxdepth 1 -mindepth 1 -exec chown "$1:$(id -gn "$1")" {} +
         fi
         shift
     done
