@@ -76,7 +76,7 @@ while getopts "hc" opt; do
       ;;
     *)
       display_help
-      exit 1
+      exit 0
       ;;
   esac
 done

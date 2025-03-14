@@ -17,6 +17,7 @@
 #  v1.0 2025-03-13
 #       Added system compatibility check for Linux.
 #       Removed manual vi editing and automated configuration steps.
+#       Redirected error messages to stderr for better logging and debugging.
 #  [Further version history truncated for brevity]
 #  v0.1 2011-07-07
 #       First.

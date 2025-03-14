@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.2 2024-01-23
 #       Integrated check_commands function for dependency checks.
 #  v1.1 2023-12-05
@@ -44,7 +46,7 @@ check_commands platex uplatex dvipdfmx nkf
 # Check for input file
 if [ -z "$1" ]; then
     echo "Usage: $0 [tex-file]"
-    exit 1
+    exit 0
 fi
 
 TEX=$*

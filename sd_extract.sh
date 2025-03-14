@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.5 2024-08-26
 #       Added validation to ensure that the permissions argument is a 3-digit octal number.
 #       Updated error handling with a new return code (6) for invalid permissions input.

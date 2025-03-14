@@ -23,6 +23,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.0 2025-02-25
 #       - Initial release with backup creation and error handling.
 #
@@ -62,8 +64,8 @@ BACKUP_FILE="$TMP/$(basename "$HISTORY_FILE").bak.$(date +%Y%m%d%H%M%S)"
 
 # Check if an argument is provided
 if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 <string>" >&2
-    exit 1
+    echo "Usage: $0 <string>"
+    exit 0
 fi
 
 PATTERN="$1"

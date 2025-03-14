@@ -18,6 +18,7 @@
 #       Improved system detection for Debian and Ubuntu.
 #       Enhanced documentation and comments for better maintainability.
 #       Ensured strict POSIX compliance.
+#       Redirected error messages to stderr for better logging and debugging.
 #  [Further version history truncated for brevity]
 #  v0.1 2007-08-27
 #       First version.

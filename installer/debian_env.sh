@@ -17,6 +17,7 @@
 #  v1.0 2025-03-13
 #       Enhanced documentation and comments for better maintainability.
 #       Ensured strict POSIX compliance.
+#       Redirected error messages to stderr for better logging and debugging.
 #  [Further version history truncated for brevity]
 #  v0.1 2011-09-28
 #       First version.

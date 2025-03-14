@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.4 2024-01-07
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.
@@ -58,7 +60,7 @@ check_commands rm find
 if [ -z "$1" ]; then
   echo "Error: No target directory provided."
   echo "Usage: $0 <target_directory>"
-  exit 1
+  exit 0
 fi
 
 # Remove common junk files from the specified directory

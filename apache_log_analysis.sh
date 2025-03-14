@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.5 2024-01-07
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.
@@ -60,7 +62,7 @@ check_commands grep zgrep awk
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 log_file_path"
     echo "Example: $0 /var/log/apache2/ssl_access.log"
-    exit 1
+    exit 0
 fi
 
 # Set the log file path

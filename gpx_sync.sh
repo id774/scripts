@@ -17,6 +17,11 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.9 2025-03-14
+#       Redirected error messages to stderr for better logging and debugging.
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax
+#       with POSIX standard commands and structures. Enhanced portability
+#       and compatibility across different UNIX-like systems.
 #  v1.8 2024-08-23
 #       Added validation to ensure that the permissions argument is a 3-digit octal number.
 #       Updated error handling with a new return code (6) for invalid permissions input.

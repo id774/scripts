@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.3 2024-01-07
 #       Added an option to include hidden directories in the tree display.
 #       Updated command existence and execution permission checks

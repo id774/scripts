@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.3 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
 #  v1.2 2024-08-11
@@ -111,7 +113,7 @@ while getopts "hc" opt; do
       ;;
     *)
       display_help
-      exit 1
+      exit 0
       ;;
   esac
 done

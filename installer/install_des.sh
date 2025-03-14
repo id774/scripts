@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v2.0 2025-03-06
 #       Updated to be POSIX compliant.
 #       Replaced non-POSIX `which` with `command -v`.

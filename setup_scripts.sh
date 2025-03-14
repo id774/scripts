@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.3 2024-01-07
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.
@@ -39,8 +41,8 @@
 
 # Check if SCRIPTS variable is set
 if [ -z "$SCRIPTS" ]; then
-    echo "Error: SCRIPTS environment variable is not set."
-    echo "Please set the SCRIPTS variable to the path of your script collection."
+    echo "Error: SCRIPTS environment variable is not set." >&2
+    echo "Please set the SCRIPTS variable to the path of your script collection." >&2
     exit 1
 fi
 

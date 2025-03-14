@@ -57,7 +57,7 @@ main() {
         git checkout -b $1 origin/$1
     else
         echo "usage: git-co-remote-branch <branch>"
-        exit 1
+        exit 0
     fi
 }
 

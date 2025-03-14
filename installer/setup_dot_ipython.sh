@@ -14,10 +14,12 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#   v1.1 2023-12-20
-#        Refactored script for readability and added documentation.
-#   v1.0 2014-08-16
-#        Initial release for automating IPython setup.
+#  v1.2 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
+#  v1.1 2023-12-20
+#       Refactored script for readability and added documentation.
+#  v1.0 2014-08-16
+#       Initial release for automating IPython setup.
 #
 #  Usage:
 #  Run this script to initialize and configure your IPython environment.

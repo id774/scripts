@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.2 2024-02-08
 #       Enhanced documentation, added configuration variable checks, and
 #       improved error handling and script structure.

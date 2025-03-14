@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v2.0 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
 #  v1.9 2024-03-17

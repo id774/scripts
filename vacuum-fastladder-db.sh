@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.3 2024-01-22
 #       Integrated check_commands function for dependency checks.
 #  v1.2 2023-12-08
@@ -47,7 +49,7 @@ check_commands() {
 }
 
 # Check for required commands
-check_commands sqlite3
+check_commands sqlite3 rm test
 
 # Define the Fastladder database directory and file path
 DB_DIR="$HOME/fastladder/db"

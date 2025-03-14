@@ -8,6 +8,8 @@
 #
 #  Maintainer: id774 <idnanashi@gmail.com>
 #
+# v1.10 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.9 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
 #  v1.8 2014-06-26

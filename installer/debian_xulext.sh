@@ -17,6 +17,7 @@
 #       Ensured POSIX compliance and improved error handling.
 #       Added system compatibility check for Debian.
 #       Enhanced package installation logic.
+#       Redirected error messages to stderr for better logging and debugging.
 #  [Further version history truncated for brevity]
 #  v0.1 2015-03-19
 #       First version.

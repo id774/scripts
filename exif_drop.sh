@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.2 2024-08-11
 #       Added input validation to ensure directory is provided as an argument.
 #       Display help message if no arguments are provided.

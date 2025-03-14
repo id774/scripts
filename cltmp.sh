@@ -14,6 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  20250313 - Redirected error messages to stderr for better logging and debugging.
 #  20250304 - Moved .netrwhist cleanup to cltmp.sh.
 #  20250303 - Added removal of unnecessary files in the home directory.
 #  20250119 - Fix wildcard handling in rm commands to ensure proper file deletion.
@@ -129,4 +130,4 @@ rm -vf "$HOME"/.vim/.netrwhist
 rm -vf "$HOME"/*.swp "$HOME"/*.swo "$HOME"/*.bak "$HOME"/*.~ "$HOME"/*.old
 rm -vf "$HOME"/.*.swp "$HOME"/.*.swo "$HOME"/.*.bak "$HOME"/.*.~ "$HOME"/.*.old
 
-echo "cltmp (20250304) done."
+echo "cltmp (20250313) done."

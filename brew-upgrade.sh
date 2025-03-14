@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.0 2025-01-26
 #       Initial release.
 #

@@ -20,6 +20,7 @@
 #       Added progress output for better visibility.
 #       Added system compatibility check for Linux.
 #       Ensured tune2fs is installed before execution.
+#       Redirected error messages to stderr for better logging and debugging.
 #  [Further version history truncated for brevity]
 #  v0.1 2011-09-26
 #       First version.

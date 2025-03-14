@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.7 2025-01-13
 #       Added display of Python and Ruby versions in both initial setup
 #       and final test reports for enhanced visibility.
@@ -52,8 +54,8 @@ export PYTHONDONTWRITEBYTECODE=1
 
 # Check if SCRIPTS variable is set
 if [ -z "$SCRIPTS" ]; then
-    echo "Error: SCRIPTS environment variable is not set."
-    echo "Please set the SCRIPTS variable to the path of your script collection."
+    echo "Error: SCRIPTS environment variable is not set." >&2
+    echo "Please set the SCRIPTS variable to the path of your script collection." >&2
     exit 1
 fi
 
@@ -196,7 +198,7 @@ fi
 # Final report
 total_failures=$((python_failures + ruby_failures))
 if [ "$total_failures" -ne 0 ]; then
-    echo "Some tests failed. Total failures: $total_failures."
+    echo "Some tests failed. Total failures: $total_failures." >&2
     exit 1
 else
     echo "All tests passed successfully."

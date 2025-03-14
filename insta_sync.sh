@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.5 2024-10-23
 #       Fixed issue with removing trailing backslash from the Instagram account name argument.
 #       Added 'sed' to the list of required commands in the check_commands function

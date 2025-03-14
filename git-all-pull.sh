@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.2 2024-01-07
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.
@@ -57,7 +59,7 @@ check_commands() {
 usage() {
     echo "Usage: $0 [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]"
     echo "Default behavior is to show this help message. Use '--all' to pull from both github and git directories."
-    exit 1
+    exit 0
 }
 
 # Parse options

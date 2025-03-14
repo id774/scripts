@@ -44,6 +44,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
 #  v1.3 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
 #  v1.2 2025-02-26
@@ -95,7 +97,7 @@ if [ "$1" != "--apply" ]; then
     echo "To apply these settings, run the following command:"
     echo "  $0 --apply"
     echo "\nThis will modify /etc/sysctl.d/ and apply security configurations immediately."
-    exit 1
+    exit 0
 fi
 
 # Function to check required commands
