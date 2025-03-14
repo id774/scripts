@@ -110,13 +110,18 @@ install_sqlite() {
     rm -rf install_sqlite
 }
 
-# Perform initial checks
-check_system
-check_commands wget make sudo tar ping
-check_network
-check_sudo
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands wget make sudo tar ping
+    check_network
+    check_sudo
 
-# Run the installation process
-install_sqlite "$1" "$2"
+    # Run the installation process
+    install_sqlite "$1" "$2"
 
-echo "SQLite $VERSION installed successfully."
+    echo "SQLite $VERSION installed successfully."
+}
+
+main "$@"

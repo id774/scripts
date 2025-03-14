@@ -39,6 +39,14 @@
 #
 ########################################################################
 
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
+
 # Function to check required commands
 check_commands() {
     for cmd in wget tar sudo rm mkdir cp chown ping file uname; do
@@ -50,6 +58,14 @@ check_commands() {
             exit 126
         fi
     done
+}
+
+# Function to check network connectivity
+check_network() {
+    if ! ping -c 1 id774.net >/dev/null 2>&1; then
+        echo "Error: No network connection detected. Please check your internet access." >&2
+        exit 1
+    fi
 }
 
 # Check if the user has sudo privileges (password may be required)
@@ -83,16 +99,13 @@ get_architecture() {
 # Configure environment settings (Linux only)
 setup_environment() {
     echo "Setting up environment..."
+    check_system
+
+    echo "Checking system requirements..."
     check_commands wget tar sudo rm mkdir cp chown ping file uname dmsetup
 
-    # Ensure the script is running on Linux
-    if [ "$(uname)" != "Linux" ]; then
-        echo "Error: This script can only be run on Linux." >&2
-        exit 1
-    fi
-
     echo "Checking network connectivity..."
-    ping -c 1 id774.net >/dev/null 2>&1 || exit 1
+    check_network
 
     check_sudo
 

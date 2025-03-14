@@ -60,40 +60,54 @@ check_scripts() {
     fi
 }
 
-# Perform initial checks
-check_system
-check_commands sudo cp chmod chown touch mkdir
-check_scripts
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
 
-# Ensure required directory exists
-if [ ! -d /var/log/sysadmin ]; then
-    sudo mkdir -p /var/log/sysadmin
-    sudo chmod 750 /var/log/sysadmin
-    sudo chown root:adm /var/log/sysadmin
-fi
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands sudo cp chmod chown touch mkdir
+    check_scripts
+    check_sudo
 
-# Deploy restorecon script
-sudo cp "$SCRIPTS/cron/bin/restorecon.sh" /root/bin/
-sudo chmod 700 /root/bin/restorecon.sh
-sudo chown root:root /root/bin/restorecon.sh
+    # Ensure required directory exists
+    if [ ! -d /var/log/sysadmin ]; then
+        sudo mkdir -p /var/log/sysadmin
+        sudo chmod 750 /var/log/sysadmin
+        sudo chown root:adm /var/log/sysadmin
+    fi
 
-# Set up restorecon cron job
-sudo cp "$SCRIPTS/cron/bin/restorecon" /etc/cron.weekly/
-sudo chmod 750 /etc/cron.weekly/restorecon
-sudo chown root:adm /etc/cron.weekly/restorecon
+    # Deploy restorecon script
+    sudo cp "$SCRIPTS/cron/bin/restorecon.sh" /root/bin/
+    sudo chmod 700 /root/bin/restorecon.sh
+    sudo chown root:root /root/bin/restorecon.sh
 
-# Ensure restorecon log file exists and set permissions
-if [ ! -f /var/log/sysadmin/restorecon.log ]; then
-    sudo touch /var/log/sysadmin/restorecon.log
-    sudo chmod 640 /var/log/sysadmin/restorecon.log
-    sudo chown root:adm /var/log/sysadmin/restorecon.log
-fi
+    # Set up restorecon cron job
+    sudo cp "$SCRIPTS/cron/bin/restorecon" /etc/cron.weekly/
+    sudo chmod 750 /etc/cron.weekly/restorecon
+    sudo chown root:adm /etc/cron.weekly/restorecon
 
-# Deploy log rotation configuration for restorecon logs
-if [ ! -f /etc/logrotate.d/restorecon ]; then
-    sudo cp "$SCRIPTS/cron/etc/logrotate.d/restorecon" /etc/logrotate.d/
-    sudo chmod 644 /etc/logrotate.d/restorecon
-    sudo chown root:root /etc/logrotate.d/restorecon
-fi
+    # Ensure restorecon log file exists and set permissions
+    if [ ! -f /var/log/sysadmin/restorecon.log ]; then
+        sudo touch /var/log/sysadmin/restorecon.log
+        sudo chmod 640 /var/log/sysadmin/restorecon.log
+        sudo chown root:adm /var/log/sysadmin/restorecon.log
+    fi
 
-echo "Restorecon cron job setup completed successfully."
+    # Deploy log rotation configuration for restorecon logs
+    if [ ! -f /etc/logrotate.d/restorecon ]; then
+        sudo cp "$SCRIPTS/cron/etc/logrotate.d/restorecon" /etc/logrotate.d/
+        sudo chmod 644 /etc/logrotate.d/restorecon
+        sudo chown root:root /etc/logrotate.d/restorecon
+    fi
+
+    echo "Restorecon cron job setup completed successfully."
+}
+
+main "$@"

@@ -84,36 +84,41 @@ check_sudo() {
     fi
 }
 
-# Perform initial checks
-check_system
-check_commands sudo cp chmod chown mkdir touch logrotate
-check_scripts
-check_sudo
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands sudo cp chmod chown mkdir touch logrotate
+    check_scripts
+    check_sudo
 
-# Make Directory if it doesn't exist and set permissions
-if [ ! -d /var/log/sysadmin ]; then
-    sudo mkdir -p /var/log/sysadmin
-    sudo chmod 750 /var/log/sysadmin
-    sudo chown root:adm /var/log/sysadmin
-fi
+    # Make Directory if it doesn't exist and set permissions
+    if [ ! -d /var/log/sysadmin ]; then
+        sudo mkdir -p /var/log/sysadmin
+        sudo chmod 750 /var/log/sysadmin
+        sudo chown root:adm /var/log/sysadmin
+    fi
 
-# Set up log file and permissions
-if [ ! -f /var/log/sysadmin/fix-permissions.log ]; then
-    sudo touch /var/log/sysadmin/fix-permissions.log
-    sudo chmod 640 /var/log/sysadmin/fix-permissions.log
-    sudo chown root:adm /var/log/sysadmin/fix-permissions.log
-fi
+    # Set up log file and permissions
+    if [ ! -f /var/log/sysadmin/fix-permissions.log ]; then
+        sudo touch /var/log/sysadmin/fix-permissions.log
+        sudo chmod 640 /var/log/sysadmin/fix-permissions.log
+        sudo chown root:adm /var/log/sysadmin/fix-permissions.log
+    fi
 
-# Deploy log rotation configuration
-if [ ! -f /etc/logrotate.d/fix-permissions ]; then
-    sudo cp "$SCRIPTS/cron/etc/logrotate.d/fix-permissions" /etc/logrotate.d/fix-permissions
-    sudo chmod 640 /etc/logrotate.d/fix-permissions
-    sudo chown root:adm /etc/logrotate.d/fix-permissions
-fi
+    # Deploy log rotation configuration
+    if [ ! -f /etc/logrotate.d/fix-permissions ]; then
+        sudo cp "$SCRIPTS/cron/etc/logrotate.d/fix-permissions" /etc/logrotate.d/fix-permissions
+        sudo chmod 640 /etc/logrotate.d/fix-permissions
+        sudo chown root:adm /etc/logrotate.d/fix-permissions
+    fi
 
-# Deploy the fix-permissions script and cron job
-sudo cp "$SCRIPTS/cron/bin/fix-permissions.sh" /etc/cron.daily/fix-permissions
-sudo chmod 744 /etc/cron.daily/fix-permissions
-sudo chown root:adm /etc/cron.daily/fix-permissions
+    # Deploy the fix-permissions script and cron job
+    sudo cp "$SCRIPTS/cron/bin/fix-permissions.sh" /etc/cron.daily/fix-permissions
+    sudo chmod 744 /etc/cron.daily/fix-permissions
+    sudo chown root:adm /etc/cron.daily/fix-permissions
 
-echo "Fix-permissions script setup completed successfully."
+    echo "Fix-permissions script setup completed successfully."
+}
+
+main "$@"

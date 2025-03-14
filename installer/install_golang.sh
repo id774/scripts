@@ -82,6 +82,7 @@ setup_environment() {
     else
         SUDO="sudo"
     fi
+    check_sudo
 }
 
 # Download and install Go
@@ -114,13 +115,17 @@ install_go() {
     go version
 }
 
-# Perform initial checks
-check_system
-check_commands curl tar ping
-check_network
-check_sudo
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands curl tar ping
+    check_network
 
-# Run the installation process
-install_go "$1" "$2" "$3"
+    # Run the installation process
+    install_go "$1" "$2" "$3"
 
-echo "Go $VERSION installed successfully at $TARGET."
+    echo "Go $VERSION installed successfully at $TARGET."
+}
+
+main "$@"

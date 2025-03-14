@@ -71,6 +71,15 @@ check_network() {
     fi
 }
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if [ "$SUDO" = "sudo" ] && ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access or specify 'no-sudo'." >&2
+        exit 1
+    fi
+}
+
+
 # Setup version and environment
 setup_environment() {
     VERSION="${1:-5.9}"
@@ -80,6 +89,7 @@ setup_environment() {
     else
         SUDO="sudo"
     fi
+    check_sudo
 }
 
 # Save sources if requested
@@ -111,12 +121,17 @@ install_ncurses() {
     rm -rf install_ncurses
 }
 
-# Perform initial checks
-check_system
-check_commands wget make sudo tar ping
-check_network
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands wget make sudo tar ping
+    check_network
 
-# Run the installation process
-install_ncurses "$1" "$2" "$3"
+    # Run the installation process
+    install_ncurses "$1" "$2" "$3"
 
-echo "ncurses $VERSION installed successfully."
+    echo "ncurses $VERSION installed successfully."
+}
+
+main "$@"

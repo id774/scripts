@@ -63,6 +63,14 @@ check_network() {
     fi
 }
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
 # Setup version and environment
 setup_environment() {
     VERSION="${1:-3.0.4}"
@@ -93,12 +101,18 @@ install_maven() {
     rm -rf install_maven
 }
 
-# Perform initial checks
-check_system
-check_commands wget sudo tar ping
-check_network
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands wget sudo tar ping
+    check_network
+    check_sudo
 
-# Run the installation process
-install_maven "$1"
+    # Run the installation process
+    install_maven "$1"
 
-echo "Apache Maven $VERSION installed successfully."
+    echo "Apache Maven $VERSION installed successfully."
+}
+
+main "$@"

@@ -42,8 +42,10 @@
 #      ./install_ruby.sh 3.3.7
 #  Specify an installation prefix:
 #      ./install_ruby.sh 3.3.7 /opt/ruby
+#  Run without sudo (for local installation):
+#      ./install_ruby.sh 3.3.7 ~/.local/ruby no-sudo
 #  Skip saving sources by adding a third argument:
-#      ./install_ruby.sh 3.3.7 /opt/ruby -n
+#      ./install_ruby.sh 3.3.7 /opt/ruby sudo -n
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
@@ -73,20 +75,34 @@ check_network() {
     fi
 }
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if [ "$SUDO" = "sudo" ] && ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access or specify 'no-sudo'." >&2
+        exit 1
+    fi
+}
+
 # Setup version and environment
 setup_environment() {
     RUBY_VERSION="${1:-3.4.2}"
     RUBY_MAJOR="$(echo "$RUBY_VERSION" | cut -d. -f1-2)"
     RUBY_PATH="${2:-/opt/ruby/$RUBY_MAJOR}"
-    SUDO="${3:-}"
+
+    if [ "$3" = "no-sudo" ]; then
+        SUDO=""
+    else
+        SUDO="sudo"
+    fi
+    check_sudo
 }
 
 # Save sources if requested
 save_sources() {
-    [ -n "$3" ] && return
-    sudo mkdir -p /usr/local/src/ruby
-    sudo cp -a "ruby-$RUBY_VERSION" /usr/local/src/ruby/
-    sudo chown -R root:root /usr/local/src/ruby/ruby-$RUBY_VERSION
+    [ -n "$4" ] && return
+    $SUDO mkdir -p /usr/local/src/ruby
+    $SUDO cp -a "ruby-$RUBY_VERSION" /usr/local/src/ruby/
+    $SUDO chown -R root:root /usr/local/src/ruby/ruby-$RUBY_VERSION
 }
 
 # Compile and install essential Ruby extensions
@@ -112,16 +128,21 @@ install_ruby() {
     $SUDO make install
     make_ext_module zlib readline openssl
     cd ../.. || exit 1
-    save_sources "$RUBY_VERSION" "$RUBY_PATH" "$SUDO"
+    save_sources "$RUBY_VERSION" "$RUBY_PATH" "$SUDO" "$4"
     rm -rf install_ruby
 }
 
-# Perform initial checks
-check_commands curl make tar ping
-check_network
+# Main execution function
+main() {
+    # Perform initial checks
+    check_commands sudo curl make tar ping mkdir cp chown
+    check_network
 
-# Run the installation process
-setup_environment "$1" "$2" "$3"
-install_ruby "$RUBY_VERSION" "$RUBY_PATH" "$SUDO"
+    # Run the installation process
+    setup_environment "$1" "$2" "$3" "$4"
+    install_ruby "$RUBY_VERSION" "$RUBY_PATH" "$SUDO" "$4"
 
-echo "Ruby $RUBY_VERSION installed successfully."
+    echo "Ruby $RUBY_VERSION installed successfully."
+}
+
+main "$@"

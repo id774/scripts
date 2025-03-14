@@ -72,45 +72,49 @@ check_sudo() {
     fi
 }
 
-# Perform initial checks
-check_system
-check_commands sudo rsync cp chmod chown mkdir touch
-check_scripts
-check_sudo
+main() {
+    # Perform initial checks
+    check_system
+    check_commands sudo rsync cp chmod chown mkdir touch
+    check_scripts
+    check_sudo
 
-# Make Directory if it doesn't exist and set permissions
-if [ ! -d /var/log/sysadmin ]; then
-    sudo mkdir -p /var/log/sysadmin
-    sudo chmod 750 /var/log/sysadmin
-    sudo chown root:adm /var/log/sysadmin
-fi
+    # Make Directory if it doesn't exist and set permissions
+    if [ ! -d /var/log/sysadmin ]; then
+        sudo mkdir -p /var/log/sysadmin
+        sudo chmod 750 /var/log/sysadmin
+        sudo chown root:adm /var/log/sysadmin
+    fi
 
-# Deploy rsync backup script and configuration
-sudo cp "$SCRIPTS/cron/bin/rsync_backup.sh" /root/bin/
-sudo chmod 700 /root/bin/rsync_backup.sh
-sudo chown root:root /root/bin/rsync_backup.sh
+    # Deploy rsync backup script and configuration
+    sudo cp "$SCRIPTS/cron/bin/rsync_backup.sh" /root/bin/
+    sudo chmod 700 /root/bin/rsync_backup.sh
+    sudo chown root:root /root/bin/rsync_backup.sh
 
-sudo cp "$SCRIPTS/cron/etc/rsync_backup.conf" /root/etc/
-sudo chmod 600 /root/etc/rsync_backup.conf
-sudo chown root:root /root/etc/rsync_backup.conf
+    sudo cp "$SCRIPTS/cron/etc/rsync_backup.conf" /root/etc/
+    sudo chmod 600 /root/etc/rsync_backup.conf
+    sudo chown root:root /root/etc/rsync_backup.conf
 
-# Deploy rsync backup cron job
-sudo cp "$SCRIPTS/cron/bin/rsync_backup" /etc/cron.hourly/
-sudo chmod 750 /etc/cron.hourly/rsync_backup
-sudo chown root:adm /etc/cron.hourly/rsync_backup
+    # Deploy rsync backup cron job
+    sudo cp "$SCRIPTS/cron/bin/rsync_backup" /etc/cron.hourly/
+    sudo chmod 750 /etc/cron.hourly/rsync_backup
+    sudo chown root:adm /etc/cron.hourly/rsync_backup
 
-# Set up rsync backup log file and permissions
-if [ ! -f /var/log/sysadmin/rsync_backup ]; then
-    sudo touch /var/log/sysadmin/rsync_backup
-    sudo chmod 640 /var/log/sysadmin/rsync_backup
-    sudo chown root:adm /var/log/sysadmin/rsync_backup
-fi
+    # Set up rsync backup log file and permissions
+    if [ ! -f /var/log/sysadmin/rsync_backup ]; then
+        sudo touch /var/log/sysadmin/rsync_backup
+        sudo chmod 640 /var/log/sysadmin/rsync_backup
+        sudo chown root:adm /var/log/sysadmin/rsync_backup
+    fi
 
-# Deploy log rotation configuration for rsync backup logs
-if [ ! -f /etc/logrotate.d/rsync_backup ]; then
-    sudo cp "$SCRIPTS/cron/etc/logrotate.d/rsync_backup" /etc/logrotate.d/
-    sudo chmod 644 /etc/logrotate.d/rsync_backup
-    sudo chown root:root /etc/logrotate.d/rsync_backup
-fi
+    # Deploy log rotation configuration for rsync backup logs
+    if [ ! -f /etc/logrotate.d/rsync_backup ]; then
+        sudo cp "$SCRIPTS/cron/etc/logrotate.d/rsync_backup" /etc/logrotate.d/
+        sudo chmod 644 /etc/logrotate.d/rsync_backup
+        sudo chown root:root /etc/logrotate.d/rsync_backup
+    fi
 
-echo "Rsync backup setup completed successfully."
+    echo "Rsync backup setup completed successfully."
+}
+
+main "$@"

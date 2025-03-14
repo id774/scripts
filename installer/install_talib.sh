@@ -109,13 +109,18 @@ install_talib() {
     rm -rf install_talib
 }
 
-# Perform initial checks
-check_system
-check_commands curl make sudo tar ping
-check_network
-check_sudo
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands curl make sudo tar ping
+    check_network
+    check_sudo
 
-# Run the installation process
-install_talib "$1" "$2"
+    # Run the installation process
+    install_talib "$1" "$2"
 
-echo "TA-Lib $VERSION installed successfully."
+    echo "TA-Lib $VERSION installed successfully."
+}
+
+main "$@"

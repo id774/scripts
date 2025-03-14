@@ -71,6 +71,14 @@ check_network() {
     fi
 }
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
 # Setup version and environment
 setup_environment() {
     PACO_VERSION="${1:-2.0.9}"
@@ -105,12 +113,18 @@ install_paco() {
     rm -rf install_paco
 }
 
-# Perform initial checks
-check_system
-check_commands wget make sudo tar ping
-check_network
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands wget make sudo tar ping
+    check_network
+    check_sudo
 
-# Run the installation process
-install_paco "$1" "$2"
+    # Run the installation process
+    install_paco "$1" "$2"
 
-echo "paco $PACO_VERSION installed successfully."
+    echo "paco $PACO_VERSION installed successfully."
+}
+
+main "$@"

@@ -113,7 +113,7 @@ make_and_install() {
 }
 
 # Download and extract Zsh
-get_zsh() {
+install_zsh() {
     mkdir install_zsh
     cd install_zsh || exit 1
     wget "http://sourceforge.net/projects/zsh/files/zsh/$ZSH_VERSION/zsh-$ZSH_VERSION.tar.gz/download" -O "zsh-$ZSH_VERSION.tar.gz"
@@ -128,14 +128,19 @@ get_zsh() {
     rm -rf install_zsh
 }
 
-# Perform initial checks
-check_system
-check_commands wget make sudo tar ping
-check_network
-check_sudo
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands wget make sudo tar ping
+    check_network
+    check_sudo
 
-# Run the installation process
-setup_environment "$1" "$2" "$3"
-get_zsh "$1" "$2" "$3"
+    # Run the installation process
+    setup_environment "$1" "$2" "$3"
+    install_zsh "$1" "$2" "$3"
 
-echo "Zsh $ZSH_VERSION installed successfully."
+    echo "Zsh $ZSH_VERSION installed successfully."
+}
+
+main "$@"

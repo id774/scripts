@@ -68,6 +68,14 @@ check_network() {
     fi
 }
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
 # Function to check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
@@ -162,13 +170,19 @@ install_main() {
     [ -f /etc/debian_version ] && setup_debian_service
 }
 
-# Perform initial checks
-check_system
-check_commands curl sudo tar ping
-check_network
-check_scripts
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands curl sudo tar ping
+    check_network
+    check_scripts
+    check_sudo
 
-# Run the installation process
-install_main "$1"
+    # Run the installation process
+    install_main "$1"
 
-echo "MongoDB $VERSION installed successfully."
+    echo "MongoDB $VERSION installed successfully."
+}
+
+main "$@"

@@ -30,8 +30,10 @@
 #      ./install_kytea.sh 0.5.0
 #  Specify an installation prefix:
 #      ./install_kytea.sh 0.5.0 /usr/local
+#  Run without sudo (for local installation):
+#      ./install_kytea.sh 0.5.0 ~/.local no-sudo
 #  Skip saving sources by adding a third argument:
-#      ./install_kytea.sh 0.5.0 /usr/local -n
+#      ./install_kytea.sh 0.5.0 /usr/local sudo -n
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
@@ -70,6 +72,14 @@ check_network() {
     fi
 }
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if [ "$SUDO" = "sudo" ] && ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access or specify 'no-sudo'." >&2
+        exit 1
+    fi
+}
+
 # Setup version and environment
 setup_environment() {
     VERSION="${1:-0.4.7}"
@@ -79,6 +89,7 @@ setup_environment() {
     else
         SUDO="sudo"
     fi
+    check_sudo
 }
 
 # Save sources if requested
@@ -119,18 +130,23 @@ install_kytea() {
     make
     $SUDO make install
     cd ..
-    [ -n "$3" ] || save_sources
+    [ -n "$4" ] || save_sources
     cd ..
     rm -rf install_kytea
     install_binding
 }
 
-# Perform initial checks
-check_system
-check_commands curl make sudo tar ping
-check_network
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands curl make sudo tar ping
+    check_network
 
-# Run the installation process
-install_kytea "$1" "$2" "$3"
+    # Run the installation process
+    install_kytea "$1" "$2" "$3" "$4"
 
-echo "KyTea $VERSION installed successfully."
+    echo "KyTea $VERSION installed successfully."
+}
+
+main "$@"

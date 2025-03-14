@@ -44,8 +44,10 @@
 #      ./install_python.sh 3.12.9
 #  Specify an installation prefix:
 #      ./install_python.sh 3.12.9 /opt/python
+#  Run without sudo (for local installation):
+#      ./install_python.sh 3.12.9 ~/.local/python no-sudo
 #  Skip saving sources by adding a third argument:
-#      ./install_python.sh 3.12.9 /opt/python -n
+#      ./install_python.sh 3.12.9 /opt/python sudo -n
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
@@ -84,11 +86,26 @@ check_network() {
     fi
 }
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if [ "$SUDO" = "sudo" ] && ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access or specify 'no-sudo'." >&2
+        exit 1
+    fi
+}
+
 # Setup version and environment
 setup_environment() {
     VERSION="${1:-3.13.2}"
     PREFIX="${2:-/usr/local}"
-    SUDO="${3:-sudo}"
+
+    if [ "$3" = "no-sudo" ]; then
+        SUDO=""
+    else
+        SUDO="sudo"
+    fi
+    check_sudo
+
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR
@@ -103,10 +120,10 @@ setup_environment() {
 
 # Save sources if requested
 save_sources() {
-    sudo mkdir -p /usr/local/src/python
-    sudo cp $OPTIONS "Python-$1" /usr/local/src/python
-    sudo chown $OWNER /usr/local/src/python
-    sudo chown -R $OWNER /usr/local/src/python/Python-$1
+    $SUDO mkdir -p /usr/local/src/python
+    $SUDO cp $OPTIONS "Python-$1" /usr/local/src/python
+    $SUDO chown $OWNER /usr/local/src/python
+    $SUDO chown -R $OWNER /usr/local/src/python/Python-$1
 }
 
 # Compile and install Python
@@ -119,7 +136,7 @@ make_and_install() {
 }
 
 # Download and extract Python
-get_python() {
+install_python() {
     mkdir install_python
     cd install_python || exit 1
     curl -L "http://www.python.org/ftp/python/$1/Python-$1.tgz" -O
@@ -129,18 +146,23 @@ get_python() {
     fi
     tar xzvf "Python-$1.tgz"
     [ "$2" = "sourceonly" ] || make_and_install "$1" "$2"
-    [ -n "$3" ] || save_sources "$1"
+    [ -n "$4" ] || save_sources "$1"
     cd ..
     $SUDO rm -rf install_python
 }
 
-# Perform initial checks
-check_system
-check_commands curl make sudo tar ping
-check_network
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands curl make sudo tar ping
+    check_network
 
-# Run the installation process
-setup_environment "$1" "$2" "$3"
-get_python "$1" "$2" "$3"
+    # Run the installation process
+    setup_environment "$1" "$2" "$3" "$4"
+    install_python "$1" "$2" "$3" "$4"
 
-echo "Python $1 installed successfully."
+    echo "Python $1 installed successfully."
+}
+
+main "$@"

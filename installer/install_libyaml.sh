@@ -65,6 +65,14 @@ check_network() {
     fi
 }
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
 # Setup version and environment
 setup_environment() {
     VERSION="${1:-0.1.4}"
@@ -98,12 +106,18 @@ install_libyaml() {
     rm -rf install_libyaml
 }
 
-# Perform initial checks
-check_system
-check_commands wget make sudo tar ping
-check_network
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands wget make sudo tar ping
+    check_network
+    check_sudo
 
-# Run the installation process
-install_libyaml "$1" "$2"
+    # Run the installation process
+    install_libyaml "$1" "$2"
 
-echo "libyaml $VERSION installed successfully."
+    echo "libyaml $VERSION installed successfully."
+}
+
+main "$@"

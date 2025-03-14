@@ -102,13 +102,18 @@ install_autoconf() {
     rm -rf install_autoconf
 }
 
-# Perform initial checks
-check_system
-check_commands wget make sudo tar ping
-check_network
-check_sudo
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands wget make sudo tar ping
+    check_network
+    check_sudo
 
-# Run the installation process
-install_autoconf "$1" "$2"
+    # Run the installation process
+    install_autoconf "$1" "$2"
 
-echo "Autoconf $VERSION installed successfully."
+    echo "Autoconf $VERSION installed successfully."
+}
+
+main "$@"

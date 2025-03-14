@@ -56,10 +56,6 @@ check_scripts() {
     fi
 }
 
-# Perform initial checks
-check_commands cp mkdir vim
-check_scripts
-
 # Set up environment variables
 setup_environment() {
     TARGET="${1:-$HOME/.vim}"
@@ -78,12 +74,21 @@ install_dotvim() {
     cp $OPTIONS "$SCRIPTS/dot_files/dot_vim"/* "$TARGET"/
 }
 
-# Ensure dot_vim source exists before proceeding
-if [ ! -d "$SCRIPTS/dot_files/dot_vim" ]; then
-    echo "Error: dot_vim source directory does not exist. Ensure that the SCRIPTS variable is correctly set." >&2
-    exit 1
-fi
+# Main execution function
+main() {
+    # Perform initial checks
+    check_commands cp mkdir vim
+    check_scripts
 
-install_dotvim "$1"
+    # Ensure dot_vim source exists before proceeding
+    if [ ! -d "$SCRIPTS/dot_files/dot_vim" ]; then
+        echo "Error: dot_vim source directory does not exist. Ensure that the SCRIPTS variable is correctly set." >&2
+        exit 1
+    fi
 
-echo "dot_vim configuration installed successfully at $TARGET."
+    install_dotvim "$1"
+
+    echo "dot_vim configuration installed successfully at $TARGET."
+}
+
+main "$@"

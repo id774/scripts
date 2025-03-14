@@ -65,6 +65,14 @@ check_network() {
     fi
 }
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
 # Setup version and environment
 setup_environment() {
     VERSION="6.5"
@@ -113,18 +121,24 @@ install_mew() {
     rm -rf install_mew
 }
 
-# Perform initial checks
-check_system
-check_commands wget make sudo tar ping
-check_network
+# Main execution function
+main() {
+    # Perform initial checks
+    check_system
+    check_commands wget make sudo tar ping
+    check_network
+    check_sudo
 
-# Validate Emacs path
-if [ -z "$1" ]; then
-    echo "Error: Emacs binary path must be specified." >&2
-    exit 1
-fi
+    # Validate Emacs path
+    if [ -z "$1" ]; then
+        echo "Error: Emacs binary path must be specified." >&2
+        exit 1
+    fi
 
-# Run the installation process
-install_mew "$1" "$2"
+    # Run the installation process
+    install_mew "$1" "$2"
 
-echo "Mew $VERSION installed successfully."
+    echo "Mew $VERSION installed successfully."
+}
+
+main "$@"
