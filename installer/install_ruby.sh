@@ -1,208 +1,127 @@
 #!/bin/sh
-#
+
 ########################################################################
-# Install Ruby
-#  $1 = ruby version (ex. 200-481)
-#  $2 = ruby path (ex. /opt/bin)
-#  $3 = no sudo
+# install_ruby.sh: Installer for Ruby
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script automates the installation of Ruby by:
+#  - Downloading the specified version from the official site.
+#  - Compiling and installing the package.
+#  - Optionally saving the source files for future use.
+#  - Compiling and installing essential extensions.
 #
-#  v2.4 2025-03-13
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v3.0 2025-03-14
+#       Restored Ruby installation process from official sources.
+#       Default Ruby version 3.4.2 installs in '/opt/ruby/3.4' directory.
+#       Improved directory navigation safety.
+#       Consolidated previous modifications under a single version entry.
+#  v2.5 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
-#  v2.3 2025-03-05
+#  v2.4 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
-#  v2.2 2023-03-12
+#  v2.3 2023-03-12
 #       Remove obsolete versions.
-#  v2.1 2019-01-14
+#  v2.2 2019-01-14
 #       Remove obsolete versions.
-#  v2.0 2015-03-11
+#  v2.1 2015-03-11
 #       Fix bugs.
 #       Specify nosudo option.
 #  v1.0 2008-06-23
 #       Stable.
+#
+#  Usage:
+#  Run this script without arguments to install the default Ruby version (3.4.2):
+#      ./install_ruby.sh
+#  Specify a different Ruby version:
+#      ./install_ruby.sh 3.3.7
+#  Specify an installation prefix:
+#      ./install_ruby.sh 3.3.7 /opt/ruby
+#  Skip saving sources by adding a third argument:
+#      ./install_ruby.sh 3.3.7 /opt/ruby -n
+#
+#  Requirements:
+#  - Network connectivity is required to download the source files.
+#  - The user must have `curl`, `make`, and `tar` installed.
+#  - Must be executed in a shell environment with internet access.
+#
 ########################################################################
 
-# Check if the user has sudo privileges (password may be required)
-check_sudo() {
-    if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Function to check network connectivity
+check_network() {
+    if ! ping -c 1 id774.net >/dev/null 2>&1; then
+        echo "Error: No network connection detected. Please check your internet access." >&2
         exit 1
     fi
 }
 
-make_ext_module() {
-  while [ $# -gt 0 ]
-  do
-    cd ext/$1
-    $SUDO $RUBY extconf.rb
-    $SUDO make
-    $SUDO make install
-    cd ../..
-    shift
-  done
-}
-
-make_and_install() {
-    $SUDO autoconf
-    test -n "$1" || $SUDO ./configure --with-opt-dir=/usr/local
-    test -n "$1" && $SUDO ./configure --prefix $1 --with-opt-dir=/usr/local
-    $SUDO make
-    $SUDO make install
-}
-
-install_trunk() {
-    test -d /usr/local/src/ruby || $SUDO mkdir -p /usr/local/src/ruby
-    cd /usr/local/src/ruby
-    if [ -d /usr/local/src/ruby/trunk ]; then
-        cd trunk
-        $SUDO svn up
-    else
-        $SUDO svn co http://svn.ruby-lang.org/repos/ruby/trunk trunk
-        cd trunk
-    fi
-    make_and_install $2
-    make_ext_module zlib readline openssl
-    $SUDO chown -R $OWNER /usr/local/src/ruby/trunk
-    test -x $SCRIPTS/installer/install_emacs_ruby.sh && \
-    $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/trunk/misc
-}
-
-install_branch() {
-    test -d /usr/local/src/ruby/branches || $SUDO mkdir -p /usr/local/src/ruby/branches
-    cd /usr/local/src/ruby/branches
-    if [ -d /usr/local/src/ruby/branches/$1 ]; then
-        cd $1
-        $SUDO svn up
-    else
-        $SUDO svn co http://svn.ruby-lang.org/repos/ruby/branches/$1/ $1
-        cd $1
-    fi
-    make_and_install $2
-    make_ext_module zlib readline openssl
-    $SUDO chown -R $OWNER /usr/local/src/ruby/branches/$1
-    test -x $SCRIPTS/installer/install_emacs_ruby.sh && \
-    $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/branches/$1/misc
-}
-
-install_stable3() {
-    mkdir install_ruby
-    cd install_ruby
-    curl -L https://cache.ruby-lang.org/pub/ruby/$2/ruby-$1.tar.gz -O
-    tar xzvf ruby-$1.tar.gz
-    cd ruby-$1
-    make_and_install $3
-    make_ext_module zlib readline openssl
-    cd ..
-    test -n "$SUDO" && save_sources $*
-    cd ..
-    $SUDO rm -rf install_ruby
-    test -x $SCRIPTS/installer/install_emacs_ruby.sh && \
-    $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/ruby-$1/misc
-}
-
-install_stable2() {
-    mkdir install_ruby
-    cd install_ruby
-    curl -L http://cache.ruby-lang.org/pub/ruby/$2/ruby-$1.tar.bz2 -O
-    tar xjvf ruby-$1.tar.bz2
-    cd ruby-$1
-    make_and_install $3
-    make_ext_module zlib readline openssl
-    cd ..
-    test -n "$SUDO" && save_sources $*
-    cd ..
-    $SUDO rm -rf install_ruby
-    test -x $SCRIPTS/installer/install_emacs_ruby.sh && \
-    $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/ruby-$1/misc
-}
-
-install_stable() {
-    mkdir install_ruby
-    cd install_ruby
-    wget ftp://ftp.ruby-lang.org/pub/ruby/$2/ruby-$1.zip
-    unzip ruby-$1.zip
-    cd ruby-$1
-    make_and_install $3
-    make_ext_module zlib readline openssl
-    cd ..
-    test -n "$SUDO" && save_sources $*
-    cd ..
-    $SUDO rm -rf install_ruby
-    test -x $SCRIPTS/installer/install_emacs_ruby.sh && \
-    $SCRIPTS/installer/install_emacs_ruby.sh /usr/local/src/ruby/ruby-$1/misc
-}
-
-save_sources() {
-    test -d /usr/local/src/ruby || $SUDO mkdir -p /usr/local/src/ruby
-    $SUDO cp $OPTIONS ruby-$1 /usr/local/src/ruby
-    $SUDO chown -R $OWNER /usr/local/src/ruby/ruby-$1
-}
-
+# Setup version and environment
 setup_environment() {
-    test -n "$2" || export RUBY=ruby
-    test -n "$2" || test -x /usr/local/bin/ruby && export RUBY=/usr/local/bin/ruby
-    test -n "$2" || test -x /opt/ruby/current/bin/ruby && export RUBY=/opt/ruby/current/bin/ruby
-    test -n "$2" && export RUBY=$2/bin/ruby
-    test -n "$3" || SUDO=sudo
-    test -n "$3" && SUDO=
-    test "$3" = "sudo" && SUDO=sudo
-
-    if [ "$SUDO" = "sudo" ]; then
-        check_sudo
-    fi
-
-    case $OSTYPE in
-      *darwin*)
-        OPTIONS=-pR
-        OWNER=root:wheel
-        ;;
-      *)
-        OPTIONS=-a
-        OWNER=root:root
-        ;;
-    esac
+    RUBY_VERSION="${1:-3.4.2}"
+    RUBY_MAJOR="$(echo "$RUBY_VERSION" | cut -d. -f1-2)"
+    RUBY_PATH="${2:-/opt/ruby/$RUBY_MAJOR}"
+    SUDO="${3:-}"
 }
 
+# Save sources if requested
+save_sources() {
+    [ -n "$3" ] && return
+    sudo mkdir -p /usr/local/src/ruby
+    sudo cp -a "ruby-$RUBY_VERSION" /usr/local/src/ruby/
+    sudo chown -R root:root /usr/local/src/ruby/ruby-$RUBY_VERSION
+}
+
+# Compile and install essential Ruby extensions
+make_ext_module() {
+    for module in "$@"; do
+        cd "ext/$module" || exit 1
+        $SUDO "$RUBY_PATH/bin/ruby" extconf.rb
+        $SUDO make
+        $SUDO make install
+        cd ../.. || exit 1
+    done
+}
+
+# Download and install Ruby
 install_ruby() {
-    setup_environment $*
-    case "$1" in
-      33)
-        install_stable3 3.3.0 3.3 $2
-        ;;
-      32)
-        install_stable3 3.2.3 3.2 $2
-        ;;
-      31)
-        install_stable3 3.1.4 3.1 $2
-        ;;
-      30)
-        install_stable3 3.0.6 3.0 $2
-        ;;
-      27)
-        install_stable3 2.7.8 2.7 $2
-        ;;
-      32-svn)
-        install_branch ruby_3_2 $2
-        ;;
-      31-svn)
-        install_branch ruby_3_1 $2
-        ;;
-      30-svn)
-        install_branch ruby_3_0 $2
-        ;;
-      27-svn)
-        install_branch ruby_2_7 $2
-        ;;
-      trunk)
-        install_trunk $2
-        ;;
-      *)
-        ;;
-    esac
-
-    ruby -v
+    mkdir install_ruby
+    cd install_ruby || exit 1
+    curl -L "https://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR/ruby-$RUBY_VERSION.tar.gz" -O
+    tar xzvf "ruby-$RUBY_VERSION.tar.gz"
+    cd "ruby-$RUBY_VERSION" || exit 1
+    ./configure --prefix="$RUBY_PATH"
+    make
+    $SUDO make install
+    make_ext_module zlib readline openssl
+    cd ../.. || exit 1
+    save_sources "$RUBY_VERSION" "$RUBY_PATH" "$SUDO"
+    rm -rf install_ruby
 }
 
-ping -c 1 id774.net > /dev/null 2>&1 || exit 1
-install_ruby $*
+# Perform initial checks
+check_commands curl make tar ping
+check_network
+
+# Run the installation process
+setup_environment "$1" "$2" "$3"
+install_ruby "$RUBY_VERSION" "$RUBY_PATH" "$SUDO"
+
+echo "Ruby $RUBY_VERSION installed successfully."
