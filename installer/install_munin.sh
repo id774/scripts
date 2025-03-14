@@ -47,11 +47,11 @@ check_system() {
     fi
 }
 
-# Function to verify script environment
-setup_environment() {
-    SCRIPTS="$HOME/scripts"
-    if [ ! -d "$SCRIPTS" ]; then
-        echo "Error: Directory '$SCRIPTS' does not exist. Please create it or specify the correct path." >&2
+# Function to check if SCRIPTS variable is set
+check_scripts() {
+    if [ -z "$SCRIPTS" ]; then
+        echo "Error: SCRIPTS environment variable is not set." >&2
+        echo "Please set the SCRIPTS variable to the install and configure Munin monitoring script." >&2
         exit 1
     fi
 }
@@ -105,7 +105,7 @@ restart_services() {
 # Main operation function
 main() {
     check_system
-    setup_environment
+    check_scripts
     check_commands sudo apt-get cp chown chmod htpasswd systemctl
     install_munin
     configure_munin

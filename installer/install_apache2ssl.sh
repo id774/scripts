@@ -54,11 +54,11 @@ check_commands() {
     done
 }
 
-# Check if SCRIPTS variable is set
+# Function to check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "Error: SCRIPTS environment variable is not set." >&2
-        echo "Please set the SCRIPTS variable to the directory containing the dot_vim configuration files." >&2
+        echo "Please set the SCRIPTS variable to the directory containing the Apache2 with SSL configuration files." >&2
         exit 1
     fi
 }

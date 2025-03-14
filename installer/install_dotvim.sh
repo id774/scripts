@@ -47,7 +47,7 @@ check_commands() {
     done
 }
 
-# Check if SCRIPTS variable is set
+# Function to check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "Error: SCRIPTS environment variable is not set." >&2
