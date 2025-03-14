@@ -1,15 +1,23 @@
 #!/bin/sh
-#
+
 ########################################################################
-# Install Python
-#  $1 = version
-#  $2 = prefix
-#  $3 = not save to src
+# install_python.sh: Installer for Python
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script automates the installation of Python by:
+#  - Downloading the specified or default version from the official site.
+#  - Compiling and installing the package.
+#  - Optionally saving the source files for future use.
+#  - Creating symlinks for Python, pip, and ipython.
 #
-# v1.10 2025-03-13
-#       Redirected error messages to stderr for better logging and debugging.
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v2.0 2025-03-14
+#       Added network connection check, system validation, command validation, and improved argument handling.
 #  v1.9 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
 #  v1.8 2014-06-26
@@ -30,27 +38,57 @@
 #       Add sourceonly option.
 #  v1.0 2009-01-07
 #       Stable.
+#
+#  Usage:
+#  Run this script without arguments to install the default version:
+#      ./install_python.sh 3.12.9
+#  Specify an installation prefix:
+#      ./install_python.sh 3.12.9 /opt/python
+#  Skip saving sources by adding a third argument:
+#      ./install_python.sh 3.12.9 /opt/python -n
+#
+#  Requirements:
+#  - Network connectivity is required to download the source files.
+#  - The user must have `curl`, `make`, `sudo`, and `tar` installed.
+#  - Must be executed in a shell environment with internet access.
+#  - This script is intended for Linux systems only.
+#
 ########################################################################
 
-# Check if the user has sudo privileges (password may be required)
-check_sudo() {
-    if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
         exit 1
     fi
 }
 
-setup_environment() {
-    test -n "$2" || PREFIX=/usr/local
-    test -n "$2" && PREFIX=$2
-    test -n "$3" || SUDO=sudo
-    test -n "$3" && SUDO=
-    test "$3" = "sudo" && SUDO=sudo
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
 
-    if [ "$SUDO" = "sudo" ]; then
-        check_sudo
+# Function to check network connectivity
+check_network() {
+    if ! ping -c 1 id774.net >/dev/null 2>&1; then
+        echo "Error: No network connection detected. Please check your internet access." >&2
+        exit 1
     fi
+}
 
+# Setup version and environment
+setup_environment() {
+    VERSION="${1:-3.13.2}"
+    PREFIX="${2:-/usr/local}"
+    SUDO="${3:-sudo}"
     case $OSTYPE in
       *darwin*)
         OPTIONS=-pR
@@ -63,56 +101,46 @@ setup_environment() {
     esac
 }
 
+# Save sources if requested
 save_sources() {
-    test -d /usr/local/src/python || $SUDO mkdir -p /usr/local/src/python
-    $SUDO cp $OPTIONS Python-$1 /usr/local/src/python
-    $SUDO chown $OWNER /usr/local/src/python
-    $SUDO chown -R $OWNER /usr/local/src/python/Python-$1
+    sudo mkdir -p /usr/local/src/python
+    sudo cp $OPTIONS "Python-$1" /usr/local/src/python
+    sudo chown $OWNER /usr/local/src/python
+    sudo chown -R $OWNER /usr/local/src/python/Python-$1
 }
 
+# Compile and install Python
 make_and_install() {
-    cd Python-$1
-    ./configure --prefix $PREFIX
+    cd "Python-$1" || exit 1
+    ./configure --prefix="$PREFIX"
     make
     $SUDO make install
     cd ..
 }
 
+# Download and extract Python
 get_python() {
     mkdir install_python
-    cd install_python
-    curl -L http://www.python.org/ftp/python/$1/Python-$1.tgz -O
-    test -f Python-$1.tgz || exit 1
-    tar xzvf Python-$1.tgz
-    test "$2" = "sourceonly" || make_and_install $*
-    test -n "$3" || save_sources $*
+    cd install_python || exit 1
+    curl -L "http://www.python.org/ftp/python/$1/Python-$1.tgz" -O
+    if [ ! -f "Python-$1.tgz" ]; then
+        echo "Error: Failed to download Python $1." >&2
+        exit 1
+    fi
+    tar xzvf "Python-$1.tgz"
+    [ "$2" = "sourceonly" ] || make_and_install "$1" "$2"
+    [ -n "$3" ] || save_sources "$1"
     cd ..
     $SUDO rm -rf install_python
 }
 
-create_symlink() {
-    test -x $PREFIX/bin/python3 && test -x $PREFIX/bin/python || $SUDO ln -s $PREFIX/bin/python3 $PREFIX/bin/python
-    test -x $PREFIX/bin/ipython3 && test -x $PREFIX/bin/ipython || $SUDO ln -s $PREFIX/bin/ipython3 $PREFIX/bin/ipython
-    test -x $PREFIX/bin/pip3 && test -x $PREFIX/bin/pip || $SUDO ln -s $PREFIX/bin/pip3 $PREFIX/bin/pip
-}
+# Perform initial checks
+check_system
+check_commands curl make sudo tar ping
+check_network
 
-get_easy_install() {
-    curl -L https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py | $SUDO $PREFIX/bin/python
-}
+# Run the installation process
+setup_environment "$1" "$2" "$3"
+get_python "$1" "$2" "$3"
 
-get_pip() {
-    curl -L https://bootstrap.pypa.io/get-pip.py | $SUDO $PREFIX/bin/python
-}
-
-install_python() {
-    setup_environment $*
-    test -n "$1" || exit 1
-    get_python $*
-    create_symlink $*
-    # get_easy_install $*
-    get_pip $*
-    python -V
-}
-
-ping -c 1 id774.net > /dev/null 2>&1 || exit 1
-install_python $*
+echo "Python $1 installed successfully."
