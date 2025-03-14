@@ -6,6 +6,7 @@ v1.3.3 (Release Date: TBD)
 - Added home directory cleanup and command check in cltmp.sh.
 - Refactored several scripts for POSIX compliance and improved maintainability.
 - Major version upgrade with significant changes to several installation scripts.
+- Refactor installation scripts with main function and improved sudo handling.
 - Revamped Debian initial setup scripts for idempotency.
 - Added sudo privilege checks to numerous scripts for improved security.
 - Improved error messages in multiple scripts by redirecting them to stderr for better logging and debugging.
