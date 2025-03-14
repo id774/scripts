@@ -20,6 +20,7 @@
 #       Ensured strict POSIX compliance.
 #       Added system compatibility check for Linux.
 #       Redirected error messages to stderr for better logging and debugging.
+#       Optimize zsh setup, cryptographic tool installation.
 #  [Further version history truncated for brevity]
 #  v0.1 2011-09-28
 #       First version.
@@ -83,8 +84,13 @@ check_sudo() {
 
 # Set zsh as the default shell for the user and root
 set_zsh_to_default() {
-    chsh -s /bin/zsh
-    sudo chsh -s /bin/zsh root
+    if [ "$(getent passwd "$USER" | cut -d: -f7)" != "/bin/zsh" ]; then
+        chsh -s /bin/zsh
+    fi
+
+    if [ "$(getent passwd root | cut -d: -f7)" != "/bin/zsh" ]; then
+        sudo chsh -s /bin/zsh root
+    fi
 }
 
 # Install various dotfiles configurations
@@ -117,9 +123,17 @@ install_dot_files() {
 
 # Install cryptographic tools
 install_crypt() {
-    "$SCRIPTS/installer/install_des.sh"
-    "$SCRIPTS/installer/install_truecrypt.sh"
-    "$SCRIPTS/installer/install_veracrypt.sh"
+    if ! command -v des >/dev/null 2>&1; then
+        "$SCRIPTS/installer/install_des.sh"
+    fi
+
+    if ! command -v truecrypt >/dev/null 2>&1; then
+        "$SCRIPTS/installer/install_truecrypt.sh"
+    fi
+
+    if ! command -v veracrypt >/dev/null 2>&1; then
+        "$SCRIPTS/installer/install_veracrypt.sh"
+    fi
 }
 
 # Setup various system utilities
@@ -169,7 +183,7 @@ erase_history() {
 main() {
     check_system
     setup_environment
-    check_commands sudo vi zsh git dpkg-reconfigure
+    check_commands sudo vi zsh git cut getent dpkg-reconfigure
     check_sudo
     set_zsh_to_default
     test -d "$HOME/.vim" || install_dot_vim

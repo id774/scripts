@@ -24,6 +24,7 @@
 #  Version History:
 #  v2.2 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
+#       Optimize home directory ownership handling.
 #  v2.1 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
 #  v2.0 2025-03-04
@@ -64,7 +65,7 @@ check_commands() {
 }
 
 # Check required commands
-check_commands sudo cp mkdir chmod rm ln zsh
+check_commands sudo cp mkdir chmod chown rm ln find zsh
 
 check_sudo
 
@@ -156,7 +157,8 @@ deploy_dotfiles_to_linux() {
     do
         if [ -d "/home/$1" ]; then
             deploy_dotfiles "/home/$1"
-            sudo chown -R "$1":"$1" "/home/$1"
+            sudo chown "$1:$1" "/home/$1"
+            sudo find "/home/$1" -maxdepth 1 -mindepth 1 -exec chown "$1:$1" {} +
         fi
         shift
     done
