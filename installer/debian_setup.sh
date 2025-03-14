@@ -112,7 +112,7 @@ install_dot_zsh() {
     fi
 
     cd "$HOME/local/github/dot_zsh" || exit 1
-    ln -sf "$HOME/local/github/dot_zsh" "$HOME/dot_zsh"
+    ln -snf "$HOME/local/github/dot_zsh" "$HOME/dot_zsh"
     "$HOME/local/github/dot_zsh/install_dotzsh.sh"
 }
 
@@ -128,7 +128,7 @@ install_dot_emacs() {
         cd "$HOME/local/github" || exit 1
         git clone https://github.com/id774/dot_emacs.git
         cd
-        ln -sf "$HOME/local/github/dot_emacs"
+        ln -snf "$HOME/local/github/dot_emacs"
         "$HOME/local/github/dot_emacs/install_dotemacs.sh"
     fi
 }
