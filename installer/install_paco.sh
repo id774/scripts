@@ -1,12 +1,22 @@
 #!/bin/sh
-#
+
 ########################################################################
-# Install paco
-#  $1 = version
-#  $2 = not save to src
+# install_paco.sh: Installer for paco
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script automates the installation of paco by:
+#  - Downloading the specified or default version from SourceForge.
+#  - Compiling and installing the package.
+#  - Optionally saving the source files for future use.
 #
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.4 2025-03-14
+#       Added network connection check, Linux system validation, command validation, and improved argument handling.
 #  v1.3 2010-09-16
 #       Refactoring.
 #  v1.2 2010-03-07
@@ -15,35 +25,92 @@
 #       Keep sources.
 #  v1.0 2008-12-04
 #       Stable.
+#
+#  Usage:
+#  Run this script without arguments to install the default version (2.0.9):
+#      ./install_paco.sh
+#  Specify a version to install a different release:
+#      ./install_paco.sh 2.1.0
+#  Skip saving sources by adding a second argument:
+#      ./install_paco.sh 2.1.0 -n
+#
+#  Requirements:
+#  - Network connectivity is required to download the source files.
+#  - The user must have `wget`, `make`, `sudo`, and `tar` installed.
+#  - Must be executed in a shell environment with internet access.
+#  - This script is intended for Linux systems only.
+#
 ########################################################################
 
-setup_environment() {
-    test -n "$1" || PACO_VERSION=2.0.9
-    test -n "$1" && PACO_VERSION=$1
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
 }
 
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Function to check network connectivity
+check_network() {
+    if ! ping -c 1 id774.net >/dev/null 2>&1; then
+        echo "Error: No network connection detected. Please check your internet access." >&2
+        exit 1
+    fi
+}
+
+# Setup version and environment
+setup_environment() {
+    PACO_VERSION="${1:-2.0.9}"
+}
+
+# Save sources if requested
 save_sources() {
     sudo mkdir -p /usr/local/src/paco
-    sudo cp -av paco-$PACO_VERSION /usr/local/src/paco/
+    sudo cp -av "paco-$PACO_VERSION" /usr/local/src/paco/
     sudo chown -R root:root /usr/local/src/paco
 }
 
+# Install paco
 install_paco() {
-    setup_environment $*
+    setup_environment "$1"
     mkdir install_paco
-    cd install_paco
-    wget http://downloads.sourceforge.net/paco/paco-$PACO_VERSION.tar.gz
-    tar xzvf paco-$PACO_VERSION.tar.gz
-    cd paco-$PACO_VERSION
+    cd install_paco || exit 1
+    wget "http://downloads.sourceforge.net/paco/paco-$PACO_VERSION.tar.gz"
+    if [ ! -f "paco-$PACO_VERSION.tar.gz" ]; then
+        echo "Error: Failed to download paco $PACO_VERSION." >&2
+        exit 1
+    fi
+    tar xzvf "paco-$PACO_VERSION.tar.gz"
+    cd "paco-$PACO_VERSION" || exit 1
     ./configure --disable-gpaco
     make
     sudo make install
     sudo make logme
     cd ..
-    test -n "$2" || save_sources
+    [ -n "$2" ] || save_sources
     cd ..
     rm -rf install_paco
 }
 
-ping -c 1 id774.net > /dev/null 2>&1 || exit 1
-install_paco $*
+# Perform initial checks
+check_system
+check_commands wget make sudo tar ping
+check_network
+
+# Run the installation process
+install_paco "$1" "$2"
+
+echo "paco $PACO_VERSION installed successfully."
