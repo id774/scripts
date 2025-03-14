@@ -79,8 +79,26 @@ check_sudo() {
 
 # Set locale ja_JP.UTF-8
 set_locale_jp() {
-    if ! locale -a | grep -q '^ja_JP\.UTF-8$'; then
-        sudo locale-gen ja_JP.UTF-8
+    # Install `locales` package if `/etc/locale.gen` does not exist
+    if [ ! -f /etc/locale.gen ]; then
+        sudo apt-get install -y locales
+        echo "ja_JP.UTF-8 UTF-8" | sudo tee -a /etc/locale.gen
+    fi
+
+    # Append `ja_JP.UTF-8 UTF-8` to `/etc/locale.gen` if not already present
+    if ! grep -q '^ja_JP.UTF-8' /etc/locale.gen; then
+        echo "ja_JP.UTF-8 UTF-8" | sudo tee -a /etc/locale.gen
+    fi
+
+    # Generate locale if `ja_JP.UTF-8` is not available
+    if ! locale -a | grep -q '^ja_JP\.UTF-8$' || [ "$(locale | grep '^LANG=')" != "LANG=ja_JP.UTF-8" ]; then
+        sudo locale-gen
+    fi
+
+    # Update `LANG` to `ja_JP.UTF-8` if not set
+    if ! locale | grep -q '^LANG=ja_JP.UTF-8$'; then
+        sudo update-locale LANG=ja_JP.UTF-8
+        export LANG=ja_JP.UTF-8
     fi
 }
 
@@ -107,7 +125,7 @@ setup_tune2fs() {
 main() {
     check_environment
     setup_environment
-    check_commands sudo vi locale locale-gen
+    check_commands sudo vi tee locale locale-gen update-locale
     check_sudo
 
     set_locale_jp
