@@ -1,47 +1,121 @@
 #!/bin/sh
-#
+
 ########################################################################
-# Install TA-Lib
-#  $1 = version
-#  $2 = not save to src
+# install_talib.sh: Installer for TA-Lib
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script automates the installation of TA-Lib by:
+#  - Downloading the specified or default version from the archive site.
+#  - Compiling and installing the package.
+#  - Optionally saving the source files for future use.
 #
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v0.3 2025-03-14
+#       Added sudo privilege check, system validation, command validation, and improved argument handling.
 #  v0.2 2015-05-31
 #       Change URL.
 #  v0.1 2015-03-23
-#       First.
+#       First version.
+#
+#  Usage:
+#  Run this script without arguments to install the default version (0.4.0):
+#      ./install_talib.sh
+#  Specify a version to install a different release:
+#      ./install_talib.sh 0.4.1
+#  Skip saving sources by adding a second argument:
+#      ./install_talib.sh 0.4.1 -n
+#
+#  Requirements:
+#  - Network connectivity is required to download the source files.
+#  - The user must have `curl`, `make`, `sudo`, and `tar` installed.
+#  - Must be executed in a shell environment with internet access.
+#  - This script is intended for Linux systems only.
+#
 ########################################################################
 
-setup_environment() {
-    test -n "$1" || VERSION=0.4.0
-    test -n "$1" && VERSION=$1
-    FILENAME=ta-lib-$VERSION-src.tar.gz
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
 }
 
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Function to check network connectivity
+check_network() {
+    if ! ping -c 1 id774.net >/dev/null 2>&1; then
+        echo "Error: No network connection detected. Please check your internet access." >&2
+        exit 1
+    fi
+}
+
+# Function to check if user has sudo privileges
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
+# Setup version and environment
+setup_environment() {
+    VERSION="${1:-0.4.0}"
+    FILENAME="ta-lib-$VERSION-src.tar.gz"
+}
+
+# Save sources if requested
 save_sources() {
     sudo mkdir -p /usr/local/src
     sudo cp -av ta-lib /usr/local/src/
     sudo chown -R root:root /usr/local/src/
 }
 
+# Install TA-Lib
 install_talib() {
-    setup_environment $*
-
+    setup_environment "$1"
     mkdir install_talib
-    cd install_talib
-
-    curl -L http://files.id774.net/archive/$FILENAME -O
-    tar xzvf $FILENAME
-    cd ta-lib
+    cd install_talib || exit 1
+    curl -L "http://files.id774.net/archive/$FILENAME" -O
+    if [ ! -f "$FILENAME" ]; then
+        echo "Error: Failed to download TA-Lib $VERSION." >&2
+        exit 1
+    fi
+    tar xzvf "$FILENAME"
+    cd ta-lib || exit 1
     ./configure --prefix=/usr/local
     make
     sudo make install
     cd ..
-    test -n "$2" || save_sources
+    [ -n "$2" ] || save_sources
     cd ..
     rm -rf install_talib
 }
 
-ping -c 1 id774.net > /dev/null 2>&1 || exit 1
-install_talib $*
+# Perform initial checks
+check_system
+check_commands curl make sudo tar ping
+check_network
+check_sudo
+
+# Run the installation process
+install_talib "$1" "$2"
+
+echo "TA-Lib $VERSION installed successfully."
