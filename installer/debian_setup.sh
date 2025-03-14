@@ -94,31 +94,44 @@ set_zsh_to_default() {
 }
 
 # Install various dotfiles configurations
-install_dot_vim() {
-    sudo locale-gen ja_JP.UTF-8
-    "$SCRIPTS/installer/install_dotvim.sh"
+install_dot_files() {
+    "$SCRIPTS/installer/install_dotfiles.sh"
 }
 
 install_dot_zsh() {
     test -d "$HOME/local/github" || mkdir -p "$HOME/local/github"
-    cd "$HOME/local/github"
-    git clone https://github.com/id774/dot_zsh.git
-    cd
-    ln -s "$HOME/local/github/dot_zsh"
+    cd "$HOME/local/github" || exit 1
+
+    if [ ! -d "dot_zsh" ]; then
+        git clone https://github.com/id774/dot_zsh.git
+    else
+        cd dot_zsh || exit 1
+        if [ -d ".git" ]; then
+            git pull
+        fi
+    fi
+
+    cd "$HOME/local/github/dot_zsh" || exit 1
+    ln -sf "$HOME/local/github/dot_zsh" "$HOME/dot_zsh"
     "$HOME/local/github/dot_zsh/install_dotzsh.sh"
 }
 
-install_dot_emacs() {
-    test -d "$HOME/local/github" || mkdir -p "$HOME/local/github"
-    cd "$HOME/local/github"
-    git clone https://github.com/id774/dot_emacs.git
-    cd
-    ln -s "$HOME/local/github/dot_emacs"
-    "$HOME/local/github/dot_emacs/install_dotemacs.sh"
+install_dot_vim() {
+    if [ ! -d "$HOME/.vim" ] && command -v vim >/dev/null 2>&1; then
+
+    sudo locale-gen ja_JP.UTF-8
+    "$SCRIPTS/installer/install_dotvim.sh"
 }
 
-install_dot_files() {
-    "$SCRIPTS/installer/install_dotfiles.sh"
+install_dot_emacs() {
+    if [ ! -d "$HOME/local/github/dot_emacs" ] && [ ! -d "/usr/local/etc/emacs.d/elisp" ] && command -v emacs >/dev/null 2>&1; then
+        test -d "$HOME/local/github" || mkdir -p "$HOME/local/github"
+        cd "$HOME/local/github" || exit 1
+        git clone https://github.com/id774/dot_emacs.git
+        cd
+        ln -sf "$HOME/local/github/dot_emacs"
+        "$HOME/local/github/dot_emacs/install_dotemacs.sh"
+    fi
 }
 
 # Install cryptographic tools
@@ -187,10 +200,10 @@ main() {
     check_commands sudo vi zsh git cut getent dpkg-reconfigure
     check_sudo
     set_zsh_to_default
-    test -d "$HOME/.vim" || install_dot_vim
-    test -d "$HOME/local/github/dot_zsh" || install_dot_zsh
-    test -d "$HOME/local/github/dot_emacs" || install_dot_emacs
     install_dot_files
+    install_dot_zsh
+    install_dot_vim
+    install_dot_emacs
     install_crypt
     setup_sysadmin_scripts
     setup_get_resources
