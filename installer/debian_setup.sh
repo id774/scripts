@@ -138,7 +138,8 @@ install_crypt() {
 
 # Setup various system utilities
 setup_sysadmin_scripts() {
-    "$SCRIPTS/installer/setup_sysadmin_scripts.sh"
+    "$SCRIPTS/installer/setup_sysadmin_scripts.sh" uninstall
+    "$SCRIPTS/installer/setup_sysadmin_scripts.sh" install
 }
 
 setup_get_resources() {
