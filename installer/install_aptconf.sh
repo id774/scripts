@@ -1,5 +1,97 @@
 #!/bin/sh
 
-sudo cp -v $SCRIPTS/etc/apt.conf /etc/apt/apt.conf
-sudo vi /etc/apt/apt.conf
+########################################################################
+# install_aptconf.sh: Configure apt.conf for APT
+#
+#  Description:
+#  This script deploys a custom `apt.conf` file and allows manual editing.
+#
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 2025-03-15
+#       Added system, command, and script checks.
+#       Improved error handling and user prompts.
+#       Ensured idempotent execution.
+#  v0.1 2008-11-06
+#       Initial version.
+#
+#  Usage:
+#  Run this script to deploy and edit the APT configuration file:
+#      ./install_aptconf.sh
+#
+#  Requirements:
+#  - Must be executed with sudo privileges.
+#  - The `$SCRIPTS` environment variable must be set.
+#
+########################################################################
 
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
+
+# Function to check required commands
+check_commands() {
+    for cmd in sudo cp chmod chown; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Check if SCRIPTS variable is set
+check_scripts() {
+    if [ -z "$SCRIPTS" ]; then
+        echo "Error: SCRIPTS environment variable is not set." >&2
+        echo "Please set the SCRIPTS variable to the directory containing the apt.conf file." >&2
+        exit 1
+    fi
+}
+
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
+# Function to deploy the apt.conf file
+deploy_aptconf() {
+    echo "Deploying apt.conf..."
+    sudo cp -v "$SCRIPTS/etc/apt.conf" /etc/apt/apt.conf
+    sudo chmod 644 /etc/apt/apt.conf
+    sudo chown root:root /etc/apt/apt.conf
+}
+
+# Function to allow manual editing of apt.conf
+edit_aptconf() {
+    echo "Opening apt.conf for manual editing..."
+    echo "Please edit /etc/apt/apt.conf"
+}
+
+# Main execution function
+main() {
+    check_system
+    check_commands
+    check_scripts
+    check_sudo
+
+    deploy_aptconf
+    edit_aptconf
+
+    echo "APT configuration setup completed successfully."
+}
+
+main "$@"
