@@ -1,13 +1,23 @@
 #!/bin/sh
-#
+
 ########################################################################
-# Install CaboCha
-#  $1 = cabocha version
-#  $2 = CRF version
-#  $3 = not save to src
+# install_cabocha.sh: Installer for CaboCha and CRF++
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script automates the installation of CaboCha and CRF++ by:
+#  - Downloading the specified or default version from the official repository.
+#  - Installing required dependencies.
+#  - Compiling and installing the application.
+#  - Optionally saving the source files for future use.
 #
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 2025-03-15
+#       Unified structure, added system checks, improved error handling.
 #  v0.7 2015-06-01
 #       Specify mecab-config.
 #  v0.6 2015-05-29
@@ -22,77 +32,134 @@
 #       Update download URL.
 #  v0.1 2012-10-23
 #       First.
+#
+#  Usage:
+#  Run this script without arguments to install the default versions:
+#      ./install_cabocha.sh
+#  Specify versions for CaboCha and CRF++:
+#      ./install_cabocha.sh 0.67 0.58
+#  Skip saving sources by adding a third argument:
+#      ./install_cabocha.sh 0.67 0.58 -n
+#
+#  Requirements:
+#  - Network connectivity is required to download the source files.
+#  - The user must have `wget`, `make`, `sudo`, `apt-get`, and `tar` installed.
+#  - Must be executed in a shell environment with internet access.
+#  - This script is intended for Linux systems only.
+#
 ########################################################################
 
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
+
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Function to check if SCRIPTS variable is set
+check_scripts() {
+    if [ -z "$SCRIPTS" ]; then
+        echo "Error: SCRIPTS environment variable is not set." >&2
+        echo "Please set the SCRIPTS variable to the directory containing Installer for bindings." >&2
+        exit 1
+    fi
+}
+
+# Function to check network connectivity
+check_network() {
+    if ! ping -c 1 id774.net >/dev/null 2>&1; then
+        echo "Error: No network connection detected. Please check your internet access." >&2
+        exit 1
+    fi
+}
+
+# Check if the user has sudo privileges
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
+# Setup version and environment
 setup_environment() {
-    test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
-    test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
-    test -n "$1" || CABOCHA_VERSION=0.67
-    test -n "$1" && CABOCHA_VERSION=$1
-    test -n "$2" || CRF_VERSION=0.58
-    test -n "$2" && CRF_VERSION=$1
-    case $OSTYPE in
-      *darwin*)
-        OWNER=root:wheel
-        OPTIONS=-pR
-        ;;
-      *)
-        OWNER=root:root
-        OPTIONS=-a
-        ;;
-    esac
+    CABOCHA_VERSION="${1:-0.67}"
+    CRF_VERSION="${2:-0.58}"
 }
 
+# Save sources if requested
 save_sources() {
-    sudo mkdir -p /usr/local/src/cabocha
-    sudo cp $OPTIONS cabocha-$CABOCHA_VERSION /usr/local/src/cabocha
-    sudo mkdir -p /usr/local/src/CRF
-    sudo cp $OPTIONS "CRF++-$CRF_VERSION" /usr/local/src/CRF
-    sudo chown -R root:root /usr/local/src/cabocha
+    sudo mkdir -p /usr/local/src/cabocha /usr/local/src/CRF
+    sudo cp -a "cabocha-$CABOCHA_VERSION" /usr/local/src/cabocha
+    sudo cp -a "CRF++-$CRF_VERSION" /usr/local/src/CRF
+    sudo chown -R root:root /usr/local/src/cabocha /usr/local/src/CRF
 }
 
+# Install CRF++
 install_crf() {
-    wget http://files.id774.net/archive/CRF%2B%2B-$CRF_VERSION.tar.gz
+    wget "http://files.id774.net/archive/CRF%2B%2B-$CRF_VERSION.tar.gz"
     tar xzvf "CRF++-$CRF_VERSION.tar.gz"
-    cd "CRF++-$CRF_VERSION"
+    cd "CRF++-$CRF_VERSION" || exit 1
     ./configure
     make
     sudo make install
     cd ..
 }
 
+# Install CaboCha
 install_cabocha() {
-    wget http://files.id774.net/archive/cabocha-$CABOCHA_VERSION.tar.bz2
-    tar xjvf cabocha-$CABOCHA_VERSION.tar.bz2
-    cd cabocha-$CABOCHA_VERSION
-    ./configure --with-charset=UTF8 --with-posset=IPA --with-mecab-config=`which mecab-config`
+    wget "http://files.id774.net/archive/cabocha-$CABOCHA_VERSION.tar.bz2"
+    tar xjvf "cabocha-$CABOCHA_VERSION.tar.bz2"
+    cd "cabocha-$CABOCHA_VERSION" || exit 1
+    ./configure --with-charset=UTF8 --with-posset=IPA --with-mecab-config=$(command -v mecab-config)
     make
     sudo make install
+    cd ..
 }
 
+# Install CRF++ and CaboCha
 install_crf_and_cabocha() {
     mkdir install_cabocha
-    cd install_cabocha
-
-    install_crf $*
-    install_cabocha $*
-
+    cd install_cabocha || exit 1
+    install_crf
+    install_cabocha
     cd ..
-    test -n "$3" || save_sources
-    cd ..
-    sudo rm -rf install_cabocha
+    [ -n "$3" ] || save_sources
+    rm -rf install_cabocha
 }
 
+# Install bindings (Ruby & Python)
 install_binding() {
-    $SCRIPTS/installer/install_cabocha_ruby.sh /opt/ruby/current /usr/local/src/cabocha/cabocha-$CABOCHA_VERSION/ruby
-    $SCRIPTS/installer/install_cabocha_python.sh /opt/python/current /usr/local/src/cabocha/cabocha-$CABOCHA_VERSION/python
+    SCRIPTS="/path/to/scripts" # Adjust this as needed
+    "$SCRIPTS/installer/install_cabocha_ruby.sh" /opt/ruby/current "/usr/local/src/cabocha/cabocha-$CABOCHA_VERSION/ruby"
+    "$SCRIPTS/installer/install_cabocha_python.sh" /opt/python/current "/usr/local/src/cabocha/cabocha-$CABOCHA_VERSION/python"
 }
 
+# Main execution function
 main() {
-    setup_environment $*
-    install_crf_and_cabocha $*
-    install_binding $*
+    check_system
+    check_commands wget make sudo apt-get tar ping
+    check_network
+    check_scripts
+    check_sudo
+    setup_environment "$@"
+    install_crf_and_cabocha "$@"
+    install_binding "$@"
+    echo "CaboCha $CABOCHA_VERSION and CRF++ $CRF_VERSION installed successfully."
 }
 
-ping -c 1 id774.net > /dev/null 2>&1 || exit 1
-main $*
+main "$@"
