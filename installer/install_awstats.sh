@@ -1,26 +1,122 @@
 #!/bin/sh
-#
+
 ########################################################################
-# Install awstats
+# install_awstats.sh: Installer for AWStats with Apache Integration
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script automates the installation and configuration of AWStats
+#  for Apache log analysis. It:
+#  - Installs AWStats using apt-get.
+#  - Configures AWStats and related Apache settings.
+#  - Ensures proper permissions on log files.
+#  - Restarts Apache and updates AWStats statistics.
 #
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 2025-03-15
+#       Added system, command, and sudo checks.
+#       Improved error handling and permission settings.
+#       Ensured idempotent execution.
 #  v0.1 2011-09-07
-#       First.
+#       Initial version.
+#
+#  Usage:
+#  Run this script to install and configure AWStats:
+#      ./install_awstats.sh
+#
+#  Requirements:
+#  - Must be executed with sudo privileges.
+#  - Apache2 must be installed on the system.
+#
 ########################################################################
 
-# Packages
-sudo apt-get install awstats
+set -e  # Exit immediately on error
 
-# Configure
-sudo vi /etc/awstats/awstats.conf*
-sudo vi /etc/apache2/sites-available/custom*
-sudo vi /etc/logrotate.d/apache2
-sudo chmod 440 /var/log/apache2/*
-sudo chown www-data:adm /var/log/apache2/*
-sudo chmod 550 /var/log/apache2
-sudo chown www-data:adm /var/log/apache2
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
 
-# Restart
-sudo /etc/init.d/apache2 restart
-sudo -u www-data /usr/lib/cgi-bin/awstats.pl -config=awstats -update
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
+# Install AWStats package
+install_awstats() {
+    echo "Installing AWStats..."
+    sudo apt-get update
+    sudo apt-get install -y awstats
+}
+
+# Configure AWStats
+configure_awstats() {
+    echo "Configuring AWStats and Apache..."
+
+    # Ensure configuration files exist before opening with vi
+    for file in /etc/awstats/awstats.conf* /etc/apache2/sites-available/custom* /etc/logrotate.d/apache2; do
+        if [ ! -f "$file" ]; then
+            echo "Warning: File $file does not exist. Skipping edit."
+        else
+            sudo vi "$file"
+        fi
+    done
+
+    # Set correct permissions on log files
+    echo "Setting permissions on Apache logs..."
+    sudo chmod 440 /var/log/apache2/*
+    sudo chown www-data:adm /var/log/apache2/*
+    sudo chmod 550 /var/log/apache2
+    sudo chown www-data:adm /var/log/apache2
+}
+
+# Restart Apache and update AWStats
+restart_services() {
+    echo "Restarting Apache..."
+    if command -v systemctl >/dev/null 2>&1; then
+        sudo systemctl restart apache2
+    else
+        sudo /etc/init.d/apache2 restart
+    fi
+
+    echo "Updating AWStats statistics..."
+    sudo -u www-data /usr/lib/cgi-bin/awstats.pl -config=awstats -update
+}
+
+# Main execution function
+main() {
+    check_system
+    check_commands sudo apt-get chmod chown vi systemctl apache2
+    check_sudo
+
+    install_awstats
+    configure_awstats
+    restart_services
+
+    echo "AWStats installation and configuration completed successfully."
+}
+
+main "$@"
