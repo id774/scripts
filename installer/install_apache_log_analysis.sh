@@ -46,7 +46,7 @@ check_system() {
 
 # Function to check required commands
 check_commands() {
-    for cmd in sudo cp chmod chown mkdir touch; do
+    for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
             echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
@@ -57,7 +57,7 @@ check_commands() {
     done
 }
 
-# Check if SCRIPTS variable is set
+# Function to check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "Error: SCRIPTS environment variable is not set." >&2
@@ -131,7 +131,7 @@ setup_log_rotation() {
 # Main execution function
 main() {
     check_system
-    check_commands
+    check_commands sudo cp chmod chown mkdir touch
     check_scripts
     check_sudo
 
