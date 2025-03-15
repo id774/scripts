@@ -1,10 +1,23 @@
 #!/bin/sh
-#
+
 ########################################################################
-# Install ClamAV
+# install_clamav.sh: Installer for ClamAV
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script automates the installation of ClamAV by:
+#  - Cloning the latest ClamAV source from the official Git repository.
+#  - Compiling and installing ClamAV with experimental features enabled.
+#  - Configuring ClamAV and setting appropriate permissions.
+#  - Keeping a backup of the source code for future reference (unless skipped).
 #
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.4 2025-03-15
+#       Unified structure, added system checks, improved error handling.
 #  v1.3 2010-07-28
 #       Make database directory if not exist.
 #  v1.2 2010-03-07
@@ -13,55 +26,95 @@
 #       Upgrade repository svn to git.
 #  v1.0 2008-08-15
 #       Stable.
+#
+#  Usage:
+#  Run this script without arguments to install ClamAV and keep source:
+#      ./install_clamav.sh
+#  Skip keeping source by passing any argument:
+#      ./install_clamav.sh -n
+#
+#  Requirements:
+#  - The user must have `git`, `make`, `sudo`, and `vi` installed.
+#  - This script is intended for Linux systems only.
+#
 ########################################################################
 
-keep_source() {
-    test -d /usr/local/src/security/clamav && sudo rm -rf /usr/local/src/security/clamav
-    test -d /usr/local/src/security/clamav-devel && sudo rm -rf /usr/local/src/security/clamav-devel
-    test -d /usr/local/src/security || sudo mkdir -p /usr/local/src/security
-    sudo cp -R clamav-devel /usr/local/src/security
-    sudo chown -R $OWNER /usr/local/src/security/clamav-devel
-    sudo chown $OWNER /usr/local/src/security
-    sudo chown $OWNER /usr/local/src
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
 }
 
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Check if the user has sudo privileges
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
+# Setup environment
+setup_environment() {
+    OWNER="root:root"
+}
+
+# Keep source for future reference unless skipped
+keep_source() {
+    [ -n "$1" ] && return
+    sudo mkdir -p /usr/local/src/security
+    sudo rm -rf /usr/local/src/security/clamav /usr/local/src/security/clamav-devel
+    sudo cp -R clamav-devel /usr/local/src/security
+    sudo chown -R "$OWNER" /usr/local/src/security/clamav-devel
+}
+
+# Install ClamAV
 install_clamav() {
-    test -d install_clamav || mkdir install_clamav
-    cd install_clamav
-    git clone git://git.clamav.net/git/clamav-devel
-    cd clamav-devel
+    mkdir install_clamav && cd install_clamav || exit 1
+    git clone git://git.clamav.net/git/clamav-devel && cd clamav-devel || exit 1
+
     ./configure --enable-experimental
     make
     sudo make install
+
     sudo vi /usr/local/etc/freshclam.conf /usr/local/etc/clamd.conf
     sudo chmod 700 /usr/local/etc/freshclam.conf
     sudo cp /usr/local/etc/freshclam.conf /usr/local/etc/freshclam.conf.base
     sudo cp /usr/local/etc/clamd.conf /usr/local/etc/clamd.conf.base
-    test -r /usr/local/share/clamav || sudo mkdir -p /usr/local/share/clamav
+
+    sudo mkdir -p /usr/local/share/clamav
     sudo chown clamav:clamav /usr/local/share/clamav
     sudo freshclam
-    cd ..
-    keep_source
+
+    cd .. || exit 1
+    keep_source "$1"
     rm -rf clamav-devel/
-    cd ..
+    cd .. || exit 1
     rm -rf install_clamav/
 }
 
-setup_environment() {
-    case $OSTYPE in
-      *darwin*)
-        OWNER=root:wheel
-        ;;
-      *)
-        OWNER=root:root
-        ;;
-    esac
-}
-
+# Main execution function
 main() {
+    check_system
+    check_commands git make sudo vi
+    check_sudo
     setup_environment
-    install_clamav
+    install_clamav "$1"
+    echo "ClamAV installation completed successfully."
 }
 
-ping -c 1 id774.net > /dev/null 2>&1 || exit 1
-main
+main "$@"
