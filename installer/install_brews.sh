@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# install_brew_batch.sh: Bulk Homebrew Library Install Script
+# install_brews.sh: Bulk Homebrew Library Install Script
 #
 #  Description:
 #  This script installs a set of essential tools and libraries on macOS
@@ -22,7 +22,7 @@
 #  Usage:
 #  Run this script in a terminal to set up your macOS environment.
 #  Examples:
-#     ./install_brew_batch.sh
+#     ./install_brews.sh
 #
 #  Requirements:
 #  - Homebrew must be installed prior to executing this script.
