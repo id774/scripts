@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-03-16
+#       Encapsulated all logic in functions and introduced main function.
 #  v1.4 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.3 2025-03-05
@@ -39,6 +41,7 @@ check_sudo() {
     fi
 }
 
+# Check if required commands exist
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -51,19 +54,32 @@ check_commands() {
     done
 }
 
-# Check if required commands are installed
-check_commands gpg apt-key sudo
+# Import a GPG key from the specified keyserver
+import_gpg_key() {
+    keyserver="$1"
+    pubkey="$2"
 
-check_sudo
+    echo "Importing GPG key from $keyserver..."
+    gpg --keyserver "$keyserver" --recv-keys "$pubkey"
 
-# Check if both arguments are provided
-if [ -n "$2" ]; then
-    # Import the GPG key from the specified keyserver
-    gpg --keyserver "$1" --recv-keys "$2"
+    echo "Exporting and adding the GPG key to APT keyring..."
+    sudo gpg --armor --export "$pubkey" | sudo apt-key add -
+}
 
-    # Export the GPG key and add it to the APT keyring
-    sudo gpg --armor --export "$2" | sudo apt-key add -
-else
-    # Display usage information if arguments are missing
-    echo "Usage: $0 KEYSERVER PUBKEY"
-fi
+# Main function
+main() {
+    # Check required commands
+    check_commands gpg apt-key sudo
+
+    check_sudo
+
+    # Check if both arguments are provided
+    if [ -n "$2" ]; then
+        import_gpg_key "$1" "$2"
+    else
+        echo "Usage: $0 KEYSERVER PUBKEY"
+    fi
+}
+
+# Execute main function
+main "$@"
