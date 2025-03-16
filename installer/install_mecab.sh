@@ -1,14 +1,22 @@
 #!/bin/sh
-#
+
 ########################################################################
-# Install Mecab
-#  $1 = mecab version
-#  $2 = ipadic version
-#  $3 = naistdic version
-#  $4 = not save to src
+# install_mecab.sh: Installer for MeCab and related dictionaries
 #
-#  Maintainer: id774 <idnanashi@gmail.com>
+#  Description:
+#  This script automates the installation of MeCab by:
+#  - Downloading and compiling the specified or default version.
+#  - Installing the IPADIC and NAIST dictionaries.
+#  - Optionally saving the source files for future use.
 #
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 2025-03-16
+#       Unified structure, added system checks, improved error handling.
 #  v0.4 2015-05-29
 #       Change URL, fix args bug.
 #  v0.3 2014-02-10
@@ -17,100 +25,116 @@
 #       Add NAIST dic.
 #  v0.1 2012-08-07
 #       First.
+#
+#  Usage:
+#  Run this script without arguments to install the default version:
+#      ./install_mecab.sh
+#  Specify versions for MeCab, IPADIC, and NAIST dictionaries:
+#      ./install_mecab.sh 0.996 2.7.0-20070801 53500
+#  Skip saving sources by adding a fourth argument:
+#      ./install_mecab.sh 0.996 2.7.0-20070801 53500 -n
+#
+#  Requirements:
+#  - The user must have `wget`, `tar`, `make`, and `sudo` installed.
+#  - Network connectivity is required to download the source files.
+#  - This script is intended for Linux systems only.
+#
 ########################################################################
 
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
+
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Function to check network connectivity
+check_network() {
+    if ! ping -c 1 id774.net >/dev/null 2>&1; then
+        echo "Error: No network connection detected. Please check your internet access." >&2
+        exit 1
+    fi
+}
+
+# Check if the user has sudo privileges
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
+# Setup environment
 setup_environment() {
-    test -n "$SCRIPTS" || export SCRIPTS=$HOME/scripts
-    test -n "$PRIVATE" || export PRIVATE=$HOME/private/scripts
-    test -n "$1" || MECAB_VERSION=0.996
-    test -n "$1" && MECAB_VERSION=$1
-    test -n "$2" || IPADIC_VERSION=2.7.0-20070801
-    test -n "$2" && IPADIC_VERSION=$2
-    test -n "$3" || NAISTDIC_NUM=53500
-    test -n "$3" && NAISTDIC_NUM=$4
-    case $OSTYPE in
-      *darwin*)
-        OWNER=root:wheel
-        OPTIONS=-pR
-        ;;
-      *)
-        OWNER=root:root
-        OPTIONS=-a
-        ;;
-    esac
+    MECAB_VERSION="${1:-0.996}"
+    IPADIC_VERSION="${2:-2.7.0-20070801}"
+    NAISTDIC_VERSION="${3:-53500}"
 }
 
-save_sources() {
-    sudo mkdir -p /usr/local/src/mecab
-    sudo cp $OPTIONS mecab-$MECAB_VERSION /usr/local/src/mecab
-    sudo cp $OPTIONS mecab-ruby-$MECAB_VERSION /usr/local/src/mecab
-    sudo cp $OPTIONS mecab-python-$MECAB_VERSION /usr/local/src/mecab
-    sudo cp $OPTIONS mecab-ipadic-$IPADIC_VERSION /usr/local/src/mecab
-    sudo cp $OPTIONS mecab-naist-jdic-$NAISTDIC_VERSION /usr/local/src/mecab
-    sudo chown -R $OWNER /usr/local/src/mecab
-}
+# Install MeCab
+install_mecab() {
+    mkdir install_mecab
+    cd install_mecab || exit 1
 
-source_compile() {
-    wget http://files.id774.net/archive/mecab-$MECAB_VERSION.tar.gz
-    tar xzvf mecab-$MECAB_VERSION.tar.gz
-    cd mecab-$MECAB_VERSION
+    wget "http://files.id774.net/archive/mecab-$MECAB_VERSION.tar.gz"
+    tar xzvf "mecab-$MECAB_VERSION.tar.gz"
+    cd "mecab-$MECAB_VERSION" || exit 1
     ./configure --enable-utf8-only
     make
     sudo make install
     cd ..
-}
 
-ipadic_compile() {
-    wget http://files.id774.net/archive/mecab-ipadic-$IPADIC_VERSION.tar.gz
-    tar xzvf mecab-ipadic-$IPADIC_VERSION.tar.gz
-    cd mecab-ipadic-$IPADIC_VERSION
+    wget "http://files.id774.net/archive/mecab-ipadic-$IPADIC_VERSION.tar.gz"
+    tar xzvf "mecab-ipadic-$IPADIC_VERSION.tar.gz"
+    cd "mecab-ipadic-$IPADIC_VERSION" || exit 1
     ./configure --with-charset=utf8
     make
     sudo make install
     cd ..
-}
 
-naistdic_compile() {
-    wget http://files.id774.net/archive/naistdic.tar.gz
-    tar xzvf naistdic.tar.gz
-    cd mecab-naist-jdic-$NAISTDIC_VERSION
+    wget "http://files.id774.net/archive/naistdic.tar.gz"
+    tar xzvf "naistdic.tar.gz"
+    cd "mecab-naist-jdic-$NAISTDIC_VERSION" || exit 1
     ./configure --with-charset=utf8
     make
     sudo make install
     cd ..
-}
 
-get_binding() {
-    wget http://files.id774.net/archive/mecab-python-$MECAB_VERSION.tar.gz
-    tar xzvf mecab-python-$MECAB_VERSION.tar.gz
-    wget http://files.id774.net/archive/mecab-ruby-$MECAB_VERSION.tar.gz
-    tar xzvf mecab-ruby-$MECAB_VERSION.tar.gz
-}
-
-install_mecab() {
-    mkdir install_mecab
-    cd install_mecab
-
-    source_compile $*
-    ipadic_compile $*
-    naistdic_compile $*
-    get_binding $*
-
-    test -n "$4" || save_sources
+    [ -n "$4" ] || save_sources
     cd ..
     rm -rf install_mecab
 }
 
-install_binding() {
-    # $SCRIPTS/installer/install_mecab_ruby.sh /opt/ruby/current /usr/local/src/mecab/mecab-ruby-$MECAB_VERSION
-    $SCRIPTS/installer/install_mecab_python.sh /opt/python/current /usr/local/src/mecab/mecab-python-$MECAB_VERSION
+# Save sources if requested
+save_sources() {
+    sudo mkdir -p /usr/local/src/mecab
+    sudo cp -a mecab-$MECAB_VERSION mecab-ipadic-$IPADIC_VERSION mecab-naist-jdic-$NAISTDIC_VERSION /usr/local/src/mecab
+    sudo chown -R root:root /usr/local/src/mecab
 }
 
+# Main execution function
 main() {
-    setup_environment $*
-    install_mecab $*
-    test -n "$5" || install_binding $*
+    check_system
+    check_commands wget tar make sudo ping
+    check_network
+    check_sudo
+    setup_environment "$@"
+    install_mecab "$@"
+    echo "MeCab installation completed successfully."
 }
 
-ping -c 1 id774.net > /dev/null 2>&1 || exit 1
-main $*
+main "$@"
