@@ -16,8 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.0 2025-03-15
+#  v1.0 2025-03-16
 #       Unified structure, added system checks, improved error handling.
+#       Removed install_binding, unified structure, improved maintainability.
 #  v0.7 2015-06-01
 #       Specify mecab-config.
 #  v0.6 2015-05-29
@@ -68,15 +69,6 @@ check_commands() {
             exit 126
         fi
     done
-}
-
-# Function to check if SCRIPTS variable is set
-check_scripts() {
-    if [ -z "$SCRIPTS" ]; then
-        echo "Error: SCRIPTS environment variable is not set." >&2
-        echo "Please set the SCRIPTS variable to the directory containing Installer for bindings." >&2
-        exit 1
-    fi
 }
 
 # Function to check network connectivity
@@ -142,23 +134,14 @@ install_crf_and_cabocha() {
     rm -rf install_cabocha
 }
 
-# Install bindings (Ruby & Python)
-install_binding() {
-    SCRIPTS="/path/to/scripts" # Adjust this as needed
-    "$SCRIPTS/installer/install_cabocha_ruby.sh" /opt/ruby/current "/usr/local/src/cabocha/cabocha-$CABOCHA_VERSION/ruby"
-    "$SCRIPTS/installer/install_cabocha_python.sh" /opt/python/current "/usr/local/src/cabocha/cabocha-$CABOCHA_VERSION/python"
-}
-
 # Main execution function
 main() {
     check_system
     check_commands wget make sudo apt-get tar ping
     check_network
-    check_scripts
     check_sudo
     setup_environment "$@"
     install_crf_and_cabocha "$@"
-    install_binding "$@"
     echo "CaboCha $CABOCHA_VERSION and CRF++ $CRF_VERSION installed successfully."
 }
 
