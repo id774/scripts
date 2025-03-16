@@ -44,11 +44,10 @@ is_git_repo() {
 }
 
 remove_repo() {
-    local repo_path_github="$HOME/local/github/$1"
-    local repo_path_git="$HOME/local/git/$1"
-    local symlink_path="$HOME/$1"
-
-    if [ -d "$repo_path_github" ] && is_git_repo "$repo_path_github"; then
+    repo_path_github="$HOME/local/github/$1"
+    repo_path_git="$HOME/local/git/$1"
+    symlink_path="$HOME/$1"
+    if [ -d "$repo_path_github" ] && is_git_repo "$repo_path_github" ; then
         if [ "$DRY_RUN" = false ]; then
             echo "Removing Git repository: $repo_path_github"
             rm -rf "$repo_path_github"
@@ -57,7 +56,7 @@ remove_repo() {
         fi
     fi
 
-    if [ -d "$repo_path_git" ] && is_git_repo "$repo_path_git"; then
+    if [ -d "$repo_path_git" ] && is_git_repo "$repo_path_git" ; then
         if [ "$DRY_RUN" = false ]; then
             echo "Removing Git repository: $repo_path_git"
             rm -rf "$repo_path_git"
