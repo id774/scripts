@@ -45,10 +45,10 @@ SHOW_HELP=false
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "Error: '$cmd' is not installed. Please install it and try again." >&2
+            echo "Error: Git is not installed. This script requires Git for managing Git repositories. Please install Git and try again." >&2
             exit 127
         elif ! [ -x "$(command -v "$cmd")" ]; then
-            echo "Error: Command '$cmd' is not executable. Check permissions." >&2
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -57,7 +57,7 @@ check_commands() {
 # Display usage information
 usage() {
     echo "Usage: $0 [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]"
-    echo "Default: Show this help message. Use '--all' to pull from both github and git directories."
+    echo "Default behavior is to show this help message. Use '--all' to pull from both github and git directories."
     exit 0
 }
 
