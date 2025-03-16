@@ -22,6 +22,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-16
+#       Encapsulated all logic in functions and introduced main function.
 #  v1.2 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.1 2025-03-05
@@ -53,40 +55,48 @@ check_sudo() {
 
 # Check if a directory exists
 check_directory() {
-  if [ ! -d "$1" ]; then
-    echo "Error: Directory $1 does not exist." >&2
-    exit 1
-  fi
+    if [ ! -d "$1" ]; then
+        echo "Error: Directory $1 does not exist." >&2
+        exit 1
+    fi
 }
 
-# Determine the operating system
-os=$(uname)
+# Fix ownership and permissions for Zsh directories
+fix_permissions() {
+    echo "Fixing ownership and permissions for Zsh directories on macOS..."
 
-# Exit if not macOS
-if [ "$os" != "Darwin" ]; then
-  echo "This script is designed for macOS only." >&2
-  exit 1
-fi
+    # Check if directories exist before proceeding
+    check_directory /usr/local/Homebrew/completions/zsh/
+    check_directory /usr/local/share/zsh/
 
-echo "Fixing ownership and permissions for Zsh directories on macOS..."
+    check_sudo
 
-# Check if directories exist before proceeding
-check_directory /usr/local/Homebrew/completions/zsh/
-check_directory /usr/local/share/zsh/
+    # Change ownership to root:wheel
+    sudo chown -R root:wheel /usr/local/Homebrew/completions/zsh/
+    sudo chown -R root:wheel /usr/local/share/zsh/
 
-check_sudo
+    # Set secure permissions
+    sudo chmod -R 755 /usr/local/Homebrew/completions/zsh/
+    sudo chmod -R 755 /usr/local/share/zsh/
 
-# Change ownership to root:wheel
-sudo chown -R root:wheel /usr/local/Homebrew/completions/zsh/
-sudo chown -R root:wheel /usr/local/share/zsh/
+    # Verify changes
+    echo "Ownership and permissions have been updated:"
+    ls -Tld /usr/local/Homebrew/completions/zsh/
+    ls -Tld /usr/local/share/zsh/
+}
 
-# Set secure permissions
-sudo chmod -R 755 /usr/local/Homebrew/completions/zsh/
-sudo chmod -R 755 /usr/local/share/zsh/
+# Main function
+main() {
+    os=$(uname)
 
-# Verify changes
-echo "Ownership and permissions have been updated:"
-ls -Tld /usr/local/Homebrew/completions/zsh/
-ls -Tld /usr/local/share/zsh/
+    # Exit if not macOS
+    if [ "$os" != "Darwin" ]; then
+        echo "This script is designed for macOS only." >&2
+        exit 1
+    fi
 
-exit 0
+    fix_permissions
+}
+
+# Execute main function
+main "$@"
