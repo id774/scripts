@@ -1,3 +1,0 @@
-deb     http://ftp.jp.debian.org/debian/ sid main contrib non-free
-deb-src http://ftp.jp.debian.org/debian/ sid main contrib non-free
-#deb     http://download.skype.com/linux/repos/debian/ stable non-free

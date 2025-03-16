@@ -1,3 +1,0 @@
-#!/bin/sh -e
-#
-test -c /dev/ttyUSB0 && pon em
