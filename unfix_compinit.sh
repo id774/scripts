@@ -23,6 +23,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-16
+#       Encapsulated all logic in functions and introduced main function.
 #  v1.2 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.1 2025-03-05
@@ -51,47 +53,55 @@ check_sudo() {
 
 # Check if a directory exists
 check_directory() {
-  if [ ! -d "$1" ]; then
-    echo "Error: Directory $1 does not exist." >&2
-    exit 1
-  fi
+    if [ ! -d "$1" ]; then
+        echo "Error: Directory $1 does not exist." >&2
+        exit 1
+    fi
 }
 
-# Determine the operating system
-os=$(uname)
+# Adjust ownership and permissions for Homebrew directories
+adjust_homebrew_permissions() {
+    echo "Setting ownership and permissions for Homebrew directories on macOS..."
 
-# Exit if not macOS
-if [ "$os" != "Darwin" ]; then
-  echo "This script is designed for macOS only." >&2
-  exit 1
-fi
+    # Get the current user and their primary group
+    current_user=$(whoami)
+    current_group=$(id -gn "$current_user")
 
-echo "Setting ownership and permissions for Homebrew directories on macOS..."
+    # Check if directories exist
+    check_directory /usr/local/Homebrew
+    check_directory /usr/local/share/zsh/
+    check_directory /usr/local/share/zsh/site-functions
 
-# Get the current user and their primary group
-current_user=$(whoami)
-current_group=$(id -gn "$current_user")
+    check_sudo
 
-# Check if directories exist
-check_directory /usr/local/Homebrew
-check_directory /usr/local/share/zsh/
-check_directory /usr/local/share/zsh/site-functions
+    # Change ownership to the current user and their primary group
+    sudo chown -R "$current_user":"$current_group" /usr/local/Homebrew
+    sudo chown -R "$current_user":"$current_group" /usr/local/share/zsh/
+    sudo chown -R "$current_user":"$current_group" /usr/local/share/zsh/site-functions
 
-check_sudo
+    # Set write permissions for the current user
+    chmod u+w /usr/local/share/zsh/
+    chmod u+w /usr/local/share/zsh/site-functions
 
-# Change ownership to the current user and their primary group
-sudo chown -R "$current_user":"$current_group" /usr/local/Homebrew
-sudo chown -R "$current_user":"$current_group" /usr/local/share/zsh/
-sudo chown -R "$current_user":"$current_group" /usr/local/share/zsh/site-functions
+    # Verify changes
+    echo "Ownership and permissions have been updated for Homebrew:"
+    ls -Tld /usr/local/Homebrew
+    ls -Tld /usr/local/share/zsh/
+    ls -Tld /usr/local/share/zsh/site-functions
+}
 
-# Set write permissions for the current user
-chmod u+w /usr/local/share/zsh/
-chmod u+w /usr/local/share/zsh/site-functions
+# Main function
+main() {
+    os=$(uname)
 
-# Verify changes
-echo "Ownership and permissions have been updated for Homebrew:"
-ls -Tld /usr/local/Homebrew
-ls -Tld /usr/local/share/zsh/
-ls -Tld /usr/local/share/zsh/site-functions
+    # Exit if not macOS
+    if [ "$os" != "Darwin" ]; then
+        echo "This script is designed for macOS only." >&2
+        exit 1
+    fi
 
-exit 0
+    adjust_homebrew_permissions
+}
+
+# Execute main function
+main "$@"
