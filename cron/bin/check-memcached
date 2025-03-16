@@ -1,3 +1,0 @@
-#!/bin/sh
-
-ps -H auxwww | grep memcached | grep -v "grep memcached" | grep -v "check-memcached" | grep memcached > /dev/null || ip addr show | mail -s "[admin][alert][`/bin/hostname`] memcached is not running" root

@@ -1,3 +1,0 @@
-#!/bin/sh
-
-iptables -vn -L | grep "SET name: SSH side: source" > /dev/null || ip addr show | mail -s "[admin][`/bin/hostname`] iptables is not running" root
