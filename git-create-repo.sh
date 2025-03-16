@@ -96,6 +96,7 @@ check_sudo() {
     fi
 }
 
+# Check if necessary commands exist
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -176,61 +177,66 @@ delete_git_repo() {
     fi
 }
 
-# Main script execution starts here
+# Parse command-line arguments
+parse_arguments() {
+    dry_run=false
+    delete_repo=false
+    explicit_sudo=""
+    user="git"
+    group="git"
 
-dry_run=false
-delete_repo=false
-explicit_sudo=""
-user="git"
-group="git"
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            --dry-run) dry_run=true ;;
+            --delete) delete_repo=true ;;
+            --sudo) explicit_sudo="sudo" ;;
+            --no-sudo) explicit_sudo="" ;;
+            --user) user="$2"; shift ;;
+            --group) group="$2"; shift ;;
+            -h|--help) usage ;;
+            --) shift; break ;;
+            -*) usage ;;
+            *) break ;;
+        esac
+        shift
+    done
 
-# Parse options
-while [ $# -gt 0 ]; do
-    case "$1" in
-        --dry-run) dry_run=true ;;
-        --delete) delete_repo=true ;;
-        --sudo) explicit_sudo="sudo" ;;
-        --no-sudo) explicit_sudo="" ;;
-        --user) user="$2"; shift ;;
-        --group) group="$2"; shift ;;
-        -h|--help) usage ;;
-        --) shift; break ;;
-        -*) usage ;;
-        *) break ;;
-    esac
-    shift
-done
+    if [ "$#" -lt 1 ]; then
+        usage
+    fi
 
-# Check the number of arguments
-if [ "$#" -lt 1 ]; then
-    usage
-fi
+    repo_name=$1
+    repo_base_path=${2:-"/var/lib/git"}
+    repo_full_path="${repo_base_path}/${repo_name}.git"
 
-# Check if Git is installed
-check_commands git
+    if [ -z "$explicit_sudo" ]; then
+        case "$repo_base_path" in
+            $HOME*) use_sudo="" ;;
+            *) use_sudo="sudo" ;;
+        esac
+    else
+        use_sudo="$explicit_sudo"
+    fi
+}
 
-repo_name=$1
-repo_base_path=${2:-"/var/lib/git"}
-repo_full_path="${repo_base_path}/${repo_name}.git"
+# Main function
+main() {
+    parse_arguments "$@"
 
-# Determine sudo usage if not explicitly set
-if [ -z "$explicit_sudo" ]; then
-    case "$repo_base_path" in
-        $HOME*) use_sudo="" ;;
-        *) use_sudo="sudo" ;;
-    esac
-else
-    use_sudo="$explicit_sudo"
-fi
+    check_commands git
 
-if [ "$use_sudo" = "sudo" ]; then
-    check_sudo
-fi
+    if [ "$use_sudo" = "sudo" ]; then
+        check_sudo
+    fi
 
-if [ "$delete_repo" = true ]; then
-    delete_git_repo "${repo_full_path}" "$dry_run" "$use_sudo"
-    exit 0
-fi
+    if [ "$delete_repo" = true ]; then
+        delete_git_repo "${repo_full_path}" "$dry_run" "$use_sudo"
+        exit 0
+    fi
 
-check_directory "$repo_base_path"
-create_git_repo "${repo_name}" "${repo_full_path}" "$dry_run" "$use_sudo" "$user" "$group"
+    check_directory "$repo_base_path"
+    create_git_repo "${repo_name}" "${repo_full_path}" "$dry_run" "$use_sudo" "$user" "$group"
+}
+
+# Run the main function
+main "$@"
