@@ -8,14 +8,6 @@
 #  processes and packages from a Debian-based system. Tracker is a file
 #  indexing and search service commonly found in GNOME environments.
 #
-#  The script performs the following operations:
-#  - Identifies and kills all running Tracker-related processes.
-#  - Disables systemd user services to prevent future auto-start.
-#  - Resets the Tracker database to free up storage.
-#  - Individually purges all related packages for better error handling.
-#  - Marks packages as "hold" to prevent reinstallation.
-#  - Cleans up orphaned dependencies and cached package files.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -60,123 +52,114 @@
 #
 ########################################################################
 
-# Function to check if the system is Linux
-check_system() {
-    if [ "$(uname)" != "Linux" ]; then
-        echo "Error: This script is intended for Linux only." >&2
-        exit 1
-    fi
+# Initial checks and setup
+perform_initial_checks() {
+    check_system
+    check_commands dpkg pgrep pkill apt systemctl
+    check_systemd
+    check_sudo
 }
 
-# Function to check required commands
-check_commands() {
-    for cmd in "$@"; do
-        if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "Error: Command '$cmd' is not installed. Please install it and try again." >&2
-            exit 127
-        elif ! [ -x "$(command -v "$cmd")" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
-            exit 126
+# Main operations to stop, disable, and remove tracker
+perform_tracker_operations() {
+    stop_tracker_processes
+    disable_tracker_services
+    reset_tracker_database
+    purge_tracker_packages
+    prevent_tracker_reinstallation
+    cleanup_system
+}
+
+# Stop all tracker-related processes
+stop_tracker_processes() {
+    echo "Stopping all tracker-related processes..."
+    for PROCESS in tracker tracker3 tracker-miner-fs tracker-extract \
+                   tracker-miner-apps tracker-miner-rss tracker-store \
+                   tracker-daemon tracker-indexer; do
+        if pgrep -x "$PROCESS" >/dev/null 2>&1; then
+            echo "Stopping process: $PROCESS"
+            pkill -9 "$PROCESS"
         fi
     done
 }
 
-# Function to check if systemd is available
-check_systemd() {
-    if ! command -v systemctl >/dev/null 2>&1; then
-        echo "Error: systemd is not available. This script requires systemd for service management." >&2
-        exit 1
+# Disable systemd user services for tracker
+disable_tracker_services() {
+    echo "Disabling tracker services..."
+    for SERVICE in tracker.service tracker3.service tracker-miner-fs.service \
+                   tracker-miner-fs-3.service tracker-miner-rss.service; do
+        systemctl --user stop "$SERVICE" 2>/dev/null
+        systemctl --user disable "$SERVICE" 2>/dev/null
+        systemctl --user mask "$SERVICE" 2>/dev/null
+    done
+}
+
+# Reset the tracker database
+reset_tracker_database() {
+    echo "Resetting tracker database..."
+    if command -v tracker3 >/dev/null 2>&1; then
+        tracker3 reset --hard
+    elif command -v tracker >/dev/null 2>&1; then
+        tracker reset --hard
     fi
 }
 
-# Check if the user has sudo privileges (password may be required)
-check_sudo() {
-    if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
-        exit 1
-    fi
+# Purge all tracker-related packages
+purge_tracker_packages() {
+    echo "Purging tracker-related packages..."
+    for PACKAGE in tracker tracker3 tracker-miner-fs tracker-extract \
+                   tracker-gui tracker-miners tracker-store tracker-indexer \
+                   tracker-doc libtracker-control-2.0-0 libtracker-control-3-0 \
+                   libtracker-miner-2.0-0 libtracker-miner-3-0 \
+                   libtracker-sparql-2.0-0 libtracker-sparql-3-0; do
+        if dpkg -l | grep -q "^ii  $PACKAGE "; then
+            echo "Purging package: $PACKAGE"
+            sudo apt purge -y "$PACKAGE"
+        fi
+    done
 }
 
-# Parse options
-FORCE_REMOVE=0
-while getopts "f" opt; do
-    case "$opt" in
-        f) FORCE_REMOVE=1 ;;
-        *) exit 1 ;;
-    esac
-done
-shift $((OPTIND -1))
-
-# Perform system and environment checks
-check_system
-check_commands dpkg pgrep pkill apt systemctl
-check_systemd
-
-# Ensure tracker is installed before proceeding, unless forced
-if [ "$FORCE_REMOVE" -eq 0 ] && ! command -v tracker3 >/dev/null 2>&1 && ! command -v tracker >/dev/null 2>&1; then
-    echo "Error: tracker is not installed." >&2
-    exit 1
-fi
-
-check_sudo
-
-echo "Stopping all tracker-related processes..."
-
-# Possible process names
-for PROCESS in tracker tracker3 tracker-miner-fs tracker-extract \
-               tracker-miner-apps tracker-miner-rss tracker-store \
-               tracker-daemon tracker-indexer; do
-    if pgrep -x "$PROCESS" >/dev/null 2>&1; then
-        echo "Stopping process: $PROCESS"
-        pkill -9 "$PROCESS"
-    fi
+# Prevent reinstallation of tracker packages
+prevent_tracker_reinstallation() {
+    echo "Running cleanup operations..."
+    for PACKAGE in tracker tracker3 tracker-miner-fs tracker-extract \
+                   tracker-gui tracker-miners tracker-store tracker-indexer \
+                   tracker-doc libtracker-control-2.0-0 libtracker-control-3-0 \
+                   libtracker-miner-2.0-0 libtracker-miner-3-0 \
+                   libtracker-sparql-2.0-0 libtracker-sparql-3-0; do
+        sudo apt-mark hold "$PACKAGE"
     done
+}
 
-echo "Disabling tracker services..."
+# Cleanup system by removing orphaned packages and cache
+cleanup_system() {
+    sudo apt autoremove -y
+    sudo apt autoclean -y
+    sudo apt clean -y
+}
 
-# Disable systemd user services
-for SERVICE in tracker.service tracker3.service tracker-miner-fs.service \
-               tracker-miner-fs-3.service tracker-miner-rss.service; do
-    systemctl --user stop "$SERVICE" 2>/dev/null
-    systemctl --user disable "$SERVICE" 2>/dev/null
-    systemctl --user mask "$SERVICE" 2>/dev/null
-done
-
-echo "Resetting tracker database..."
-if command -v tracker3 >/dev/null 2>&1; then
-    tracker3 reset --hard
-elif command -v tracker >/dev/null 2>&1; then
-    tracker reset --hard
-fi
-
-echo "Purging tracker-related packages..."
-
-# Possible package names
-for PACKAGE in tracker tracker3 tracker-miner-fs tracker-extract \
-               tracker-gui tracker-miners tracker-store tracker-indexer \
-               tracker-doc libtracker-control-2.0-0 libtracker-control-3-0 \
-               libtracker-miner-2.0-0 libtracker-miner-3-0 \
-               libtracker-sparql-2.0-0 libtracker-sparql-3-0; do
-    if dpkg -l | grep -q "^ii  $PACKAGE "; then
-        echo "Purging package: $PACKAGE"
-        sudo apt purge -y "$PACKAGE"
-    fi
+# Parse command-line options
+parse_options() {
+    FORCE_REMOVE=0
+    while getopts "f" opt; do
+        case "$opt" in
+            f) FORCE_REMOVE=1 ;;
+            *) exit 1 ;;
+        esac
     done
+    shift $((OPTIND -1))
+}
 
-echo "Running cleanup operations..."
+# Main execution block
+main() {
+    parse_options "$@"
+    perform_initial_checks
+    if [ "$FORCE_REMOVE" -eq 0 ] && ! command -v tracker3 >/dev/null 2>&1 && ! command -v tracker >/dev/null 2>&1; then
+        echo "Error: tracker is not installed." >&2
+        exit 1
+    fi
+    perform_tracker_operations
+    echo "Tracker has been completely removed and cleaned up."
+}
 
-# Prevent tracker from being reinstalled
-for PACKAGE in tracker tracker3 tracker-miner-fs tracker-extract \
-               tracker-gui tracker-miners tracker-store tracker-indexer \
-               tracker-doc libtracker-control-2.0-0 libtracker-control-3-0 \
-               libtracker-miner-2.0-0 libtracker-miner-3-0 \
-               libtracker-sparql-2.0-0 libtracker-sparql-3-0; do
-    sudo apt-mark hold "$PACKAGE"
-done
-
-# Remove orphaned packages
-sudo apt autoremove -y
-sudo apt autoclean -y
-sudo apt clean -y
-
-echo "Tracker has been completely removed and cleaned up."
+main "$@"
