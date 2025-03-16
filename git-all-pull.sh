@@ -18,24 +18,21 @@
 #
 #  Version History:
 #  v1.3 2025-03-16
-#       Redirected error messages to stderr for better logging and debugging.
-#       Make POSIX compliant by removing 'local' variables.
+#       Refactored entire script to encapsulate all logic in functions.
+#       Introduced `main()` function for better structure and maintainability.
 #  v1.2 2024-01-07
-#       Updated command existence and execution permission checks
-#       using a common function for enhanced reliability and maintainability.
+#       Updated command existence and execution permission checks.
 #  v1.1 2023-12-07
-#       Added check for Git installation and options to pull from specific directories.
-#       Added '--all' option and default behavior to show help message if no option is provided.
-#       Refactored to comply with POSIX standards.
+#       Added checks for Git installation and improved options handling.
 #  v1.0 2023-12-05
-#       Initial release. Supports pulling Git repositories and managing
-#       symbolic links with optional arguments.
+#       Initial release.
 #
 #  Usage:
 #  ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]
 #
 ########################################################################
 
+# Global variables
 HARD_MODE=false
 NO_SYMLINK=false
 DRY_RUN=false
@@ -44,118 +41,120 @@ GIT_ONLY=false
 ALL=false
 SHOW_HELP=false
 
+# Check if necessary commands exist
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "Error: Git is not installed. This script requires Git for pulling repositories. Please install Git and try again." >&2
+            echo "Error: '$cmd' is not installed. Please install it and try again." >&2
             exit 127
         elif ! [ -x "$(command -v "$cmd")" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "Error: Command '$cmd' is not executable. Check permissions." >&2
             exit 126
         fi
     done
 }
 
-# Display script usage information
+# Display usage information
 usage() {
     echo "Usage: $0 [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]"
-    echo "Default behavior is to show this help message. Use '--all' to pull from both github and git directories."
+    echo "Default: Show this help message. Use '--all' to pull from both github and git directories."
     exit 0
 }
 
-# Parse options
-if [ $# -eq 0 ]; then
-    SHOW_HELP=true
-fi
-
-for arg in "$@"
-do
-    case $arg in
-        --hard)
-        HARD_MODE=true
-        ;;
-        --no-symlink)
-        NO_SYMLINK=true
-        ;;
-        --dry-run)
-        DRY_RUN=true
-        ;;
-        --github-only)
-        GITHUB_ONLY=true
-        ;;
-        --git-only)
-        GIT_ONLY=true
-        ;;
-        --all)
-        ALL=true
-        ;;
-        *)
+# Parse command-line arguments
+parse_arguments() {
+    if [ $# -eq 0 ]; then
         SHOW_HELP=true
-        ;;
-    esac
-done
+    fi
 
-if [ "$SHOW_HELP" = true ]; then
-    usage
-fi
+    for arg in "$@"; do
+        case "$arg" in
+            --hard) HARD_MODE=true ;;
+            --no-symlink) NO_SYMLINK=true ;;
+            --dry-run) DRY_RUN=true ;;
+            --github-only) GITHUB_ONLY=true ;;
+            --git-only) GIT_ONLY=true ;;
+            --all) ALL=true ;;
+            *) SHOW_HELP=true ;;
+        esac
+    done
 
-# Check if Git is installed
-check_commands git
+    if [ "$SHOW_HELP" = true ]; then
+        usage
+    fi
+}
 
+# Pull updates from a Git repository
 pull_repo() {
+    repo="$1"
+
     if [ "$HARD_MODE" = true ]; then
         if [ "$DRY_RUN" = false ]; then
-            echo "Resetting repository: $1"
-            git -C "$1" clean -dxf
-            git -C "$1" reset --hard
+            echo "Resetting repository: $repo"
+            git -C "$repo" clean -dxf
+            git -C "$repo" reset --hard
         else
-            echo "[DRY RUN] Clear and Reset: $1"
+            echo "[DRY RUN] Reset repository: $repo"
         fi
     fi
 
     if [ "$DRY_RUN" = false ]; then
-        echo "Pulling repository: $1"
-        git -C "$1" pull
+        echo "Pulling repository: $repo"
+        git -C "$repo" pull
     else
-        echo "[DRY RUN] Pull repository: $1"
+        echo "[DRY RUN] Pull repository: $repo"
     fi
 }
 
+# Create a symbolic link in the home directory for a repository
 create_symlink() {
-    link_path="$HOME/$(basename "$1")"
+    repo="$1"
+    link_path="$HOME/$(basename "$repo")"
 
     if [ ! -L "$link_path" ]; then
         if [ "$DRY_RUN" = false ]; then
-            echo "Creating symlink: $link_path -> $1"
-            ln -s "$1" "$link_path"
+            echo "Creating symlink: $link_path -> $repo"
+            ln -s "$repo" "$link_path"
         else
-            echo "[DRY RUN] Create symlink: $link_path -> $1"
+            echo "[DRY RUN] Create symlink: $link_path -> $repo"
         fi
     fi
 }
 
+# Process all repositories in a given directory
 process_directory() {
-    for repo_dir in "$1"/*; do
-        if [ -d "$repo_dir/.git" ]; then
-            pull_repo "$repo_dir"
+    dir="$1"
+
+    for repo in "$dir"/*; do
+        if [ -d "$repo/.git" ]; then
+            pull_repo "$repo"
 
             if [ "$NO_SYMLINK" = false ]; then
-                create_symlink "$repo_dir"
+                create_symlink "$repo"
             fi
         else
-            echo "Skipping non-repository: $repo_dir"
+            echo "Skipping non-repository: $repo"
         fi
     done
 }
 
-# Process each specified directory
-if [ "$ALL" = true ]; then
-    process_directory "$HOME/local/github"
-    process_directory "$HOME/local/git"
-elif [ "$GITHUB_ONLY" = true ]; then
-    process_directory "$HOME/local/github"
-elif [ "$GIT_ONLY" = true ]; then
-    process_directory "$HOME/local/git"
-else
-    usage
-fi
+# Main function to orchestrate the script execution
+main() {
+    parse_arguments "$@"
+
+    check_commands git
+
+    if [ "$ALL" = true ]; then
+        process_directory "$HOME/local/github"
+        process_directory "$HOME/local/git"
+    elif [ "$GITHUB_ONLY" = true ]; then
+        process_directory "$HOME/local/github"
+    elif [ "$GIT_ONLY" = true ]; then
+        process_directory "$HOME/local/git"
+    else
+        usage
+    fi
+}
+
+# Execute main function
+main "$@"
