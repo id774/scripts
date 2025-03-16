@@ -15,8 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.3 2025-03-13
+#  v1.3 2025-03-16
 #       Redirected error messages to stderr for better logging and debugging.
+#       Make POSIX compliant by removing 'local' variables.
 #  v1.2 2024-02-08
 #       Enhanced documentation, added configuration variable checks, and
 #       improved error handling and script structure.
@@ -90,17 +91,15 @@ fi
 
 # Function to move files to yearly directory
 move_files() {
-    local from_dir=$1
-    local to_dir=$2
 
     # Check if there are files to move
-    if [ -z "$(ls -A $from_dir/* 2>/dev/null)" ]; then
-        echo "No files to move from $from_dir."
+    if [ -z "$(find "$1" -type f | head -n 1)" ]; then
+        echo "No files to move from $1."
         return 0
     fi
 
-    echo "Moving files from $from_dir to $to_dir..."
-    mv "$from_dir"/* "$to_dir/"
+    echo "Moving files from '$1' to '$2'..."
+    mv "$1"/* "$2/" 2>/dev/null
     if [ $? -ne 0 ]; then
         echo "Error: Moving files failed." >&2
         exit 3
