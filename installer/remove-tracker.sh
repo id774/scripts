@@ -7,9 +7,6 @@
 #  This script forcibly stops, disables, and removes all Tracker-related
 #  processes and packages from a Debian-based system. Tracker is a file
 #  indexing and search service commonly found in GNOME environments.
-#  Since its presence varies depending on the Debian version and desktop
-#  environment, this script attempts to eliminate all possible instances
-#  and variations of Tracker.
 #
 #  The script performs the following operations:
 #  - Identifies and kills all running Tracker-related processes.
@@ -25,6 +22,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-16
+#       Added Linux OS check, systemd check, and command validation.
+#       Improved error handling and robustness.
 #  v1.2 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.1 2025-03-05
@@ -60,6 +60,35 @@
 #
 ########################################################################
 
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux only." >&2
+        exit 1
+    fi
+}
+
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install it and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Function to check if systemd is available
+check_systemd() {
+    if ! command -v systemctl >/dev/null 2>&1; then
+        echo "Error: systemd is not available. This script requires systemd for service management." >&2
+        exit 1
+    fi
+}
+
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
@@ -77,6 +106,11 @@ while getopts "f" opt; do
     esac
 done
 shift $((OPTIND -1))
+
+# Perform system and environment checks
+check_system
+check_commands dpkg pgrep pkill apt systemctl
+check_systemd
 
 # Ensure tracker is installed before proceeding, unless forced
 if [ "$FORCE_REMOVE" -eq 0 ] && ! command -v tracker3 >/dev/null 2>&1 && ! command -v tracker >/dev/null 2>&1; then
@@ -96,7 +130,7 @@ for PROCESS in tracker tracker3 tracker-miner-fs tracker-extract \
         echo "Stopping process: $PROCESS"
         pkill -9 "$PROCESS"
     fi
-done
+    done
 
 echo "Disabling tracker services..."
 
@@ -127,7 +161,7 @@ for PACKAGE in tracker tracker3 tracker-miner-fs tracker-extract \
         echo "Purging package: $PACKAGE"
         sudo apt purge -y "$PACKAGE"
     fi
-done
+    done
 
 echo "Running cleanup operations..."
 
