@@ -54,10 +54,12 @@ display_log() {
 
 # System Information
 if [ "$(uname)" != "Darwin" ]; then
-    dmesg | grep "Linux version" || true
+    if [ "$(id -u)" -eq 0 ]; then
+        dmesg | grep "Linux version" || true
+    fi
 fi
-execute_command lsb_release -a
 
+execute_command lsb_release -a
 execute_command uname -a
 execute_command uptime
 
