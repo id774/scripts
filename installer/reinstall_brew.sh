@@ -63,6 +63,14 @@ check_scripts() {
     fi
 }
 
+# Function to check network connectivity
+check_network() {
+    if ! ping -c 1 id774.net >/dev/null 2>&1; then
+        echo "Error: No network connection detected. Please check your internet access." >&2
+        exit 1
+    fi
+}
+
 # Function to check if the user has sudo privileges
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
@@ -108,8 +116,9 @@ main() {
     check_system
     check_commands curl sudo rm bash
     check_scripts
-    check_sudo
+    check_network
     check_required_scripts
+    check_sudo
     reinstall_homebrew
 }
 
