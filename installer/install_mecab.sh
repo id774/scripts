@@ -1,13 +1,12 @@
 #!/bin/sh
 
 ########################################################################
-# install_mecab.sh: Installer for MeCab and related dictionaries
+# install_mecab_python.sh: Installer for MeCab Python Binding
 #
 #  Description:
-#  This script automates the installation of MeCab by:
-#  - Downloading and compiling the specified or default version.
-#  - Installing the IPADIC and NAIST dictionaries.
-#  - Optionally saving the source files for future use.
+#  This script automates the installation of the MeCab Python binding by:
+#  - Setting up the Python environment.
+#  - Compiling and installing the MeCab Python binding.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,26 +16,19 @@
 #  Version History:
 #  v1.0 2025-03-16
 #       Unified structure, added system checks, improved error handling.
-#  v0.4 2015-05-29
-#       Change URL, fix args bug.
-#  v0.3 2014-02-10
-#       Refactoring.
-#  v0.2 2013-01-28
-#       Add NAIST dic.
-#  v0.1 2012-08-07
+#  v0.1 2014-02-09
 #       First.
 #
 #  Usage:
-#  Run this script without arguments to install the default version:
-#      ./install_mecab.sh
-#  Specify versions for MeCab, IPADIC, and NAIST dictionaries:
-#      ./install_mecab.sh 0.996 2.7.0-20070801 53500
-#  Skip saving sources by adding a fourth argument:
-#      ./install_mecab.sh 0.996 2.7.0-20070801 53500 -n
+#  Run this script without arguments to install with default settings:
+#      ./install_mecab_python.sh
+#  Specify a Python path and source path:
+#      ./install_mecab_python.sh /opt/python/current /usr/local/src/mecab/mecab-python-0.994
+#  Disable sudo by passing any third argument (e.g., '-n', 'nosudo'):
+#      ./install_mecab_python.sh /opt/python/current /usr/local/src/mecab/mecab-python-0.994 -n
 #
 #  Requirements:
-#  - The user must have `wget`, `tar`, `make`, and `sudo` installed.
-#  - Network connectivity is required to download the source files.
+#  - The user must have `python` installed and accessible.
 #  - This script is intended for Linux systems only.
 #
 ########################################################################
@@ -80,61 +72,28 @@ check_sudo() {
 
 # Setup environment
 setup_environment() {
-    MECAB_VERSION="${1:-0.996}"
-    IPADIC_VERSION="${2:-2.7.0-20070801}"
-    NAISTDIC_VERSION="${3:-53500}"
+    PYTHON="${1:-/opt/python/current}/bin/python"
+    TARGET="${2:-/usr/local/src/mecab/mecab-python-0.994}"
+    SUDO="sudo"
+    [ -n "$3" ] && SUDO=""
+    [ "$SUDO" = "sudo" ] && check_sudo
 }
 
-# Install MeCab
-install_mecab() {
-    mkdir install_mecab
-    cd install_mecab || exit 1
-
-    wget "http://files.id774.net/archive/mecab-$MECAB_VERSION.tar.gz"
-    tar xzvf "mecab-$MECAB_VERSION.tar.gz"
-    cd "mecab-$MECAB_VERSION" || exit 1
-    ./configure --enable-utf8-only
-    make
-    sudo make install
-    cd ..
-
-    wget "http://files.id774.net/archive/mecab-ipadic-$IPADIC_VERSION.tar.gz"
-    tar xzvf "mecab-ipadic-$IPADIC_VERSION.tar.gz"
-    cd "mecab-ipadic-$IPADIC_VERSION" || exit 1
-    ./configure --with-charset=utf8
-    make
-    sudo make install
-    cd ..
-
-    wget "http://files.id774.net/archive/naistdic.tar.gz"
-    tar xzvf "naistdic.tar.gz"
-    cd "mecab-naist-jdic-$NAISTDIC_VERSION" || exit 1
-    ./configure --with-charset=utf8
-    make
-    sudo make install
-    cd ..
-
-    [ -n "$4" ] || save_sources
-    cd ..
-    rm -rf install_mecab
-}
-
-# Save sources if requested
-save_sources() {
-    sudo mkdir -p /usr/local/src/mecab
-    sudo cp -a mecab-$MECAB_VERSION mecab-ipadic-$IPADIC_VERSION mecab-naist-jdic-$NAISTDIC_VERSION /usr/local/src/mecab
-    sudo chown -R root:root /usr/local/src/mecab
+# Compile and install MeCab Python binding
+make_and_install() {
+    cd "$TARGET" || exit 1
+    $SUDO "$PYTHON" setup.py build
+    $SUDO "$PYTHON" setup.py install
 }
 
 # Main execution function
 main() {
     check_system
-    check_commands wget tar make sudo ping
+    check_commands python
     check_network
-    check_sudo
     setup_environment "$@"
-    install_mecab "$@"
-    echo "MeCab installation completed successfully."
+    make_and_install
+    echo "MeCab Python binding installed successfully."
 }
 
 main "$@"
