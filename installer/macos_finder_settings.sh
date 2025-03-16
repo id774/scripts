@@ -1,24 +1,71 @@
 #!/bin/sh
 
-os=$(uname)
+########################################################################
+# macos_finder_settings.sh: Configure Finder and Screenshot Settings on macOS
+#
+#  Description:
+#  This script customizes Finder and screenshot settings on macOS by:
+#  - Disabling shadows in screenshots.
+#  - Showing hidden files in Finder.
+#  - Changing the default screenshot file name.
+#  - Preventing .DS_Store files on network shares.
+#  - Restarting SystemUIServer to apply changes.
+#
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 2025-03-16
+#       Stable version with key Finder and screenshot settings.
+#  v0.1 2025-02-04
+#       Initial version.
+#
+#  Usage:
+#  Run this script on macOS to apply Finder and screenshot settings:
+#      ./macos_finder_settings.sh
+#
+#  Requirements:
+#  - Must be executed on macOS.
+#  - The script modifies Finder preferences and requires user permissions.
+#
+########################################################################
 
-if [ "$os" = "Darwin" ]; then
-  # スクリーンショットの撮影時に影を含めない
-  defaults write com.apple.screencapture disable-shadow -boolean true
+# Function to check if the system is macOS
+check_system() {
+    if [ "$(uname)" != "Darwin" ]; then
+        echo "Error: This script is intended for macOS only." >&2
+        exit 1
+    fi
+}
 
-  # Finder で隠しファイルを表示する
-  defaults write com.apple.finder AppleShowAllFiles true
+# Apply Finder and screenshot settings
+configure_finder_settings() {
+    echo "Applying macOS Finder and screenshot settings..."
 
-  # スクリーンショットのファイル名変更
-  defaults write com.apple.screencapture name "Screenshot"
+    # Disable shadow in screenshots
+    defaults write com.apple.screencapture disable-shadow -boolean true
 
-  # 共有フォルダで .DS_Store ファイルを作成しない
-  defaults write com.apple.desktopservices DSDontWriteNetworkStores true
+    # Show hidden files in Finder
+    defaults write com.apple.finder AppleShowAllFiles true
 
-  # SystemUIServer を再起動して設定を反映させる
-  killall SystemUIServer
-else
-  exit 1
-fi
+    # Change the default screenshot file name
+    defaults write com.apple.screencapture name "Screenshot"
 
-exit 0
+    # Prevent .DS_Store file creation on network shares
+    defaults write com.apple.desktopservices DSDontWriteNetworkStores true
+
+    # Restart SystemUIServer to apply changes
+    killall SystemUIServer
+
+    echo "macOS Finder settings applied successfully."
+}
+
+# Main execution function
+main() {
+    check_system
+    configure_finder_settings
+}
+
+main "$@"
