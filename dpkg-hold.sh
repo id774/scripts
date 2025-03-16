@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-03-16
+#       Encapsulated all logic in functions and introduced main function.
 #  v1.4 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.3 2024-01-07
@@ -57,9 +59,6 @@ check_commands() {
     done
 }
 
-# Check if dpkg is installed
-check_commands dpkg
-
 # Function to display the current state of a package
 show_package_status() {
     dpkg -l "$1"
@@ -71,15 +70,21 @@ set_package_state() {
     show_package_status "$1"
 }
 
-# Main logic
-if [ -n "$2" ]; then
-    # If two arguments are provided, set the package state
-    set_package_state "$1" "$2"
-elif [ -n "$1" ]; then
-    # If only one argument is provided, display the package status
-    show_package_status "$1"
-else
-    # If no arguments are provided, display usage instructions
-    echo "usage: $0 package-name [hold|install]"
-fi
+# Main function
+main() {
+    check_commands dpkg
 
+    if [ -n "$2" ]; then
+        # If two arguments are provided, set the package state
+        set_package_state "$1" "$2"
+    elif [ -n "$1" ]; then
+        # If only one argument is provided, display the package status
+        show_package_status "$1"
+    else
+        # If no arguments are provided, display usage instructions
+        echo "usage: $0 package-name [hold|install]"
+    fi
+}
+
+# Execute main function
+main "$@"
