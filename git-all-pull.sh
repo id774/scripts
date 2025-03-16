@@ -103,50 +103,44 @@ fi
 check_commands git
 
 pull_repo() {
-    repo_path="$1"
-
     if [ "$HARD_MODE" = true ]; then
         if [ "$DRY_RUN" = false ]; then
-            echo "Resetting repository: $repo_path"
-            git -C "$repo_path" clean -dxf
-            git -C "$repo_path" reset --hard
+            echo "Resetting repository: $1"
+            git -C "$1" clean -dxf
+            git -C "$1" reset --hard
         else
-            echo "[DRY RUN] Clear and Reset: $repo_path"
+            echo "[DRY RUN] Clear and Reset: $1"
         fi
     fi
 
     if [ "$DRY_RUN" = false ]; then
-        echo "Pulling repository: $repo_path"
-        git -C "$repo_path" pull
+        echo "Pulling repository: $1"
+        git -C "$1" pull
     else
-        echo "[DRY RUN] Pull repository: $repo_path"
+        echo "[DRY RUN] Pull repository: $1"
     fi
 }
 
 create_symlink() {
-    repo_path="$1"
-    base_dir="$2"
-    link_path="$HOME/local/$(basename "$base_dir")/$(basename "$repo_path")"
+    link_path="$HOME/$(basename "$1")"
 
-    cd
-    if [ ! -L "$(basename "$repo_path")" ]; then
+    if [ ! -L "$link_path" ]; then
         if [ "$DRY_RUN" = false ]; then
-            echo "Creating symlink: $link_path"
-            ln -s "$link_path"
+            echo "Creating symlink: $link_path -> $1"
+            ln -s "$1" "$link_path"
         else
-            echo "[DRY RUN] Create symlink: $link_path"
+            echo "[DRY RUN] Create symlink: $link_path -> $1"
         fi
     fi
 }
 
 process_directory() {
-    base_dir="$1"
-    for repo_dir in "$base_dir"/*; do
+    for repo_dir in "$1"/*; do
         if [ -d "$repo_dir/.git" ]; then
             pull_repo "$repo_dir"
 
             if [ "$NO_SYMLINK" = false ]; then
-                create_symlink "$repo_dir" "$base_dir"
+                create_symlink "$repo_dir"
             fi
         else
             echo "Skipping non-repository: $repo_dir"
@@ -165,4 +159,3 @@ elif [ "$GIT_ONLY" = true ]; then
 else
     usage
 fi
-
