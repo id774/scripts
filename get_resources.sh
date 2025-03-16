@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-16
+#       Make POSIX compliant by removing 'local' variables.
 #  v1.2 2024-12-04
 #       Added error handling for command execution to display error messages when commands fail.
 #       Added fail2ban status checks for non-Darwin environments.
@@ -34,33 +36,18 @@ command_exists() {
 
 # Function to display a command's output if the command exists
 execute_command() {
-    local cmd="$1"
-    shift  # Remove the first argument and use the rest as additional arguments
-    local args
-    if [ "$#" -gt 0 ]; then
-        args="$@"
-    fi
-
-    if command_exists "$cmd"; then
-        if [ -n "$args" ]; then
-            echo "[$cmd $args]"
-            "$cmd" $args || echo "Error executing: $cmd $args"
-        else
-            echo "[$cmd]"
-            "$cmd"
-        fi
+    if command_exists "$1"; then
+        echo "[$1 $*]"
+        "$@" || echo "Error executing: $*"
         echo
     fi
 }
 
 # Function to display specific log file contents if the file exists
 display_log() {
-    local log_file="$1"
-    local pattern="$2"
-
-    if [ -f "$log_file" ]; then
-        echo "[Contents of $log_file with pattern '$pattern']"
-        grep "$pattern" "$log_file"
+    if [ -f "$1" ]; then
+        echo "[Contents of $1 with pattern '$2']"
+        grep "$2" "$1"
         echo
     fi
 }
@@ -116,4 +103,3 @@ display_log "/var/log/auth.log" "Accepted"
 display_log "/var/log/messages" "attack"
 display_log "/var/log/auth.log" '(Fail|refuse)'
 display_log "/var/log/fail2ban.log" "WARNING"
-

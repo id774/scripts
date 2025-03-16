@@ -17,8 +17,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.3 2025-03-13
+#  v1.3 2025-03-16
 #       Redirected error messages to stderr for better logging and debugging.
+#       Make POSIX compliant by removing 'local' variables.
 #  v1.2 2024-01-07
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.
@@ -102,7 +103,7 @@ fi
 check_commands git
 
 pull_repo() {
-    local repo_path="$1"
+    repo_path="$1"
 
     if [ "$HARD_MODE" = true ]; then
         if [ "$DRY_RUN" = false ]; then
@@ -123,9 +124,9 @@ pull_repo() {
 }
 
 create_symlink() {
-    local repo_path="$1"
-    local base_dir="$2"
-    local link_path="$HOME/local/$(basename "$base_dir")/$(basename "$repo_path")"
+    repo_path="$1"
+    base_dir="$2"
+    link_path="$HOME/local/$(basename "$base_dir")/$(basename "$repo_path")"
 
     cd
     if [ ! -L "$(basename "$repo_path")" ]; then
@@ -139,7 +140,7 @@ create_symlink() {
 }
 
 process_directory() {
-    local base_dir="$1"
+    base_dir="$1"
     for repo_dir in "$base_dir"/*; do
         if [ -d "$repo_dir/.git" ]; then
             pull_repo "$repo_dir"
