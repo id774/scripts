@@ -37,8 +37,8 @@ command_exists() {
 # Function to display a command's output if the command exists
 execute_command() {
     if command_exists "$1"; then
-        echo "[$1 $*]"
-        "$@" || echo "Error executing: $*"
+        echo "[$@]"
+        "$@" || echo "Error executing: $@"
         echo
     fi
 }
@@ -53,7 +53,9 @@ display_log() {
 }
 
 # System Information
-execute_command dmesg | grep "Linux version"
+if [ "$(uname)" != "Darwin" ]; then
+    dmesg | grep "Linux version" || true
+fi
 execute_command lsb_release -a
 
 execute_command uname -a
