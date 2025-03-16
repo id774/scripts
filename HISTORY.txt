@@ -4,12 +4,11 @@ Repository Update History
 v1.3.3 (Release Date: TBD)
 --------------------------
 - Added home directory cleanup and command check in cltmp.sh.
-- Refactored several scripts for POSIX compliance and improved maintainability.
-- Major version upgrade with significant changes to several installation scripts.
-- Refactor installation scripts with main function and improved sudo handling.
-- Revamped Debian initial setup scripts for idempotency.
-- Added sudo privilege checks to numerous scripts for improved security.
-- Improved error messages in multiple scripts by redirecting them to stderr for better logging and debugging.
+- Refactored many scripts to be POSIX compliant and improved maintainability.
+- Overhauled Debian setup scripts for better idempotency and system compatibility.
+- Organized and streamlined numerous installation scripts, strengthening environment checks.
+- Improved sudo privilege handling and added necessary validations.
+- Enhanced error messages by redirecting them to stderr for better logging and debugging.
 
 v1.3.2 (2025-02-27)
 -------------------
