@@ -57,8 +57,8 @@ check_commands() {
 
 # Function to check network connectivity
 check_network() {
-    if ! ping -c 1 id774.net >/dev/null 2>&1; then
-        echo "Error: No network connection detected. Please check your internet access." >&2
+    if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
+        echo "Error: No network connection detected." >&2
         exit 1
     fi
 }
@@ -91,7 +91,7 @@ source_compile() {
 # Main execution function
 main() {
     check_system
-    check_commands ruby make
+    check_commands curl ruby make
     check_network
     setup_environment "$@"
     source_compile

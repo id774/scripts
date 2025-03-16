@@ -48,7 +48,7 @@ check_system() {
 
 # Function to check required commands
 check_commands() {
-    for cmd in wget tar sudo rm mkdir cp chown ping file uname; do
+    for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
             echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
@@ -61,8 +61,8 @@ check_commands() {
 
 # Function to check network connectivity
 check_network() {
-    if ! ping -c 1 id774.net >/dev/null 2>&1; then
-        echo "Error: No network connection detected. Please check your internet access." >&2
+    if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
+        echo "Error: No network connection detected." >&2
         exit 1
     fi
 }
@@ -118,7 +118,7 @@ setup_environment() {
     check_system
 
     echo "Checking system requirements..."
-    check_commands wget tar sudo rm mkdir cp chown ping file uname dmsetup
+    check_commands curl wget tar sudo rm mkdir cp chown file uname dmsetup
 
     echo "Checking network connectivity..."
     check_network
