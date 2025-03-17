@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.9 2025-03-17
+#       Encapsulated all logic in functions and introduced main function.
 #  v1.8 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.7 2025-01-13
@@ -52,29 +54,14 @@
 
 export PYTHONDONTWRITEBYTECODE=1
 
-# Check if SCRIPTS variable is set
-if [ -z "$SCRIPTS" ]; then
-    echo "Error: SCRIPTS environment variable is not set." >&2
-    echo "Please set the SCRIPTS variable to the path of your script collection." >&2
-    exit 1
-fi
-
-cd "$SCRIPTS" || exit
-
-python_path="$1"
-rspec_path="$2"
-
-# Initialize counters
-python_failures=0
-ruby_failures=0
-python_tests=0
-ruby_tests=0
-python_skipped_tests=0
-ruby_skipped_tests=0
-python_scripts=0
-ruby_scripts=0
-total_tests=0
-total_scripts=0
+# Function to check if SCRIPTS variable is set
+check_scripts() {
+    if [ -z "$SCRIPTS" ]; then
+        echo "Error: SCRIPTS environment variable is not set." >&2
+        echo "Please set the SCRIPTS variable to the path of your script collection." >&2
+        exit 1
+    fi
+}
 
 # Function to extract test count from Python test result
 extract_python_test_count() {
@@ -114,96 +101,122 @@ extract_ruby_test_count() {
     fi
 }
 
-# Check if Python is installed
-if [ -z "$python_path" ]; then
-    python_path=$(command -v python)
-fi
-
-if [ -z "$python_path" ]; then
-    echo "Python is not installed. Skipping Python tests."
-else
-    if [ ! -x "$python_path" ]; then
-        echo "Error: Specified Python path is either invalid or not executable." >&2
-        exit 1
+run_python_tests() {
+    # Check if Python is installed
+    if [ -z "$python_path" ]; then
+        python_path=$(command -v python)
     fi
-    echo "Python path: $python_path"
-    python_version=$("$python_path" --version 2>&1)
-    echo "$python_version"
 
-    # Execute Python tests
-    for file in test/*_test.py; do
-        echo "Running Python test: $file"
-        output="$("$python_path" "$file" 2>&1)" # Capture both stdout and stderr
-        echo "$output"
-        if ! echo "$output" | grep -qE "OK|SKIPPED|OK \(skipped=[0-9]+\)" ; then
-            echo "Failure in Python test: $file"
-            python_failures=$((python_failures + 1))
+    if [ -z "$python_path" ]; then
+        echo "Python is not installed. Skipping Python tests."
+    else
+        if [ ! -x "$python_path" ]; then
+            echo "Error: Specified Python path is either invalid or not executable." >&2
+            exit 1
         fi
-        extract_python_test_count "$output"
-        python_scripts=$((python_scripts + 1))
-        total_tests=$((total_tests + python_tests))
-    done
-    total_scripts=$((total_scripts + python_scripts))
-    echo "All Python tests completed."
-    echo "  Python path: $python_path"
-    echo "  $python_version"
-    echo "  Total Python test scripts: $python_scripts"
-    echo "  Total Python test cases: $total_tests"
-    echo "  Skipped Python test cases: $python_skipped_tests"
-fi
+        echo "Python path: $python_path"
+        python_version=$("$python_path" --version 2>&1)
+        echo "$python_version"
 
-# Check if RSpec is installed
-if [ -z "$rspec_path" ]; then
-    rspec_path=$(command -v rspec)
-fi
-
-if [ -z "$rspec_path" ]; then
-    echo "RSpec is not installed. Skipping Ruby tests."
-else
-    if [ ! -x "$rspec_path" ]; then
-        echo "Error: Specified RSpec path is either invalid or not executable." >&2
-        exit 1
+        # Execute Python tests
+        for file in test/*_test.py; do
+            echo "Running Python test: $file"
+            output="$("$python_path" "$file" 2>&1)"
+            echo "$output"
+            if ! echo "$output" | grep -qE "OK|SKIPPED|OK \(skipped=[0-9]+\)" ; then
+                echo "Failure in Python test: $file"
+                python_failures=$((python_failures + 1))
+            fi
+            extract_python_test_count "$output"
+            python_scripts=$((python_scripts + 1))
+            total_tests=$((total_tests + python_tests))
+        done
+        total_scripts=$((total_scripts + python_scripts))
     fi
-    echo "RSpec path: $rspec_path"
-    ruby_dir="$(dirname "$rspec_path")"
-    ruby_command="$ruby_dir/ruby"
-    ruby_version=$("$ruby_command" --version 2>&1)
-    echo "$ruby_version"
-    rspec_version=$("$rspec_path" --version)
-    echo "$rspec_version"
+}
 
-    # Execute Ruby tests
-    for file in test/*_test.rb; do
-        echo "Running Ruby test: $file"
-        output="$("$rspec_path" "$file" 2>&1)" # Capture both stdout and stderr
-        echo "$output"
-        if ! echo "$output" | grep -q "0 failures"; then
-            echo "Failure in Ruby test: $file"
-            ruby_failures=$((ruby_failures + 1))
+run_ruby_tests() {
+    # Check if RSpec is installed
+    if [ -z "$rspec_path" ]; then
+        rspec_path=$(command -v rspec)
+    fi
+
+    if [ -z "$rspec_path" ]; then
+        echo "RSpec is not installed. Skipping Ruby tests."
+    else
+        if [ ! -x "$rspec_path" ]; then
+            echo "Error: Specified RSpec path is either invalid or not executable." >&2
+            exit 1
         fi
-        extract_ruby_test_count "$output"
-        ruby_scripts=$((ruby_scripts + 1))
-        total_tests=$((total_tests + ruby_tests))
-    done
-    total_scripts=$((total_scripts + ruby_scripts))
-    echo "All Ruby tests completed."
-    echo "  RSpec path: $rspec_path"
-    echo "  $ruby_version"
-    echo "  $rspec_version"
-    echo "  Total Ruby test scripts: $ruby_scripts"
-    echo "  Total Ruby test cases: $ruby_tests"
-    echo "  Skipped Ruby test cases: $ruby_skipped_tests"
-fi
+        echo "RSpec path: $rspec_path"
+        ruby_dir="$(dirname "$rspec_path")"
+        ruby_command="$ruby_dir/ruby"
+        ruby_version=$("$ruby_command" --version 2>&1)
+        echo "$ruby_version"
+        rspec_version=$("$rspec_path" --version)
+        echo "$rspec_version"
 
-# Final report
-total_failures=$((python_failures + ruby_failures))
-if [ "$total_failures" -ne 0 ]; then
-    echo "Some tests failed. Total failures: $total_failures." >&2
-    exit 1
-else
-    echo "All tests passed successfully."
-    echo "Total test scripts: $total_scripts"
-    echo "Total test cases: $total_tests"
-    echo "Skipped test cases: $((python_skipped_tests + ruby_skipped_tests))"
-    exit 0
-fi
+        # Execute Ruby tests
+        for file in test/*_test.rb; do
+            echo "Running Ruby test: $file"
+            output="$("$rspec_path" "$file" 2>&1)"
+            echo "$output"
+            if ! echo "$output" | grep -q "0 failures"; then
+                echo "Failure in Ruby test: $file"
+                ruby_failures=$((ruby_failures + 1))
+            fi
+            extract_ruby_test_count "$output"
+            ruby_scripts=$((ruby_scripts + 1))
+            total_tests=$((total_tests + ruby_tests))
+        done
+        total_scripts=$((total_scripts + ruby_scripts))
+    fi
+}
+
+display_final_report() {
+    # Final report
+    total_failures=$((python_failures + ruby_failures))
+    if [ "$total_failures" -ne 0 ]; then
+        echo "Some tests failed. Total failures: $total_failures." >&2
+        exit 1
+    else
+        echo "All tests passed successfully."
+        echo "Total test scripts: $total_scripts"
+        echo "Total test cases: $total_tests"
+        echo "Skipped test cases: $((python_skipped_tests + ruby_skipped_tests))"
+        exit 0
+    fi
+}
+
+# Function to run tests
+run_tests() {
+    cd "$SCRIPTS" || exit
+
+    python_path="$1"
+    rspec_path="$2"
+
+    # Initialize counters
+    python_failures=0
+    ruby_failures=0
+    python_tests=0
+    ruby_tests=0
+    python_skipped_tests=0
+    ruby_skipped_tests=0
+    python_scripts=0
+    ruby_scripts=0
+    total_tests=0
+    total_scripts=0
+
+    run_python_tests
+    run_ruby_tests
+    display_final_report
+}
+
+# Main function
+main() {
+    check_scripts
+    run_tests "$@"
+}
+
+# Execute main function
+main "$@"
