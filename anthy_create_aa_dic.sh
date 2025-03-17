@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-03-17
+#       Encapsulated all logic in functions and introduced main function.
 #  v1.1 2023-12-06
 #       Refactored for improved readability and added detailed comments.
 #  v1.0 2009-11-17
@@ -24,12 +26,57 @@
 #
 ########################################################################
 
-# Ensure necessary files and directories exist
-test -f $SCRIPTS/convert_msime2cannna.rb || { echo "Missing convert_msime2cannna.rb"; exit 1; }
-test -f $SCRIPTS/etc/aa.txt || { echo "Missing aa.txt"; exit 1; }
-test -d $HOME/.anthy || mkdir $HOME/.anthy
+# Check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
 
-# Create Anthy dictionary for ASCII Art
-ruby -Ku $SCRIPTS/convert_msime2cannna.rb < $SCRIPTS/etc/aa.txt > $HOME/.anthy/private_words_default
-echo "Dictionary created."
+# Function to check if SCRIPTS variable is set
+check_scripts() {
+    if [ -z "$SCRIPTS" ]; then
+        echo "Error: SCRIPTS environment variable is not set." >&2
+        echo "Please set the SCRIPTS variable to this script." >&2
+        exit 1
+    fi
+}
 
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Function to check for required files and directories
+check_files() {
+    test -f "$SCRIPTS/convert_msime2cannna.rb" || { echo "Error: Missing convert_msime2cannna.rb" >&2; exit 1; }
+    test -f "$SCRIPTS/etc/aa.txt" || { echo "Error: Missing aa.txt" >&2; exit 1; }
+    test -d "$HOME/.anthy" || mkdir -p "$HOME/.anthy"
+}
+
+# Function to create Anthy dictionary for ASCII Art
+create_dictionary() {
+    ruby -Ku "$SCRIPTS/convert_msime2cannna.rb" < "$SCRIPTS/etc/aa.txt" > "$HOME/.anthy/private_words_default"
+    echo "Dictionary created."
+}
+
+# Main function
+main() {
+    check_system
+    check_scripts
+    check_commands ruby mkdir
+    check_files
+    create_dictionary
+}
+
+# Execute main function
+main
