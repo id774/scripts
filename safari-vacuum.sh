@@ -28,20 +28,32 @@
 #
 ########################################################################
 
-# Check if sqlite3 command is available
-if ! command -v sqlite3 >/dev/null 2>&1; then
-    echo "sqlite3 command not found. Please install sqlite3." >&2
-    exit 1
-fi
+# Function to check if sqlite3 command is available
+check_sqlite3() {
+    if ! command -v sqlite3 >/dev/null 2>&1; then
+        echo "sqlite3 command not found. Please install sqlite3." >&2
+        exit 1
+    fi
+}
 
-# Navigate to Safari's cache directory and perform vacuum
-SAFARI_CACHE_DIR="$HOME/Library/Caches/com.apple.Safari"
-if [ -d "$SAFARI_CACHE_DIR" ] && [ -w "$SAFARI_CACHE_DIR/Cache.db" ]; then
-    cd "$SAFARI_CACHE_DIR"
-    sqlite3 Cache.db vacuum
-    echo "Safari cache database vacuumed."
-else
-    echo "Safari cache directory or Cache.db not found or not writable." >&2
-    exit 1
-fi
+# Function to vacuum Safari's cache database
+vacuum_safari_cache() {
+    SAFARI_CACHE_DIR="$HOME/Library/Caches/com.apple.Safari"
+    if [ -d "$SAFARI_CACHE_DIR" ] && [ -w "$SAFARI_CACHE_DIR/Cache.db" ]; then
+        cd "$SAFARI_CACHE_DIR"
+        sqlite3 Cache.db vacuum
+        echo "Safari cache database vacuumed."
+    else
+        echo "Safari cache directory or Cache.db not found or not writable." >&2
+        exit 1
+    fi
+}
 
+# Main function
+main() {
+    check_sqlite3
+    vacuum_safari_cache
+}
+
+# Execute main function
+main "$@"
