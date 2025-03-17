@@ -14,6 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  20250317 - Encapsulated all logic in functions and introduced main function.
 #  20250313 - Redirected error messages to stderr for better logging and debugging.
 #  20250304 - Moved .netrwhist cleanup to cltmp.sh.
 #  20250303 - Added removal of unnecessary files in the home directory.
@@ -45,11 +46,6 @@ check_commands() {
     done
 }
 
-# Check required commands
-check_commands find rm uname
-
-os=$(uname)
-
 # Function to clean a directory with specified conditions
 clean_dir() {
     dir=$1
@@ -60,74 +56,86 @@ clean_dir() {
     fi
 }
 
-if [ "$os" = "Darwin" ]; then
-    test -L "$HOME/Desktop/場所が変更された項目" && rm -f "$HOME/Desktop/場所が変更された項目"
-    for dir in "$HOME/Pictures" "$HOME/Documents" "$HOME/Downloads" "$HOME/Desktop"; do
-        test -d "$dir" && touch "$dir/.localized"
-    done
-    clean_dir "$HOME/tmp" 3 "rm -vf"
-elif [ "$os" = "Linux" ]; then
-    if [ "$(id -u)" -eq 0 ]; then
-        clean_dir /root/.cache 0 "rm -vrf"
+# Perform cleanup based on OS
+perform_cleanup() {
+    os=$(uname)
+
+    if [ "$os" = "Darwin" ]; then
+        test -L "$HOME/Desktop/場所が変更された項目" && rm -f "$HOME/Desktop/場所が変更された項目"
+        for dir in "$HOME/Pictures" "$HOME/Documents" "$HOME/Downloads" "$HOME/Desktop"; do
+            test -d "$dir" && touch "$dir/.localized"
+        done
+        clean_dir "$HOME/tmp" 3 "rm -vf"
+    elif [ "$os" = "Linux" ]; then
+        if [ "$(id -u)" -eq 0 ]; then
+            clean_dir /root/.cache 0 "rm -vrf"
+        fi
+        rm -vf "$HOME/hardcopy."[0-9]*
+        clean_dir "$HOME/tmp" 1 "rm -vf"
     fi
-    rm -vf $HOME/hardcopy.[0-9]*
-    clean_dir "$HOME/tmp" 1 "rm -vf"
-fi
 
-rm -vf "$HOME/wget-log" $HOME/wget-log.[0-9]*
+    rm -vf "$HOME/wget-log" "$HOME"/wget-log.[0-9]*
 
-for dir in "$HOME/.gem" "$HOME/.pip" "$HOME/.npm"; do
-    clean_dir "$dir" 0 "rm -vrf"
-done
+    for dir in "$HOME/.gem" "$HOME/.pip" "$HOME/.npm"; do
+        clean_dir "$dir" 0 "rm -vrf"
+    done
 
-# Common clean-up for 7 days
-for dir in "$HOME/.tmp" "$HOME/twitter_viewer/log" "$HOME/fastladder/log"; do
-    clean_dir "$dir" 7 "rm -vf"
-done
+    for dir in "$HOME/.tmp" "$HOME/twitter_viewer/log" "$HOME/fastladder/log"; do
+        clean_dir "$dir" 7 "rm -vf"
+    done
 
-# Common clean-up for 30 days
-for dir in "$HOME/.emacs.d/tmp" "$HOME/.emacs.d/backups" "$HOME/.emacs.d/auto-save-list" "$HOME/.emacs.d/tramp-auto-save"; do
-    clean_dir "$dir" 30 "rm -vf"
-done
+    for dir in "$HOME/.emacs.d/tmp" "$HOME/.emacs.d/backups" "$HOME/.emacs.d/auto-save-list" "$HOME/.emacs.d/tramp-auto-save"; do
+        clean_dir "$dir" 30 "rm -vf"
+    done
 
-if [ "$os" = "Darwin" ]; then
-    if [ "$(id -u)" -eq 0 ] || ! type trash &> /dev/null; then
-        # Use rm for root or if trash is unavailable
+    if [ "$os" = "Darwin" ]; then
+        if [ "$(id -u)" -eq 0 ] || ! type trash >/dev/null 2>&1; then
+            # Use rm for root or if trash is unavailable
+            for dir in "$HOME/Pictures" "$HOME/Documents"; do
+                clean_dir "$dir" 30 "rm -vf"
+            done
+            for dir in "$HOME/Downloads" "$HOME/Desktop"; do
+                clean_dir "$dir" 7 "rm -vf"
+            done
+        else
+            # Use trash for non-root users
+            trash -ev
+            for dir in "$HOME/Pictures" "$HOME/Documents"; do
+                clean_dir "$dir" 7 trash
+            done
+            for dir in "$HOME/Downloads" "$HOME/Desktop"; do
+                clean_dir "$dir" 3 trash
+            done
+            echo "Show trash contents..."
+            trash -lv
+        fi
+    else
         for dir in "$HOME/Pictures" "$HOME/Documents"; do
             clean_dir "$dir" 30 "rm -vf"
         done
         for dir in "$HOME/Downloads" "$HOME/Desktop"; do
             clean_dir "$dir" 7 "rm -vf"
         done
-    else
-        # Use trash for non-root users
-        trash -ev
-        for dir in "$HOME/Pictures" "$HOME/Documents"; do
-            clean_dir "$dir" 7 trash
-        done
-        for dir in "$HOME/Downloads" "$HOME/Desktop"; do
-            clean_dir "$dir" 3 trash
-        done
-        echo "Show trash contents..."
-        trash -lv
     fi
-else
-    for dir in "$HOME/Pictures" "$HOME/Documents"; do
-        clean_dir "$dir" 30 "rm -vf"
-    done
-    for dir in "$HOME/Downloads" "$HOME/Desktop"; do
-        clean_dir "$dir" 7 "rm -vf"
-    done
-fi
 
-# Additional cleanup
-rm -vf "$HOME/.bash_history"
-rm -vf "$HOME/.recentf~"
-rm -vf "$HOME/.xsession-errors"
-rm -vrf "$HOME/.cache/*"
-rm -vrf "$HOME/.local/share/Trash/*"
-rm -vf "$HOME"/.vim/.netrwhist
-rm -vf "$HOME"/*.swp "$HOME"/*.swo "$HOME"/*.bak "$HOME"/*.~ "$HOME"/*.old
-rm -vf "$HOME"/.*.swp "$HOME"/.*.swo "$HOME"/.*.bak "$HOME"/.*.~ "$HOME"/.*.old
+    # Additional cleanup
+    rm -vf "$HOME/.bash_history"
+    rm -vf "$HOME/.recentf~"
+    rm -vf "$HOME/.xsession-errors"
+    rm -vrf "$HOME/.cache/*"
+    rm -vrf "$HOME/.local/share/Trash/*"
+    rm -vf "$HOME"/.vim/.netrwhist
+    rm -vf "$HOME"/*.swp "$HOME"/*.swo "$HOME"/*.bak "$HOME"/*.~ "$HOME"/*.old
+    rm -vf "$HOME"/.*.swp "$HOME"/.*.swo "$HOME"/.*.bak "$HOME"/.*.~ "$HOME"/.*.old
 
-echo "cltmp (20250313) done."
+    echo "cltmp (20250317) done."
+}
+
+# Main function
+main() {
+    check_commands find rm uname
+    perform_cleanup
+}
+
+# Execute main function
+main "$@"
