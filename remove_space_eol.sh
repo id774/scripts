@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-17
+#       Encapsulated all logic in functions and introduced main function.
 #  v1.2 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #       Added command existence check for sed and mv.
@@ -39,25 +41,31 @@ check_commands() {
     done
 }
 
-check_commands sed mv
+# Function to remove trailing whitespace from a file
+process_file() {
+    file="$1"
 
-# Process each file passed as an argument
-while [ $# -gt 0 ]; do
-    # Create a temporary file
-    if mv "$1" "$1.tmp"; then
-        # Remove trailing whitespace and overwrite the original file
-        if sed -e 's/[[:blank:]]*$//' "$1.tmp" > "$1"; then
-            echo "Removed trailing whitespace from '$1'"
+    if mv "$file" "$file.tmp"; then
+        if sed -e 's/[[:blank:]]*$//' "$file.tmp" > "$file"; then
+            echo "Removed trailing whitespace from '$file'"
         else
-            echo "Error processing '$1'" >&2
+            echo "Error processing '$file'" >&2
         fi
-        # Remove the temporary file
-        rm "$1.tmp"
+        rm "$file.tmp"
     else
-        echo "Error moving '$1' to temporary file" >&2
+        echo "Error moving '$file' to temporary file" >&2
     fi
+}
 
-    # Move to the next file
-    shift
-done
+# Main function
+main() {
+    check_commands sed mv
 
+    while [ $# -gt 0 ]; do
+        process_file "$1"
+        shift
+    done
+}
+
+# Execute main function
+main "$@"
