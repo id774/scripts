@@ -37,10 +37,11 @@ HOST="${2:-harpuia}"
 # Function to check required commands
 check_commands() {
     for cmd in "$@"; do
-        if ! command -v "$cmd" >/dev/null 2>&1; then
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
             echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
-        elif ! [ -x "$(command -v "$cmd")" ]; then
+        elif [ ! -x "$cmd_path" ]; then
             echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
