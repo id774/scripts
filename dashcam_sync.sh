@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-17
+#       Encapsulated all logic into functions and introduced main function.
 #  v1.3 2025-03-16
 #       Redirected error messages to stderr for better logging and debugging.
 #       Make POSIX compliant by removing 'local' variables.
@@ -56,58 +58,75 @@
 # Determine the script's directory
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Load configuration from a .conf file
-CONF_FILE="$SCRIPT_DIR/etc/dashcam_sync.conf"
-if [ ! -f "$CONF_FILE" ]; then
-    CONF_FILE="$SCRIPT_DIR/../etc/dashcam_sync.conf"
+# Function to load configuration
+load_configuration() {
+    CONF_FILE="$SCRIPT_DIR/etc/dashcam_sync.conf"
     if [ ! -f "$CONF_FILE" ]; then
-        echo "Configuration file not found." >&2
-        exit 4
+        CONF_FILE="$SCRIPT_DIR/../etc/dashcam_sync.conf"
+        if [ ! -f "$CONF_FILE" ]; then
+            echo "Error: Configuration file not found." >&2
+            exit 4
+        fi
     fi
-fi
-. "$CONF_FILE"
+    . "$CONF_FILE"
 
-# Check if necessary variables are set
-if [ -z "$SOURCE_DIR" ] || [ -z "$DEST_DIR" ]; then
-    echo "Error: SOURCE_DIR or DEST_DIR not set in configuration." >&2
-    exit 5
-fi
+    # Check if necessary variables are set
+    if [ -z "$SOURCE_DIR" ] || [ -z "$DEST_DIR" ]; then
+        echo "Error: SOURCE_DIR or DEST_DIR not set in configuration." >&2
+        exit 5
+    fi
+}
 
-YEAR_DIR="$(date +"%Y")"
+# Function to check if source and destination directories exist
+check_directories() {
+    if [ ! -d "$SOURCE_DIR" ] || [ ! -d "$DEST_DIR" ]; then
+        echo "Error: Source or destination directory does not exist." >&2
+        exit 1
+    fi
+}
 
-# Check if source and destination directories exist
-if [ ! -d "$SOURCE_DIR" ] || [ ! -d "$DEST_DIR" ]; then
-    echo "Error: Source or destination directory does not exist." >&2
-    exit 1
-fi
+# Function to synchronize files using rsync
+sync_files() {
+    echo "Synchronizing files to $DEST_DIR..."
+    rsync -avz --delete "$SOURCE_DIR/" "$DEST_DIR/daily/"
+    if [ $? -ne 0 ]; then
+        echo "Error: Rsync failed." >&2
+        exit 2
+    fi
+}
 
-# Rsync files
-echo "Synchronizing files to $DEST_DIR..."
-rsync -avz --delete "$SOURCE_DIR/" "$DEST_DIR/daily/"
-if [ $? -ne 0 ]; then
-    echo "Error: Rsync failed." >&2
-    exit 2
-fi
-
-# Function to move files to yearly directory
+# Function to move files to a yearly directory
 move_files() {
+    src="$1"
+    dest="$2"
 
     # Check if there are files to move
-    if [ -z "$(find "$1" -type f | head -n 1)" ]; then
-        echo "No files to move from $1."
+    if [ -z "$(find "$src" -type f | head -n 1)" ]; then
+        echo "No files to move from $src."
         return 0
     fi
 
-    echo "Moving files from '$1' to '$2'..."
-    mv "$1"/* "$2/" 2>/dev/null
+    echo "Moving files from '$src' to '$dest'..."
+    mv "$src"/* "$dest/" 2>/dev/null
     if [ $? -ne 0 ]; then
         echo "Error: Moving files failed." >&2
         exit 3
     fi
 }
 
-move_files "$DEST_DIR/daily" "$DEST_DIR/$YEAR_DIR"
-move_files "$SOURCE_DIR" "$SOURCE_DIR/../$YEAR_DIR"
+# Main function
+main() {
+    load_configuration
+    check_directories
 
-echo "Operation completed successfully."
+    YEAR_DIR="$(date +"%Y")"
 
+    sync_files
+    move_files "$DEST_DIR/daily" "$DEST_DIR/$YEAR_DIR"
+    move_files "$SOURCE_DIR" "$SOURCE_DIR/../$YEAR_DIR"
+
+    echo "Operation completed successfully."
+}
+
+# Execute main function
+main "$@"
