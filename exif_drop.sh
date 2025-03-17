@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-17
+#       Encapsulated all logic into functions and introduced main function.
 #  v1.3 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.2 2024-08-11
@@ -28,9 +30,9 @@
 #
 ########################################################################
 
-FIND=/usr/bin/find
-EXIFTOOL=/usr/bin/exiftool
-JHEAD=/usr/bin/jhead
+FIND=find
+EXIFTOOL=exiftool
+JHEAD=jhead
 
 # Function to display help message
 display_help() {
@@ -49,34 +51,57 @@ Notes:
 EOF
 }
 
-# Check if arguments are provided
-if [ "$#" -eq 0 ]; then
-  display_help
-  exit 0
-fi
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
 
-# Process -h option
-if [ "$1" = "-h" ]; then
-  display_help
-  exit 0
-fi
+# Function to validate directory
+check_directory() {
+    if [ ! -d "$1" ]; then
+        echo "Error: '$1' is not a valid directory." >&2
+        exit 1
+    fi
+}
 
-# Validate the directory path argument
-PATH=$1
-if [ ! -d "$PATH" ]; then
-  echo "Error: '$PATH' is not a valid directory." >&2
-  exit 1
-fi
+# Function to process images and remove EXIF GPS data
+process_images() {
+    dir="$1"
+    $FIND "$dir" -type f | while read file
+    do
+        if [ -n "$($EXIFTOOL -gps:GPSLatitude "$file")" ]; then
+            $JHEAD -purejpg "$file"
+            echo "Processed: $file"
+        fi
+    done
+}
 
-# Ensure the required tools are installed
-[ -x "$EXIFTOOL" ] || { echo "exiftool not found"; exit 1; }
-[ -x "$JHEAD" ] || { echo "jhead not found"; exit 1; }
+# Main function
+main() {
+    if [ "$#" -eq 0 ]; then
+        display_help
+        exit 0
+    fi
 
-# Process image files with GPS information
-$FIND "$PATH" -type f | while read FILE
-do
-  if [ -n "$($EXIFTOOL -gps:GPSLatitude "$FILE")" ]; then
-    $JHEAD -purejpg "$FILE"
-    echo "Processed $FILE"
-  fi
-done
+    if [ "$1" = "-h" ]; then
+        display_help
+        exit 0
+    fi
+
+    directory="$1"
+
+    check_commands $EXIFTOOL $JHEAD $FIND
+    check_directory "$directory"
+    process_images "$directory"
+}
+
+# Execute main function
+main "$@"
