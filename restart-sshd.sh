@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-03-17
+#       Encapsulated all logic into functions and introduced main function.
 #  v1.5 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.4 2025-03-05
@@ -47,6 +49,7 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Restart SSH daemon on macOS
 restart_macos_sshd() {
     SSH_PLIST="/System/Library/LaunchDaemons/ssh.plist"
     if ! command_exists launchctl; then
@@ -55,7 +58,6 @@ restart_macos_sshd() {
     fi
 
     if [ -f "$SSH_PLIST" ]; then
-        check_sudo
         sudo launchctl unload -w "$SSH_PLIST" && sudo launchctl load -w "$SSH_PLIST"
     else
         echo "SSH plist file not found: $SSH_PLIST" >&2
@@ -63,9 +65,9 @@ restart_macos_sshd() {
     fi
 }
 
+# Restart SSH daemon on Linux
 restart_linux_sshd() {
     if command_exists systemctl; then
-        check_sudo
         sudo systemctl restart ssh.service
     else
         echo "systemctl not found. Unable to restart SSH." >&2
@@ -73,14 +75,19 @@ restart_linux_sshd() {
     fi
 }
 
-# Determine the operating system and restart SSH accordingly
-UNAME=$(uname)
-case $UNAME in
-    Darwin*)
-        restart_macos_sshd
-        ;;
-    *)
-        restart_linux_sshd
-        ;;
-esac
+# Main function
+main() {
+    check_sudo
+    UNAME=$(uname)
+    case $UNAME in
+        Darwin*)
+            restart_macos_sshd
+            ;;
+        *)
+            restart_linux_sshd
+            ;;
+    esac
+}
 
+# Run main function
+main "$@"
