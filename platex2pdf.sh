@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-17
+#       Encapsulated logic into functions and introduced main function.
 #  v1.3 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.2 2024-01-23
@@ -28,6 +30,7 @@
 #
 ########################################################################
 
+# Function to check required commands
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -40,35 +43,53 @@ check_commands() {
     done
 }
 
-# Check for required commands
-check_commands platex uplatex dvipdfmx nkf
+# Function to detect encoding using nkf
+detect_encoding() {
+    encoding=$(nkf -g "$1")
 
-# Check for input file
-if [ -z "$1" ]; then
-    echo "Usage: $0 [tex-file]"
-    exit 0
-fi
+    case $encoding in
+        UTF-8) echo "-kanji=utf8" ;;
+        EUC-JP) echo "-kanji=euc" ;;
+        Shift-JIS) echo "-kanji=sjis" ;;
+        ISO-2022-JP) echo "-kanji=jis" ;;
+        *) echo "" ;;  # Default to an empty string if encoding is not recognized
+    esac
+}
 
-TEX=$*
-DVI=`/usr/bin/basename "$TEX" ".tex"`
+# Function to detect which LaTeX engine to use (platex or uplatex)
+detect_latex_engine() {
+    class=$(sed -n '/documentclass/p' "$1" | sed '/%.*documentclass/d' | sed -n '1p')
 
-# Detect encoding
-THECODE=`nkf -g "$TEX"`
-case $THECODE in
-    UTF-8) KANJI="-kanji=utf8";;
-    EUC-JP) KANJI="-kanji=euc";;
-    Shift-JIS) KANJI="kanji=sjis";;
-    ISO-2022-JP) KANJI="-kanji=jis";;
-esac
+    case $class in
+        *{u*) echo "uplatex" ;;
+        *) echo "platex" ;;
+    esac
+}
 
-# Determine LaTeX command to use
-PLATEX="platex"
-CLASS=`sed -n '/documentclass/p' "$TEX" | sed '/%.*documentclass/d' | sed -n '1p'`
-case $CLASS in
-    *{u*) PLATEX="uplatex";;
-esac
+# Function to convert LaTeX to PDF
+convert_to_pdf() {
+    dvi_file=$(basename "$1" ".tex")
+    kanji_opt=$(detect_encoding "$1")
+    latex_engine=$(detect_latex_engine "$1")
 
-# Execute LaTeX and PDF conversion
-$PLATEX $KANJI "$TEX"
-dvipdfmx "$DVI"
+    # Run LaTeX command with the detected engine and encoding
+    $latex_engine $kanji_opt "$1"
+    dvipdfmx "$dvi_file"
+}
 
+# Main function to execute the script
+main() {
+    # Ensure required commands are available
+    check_commands platex uplatex dvipdfmx nkf
+
+    # Check for input file argument
+    if [ -z "$1" ]; then
+        echo "Usage: $0 [tex-file]"
+        exit 0
+    fi
+
+    convert_to_pdf "$1"
+}
+
+# Execute the main function
+main "$@"
