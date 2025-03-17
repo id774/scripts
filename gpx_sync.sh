@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.0 2025-03-17
+#       Encapsulated all logic into functions and introduced main function.
 #  v1.9 2025-03-14
 #       Redirected error messages to stderr for better logging and debugging.
 #       Refactored for POSIX compliance. Replaced Bash-specific syntax
@@ -87,30 +89,26 @@
 # Determine the script's directory
 SCRIPT_DIR=$(dirname "$0")
 
-# Load configuration from a .conf file
-CONF_FILE="$SCRIPT_DIR/etc/gpx_sync.conf"
-if [ ! -f "$CONF_FILE" ]; then
-    CONF_FILE="$SCRIPT_DIR/../etc/gpx_sync.conf"
+# Function to load configuration
+load_configuration() {
+    CONF_FILE="$SCRIPT_DIR/etc/gpx_sync.conf"
     if [ ! -f "$CONF_FILE" ]; then
-        echo "Error: Configuration file not found." >&2
-        exit 3
+        CONF_FILE="$SCRIPT_DIR/../etc/gpx_sync.conf"
+        if [ ! -f "$CONF_FILE" ]; then
+            echo "Error: Configuration file not found." >&2
+            exit 3
+        fi
     fi
-fi
-. "$CONF_FILE"
+    . "$CONF_FILE"
 
-# Check if necessary variables are set
-if [ -z "$TMP_DIR" ] || [ -z "$USER_GPX_DIR" ] || [ -z "$MOUNTED_DIR" ] || [ -z "$RSYNC_USER" ] || [ -z "$RSYNC_HOST" ]; then
-    echo "Error: One or more configuration variables are not set. Please check your gpx_sync.conf." >&2
-    exit 4
-fi
+    # Check if necessary variables are set
+    if [ -z "$TMP_DIR" ] || [ -z "$USER_GPX_DIR" ] || [ -z "$MOUNTED_DIR" ] || [ -z "$RSYNC_USER" ] || [ -z "$RSYNC_HOST" ]; then
+        echo "Error: One or more configuration variables are not set. Please check your gpx_sync.conf." >&2
+        exit 4
+    fi
+}
 
-# Check if DEFAULT_PERMISSIONS is set in the configuration file if no permissions are provided as an argument
-if [ -z "$1" ] && [ -z "$DEFAULT_PERMISSIONS" ]; then
-    echo "Error: DEFAULT_PERMISSIONS is not set in the configuration file and no permissions argument was provided." >&2
-    exit 5
-fi
-
-# Check for required commands
+# Function to check for required commands
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -123,21 +121,25 @@ check_commands() {
     done
 }
 
-# Ensure necessary commands are available
-check_commands chmod cp rsync rm find
+# Function to parse arguments
+parse_arguments() {
+    # Set default permissions from config or use the argument
+    permissions=${1:-$DEFAULT_PERMISSIONS}
 
-# Set default permissions from the configuration file or use the first argument if provided
-permissions=${1:-$DEFAULT_PERMISSIONS}
+    # Check if DEFAULT_PERMISSIONS is set in the configuration file if no permissions are provided
+    if [ -z "$permissions" ]; then
+        echo "Error: DEFAULT_PERMISSIONS is not set in the configuration file and no permissions argument was provided." >&2
+        exit 5
+    fi
 
-# Check if the permissions argument is a valid 3-digit number
-if echo "$permissions" | grep -e '^[0-7][0-7][0-7]$' >/dev/null 2>&1; then
-    :
-else
-    echo "Error: Permissions must be a 3-digit octal number." >&2
-    exit 6
-fi
-
-CURRENT_YEAR=$(date +"%Y")
+    # Validate permissions format (3-digit octal number)
+    if echo "$permissions" | grep -E '^[0-7][0-7][0-7]$' >/dev/null 2>&1; then
+        :
+    else
+        echo "Error: Permissions must be a 3-digit octal number." >&2
+        exit 6
+    fi
+}
 
 # Function to check if GPX files exist in a directory
 check_gpx_files() {
@@ -149,7 +151,7 @@ check_gpx_files() {
     return 0
 }
 
-# Function to set permissions and copy files to a directory, returning an error if the directory does not exist
+# Function to set permissions and copy files to a directory
 copy_files() {
     source_dir="$1"
     destination="$2"
@@ -179,15 +181,22 @@ remove_files() {
     done
 }
 
-# Main logic
-check_gpx_files "$TMP_DIR" || exit $?
+# Main function
+main() {
+    load_configuration
+    check_commands chmod cp rsync rm find
+    parse_arguments "$@"
 
-copy_files "$TMP_DIR" "$HOME/$USER_GPX_DIR/$CURRENT_YEAR/" "$permissions" || exit $?
+    CURRENT_YEAR=$(date +"%Y")
 
-copy_files "$TMP_DIR" "$MOUNTED_DIR/$USER_GPX_DIR/$CURRENT_YEAR/" "$permissions" || exit $?
+    check_gpx_files "$TMP_DIR" || exit $?
+    copy_files "$TMP_DIR" "$HOME/$USER_GPX_DIR/$CURRENT_YEAR/" "$permissions" || exit $?
+    copy_files "$TMP_DIR" "$MOUNTED_DIR/$USER_GPX_DIR/$CURRENT_YEAR/" "$permissions" || exit $?
+    sync_files "$HOME/$USER_GPX_DIR" "$RSYNC_USER" "$RSYNC_HOST" || exit $?
+    remove_files "$TMP_DIR"/*.gpx || exit $?
 
-sync_files "$HOME/$USER_GPX_DIR" "$RSYNC_USER" "$RSYNC_HOST" || exit $?
+    echo "All operations completed successfully."
+}
 
-remove_files "$TMP_DIR"/*.gpx || exit $?
-
-echo "All operations completed successfully."
+# Execute main function
+main "$@"
