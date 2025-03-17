@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-03-17
+#       Encapsulated all logic into functions and introduced main function.
 #  v1.6 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #       Refactored for POSIX compliance by removing non-standard syntax.
@@ -74,6 +76,7 @@
 #
 ########################################################################
 
+# Function to check required commands
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -86,48 +89,41 @@ check_commands() {
     done
 }
 
-# Check if necessary commands are available
-check_commands rsync find chmod
+load_config() {
+    # Determine the script's directory
+    SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Determine the script's directory
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-
-# Load configuration from a .conf file
-CONF_FILE="$SCRIPT_DIR/etc/sd_extract.conf"
-if [ ! -f "$CONF_FILE" ]; then
-    CONF_FILE="$SCRIPT_DIR/../etc/sd_extract.conf"
+    # Load configuration from a .conf file
+    CONF_FILE="$SCRIPT_DIR/etc/sd_extract.conf"
     if [ ! -f "$CONF_FILE" ]; then
-        echo "Configuration file not found." >&2
-        exit 5
+        CONF_FILE="$SCRIPT_DIR/../etc/sd_extract.conf"
+        if [ ! -f "$CONF_FILE" ]; then
+            echo "Error: Configuration file not found." >&2
+            exit 5
+        fi
     fi
-fi
-. "$CONF_FILE"
+    . "$CONF_FILE"
+}
 
-# Check if necessary variables are set
-if [ -z "$SOURCE_DIRS" ] || [ -z "$FILE_PATTERNS" ] || [ -z "$DEST_DIR" ] || [ -z "$DEFAULT_PERMISSIONS" ]; then
-    echo "Error: Configuration variables not set. Check sd_extract.conf." >&2
-    exit 6
-fi
+validate_config() {
+    # Check if necessary variables are set
+    if [ -z "$SOURCE_DIRS" ] || [ -z "$FILE_PATTERNS" ] || [ -z "$DEST_DIR" ] || [ -z "$DEFAULT_PERMISSIONS" ]; then
+        echo "Error: Configuration variables not set. Check sd_extract.conf." >&2
+        exit 6
+    fi
 
-# Check if destination directory exists
-if [ ! -d "$DEST_DIR" ]; then
-    echo "Error: Destination directory $DEST_DIR does not exist." >&2
-    exit 2
-fi
+    # Check if destination directory exists
+    if [ ! -d "$DEST_DIR" ]; then
+        echo "Error: Destination directory $DEST_DIR does not exist." >&2
+        exit 2
+    fi
 
-# Set default permissions from configuration file or use the first argument if provided
-permissions=${1:-$DEFAULT_PERMISSIONS}
-
-# Check if the permissions argument is a valid 3-digit number
-if ! echo "$permissions" | grep -Eq '^[0-7]{3}$'; then
-    echo "Error: Permissions must be a 3-digit octal number." >&2
-    exit 8
-fi
-
-# Initialize a flag to check if any files were copied
-files_copied=false
-# Initialize a variable to track files that failed to sync
-error_files=""
+    # Check if the permissions argument is a valid 3-digit number
+    if ! echo "$permissions" | grep -Eq '^[0-7]{3}$'; then
+        echo "Error: Permissions must be a 3-digit octal number." >&2
+        exit 8
+    fi
+}
 
 # A temporary flag file is used instead of a variable to detect if any files have been copied.
 # This approach is necessary because the 'find ... | while read' loop runs in a subshell due to the pipeline.
@@ -175,33 +171,48 @@ sync_files() {
     fi
 }
 
-# Loop through each source directory and file pattern defined in the configuration
-# Temporarily change IFS (Internal Field Separator) to space to treat the space-separated
-# strings in SOURCE_DIRS and FILE_PATTERNS as lists
-OLD_IFS="$IFS"
-IFS=' '
-for source_dir in $SOURCE_DIRS; do
-    for file_pattern in $FILE_PATTERNS; do
-        # Call sync_files function for each combination of source directory and file pattern
-        sync_files "$source_dir" "$file_pattern" "$DEST_DIR" "$permissions"
-    done
-done
-# Restore the original IFS value to avoid affecting subsequent script behavior
-IFS="$OLD_IFS"
+main() {
+    check_commands rsync find chmod grep
+    load_config
 
-# Check if any files were copied
-if [ "$files_copied" = false ]; then
-    echo "No matching files found to copy." >&2
-    exit 1
-fi
+    # Set default permissions from configuration file or use the first argument if provided
+    permissions=${1:-$DEFAULT_PERMISSIONS}
+    validate_config
 
-# If there are error files, print them and exit with a non-zero status
-if [ -n "$error_files" ]; then
-    echo "The following files failed to sync:"
-    for error_file in $error_files; do
-        echo "$error_file"
+    files_copied=false
+    error_files=""
+
+    # Loop through each source directory and file pattern defined in the configuration
+    # Temporarily change IFS (Internal Field Separator) to space to treat the space-separated
+    # strings in SOURCE_DIRS and FILE_PATTERNS as lists
+    OLD_IFS="$IFS"
+    IFS=' '
+    for source_dir in $SOURCE_DIRS; do
+        for file_pattern in $FILE_PATTERNS; do
+            # Call sync_files function for each combination of source directory and file pattern
+            sync_files "$source_dir" "$file_pattern" "$DEST_DIR" "$permissions"
+        done
     done
-    exit 7
-else
-    echo "Operation completed successfully."
-fi
+
+    # Restore the original IFS value to avoid affecting subsequent script behavior
+    IFS="$OLD_IFS"
+
+    # Check if any files were copied
+    if ! $files_copied; then
+        echo "No matching files found to copy." >&2
+        exit 1
+    fi
+
+    # If there are error files, print them and exit with a non-zero status
+    if [ -n "$error_files" ]; then
+        echo "The following files failed to sync:" >&2
+        for error_file in $error_files; do
+            echo "$error_file" >&2
+        done
+        exit 7
+    else
+        echo "Operation completed successfully."
+    fi
+}
+
+main "$@"
