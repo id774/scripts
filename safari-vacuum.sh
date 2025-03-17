@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# safari-vacuum.sh: Optimize Safari Cache Database
+# vacuum-safari.sh: Optimize Safari Cache Database
 #
 #  Description:
 #  This script performs the SQLite vacuum command on Safari's cache
@@ -20,7 +20,7 @@
 #       Initial release.
 #
 #  Usage:
-#  ./safari-vacuum.sh
+#  ./vacuum-safari.sh
 #
 #  Notes:
 #  - Ensure Safari is not running while executing this script.
