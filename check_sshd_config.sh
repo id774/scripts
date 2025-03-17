@@ -5,11 +5,6 @@
 #
 #  Description:
 #  This script checks the SSH daemon configuration for both macOS and Linux.
-#  It defines a function to display key SSHD configuration parameters.
-#  For macOS, it copies a default configuration file if it's missing, sets
-#  the owner to root, and checks both the default and main configuration files.
-#  For Linux, it displays key SSHD configuration parameters from the main
-#  configuration file.
 #
 #  Features:
 #  - Ensures required commands are installed and executable.
@@ -21,7 +16,6 @@
 #    - AddressFamily (added in v1.7)
 #    - AllowUsers (newly added in v1.6)
 #  - Detects and supports both macOS and Linux environments.
-#  - Automatically copies and configures default SSHD settings on macOS.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -29,30 +23,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.9 2025-03-17
+#  v2.0 2025-03-17
 #       Encapsulated all logic into functions and introduced main function.
 #       Redirected error messages to stderr for better logging and debugging.
-#  v1.8 2025-03-05
-#       Added sudo privilege check when --sudo option is specified.
-#  v1.7 2025-02-19
-#       Added support for detecting and displaying AddressFamily configuration.
-#  v1.6 2025-01-03
-#       Added support for detecting and displaying AllowUsers configuration.
-#  v1.5 2024-03-04
-#       Added command check functionality to ensure all required commands
-#       are available before script execution.
-#  v1.4 2024-03-03
-#       Added a function to check SSHD configuration parameters and extended
-#       macOS support to check both default and main configuration files.
-#       Added ownership setting for the copied configuration file on macOS.
-#  v1.3 2023-12-23
-#       Refactored for POSIX compliance. Replaced Bash-specific syntax
-#       with POSIX standard commands and structures. Enhanced portability
-#       and compatibility across different UNIX-like systems.
-#  v1.2 2023-12-06
-#       Refactored for clarity and added detailed comments.
-#  v1.1 2023-05-21
-#       Added macOS support.
+#  [Further version history truncated for brevity]
 #  v1.0 2022-09-13
 #       Initial release.
 #
