@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-03-17
+#       Encapsulated all logic in functions and introduced main function.
 #  v1.4 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.3 2024-01-07
@@ -40,6 +42,7 @@
 #
 ########################################################################
 
+# Function to check if required commands exist
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -52,36 +55,44 @@ check_commands() {
     done
 }
 
-# Check if required commands are available and executable
-check_commands find sort sed
+# Function to determine the directory and option for hidden files
+parse_arguments() {
+    show_hidden=false
 
-# Check for hidden directory display option
-show_hidden=false
-if [ "$#" -gt 0 ] && [ "$1" = "-a" ]; then
-  show_hidden=true
-  shift
-fi
-
-# Check if an argument is given for directory
-if [ $# -eq 0 ]; then
-    directory="."
-else
-    directory="$1"
-    # Check if the directory exists
-    if [ ! -d "$directory" ]; then
-        echo "Error: Directory '$directory' does not exist." >&2
-        exit 1
+    if [ "$#" -gt 0 ] && [ "$1" = "-a" ]; then
+        show_hidden=true
+        shift
     fi
-fi
 
-# Display the specified directory
-echo "$directory"
-cd "$directory" || exit
+    if [ $# -eq 0 ]; then
+        directory="."
+    else
+        directory="$1"
+        if [ ! -d "$directory" ]; then
+            echo "Error: Directory '$directory' does not exist." >&2
+            exit 1
+        fi
+    fi
+}
 
-# Generate and display the directory tree
-if [ "$show_hidden" = true ]; then
-  find . -print | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'
-else
-  find . -not -path '*/\.*' -print | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'
-fi
+# Function to display the directory tree
+display_tree() {
+    echo "$directory"
+    cd "$directory" || exit 1
 
+    if [ "$show_hidden" = true ]; then
+        find . -print | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'
+    else
+        find . -not -path '*/\.*' -print | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'
+    fi
+}
+
+# Main function
+main() {
+    check_commands find sort sed
+    parse_arguments "$@"
+    display_tree
+}
+
+# Execute main function
+main "$@"
