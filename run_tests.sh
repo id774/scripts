@@ -132,6 +132,7 @@ run_python_tests() {
             total_tests=$((total_tests + python_tests))
         done
         total_scripts=$((total_scripts + python_scripts))
+        display_python_report
     fi
 }
 
@@ -170,7 +171,27 @@ run_ruby_tests() {
             total_tests=$((total_tests + ruby_tests))
         done
         total_scripts=$((total_scripts + ruby_scripts))
+        display_ruby_report
     fi
+}
+
+display_python_report() {
+    echo "All Python tests completed."
+    echo "  Python path: $python_path"
+    echo "  $python_version"
+    echo "  Total Python test scripts: $python_scripts"
+    echo "  Total Python test cases: $total_tests"
+    echo "  Skipped Python test cases: $python_skipped_tests"
+}
+
+display_ruby_report() {
+    echo "All Ruby tests completed."
+    echo "  RSpec path: $rspec_path"
+    echo "  $ruby_version"
+    echo "  $rspec_version"
+    echo "  Total Ruby test scripts: $ruby_scripts"
+    echo "  Total Ruby test cases: $ruby_tests"
+    echo "  Skipped Ruby test cases: $ruby_skipped_tests"
 }
 
 display_final_report() {
