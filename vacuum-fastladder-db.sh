@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-03-17
+#       Encapsulated all logic into functions and introduced main function.
 #  v1.4 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.3 2024-01-22
@@ -36,6 +38,11 @@
 #
 ########################################################################
 
+# Define the Fastladder database directory and file path
+DB_DIR="$HOME/fastladder/db"
+DB_PATH="$DB_DIR/fastladder.db"
+
+# Function to check required commands
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -48,34 +55,43 @@ check_commands() {
     done
 }
 
-# Check for required commands
-check_commands sqlite3 rm test
+# Function to check if the database directory and file exist
+check_database() {
+    if [ ! -d "$DB_DIR" ]; then
+        echo "Error: Fastladder database directory does not exist. Please check the path and try again." >&2
+        exit 1
+    fi
 
-# Define the Fastladder database directory and file path
-DB_DIR="$HOME/fastladder/db"
-DB_PATH="$DB_DIR/fastladder.db"
+    if [ ! -f "$DB_PATH" ]; then
+        echo "Error: Fastladder database file does not exist. Please check the path and try again." >&2
+        exit 2
+    fi
+}
 
-# Check if the database directory exists
-if [ ! -d "$DB_DIR" ]; then
-    echo "Error: Fastladder database directory does not exist. Please check the path and try again." >&2
-    exit 2
-fi
+# Function to change to the Fastladder database directory
+change_to_db_dir() {
+    cd "$DB_DIR" || exit 1
+}
 
-# Check if the database file exists
-if [ ! -f "$DB_PATH" ]; then
-    echo "Error: Fastladder database file does not exist. Please check the path and try again." >&2
-    exit 1
-fi
+# Function to vacuum and optimize the database
+vacuum_and_optimize_db() {
+    # Remove existing temporary database file if it exists
+    test -f new.db && rm -vf new.db
 
-# Navigate to the Fastladder database directory
-cd "$DB_DIR"
+    # Vacuum the Fastladder SQLite database
+    sqlite3 "$DB_PATH" vacuum
 
-# Remove existing temporary database file if it exists
-test -f new.db && rm -vf new.db
+    # Dump the current database and create a new optimized database
+    sqlite3 fastladder.db .dump | sqlite3 new.db
+}
 
-# Vacuum the Fastladder SQLite database
-sqlite3 "$DB_PATH" vacuum
+# Main function
+main() {
+    check_commands sqlite3 rm
+    check_database
+    change_to_db_dir
+    vacuum_and_optimize_db
+}
 
-# Dump the current database and create a new optimized database
-sqlite3 fastladder.db .dump | sqlite3 new.db
-
+# Execute main function
+main "$@"
