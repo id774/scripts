@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-03-17
+#       Refactored to encapsulate all logic into functions and introduced main function.
 #  v1.4 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.3 2025-03-05
@@ -54,6 +56,14 @@ Options:
 EOF
 }
 
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
+
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
@@ -62,58 +72,72 @@ check_sudo() {
     fi
 }
 
-# Configuration variables
-TMP_SCRIPT_DIR=${TMP:-/tmp}
-SCRIPT_NAME=$TMP_SCRIPT_DIR/create-munin-plugins-links.sh
-PLUGINS_DIR=/etc/munin/plugins
+# Function to check if necessary directories exist and are writable
+check_directories() {
+    TMP_SCRIPT_DIR=${TMP:-/tmp}
+    PLUGINS_DIR=/etc/munin/plugins
 
-# Check if the temporary directory is writable
-if [ ! -w "$TMP_SCRIPT_DIR" ]; then
-    echo "Error: Temporary directory $TMP_SCRIPT_DIR is not writable." >&2
-    exit 3
-fi
+    if [ ! -w "$TMP_SCRIPT_DIR" ]; then
+        echo "Error: Temporary directory $TMP_SCRIPT_DIR is not writable." >&2
+        exit 3
+    fi
 
-# Check if the plugins directory exists
-if [ ! -d "$PLUGINS_DIR" ]; then
-    echo "Error: Plugins directory $PLUGINS_DIR does not exist." >&2
-    exit 4
-fi
+    if [ ! -d "$PLUGINS_DIR" ]; then
+        echo "Error: Plugins directory $PLUGINS_DIR does not exist." >&2
+        exit 4
+    fi
+}
 
-# Parse options
-if [ "$#" -eq 0 ]; then
-    display_help
-    exit 0
-fi
+# Function to configure Munin plugins
+configure_munin_plugins() {
+    check_system
+    check_sudo
+    check_directories
 
-while getopts "hc" opt; do
-  case $opt in
-    h)
-      display_help
-      exit 0
-      ;;
-    c)
-      check_sudo
+    TMP_SCRIPT_DIR=${TMP:-/tmp}
+    SCRIPT_NAME=$TMP_SCRIPT_DIR/create-munin-plugins-links.sh
+    PLUGINS_DIR=/etc/munin/plugins
 
-      # Create a temporary script for Munin plugin setup
-      echo "#!/bin/sh" > "$SCRIPT_NAME"
-      sudo munin-node-configure --shell >> "$SCRIPT_NAME"
-      chmod +x "$SCRIPT_NAME"
+    # Create a temporary script for Munin plugin setup
+    echo "#!/bin/sh" > "$SCRIPT_NAME"
+    sudo munin-node-configure --shell >> "$SCRIPT_NAME"
+    chmod +x "$SCRIPT_NAME"
 
-      # Execute the script in the plugins directory
-      cd "$PLUGINS_DIR" || { echo "Error: Failed to change directory to $PLUGINS_DIR." >&2; exit 5; }
-      sudo "$SCRIPT_NAME"
-      rm "$SCRIPT_NAME"
+    # Execute the script in the plugins directory
+    cd "$PLUGINS_DIR" || { echo "Error: Failed to change directory to $PLUGINS_DIR." >&2; exit 5; }
+    sudo "$SCRIPT_NAME"
+    rm "$SCRIPT_NAME"
 
-      # Remove specific plugins
-      sudo rm ntp_[0-9]*
+    # Remove specific plugins
+    sudo rm ntp_[0-9]*
 
-      # Restart Munin node service
-      sudo systemctl restart munin-node.service
-      exit 0
-      ;;
-    *)
-      display_help
-      exit 0
-      ;;
-  esac
-done
+    # Restart Munin node service
+    sudo systemctl restart munin-node.service
+}
+
+# Main function to parse options and execute corresponding actions
+main() {
+    if [ "$#" -eq 0 ]; then
+        display_help
+        exit 0
+    fi
+
+    while getopts "hc" opt; do
+        case $opt in
+            h)
+                display_help
+                exit 0
+                ;;
+            c)
+                configure_munin_plugins
+                ;;
+            *)
+                display_help
+                exit 0
+                ;;
+        esac
+    done
+}
+
+# Execute main function
+main "$@"
