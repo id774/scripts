@@ -37,7 +37,7 @@
 #
 ########################################################################
 
-# Check for required commands
+# Function to check required commands
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -75,9 +75,7 @@ check_additional_sshd() {
 
 # Main function
 main() {
-    # Ensure necessary commands are available
     check_commands grep
-
     check_main_sshd
     check_additional_sshd
 }

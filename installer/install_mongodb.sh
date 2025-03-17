@@ -185,4 +185,5 @@ main() {
     echo "MongoDB $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

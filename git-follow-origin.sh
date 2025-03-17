@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-17
+#       Encapsulated all logic in functions and introduced main function.
 #  v1.3 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.2 2024-01-07
@@ -36,6 +38,7 @@
 #
 ########################################################################
 
+# Function to check required commands
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -48,6 +51,7 @@ check_commands() {
     done
 }
 
+# Processes for git merge
 git_merge() {
     git checkout -b merge-master master
     git pull https://github.com/$1/$2
@@ -57,6 +61,7 @@ git_merge() {
     git branch -D merge-master
 }
 
+# Main function
 main() {
     if [ -n "$2" ]; then
         # Check if Git is installed
@@ -69,4 +74,5 @@ main() {
     fi
 }
 
-main $*
+# Execute main function
+main "$@"

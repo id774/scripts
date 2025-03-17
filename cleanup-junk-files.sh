@@ -43,6 +43,7 @@
 #
 ########################################################################
 
+# Function to check required commands
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -57,21 +58,19 @@ check_commands() {
 
 # Perform cleanup of junk files
 cleanup_junk_files() {
-    target_dir="$1"
-
-    echo "Cleaning up junk files in $target_dir..."
+    echo "Cleaning up junk files in $1..."
 
     echo "Removing ._* AppleDouble files..."
-    find "$target_dir" -name '._*' -exec rm -vf {} \;
+    find "$1" -name '._*' -exec rm -vf {} \;
 
     echo "Removing .DS_Store files..."
-    find "$target_dir" -name '.DS_Store' -exec rm -vf {} \;
+    find "$1" -name '.DS_Store' -exec rm -vf {} \;
 
     echo "Removing temporary Unix files ending with '.un~'..."
-    find "$target_dir" -name '.*.un~' -exec rm -vf {} \;
+    find "$1" -name '.*.un~' -exec rm -vf {} \;
 
     echo "Removing __pycache__ directories..."
-    find "$target_dir" -type d -name '__pycache__' -exec rm -vrf {} \;
+    find "$1" -type d -name '__pycache__' -exec rm -vrf {} \;
 
     echo "Cleanup completed."
 }

@@ -298,6 +298,7 @@ change_to_target_dir() {
     cd "$TARGET_DIR" || exit
 }
 
+# Main function
 main() {
     load_and_validate_config
 

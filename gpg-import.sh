@@ -41,7 +41,7 @@ check_sudo() {
     fi
 }
 
-# Check if required commands exist
+# Function to check required commands
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then

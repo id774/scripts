@@ -41,7 +41,7 @@ GIT_ONLY=false
 ALL=false
 SHOW_HELP=false
 
-# Check if necessary commands exist
+# Function to check required commands
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then

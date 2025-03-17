@@ -238,5 +238,5 @@ main() {
     create_git_repo "${repo_name}" "${repo_full_path}" "$dry_run" "$use_sudo" "$user" "$group"
 }
 
-# Run the main function
+# Execute main function
 main "$@"

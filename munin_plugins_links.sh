@@ -64,6 +64,19 @@ check_system() {
     fi
 }
 
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
@@ -93,6 +106,7 @@ configure_munin_plugins() {
     check_system
     check_sudo
     check_directories
+    check_commands sudo munin-node-configure chmod rm systemctl
 
     TMP_SCRIPT_DIR=${TMP:-/tmp}
     SCRIPT_NAME=$TMP_SCRIPT_DIR/create-munin-plugins-links.sh

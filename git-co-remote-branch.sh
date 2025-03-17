@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-17
+#       Encapsulated all logic in functions and introduced main function.
 #  v1.2 2024-01-07
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.
@@ -36,6 +38,7 @@
 #
 ########################################################################
 
+# Function to check required commands
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -48,10 +51,11 @@ check_commands() {
     done
 }
 
-# Check if Git is installed
-check_commands git
-
+# Main function
 main() {
+    # Check if Git is installed
+    check_commands git
+
     if [ -n "$1" ]; then
         check_git_installed
         git checkout -b $1 origin/$1
@@ -61,5 +65,5 @@ main() {
     fi
 }
 
-main $*
-
+# Execute main function
+main "$@"
