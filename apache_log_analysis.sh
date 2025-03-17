@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-03-17
+#       Encapsulated all logic in functions and introduced main function.
 #  v1.6 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.5 2024-01-07
@@ -43,6 +45,7 @@
 #
 ########################################################################
 
+# Function to check required commands
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -55,74 +58,68 @@ check_commands() {
     done
 }
 
-# Check if grep, zgrep, and awk commands are available
-check_commands grep zgrep awk
-
-# Check for correct number of arguments
-if [ "$#" -ne 1 ]; then
-    echo "Usage: $0 log_file_path"
-    echo "Example: $0 /var/log/apache2/ssl_access.log"
-    exit 0
-fi
-
-# Set the log file path
-LOG_FILE=$1
-
-# Check if log file exists
-if [ ! -f "$LOG_FILE" ]; then
-    echo "Error: Log file not found at $LOG_FILE" >&2
-    exit 1
-fi
-
-# Determine the script's directory
-SCRIPT_DIR=$(dirname "$0")
-
-# Load the ignore list from the first available location
-IGNORE_FILE="$SCRIPT_DIR/etc/apache_ignore.list"
-if [ ! -f "$IGNORE_FILE" ]; then
-    IGNORE_FILE="$SCRIPT_DIR/../etc/apache_ignore.list"
+load_ignore_list() {
+    SCRIPT_DIR=$(dirname "$0")
+    IGNORE_FILE="$SCRIPT_DIR/etc/apache_ignore.list"
     if [ ! -f "$IGNORE_FILE" ]; then
+        IGNORE_FILE="$SCRIPT_DIR/../etc/apache_ignore.list"
+    fi
+
+    if [ -f "$IGNORE_FILE" ]; then
+        IGNORE_IPS=$(awk '!/^#/ && NF' "$IGNORE_FILE" | paste -sd "|" -)
+    else
         IGNORE_IPS="127.0.0.1"
         echo "Ignore file not found. Using default ignore IP: $IGNORE_IPS"
-    else
-        IGNORE_IPS=$(awk '!/^#/ && NF' "$IGNORE_FILE" | paste -sd "|" -)
     fi
-else
-    IGNORE_IPS=$(awk '!/^#/ && NF' "$IGNORE_FILE" | paste -sd "|" -)
-fi
+}
 
-# Function to display top accessed URLs
-echo "[Access Count]"
-zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 100
+analyze_logs() {
+    echo "[Access Count]"
+    zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 100
 
-# Function to display top referrers
-echo "[Referer]"
-zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | cut -d " " -f11 | sort | uniq -c | sort -r | head -n 100
+    echo "[Referer]"
+    zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | cut -d " " -f11 | sort | uniq -c | sort -r | head -n 100
 
-# Function to display top user agents
-echo "[User Agent]"
-zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk -F '"' '{print $6}' | sort | uniq -c | sort -nr | head -n 50
+    echo "[User Agent]"
+    zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk -F '"' '{print $6}' | sort | uniq -c | sort -nr | head -n 50
 
-# Function to count accesses by browser type
-echo "[Browser]"
-for UA in MSIE Firefox Chrome Safari; do
-    COUNT=$(zgrep 'https' "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | grep "$UA" | wc -l)
-    echo "$UA: $COUNT"
-done
+    echo "[Browser]"
+    for UA in MSIE Firefox Chrome Safari; do
+        COUNT=$(zgrep 'https' "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | grep "$UA" | wc -l)
+        echo "$UA: $COUNT"
+    done
 
-# Function to display daily access count
-echo "[Daily Access]"
-zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk '{print $4}' | cut -b 2-12 | sort | uniq -c
+    echo "[Daily Access]"
+    zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk '{print $4}' | cut -b 2-12 | sort | uniq -c
 
-# Function to display access count by time
-echo "[Access By Time]"
-grep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk '{print $4}' | cut -b 2-15 | sort | uniq -c
+    echo "[Access By Time]"
+    grep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk '{print $4}' | cut -b 2-15 | sort | uniq -c
 
-# Function to display recent accesses
-echo "[Recent Accesses]"
-grep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 100
+    echo "[Recent Accesses]"
+    grep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 100
 
-# Function to display recent referrers
-echo "[Recent Referer]"
-grep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | cut -d " " -f11 | sort | uniq -c | sort -r | head -n 100
+    echo "[Recent Referer]"
+    grep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | cut -d " " -f11 | sort | uniq -c | sort -r | head -n 100
+}
 
+main() {
+    check_commands grep zgrep awk cut sort uniq wc paste
+
+    if [ "$#" -ne 1 ]; then
+        echo "Usage: $0 log_file_path"
+        echo "Example: $0 /var/log/apache2/ssl_access.log"
+        exit 0
+    fi
+
+    LOG_FILE=$1
+
+    if [ ! -f "$LOG_FILE" ]; then
+        echo "Error: Log file not found at $LOG_FILE" >&2
+        exit 1
+    fi
+
+    load_ignore_list
+    analyze_logs
+}
+
+main "$@"
