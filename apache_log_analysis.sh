@@ -102,6 +102,7 @@ analyze_logs() {
     grep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | cut -d " " -f11 | sort | uniq -c | sort -r | head -n 100
 }
 
+# Main function to execute the script
 main() {
     check_commands grep zgrep awk cut sort uniq wc paste
 
@@ -122,4 +123,5 @@ main() {
     analyze_logs
 }
 
+# Execute main function
 main "$@"

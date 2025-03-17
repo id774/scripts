@@ -89,7 +89,7 @@ remove_repos() {
     done
 }
 
-# Main function
+# Main function to execute the script
 main() {
     DRY_RUN=true
 

@@ -75,7 +75,7 @@ cleanup_junk_files() {
     echo "Cleanup completed."
 }
 
-# Main function
+# Main function to execute the script
 main() {
     # Check if rm and find commands exist
     check_commands rm find

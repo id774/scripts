@@ -59,10 +59,11 @@ brew_maintenance() {
     brew cleanup
 }
 
-# Main operation
+# Main function to execute the script
 main() {
     check_environment
     brew_maintenance
 }
 
+# Execute main function
 main "$@"

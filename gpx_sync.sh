@@ -181,7 +181,7 @@ remove_files() {
     done
 }
 
-# Main function
+# Main function to execute the script
 main() {
     load_configuration
     check_commands chmod cp rsync rm find

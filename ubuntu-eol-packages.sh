@@ -54,7 +54,7 @@ list_eol_packages() {
     sed -e "s/##/\n/g" | sort | uniq
 }
 
-# Main function
+# Main function to execute the script
 main() {
     check_system
     check_commands dpkg apt-cache cut tail xargs egrep sed tr sort uniq

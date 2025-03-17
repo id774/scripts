@@ -79,11 +79,12 @@ sync_database() {
     fi
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_commands rsync mkdir mv
     check_arguments "$@"
     sync_database
 }
 
+# Execute main function
 main "$@"

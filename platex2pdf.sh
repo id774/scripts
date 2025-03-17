@@ -97,5 +97,5 @@ main() {
     convert_to_pdf "$1"
 }
 
-# Execute the main function
+# Execute main function
 main "$@"

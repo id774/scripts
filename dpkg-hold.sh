@@ -71,7 +71,7 @@ set_package_state() {
     show_package_status "$1"
 }
 
-# Main function
+# Main function to execute the script
 main() {
     check_commands dpkg
 

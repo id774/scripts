@@ -90,7 +90,7 @@ adjust_homebrew_permissions() {
     ls -Tld /usr/local/share/zsh/site-functions
 }
 
-# Main function
+# Main function to execute the script
 main() {
     os=$(uname)
 

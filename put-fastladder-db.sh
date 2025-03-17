@@ -73,7 +73,7 @@ sync_database() {
     }
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_commands sqlite3 rsync
     check_database
@@ -82,5 +82,5 @@ main() {
     echo "Fastladder database successfully synced to $USER@$HOST."
 }
 
-# Execute the main function
+# Execute main function
 main "$@"

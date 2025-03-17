@@ -84,7 +84,7 @@ send_test_message() {
     echo '{"json":"message"}' | "$FLUENT_CAT" debug.test
 }
 
-# Main function
+# Main function to execute the script
 main() {
     determine_fluentd_paths "$1"
     check_fluentd_commands

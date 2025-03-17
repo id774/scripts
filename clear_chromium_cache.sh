@@ -53,19 +53,6 @@ Notes:
 EOF
 }
 
-# Function to check required commands
-check_commands() {
-    for cmd in "$@"; do
-        if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
-            exit 127
-        elif ! [ -x "$(command -v "$cmd")" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
-            exit 126
-        fi
-    done
-}
-
 # Function to clear Chromium "Web Data" directory
 clear_cache() {
     cache_dir="$HOME/.config/chromium/Default/Web Data"
@@ -105,9 +92,8 @@ parse_arguments() {
     fi
 }
 
-# Main function
+# Main function to execute the script
 main() {
-    check_commands rm
     parse_arguments "$@"
 }
 

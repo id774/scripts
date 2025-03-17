@@ -129,7 +129,7 @@ configure_munin_plugins() {
     sudo systemctl restart munin-node.service
 }
 
-# Main function to parse options and execute corresponding actions
+# Main function to execute the script
 main() {
     if [ "$#" -eq 0 ]; then
         display_help

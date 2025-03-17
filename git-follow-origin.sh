@@ -61,7 +61,7 @@ git_merge() {
     git branch -D merge-master
 }
 
-# Main function
+# Main function to execute the script
 main() {
     if [ -n "$2" ]; then
         # Check if Git is installed

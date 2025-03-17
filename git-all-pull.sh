@@ -138,7 +138,7 @@ process_directory() {
     done
 }
 
-# Main function to orchestrate the script execution
+# Main function to execute the script
 main() {
     parse_arguments "$@"
 

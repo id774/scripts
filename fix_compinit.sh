@@ -85,7 +85,7 @@ fix_permissions() {
     ls -Tld /usr/local/share/zsh/
 }
 
-# Main function
+# Main function to execute the script
 main() {
     os=$(uname)
 

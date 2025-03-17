@@ -51,7 +51,7 @@ check_commands() {
     done
 }
 
-# Main function
+# Main function to execute the script
 main() {
     # Check if Git is installed
     check_commands git

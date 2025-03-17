@@ -51,7 +51,7 @@ check_commands() {
     done
 }
 
-# Main function
+# Main function to execute the script
 main() {
     # Required commands
     check_commands grep cp mv basename diff

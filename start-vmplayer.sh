@@ -63,9 +63,14 @@ start_daemon() {
     start_vmplayer
 }
 
-command -v Xvfb > /dev/null && \
-  command -v fluxbox > /dev/null && \
-  command -v x11vnc > /dev/null && \
-  command -v vmplayer > /dev/null && \
-  start_daemon
+# Main function to execute the script
+main() {
+    command -v Xvfb > /dev/null && \
+        command -v fluxbox > /dev/null && \
+        command -v x11vnc > /dev/null && \
+        command -v vmplayer > /dev/null && \
+        start_daemon
+}
 
+# Execute main function
+main "$@"

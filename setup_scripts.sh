@@ -71,7 +71,7 @@ set_permissions() {
     find "$SCRIPTS"/ -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
 }
 
-# Main function
+# Main function to execute the script
 main() {
     check_scripts
     check_commands chmod find

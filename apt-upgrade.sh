@@ -59,11 +59,12 @@ apt_upgrade() {
     sudo apt-get -y autoremove
 }
 
-# Main operation
+# Main function to execute the script
 main() {
     check_environment
     check_sudo
     apt_upgrade
 }
 
+# Execute main function
 main "$@"

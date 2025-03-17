@@ -87,7 +87,7 @@ display_tree() {
     fi
 }
 
-# Main function
+# Main function to execute the script
 main() {
     check_commands find sort sed
     parse_arguments "$@"

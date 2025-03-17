@@ -70,7 +70,7 @@ control_hadoop_services() {
     done
 }
 
-# Main function
+# Main function to execute the script
 main() {
     check_arguments "$1"
     set_environment "$2"

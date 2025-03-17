@@ -75,7 +75,7 @@ restart_linux_sshd() {
     fi
 }
 
-# Main function
+# Main function to execute the script
 main() {
     check_sudo
     UNAME=$(uname)
@@ -89,5 +89,5 @@ main() {
     esac
 }
 
-# Run main function
+# Execute main function
 main "$@"

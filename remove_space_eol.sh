@@ -57,7 +57,7 @@ process_file() {
     fi
 }
 
-# Main function
+# Main function to execute the script
 main() {
     check_commands sed mv
 

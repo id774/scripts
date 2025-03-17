@@ -114,7 +114,7 @@ move_files() {
     fi
 }
 
-# Main function
+# Main function to execute the script
 main() {
     load_configuration
     check_directories

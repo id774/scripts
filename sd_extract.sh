@@ -171,6 +171,7 @@ sync_files() {
     fi
 }
 
+# Main function to execute the script
 main() {
     check_commands rsync find chmod grep
     load_config
@@ -215,4 +216,5 @@ main() {
     fi
 }
 
+# Execute main function
 main "$@"

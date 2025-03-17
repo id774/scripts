@@ -131,7 +131,7 @@ perform_cleanup() {
     echo "cltmp (20250317) done."
 }
 
-# Main function
+# Main function to execute the script
 main() {
     check_commands find rm uname
     perform_cleanup

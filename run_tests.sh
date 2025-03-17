@@ -233,7 +233,7 @@ run_tests() {
     display_final_report
 }
 
-# Main function
+# Main function to execute the script
 main() {
     check_scripts
     run_tests "$@"

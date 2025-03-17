@@ -84,7 +84,7 @@ process_images() {
     done
 }
 
-# Main function
+# Main function to execute the script
 main() {
     if [ "$#" -eq 0 ]; then
         display_help

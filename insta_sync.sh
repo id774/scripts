@@ -177,7 +177,7 @@ check_remote_sync() {
     fi
 }
 
-# Main function
+# Main function to execute the script
 main() {
     # Check for help option
     if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then

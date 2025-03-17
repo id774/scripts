@@ -117,7 +117,7 @@ gather_logs() {
     display_log "/var/log/fail2ban.log" "WARNING"
 }
 
-# Main function
+# Main function to execute the script
 main() {
     gather_system_info
     gather_os_specific_info

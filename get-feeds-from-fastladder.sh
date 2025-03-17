@@ -59,7 +59,7 @@ exec_sql() {
     }
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_commands sqlite3
     check_database
@@ -73,4 +73,5 @@ main() {
     echo "Feed retrieval completed."
 }
 
+# Execute main function
 main "$@"

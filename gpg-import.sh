@@ -66,7 +66,7 @@ import_gpg_key() {
     sudo gpg --armor --export "$pubkey" | sudo apt-key add -
 }
 
-# Main function
+# Main function to execute the script
 main() {
     # Check required commands
     check_commands gpg apt-key sudo

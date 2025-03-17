@@ -55,7 +55,7 @@ exec_sql() {
     echo "$@" | sqlite3 -separator , "$DBFILE"
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_commands sqlite3
     check_db_file
@@ -72,4 +72,5 @@ main() {
     echo "Fastladder pin cleanup completed successfully."
 }
 
+# Execute main function
 main "$@"

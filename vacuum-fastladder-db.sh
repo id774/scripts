@@ -85,7 +85,7 @@ vacuum_and_optimize_db() {
     sqlite3 fastladder.db .dump | sqlite3 new.db
 }
 
-# Main function
+# Main function to execute the script
 main() {
     check_commands sqlite3 rm
     check_database

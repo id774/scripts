@@ -73,7 +73,7 @@ check_additional_sshd() {
     fi
 }
 
-# Main function
+# Main function to execute the script
 main() {
     check_commands grep
     check_main_sshd

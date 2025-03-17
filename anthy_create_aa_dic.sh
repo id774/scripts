@@ -69,7 +69,7 @@ create_dictionary() {
     echo "Dictionary created."
 }
 
-# Main function
+# Main function to execute the script
 main() {
     check_system
     check_scripts

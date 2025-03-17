@@ -49,7 +49,7 @@ vacuum_safari_cache() {
     fi
 }
 
-# Main function
+# Main function to execute the script
 main() {
     check_sqlite3
     vacuum_safari_cache
