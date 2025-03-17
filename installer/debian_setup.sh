@@ -163,7 +163,7 @@ setup_munin() {
 }
 
 setup_securetty() {
-    "$SCRIPTS/securetty.sh"
+    "$SCRIPTS/installer/securetty.sh"
 }
 
 # Set permissions for /usr/src
