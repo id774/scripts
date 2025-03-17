@@ -21,6 +21,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.2 2025-03-17
+#       Encapsulated all logic into functions and introduced main function.
 #  v2.1 2025-01-02
 #       Improved the "Running:" message to display the full absolute path
 #       of the target subdirectory for better clarity.
@@ -94,11 +96,6 @@
 #
 ########################################################################
 
-# Define a function to trim and ignore comments
-trim_and_ignore_comments() {
-    echo "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^#'
-}
-
 show_help() {
     cat << EOF
 Usage: ${0##*/} [--reset] [--no-sync] [--account ACCOUNT_NAME] [--help]
@@ -146,31 +143,33 @@ Error Conditions:
 EOF
 }
 
-# Determine the script's directory
-SCRIPT_DIR=$(dirname "$0")
+load_and_validate_config() {
+    # Determine the script's directory
+    SCRIPT_DIR=$(dirname "$0")
 
-# Load configuration from a .conf file
-CONF_FILE="$SCRIPT_DIR/etc/insta_update.conf"
-if [ ! -f "$CONF_FILE" ]; then
-    CONF_FILE="$SCRIPT_DIR/../etc/insta_update.conf"
+    # Load configuration from a .conf file
+    CONF_FILE="$SCRIPT_DIR/etc/insta_update.conf"
     if [ ! -f "$CONF_FILE" ]; then
-        echo "Error: Configuration file not found." >&2
-        exit 1
+        CONF_FILE="$SCRIPT_DIR/../etc/insta_update.conf"
+        if [ ! -f "$CONF_FILE" ]; then
+            echo "Error: Configuration file not found." >&2
+            exit 1
+        fi
     fi
-fi
-. "$CONF_FILE"
+    . "$CONF_FILE"
 
-# Check if necessary variables are set
-if [ -z "$PYTHON_BIN" ] || [ -z "$DOWNLOADER_SCRIPT" ] || [ -z "$SYNC_SCRIPT" ] || [ -z "$TARGET_DIR" ]; then
-    echo "Error: One or more configuration variables are not set. Please check your insta_update.conf." >&2
-    exit 3
-fi
+    # Check if necessary variables are set
+    if [ -z "$PYTHON_BIN" ] || [ -z "$DOWNLOADER_SCRIPT" ] || [ -z "$SYNC_SCRIPT" ] || [ -z "$TARGET_DIR" ]; then
+        echo "Error: One or more configuration variables are not set. Please check your insta_update.conf." >&2
+        exit 3
+    fi
 
-# Check if specified scripts and target directory exist and are executable
-if [ ! -x "$PYTHON_BIN" ] || [ ! -f "$DOWNLOADER_SCRIPT" ] || [ ! -x "$DOWNLOADER_SCRIPT" ] || [ ! -f "$SYNC_SCRIPT" ] || [ ! -x "$SYNC_SCRIPT" ] || [ ! -d "$TARGET_DIR" ]; then
-    echo "Error: Specified scripts or target directory do not exist or are not executable." >&2
-    exit 4
-fi
+    # Check if specified scripts and target directory exist and are executable
+    if [ ! -x "$PYTHON_BIN" ] || [ ! -f "$DOWNLOADER_SCRIPT" ] || [ ! -x "$DOWNLOADER_SCRIPT" ] || [ ! -f "$SYNC_SCRIPT" ] || [ ! -x "$SYNC_SCRIPT" ] || [ ! -d "$TARGET_DIR" ]; then
+        echo "Error: Specified scripts or target directory do not exist or are not executable." >&2
+        exit 4
+    fi
+}
 
 # Check for required commands
 check_commands() {
@@ -185,47 +184,51 @@ check_commands() {
     done
 }
 
-# Ensure necessary commands are available
-check_commands mv mkdir rm grep sed
+# Define a function to trim and ignore comments
+trim_and_ignore_comments() {
+    echo "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^#'
+}
 
-RESET=false
-NO_SYNC=false
-ACCOUNT_SPECIFIED=""
-EXCLUDE_LIST="$TARGET_DIR/exclude_accounts.txt"
-INCLUDE_LIST="$TARGET_DIR/include_accounts.txt"
+parse_options() {
+    RESET=false
+    NO_SYNC=false
+    ACCOUNT_SPECIFIED=""
+    EXCLUDE_LIST="$TARGET_DIR/exclude_accounts.txt"
+    INCLUDE_LIST="$TARGET_DIR/include_accounts.txt"
 
-# Parse options
-while [ $# -gt 0 ]; do
-    case $1 in
-        --reset)
-            RESET=true
-            shift
-            ;;
-        --no-sync|-n)
-            NO_SYNC=true
-            shift
-            ;;
-        --account|-a)
-            if [ -n "$2" ]; then
-                # Remove trailing slash, if any
-                ACCOUNT_SPECIFIED=$(echo "$2" | sed 's:[/\\]*$::')
-                shift 2
-            else
-                echo "Error: --account option requires a value." >&2
+    # Parse options
+    while [ $# -gt 0 ]; do
+        case $1 in
+            --reset)
+                RESET=true
+                shift
+                ;;
+            --no-sync|-n)
+                NO_SYNC=true
+                shift
+                ;;
+            --account|-a)
+                if [ -n "$2" ]; then
+                    # Remove trailing slash, if any
+                    ACCOUNT_SPECIFIED=$(echo "$2" | sed 's:[/\\]*$::')
+                    shift 2
+                else
+                    echo "Error: --account option requires a value." >&2
+                    exit 2
+                fi
+                ;;
+            --help|-h)
+                show_help
+                exit 0
+                ;;
+            *)
+                # Unknown option
+                echo "Error: Unknown option $1" >&2
                 exit 2
-            fi
-            ;;
-        --help|-h)
-            show_help
-            exit 0
-            ;;
-        *)
-            # Unknown option
-            echo "Error: Unknown option $1" >&2
-            exit 2
-            ;;
-    esac
-done
+                ;;
+        esac
+    done
+}
 
 update_content() {
     subdir="$1"
@@ -255,7 +258,7 @@ update_content() {
 }
 
 should_process() {
-    local subdir_name=$(basename "$1")
+    subdir_name=$(basename "$1")
 
     # If an account is specified in the command line, process only that account
     if [ -n "$ACCOUNT_SPECIFIED" ]; then
@@ -290,28 +293,44 @@ should_process() {
     return 0  # Default to process if no include list is provided and no account is specified
 }
 
-cd "$TARGET_DIR" || exit
+# Function to change to the target directory
+change_to_target_dir() {
+    cd "$TARGET_DIR" || exit
+}
 
-# Check if include_accounts.txt exists and process in the order listed
-if [ -n "$ACCOUNT_SPECIFIED" ]; then
-    subdir="${ACCOUNT_SPECIFIED}/"
-    if [ -d "$subdir" ] && should_process "$subdir"; then
-        update_content "$subdir"
-    fi
-elif [ -f "$INCLUDE_LIST" ]; then
-    while IFS= read -r account; do
-        account=$(trim_and_ignore_comments "$account")
-        if [ -n "$account" ]; then
-            subdir="${account}/"
-            if [ -d "$subdir" ] && should_process "$subdir"; then
-                update_content "$subdir"
-            fi
-        fi
-    done < "$INCLUDE_LIST"
-else
-    for subdir in */ ; do
+main() {
+    load_and_validate_config
+
+    # Ensure necessary commands are available
+    check_commands mv mkdir rm grep sed
+
+    parse_options "$@"
+    change_to_target_dir
+
+    # Check if include_accounts.txt exists and process in the order listed
+    if [ -n "$ACCOUNT_SPECIFIED" ]; then
+        subdir="${ACCOUNT_SPECIFIED}/"
         if [ -d "$subdir" ] && should_process "$subdir"; then
             update_content "$subdir"
         fi
-    done
-fi
+    elif [ -f "$INCLUDE_LIST" ]; then
+        while IFS= read -r account; do
+            account=$(trim_and_ignore_comments "$account")
+            if [ -n "$account" ]; then
+                subdir="${account}/"
+                if [ -d "$subdir" ] && should_process "$subdir"; then
+                    update_content "$subdir"
+                fi
+            fi
+        done < "$INCLUDE_LIST"
+    else
+        for subdir in */ ; do
+            if [ -d "$subdir" ] && should_process "$subdir"; then
+                update_content "$subdir"
+            fi
+        done
+    fi
+}
+
+# Execute main function
+main "$@"
