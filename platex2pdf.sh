@@ -16,6 +16,7 @@
 #  Version History:
 #  v1.4 2025-03-17
 #       Encapsulated logic into functions and introduced main function.
+#       Added file existence check before processing.
 #  v1.3 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.2 2024-01-23
@@ -68,6 +69,11 @@ detect_latex_engine() {
 
 # Function to convert LaTeX to PDF
 convert_to_pdf() {
+    if [ ! -f "$1" ]; then
+        echo "Error: File '$1' does not exist." >&2
+        exit 2
+    fi
+
     dvi_file=$(basename "$1" ".tex")
     kanji_opt=$(detect_encoding "$1")
     latex_engine=$(detect_latex_engine "$1")
