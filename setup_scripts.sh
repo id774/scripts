@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-03-17
+#       Encapsulated all logic in functions and introduced main function.
 #  v1.4 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.3 2024-01-07
@@ -39,13 +41,7 @@
 #
 ########################################################################
 
-# Check if SCRIPTS variable is set
-if [ -z "$SCRIPTS" ]; then
-    echo "Error: SCRIPTS environment variable is not set." >&2
-    echo "Please set the SCRIPTS variable to the path of your script collection." >&2
-    exit 1
-fi
-
+# Function to check if required commands exist
 check_commands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
@@ -58,12 +54,29 @@ check_commands() {
     done
 }
 
-# Check if necessary commands are available
-check_commands chmod find
+# Function to validate the SCRIPTS environment variable
+check_scripts() {
+    if [ -z "$SCRIPTS" ]; then
+        echo "Error: SCRIPTS environment variable is not set." >&2
+        echo "Please set the SCRIPTS variable to the path of your script collection." >&2
+        exit 1
+    fi
+}
 
-# Set permissions for all files in the script collection
-chmod -R u+rw,g+r,g-w,o+r,o-w "$SCRIPTS"/*
+# Function to set file permissions
+set_permissions() {
+    chmod -R u+rw,g+r,g-w,o+r,o-w "$SCRIPTS"/*
 
-# Set execute permissions for script files
-find "$SCRIPTS"/ -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+    # Set execute permissions for script files
+    find "$SCRIPTS"/ -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+}
 
+# Main function
+main() {
+    check_scripts
+    check_commands chmod find
+    set_permissions
+}
+
+# Execute main function
+main "$@"
