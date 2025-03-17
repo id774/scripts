@@ -29,7 +29,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.9 2025-03-13
+#  v1.9 2025-03-17
+#       Encapsulated all logic into functions and introduced main function.
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.8 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
@@ -62,14 +63,6 @@
 #
 ########################################################################
 
-# Check if the user has sudo privileges (password may be required)
-check_sudo() {
-    if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
-        exit 1
-    fi
-}
-
 # Check for required commands
 check_commands() {
     for cmd in "$@"; do
@@ -83,42 +76,37 @@ check_commands() {
     done
 }
 
-# Ensure necessary commands are available
-check_commands grep sudo cp chown
-
 # Define a function to check key SSHD configuration parameters
 check_sshd_config() {
-  # Display non-commented SSHD configuration parameters for Port, PermitRootLogin,
-  # PasswordAuthentication, and ChallengeResponseAuthentication
-  grep Port "$1" | grep -v "#"
-  grep PermitRootLogin "$1" | grep -v "#"
-  grep PasswordAuthentication "$1" | grep -v "#"
-  grep ChallengeResponseAuthentication "$1" | grep -v "#"
-  grep AddressFamily "$1" | grep -v "#"
-  grep AllowUsers "$1" | grep -v "#"
+    if [ -f "$1" ]; then
+        grep -E "^(Port|PermitRootLogin|PasswordAuthentication|ChallengeResponseAuthentication|AddressFamily|AllowUsers)" "$1" | grep -v "#"
+    else
+        echo "Error: Configuration file '$1' not found." >&2
+    fi
 }
 
-# Detect the operating system
-os=$(uname -s)
+# Function to handle main SSHD configuration checks
+check_main_sshd() {
+    sshd_config_file="/etc/ssh/sshd_config"
+    check_sshd_config "$sshd_config_file"
+}
 
-# Check and handle macOS specific configuration
-if [ "$os" = "Darwin" ]; then
-  # Copy the default sshd configuration file if it does not exist
-  sshd_config_file="/etc/ssh/sshd_config.d/000-sshdconfig.conf"
-  if [ ! -f "$sshd_config_file" ]; then
-    check_sudo
-    sudo cp -v "$SCRIPTS/etc/sshd_config.d/000-sshdconfig.conf" "$sshd_config_file"
-    sudo chown root:wheel "$sshd_config_file"
-  fi
-  # Display the sshd configuration file
-  check_sshd_config "$sshd_config_file"
-  sshd_config_file="/etc/ssh/sshd_config"
-  check_sshd_config "$sshd_config_file"
-else
-  # For Linux, display key configuration parameters from the sshd_config
-  sshd_config_file="/etc/ssh/sshd_config"
-  check_sshd_config "$sshd_config_file"
-fi
+# Function to handle additional SSHD configuration checks
+check_additional_sshd() {
+    sshd_config_file="/etc/ssh/sshd_config.d/000-sshdconfig.conf"
+    if [ -f "$sshd_config_file" ]; then
+        check_sshd_config "$sshd_config_file"
+    fi
+}
 
-exit 0
+# Main function
+main() {
+    # Ensure necessary commands are available
+    check_commands grep
 
+    check_main_sshd
+    check_additional_sshd
+}
+
+# Execute main function
+main "$@"
