@@ -177,14 +177,6 @@ configure_sysctl() {
     "$SCRIPTS/installer/configure_sysctl.sh" --apply
 }
 
-configure_sysstat() {
-    sudo dpkg-reconfigure sysstat
-}
-
-configure_hddtemp() {
-    sudo dpkg-reconfigure hddtemp
-}
-
 # Erase history files
 erase_history() {
     test -f "$HOME/.bash_history" && sudo rm "$HOME/.bash_history"
@@ -196,7 +188,7 @@ erase_history() {
 main() {
     check_system
     setup_environment
-    check_commands sudo vi zsh git cut getent dpkg-reconfigure
+    check_commands sudo vi zsh git cut getent
     check_sudo
     set_zsh_to_default
     install_dot_files
@@ -210,8 +202,6 @@ main() {
     setup_securetty
     permission_for_src
     configure_sysctl
-    configure_sysstat
-    configure_hddtemp
     erase_history
 }
 
