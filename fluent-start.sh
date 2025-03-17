@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.5 2025-03-17
+#       Encapsulated all logic into functions and introduced main function.
 #  v0.4 2025-02-26
 #       Improved POSIX compatibility by replacing `test -n` with `[ -n ]`.
 #       Added error handling for missing Fluentd and Fluent-Cat commands.
@@ -31,45 +33,65 @@
 #
 ########################################################################
 
-# Determine Fluentd and Fluent-Cat paths
-if [ -n "$1" ]; then
-    FLUENTD=$1/bin/fluentd
-    FLUENT_CAT=$1/bin/fluent-cat
-else
-    FLUENTD=$(command -v fluentd)
-    FLUENT_CAT=$(command -v fluent-cat)
-fi
+# Function to determine Fluentd and Fluent-Cat paths
+determine_fluentd_paths() {
+    if [ -n "$1" ]; then
+        FLUENTD=$1/bin/fluentd
+        FLUENT_CAT=$1/bin/fluent-cat
+    else
+        FLUENTD=$(command -v fluentd)
+        FLUENT_CAT=$(command -v fluent-cat)
+    fi
+}
 
-# Check if Fluentd and Fluent-Cat exist
-if [ -z "$FLUENTD" ]; then
-    echo "Error: Fluentd not found. Please specify the path." >&2
-    exit 1
-fi
-if [ -z "$FLUENT_CAT" ]; then
-    echo "Error: Fluent-Cat not found. Please specify the path." >&2
-    exit 1
-fi
-
-# Determine configuration path
-if [ -n "$2" ]; then
-    FLUENT_CONF=$2
-else
-    FLUENT_CONF=~/.fluent
-fi
-
-# Ensure Fluentd and Fluent-Cat exist before execution
-for cmd in "$FLUENTD" "$FLUENT_CAT"; do
-    if [ ! -x "$cmd" ]; then
-        echo "Error: Command not found or not executable: $cmd" >&2
+# Function to check if Fluentd and Fluent-Cat exist
+check_fluentd_commands() {
+    if [ -z "$FLUENTD" ]; then
+        echo "Error: Fluentd not found. Please specify the path." >&2
         exit 1
     fi
-done
+    if [ -z "$FLUENT_CAT" ]; then
+        echo "Error: Fluent-Cat not found. Please specify the path." >&2
+        exit 1
+    fi
 
-# Setup Fluentd configuration if needed
-$FLUENTD --setup "$FLUENT_CONF"
+    # Ensure Fluentd and Fluent-Cat are executable
+    for cmd in "$FLUENTD" "$FLUENT_CAT"; do
+        if [ ! -x "$cmd" ]; then
+            echo "Error: Command not found or not executable: $cmd" >&2
+            exit 1
+        fi
+    done
+}
 
-# Start Fluentd
-$FLUENTD -c "$FLUENT_CONF/fluent.conf" "$3" &
+# Function to determine Fluentd configuration path
+determine_fluentd_config() {
+    if [ -n "$1" ]; then
+        FLUENT_CONF=$1
+    else
+        FLUENT_CONF=~/.fluent
+    fi
+}
 
-# Send test message
-echo '{"json":"message"}' | "$FLUENT_CAT" debug.test
+# Function to start Fluentd
+start_fluentd() {
+    $FLUENTD --setup "$FLUENT_CONF"
+    $FLUENTD -c "$FLUENT_CONF/fluent.conf" "$3" &
+}
+
+# Function to send test message
+send_test_message() {
+    echo '{"json":"message"}' | "$FLUENT_CAT" debug.test
+}
+
+# Main function
+main() {
+    determine_fluentd_paths "$1"
+    check_fluentd_commands
+    determine_fluentd_config "$2"
+    start_fluentd "$3"
+    send_test_message
+}
+
+# Execute main function
+main "$@"
