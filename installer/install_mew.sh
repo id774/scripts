@@ -121,7 +121,7 @@ install_mew() {
     rm -rf install_mew
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -141,4 +141,5 @@ main() {
     echo "Mew $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

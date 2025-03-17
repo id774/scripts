@@ -184,7 +184,7 @@ erase_history() {
     test -f "$HOME/.viminfo" && sudo rm "$HOME/.viminfo"
 }
 
-# Main operation function
+# Main function to execute the script
 main() {
     check_system
     setup_environment
@@ -205,5 +205,5 @@ main() {
     erase_history
 }
 
-# Execute main operations
+# Execute main function
 main "$@"

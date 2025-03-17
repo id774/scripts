@@ -72,6 +72,7 @@ check_sudo() {
     fi
 }
 
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -117,4 +118,5 @@ main() {
     echo "Rsync backup setup completed successfully."
 }
 
+# Execute main function
 main "$@"

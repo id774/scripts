@@ -126,7 +126,7 @@ save_sources() {
     sudo chown -R root:root /usr/local/src/mecab
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands curl wget tar make sudo
@@ -137,4 +137,5 @@ main() {
     echo "MeCab installation completed successfully."
 }
 
+# Execute main function
 main "$@"

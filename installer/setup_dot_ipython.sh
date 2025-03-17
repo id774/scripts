@@ -96,7 +96,7 @@ copy_dotipython() {
     cp ${OPTIONS} "${SCRIPTS}/dot_files/dot_zshrc_local" "${HOME}/.zshrc_local"
 }
 
-# Main function to orchestrate setup
+# Main function to execute the script
 main() {
     check_scripts
     check_ipython

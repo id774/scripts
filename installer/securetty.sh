@@ -75,7 +75,7 @@ clear_securetty() {
     fi
 }
 
-# Main function
+# Main function to execute the script
 main() {
     check_system
     check_commands sudo sh

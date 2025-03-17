@@ -134,7 +134,7 @@ install_crf_and_cabocha() {
     rm -rf install_cabocha
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands curl wget make sudo apt-get tar
@@ -145,4 +145,5 @@ main() {
     echo "CaboCha $CABOCHA_VERSION and CRF++ $CRF_VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

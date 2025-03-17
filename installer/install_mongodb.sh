@@ -170,7 +170,7 @@ install_main() {
     [ -f /etc/debian_version ] && setup_debian_service
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system

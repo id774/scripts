@@ -115,7 +115,7 @@ install_go() {
     go version
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -128,4 +128,5 @@ main() {
     echo "Go $VERSION installed successfully at $TARGET."
 }
 
+# Execute main function
 main "$@"

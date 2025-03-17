@@ -79,7 +79,7 @@ install_gdm_themes() {
     rm gdmthemes.tar.gz
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands curl wget sudo tar
@@ -89,4 +89,5 @@ main() {
     echo "GDM themes installation completed successfully."
 }
 
+# Execute main function
 main "$@"

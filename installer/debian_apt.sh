@@ -163,7 +163,7 @@ optional_packages() {
               libgpcl-dev
 }
 
-# Main operation
+# Main function to execute the script
 main() {
     check_environment
     check_sudo
@@ -184,4 +184,5 @@ main() {
     # Further package groups can be added here as needed
 }
 
+# Execute main function
 main "$@"

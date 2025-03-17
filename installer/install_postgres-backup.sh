@@ -90,7 +90,7 @@ install_script() {
     sudo chmod 750 "$TARGET/pg_dump"
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands sudo mkdir cp chown chmod
@@ -101,4 +101,5 @@ main() {
     echo "PostgreSQL backup setup completed successfully."
 }
 
+# Execute main function
 main "$@"

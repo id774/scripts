@@ -108,7 +108,7 @@ install_clamscan() {
     sudo chown root:adm /etc/logrotate.d/clamscan
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands sudo cp chmod chown mkdir touch
@@ -118,4 +118,5 @@ main() {
     echo "ClamAV AutoScan setup completed successfully."
 }
 
+# Execute main function
 main "$@"

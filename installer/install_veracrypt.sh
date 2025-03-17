@@ -160,7 +160,7 @@ install_veracrypt() {
     rm -rf install_veracrypt
 }
 
-# Main function
+# Main function to execute the script
 main() {
     if [ "$1" = "-h" ]; then
         echo "Usage: ./install_veracrypt.sh [OPTION]"
@@ -174,4 +174,5 @@ main() {
     install_veracrypt "$@"
 }
 
+# Execute main function
 main "$@"

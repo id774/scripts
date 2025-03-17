@@ -203,7 +203,7 @@ install_libs() {
     fi
 }
 
-# Main function to coordinate environment setup and library installation
+# Main function to execute the script
 main() {
     echo "Starting Python library installation..."
     setup_environment "$1"
@@ -211,5 +211,5 @@ main() {
     echo "All tasks completed successfully."
 }
 
-# Start the script with the provided argument (if any)
-main "$1"
+# Execute main function
+main "$@"

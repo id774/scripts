@@ -81,7 +81,7 @@ edit_aptconf() {
     echo "Please edit /etc/apt/apt.conf"
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands sudo cp chmod chown
@@ -94,4 +94,5 @@ main() {
     echo "APT configuration setup completed successfully."
 }
 
+# Execute main function
 main "$@"

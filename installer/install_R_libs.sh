@@ -69,7 +69,7 @@ install_R_libs() {
     echo "R library installation completed."
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_R
     check_scripts
@@ -78,4 +78,5 @@ main() {
     install_R_libs
 }
 
+# Execute main function
 main "$@"

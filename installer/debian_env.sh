@@ -121,7 +121,7 @@ setup_tune2fs() {
     "$SCRIPTS/installer/setup_tune2fs.sh"
 }
 
-# Main operation function
+# Main function to execute the script
 main() {
     check_environment
     setup_environment
@@ -135,5 +135,5 @@ main() {
     setup_tune2fs
 }
 
-# Execute main operations
+# Execute main function
 main "$@"

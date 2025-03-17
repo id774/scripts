@@ -121,7 +121,7 @@ install_stable() {
     $SUDO rm -rf install_gauche
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands curl git make sudo wget tar
@@ -138,4 +138,5 @@ main() {
     echo "Gauche installation completed successfully."
 }
 
+# Execute main function
 main "$@"

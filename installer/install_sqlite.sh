@@ -110,7 +110,7 @@ install_sqlite() {
     rm -rf install_sqlite
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -124,4 +124,5 @@ main() {
     echo "SQLite $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

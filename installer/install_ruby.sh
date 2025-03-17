@@ -132,7 +132,7 @@ install_ruby() {
     rm -rf install_ruby
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_commands curl sudo make tar mkdir cp chown
@@ -145,4 +145,5 @@ main() {
     echo "Ruby $RUBY_VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

@@ -109,7 +109,7 @@ install_talib() {
     rm -rf install_talib
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -123,4 +123,5 @@ main() {
     echo "TA-Lib $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

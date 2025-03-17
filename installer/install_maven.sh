@@ -101,7 +101,7 @@ install_maven() {
     rm -rf install_maven
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -115,4 +115,5 @@ main() {
     echo "Apache Maven $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

@@ -111,7 +111,7 @@ reinstall_homebrew() {
     echo "Homebrew reinstallation completed successfully."
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands curl sudo rm bash
@@ -122,4 +122,5 @@ main() {
     reinstall_homebrew
 }
 
+# Execute main function
 main "$@"

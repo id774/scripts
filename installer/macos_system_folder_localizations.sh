@@ -75,7 +75,7 @@ disable_localization() {
     echo "Folder localization disabled."
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     case "$1" in
@@ -94,4 +94,5 @@ main() {
     esac
 }
 
+# Execute main function
 main "$@"

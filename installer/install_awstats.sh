@@ -106,7 +106,7 @@ restart_services() {
     sudo -u www-data /usr/lib/cgi-bin/awstats.pl -config=awstats -update
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands sudo apt-get chmod chown vi systemctl apache2
@@ -119,4 +119,5 @@ main() {
     echo "AWStats installation and configuration completed successfully."
 }
 
+# Execute main function
 main "$@"

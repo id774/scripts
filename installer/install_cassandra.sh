@@ -111,7 +111,7 @@ install_cassandra() {
     [ -n "$2" ] || mkdir_lib_and_log
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands curl wget sudo tar
@@ -121,4 +121,5 @@ main() {
     echo "Apache Cassandra $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

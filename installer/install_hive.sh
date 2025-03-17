@@ -105,7 +105,7 @@ install_hive() {
     rm -rf install_hive
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -119,4 +119,5 @@ main() {
     echo "Apache Hive $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

@@ -115,7 +115,7 @@ install_ipmsg() {
     rm -rf install_ipmsg
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -129,4 +129,5 @@ main() {
     echo "IP Messenger $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

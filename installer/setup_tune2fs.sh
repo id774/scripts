@@ -126,8 +126,8 @@ set_lvm_logvol() {
     done
 }
 
-# Main function to apply all tune2fs settings
-setup_tune2fs() {
+# Main function to execute the script
+main() {
     echo "Starting tune2fs configuration..."
     check_system
     check_commands sudo tune2fs hostname
@@ -142,5 +142,5 @@ setup_tune2fs() {
     echo "tune2fs configuration completed."
 }
 
-# Execute main operations
-setup_tune2fs
+# Execute main function
+main "$@"

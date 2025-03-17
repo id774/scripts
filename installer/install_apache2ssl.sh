@@ -102,7 +102,7 @@ configure_apache() {
     sudo systemctl reload apache2 || sudo /etc/init.d/apache2 reload
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands sudo systemctl apache2 make-ssl-cert a2enmod a2ensite a2dissite
@@ -116,4 +116,5 @@ main() {
     echo "Apache2 SSL setup completed successfully."
 }
 
+# Execute main function
 main "$@"

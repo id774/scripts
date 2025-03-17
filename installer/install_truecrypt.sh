@@ -178,7 +178,7 @@ install_truecrypt() {
     rm -rf install_truecrypt
 }
 
-# Main function
+# Main function to execute the script
 main() {
     if [ "$1" = "-h" ]; then
         echo "Usage: ./install_truecrypt.sh [VERSION] [OPTION]"
@@ -192,4 +192,5 @@ main() {
     install_truecrypt "$@"
 }
 
+# Execute main function
 main "$@"

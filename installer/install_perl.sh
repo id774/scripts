@@ -143,7 +143,7 @@ install_perl() {
     perl -V
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -157,4 +157,5 @@ main() {
     echo "Perl $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

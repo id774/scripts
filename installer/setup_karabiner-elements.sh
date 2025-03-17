@@ -73,11 +73,12 @@ setup_karabiner() {
     echo "Karabiner configuration successfully updated."
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_scripts
     setup_karabiner
 }
 
+# Execute main function
 main "$@"

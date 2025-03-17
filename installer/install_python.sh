@@ -151,7 +151,7 @@ install_python() {
     $SUDO rm -rf install_python
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -165,4 +165,5 @@ main() {
     echo "Python $1 installed successfully."
 }
 
+# Execute main function
 main "$@"

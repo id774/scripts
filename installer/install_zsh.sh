@@ -128,7 +128,7 @@ install_zsh() {
     rm -rf install_zsh
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -143,4 +143,5 @@ main() {
     echo "Zsh $ZSH_VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

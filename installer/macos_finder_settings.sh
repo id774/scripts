@@ -62,10 +62,11 @@ configure_finder_settings() {
     echo "macOS Finder settings applied successfully."
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     configure_finder_settings
 }
 
+# Execute main function
 main "$@"

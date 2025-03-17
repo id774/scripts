@@ -113,7 +113,7 @@ install_paco() {
     rm -rf install_paco
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -127,4 +127,5 @@ main() {
     echo "paco $PACO_VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

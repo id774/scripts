@@ -76,7 +76,7 @@ install_jupyter_theme() {
     echo "Jupyter theme configuration applied. If further customization is needed, edit: $HOME/.jupyter/custom/custom.css"
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     setup_environment "$@"
     check_commands "$PIP" "$JUPYTER" "$JT"
@@ -84,4 +84,5 @@ main() {
     echo "Jupyter theme setup completed successfully."
 }
 
+# Execute main function
 main "$@"

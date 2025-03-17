@@ -273,7 +273,7 @@ install_gems() {
     $GEM list --local
 }
 
-# Main function to coordinate environment setup and gem installation
+# Main function to execute the script
 main() {
     echo "Starting Ruby gem installation..."
     setup_environment "$1"
@@ -281,5 +281,5 @@ main() {
     echo "All tasks completed successfully."
 }
 
-# Start the script with the provided argument (if any)
-main "$1"
+# Execute main function
+main "$@"

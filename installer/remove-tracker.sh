@@ -52,11 +52,39 @@
 #
 ########################################################################
 
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
+
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif ! [ -x "$(command -v "$cmd")" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
 # Initial checks and setup
 perform_initial_checks() {
     check_system
-    check_commands dpkg pgrep pkill apt systemctl
-    check_systemd
+    check_commands systemd dpkg pgrep pkill apt systemctl
     check_sudo
 }
 
@@ -150,7 +178,7 @@ parse_options() {
     shift $((OPTIND -1))
 }
 
-# Main execution block
+# Main function to execute the script
 main() {
     parse_options "$@"
     perform_initial_checks
@@ -162,4 +190,5 @@ main() {
     echo "Tracker has been completely removed and cleaned up."
 }
 
+# Execute main function
 main "$@"

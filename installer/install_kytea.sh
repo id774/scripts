@@ -136,7 +136,7 @@ install_kytea() {
     install_binding
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -149,4 +149,5 @@ main() {
     echo "KyTea $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

@@ -106,7 +106,7 @@ install_libyaml() {
     rm -rf install_libyaml
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -120,4 +120,5 @@ main() {
     echo "libyaml $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

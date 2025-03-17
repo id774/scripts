@@ -102,11 +102,14 @@ restart_services() {
     sudo systemctl restart apache2
 }
 
-# Main operation function
+# Main function to execute the script
 main() {
+    # Perform initial checks
     check_system
     check_scripts
     check_commands sudo apt-get cp chown chmod htpasswd systemctl
+
+    # Run the installation process
     install_munin
     configure_munin
     configure_authentication
@@ -115,5 +118,5 @@ main() {
     echo "Munin installation and configuration completed successfully."
 }
 
-# Execute main operations
+# Execute main function
 main "$@"

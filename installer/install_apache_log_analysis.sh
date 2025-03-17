@@ -128,7 +128,7 @@ setup_log_rotation() {
     sudo chown root:root /etc/logrotate.d/apache_summary
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands sudo cp chmod chown mkdir touch
@@ -145,4 +145,5 @@ main() {
     echo "Apache log analysis setup completed successfully."
 }
 
+# Execute main function
 main "$@"

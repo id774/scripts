@@ -68,7 +68,7 @@ check_homebrew() {
     fi
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_network
@@ -102,4 +102,5 @@ main() {
     echo "All specified packages have been successfully installed."
 }
 
+# Execute main function
 main "$@"

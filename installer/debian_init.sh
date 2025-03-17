@@ -89,8 +89,10 @@ setup_environment() {
     fi
 }
 
-# Main operation function
+# Main function to execute the script
 main() {
+    # Check if the system is Debian-based before proceeding
+    check_debian_based
     setup_environment
     check_commands awk tr
 
@@ -108,8 +110,5 @@ main() {
     #"$SCRIPTS/installer/debian_desktop_setup.sh"
 }
 
-# Check if the system is Debian-based before proceeding
-check_debian_based
-
-# Execute main operations
+# Execute main function
 main "$@"

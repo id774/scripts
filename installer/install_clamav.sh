@@ -107,7 +107,7 @@ install_clamav() {
     rm -rf install_clamav/
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands git make sudo vi
@@ -117,4 +117,5 @@ main() {
     echo "ClamAV installation completed successfully."
 }
 
+# Execute main function
 main "$@"

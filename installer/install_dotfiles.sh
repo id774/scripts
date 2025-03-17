@@ -200,7 +200,8 @@ bulk_deploy() {
     deploy_dotfiles_to_others /var/lib/jenkins jenkins
 }
 
-install_dotfiles() {
+# Main function to execute the script
+main() {
     setup_environment "$1"
     bulk_deploy
     test -f "$HOME/.zshrc.zwc" && rm -f "$HOME/.zshrc.zwc"
@@ -213,4 +214,5 @@ install_dotfiles() {
     test -f "$HOME/.viminfo" && sudo chown "$USER" "$HOME/.viminfo"
 }
 
-install_dotfiles "$@"
+# Execute main function
+main "$@"

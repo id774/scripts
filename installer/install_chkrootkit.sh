@@ -64,7 +64,7 @@ check_sudo() {
     fi
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -99,4 +99,5 @@ main() {
     echo "chkrootkit setup completed successfully."
 }
 
+# Execute main function
 main "$@"

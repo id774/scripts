@@ -87,7 +87,7 @@ source_compile() {
     $SUDO "$PYTHON" setup.py install
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands python curl
@@ -97,4 +97,5 @@ main() {
     echo "CaboCha Python binding installed successfully."
 }
 
+# Execute main function
 main "$@"

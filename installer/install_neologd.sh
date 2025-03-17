@@ -68,7 +68,7 @@ install_neologd() {
     ./bin/install-mecab-ipadic-neologd
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands curl git
@@ -77,4 +77,5 @@ main() {
     echo "mecab-ipadic-neologd installation completed successfully."
 }
 
+# Execute main function
 main "$@"

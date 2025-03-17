@@ -109,7 +109,7 @@ install_resin() {
     rm -rf install_resin
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -123,4 +123,5 @@ main() {
     echo "Resin $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

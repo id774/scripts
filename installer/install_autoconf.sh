@@ -102,7 +102,7 @@ install_autoconf() {
     rm -rf install_autoconf
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -116,4 +116,5 @@ main() {
     echo "Autoconf $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

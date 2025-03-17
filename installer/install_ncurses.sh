@@ -121,7 +121,7 @@ install_ncurses() {
     rm -rf install_ncurses
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -134,4 +134,5 @@ main() {
     echo "ncurses $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

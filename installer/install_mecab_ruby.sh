@@ -87,7 +87,7 @@ source_compile() {
     $SUDO make install
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands curl ruby
@@ -97,4 +97,5 @@ main() {
     echo "MeCab Ruby binding installed successfully."
 }
 
+# Execute main function
 main "$@"

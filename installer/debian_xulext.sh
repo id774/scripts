@@ -85,7 +85,7 @@ xulext_packages() {
       xul-ext-webdeveloper
 }
 
-# Main operation function
+# Main function to execute the script
 main() {
     check_environment
     check_commands sudo apt-get dpkg-query grep
@@ -93,5 +93,5 @@ main() {
     echo "XUL extensions installation completed."
 }
 
-# Execute main operations
+# Execute main function
 main "$@"

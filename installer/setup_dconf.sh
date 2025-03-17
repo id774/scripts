@@ -82,7 +82,7 @@ setup_dconf_keys() {
     done
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands dconf tasksel
@@ -92,4 +92,5 @@ main() {
     echo "GNOME workspace keybindings successfully configured."
 }
 
+# Execute main function
 main "$@"

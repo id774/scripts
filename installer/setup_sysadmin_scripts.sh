@@ -160,7 +160,8 @@ install_sysadmin_scripts() {
     test -f /etc/debian_version && setup_debian_scripts
 }
 
-setup_sysadmin_scripts() {
+# Main function to execute the script
+main() {
     check_scripts
     check_sudo
     setup_environment $*
@@ -169,4 +170,5 @@ setup_sysadmin_scripts() {
     test "$1" = "install" && install_sysadmin_scripts
 }
 
-setup_sysadmin_scripts $*
+# Execute main function
+main "$@"

@@ -142,7 +142,7 @@ optional_packages() {
               vlc pidgin xpdf evince comix fbreader wireshark xtightvncviewer chromium chromium-l10n
 }
 
-# Main operation
+# Main function to execute the script
 main() {
     check_environment
     check_commands sudo dpkg-query grep tasksel
@@ -159,4 +159,5 @@ main() {
     optional_packages
 }
 
+# Execute main function
 main "$@"

@@ -86,7 +86,7 @@ make_and_install() {
     $SUDO "$PYTHON" setup.py install
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_system
     check_commands curl python
@@ -96,4 +96,5 @@ main() {
     echo "MeCab Python binding installed successfully."
 }
 
+# Execute main function
 main "$@"

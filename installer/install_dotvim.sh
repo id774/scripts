@@ -74,7 +74,7 @@ install_dotvim() {
     cp $OPTIONS "$SCRIPTS/dot_files/dot_vim"/* "$TARGET"/
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_commands cp mkdir vim
@@ -91,4 +91,5 @@ main() {
     echo "dot_vim configuration installed successfully at $TARGET."
 }
 
+# Execute main function
 main "$@"

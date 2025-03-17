@@ -142,7 +142,7 @@ install_des() {
     echo "DES installation completed."
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Check if -h is provided as an argument
     if [ "$1" = "-h" ]; then
@@ -161,4 +161,5 @@ main() {
     fi
 }
 
+# Execute main function
 main "$@"

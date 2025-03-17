@@ -106,7 +106,7 @@ install_m4() {
     rm -rf install_m4
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     # Perform initial checks
     check_system
@@ -120,4 +120,5 @@ main() {
     echo "M4 $VERSION installed successfully."
 }
 
+# Execute main function
 main "$@"

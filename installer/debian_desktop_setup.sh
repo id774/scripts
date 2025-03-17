@@ -104,7 +104,7 @@ restart_lightdm() {
     sudo systemctl restart lightdm || echo "Warning: Failed to restart LightDM." >&2
 }
 
-# Main operation function
+# Main function to execute the script
 main() {
     check_system
     check_commands sudo dpkg-query grep tee systemctl tasksel
@@ -115,5 +115,5 @@ main() {
     restart_lightdm
 }
 
-# Execute main operations
+# Execute main function
 main "$@"
