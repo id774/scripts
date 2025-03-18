@@ -15,6 +15,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.3  2025-03-19 - Improved code readability by standardizing function indentation.
+#                     Encapsulated script logic in a `main` function for better structure.
+#                     Ensured proper preservation of return codes by storing `$?` in a
+#                     variable before use.
 #  v2.2  2023-12-23 - Refactored for POSIX compliance. Replaced Bash-specific syntax
 #                     with POSIX standard commands and structures. Enhanced portability
 #                     and compatibility across different UNIX-like systems.
