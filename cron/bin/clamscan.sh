@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# clamav_autoscan.sh: Automated ClamAV Scan Script
+# clamscan.sh: Automated ClamAV Scan Script
 #
 #  Description:
 #  This script performs an automated ClamAV scan on specified directories.
@@ -32,7 +32,7 @@
 #
 #  Usage:
 #  Run this script to perform an automated ClamAV scan:
-#      ./clamav_autoscan.sh
+#      ./clamscan.sh
 #
 #  Requirements:
 #  - Must be executed on a system with `clamav` installed.

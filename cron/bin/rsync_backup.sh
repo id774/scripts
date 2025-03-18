@@ -1,5 +1,5 @@
 #!/bin/sh
-#
+
 ########################################################################
 # rsync_backup.sh: Backup and Syncing Removable Disk Script
 #
