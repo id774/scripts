@@ -21,6 +21,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-19
+#       Improved POSIX compliance, standardized redirections, and enhanced readability.
 #  v1.0 2024-12-09
 #       Initial release with logging, permission adjustments, and email reporting.
 #
@@ -41,34 +43,35 @@
 #
 ########################################################################
 
+
 LC_CTYPE=ja_JP.UTF-8
-JOBLOG=/var/log/sysadmin/fix-permissions.log
+JOBLOG="/var/log/sysadmin/fix-permissions.log"
 
-echo -n "*** $0: Job started on `/bin/hostname` at ">>$JOBLOG 2>&1
-date "+%Y/%m/%d %T">>$JOBLOG 2>&1
+echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
+date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
 
-echo "Setting permission for /opt/python, /opt/ruby">>$JOBLOG 2>&1
+echo "Setting permission for /opt/python, /opt/ruby" >> "$JOBLOG" 2>&1
 chown -R root:root /opt/python
 chown -R root:root /opt/ruby
-echo "Setting permission for /usr/local/etc, /usr/local/src">>$JOBLOG 2>&1
+echo "Setting permission for /usr/local/etc, /usr/local/src" >> "$JOBLOG" 2>&1
 chown -R root:root /usr/local/etc
 chown -R root:root /usr/local/src
 
-echo "Setting permission for /etc/cron.*">>$JOBLOG 2>&1
+echo "Setting permission for /etc/cron.*" >> "$JOBLOG" 2>&1
 chmod -R 744 /etc/cron.hourly/*
 chmod -R 744 /etc/cron.daily/*
 chmod -R 744 /etc/cron.weekly/*
 chmod -R 744 /etc/cron.monthly/*
 chmod -R 644 /etc/cron.d/*
 
-echo -n "*** $0: Job ended on `/bin/hostname` at ">>$JOBLOG 2>&1
-date "+%Y/%m/%d %T">>$JOBLOG 2>&1
-echo>>$JOBLOG 2>&1
+echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
+date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
+echo >> "$JOBLOG" 2>&1
 
-ADMIN_MAIL_ADDRESS=root
+ADMIN_MAIL_ADDRESS="root"
 case "$ADMIN_MAIL_ADDRESS" in
   *@*)
-    cat -v $JOBLOG | nkf -w | mail -s "[cron][`/bin/hostname`] Fixed Permissions Log" $ADMIN_MAIL_ADDRESS
+    [ -r "$JOBLOG" ] && cat -v "$JOBLOG" | nkf -w | mail -s "[cron][$(hostname)] Fixed Permissions Log" "$ADMIN_MAIL_ADDRESS"
     ;;
 esac
 
