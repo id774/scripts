@@ -1,22 +1,22 @@
 #!/bin/sh
 
 LC_CTYPE=ja_JP.UTF-8
-JOBLOG=/var/log/chkrootkit/chkrootkit.log
+JOBLOG="/var/log/chkrootkit/chkrootkit.log"
 
-echo -n "*** $0: Job started on `/bin/hostname` at ">>$JOBLOG 2>&1
-date "+%Y/%m/%d %T">>$JOBLOG 2>&1
+echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
+date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
 
-chkrootkit>>$JOBLOG 2>&1
+chkrootkit >> "$JOBLOG" 2>&1
 
-echo -n "*** $0: Job ended on `/bin/hostname` at ">>$JOBLOG 2>&1
-date "+%Y/%m/%d %T">>$JOBLOG 2>&1
-echo>>$JOBLOG 2>&1
+echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
+date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
+echo >> "$JOBLOG" 2>&1
 
-ADMIN_MAIL_ADDRESS=root
+ADMIN_MAIL_ADDRESS="root"
 case "$ADMIN_MAIL_ADDRESS" in
-  *@*)
-    grep "INFECTED" $JOBLOG && grep -v /sbin/init && (cat -v $JOBLOG | nkf -w | mail -s "[cron][`/bin/hostname`] Infected rootkit" $ADMIN_MAIL_ADDRESS)
-    ;;
+    *@*)
+        grep "INFECTED" "$JOBLOG" | grep -v "/sbin/init" && (cat -v "$JOBLOG" | nkf -w | mail -s "[cron][$(hostname)] Infected rootkit" "$ADMIN_MAIL_ADDRESS")
+        ;;
 esac
 
 exit 0
