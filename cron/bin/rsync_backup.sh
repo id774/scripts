@@ -136,7 +136,8 @@ rsync_disk2ssh_1() {
   else
     false
   fi
-  echo "Return code is $?"
+  RC=$?
+  echo "Return code is $RC"
 
   if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2" ]; then
     rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
@@ -144,7 +145,8 @@ rsync_disk2ssh_1() {
   else
     false
   fi
-  echo "Return code is $?"
+  RC=$?
+  echo "Return code is $RC"
 
   if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user3" ]; then
     rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
@@ -152,7 +154,8 @@ rsync_disk2ssh_1() {
   else
     false
   fi
-  echo "Return code is $?"
+  RC=$?
+  echo "Return code is $RC"
 }
 
 rsync_disk2ssh_2() {
@@ -164,7 +167,8 @@ rsync_disk2ssh_2() {
   else
     false
   fi
-  echo "Return code is $?"
+  RC=$?
+  echo "Return code is $RC"
 }
 
 rsync_disk2disk_1() {
@@ -176,7 +180,8 @@ rsync_disk2disk_1() {
   else
     false
   fi
-  echo "Return code is $?"
+  RC=$?
+  echo "Return code is $RC"
 
   if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user2" ]; then
     rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
@@ -184,7 +189,8 @@ rsync_disk2disk_1() {
   else
     false
   fi
-  echo "Return code is $?"
+  RC=$?
+  echo "Return code is $RC"
 
   if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user3" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user3" ]; then
     rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
@@ -192,7 +198,8 @@ rsync_disk2disk_1() {
   else
     false
   fi
-  echo "Return code is $?"
+  RC=$?
+  echo "Return code is $RC"
 }
 
 rsync_disk2disk_2() {
@@ -204,7 +211,8 @@ rsync_disk2disk_2() {
   else
     false
   fi
-  echo "Return code is $?"
+  RC=$?
+  echo "Return code is $RC"
 }
 
 # Main function to execute the script
