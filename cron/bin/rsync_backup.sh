@@ -48,171 +48,171 @@
 ########################################################################
 
 display_and_update_timestamp() {
-  if [ -f "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp" ]; then
-    ls -l "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
-  fi
-  touch "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
+    if [ -f "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp" ]; then
+        ls -l "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
+    fi
+    touch "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
 }
 
 version_info() {
-  if [ -x /usr/bin/truecrypt ]; then
-    /usr/bin/truecrypt -t --version
-  fi
-  if [ -x /usr/bin/veracrypt ]; then
-    /usr/bin/veracrypt -t --version
-  fi
+    if [ -x /usr/bin/truecrypt ]; then
+        /usr/bin/truecrypt -t --version
+    fi
+    if [ -x /usr/bin/veracrypt ]; then
+        /usr/bin/veracrypt -t --version
+    fi
 }
 
 smart_info() {
-  if [ -b /dev/$B_DEVICE ]; then
-    smartctl -a /dev/$B_DEVICE
-  fi
-  if [ -b /dev/$T_DEVICE ]; then
-    smartctl -a /dev/$T_DEVICE
-  fi
+    if [ -b /dev/$B_DEVICE ]; then
+        smartctl -a /dev/$B_DEVICE
+    fi
+    if [ -b /dev/$T_DEVICE ]; then
+        smartctl -a /dev/$T_DEVICE
+    fi
 }
 
 smart_check() {
-  if [ -b /dev/$T_DEVICE ]; then
-    if [ -f "$T_HOME/$T_MOUNT/$T_DEVICE/smart_longtest" ]; then
-      touch "$T_HOME/$T_MOUNT/$T_DEVICE/smart_longtest"
-      smartctl -t long /dev/$T_DEVICE
+    if [ -b /dev/$T_DEVICE ]; then
+        if [ -f "$T_HOME/$T_MOUNT/$T_DEVICE/smart_longtest" ]; then
+            touch "$T_HOME/$T_MOUNT/$T_DEVICE/smart_longtest"
+            smartctl -t long /dev/$T_DEVICE
+        else
+            touch "$T_HOME/$T_MOUNT/$T_DEVICE/smart_shorttest"
+            smartctl -t short /dev/$T_DEVICE
+        fi
     else
-      touch "$T_HOME/$T_MOUNT/$T_DEVICE/smart_shorttest"
-      smartctl -t short /dev/$T_DEVICE
+        echo "The device /dev/$T_DEVICE does not exist or is not a block device."
     fi
-  else
-    echo "The device /dev/$T_DEVICE does not exist or is not a block device."
-  fi
 }
 
 show_capacity_of_directories() {
-  if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ]; then
-    du -h --max-depth=2 "$B_HOME/$B_MOUNT/$B_DEVICE"
-  fi
+    if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ]; then
+        du -h --max-depth=2 "$B_HOME/$B_MOUNT/$B_DEVICE"
+    fi
 }
 
 cleanup() {
-  echo "Removing junk files in $B_HOME/$B_MOUNT/$B_DEVICE..."
-  echo "Removing ._* AppleDouble files..."
-  find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '._*' -exec rm -vf {} \;
-  echo "Removing .DS_Store files..."
-  find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '.DS_Store' -exec rm -vf {} \;
-  echo "Removing temporary Unix files ending with '.un~'..."
-  find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '.*.un~' -exec rm -vf {} \;
-  echo "Removing __pycache__ directories..."
-  find "$B_HOME/$B_MOUNT/$B_DEVICE" -type d -name '__pycache__' -exec rm -vrf {} \;
-  echo "Cleanup completed."
+    echo "Removing junk files in $B_HOME/$B_MOUNT/$B_DEVICE..."
+    echo "Removing ._* AppleDouble files..."
+    find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '._*' -exec rm -vf {} \;
+    echo "Removing .DS_Store files..."
+    find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '.DS_Store' -exec rm -vf {} \;
+    echo "Removing temporary Unix files ending with '.un~'..."
+    find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '.*.un~' -exec rm -vf {} \;
+    echo "Removing __pycache__ directories..."
+    find "$B_HOME/$B_MOUNT/$B_DEVICE" -type d -name '__pycache__' -exec rm -vrf {} \;
+    echo "Cleanup completed."
 }
 
 git_backup() {
-  if [ -f /root/local/git.tar.gz ]; then
-    rm /root/local/git.tar.gz
-  fi
-  rsync -avz --no-o --no-g --delete "$1"@"$2":/home/repo /root/local/
-  cd /root/local
-  tar czvf git.tar.gz repo/ > /dev/null
-  cp -v /root/local/git.tar.gz "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
-  cd
+    if [ -f /root/local/git.tar.gz ]; then
+        rm /root/local/git.tar.gz
+    fi
+    rsync -avz --no-o --no-g --delete "$1"@"$2":/home/repo /root/local/
+    cd /root/local
+    tar czvf git.tar.gz repo/ > /dev/null
+    cp -v /root/local/git.tar.gz "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
+    cd
 }
 
 github_backup() {
-  test -f /root/local/github.tar.gz && rm -f /root/local/github.tar.gz
-  test -d $B_HOME/local/github && tar czvf /root/local/github.tar.gz $B_HOME/local/github > /dev/null
-  du -h --max-depth=1 $B_HOME/local/github
-  du -h --max-depth=1 $B_HOME/local/git
+    test -f /root/local/github.tar.gz && rm -f /root/local/github.tar.gz
+    test -d $B_HOME/local/github && tar czvf /root/local/github.tar.gz $B_HOME/local/github > /dev/null
+    du -h --max-depth=1 $B_HOME/local/github
+    du -h --max-depth=1 $B_HOME/local/git
 
-  if [ -f /root/local/github.tar.gz ] && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git" ]; then
-    cp -v /root/local/github.tar.gz "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
-  fi
+    if [ -f /root/local/github.tar.gz ] && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git" ]; then
+        cp -v /root/local/github.tar.gz "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
+    fi
 }
 
 rsync_disk2ssh_1() {
-  echo -n "* Executing rsync_disk2ssh_1 $B_DEVICE -> $T_DEVICE of $T_HOST on "
-  date "+%Y/%m/%d %T"
-  if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user1" ]; then
-    rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
-    "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
-  else
-    false
-  fi
-  RC=$?
-  echo "Return code is $RC"
+    echo -n "* Executing rsync_disk2ssh_1 $B_DEVICE -> $T_DEVICE of $T_HOST on "
+    date "+%Y/%m/%d %T"
+    if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user1" ]; then
+        rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
+        "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
+    else
+        false
+    fi
+    RC=$?
+    echo "Return code is $RC"
 
-  if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2" ]; then
-    rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
-    "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
-  else
-    false
-  fi
-  RC=$?
-  echo "Return code is $RC"
+    if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2" ]; then
+        rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
+        "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
+    else
+        false
+    fi
+    RC=$?
+    echo "Return code is $RC"
 
-  if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user3" ]; then
-    rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
-    "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
-  else
-    false
-  fi
-  RC=$?
-  echo "Return code is $RC"
+    if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user3" ]; then
+        rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
+        "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
+    else
+        false
+    fi
+    RC=$?
+    echo "Return code is $RC"
 }
 
 rsync_disk2ssh_2() {
-  echo -n "* Executing rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST on "
-  date "+%Y/%m/%d %T"
-  if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ]; then
-    rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
-    "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
-  else
-    false
-  fi
-  RC=$?
-  echo "Return code is $RC"
+    echo -n "* Executing rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST on "
+    date "+%Y/%m/%d %T"
+    if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ]; then
+        rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
+        "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
+    else
+        false
+    fi
+    RC=$?
+    echo "Return code is $RC"
 }
 
 rsync_disk2disk_1() {
-  echo -n "* Executing rsync_disk2disk_1 $B_DEVICE -> $T_DEVICE on "
-  date "+%Y/%m/%d %T"
-  if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user1" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user1" ]; then
-    rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
-    "$T_HOME/$T_MOUNT/$T_DEVICE/"
-  else
-    false
-  fi
-  RC=$?
-  echo "Return code is $RC"
+    echo -n "* Executing rsync_disk2disk_1 $B_DEVICE -> $T_DEVICE on "
+    date "+%Y/%m/%d %T"
+    if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user1" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user1" ]; then
+        rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
+        "$T_HOME/$T_MOUNT/$T_DEVICE/"
+    else
+        false
+    fi
+    RC=$?
+    echo "Return code is $RC"
 
-  if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user2" ]; then
-    rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
-    "$T_HOME/$T_MOUNT/$T_DEVICE/"
-  else
-    false
-  fi
-  RC=$?
-  echo "Return code is $RC"
+    if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user2" ]; then
+        rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
+        "$T_HOME/$T_MOUNT/$T_DEVICE/"
+    else
+        false
+    fi
+    RC=$?
+    echo "Return code is $RC"
 
-  if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user3" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user3" ]; then
-    rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
-    "$T_HOME/$T_MOUNT/$T_DEVICE/"
-  else
-    false
-  fi
-  RC=$?
-  echo "Return code is $RC"
+    if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user3" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user3" ]; then
+        rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
+        "$T_HOME/$T_MOUNT/$T_DEVICE/"
+    else
+        false
+    fi
+    RC=$?
+    echo "Return code is $RC"
 }
 
 rsync_disk2disk_2() {
-  echo -n "* Executing rsync_disk2disk_2 $B_DEVICE -> $T_DEVICE on "
-  date "+%Y/%m/%d %T"
-  if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/largefiles" ]; then
-    rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
-    "$T_HOME/$T_MOUNT/$T_DEVICE/"
-  else
-    false
-  fi
-  RC=$?
-  echo "Return code is $RC"
+    echo -n "* Executing rsync_disk2disk_2 $B_DEVICE -> $T_DEVICE on "
+    date "+%Y/%m/%d %T"
+    if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/largefiles" ]; then
+        rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
+        "$T_HOME/$T_MOUNT/$T_DEVICE/"
+    else
+        false
+    fi
+    RC=$?
+    echo "Return code is $RC"
 }
 
 # Main function to execute the script
