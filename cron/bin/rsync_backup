@@ -1,31 +1,31 @@
 #!/bin/sh
 
 LC_CTYPE=ja_JP.UTF-8
-JOBLOG=/var/log/sysadmin/rsync_backup
-TRIGGER_FILE=/home/ubuntu/mnt/rsync_backup
+JOBLOG="/var/log/sysadmin/rsync_backup"
+TRIGGER_FILE="/home/ubuntu/mnt/rsync_backup"
 
 # trigger check
-test -f $TRIGGER_FILE && RSYNC_BACKUP_RUN=run
+[ -f "$TRIGGER_FILE" ] && RSYNC_BACKUP_RUN="run"
 
 case "$RSYNC_BACKUP_RUN" in
-  run)
-    echo -n "*** $0: Job started on `/bin/hostname` at ">>$JOBLOG 2>&1
-    date "+%Y/%m/%d %T">>$JOBLOG 2>&1
-    rm -f $TRIGGER_FILE
+    run)
+        echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
+        date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
+        rm -f "$TRIGGER_FILE"
 
-    test -x /root/bin/rsync_backup.sh && /root/bin/rsync_backup.sh>>$JOBLOG 2>&1;
+        [ -x "/root/bin/rsync_backup.sh" ] && /root/bin/rsync_backup.sh >> "$JOBLOG" 2>&1
 
-    echo -n "*** $0: Job ended on `/bin/hostname` at ">>$JOBLOG 2>&1
-    date "+%Y/%m/%d %T">>$JOBLOG 2>&1
-    echo>>$JOBLOG 2>&1
+        echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
+        date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
+        echo >> "$JOBLOG" 2>&1
 
-    ADMIN_MAIL_ADDRESS=root
-    case "$ADMIN_MAIL_ADDRESS" in
-      *@*)
-        test -r $JOBLOG && cat -v $JOBLOG | nkf -w | mail -s "[cron][`/bin/hostname`] Rsync Backup Log" $ADMIN_MAIL_ADDRESS
+        ADMIN_MAIL_ADDRESS="root"
+        case "$ADMIN_MAIL_ADDRESS" in
+            *@*)
+                [ -r "$JOBLOG" ] && cat -v "$JOBLOG" | nkf -w | mail -s "[cron][$(hostname)] Rsync Backup Log" "$ADMIN_MAIL_ADDRESS"
+                ;;
+        esac
         ;;
-    esac
-    ;;
 esac
 
 exit 0
