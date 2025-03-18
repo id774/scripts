@@ -55,6 +55,7 @@ chown -R root:root /usr/local/etc
 chown -R root:root /usr/local/src
 
 echo "Setting permission for /etc/cron.*">>$JOBLOG 2>&1
+chmod -R 744 /etc/cron.hourly/*
 chmod -R 744 /etc/cron.daily/*
 chmod -R 744 /etc/cron.weekly/*
 chmod -R 744 /etc/cron.monthly/*
