@@ -109,7 +109,7 @@ git_backup() {
   if [ -f /root/local/git.tar.gz ]; then
     rm /root/local/git.tar.gz
   fi
-  rsync -avz --no-o --no-g --delete $1@$2:/home/repo /root/local/
+  rsync -avz --no-o --no-g --delete "$1"@"$2":/home/repo /root/local/
   cd /root/local
   tar czvf git.tar.gz repo/ > /dev/null
   cp -v /root/local/git.tar.gz "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
