@@ -207,13 +207,18 @@ rsync_disk2disk_2() {
   echo "Return code is $?"
 }
 
-SCRIPT_DIR="$(cd "$(dirname "$0")" >/dev/null 2>&1 && pwd)"
+# Main function to execute the script
+main() {
+    SCRIPT_DIR="$(cd "$(dirname "$0")" >/dev/null 2>&1 && pwd)"
+    CONFIG_FILE="$SCRIPT_DIR/../etc/rsync_backup.conf"
 
-CONFIG_FILE="$SCRIPT_DIR/../etc/rsync_backup.conf"
+    if [ -f "$CONFIG_FILE" ]; then
+        . "$CONFIG_FILE"
+    else
+        echo "Configuration file not found: $CONFIG_FILE">&2
+        exit 99
+    fi
+}
 
-if [ -f "$CONFIG_FILE" ]; then
-    . "$CONFIG_FILE"
-else
-    echo "Configuration file not found: $CONFIG_FILE"
-    exit 99
-fi
+# Execute main function
+main "$@"
