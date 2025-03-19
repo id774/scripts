@@ -60,8 +60,11 @@ setup_environment() {
     PIP="$PYTHON_PATH/bin/pip"
     JUPYTER="$PYTHON_PATH/bin/jupyter"
     JT="$PYTHON_PATH/bin/jt"
-    SUDO="sudo -H"
-    [ -n "$2" ] && SUDO=""
+    if [ -z "$2" ] || [ "$2" = "sudo" ]; then
+        SUDO="sudo -H"
+    else
+        SUDO=""
+    fi
     [ "$SUDO" = "sudo -H" ] && check_sudo
 }
 
