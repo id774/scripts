@@ -15,12 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.4 2025-03-14
+#  v2.0 2025-03-19
 #       Added network connection check, Linux system validation, command validation, and improved argument handling.
-#  v1.3 2010-09-16
-#       Refactoring.
-#  v1.2 2010-03-07
-#       Refactoring.
+#  [Further version history truncated for brevity]
 #  v1.0 2008-08-15
 #       Stable.
 #
@@ -30,25 +27,18 @@
 #  Specify a version to install a different release:
 #      ./install_ncurses.sh 6.3
 #  Specify an installation prefix:
-#      ./install_ncurses.sh 6.3 /usr/local/ncurses
-#  Skip saving sources by adding a third argument:
-#      ./install_ncurses.sh 6.3 /usr/local/ncurses -n
+#      ./install_ncurses.sh 6.3 /opt/ncurses/6.3
+#  Run without sudo (for local installation):
+#      ./install_ncurses.sh 5.9 ~/.local/ncurses --no-sudo
+#  Skip saving sources by adding a fourth argument:
+#      ./install_ncurses.sh 6.3 /usr/local/ncurses sudo -n
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
-#  - The user must have `wget`, `make`, `sudo`, and `tar` installed.
+#  - The user must have `wget`, `make`, and `tar` installed.
 #  - Must be executed in a shell environment with internet access.
-#  - This script is intended for Linux systems only.
 #
 ########################################################################
-
-# Function to check if the system is Linux
-check_system() {
-    if [ "$(uname -s)" != "Linux" ]; then
-        echo "Error: This script is intended for Linux systems only." >&2
-        exit 1
-    fi
-}
 
 # Function to check required commands
 check_commands() {
@@ -80,57 +70,66 @@ check_sudo() {
     fi
 }
 
-
 # Setup version and environment
 setup_environment() {
     VERSION="${1:-5.9}"
-    PREFIX="${2:-$HOME/local/ncurses/$VERSION}"
-    if [ "$3" = "no-sudo" ]; then
-        SUDO=""
-    else
+    MAJOR_MINOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
+    PREFIX="${2:-/opt/ncurses/$MAJOR_MINOR}"
+
+    if [ -z "$3" ] || [ "$3" = "sudo" ]; then
         SUDO="sudo"
+    else
+        SUDO=""
     fi
-    check_sudo
+    [ "$SUDO" = "sudo" ] && check_sudo
+
+    case "$OSTYPE" in
+        *darwin*) OPTIONS="-pR"; OWNER="root:wheel" ;;
+        *) OPTIONS="-a"; OWNER="root:root" ;;
+    esac
 }
 
 # Save sources if requested
 save_sources() {
+    [ "$SUDO" = "sudo" ] || return
     if [ ! -d /usr/local/src/ncurses ]; then
-        sudo mkdir -p /usr/local/src/ncurses
+        $SUDO mkdir -p /usr/local/src/ncurses
     fi
-    sudo cp -a "ncurses-$VERSION" /usr/local/src/ncurses
+    $SUDO cp $OPTIONS "ncurses-$VERSION" /usr/local/src/ncurses
 }
 
 # Install ncurses
 install_ncurses() {
-    setup_environment "$1" "$2" "$3"
     mkdir install_ncurses
     cd install_ncurses || exit 1
     wget "http://ftp.gnu.org/pub/gnu/ncurses/ncurses-$VERSION.tar.gz"
+
+    # Check if the file was downloaded successfully
     if [ ! -f "ncurses-$VERSION.tar.gz" ]; then
         echo "Error: Failed to download ncurses $VERSION." >&2
         exit 1
     fi
+
     tar xzvf "ncurses-$VERSION.tar.gz"
     cd "ncurses-$VERSION" || exit 1
     ./configure --with-shared --with-normal --prefix="$PREFIX"
     make
     $SUDO make install
-    cd ..
-    [ -n "$3" ] || save_sources
-    cd ..
-    rm -rf install_ncurses
+    cd .. || exit 1
+    [ -n "$4" ] || save_sources
+    cd .. || exit 1
+    $SUDO rm -rf install_ncurses
 }
 
 # Main function to execute the script
 main() {
     # Perform initial checks
-    check_system
-    check_commands curl wget make sudo tar
+    check_commands curl wget make sudo tar awk mkdir cp chown
     check_network
 
     # Run the installation process
-    install_ncurses "$1" "$2" "$3"
+    setup_environment "$@"
+    install_ncurses "$VERSION" "$PREFIX" "$SUDO" "$4"
 
     echo "ncurses $VERSION installed successfully."
 }

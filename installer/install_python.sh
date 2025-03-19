@@ -32,8 +32,8 @@
 #  Specify an installation prefix:
 #      ./install_python.sh 3.12.9 /opt/python/3.12
 #  Run without sudo (for local installation):
-#      ./install_python.sh 3.13.2 ~/.local/python no-sudo
-#  Skip saving sources by adding a third argument:
+#      ./install_python.sh 3.13.2 ~/.local/python --no-sudo
+#  Skip saving sources by adding a fourth argument:
 #      ./install_python.sh 3.13.2 /opt/python sudo -n
 #
 #  By default, if no installation path is provided, the script will install Python under /opt/python/x.x.
@@ -82,22 +82,16 @@ setup_environment() {
     MAJOR_MINOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
     PREFIX="${2:-/opt/python/$MAJOR_MINOR}"
 
-    if [ "$3" = "no-sudo" ]; then
-        SUDO=""
-    else
+    if [ -z "$3" ] || [ "$3" = "sudo" ]; then
         SUDO="sudo"
+    else
+        SUDO=""
     fi
     [ "$SUDO" = "sudo" ] && check_sudo
 
-    case $OSTYPE in
-      *darwin*)
-        OPTIONS=-pR
-        OWNER=root:wheel
-        ;;
-      *)
-        OPTIONS=-a
-        OWNER=root:root
-        ;;
+    case "$OSTYPE" in
+        *darwin*) OPTIONS="-pR"; OWNER="root:wheel" ;;
+        *) OPTIONS="-a"; OWNER="root:root" ;;
     esac
 }
 
@@ -145,7 +139,7 @@ main() {
     check_network
 
     # Run the installation process
-    setup_environment "$1" "$2" "$3" "$4"
+    setup_environment "$@"
     install_python "$VERSION" "$PREFIX" "$SUDO" "$4"
 
     echo "Python $VERSION installed successfully in $PREFIX."

@@ -32,8 +32,8 @@
 #  Specify an installation prefix:
 #      ./install_ruby.sh 3.3.7 /opt/ruby/3.3
 #  Run without sudo (for local installation):
-#      ./install_ruby.sh 3.4.2 ~/.local/ruby no-sudo
-#  Skip saving sources by adding a third argument:
+#      ./install_ruby.sh 3.4.2 ~/.local/ruby --no-sudo
+#  Skip saving sources by adding a fourth argument:
 #      ./install_ruby.sh 3.4.2 /opt/ruby sudo -n
 #
 #  By default, if no installation path is provided, the script will install Ruby under /opt/ruby/x.x.
@@ -82,22 +82,16 @@ setup_environment() {
     RUBY_MAJOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
     PREFIX="${2:-/opt/ruby/$RUBY_MAJOR}"
 
-    if [ "$3" = "no-sudo" ]; then
-        SUDO=""
-    else
+    if [ -z "$3" ] || [ "$3" = "sudo" ]; then
         SUDO="sudo"
+    else
+        SUDO=""
     fi
     [ "$SUDO" = "sudo" ] && check_sudo
 
-    case $OSTYPE in
-      *darwin*)
-        OPTIONS=-pR
-        OWNER=root:wheel
-        ;;
-      *)
-        OPTIONS=-a
-        OWNER=root:root
-        ;;
+    case "$OSTYPE" in
+        *darwin*) OPTIONS="-pR"; OWNER="root:wheel" ;;
+        *) OPTIONS="-a"; OWNER="root:root" ;;
     esac
 }
 
@@ -145,7 +139,7 @@ main() {
     check_network
 
     # Run the installation process
-    setup_environment "$1" "$2" "$3" "$4"
+    setup_environment "$@"
     install_ruby "$VERSION" "$PREFIX" "$SUDO" "$4"
 
     echo "Ruby $VERSION installed successfully in $PREFIX."

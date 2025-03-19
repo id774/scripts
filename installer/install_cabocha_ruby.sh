@@ -76,8 +76,11 @@ check_sudo() {
 setup_environment() {
     RUBY="${1:-/opt/ruby/current}/bin/ruby"
     TARGET="${2:-/usr/local/src/cabocha/cabocha-0.67/ruby}"
-    SUDO="sudo"
-    [ -n "$3" ] && SUDO=""
+    if [ -z "$3" ] || [ "$3" = "sudo" ]; then
+        SUDO="sudo"
+    else
+        SUDO=""
+    fi
     [ "$SUDO" = "sudo" ] && check_sudo
 }
 

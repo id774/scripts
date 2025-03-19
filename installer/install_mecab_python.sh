@@ -75,8 +75,11 @@ check_sudo() {
 setup_environment() {
     PYTHON="${1:-/opt/python/current}/bin/python"
     TARGET="${2:-/usr/local/src/mecab/mecab-python-0.994}"
-    SUDO="sudo"
-    [ -n "$3" ] && SUDO=""
+    if [ -z "$3" ] || [ "$3" = "sudo" ]; then
+        SUDO="sudo"
+    else
+        SUDO=""
+    fi
     [ "$SUDO" = "sudo" ] && check_sudo
 }
 
