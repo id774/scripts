@@ -57,17 +57,8 @@
 #  - Network connectivity is required to download the source files.
 #  - The user must have `curl`, `make`, `sudo`, and `tar` installed.
 #  - Must be executed in a shell environment with internet access.
-#  - This script is intended for Linux systems only.
 #
 ########################################################################
-
-# Function to check if the system is Linux
-check_system() {
-    if [ "$(uname -s)" != "Linux" ]; then
-        echo "Error: This script is intended for Linux systems only." >&2
-        exit 1
-    fi
-}
 
 # Function to check required commands
 check_commands() {
@@ -160,7 +151,6 @@ install_python() {
 # Main function to execute the script
 main() {
     # Perform initial checks
-    check_system
     check_commands curl make sudo tar awk
     check_network
 
