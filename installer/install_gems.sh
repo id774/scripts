@@ -192,7 +192,6 @@ install_gems() {
     woothee
     daemons
     eventmachine
-    aws-sdk
     "
 
     # Loop through each gem and install it
