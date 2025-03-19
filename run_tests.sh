@@ -52,6 +52,7 @@
 #
 ########################################################################
 
+# Prevent __pycache__ directory creation
 export PYTHONDONTWRITEBYTECODE=1
 
 # Function to check if SCRIPTS variable is set
@@ -101,6 +102,7 @@ extract_ruby_test_count() {
     fi
 }
 
+# Function to run Python tests
 run_python_tests() {
     # Check if Python is installed
     if [ -z "$python_path" ]; then
@@ -136,6 +138,7 @@ run_python_tests() {
     fi
 }
 
+# Function to run Ruby tests
 run_ruby_tests() {
     # Check if RSpec is installed
     if [ -z "$rspec_path" ]; then
@@ -175,6 +178,7 @@ run_ruby_tests() {
     fi
 }
 
+# Function to display a summary of Ruby test results
 display_python_report() {
     echo "All Python tests completed."
     echo "  Python path: $python_path"
@@ -184,6 +188,7 @@ display_python_report() {
     echo "  Skipped Python test cases: $python_skipped_tests"
 }
 
+# Function to display a final test report
 display_ruby_report() {
     echo "All Ruby tests completed."
     echo "  RSpec path: $rspec_path"
@@ -194,6 +199,7 @@ display_ruby_report() {
     echo "  Skipped Ruby test cases: $ruby_skipped_tests"
 }
 
+# Function to run all tests
 display_final_report() {
     # Final report
     total_failures=$((python_failures + ruby_failures))
