@@ -81,7 +81,7 @@ smart_apt() {
 
 # Basic packages
 basic_packages() {
-    smart_apt vim w3m lynx wget openssh-server ssh rsync build-essential gcc g++ make \
+    smart_apt vim w3m lynx curl wget openssh-server ssh rsync build-essential gcc g++ make \
               gdb cgdb valgrind strace ltrace scons libcunit1 libcunit1-dev libgtest-dev \
               libgoogle-perftools-dev doxygen tar zip gzip unzip bzip2 unar p7zip \
               p7zip-full zsh screen
