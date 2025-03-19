@@ -101,7 +101,7 @@ setup_environment() {
     else
         SUDO="sudo"
     fi
-    check_sudo
+    [ "$SUDO" = "sudo" ] && check_sudo
 
     case $OSTYPE in
       *darwin*)
@@ -117,6 +117,7 @@ setup_environment() {
 
 # Save sources if requested
 save_sources() {
+    [ "$SUDO" = "sudo" ] || return
     $SUDO mkdir -p /usr/local/src/python
     $SUDO cp $OPTIONS "Python-$1" /usr/local/src/python
     $SUDO chown $OWNER /usr/local/src/python

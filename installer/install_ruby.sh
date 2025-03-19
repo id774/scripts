@@ -16,11 +16,12 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v3.0 2025-03-14
+#  v3.0 2025-03-19
 #       Restored Ruby installation process from official sources.
 #       Default Ruby version 3.4.2 installs in '/opt/ruby/3.4' directory.
 #       Improved directory navigation safety.
 #       Consolidated previous modifications under a single version entry.
+#       Set default installation path to /opt/ruby/x.x.
 #  v2.5 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v2.4 2025-03-05
@@ -41,11 +42,14 @@
 #  Specify a different Ruby version:
 #      ./install_ruby.sh 3.3.7
 #  Specify an installation prefix:
-#      ./install_ruby.sh 3.3.7 /opt/ruby
+#      ./install_ruby.sh 3.3.7 /opt/ruby/3.3
 #  Run without sudo (for local installation):
 #      ./install_ruby.sh 3.3.7 ~/.local/ruby no-sudo
 #  Skip saving sources by adding a third argument:
 #      ./install_ruby.sh 3.3.7 /opt/ruby sudo -n
+#
+#  By default, if no installation path is provided, the script will install Ruby under /opt/ruby/x.x.
+#  For example, Ruby 3.4.2 will be installed in /opt/ruby/3.4.
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
@@ -87,8 +91,8 @@ check_sudo() {
 # Setup version and environment
 setup_environment() {
     RUBY_VERSION="${1:-3.4.2}"
-    RUBY_MAJOR="$(echo "$RUBY_VERSION" | cut -d. -f1-2)"
-    RUBY_PATH="${2:-/opt/ruby/$RUBY_MAJOR}"
+    RUBY_MAJOR="$(echo "$RUBY_VERSION" | awk -F. '{print $1"."$2}')"
+    PREFIX="${2:-/opt/ruby/$RUBY_MAJOR}"
 
     if [ "$3" = "no-sudo" ]; then
         SUDO=""
@@ -101,20 +105,10 @@ setup_environment() {
 # Save sources if requested
 save_sources() {
     [ -n "$4" ] && return
+    [ "$SUDO" = "sudo" ] || return
     $SUDO mkdir -p /usr/local/src/ruby
     $SUDO cp -a "ruby-$RUBY_VERSION" /usr/local/src/ruby/
     $SUDO chown -R root:root /usr/local/src/ruby/ruby-$RUBY_VERSION
-}
-
-# Compile and install essential Ruby extensions
-make_ext_module() {
-    for module in "$@"; do
-        cd "ext/$module" || exit 1
-        $SUDO "$RUBY_PATH/bin/ruby" extconf.rb
-        $SUDO make
-        $SUDO make install
-        cd ../.. || exit 1
-    done
 }
 
 # Download and install Ruby
@@ -124,26 +118,25 @@ install_ruby() {
     curl -L "https://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR/ruby-$RUBY_VERSION.tar.gz" -O
     tar xzvf "ruby-$RUBY_VERSION.tar.gz"
     cd "ruby-$RUBY_VERSION" || exit 1
-    ./configure --prefix="$RUBY_PATH"
+    ./configure --prefix="$PREFIX"
     make
     $SUDO make install
-    make_ext_module zlib readline openssl
     cd ../.. || exit 1
-    save_sources "$RUBY_VERSION" "$RUBY_PATH" "$SUDO" "$4"
+    save_sources "$RUBY_VERSION" "$PREFIX" "$SUDO" "$4"
     rm -rf install_ruby
 }
 
 # Main function to execute the script
 main() {
     # Perform initial checks
-    check_commands curl sudo make tar mkdir cp chown
+    check_commands curl sudo make tar awk mkdir cp chown
     check_network
 
     # Run the installation process
     setup_environment "$1" "$2" "$3" "$4"
-    install_ruby "$RUBY_VERSION" "$RUBY_PATH" "$SUDO" "$4"
+    install_ruby "$RUBY_VERSION" "$PREFIX" "$SUDO" "$4"
 
-    echo "Ruby $RUBY_VERSION installed successfully."
+    echo "Ruby $RUBY_VERSION installed successfully in $PREFIX."
 }
 
 # Execute main function
