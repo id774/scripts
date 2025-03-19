@@ -107,8 +107,9 @@ install_libs() {
     pyflakes
     flake8
     pytest
-    pytest-pep8
+    pytest-flake8
     autopep8
+    black
     autoflake
     isort
     Cython
@@ -116,11 +117,9 @@ install_libs() {
     nose
     docopt
     simplejson
-    msgpack-python
     numpy
     scipy
     scikit-learn
-    japandas
     pandas-datareader
     chainer
     joblib
@@ -140,7 +139,6 @@ install_libs() {
     SQLAlchemy
     lmdb
     migrate
-    readline
     Pygments
     Babel
     Genshi
@@ -150,11 +148,10 @@ install_libs() {
     lxml
     requests
     pysolr
-    watson-developer-cloud
     html5lib
-    husl
+    colorspacious
     pillow
-    ggplot
+    plotnine
     pyper
     jinja2
     tornado
@@ -165,14 +162,9 @@ install_libs() {
     xlrd
     simpy
     networkx
-    pdfminer3k
-    pybrain
     uwsgi
-    pypandoc
     zipline
     DocumentFeatureSelection
-    python-tr
-    mod_wsgi
     beaker
     python-memcached
     psycopg2-binary
@@ -181,7 +173,7 @@ install_libs() {
     tensorflow
     matplotlib
     pandas
-    pep8
+    pycodestyle
     instaloader
     "
 
