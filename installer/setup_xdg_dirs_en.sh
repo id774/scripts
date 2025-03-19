@@ -93,7 +93,7 @@ update_xdg_dirs() {
 main() {
     # Perform system checks
     check_system
-    check_commands apt sudo dpkg
+    check_commands apt sudo dpkg grep
     check_sudo
 
     # Install xdg-user-dirs-gtk if necessary
