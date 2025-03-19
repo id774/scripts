@@ -168,8 +168,6 @@ install_gems() {
     gherkin
     cucumber
     capybara
-    rubytter
-    termtter
     userstream
     webtail
     zipruby
@@ -184,8 +182,6 @@ install_gems() {
     log4r
     foreman
     sinatra
-    sinatra_more
-    sinatra-formkeeper
     formkeeper-japanese
     redis
     sidekiq
@@ -194,7 +190,6 @@ install_gems() {
     request-log-analyzer
     apache-loggen
     tzinfo
-    guard-coffeescript
     rb-fsevent
     iconv
     i18n
@@ -205,8 +200,6 @@ install_gems() {
     gcalapi
     xml-simple
     pocket-ruby
-    weather_hacker
-    jpstock
     spreadsheet
     prawn
     pdfkit
@@ -214,12 +207,6 @@ install_gems() {
     gnuplot
     ai4r
     nimbus
-    naivebayes
-    kmeans
-    recommendation
-    stdout
-    sysadmin
-    automatic
     screening
     ctoD
     count_by
@@ -237,15 +224,6 @@ install_gems() {
     eventmachine
     fluentd
     fluent-logger
-    fluent-plugin-sqlite3
-    fluent-plugin-s3
-    fluent-plugin-mongo
-    fluent-plugin-webhdfs
-    fluent-plugin-parser
-    fluent-plugin-rewrite-tag-filter
-    fluent-plugin-flowcounter
-    fluent-plugin-growthforecast
-    fluent-plugin-datacounter
     heroku
     aws-sdk
     "
