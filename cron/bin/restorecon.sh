@@ -48,10 +48,11 @@ restore_selinux_context() {
     echo "SELinux context restoration completed."
 }
 
-# Main execution function
+# Main function to execute the script
 main() {
     check_selinux
     restore_selinux_context
 }
 
+# Execute main function
 main "$@"
