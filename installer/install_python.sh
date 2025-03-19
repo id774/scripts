@@ -105,9 +105,9 @@ setup_environment() {
 save_sources() {
     [ "$SUDO" = "sudo" ] || return
     $SUDO mkdir -p /usr/local/src/python
-    $SUDO cp $OPTIONS "Python-$1" /usr/local/src/python
+    $SUDO cp $OPTIONS "Python-$VERSION" /usr/local/src/python
     $SUDO chown $OWNER /usr/local/src/python
-    $SUDO chown -R $OWNER /usr/local/src/python/Python-$1
+    $SUDO chown -R $OWNER /usr/local/src/python/Python-$VERSION
 }
 
 # Compile and install Python
