@@ -121,9 +121,10 @@ install_ruby() {
     ./configure --prefix="$PREFIX"
     make
     $SUDO make install
-    cd ../.. || exit 1
+    cd ../ || exit 1
     save_sources "$RUBY_VERSION" "$PREFIX" "$SUDO" "$4"
-    rm -rf install_ruby
+    cd ../ || exit 1
+    $SUDO rm -rf install_ruby
 }
 
 # Main function to execute the script
