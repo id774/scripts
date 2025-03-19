@@ -51,6 +51,7 @@
 #
 ########################################################################
 
+# Function to display the timestamp of the last backup and update it
 display_and_update_timestamp() {
     if [ -f "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp" ]; then
         ls -l "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
@@ -58,6 +59,7 @@ display_and_update_timestamp() {
     touch "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
 }
 
+# Function to display the installed versions of TrueCrypt and VeraCrypt
 version_info() {
     if [ -x /usr/bin/truecrypt ]; then
         /usr/bin/truecrypt -t --version
@@ -67,6 +69,7 @@ version_info() {
     fi
 }
 
+# Function to retrieve SMART information of the backup and target devices
 smart_info() {
     if [ -b /dev/$B_DEVICE ]; then
         smartctl -a /dev/$B_DEVICE
@@ -76,6 +79,7 @@ smart_info() {
     fi
 }
 
+# Function to perform a SMART diagnostic check on the target device
 smart_check() {
     if [ -b /dev/$T_DEVICE ]; then
         if [ -f "$T_HOME/$T_MOUNT/$T_DEVICE/smart_longtest" ]; then
@@ -90,12 +94,14 @@ smart_check() {
     fi
 }
 
+# Function to show disk space usage of backup directories
 show_capacity_of_directories() {
     if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ]; then
         du -h --max-depth=2 "$B_HOME/$B_MOUNT/$B_DEVICE"
     fi
 }
 
+# Function to remove unnecessary files such as macOS metadata and temp files
 cleanup() {
     echo "Removing junk files in $B_HOME/$B_MOUNT/$B_DEVICE..."
     echo "Removing ._* AppleDouble files..."
@@ -109,6 +115,7 @@ cleanup() {
     echo "Cleanup completed."
 }
 
+# Function to create a local backup of Git repositories
 git_backup() {
     if [ -f /root/local/git.tar.gz ]; then
         rm /root/local/git.tar.gz
@@ -120,6 +127,7 @@ git_backup() {
     cd
 }
 
+# Function to back up GitHub repositories locally
 github_backup() {
     test -f /root/local/github.tar.gz && rm -f /root/local/github.tar.gz
     test -d $B_HOME/local/github && tar czvf /root/local/github.tar.gz $B_HOME/local/github > /dev/null
@@ -131,6 +139,7 @@ github_backup() {
     fi
 }
 
+# Function to sync user directories from disk to remote server via SSH
 rsync_disk2ssh_1() {
     echo -n "* Executing rsync_disk2ssh_1 $B_DEVICE -> $T_DEVICE of $T_HOST on "
     date "+%Y/%m/%d %T"
@@ -162,6 +171,7 @@ rsync_disk2ssh_1() {
     echo "Return code is $RC"
 }
 
+# Function to sync large files from disk to remote server via SSH
 rsync_disk2ssh_2() {
     echo -n "* Executing rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST on "
     date "+%Y/%m/%d %T"
@@ -175,6 +185,7 @@ rsync_disk2ssh_2() {
     echo "Return code is $RC"
 }
 
+# Function to sync user directories between two local disks
 rsync_disk2disk_1() {
     echo -n "* Executing rsync_disk2disk_1 $B_DEVICE -> $T_DEVICE on "
     date "+%Y/%m/%d %T"
@@ -206,6 +217,7 @@ rsync_disk2disk_1() {
     echo "Return code is $RC"
 }
 
+# Function to sync large files between two local disks
 rsync_disk2disk_2() {
     echo -n "* Executing rsync_disk2disk_2 $B_DEVICE -> $T_DEVICE on "
     date "+%Y/%m/%d %T"
