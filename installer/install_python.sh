@@ -157,7 +157,7 @@ main() {
 
     # Run the installation process
     setup_environment "$1" "$2" "$3" "$4"
-    install_python "$1" "$2" "$3" "$4"
+    install_python "$VERSION" "$PREFIX" "$SUDO" "$4"
 
     echo "Python $1 installed successfully in $PREFIX."
 }
