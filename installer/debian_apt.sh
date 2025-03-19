@@ -132,7 +132,7 @@ lang_packages() {
     smart_apt nasm gauche gauche-dev clisp clisp-dev libboost-dev scheme48 cmuscheme48-el \
               gnu-smalltalk scala r-base r-base-dev ghc cabal-install global markdown \
               graphviz graphviz-dev gsl-bin libgsl-dev libpng-dev libpng12-0 libpng16-16 \
-              shunit2 pandoc
+              shunit2 pandoc libyaml-dev
 }
 
 # Source control management tools
