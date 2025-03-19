@@ -16,8 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v2.0 2025-03-14
+#  v2.0 2025-03-19
 #       Added network connection check, system validation, command validation, and improved argument handling.
+#       Set default installation path to /opt/python/x.x.
 #  v1.9 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
 #  v1.8 2014-06-26
@@ -41,13 +42,16 @@
 #
 #  Usage:
 #  Run this script without arguments to install the default version:
-#      ./install_python.sh 3.12.9
+#      ./install_python.sh 3.13.2
 #  Specify an installation prefix:
-#      ./install_python.sh 3.12.9 /opt/python
+#      ./install_python.sh 3.13.2 /opt/python/3.13
 #  Run without sudo (for local installation):
-#      ./install_python.sh 3.12.9 ~/.local/python no-sudo
+#      ./install_python.sh 3.13.2 ~/.local/python no-sudo
 #  Skip saving sources by adding a third argument:
-#      ./install_python.sh 3.12.9 /opt/python sudo -n
+#      ./install_python.sh 3.13.2 /opt/python sudo -n
+#
+#  By default, if no installation path is provided, the script will install Python under /opt/python/x.x.
+#  For example, Python 3.13.2 will be installed in /opt/python/3.13.
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
@@ -98,7 +102,8 @@ check_sudo() {
 # Setup version and environment
 setup_environment() {
     VERSION="${1:-3.13.2}"
-    PREFIX="${2:-/usr/local}"
+    MAJOR_MINOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
+    PREFIX="${2:-/opt/python/$MAJOR_MINOR}"
 
     if [ "$3" = "no-sudo" ]; then
         SUDO=""
@@ -156,14 +161,14 @@ install_python() {
 main() {
     # Perform initial checks
     check_system
-    check_commands curl make sudo tar
+    check_commands curl make sudo tar awk
     check_network
 
     # Run the installation process
     setup_environment "$1" "$2" "$3" "$4"
     install_python "$1" "$2" "$3" "$4"
 
-    echo "Python $1 installed successfully."
+    echo "Python $1 installed successfully in $PREFIX."
 }
 
 # Execute main function
