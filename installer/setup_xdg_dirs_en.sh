@@ -66,7 +66,7 @@ check_sudo() {
 main() {
     # Perform system checks
     check_system
-    check_commands apt sudo xdg-user-dirs-gtk
+    check_commands apt sudo
     check_sudo
 
     # Install xdg-user-dirs-gtk package
