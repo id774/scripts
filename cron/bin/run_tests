@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# run_tests.sh: Automated Testing Script for Python and Ruby projects
+# run_tests: Automated Testing Script for Python and Ruby projects
 #
 #  Description:
 #  This script automates the process of running tests for projects developed
@@ -17,6 +17,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-03-19
+#       Improved POSIX compliance, standardized logging, and enhanced
+#       readability through function encapsulation.
 #  v1.1 2024-04-08
 #       Made ADMIN_MAIL_ADDRESS optional for email notifications.
 #  v1.0 2024-03-13
@@ -28,7 +31,7 @@
 #  that 'run_tests.conf' is properly configured with the SCRIPTS, JOBLOG,
 #  python_versions, ruby_versions, and ADMIN_MAIL_ADDRESS variables. For manual
 #  execution, run the script:
-#      ./run_tests.sh
+#      ./run_tests
 #
 #  The script iterates through the specified versions, runs tests for each
 #  combination of Python and Ruby versions, concludes with a compatibility
@@ -64,65 +67,68 @@ CONF_FILE="$SCRIPT_DIR/etc/run_tests.conf"
 if [ ! -f "$CONF_FILE" ]; then
     CONF_FILE="$SCRIPT_DIR/../etc/run_tests.conf"
     if [ ! -f "$CONF_FILE" ]; then
-        echo "Configuration file not found." >>$JOBLOG 2>&1
+        echo "Configuration file not found." >> "$JOBLOG" 2>&1
         exit 3
     fi
 fi
 . "$CONF_FILE"
 
-# Check if necessary variables are set
+# Validate essential configuration variables
 if [ -z "$SCRIPTS" ] || [ -z "$JOBLOG" ] || [ -z "$python_versions" ] || [ -z "$ruby_versions" ]; then
-    echo "Error: Configuration variables not set. Check run_tests.conf." >>$JOBLOG 2>&1
+    echo "Error: Configuration variables not set. Check run_tests.conf." >> "$JOBLOG" 2>&1
     exit 4
 fi
 
-echo -n "*** $0: Job started on `/bin/hostname` at " >>$JOBLOG 2>&1
-date "+%Y/%m/%d %T" >>$JOBLOG 2>&1
+echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
+date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
 
+# Function to execute tests for a given Python and Ruby version
 run_tests() {
-    python_version=$1
-    ruby_version=$2
-    echo "=== Running Tests with Python $python_version and Ruby $ruby_version. ===" >>$JOBLOG 2>&1
-    $SCRIPTS/run_tests.sh /opt/python/$python_version/bin/python /opt/ruby/$ruby_version/bin/rspec >>$JOBLOG 2>&1
+    python_version="$1"
+    ruby_version="$2"
+    echo "=== Running Tests with Python $python_version and Ruby $ruby_version. ===" >> "$JOBLOG" 2>&1
+    "$SCRIPTS/run_tests.sh" "/opt/python/$python_version/bin/python" "/opt/ruby/$ruby_version/bin/rspec" >> "$JOBLOG" 2>&1
 }
 
 last_python_version=""
 
+# Iterate through all Python and Ruby versions and execute tests
 for ruby_version in $ruby_versions; do
     for python_version in $python_versions; do
-        run_tests $python_version $ruby_version
-        last_python_version=$python_version  # Update the last_python_version on each iteration
+        run_tests "$python_version" "$ruby_version"
+        last_python_version="$python_version"  # Keep track of the last Python version tested
     done
 done
 
-# Now last_python_version contains the last Python version used in the loop
-echo "=== Starting the inspection for Python compatibility issues with Python $last_python_version. ===" >>$JOBLOG 2>&1
-/opt/python/$last_python_version/bin/python $SCRIPTS/find_pycompat.py $SCRIPTS >>$JOBLOG 2>&1
+# Perform compatibility check with the last Python version used
+echo "=== Checking Python compatibility with Python $last_python_version. ===" >> "$JOBLOG" 2>&1
+"/opt/python/$last_python_version/bin/python" "$SCRIPTS/find_pycompat.py" "$SCRIPTS" >> "$JOBLOG" 2>&1
 result=$?
 
-echo -n "*** $0: Job ended on `/bin/hostname` at " >>$JOBLOG 2>&1
-date "+%Y/%m/%d %T" >>$JOBLOG 2>&1
+echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
+date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
 
-if [ $result -ge 1 ]; then
-    echo "*** $0: Python compatibility inspection failed. Check the logs for details." >>$JOBLOG 2>&1
-    exit $result
-elif grep -q "Some tests failed" $JOBLOG; then
-    echo "*** $0: Some tests failed. Check the logs for details." >>$JOBLOG 2>&1
+# Exit based on test results
+if [ "$result" -ge 1 ]; then
+    echo "*** $0: Python compatibility inspection failed. Check logs for details." >> "$JOBLOG" 2>&1
+    exit "$result"
+elif grep -q "Some tests failed" "$JOBLOG"; then
+    echo "*** $0: Some tests failed. Check logs for details." >> "$JOBLOG" 2>&1
     exit 1
 else
-    echo "*** $0: All tests completed successfully for all versions." >>$JOBLOG 2>&1
+    echo "*** $0: All tests completed successfully for all versions." >> "$JOBLOG" 2>&1
 fi
 
-echo >>$JOBLOG 2>&1
+echo >> "$JOBLOG" 2>&1
 
-# Mail sending function
+# Function to send a summary email to the administrator
 send_mail_to_admin() {
-    cat -v $JOBLOG | nkf -w | \
-      mail -s "[cron][`/bin/hostname`] CI Results Overview" \
-      $ADMIN_MAIL_ADDRESS
+    cat -v "$JOBLOG" | nkf -w | \
+      mail -s "[cron][$(hostname)] CI Results Overview" \
+      "$ADMIN_MAIL_ADDRESS"
 }
 
-# Check if ADMIN_MAIL_ADDRESS is set and send summary email to admin
+# Send summary email if ADMIN_MAIL_ADDRESS is configured
 if [ -n "$ADMIN_MAIL_ADDRESS" ]; then
     send_mail_to_admin
 fi
