@@ -62,21 +62,48 @@ check_sudo() {
     fi
 }
 
+
+# Install xdg-user-dirs-gtk if not already installed
+install_xdg_user_dirs_gtk() {
+    if ! dpkg -l | grep -q xdg-user-dirs-gtk; then
+        echo "Installing xdg-user-dirs-gtk..."
+        sudo apt install -y xdg-user-dirs-gtk
+        if [ $? -ne 0 ]; then
+            echo "Error: Failed to install xdg-user-dirs-gtk." >&2
+            exit 1
+        fi
+    else
+        echo "xdg-user-dirs-gtk is already installed."
+    fi
+}
+
+# Update user directories and check for success
+update_xdg_dirs() {
+    echo "Updating XDG user directories..."
+    LANG=C xdg-user-dirs-gtk-update
+    if [ $? -eq 0 ]; then
+        echo "XDG user directories have been successfully updated."
+    else
+        echo "Error: Failed to update XDG user directories." >&2
+        exit 1
+    fi
+}
+
 # Main function to execute the script
 main() {
     # Perform system checks
     check_system
-    check_commands apt sudo
+    check_commands apt sudo dpkg
     check_sudo
 
-    # Install xdg-user-dirs-gtk package
-    sudo apt install -y xdg-user-dirs-gtk
+    # Install xdg-user-dirs-gtk if necessary
+    install_xdg_user_dirs_gtk
 
-    # Update user directories configuration
-    LANG=C xdg-user-dirs-gtk-update
+    # Update user directories
+    update_xdg_dirs
 
-    # Notify the user to manually edit the configuration file
-    echo "User directories have been updated. If you need to customize them, edit the file manually:"
+    # Notify the user to manually edit the configuration file if needed
+    echo "If you need to customize your directories, edit the file manually:"
     echo "    $HOME/.config/user-dirs.dirs"
     echo "Then, log out and log back in for changes to take effect."
 }
