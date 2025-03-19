@@ -106,7 +106,7 @@ save_sources() {
     [ "$SUDO" = "sudo" ] || return
     $SUDO mkdir -p /usr/local/src/ruby
     $SUDO cp -a "ruby-$VERSION" /usr/local/src/ruby/
-    $SUDO chown $OWNER /usr/local/src/python
+    $SUDO chown $OWNER /usr/local/src/ruby
     $SUDO chown -R $OWNER /usr/local/src/ruby/ruby-$VERSION
 }
 
