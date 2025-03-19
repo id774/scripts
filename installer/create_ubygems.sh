@@ -45,7 +45,7 @@
 #
 ########################################################################
 
-# Function to check required commands
+# Function to check required commands before execution
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -59,10 +59,8 @@ check_commands() {
     done
 }
 
-check_commands find grep sort tail basename
-
-if [ -n "$1" ]; then
-    # User specified a custom Ruby installation path
+# Function to determine the Ruby library path for a custom installation
+get_custom_ruby_path() {
     BASE_DIR="$1"
 
     # Ensure the given path contains a valid Ruby library directory
@@ -80,11 +78,13 @@ if [ -n "$1" ]; then
         exit 1
     fi
 
-    # Extract only the x.y.z part
+    # Extract only the x.y.z part and set target directory
     RUBY_VERSION=$(basename "$RUBY_VERSION")
     TARGET_DIR="$BASE_DIR/lib/ruby/$RUBY_VERSION"
-else
-    # Default behavior: Use Homebrew-installed Ruby
+}
+
+# Function to determine the Ruby library path for Homebrew-installed Ruby
+get_homebrew_ruby_path() {
     if [ -x "/opt/homebrew/opt/ruby/bin/ruby" ]; then
         RUBY_BIN="/opt/homebrew/opt/ruby/bin/ruby"
     elif [ -x "/usr/local/opt/ruby/bin/ruby" ]; then
@@ -102,35 +102,56 @@ else
         echo "Error: Unable to retrieve the Ruby library directory." >&2
         exit 1
     fi
-fi
+}
 
-# Ensure the target directory exists
-if [ ! -d "$TARGET_DIR" ]; then
-    echo "Error: Target directory $TARGET_DIR does not exist." >&2
-    exit 1
-fi
+# Function to create ubygems.rb if it does not already exist
+create_ubygems() {
+    if [ -f "$TARGET_DIR/ubygems.rb" ]; then
+        echo "Notice: ubygems.rb already exists in $TARGET_DIR. No changes were made."
+        ls -l "$TARGET_DIR/ubygems.rb"
+        cat "$TARGET_DIR/ubygems.rb"
+        exit 0
+    else
+        echo "Creating ubygems.rb in $TARGET_DIR as it does not exist."
+    fi
 
-# Check if ubygems.rb already exists
-if [ -f "$TARGET_DIR/ubygems.rb" ]; then
-    echo "Notice: ubygems.rb already exists in $TARGET_DIR. No changes were made."
-    ls -l "$TARGET_DIR/ubygems.rb"
-    cat "$TARGET_DIR/ubygems.rb"
-    exit 0
-else
-    echo "Creating ubygems.rb in $TARGET_DIR as it does not exist."
-fi
+    # Create ubygems.rb with a simple 'require rubygems' statement
+    printf "require 'rubygems'\\n" > "$TARGET_DIR/ubygems.rb"
 
-# Create ubygems.rb with a simple 'require rubygems' statement
-printf "require 'rubygems'\\n" > "$TARGET_DIR/ubygems.rb"
+    # Verify that the file was successfully created
+    if [ $? -eq 0 ]; then
+        echo "ubygems.rb was successfully created in $TARGET_DIR"
+        echo "Listing the contents of $TARGET_DIR:"
+        ls -l "$TARGET_DIR/ubygems.rb"
+        echo "Contents of ubygems.rb:"
+        cat "$TARGET_DIR/ubygems.rb"
+    else
+        echo "Error: Failed to create ubygems.rb." >&2
+        exit 1
+    fi
+}
 
-# Verify that the file was successfully created
-if [ $? -eq 0 ]; then
-    echo "ubygems.rb was successfully created in $TARGET_DIR"
-    echo "Listing the contents of $TARGET_DIR:"
-    ls -l "$TARGET_DIR/ubygems.rb"
-    echo "Contents of ubygems.rb:"
-    cat "$TARGET_DIR/ubygems.rb"
-else
-    echo "Error: Failed to create ubygems.rb." >&2
-    exit 1
-fi
+# Main function to execute the script
+main() {
+    # Ensure required commands are available before proceeding
+    check_commands find grep sort tail basename
+
+    # Determine target directory
+    if [ -n "$1" ]; then
+        get_custom_ruby_path "$1"
+    else
+        get_homebrew_ruby_path
+    fi
+
+    # Ensure the target directory exists
+    if [ ! -d "$TARGET_DIR" ]; then
+        echo "Error: Target directory $TARGET_DIR does not exist." >&2
+        exit 1
+    fi
+
+    # Create ubygems.rb if necessary
+    create_ubygems
+}
+
+# Execute main function
+main "$@"
