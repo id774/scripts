@@ -130,7 +130,7 @@ install_ncurses() {
 # Main function to execute the script
 main() {
     # Perform initial checks
-    check_commands curl wget make sudo tar awk mkdir cp chown uname
+    check_commands curl wget make sudo tar awk mkdir cp uname
     check_network
 
     # Run the installation process

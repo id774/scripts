@@ -179,7 +179,7 @@ install_main() {
 main() {
     # Perform initial checks
     check_system
-    check_commands useradd update-rc.d ln mv rm cp chsh curl sudo make tar mkdir chown chmod uname
+    check_commands useradd update-rc.d ln mv rm cp chsh curl sudo tar mkdir chown chmod uname
     check_network
     check_scripts
     check_sudo

@@ -47,6 +47,20 @@ check_scripts() {
     fi
 }
 
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
 # Check if IPython is installed and get its path
 check_ipython() {
     if ! command -v ipython >/dev/null 2>&1; then
@@ -106,6 +120,7 @@ copy_dotipython() {
 main() {
     check_scripts
     check_ipython
+    check_commands uname cp chmod rm mkdir
     setup_environment
     copy_dotipython "$@"
     init_nbserver "$@"
