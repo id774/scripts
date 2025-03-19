@@ -90,8 +90,8 @@ check_sudo() {
 
 # Setup version and environment
 setup_environment() {
-    RUBY_VERSION="${1:-3.4.2}"
-    RUBY_MAJOR="$(echo "$RUBY_VERSION" | awk -F. '{print $1"."$2}')"
+    VERSION="${1:-3.4.2}"
+    RUBY_MAJOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
     PREFIX="${2:-/opt/ruby/$RUBY_MAJOR}"
 
     if [ "$3" = "no-sudo" ]; then
@@ -104,26 +104,37 @@ setup_environment() {
 
 # Save sources if requested
 save_sources() {
-    [ -n "$4" ] && return
     [ "$SUDO" = "sudo" ] || return
     $SUDO mkdir -p /usr/local/src/ruby
-    $SUDO cp -a "ruby-$RUBY_VERSION" /usr/local/src/ruby/
-    $SUDO chown -R root:root /usr/local/src/ruby/ruby-$RUBY_VERSION
+    $SUDO cp -a "ruby-$VERSION" /usr/local/src/ruby/
+    $SUDO chown -R root:root /usr/local/src/ruby/ruby-$VERSION
+}
+
+# Compile and install Ruby
+make_and_install() {
+    cd "ruby-$VERSION" || exit 1
+    ./configure --prefix="$PREFIX"
+    make
+    $SUDO make install
+    cd .. || exit 1
 }
 
 # Download and install Ruby
 install_ruby() {
     mkdir install_ruby
     cd install_ruby || exit 1
-    curl -L "https://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR/ruby-$RUBY_VERSION.tar.gz" -O
-    tar xzvf "ruby-$RUBY_VERSION.tar.gz"
-    cd "ruby-$RUBY_VERSION" || exit 1
-    ./configure --prefix="$PREFIX"
-    make
-    $SUDO make install
-    cd ../ || exit 1
-    save_sources "$RUBY_VERSION" "$PREFIX" "$SUDO" "$4"
-    cd ../ || exit 1
+    curl -L "https://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR/ruby-$VERSION.tar.gz" -O
+
+    # Check if the file was downloaded successfully
+    if [ ! -f "ruby-$VERSION.tar.gz" ]; then
+        echo "Error: Failed to download Ruby $VERSION." >&2
+        exit 1
+    fi
+
+    tar xzvf "ruby-$VERSION.tar.gz"
+    make_and_install
+    [ -n "$4" ] || save_sources
+    cd .. || exit 1
     $SUDO rm -rf install_ruby
 }
 
@@ -135,9 +146,9 @@ main() {
 
     # Run the installation process
     setup_environment "$1" "$2" "$3" "$4"
-    install_ruby "$RUBY_VERSION" "$PREFIX" "$SUDO" "$4"
+    install_ruby "$VERSION" "$PREFIX" "$SUDO" "$4"
 
-    echo "Ruby $RUBY_VERSION installed successfully in $PREFIX."
+    echo "Ruby $VERSION installed successfully in $PREFIX."
 }
 
 # Execute main function

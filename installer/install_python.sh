@@ -126,26 +126,29 @@ save_sources() {
 
 # Compile and install Python
 make_and_install() {
-    cd "Python-$1" || exit 1
+    cd "Python-$VERSION" || exit 1
     ./configure --prefix="$PREFIX"
     make
     $SUDO make install
-    cd ..
+    cd .. || exit 1
 }
 
 # Download and extract Python
 install_python() {
     mkdir install_python
     cd install_python || exit 1
-    curl -L "http://www.python.org/ftp/python/$1/Python-$1.tgz" -O
-    if [ ! -f "Python-$1.tgz" ]; then
-        echo "Error: Failed to download Python $1." >&2
+    curl -L "http://www.python.org/ftp/python/$VERSION/Python-$VERSION.tgz" -O
+
+    # Check if the file was downloaded successfully
+    if [ ! -f "Python-$VERSION.tgz" ]; then
+        echo "Error: Failed to download Python $VERSION." >&2
         exit 1
     fi
-    tar xzvf "Python-$1.tgz"
-    [ "$2" = "sourceonly" ] || make_and_install "$1" "$2"
-    [ -n "$4" ] || save_sources "$1"
-    cd ..
+
+    tar xzvf "Python-$VERSION.tgz"
+    make_and_install
+    [ -n "$4" ] || save_sources
+    cd .. || exit 1
     $SUDO rm -rf install_python
 }
 
@@ -159,7 +162,7 @@ main() {
     setup_environment "$1" "$2" "$3" "$4"
     install_python "$VERSION" "$PREFIX" "$SUDO" "$4"
 
-    echo "Python $1 installed successfully in $PREFIX."
+    echo "Python $VERSION installed successfully in $PREFIX."
 }
 
 # Execute main function
