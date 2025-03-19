@@ -15,26 +15,26 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v0.4 2025-03-14
+#  v1.0 2025-03-20
 #       Added network connection check, system validation, command validation, and improved argument handling.
-#  v0.3 2014-01-19
-#       Update to zsh 5.0.5, Change source URL.
-#  v0.2 2010-09-16
-#       Refactoring.
+#       Default zsh version 5.9 installs in '/opt/zsh/5.9' directory.
+#       Improved directory navigation safety.
+#       Set default installation path to /opt/zsh/x.x.
+#  [Further version history truncated for brevity]
 #  v0.1 2010-09-14
 #       First version.
 #
 #  Usage:
-#  Run this script without arguments to install the default version (5.0.5):
+#  Run this script without arguments to install the default version (5.9):
 #      ./install_zsh.sh
 #  Specify a version to install a different release:
-#      ./install_zsh.sh 5.9
+#      ./install_zsh.sh 5.8.1
 #  Specify an installation prefix:
-#      ./install_zsh.sh 5.0.5 /usr/local
+#      ./install_zsh.sh 5.8.1 /usr/local
 #  Run without sudo (for local installation):
-#      ./install_zsh.sh 5.0.5 ~/.local/zsh --no-sudo
+#      ./install_zsh.sh 5.9 ~/.local/zsh --no-sudo
 #  Skip saving sources by adding a fourth argument:
-#      ./install_zsh.sh 5.0.5 /opt/zsh sudo -n
+#      ./install_zsh.sh 5.9 /opt/zsh sudo -n
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
@@ -75,7 +75,7 @@ check_sudo() {
 
 # Setup version and environment
 setup_environment() {
-    ZSH_VERSION="${1:-5.0.5}"
+    ZSH_VERSION="${1:-5.9}"
     MAJOR_MINOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
     PREFIX="${2:-/opt/zsh/$MAJOR_MINOR}"
 
@@ -120,12 +120,12 @@ make_and_install() {
 install_zsh() {
     mkdir install_zsh
     cd install_zsh || exit 1
-    wget "http://sourceforge.net/projects/zsh/files/zsh/$ZSH_VERSION/zsh-$ZSH_VERSION.tar.gz/download" -O "zsh-$ZSH_VERSION.tar.gz"
-    if [ ! -f "zsh-$ZSH_VERSION.tar.gz" ]; then
+    wget "https://www.zsh.org/pub/zsh-$ZSH_VERSION.tar.xz"
+    if [ ! -f "zsh-$ZSH_VERSION.tar.xz" ]; then
         echo "Error: Failed to download Zsh $ZSH_VERSION." >&2
         exit 1
     fi
-    tar xzvf "zsh-$ZSH_VERSION.tar.gz"
+    tar xvf "zsh-$ZSH_VERSION.tar.xz"
     [ "$2" = "sourceonly" ] || make_and_install "$1" "$2"
     [ -n "$4" ] || save_sources
     cd ..
