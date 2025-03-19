@@ -97,7 +97,7 @@ install_mecab() {
     ./configure --enable-utf8-only
     make
     sudo make install
-    cd ..
+    cd .. || exit 1
 
     wget "http://files.id774.net/archive/mecab-ipadic-$IPADIC_VERSION.tar.gz"
     tar xzvf "mecab-ipadic-$IPADIC_VERSION.tar.gz"
@@ -105,25 +105,26 @@ install_mecab() {
     ./configure --with-charset=utf8
     make
     sudo make install
-    cd ..
+    cd .. || exit 1
 
     wget "http://files.id774.net/archive/naistdic.tar.gz"
     tar xzvf "naistdic.tar.gz"
-    cd "mecab-naist-jdic-$NAISTDIC_VERSION" || exit 1
+    cd "mecab-naist-jdic-0.6.3b-20111013" || exit 1
+
     ./configure --with-charset=utf8
     make
     sudo make install
-    cd ..
+    cd .. || exit 1
 
     [ -n "$4" ] || save_sources
-    cd ..
+    cd .. || exit 1
     rm -rf install_mecab
 }
 
 # Save sources if requested
 save_sources() {
     sudo mkdir -p /usr/local/src/mecab
-    sudo cp -a mecab-$MECAB_VERSION mecab-ipadic-$IPADIC_VERSION mecab-naist-jdic-$NAISTDIC_VERSION /usr/local/src/mecab
+    sudo cp -a mecab-$MECAB_VERSION mecab-ipadic-$IPADIC_VERSION "mecab-naist-jdic-0.6.3b-20111013" /usr/local/src/mecab
     sudo chown -R root:root /usr/local/src/mecab
 }
 
