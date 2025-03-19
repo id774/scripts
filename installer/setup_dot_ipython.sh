@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-20
+#       Improved POSIX compliance and safety checks.
 #  v1.2 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.1 2023-12-20
@@ -47,26 +49,23 @@ check_scripts() {
 
 # Check if IPython is installed and get its path
 check_ipython() {
-    IPYTHON_PATH=$(command -v ipython)
-
-    if [ -z "$IPYTHON_PATH" ]; then
+    if ! command -v ipython >/dev/null 2>&1; then
         echo "Error: IPython is not installed." >&2
         exit 1
-    else
-        echo "IPython found at: $IPYTHON_PATH"
     fi
+    echo "IPython found at: $(command -v ipython)"
 }
 
-# Setup environment variables based on OSTYPE
+# Setup environment variables based on system type
 setup_environment() {
-     case $OSTYPE in
-       *darwin*)
-         OPTIONS=-Rv
-         ;;
-       *)
-         OPTIONS=-Rvd
-         ;;
-     esac
+    case "$(uname -s)" in
+        Darwin)
+            OPTIONS="-Rv"
+            ;;
+        *)
+            OPTIONS="-Rvd"
+            ;;
+    esac
 }
 
 # Initialize the nbserver IPython profile
@@ -75,25 +74,32 @@ init_nbserver() {
     NB_SERVER_DIR="${HOME}/.ipython/profile_nbserver/startup"
 
     if [ -d "$NB_SERVER_DIR" ]; then
-        cp ${OPTIONS} "${SCRIPTS}/dot_files/dot_ipython/profile_default/startup/00-init.py" "$NB_SERVER_DIR"
-        [ -f "${NB_SERVER_DIR}/00-init.py" ] && chmod -x "${NB_SERVER_DIR}/00-init.py"
+        cp $OPTIONS "${SCRIPTS}/dot_files/dot_ipython/profile_default/startup/00-init.py" "$NB_SERVER_DIR"
+        if [ -f "${NB_SERVER_DIR}/00-init.py" ] && [ -x "${NB_SERVER_DIR}/00-init.py" ]; then
+            chmod -x "${NB_SERVER_DIR}/00-init.py"
+        fi
     fi
 }
 
 # Copy .ipython configuration and set up default profile
 copy_dotipython() {
     IPYTHON_DIR="${HOME}/.ipython"
-    [ -d "$IPYTHON_DIR" ] && rm -rf "$IPYTHON_DIR"
+    if [ -d "$IPYTHON_DIR" ]; then
+        echo "Warning: Removing existing IPython directory: $IPYTHON_DIR" >&2
+        rm -rf "$IPYTHON_DIR"
+    fi
 
     ipython profile create default
     DEFAULT_PROFILE_DIR="${IPYTHON_DIR}/profile_default/startup"
 
     [ -d "$DEFAULT_PROFILE_DIR" ] || mkdir -p "$DEFAULT_PROFILE_DIR"
-    cp ${OPTIONS} "${SCRIPTS}/dot_files/dot_ipython/profile_default/startup/00-init.py" "$DEFAULT_PROFILE_DIR"
-    [ -f "${DEFAULT_PROFILE_DIR}/00-init.py" ] && chmod -x "${DEFAULT_PROFILE_DIR}/00-init.py"
+    cp $OPTIONS "${SCRIPTS}/dot_files/dot_ipython/profile_default/startup/00-init.py" "$DEFAULT_PROFILE_DIR"
+    if [ -f "${DEFAULT_PROFILE_DIR}/00-init.py" ] && [ -x "${DEFAULT_PROFILE_DIR}/00-init.py" ]; then
+        chmod -x "${DEFAULT_PROFILE_DIR}/00-init.py"
+    fi
 
-    cp ${OPTIONS} "${SCRIPTS}/dot_files/dot_zshrc" "${HOME}/.zshrc"
-    cp ${OPTIONS} "${SCRIPTS}/dot_files/dot_zshrc_local" "${HOME}/.zshrc_local"
+    cp $OPTIONS "${SCRIPTS}/dot_files/dot_zshrc" "${HOME}/.zshrc"
+    cp $OPTIONS "${SCRIPTS}/dot_files/dot_zshrc_local" "${HOME}/.zshrc_local"
 }
 
 # Main function to execute the script
@@ -101,9 +107,9 @@ main() {
     check_scripts
     check_ipython
     setup_environment
-    copy_dotipython $*
-    init_nbserver $*
+    copy_dotipython "$@"
+    init_nbserver "$@"
 }
 
 # Execute main function
-main $*
+main "$@"
