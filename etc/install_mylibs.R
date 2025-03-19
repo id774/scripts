@@ -17,7 +17,7 @@ options(repos = "https://cloud.r-project.org/")
 # List of required R packages
 required_packages <- c(
     # Machine Learning & Statistics
-    "randomForest", "forecast", "party", "gbm", "e1071", "lme4", "qcc", "DMwR",
+    "randomForest", "forecast", "party", "gbm", "e1071", "lme4", "qcc", "DMwR2",
 
     # Data Manipulation & Visualization
     "plyr", "reshape2", "lubridate", "sqldf", "ggplot2", "stringr",
@@ -26,13 +26,13 @@ required_packages <- c(
     "TTR", "tseries", "xts", "zoo",
 
     # Geospatial & Mapping
-    "XML", "RCurl", "RgoogleMaps", "classInt", "RColorBrewer",
-    "gpclib", "maptools", "spsurvey", "mapproj", "maps",
+    "XML", "httr", "curl", "ggmap", "classInt", "RColorBrewer",
+    "rgeos", "maptools", "spsurvey", "mapproj", "maps",
 
     # General Utilities
-    "XLConnect", "caTools", "aod", "car", "faraway", "scatterplot3d",
-    "pracma", "quadprog", "vegan", "xtable",
+    "readxl", "caTools", "aod", "car", "faraway", "scatterplot3d",
+    "pracma", "ROI", "vegan", "xtable",
 
     # Additional Packages
-    "sem", "igraph", "kernlab", "mvtnorm", "plotrix", "pequod"
+    "lavaan", "igraph", "kernlab", "mvtnorm", "plotrix", "pequod"
 )
