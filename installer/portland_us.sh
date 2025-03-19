@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# portland_us.sh: User Directory Management Script for GNU/Linux
+# setup_xdg_dirs_en.sh: User Directory Management Script for GNU/Linux
 #
 #  Description:
 #  This script manages user directories on GNU/Linux systems. It installs
@@ -28,7 +28,7 @@
 #
 #  Usage:
 #  Run the script without any arguments:
-#      ./portland_us.sh
+#      ./setup_xdg_dirs_en.sh
 #
 ########################################################################
 
