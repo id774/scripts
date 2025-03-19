@@ -5,10 +5,9 @@
 #
 #  Description:
 #  This script automates the installation of Ruby by:
-#  - Downloading the specified version from the official site.
+#  - Downloading the specified or default version from the official site.
 #  - Compiling and installing the package.
 #  - Optionally saving the source files for future use.
-#  - Compiling and installing essential extensions.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,24 +16,13 @@
 #
 #  Version History:
 #  v3.0 2025-03-19
-#       Restored Ruby installation process from official sources.
+#       Added network connection check, system validation, command validation, and improved argument handling.
 #       Default Ruby version 3.4.2 installs in '/opt/ruby/3.4' directory.
 #       Improved directory navigation safety.
-#       Consolidated previous modifications under a single version entry.
 #       Set default installation path to /opt/ruby/x.x.
-#  v2.5 2025-03-13
-#       Redirected error messages to stderr for better logging and debugging.
-#  v2.4 2025-03-05
-#       Added sudo privilege check when --sudo option is specified.
-#  v2.3 2023-03-12
-#       Remove obsolete versions.
-#  v2.2 2019-01-14
-#       Remove obsolete versions.
-#  v2.1 2015-03-11
-#       Fix bugs.
-#       Specify nosudo option.
+#  [Further version history truncated for brevity]
 #  v1.0 2008-06-23
-#       Stable.
+#       First stable release.
 #
 #  Usage:
 #  Run this script without arguments to install the default Ruby version (3.4.2):
@@ -44,9 +32,9 @@
 #  Specify an installation prefix:
 #      ./install_ruby.sh 3.3.7 /opt/ruby/3.3
 #  Run without sudo (for local installation):
-#      ./install_ruby.sh 3.3.7 ~/.local/ruby no-sudo
+#      ./install_ruby.sh 3.4.2 ~/.local/ruby no-sudo
 #  Skip saving sources by adding a third argument:
-#      ./install_ruby.sh 3.3.7 /opt/ruby sudo -n
+#      ./install_ruby.sh 3.4.2 /opt/ruby sudo -n
 #
 #  By default, if no installation path is provided, the script will install Ruby under /opt/ruby/x.x.
 #  For example, Ruby 3.4.2 will be installed in /opt/ruby/3.4.
@@ -83,7 +71,7 @@ check_network() {
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access or specify 'no-sudo'." >&2
         exit 1
     fi
 }
@@ -100,6 +88,17 @@ setup_environment() {
         SUDO="sudo"
     fi
     [ "$SUDO" = "sudo" ] && check_sudo
+
+    case $OSTYPE in
+      *darwin*)
+        OPTIONS=-pR
+        OWNER=root:wheel
+        ;;
+      *)
+        OPTIONS=-a
+        OWNER=root:root
+        ;;
+    esac
 }
 
 # Save sources if requested
@@ -107,7 +106,8 @@ save_sources() {
     [ "$SUDO" = "sudo" ] || return
     $SUDO mkdir -p /usr/local/src/ruby
     $SUDO cp -a "ruby-$VERSION" /usr/local/src/ruby/
-    $SUDO chown -R root:root /usr/local/src/ruby/ruby-$VERSION
+    $SUDO chown $OWNER /usr/local/src/python
+    $SUDO chown -R $OWNER /usr/local/src/ruby/ruby-$VERSION
 }
 
 # Compile and install Ruby

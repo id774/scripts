@@ -8,7 +8,6 @@
 #  - Downloading the specified or default version from the official site.
 #  - Compiling and installing the package.
 #  - Optionally saving the source files for future use.
-#  - Creating symlinks for Python, pip, and ipython.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -18,33 +17,20 @@
 #  Version History:
 #  v2.0 2025-03-19
 #       Added network connection check, system validation, command validation, and improved argument handling.
+#       Default Python version 3.13.2 installs in '/opt/python/3.13' directory.
+#       Improved directory navigation safety.
 #       Set default installation path to /opt/python/x.x.
-#  v1.9 2025-03-05
-#       Added sudo privilege check when --sudo option is specified.
-#  v1.8 2014-06-26
-#       Change address of pip.
-#  v1.7 2014-03-12
-#       Create symlink for ipython3.
-#  v1.6 2014-02-14
-#       Change source tarball ext.
-#  v1.5 2014-02-09
-#       Easy install as default, create symlink, bug fix.
-#  v1.4 2010-09-16
-#       Refactoring.
-#  v1.3 2010-03-07
-#       Refactoring.
-#  v1.2 2010-02-20
-#       Refactoring.
-#  v1.1 2009-02-21
-#       Add sourceonly option.
+#  [Further version history truncated for brevity]
 #  v1.0 2009-01-07
-#       Stable.
+#       First stable release.
 #
 #  Usage:
-#  Run this script without arguments to install the default version:
-#      ./install_python.sh 3.13.2
+#  Run this script without arguments to install the default Python version (3.13.2):
+#      ./install_python.sh
+#  Specify a different Python version:
+#      ./install_python.sh 3.12.9
 #  Specify an installation prefix:
-#      ./install_python.sh 3.13.2 /opt/python/3.13
+#      ./install_python.sh 3.12.9 /opt/python/3.12
 #  Run without sudo (for local installation):
 #      ./install_python.sh 3.13.2 ~/.local/python no-sudo
 #  Skip saving sources by adding a third argument:
@@ -55,7 +41,7 @@
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
-#  - The user must have `curl`, `make`, `sudo`, and `tar` installed.
+#  - The user must have `curl`, `make`, and `tar` installed.
 #  - Must be executed in a shell environment with internet access.
 #
 ########################################################################
@@ -133,7 +119,7 @@ make_and_install() {
     cd .. || exit 1
 }
 
-# Download and extract Python
+# Download and install Python
 install_python() {
     mkdir install_python
     cd install_python || exit 1
@@ -155,7 +141,7 @@ install_python() {
 # Main function to execute the script
 main() {
     # Perform initial checks
-    check_commands curl make sudo tar awk
+    check_commands curl sudo make tar awk mkdir cp chown
     check_network
 
     # Run the installation process
