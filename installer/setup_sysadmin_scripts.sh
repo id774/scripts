@@ -76,17 +76,18 @@ check_scripts() {
 }
 
 setup_environment() {
-    test -n "$2" && SBIN=$2
+    test -n "$2" && SBIN="$2"
     test -n "$2" || SBIN=/usr/local/sbin
-    case $OSTYPE in
-      *darwin*)
-        OPTIONS=-pR
-        OWNER=root:wheel
-        ;;
-      *)
-        OPTIONS=-a
-        OWNER=root:root
-        ;;
+
+    case "$(uname -s)" in
+        Darwin)
+            OPTIONS="-pR"
+            OWNER="root:wheel"
+            ;;
+        *)
+            OPTIONS="-a"
+            OWNER="root:root"
+            ;;
     esac
 }
 
@@ -164,7 +165,7 @@ install_sysadmin_scripts() {
 main() {
     check_scripts
     check_sudo
-    setup_environment $*
+    setup_environment "$@"
     test -n "$1" && uninstall_sysadmin_scripts
     test -n "$1" || install_sysadmin_scripts
     test "$1" = "install" && install_sysadmin_scripts

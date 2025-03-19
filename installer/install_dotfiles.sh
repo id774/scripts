@@ -51,6 +51,15 @@ check_sudo() {
     fi
 }
 
+# Check if SCRIPTS variable is set
+check_scripts() {
+    if [ -z "$SCRIPTS" ]; then
+        echo "Error: SCRIPTS environment variable is not set." >&2
+        echo "Please set the SCRIPTS variable to the path of your IPython startup files." >&2
+        exit 1
+    fi
+}
+
 # Function to check required commands
 check_commands() {
     for cmd in "$@"; do
@@ -65,25 +74,14 @@ check_commands() {
     done
 }
 
-# Check required commands
-check_commands sudo cp mkdir chmod chown id rm ln find zsh
-
-check_sudo
-
 setup_environment() {
-    SCRIPTS="$HOME/scripts"
-    if [ ! -d "$SCRIPTS" ]; then
-        echo "Error: Directory '$SCRIPTS' does not exist. Please create it or specify the correct path." >&2
-        exit 1
-    fi
-
-    case "$OSTYPE" in
-      *darwin*)
-        OPTIONS="-v"
-        ;;
-      *)
-        OPTIONS="-vd"
-        ;;
+    case "$(uname -s)" in
+        Darwin)
+            OPTIONS="-v"
+            ;;
+        *)
+            OPTIONS="-vd"
+            ;;
     esac
 }
 
@@ -203,7 +201,11 @@ bulk_deploy() {
 
 # Main function to execute the script
 main() {
+    # Check required commands
+    check_commands sudo cp mkdir chmod chown id rm ln find zsh uname touch
+    check_scripts
     setup_environment "$1"
+    check_sudo
     bulk_deploy
     test -f "$HOME/.zshrc.zwc" && rm -f "$HOME/.zshrc.zwc"
     cd || exit 1

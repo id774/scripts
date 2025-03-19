@@ -77,9 +77,13 @@ check_sudo() {
 # Setup version and environment
 setup_environment() {
     VERSION="6.5"
-    case "$OSTYPE" in
-        *darwin*) OWNER="root:wheel" ;;
-        *) OWNER="root:root" ;;
+    case "$(uname -s)" in
+        Darwin)
+            OWNER="root:wheel"
+            ;;
+        *)
+            OWNER="root:root"
+            ;;
     esac
 }
 
@@ -126,7 +130,7 @@ install_mew() {
 main() {
     # Perform initial checks
     check_system
-    check_commands curl wget make sudo tar
+    check_commands curl wget make sudo tar mkdir cp chown uname rm
     check_network
     check_sudo
 

@@ -30,25 +30,18 @@
 #  Specify a version to install a different release:
 #      ./install_zsh.sh 5.9
 #  Specify an installation prefix:
-#      ./install_zsh.sh 5.9 /opt/zsh
-#  Skip saving sources by adding a third argument:
-#      ./install_zsh.sh 5.9 /opt/zsh -n
+#      ./install_zsh.sh 5.0.5 /usr/local
+#  Run without sudo (for local installation):
+#      ./install_zsh.sh 5.0.5 ~/.local/zsh --no-sudo
+#  Skip saving sources by adding a fourth argument:
+#      ./install_zsh.sh 5.0.5 /opt/zsh sudo -n
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
 #  - The user must have `wget`, `make`, `sudo`, and `tar` installed.
 #  - Must be executed in a shell environment with internet access.
-#  - This script is intended for Linux systems only.
 #
 ########################################################################
-
-# Function to check if the system is Linux
-check_system() {
-    if [ "$(uname -s)" != "Linux" ]; then
-        echo "Error: This script is intended for Linux systems only." >&2
-        exit 1
-    fi
-}
 
 # Function to check required commands
 check_commands() {
@@ -83,31 +76,41 @@ check_sudo() {
 # Setup version and environment
 setup_environment() {
     ZSH_VERSION="${1:-5.0.5}"
-    SUDO="${3:-sudo}"
-    case $OSTYPE in
-      *darwin*)
-        OPTIONS=-pR
-        OWNER=root:wheel
-        ;;
-      *)
-        OPTIONS=-a
-        OWNER=root:root
-        ;;
+    MAJOR_MINOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
+    PREFIX="${2:-/opt/zsh/$MAJOR_MINOR}"
+
+    if [ -z "$3" ] || [ "$3" = "sudo" ]; then
+        SUDO="sudo"
+    else
+        SUDO=""
+    fi
+    [ "$SUDO" = "sudo" ] && check_sudo
+
+    case "$(uname -s)" in
+        Darwin)
+            OPTIONS="-pR"
+            OWNER="root:wheel"
+            ;;
+        *)
+            OPTIONS="-a"
+            OWNER="root:root"
+            ;;
     esac
 }
 
 # Save sources if requested
 save_sources() {
-    sudo mkdir -p /usr/local/src/zsh
-    sudo cp $OPTIONS "zsh-$ZSH_VERSION" /usr/local/src/zsh
-    sudo chown $OWNER /usr/local/src/zsh
-    sudo chown -R $OWNER /usr/local/src/zsh/zsh-$ZSH_VERSION
+    [ "$SUDO" = "sudo" ] || return
+    $SUDO mkdir -p /usr/local/src/zsh
+    $SUDO cp $OPTIONS "zsh-$ZSH_VERSION" /usr/local/src/zsh
+    $SUDO chown $OWNER /usr/local/src/zsh
+    $SUDO chown -R $OWNER /usr/local/src/zsh/zsh-$ZSH_VERSION
 }
 
 # Compile and install Zsh
 make_and_install() {
     cd "zsh-$ZSH_VERSION" || exit 1
-    ./configure --enable-multibyte --prefix="${2:-/usr/local}"
+    ./configure --enable-multibyte --prefix="$PREFIX"
     make
     $SUDO make install
     cd ..
@@ -124,7 +127,7 @@ install_zsh() {
     fi
     tar xzvf "zsh-$ZSH_VERSION.tar.gz"
     [ "$2" = "sourceonly" ] || make_and_install "$1" "$2"
-    [ -n "$3" ] || save_sources
+    [ -n "$4" ] || save_sources
     cd ..
     rm -rf install_zsh
 }
@@ -132,16 +135,14 @@ install_zsh() {
 # Main function to execute the script
 main() {
     # Perform initial checks
-    check_system
-    check_commands curl wget make sudo tar
+    check_commands curl wget make sudo tar awk mkdir cp chown uname
     check_network
-    check_sudo
 
     # Run the installation process
-    setup_environment "$1" "$2" "$3"
-    install_zsh "$1" "$2" "$3"
+    setup_environment "$@"
+    install_zsh "$VERSION" "$PREFIX" "$SUDO" "$4"
 
-    echo "Zsh $ZSH_VERSION installed successfully."
+    echo "Zsh $ZSH_VERSION installed successfully in $PREFIX."
 }
 
 # Execute main function

@@ -83,9 +83,15 @@ setup_environment() {
     fi
     [ "$SUDO" = "sudo" ] && check_sudo
 
-    case "$OSTYPE" in
-        *darwin*) OPTIONS="-pR"; OWNER="root:wheel" ;;
-        *) OPTIONS="-a"; OWNER="root:root" ;;
+    case "$(uname -s)" in
+        Darwin)
+            OPTIONS="-pR"
+            OWNER="root:wheel"
+            ;;
+        *)
+            OPTIONS="-a"
+            OWNER="root:root"
+            ;;
     esac
 }
 
@@ -124,7 +130,7 @@ install_ncurses() {
 # Main function to execute the script
 main() {
     # Perform initial checks
-    check_commands curl wget make sudo tar awk mkdir cp chown
+    check_commands curl wget make sudo tar awk mkdir cp chown uname
     check_network
 
     # Run the installation process

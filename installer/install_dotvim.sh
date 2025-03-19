@@ -60,15 +60,18 @@ check_scripts() {
 # Set up environment variables
 setup_environment() {
     TARGET="${1:-$HOME/.vim}"
-    case "$OSTYPE" in
-        *darwin*) OPTIONS="-Rv" ;;
-        *) OPTIONS="-Rvd" ;;
+    case "$(uname -s)" in
+        Darwin)
+            OPTIONS="-Rv"
+            ;;
+        *)
+            OPTIONS="-Rvd"
+            ;;
     esac
 }
 
 # Install dot_vim configuration
 install_dotvim() {
-    setup_environment "$1"
     if [ ! -d "$TARGET" ]; then
         mkdir -p "$TARGET"
     fi
@@ -78,7 +81,7 @@ install_dotvim() {
 # Main function to execute the script
 main() {
     # Perform initial checks
-    check_commands cp mkdir vim
+    check_commands cp mkdir vim uname
     check_scripts
 
     # Ensure dot_vim source exists before proceeding
@@ -87,6 +90,7 @@ main() {
         exit 1
     fi
 
+    setup_environment "$1"
     install_dotvim "$1"
 
     echo "dot_vim configuration installed successfully at $TARGET."

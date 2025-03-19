@@ -90,9 +90,13 @@ check_scripts() {
 setup_environment() {
     VERSION="${1:-2.4.8}"
     SYSTEM_ID="linux-$(uname -m)"
-    case "$OSTYPE" in
-        *darwin*) OWNER="root:wheel" ;;
-        *) OWNER="root:root" ;;
+    case "$(uname -s)" in
+        Darwin)
+            OWNER="root:wheel"
+            ;;
+        *)
+            OWNER="root:root"
+            ;;
     esac
 }
 
@@ -175,7 +179,7 @@ install_main() {
 main() {
     # Perform initial checks
     check_system
-    check_commands curl sudo tar
+    check_commands useradd update-rc.d ln mv rm cp chsh curl sudo make tar mkdir chown chmod uname
     check_network
     check_scripts
     check_sudo
