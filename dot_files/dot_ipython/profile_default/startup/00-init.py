@@ -46,8 +46,8 @@ with warnings.catch_warnings():
         import pandas as pd
         print("import pandas as pd")
         print("pandas", pd.__version__)
-        import pandas.tools.plotting as plotting
-        print("import pandas.tools.plotting as plotting")
+        import pandas.plotting as plotting
+        print("import pandas.plotting as plotting")
     except ImportError:
         pass
 
