@@ -95,16 +95,12 @@ install_gems() {
     # Define the list of gems as a multi-line string
     gems="
     rails
-    rb-readline
     debugger
     pry
     pry-doc
-    pry-debugger
-    pry-stack_explorer
     pry-rails
     pry-coolline
     hirb
-    hirb-unicode
     awesome_print
     rake
     bundler
@@ -132,10 +128,7 @@ install_gems() {
     rinku
     yaml_db
     term-ansicolor
-    turn
-    rest-client
     http_configuration
-    hpricot
     mechanize
     nokogiri
     anemone
@@ -149,7 +142,6 @@ install_gems() {
     net-scp
     net-sftp
     net-ping
-    coverage
     unicorn
     capistrano
     redgreen
@@ -159,26 +151,15 @@ install_gems() {
     rspec-mocks
     flexmock
     simplecov
-    simplecov-rcov
     sequel
-    thrift
     puppet
-    json
-    rdoc
     gherkin
     cucumber
     capybara
-    userstream
     webtail
     zipruby
-    oauth
-    webrat
     diff-lcs
     msgpack
-    gettext_rails
-    gettext_activerecord
-    searchlogic
-    fastercsv
     log4r
     foreman
     sinatra
@@ -193,8 +174,6 @@ install_gems() {
     rb-fsevent
     iconv
     i18n
-    execjs
-    therubyracer
     feedbag
     hashie
     gcalapi
@@ -205,25 +184,14 @@ install_gems() {
     pdfkit
     wkhtmltopdf-binary-edge
     gnuplot
-    ai4r
-    nimbus
     screening
     ctoD
     count_by
     poppler
-    rubypython
-    narray
     gsl
-    rmagick
-    graphviz
-    wukong
     woothee
-    webhdfs
-    passenger
     daemons
     eventmachine
-    fluentd
-    fluent-logger
     aws-sdk
     "
 
