@@ -224,7 +224,6 @@ install_gems() {
     eventmachine
     fluentd
     fluent-logger
-    heroku
     aws-sdk
     "
 
