@@ -75,7 +75,7 @@ check_sudo() {
 
 # Setup version and environment
 setup_environment() {
-    ZSH_VERSION="${1:-5.9}"
+    VERSION="${1:-5.9}"
     MAJOR_MINOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
     PREFIX="${2:-/opt/zsh/$MAJOR_MINOR}"
 
@@ -102,14 +102,14 @@ setup_environment() {
 save_sources() {
     [ "$SUDO" = "sudo" ] || return
     $SUDO mkdir -p /usr/local/src/zsh
-    $SUDO cp $OPTIONS "zsh-$ZSH_VERSION" /usr/local/src/zsh
+    $SUDO cp $OPTIONS "zsh-$VERSION" /usr/local/src/zsh
     $SUDO chown $OWNER /usr/local/src/zsh
-    $SUDO chown -R $OWNER /usr/local/src/zsh/zsh-$ZSH_VERSION
+    $SUDO chown -R $OWNER /usr/local/src/zsh/zsh-$VERSION
 }
 
 # Compile and install Zsh
 make_and_install() {
-    cd "zsh-$ZSH_VERSION" || exit 1
+    cd "zsh-$VERSION" || exit 1
     ./configure --enable-multibyte --prefix="$PREFIX"
     make
     $SUDO make install
@@ -120,13 +120,20 @@ make_and_install() {
 install_zsh() {
     mkdir install_zsh
     cd install_zsh || exit 1
-    wget "https://www.zsh.org/pub/zsh-$ZSH_VERSION.tar.xz"
-    if [ ! -f "zsh-$ZSH_VERSION.tar.xz" ]; then
-        echo "Error: Failed to download Zsh $ZSH_VERSION." >&2
+
+    if [ "$USER_SPECIFIED_VERSION" -eq 1 ]; then
+        ZSH_URL="https://www.zsh.org/pub/old/zsh-$VERSION.tar.xz"
+    else
+        ZSH_URL="https://www.zsh.org/pub/zsh-$VERSION.tar.xz"
+    fi
+
+    wget "$ZSH_URL"
+    if [ ! -f "zsh-$VERSION.tar.xz" ]; then
+        echo "Error: Failed to download Zsh $VERSION." >&2
         exit 1
     fi
-    tar xvf "zsh-$ZSH_VERSION.tar.xz"
-    [ "$2" = "sourceonly" ] || make_and_install "$1" "$2"
+    tar xvf "zsh-$VERSION.tar.xz"
+    make_and_install
     [ -n "$4" ] || save_sources
     cd ..
     rm -rf install_zsh
@@ -138,11 +145,16 @@ main() {
     check_commands curl wget make sudo tar awk mkdir cp chown uname
     check_network
 
+    USER_SPECIFIED_VERSION=0
+    if [ -n "$1" ]; then
+        USER_SPECIFIED_VERSION=1
+    fi
+
     # Run the installation process
     setup_environment "$@"
     install_zsh "$VERSION" "$PREFIX" "$SUDO" "$4"
 
-    echo "Zsh $ZSH_VERSION installed successfully in $PREFIX."
+    echo "Zsh $VERSION installed successfully in $PREFIX."
 }
 
 # Execute main function
