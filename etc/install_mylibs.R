@@ -12,7 +12,7 @@
 #      install.packages(required_packages, dependencies=TRUE)
 
 # Set CRAN repository
-options(repos="http://cran.ism.ac.jp")
+options(repos = "https://cloud.r-project.org/")
 
 # List of required R packages
 required_packages <- c(
