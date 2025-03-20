@@ -15,6 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.4 2025-03-20
+#       Fixed elisp directory to $HOME/.emacs.d/elisp/3rd-party.
+#       Added Mew version selection as second argument with default 6.9a.
 #  v0.3 2025-03-14
 #       Added network connection check, Linux system validation, command validation, and improved argument handling.
 #  v0.2 2011-12-08
@@ -76,7 +79,13 @@ check_sudo() {
 
 # Setup version and environment
 setup_environment() {
-    VERSION="6.5"
+    VERSION="${2:-6.9a}"
+
+    if [ ! -d "$EMACS_ELISP_DIR" ]; then
+        echo "Error: Emacs elisp directory '$EMACS_ELISP_DIR' does not exist." >&2
+        exit 1
+    fi
+
     case "$(uname -s)" in
         Darwin)
             OWNER="root:wheel"
@@ -101,28 +110,32 @@ save_sources() {
 
 # Install Mew
 install_mew() {
-    setup_environment
+    setup_environment "$@"
+
     mkdir install_mew
     cd install_mew || exit 1
+
     wget "http://www.mew.org/Release/mew-$VERSION.tar.gz"
     if [ ! -f "mew-$VERSION.tar.gz" ]; then
         echo "Error: Failed to download Mew $VERSION." >&2
         exit 1
     fi
+
     tar xzvf "mew-$VERSION.tar.gz"
     rm "mew-$VERSION.tar.gz"
     cd "mew-$VERSION" || exit 1
-    ./configure --with-elispdir="$HOME/.emacs.d/elisp/3rd-party" \
-                --with-etcdir="$HOME/.emacs.d/elisp/3rd-party" \
+
+    ./configure --with-elispdir="$EMACS_ELISP_DIR" \
+                --with-etcdir="$EMACS_ELISP_DIR" \
                 --with-emacs="$1"
     make
     make info
     make jinfo
     sudo make install
     sudo make install-jinfo
-    cd ..
+    cd .. || exit 1
     [ -n "$2" ] || save_sources
-    cd ..
+    cd .. || exit 1
     rm -rf install_mew
 }
 
