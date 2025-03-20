@@ -83,6 +83,8 @@ setup_environment() {
     fi
     [ "$SUDO" = "sudo" ] && check_sudo
 
+    DOWNLOAD_SOURCE="${4:-off}"
+
     case "$(uname -s)" in
         Darwin)
             OPTIONS="-pR"
@@ -122,7 +124,7 @@ install_ncurses() {
     make
     $SUDO make install
     cd .. || exit 1
-    [ -n "$4" ] || save_sources
+    [ "$DOWNLOAD_SOURCE" = "off" ] || save_sources
     cd .. || exit 1
     $SUDO rm -rf install_ncurses
 }
@@ -135,7 +137,7 @@ main() {
 
     # Run the installation process
     setup_environment "$@"
-    install_ncurses "$VERSION" "$PREFIX" "$SUDO" "$4"
+    install_ncurses
 
     echo "ncurses $VERSION installed successfully."
 }
