@@ -81,13 +81,13 @@ setup_environment() {
     VERSION="${1:-3.13.2}"
     MAJOR_MINOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
     PREFIX="${2:-/opt/python/$MAJOR_MINOR}"
-
     if [ -z "$3" ] || [ "$3" = "sudo" ]; then
         SUDO="sudo"
     else
         SUDO=""
     fi
-    [ "$SUDO" = "sudo" ] && check_sudo
+    check_sudo
+    DOWNLOAD_SOURCE="${4:-auto}"
 
     case "$(uname -s)" in
         Darwin)
@@ -133,7 +133,7 @@ install_python() {
 
     tar xzvf "Python-$VERSION.tgz"
     make_and_install
-    [ -n "$4" ] || save_sources
+    [ "$DOWNLOAD_SOURCE" = "auto" ] && save_sources
     cd .. || exit 1
     $SUDO rm -rf install_python
 }
@@ -146,7 +146,7 @@ main() {
 
     # Run the installation process
     setup_environment "$@"
-    install_python "$VERSION" "$PREFIX" "$SUDO" "$4"
+    install_python
 
     echo "Python $VERSION installed successfully in $PREFIX."
 }

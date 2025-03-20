@@ -75,15 +75,13 @@ setup_environment() {
     VERSION="${1:-6.5}"
     MAJOR_MINOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
     PREFIX="${2:-/opt/ncurses/$MAJOR_MINOR}"
-
     if [ -z "$3" ] || [ "$3" = "sudo" ]; then
         SUDO="sudo"
     else
         SUDO=""
     fi
-    [ "$SUDO" = "sudo" ] && check_sudo
-
-    DOWNLOAD_SOURCE="${4:-off}"
+    check_sudo
+    DOWNLOAD_SOURCE="${4:-auto}"
 
     case "$(uname -s)" in
         Darwin)
@@ -124,7 +122,7 @@ install_ncurses() {
     make
     $SUDO make install
     cd .. || exit 1
-    [ "$DOWNLOAD_SOURCE" = "off" ] || save_sources
+    [ "$DOWNLOAD_SOURCE" = "auto" ] && save_sources
     cd .. || exit 1
     $SUDO rm -rf install_ncurses
 }

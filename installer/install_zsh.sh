@@ -71,26 +71,27 @@ check_network() {
     fi
 }
 
-# Function to check if user has sudo privileges
+# Check if the user has sudo privileges (password may be required)
 check_sudo() {
-    if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+    if [ "$SUDO" = "sudo" ] && ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access or specify 'no-sudo'." >&2
         exit 1
     fi
 }
+
 
 # Setup version and environment
 setup_environment() {
     VERSION="${1:-5.9}"
     MAJOR_MINOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
     PREFIX="${2:-/opt/zsh/$MAJOR_MINOR}"
-
     if [ -z "$3" ] || [ "$3" = "sudo" ]; then
         SUDO="sudo"
     else
         SUDO=""
     fi
-    [ "$SUDO" = "sudo" ] && check_sudo
+    check_sudo
+    DOWNLOAD_SOURCE="${4:-auto}"
 
     case "$(uname -s)" in
         Darwin)
@@ -119,7 +120,7 @@ make_and_install() {
     ./configure --enable-multibyte --prefix="$PREFIX"
     make
     $SUDO make install
-    cd ..
+    cd .. || exit 1
 }
 
 # Download and extract Zsh
@@ -140,8 +141,8 @@ install_zsh() {
     fi
     tar xvf "zsh-$VERSION.tar.xz"
     make_and_install
-    [ -n "$4" ] || save_sources
-    cd ..
+    [ "$DOWNLOAD_SOURCE" = "auto" ] && save_sources
+    cd .. || exit 1
     rm -rf install_zsh
 }
 

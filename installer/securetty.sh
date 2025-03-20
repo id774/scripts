@@ -57,8 +57,8 @@ check_commands() {
 
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
-    if [ "$SUDO" = "sudo" ] && ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access or specify 'no-sudo'." >&2
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }
