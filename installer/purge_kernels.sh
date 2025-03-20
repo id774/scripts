@@ -8,18 +8,15 @@
 #  keeping the currently running kernel. It ensures system compatibility
 #  and prevents accidental removal of the active kernel.
 #
-#  The script performs the following operations:
-#  - Checks if the system is Ubuntu-based before execution.
-#  - Identifies and lists installed kernel packages.
-#  - Excludes the currently running kernel from the removal list.
-#  - Safely removes only outdated kernels while preserving system stability.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-20
+#       Added system and command check functions for improved security.
+#       Structured script into functions for better modularity and error handling.
 #  v1.2 2025-02-04
 #       Switched from aptitude to apt for broader compatibility.
 #       Improved kernel identification using dpkg --list.
@@ -41,26 +38,75 @@
 #
 ########################################################################
 
-# Ensure the system is Ubuntu-based
-if [ ! -f /etc/lsb-release ] || [ ! -f /etc/debian_version ]; then
-    echo "This script only runs on Ubuntu or Ubuntu-based systems." >&2
-    exit 1
-fi
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
 
-# Get the current kernel version
-CURKERNEL=$(uname -r | sed 's/-*[a-z]//g' | sed 's/-386//g')
+# Function to check if the system is Ubuntu-based
+check_system_ubuntu() {
+    if [ ! -f /etc/lsb-release ] || [ ! -f /etc/debian_version ]; then
+        echo "This script only runs on Ubuntu or Ubuntu-based systems." >&2
+        exit 1
+    fi
+}
 
-# Find installed kernel packages
-OLDKERNELS=$(dpkg --list | awk '/^ii/ && /linux-image-[0-9]/ {print $2}' | grep -v "$CURKERNEL")
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
 
-# Ensure there are old kernels to remove
-if [ -z "$OLDKERNELS" ]; then
-    echo "No old kernels to remove."
-    exit 0
-fi
+# Check if the user has sudo privileges
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
 
-# Remove old kernels safely
-echo "Purging old kernels: $OLDKERNELS"
-sudo apt purge -y $OLDKERNELS
+# Function to get the currently running kernel version
+get_current_kernel() {
+    CURKERNEL=$(uname -r | sed 's/-*[a-z]//g' | sed 's/-386//g')
+}
 
-echo "Kernel cleanup completed."
+# Function to find and list old kernels
+list_old_kernels() {
+    OLDKERNELS=$(dpkg --list | awk '/^ii/ && /linux-image-[0-9]/ {print $2}' | grep -v "$CURKERNEL")
+    if [ -z "$OLDKERNELS" ]; then
+        echo "No old kernels to remove."
+        exit 0
+    fi
+}
+
+# Function to remove old kernels safely
+remove_old_kernels() {
+    echo "Purging old kernels: $OLDKERNELS"
+    sudo apt purge -y $OLDKERNELS
+    echo "Kernel cleanup completed."
+}
+
+# Main function to execute the script
+main() {
+    check_system
+    check_system_ubuntu
+    check_commands apt dpkg awk grep sed sudo uname
+    check_sudo
+    get_current_kernel
+    list_old_kernels
+    remove_old_kernels
+}
+
+# Execute main function
+main "$@"

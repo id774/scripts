@@ -18,6 +18,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-20
+#       Added system and command check functions for improved security.
+#       Structured script into functions for better modularity and error handling.
 #  v1.2 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.1 2023-12-06
@@ -26,7 +29,8 @@
 #       Initial release.
 #
 #  Usage:
-#  ./purge_apt_cache.sh
+#  Run the script directly without any arguments:
+#      ./purge_apt_cache.sh
 #
 ########################################################################
 
@@ -88,7 +92,7 @@ perform_cleanup() {
     rm "$SCRIPT_NAME"
 }
 
-# Main function to execute the script
+# Main function to execute the Script
 main() {
     check_system
     check_commands aptitude awk sed chmod cat rm
