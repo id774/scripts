@@ -79,8 +79,8 @@ set_temp_file() {
 
 # Function to generate and execute the cleanup script
 perform_cleanup() {
-    aptitude search . | grep '^c' | awk '{print $2}' | sed 's/^/sudo apt purge -y /g' > "$SCRIPT_NAME"
     echo "#!/bin/sh" > "$SCRIPT_NAME"
+    aptitude search . | grep '^c' | awk '{print $2}' | sed 's/^/sudo apt purge -y /g' >> "$SCRIPT_NAME"
     chmod +x "$SCRIPT_NAME"
     echo "The following packages will be purged:"
     cat "$SCRIPT_NAME"
