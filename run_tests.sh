@@ -205,9 +205,11 @@ display_final_report() {
         exit 1
     else
         echo "All tests passed successfully."
-        echo "Total test scripts: $total_scripts"
-        echo "Total test cases: $total_tests"
-        echo "Skipped test cases: $((python_skipped_tests + ruby_skipped_tests))"
+        echo "  Python: $python_version"
+        echo "  Ruby: $ruby_version"
+        echo "  Total test scripts: $total_scripts"
+        echo "  Total test cases: $total_tests"
+        echo "  Skipped test cases: $((python_skipped_tests + ruby_skipped_tests))"
         exit 0
     fi
 }
