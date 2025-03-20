@@ -28,8 +28,10 @@
 #  Usage:
 #  Run this script with the Emacs binary path:
 #      ./install_mew.sh /usr/bin/emacs
-#  Skip saving sources by adding a second argument:
-#      ./install_mew.sh /usr/bin/emacs -n
+#  Specify a Mew version (default is 6.9a):
+#      ./install_mew.sh /usr/bin/emacs 6.8
+#  Skip saving sources by adding a third argument:
+#      ./install_mew.sh /usr/bin/emacs 6.9a -n
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
@@ -80,6 +82,7 @@ check_sudo() {
 # Setup version and environment
 setup_environment() {
     VERSION="${2:-6.9a}"
+    EMACS_ELISP_DIR="$HOME/.emacs.d/elisp/3rd-party"
 
     if [ ! -d "$EMACS_ELISP_DIR" ]; then
         echo "Error: Emacs elisp directory '$EMACS_ELISP_DIR' does not exist." >&2
