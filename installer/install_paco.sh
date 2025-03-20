@@ -108,9 +108,9 @@ install_paco() {
     make
     sudo make install
     sudo make logme
-    cd ..
+    cd .. || exit 1
     [ -n "$2" ] || save_sources
-    cd ..
+    cd .. || exit 1
     rm -rf install_paco
 }
 

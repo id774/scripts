@@ -136,9 +136,9 @@ install_des() {
     sudo make install
 
     echo "Cleaning up installation files..."
-    cd ..
+    cd .. || exit 1
     rm -rf des
-    cd ..
+    cd .. || exit 1
     rm -rf install_des
     echo "DES installation completed."
 }

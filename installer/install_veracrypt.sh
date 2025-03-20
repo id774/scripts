@@ -120,6 +120,7 @@ setup_environment() {
     fi
 
     OWNER=root:root
+    VERSION=1.25.9
 }
 
 # Save downloaded packages
@@ -144,20 +145,20 @@ install_veracrypt() {
     setup_environment
 
     get_architecture
-    echo "Installing VeraCrypt version 1.25.9 for architecture: $ARCH"
+    echo "Installing VeraCrypt version $VERSION for architecture: $ARCH"
     mkdir install_veracrypt
     cd install_veracrypt || exit 1
 
-    FILE_NAME="veracrypt-1.25.9-setup-console-$ARCH"
+    FILE_NAME="veracrypt-$VERSION-setup-console-$ARCH"
     echo "Downloading $FILE_NAME..."
     wget "http://id774.net/veracrypt/$FILE_NAME"
-    [ "$1" != "-n" ] && save_packages "$FILE_NAME" /usr/local/src/crypt/veracrypt
+    [ -n "$1" ] || save_packages "$FILE_NAME" /usr/local/src/crypt/veracrypt
 
     chmod +x "./$FILE_NAME" && "./$FILE_NAME"
     file /usr/bin/veracrypt
     set_veracrypt_permission
 
-    cd ..
+    cd .. || exit 1
     rm -rf install_veracrypt
 }
 

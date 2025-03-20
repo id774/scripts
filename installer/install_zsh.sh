@@ -39,7 +39,7 @@
 #  Note:
 #  The current default version for installation is 5.9, but it is anticipated that this version
 #  will eventually be moved to the 'old' directory in the future. At that point, to install version
-#  5.9, it will need to be explicitly specified. To install the latest version then, the script’s
+#  5.9, it will need to be explicitly specified. To install the latest version then, the script's
 #  default version will need to be updated.
 #
 #  Requirements:

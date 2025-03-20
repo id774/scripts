@@ -128,7 +128,7 @@ install_dot_emacs() {
         test -d "$HOME/local/github" || mkdir -p "$HOME/local/github"
         cd "$HOME/local/github" || exit 1
         git clone https://github.com/id774/dot_emacs.git
-        cd
+        cd || exit 1
         ln -snf "$HOME/local/github/dot_emacs"
         "$HOME/local/github/dot_emacs/install_dotemacs.sh"
     fi

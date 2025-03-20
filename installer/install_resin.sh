@@ -104,9 +104,9 @@ install_resin() {
     ./configure --prefix="/opt/resin/$VERSION"
     make
     sudo make install
-    cd ..
+    cd .. || exit 1
     [ -n "$2" ] || save_sources
-    cd ..
+    cd .. || exit 1
     rm -rf install_resin
 }
 

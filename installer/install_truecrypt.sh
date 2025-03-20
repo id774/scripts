@@ -175,7 +175,7 @@ install_truecrypt() {
     file /usr/bin/truecrypt
     set_truecrypt_permission
 
-    cd ..
+    cd .. || exit 1
     rm -rf install_truecrypt
 }
 

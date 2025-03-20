@@ -21,7 +21,7 @@
 #       First.
 #
 #  Usage:
-#  Run this script without arguments to install the default version (1.2.5):
+#  Run this script without arguments to install the default version (5.0.3):
 #      ./install_cassandra.sh
 #  Specify a version to install a different release:
 #      ./install_cassandra.sh 4.1.8
@@ -102,7 +102,7 @@ install_cassandra() {
     [ -d "/opt/cassandra/$VERSION" ] && sudo rm -rf "/opt/cassandra/$VERSION"
     sudo mv "$VERSION" /opt/cassandra/
     sudo chown -R "$OWNER" "/opt/cassandra/$VERSION"
-    cd ..
+    cd .. || exit 1
     rm -rf install_cassandra
 
     cd /opt/cassandra || exit 1
