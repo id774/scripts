@@ -74,6 +74,7 @@ check_commands() {
     done
 }
 
+# Set up system-specific environment options
 setup_environment() {
     case "$(uname -s)" in
         Darwin)
@@ -85,6 +86,7 @@ setup_environment() {
     esac
 }
 
+# Create directories if they do not exist
 mkdir_if_not_exist() {
     while [ "$#" -gt 0 ]
     do
@@ -93,6 +95,7 @@ mkdir_if_not_exist() {
     done
 }
 
+# Deploy user dotfiles such as .zshrc, .vimrc, etc.
 deploy_dotfile() {
     for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore condarc gemrc Rprofile emacs
     do
@@ -104,6 +107,7 @@ deploy_dotfile() {
     done
 }
 
+# Set up Emacs configuration directories and permissions
 setup_dotemacs() {
     mkdir_if_not_exist \
       "$1/.emacs.d" \
@@ -121,6 +125,7 @@ setup_dotemacs() {
       sudo rm -f /usr/local/etc/emacs.d/elisp/elisp
 }
 
+# Create user skeleton directories and set proper permissions
 mkdir_skelton() {
     mkdir_if_not_exist \
       "$1/.tmp" "$1/.local" "$1/.config" "$1/tmp" "$1/mnt" "$1/local" "$1/var" "$1/etc" "$1/bin" "$1/arc"
@@ -129,11 +134,13 @@ mkdir_skelton() {
     command -v emacs >/dev/null 2>&1 && setup_dotemacs "$1"
 }
 
+# Deploy dotfiles and create necessary directories for a given user
 deploy_dotfiles() {
     deploy_dotfile "$1"
     mkdir_skelton "$1"
 }
 
+# Deploy dotfiles to a specific user and adjust ownership
 deploy_dotfiles_to_others() {
     if [ -d "$1" ]; then
         deploy_dotfiles "$1"
@@ -141,6 +148,7 @@ deploy_dotfiles_to_others() {
     fi
 }
 
+# Deploy dotfiles to macOS users
 deploy_dotfiles_to_mac() {
     while [ "$#" -gt 0 ]
     do
@@ -151,6 +159,7 @@ deploy_dotfiles_to_mac() {
     done
 }
 
+# Deploy dotfiles to Linux users
 deploy_dotfiles_to_linux() {
     while [ "$#" -gt 0 ]
     do
@@ -163,6 +172,7 @@ deploy_dotfiles_to_linux() {
     done
 }
 
+# Deploy dotfiles to multiple users across different OS environments
 bulk_deploy() {
     test -d "/home" && test -d "/home/$USER" && sudo chmod 750 /home/*
     deploy_dotfiles_to_linux \
