@@ -126,11 +126,10 @@ setup_tune2fs() {
 main() {
     check_environment
     setup_environment
-    check_commands sudo vi tee locale locale-gen update-locale
+    check_commands sudo tee locale locale-gen update-locale
     check_sudo
 
     set_locale_jp
-    sudo vi /etc/apt/sources.list
     apt_upgrade
     create_admin_group
     setup_tune2fs
