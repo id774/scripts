@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# install_aptconf.sh: Configure apt.conf for APT
+# setup_aptconf.sh: Configure apt.conf for APT
 #
 #  Description:
 #  This script deploys a custom `apt.conf` file and allows manual editing.
@@ -21,7 +21,7 @@
 #
 #  Usage:
 #  Run this script to deploy and edit the APT configuration file:
-#      ./install_aptconf.sh
+#      ./setup_aptconf.sh
 #
 #  Requirements:
 #  - Must be executed with sudo privileges.
