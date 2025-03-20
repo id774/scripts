@@ -104,9 +104,9 @@ install_talib() {
     ./configure --prefix=/usr/local
     make
     sudo make install
-    cd ..
+    cd .. || exit 1
     [ -n "$2" ] || save_sources
-    cd ..
+    cd .. || exit 1
     rm -rf install_talib
 }
 
