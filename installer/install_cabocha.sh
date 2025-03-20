@@ -1,11 +1,13 @@
 #!/bin/sh
 
 ########################################################################
-# install_mecab.sh: Installer for MeCab and related dictionaries
+# install_cabocha.sh: Installer for CaboCha and CRF++
 #
 #  Description:
-#  This script automates the installation of MeCab by:
-#  - Installing the IPADIC and NAIST dictionaries.
+#  This script automates the installation of CaboCha and CRF++ by:
+#  - Downloading the default version from the official repository.
+#  - Installing required dependencies.
+#  - Compiling and installing the application.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,12 +19,12 @@
 #       Unified structure, added system checks, improved error handling.
 #       Removed arguments, fixed versions, and removed source saving.
 #  [Further version history truncated for brevity]
-#  v0.1 2012-08-07
+#  v0.1 2012-10-23
 #       First version.
 #
 #  Usage:
-#  Run this script without arguments to install the default version:
-#      ./install_mecab.sh
+#  Run this script without arguments to install the default versions:
+#      ./install_cabocha.sh
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
@@ -31,9 +33,8 @@
 ########################################################################
 
 # Fixed versions
-MECAB_VERSION="0.996"
-IPADIC_VERSION="2.7.0-20070801"
-NAISTDIC_VERSION="0.6.3b-20111013"
+CABOCHA_VERSION="0.67"
+CRF_VERSION="0.58"
 
 # Function to check if the system is Linux
 check_system() {
@@ -73,48 +74,47 @@ check_sudo() {
     fi
 }
 
-# Install MeCab and dictionaries
-install_mecab() {
-    mkdir install_mecab
-    cd install_mecab || exit 1
-
-    wget "http://files.id774.net/archive/mecab-$MECAB_VERSION.tar.gz"
-    tar xzvf "mecab-$MECAB_VERSION.tar.gz"
-    cd "mecab-$MECAB_VERSION" || exit 1
-    ./configure --enable-utf8-only
+# Install CRF++
+install_crf() {
+    wget "http://files.id774.net/archive/CRF%2B%2B-$CRF_VERSION.tar.gz"
+    tar xzvf "CRF++-$CRF_VERSION.tar.gz"
+    cd "CRF++-$CRF_VERSION" || exit 1
+    ./configure
     make
     sudo make install
     cd .. || exit 1
+}
 
-    wget "http://files.id774.net/archive/mecab-ipadic-$IPADIC_VERSION.tar.gz"
-    tar xzvf "mecab-ipadic-$IPADIC_VERSION.tar.gz"
-    cd "mecab-ipadic-$IPADIC_VERSION" || exit 1
-    ./configure --with-charset=utf8
+# Install CaboCha
+install_cabocha() {
+    wget "http://files.id774.net/archive/cabocha-$CABOCHA_VERSION.tar.bz2"
+    tar xjvf "cabocha-$CABOCHA_VERSION.tar.bz2"
+    cd "cabocha-$CABOCHA_VERSION" || exit 1
+    ./configure --with-charset=UTF8 --with-posset=IPA --with-mecab-config=$(command -v mecab-config)
     make
     sudo make install
     cd .. || exit 1
+}
 
-    wget "http://files.id774.net/archive/naistdic.tar.gz"
-    tar xzvf "naistdic.tar.gz"
-    cd "mecab-naist-jdic-$NAISTDIC_VERSION" || exit 1
-    ./configure --with-charset=utf8
-    make
-    sudo make install
+# Install CRF++ and CaboCha
+install_crf_and_cabocha() {
+    mkdir install_cabocha || exit 1
+    cd install_cabocha || exit 1
+    install_crf
+    install_cabocha
     cd .. || exit 1
-
-    cd .. || exit 1
-    rm -rf install_mecab
+    rm -rf install_cabocha
 }
 
 # Main function to execute the script
 main() {
     check_system
-    check_commands curl wget tar make sudo
+    check_commands curl wget make sudo apt-get tar
     check_network
     check_sudo
-    install_mecab
-    echo "MeCab installation completed successfully."
+    install_crf_and_cabocha
+    echo "CaboCha $CABOCHA_VERSION and CRF++ $CRF_VERSION installed successfully."
 }
 
 # Execute main function
-main "$@"
+main
