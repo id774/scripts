@@ -89,6 +89,7 @@ check_scripts() {
     fi
 }
 
+# Set up environment variables and system-specific options
 setup_environment() {
     test -n "$2" && SBIN="$2"
     test -n "$2" || SBIN=/usr/local/sbin
@@ -105,6 +106,7 @@ setup_environment() {
     esac
 }
 
+# Uninstall a list of specified scripts
 uninstall_scripts() {
     while [ $# -gt 0 ]
     do
@@ -116,6 +118,7 @@ uninstall_scripts() {
     done
 }
 
+# Uninstall all system administration scripts
 uninstall_sysadmin_scripts() {
     uninstall_scripts \
         md5 \
@@ -146,12 +149,14 @@ uninstall_sysadmin_scripts() {
         restart-sshd
 }
 
+# Install a script with the specified permissions and ownership
 install_scripts() {
     sudo cp -v $OPTIONS $SCRIPTS/$2 $SBIN/$3
     sudo chmod $1 $SBIN/$3
     sudo chown $OWNER $SBIN/$3
 }
 
+# Install general system administration scripts
 setup_scripts() {
     install_scripts 755 md5.py md5
     install_scripts 755 chmodtree.py chmodtree
@@ -163,6 +168,7 @@ setup_scripts() {
     install_scripts 755 restart-sshd.sh restart-sshd
 }
 
+# Install Debian-specific system administration scripts
 setup_debian_scripts() {
     install_scripts 755 apt-upgrade.sh apt-upgrade
     install_scripts 755 dpkg-hold.sh dpkg-hold
@@ -170,6 +176,7 @@ setup_debian_scripts() {
     install_scripts 755 tcmount.py tcmount
 }
 
+# Install system administration scripts based on the system type
 install_sysadmin_scripts() {
     setup_scripts
     test -f /etc/debian_version && setup_debian_scripts
