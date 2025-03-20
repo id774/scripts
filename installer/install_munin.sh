@@ -115,7 +115,7 @@ main() {
     configure_munin
     configure_authentication
     restart_services
-    "$SCRIPTS/munin_plugins_links.sh" -c
+    "$SCRIPTS/installer/munin_plugins_links.sh" -c
     echo "Munin installation and configuration completed successfully."
 }
 
