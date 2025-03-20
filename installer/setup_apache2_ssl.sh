@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# install_apache2ssl.sh: Configure Apache2 with SSL
+# setup_apache2_ssl.sh: Configure Apache2 with SSL
 #
 #  Description:
 #  This script automates the setup of an SSL-enabled Apache2 server by:
@@ -24,7 +24,7 @@
 #
 #  Usage:
 #  Run this script to configure Apache2 with SSL:
-#      ./install_apache2ssl.sh
+#      ./setup_apache2_ssl.sh
 #
 #  Requirements:
 #  - Must be executed with sudo privileges.
