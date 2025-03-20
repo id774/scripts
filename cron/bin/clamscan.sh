@@ -48,10 +48,12 @@ EXECDIR="$(dirname "$0")"
 EXCLUDEFILE="$EXECDIR/clamscan_exclude"
 
 # Update virus definitions
+systemctl stop clamav-freshclam.service
 freshclam || {
     echo "Error: Failed to update ClamAV virus definitions." >&2
     exit 1
 }
+systemctl start clamav-freshclam.service
 
 # Construct exclusion options
 OPTS=""
