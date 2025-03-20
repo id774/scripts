@@ -66,7 +66,7 @@ check_commands() {
 
 # Check if the user has sudo privileges
 check_sudo() {
-    if ! sudo -v 2>/dev/null; then
+    if ! sudo -v >/dev/null 2>&1; then
         echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
@@ -80,13 +80,13 @@ set_temp_file() {
 # Function to generate and execute the cleanup script
 perform_cleanup() {
     aptitude search . | grep '^c' | awk '{print $2}' | sed 's/^/sudo apt purge -y /g' > "$SCRIPT_NAME"
-    sed -i '1s/^/#!\/bin\/sh\n/' "$SCRIPT_NAME"
+    echo "#!/bin/sh" > "$SCRIPT_NAME"
     chmod +x "$SCRIPT_NAME"
     echo "The following packages will be purged:"
     cat "$SCRIPT_NAME"
-    read -p "Do you want to continue? (y/n): " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "Do you want to continue? (y/n): "
+    read REPLY
+    if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ]; then
         "$SCRIPT_NAME"
     fi
     rm "$SCRIPT_NAME"
