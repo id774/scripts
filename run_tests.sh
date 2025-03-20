@@ -193,7 +193,6 @@ display_ruby_report() {
     echo "All Ruby tests completed."
     echo "  RSpec path: $rspec_path"
     echo "  $ruby_version"
-    echo "  $rspec_version"
     echo "  Total Ruby test scripts: $ruby_scripts"
     echo "  Total Ruby test cases: $ruby_tests"
     echo "  Skipped Ruby test cases: $ruby_skipped_tests"
