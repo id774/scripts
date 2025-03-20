@@ -159,6 +159,14 @@ setup_get_resources() {
     "$SCRIPTS/installer/install_get_resources.sh"
 }
 
+setup_chkrootkit() {
+    "$SCRIPTS/installer/install_chkrootkit.sh"
+}
+
+setup_clamscan() {
+    "$SCRIPTS/installer/install_clamscan.sh"
+}
+
 setup_munin() {
     "$SCRIPTS/installer/install_munin.sh"
 }
@@ -199,6 +207,8 @@ main() {
     install_crypt
     setup_sysadmin_scripts
     setup_get_resources
+    setup_chkrootkit
+    setup_clamscan
     setup_munin
     setup_securetty
     permission_for_src
