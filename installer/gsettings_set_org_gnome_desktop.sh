@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# gsettings_set_org_gnome_desktop.sh: Configure GNOME media handling settings
+# setup_gnome_desktop_gsettings.sh: Configure GNOME media handling settings
 #
 #  Description:
 #  This script modifies GNOME desktop settings related to media handling.
@@ -25,7 +25,7 @@
 #       - Initial release with command validation and setting updates.
 #
 #  Usage:
-#  ./gsettings_set_org_gnome_desktop.sh
+#  ./setup_gnome_desktop_gsettings.sh
 #  No arguments required.
 #
 ########################################################################
