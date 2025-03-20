@@ -14,11 +14,12 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v5.0 2025-03-13
+#  v5.0 2025-03-21
 #       Improved system detection for Debian and Ubuntu.
 #       Enhanced documentation and comments for better maintainability.
 #       Ensured strict POSIX compliance.
 #       Redirected error messages to stderr for better logging and debugging.
+#       Added confirmation prompt before execution.
 #  [Further version history truncated for brevity]
 #  v0.1 2007-08-27
 #       First version.
@@ -40,6 +41,14 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 ########################################################################
+
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
 
 # Function to check required commands
 check_commands() {
@@ -90,12 +99,28 @@ setup_environment() {
     fi
 }
 
+# Function to ask for confirmation before execution
+confirm_execution() {
+    echo "This script will configure your Debian-based system."
+    printf "Do you want to proceed? [y/N]: "
+    read -r response < /dev/tty
+
+    case "$response" in
+        y|Y) return 0 ;;
+        *) echo "Aborted by user."; exit 1 ;;
+    esac
+}
+
 # Main function to execute the script
 main() {
     # Check if the system is Debian-based before proceeding
-    check_debian_based
+    check_system
     setup_environment
     check_commands awk tr
+    check_debian_based
+
+    # Ask for confirmation before proceeding
+    confirm_execution
 
     # Environment setup
     "$SCRIPTS/installer/debian_env.sh"
