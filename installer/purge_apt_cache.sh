@@ -30,18 +30,74 @@
 #
 ########################################################################
 
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
+
 # Check if the system is Debian-based
-if [ ! -f /etc/debian_version ]; then
-  echo "This script only runs on Debian-based systems." >&2
-  exit 1
-fi
+check_debian() {
+    if [ ! -f /etc/debian_version ]; then
+        echo "This script only runs on Debian-based systems." >&2
+        exit 1
+    fi
+}
 
-# Generate and execute the cleanup script
-SCRIPT_NAME="$TMP/purge_apt_cache.sh"
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
 
-aptitude search . | grep '^c' | awk '{print $2}' | sed 's/^/sudo apt purge -y /g' > "$SCRIPT_NAME"
-sed -i '1s/^/#!\/bin\/sh\n/' "$SCRIPT_NAME"
-chmod +x "$SCRIPT_NAME"
-"$SCRIPT_NAME"
-rm "$SCRIPT_NAME"
+# Check if the user has sudo privileges
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
 
+# Function to set temporary file location
+set_temp_file() {
+    SCRIPT_NAME="${TMP:-/tmp}/purge_apt_cache.sh"
+}
+
+# Function to generate and execute the cleanup script
+perform_cleanup() {
+    aptitude search . | grep '^c' | awk '{print $2}' | sed 's/^/sudo apt purge -y /g' > "$SCRIPT_NAME"
+    sed -i '1s/^/#!\/bin\/sh\n/' "$SCRIPT_NAME"
+    chmod +x "$SCRIPT_NAME"
+    echo "The following packages will be purged:"
+    cat "$SCRIPT_NAME"
+    read -p "Do you want to continue? (y/n): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        "$SCRIPT_NAME"
+    fi
+    rm "$SCRIPT_NAME"
+}
+
+# Main function to execute the script
+main() {
+    check_system
+    check_commands aptitude awk sed chmod cat rm
+    check_debian
+    check_sudo
+    set_temp_file
+    trap 'rm -f "$SCRIPT_NAME"' EXIT
+    perform_cleanup
+}
+
+# Execute main function
+main "$@"
