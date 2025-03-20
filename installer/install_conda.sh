@@ -46,12 +46,18 @@
 #
 ########################################################################
 
-# Function to check if a command exists in the PATH
-check_command() {
-    if ! command -v "$1" >/dev/null 2>&1; then
-        echo "Error: $1 is not installed or not in PATH." >&2
-        exit 1
-    fi
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
 }
 
 # Function to set up the environment variables for Conda and Easy Install
@@ -65,8 +71,7 @@ setup_environment() {
     fi
 
     # Verify that Conda is available
-    check_command "$CONDA"
-    check_command sed
+    check_commands "$CONDA" sed
 
     # Warn if Easy Install is not available
     if [ ! -x "$EASY_INSTALL" ]; then
@@ -77,9 +82,8 @@ setup_environment() {
 
 # Function to install a single Python library using Conda
 install_lib() {
-    local lib=$1
-    echo "Installing $lib..."
-    $CONDA install -y "$lib"
+    echo "Installing $1..."
+    $CONDA install -y "$1"
 }
 
 # Function to install the necessary libraries using Conda

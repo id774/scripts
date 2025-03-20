@@ -115,7 +115,7 @@ install_cassandra() {
 # Main function to execute the script
 main() {
     check_system
-    check_commands curl wget sudo tar
+    check_commands curl wget sudo tar mkdir mv rm
     check_network
     check_sudo
     install_cassandra "$@"
@@ -124,3 +124,5 @@ main() {
 
 # Execute main function
 main "$@"
+
+

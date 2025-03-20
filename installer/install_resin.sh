@@ -114,7 +114,7 @@ install_resin() {
 main() {
     # Perform initial checks
     check_system
-    check_commands curl wget make sudo unzip tar
+    check_commands curl wget make sudo unzip tar chown mkdir cp rm
     check_network
     check_sudo
 

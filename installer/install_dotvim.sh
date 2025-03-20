@@ -81,7 +81,7 @@ install_dotvim() {
 # Main function to execute the script
 main() {
     # Perform initial checks
-    check_commands cp mkdir vim uname
+    check_commands vim cp mkdir uname
     check_scripts
 
     # Ensure dot_vim source exists before proceeding

@@ -50,12 +50,18 @@
 #
 ########################################################################
 
-# Function to check if a command exists in the PATH
-check_command() {
-    if ! command -v "$1" >/dev/null 2>&1; then
-        echo "Error: $1 is not installed or not in PATH." >&2
-        exit 1
-    fi
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
 }
 
 # Function to set up the environment variables for pip and Easy Install
@@ -69,8 +75,7 @@ setup_environment() {
     fi
 
     # Verify that pip is available
-    check_command "$PIP"
-    check_command sed
+    check_commands "$PIP" sed
 
     # Warn if Easy Install is not available
     if ! command -v "$EASY_INSTALL" >/dev/null 2>&1; then
@@ -88,9 +93,8 @@ setup_environment() {
 
 # Function to install a single Python library
 install_lib() {
-    local lib=$1
-    echo "Installing $lib..."
-    $PIP install $PROXY -U "$lib"
+    echo "Installing $1..."
+    $PIP install $PROXY -U "$1"
 }
 
 # Function to install the necessary Python libraries using pip

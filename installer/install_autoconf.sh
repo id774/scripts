@@ -107,7 +107,7 @@ install_autoconf() {
 main() {
     # Perform initial checks
     check_system
-    check_commands curl wget make sudo tar
+    check_commands curl wget make sudo tar mkdir cp rm chown
     check_network
     check_sudo
 

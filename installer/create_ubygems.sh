@@ -134,7 +134,7 @@ create_ubygems() {
 # Main function to execute the script
 main() {
     # Ensure required commands are available before proceeding
-    check_commands find grep sort tail basename
+    check_commands find grep sort tail basename ls cat
 
     # Determine target directory
     if [ -n "$1" ]; then

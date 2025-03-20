@@ -111,7 +111,7 @@ install_libyaml() {
 main() {
     # Perform initial checks
     check_system
-    check_commands curl wget make sudo tar
+    check_commands curl wget make sudo tar mkdir cp chown rm
     check_network
     check_sudo
 

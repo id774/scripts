@@ -119,7 +119,7 @@ setup_environment() {
     check_system
 
     echo "Checking system requirements..."
-    check_commands curl wget tar sudo rm mkdir cp chown file uname dmsetup
+    check_commands dmsetup curl wget tar sudo rm mkdir cp chown file uname
 
     echo "Checking network connectivity..."
     check_network

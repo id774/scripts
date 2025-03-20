@@ -81,7 +81,7 @@ setup_environment() {
     check_system
 
     echo "Checking system requirements..."
-    check_commands curl wget md5sum tar make sudo rm mkdir cp chown dmsetup
+    check_commands dmsetup curl wget md5sum tar make sudo rm mkdir cp chown
 
     echo "Checking network connectivity..."
     check_network

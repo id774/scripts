@@ -111,7 +111,7 @@ install_clamav() {
 # Main function to execute the script
 main() {
     check_system
-    check_commands git make sudo vi
+    check_commands git make sudo vi cp rm chmod mkdir
     check_sudo
     setup_environment
     install_clamav "$1"

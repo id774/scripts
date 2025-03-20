@@ -83,7 +83,7 @@ install_gdm_themes2() {
 # Main function to execute the script
 main() {
     check_system
-    check_commands curl wget sudo tar
+    check_commands curl wget sudo tar chown rm
     check_network
     check_sudo
     install_gdm_themes2

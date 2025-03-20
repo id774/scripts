@@ -51,12 +51,18 @@
 #
 ########################################################################
 
-# Function to check if a command exists in the PATH
-check_command() {
-    if ! command -v "$1" >/dev/null 2>&1; then
-        echo "Error: $1 is not installed or not in PATH." >&2
-        exit 1
-    fi
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
 }
 
 # Function to set up the environment variables for gem
@@ -68,8 +74,7 @@ setup_environment() {
     fi
 
     # Verify that gem is available
-    check_command "$GEM"
-    check_command sed
+    check_commands "$GEM" sed
 
     # Set proxy if HTTP_PROXY is defined
     if [ -n "$HTTP_PROXY" ]; then
@@ -81,9 +86,8 @@ setup_environment() {
 
 # Function to install a single Ruby gem
 install_gem() {
-    local gem=$1
-    echo "Installing $gem..."
-    $GEM install $PROXY "$gem"
+    echo "Installing $1..."
+    $GEM install $PROXY "$1"
 }
 
 # Function to install the necessary Ruby gems
