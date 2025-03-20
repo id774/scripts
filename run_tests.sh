@@ -157,8 +157,6 @@ run_ruby_tests() {
         ruby_command="$ruby_dir/ruby"
         ruby_version=$("$ruby_command" --version 2>&1)
         echo "$ruby_version"
-        rspec_version=$("$rspec_path" --version)
-        echo "$rspec_version"
 
         # Execute Ruby tests
         for file in test/*_test.rb; do
