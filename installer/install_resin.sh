@@ -23,12 +23,12 @@
 #       First version.
 #
 #  Usage:
-#  Run this script without arguments to install the default version (4.0.19):
+#  Run this script without arguments to install the default version (4.0.67):
 #      ./install_resin.sh
 #  Specify a version to install a different release:
-#      ./install_resin.sh 4.0.68
+#      ./install_resin.sh 4.0.66
 #  Skip saving sources by adding a second argument:
-#      ./install_resin.sh 4.0.68 -n
+#      ./install_resin.sh 4.0.66 -n
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
@@ -78,7 +78,7 @@ check_sudo() {
 
 # Setup version and environment
 setup_environment() {
-    VERSION="${1:-4.0.19}"
+    VERSION="${1:-4.0.67}"
     RESIN="resin-$VERSION"
 }
 

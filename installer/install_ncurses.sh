@@ -22,16 +22,16 @@
 #       Stable.
 #
 #  Usage:
-#  Run this script without arguments to install the default version (5.9):
+#  Run this script without arguments to install the default version (6.5):
 #      ./install_ncurses.sh
 #  Specify a version to install a different release:
-#      ./install_ncurses.sh 6.3
+#      ./install_ncurses.sh 5.9
 #  Specify an installation prefix:
-#      ./install_ncurses.sh 6.3 /opt/ncurses/6.3
+#      ./install_ncurses.sh 6.5 /opt/ncurses/6.5
 #  Run without sudo (for local installation):
 #      ./install_ncurses.sh 5.9 ~/.local/ncurses --no-sudo
 #  Skip saving sources by adding a fourth argument:
-#      ./install_ncurses.sh 6.3 /usr/local/ncurses sudo -n
+#      ./install_ncurses.sh 6.5 /usr/local/ncurses sudo -n
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
@@ -72,7 +72,7 @@ check_sudo() {
 
 # Setup version and environment
 setup_environment() {
-    VERSION="${1:-5.9}"
+    VERSION="${1:-6.5}"
     MAJOR_MINOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
     PREFIX="${2:-/opt/ncurses/$MAJOR_MINOR}"
 
