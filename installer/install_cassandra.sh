@@ -24,9 +24,9 @@
 #  Run this script without arguments to install the default version (1.2.5):
 #      ./install_cassandra.sh
 #  Specify a version to install a different release:
-#      ./install_cassandra.sh 4.0.0
+#      ./install_cassandra.sh 4.1.8
 #  Skip creating lib and log directories by adding a second argument:
-#      ./install_cassandra.sh 4.0.0 -n
+#      ./install_cassandra.sh 4.1.8 -n
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
@@ -75,7 +75,7 @@ check_sudo() {
 
 # Setup version and environment
 setup_environment() {
-    VERSION="${1:-1.2.5}"
+    VERSION="${1:-5.0.3}"
     OWNER="root:root"
 }
 
