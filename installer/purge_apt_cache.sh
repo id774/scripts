@@ -97,11 +97,11 @@ perform_cleanup() {
     rm "$SCRIPT_NAME"
 }
 
-# Main function to execute the Script
+# Main function to execute the script
 main() {
     check_system
-    check_commands aptitude awk sed chmod cat rm
     check_debian
+    check_commands aptitude awk sed chmod cat rm
     check_sudo
     set_temp_file
     trap 'rm -f "$SCRIPT_NAME"' EXIT

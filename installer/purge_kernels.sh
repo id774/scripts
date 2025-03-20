@@ -8,6 +8,12 @@
 #  keeping the currently running kernel. It ensures system compatibility
 #  and prevents accidental removal of the active kernel.
 #
+#  The script performs the following operations:
+#  - Checks if the system is Ubuntu-based before execution.
+#  - Identifies and lists installed kernel packages.
+#  - Excludes the currently running kernel from the removal list.
+#  - Safely removes only outdated kernels while preserving system stability.
+#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -47,7 +53,7 @@ check_system() {
 }
 
 # Function to check if the system is Ubuntu-based
-check_system_ubuntu() {
+check_ubuntu() {
     if [ ! -f /etc/lsb-release ] || [ ! -f /etc/debian_version ]; then
         echo "This script only runs on Ubuntu or Ubuntu-based systems." >&2
         exit 1
@@ -100,7 +106,7 @@ remove_old_kernels() {
 # Main function to execute the script
 main() {
     check_system
-    check_system_ubuntu
+    check_ubuntu
     check_commands apt dpkg awk grep sed sudo uname
     check_sudo
     get_current_kernel
