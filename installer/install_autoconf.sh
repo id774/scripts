@@ -15,13 +15,15 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.3 2025-03-20
+#       Update default Autoconf version to 2.72 and adjust installation prefix.
 #  v0.2 2025-03-14
 #       Added network connection check and improved argument handling.
 #  v0.1 2011-04-26
 #       First version.
 #
 #  Usage:
-#  Run this script without arguments to install the default version (2.69):
+#  Run this script without arguments to install the default version (2.72):
 #      ./install_autoconf.sh
 #  Specify a version to install a different release:
 #      ./install_autoconf.sh 2.71
@@ -76,7 +78,7 @@ check_sudo() {
 
 # Setup version environment
 setup_environment() {
-    VERSION="${1:-2.69}"
+    VERSION="${1:-2.72}"
 }
 
 # Save sources if requested
@@ -94,12 +96,12 @@ install_autoconf() {
     wget "ftp://ftp.gnu.org/gnu/autoconf/autoconf-$VERSION.tar.gz"
     tar xzvf "autoconf-$VERSION.tar.gz"
     cd "autoconf-$VERSION" || exit 1
-    ./configure --prefix=/usr
+    ./configure --prefix=/usr/local
     make
     sudo make install
-    cd ..
+    cd .. || exit 1
     [ -n "$2" ] || save_sources
-    cd ..
+    cd .. || exit 1
     rm -rf install_autoconf
 }
 
