@@ -12,6 +12,7 @@ bind ^E escape ^Ee
 bind ^O escape ^Oo
 bind ^V escape ^Vv
 bind ^Q escape ^Qq
+bind ^W escape ^Ww
 bind ^X escape ^Xx
 bind ^Y escape ^Yy
 bind ^Z escape ^Zz
