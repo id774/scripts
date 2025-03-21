@@ -1,5 +1,10 @@
+import codecs
+import datetime
+import json
+import os
 import readline
 import sys
+import time
 import warnings
 
 print("import sys, os, readline, codecs, time, datetime, json, warnings")
