@@ -75,6 +75,7 @@
 #
 ########################################################################
 
+# Display usage help and script options.
 show_help() {
     cat << EOF
 Usage: ${0##*/} [--help] [-h] <instagram_account_name>
