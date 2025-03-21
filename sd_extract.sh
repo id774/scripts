@@ -90,6 +90,7 @@ check_commands() {
     done
 }
 
+# Load configuration file and set environment variables.
 load_config() {
     # Determine the script's directory
     SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -106,6 +107,7 @@ load_config() {
     . "$CONF_FILE"
 }
 
+# Validate configuration values and check destination directory and permissions format.
 validate_config() {
     # Check if necessary variables are set
     if [ -z "$SOURCE_DIRS" ] || [ -z "$FILE_PATTERNS" ] || [ -z "$DEST_DIR" ] || [ -z "$DEFAULT_PERMISSIONS" ]; then
