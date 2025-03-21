@@ -11,8 +11,8 @@
 #  and /etc/cron.weekend) exist by creating them if necessary.
 #
 #  The script verifies and maintains the following cron jobs:
-#    "05 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
-#    "05 23 * * 0,6 root cd / && run-parts --report /etc/cron.weekend"
+#    "01 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
+#    "01 23 * * 0,6 root cd / && run-parts --report /etc/cron.weekend"
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -37,8 +37,8 @@
 CRONTAB_FILE="/etc/crontab"
 
 # Cron job entries to check and add if missing
-WEEKDAY_ENTRY="05 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
-WEEKEND_ENTRY="05 23 * * 0,6 root cd / && run-parts --report /etc/cron.weekend"
+WEEKDAY_ENTRY="01 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
+WEEKEND_ENTRY="01 23 * * 0,6 root cd / && run-parts --report /etc/cron.weekend"
 
 # Function to check if the system is Linux
 check_system() {
