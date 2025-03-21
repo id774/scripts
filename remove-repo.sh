@@ -31,11 +31,12 @@
 #
 ########################################################################
 
-# Function to check if a directory is a Git repository
+# Check if a directory is a Git repository.
 is_git_repo() {
     [ -d "$1/.git" ]
 }
 
+# Remove the Git repository from the github directory if it exists.
 remove_from_github() {
     repo_path_github="$HOME/local/github/$repo_name"
     if [ -d "$repo_path_github" ] && is_git_repo "$repo_path_github"; then
@@ -48,6 +49,7 @@ remove_from_github() {
     fi
 }
 
+# Remove the Git repository from the git directory if it exists.
 remove_from_git() {
     repo_path_git="$HOME/local/git/$repo_name"
     if [ -d "$repo_path_git" ] && is_git_repo "$repo_path_git"; then
@@ -60,6 +62,7 @@ remove_from_git() {
     fi
 }
 
+# Remove the symbolic link in the home directory if it exists.
 remove_symlink() {
     symlink_path="$HOME/$repo_name"
     if [ -L "$symlink_path" ]; then
@@ -72,7 +75,7 @@ remove_symlink() {
     fi
 }
 
-# Function to remove a Git repository and its symlink
+# Remove a Git repository and its related symbolic link.
 remove_repo() {
     repo_name="$1"
 
@@ -81,7 +84,7 @@ remove_repo() {
     remove_symlink
 }
 
-# Function to process multiple repositories
+# Iterate through arguments and remove each specified repository.
 remove_repos() {
     while [ $# -gt 0 ]; do
         [ "$1" != "-x" ] && remove_repo "$1"
