@@ -5,10 +5,10 @@ defkanji utf-8
 encoding utf-8 utf-8
 defencoding utf-8
 
-escape ^Yy
-bind ^T escape ^Tt
-bind ^W escape ^Ww
+escape ^Tt
+bind ^V escape ^Vv
 bind ^Q escape ^Qq
+bind ^Y escape ^Yy
 bind -c REGION 2 split
 bind -c REGION 1 only
 bind -c REGION 0 remove
