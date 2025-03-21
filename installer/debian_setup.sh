@@ -167,6 +167,10 @@ setup_clamscan() {
     "$SCRIPTS/installer/install_clamscan.sh"
 }
 
+setup_crontab() {
+    "$SCRIPTS/installer/setup_crontab.sh"
+}
+
 setup_munin() {
     "$SCRIPTS/installer/install_munin.sh"
 }
@@ -209,6 +213,7 @@ main() {
     setup_get_resources
     setup_chkrootkit
     setup_clamscan
+    setup_crontab
     setup_munin
     setup_securetty
     permission_for_src
