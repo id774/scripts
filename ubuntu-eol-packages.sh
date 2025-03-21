@@ -34,6 +34,14 @@ check_system() {
     fi
 }
 
+# Function to check if the system is Ubuntu-based
+check_ubuntu() {
+    if [ ! -f /etc/lsb-release ] || [ ! -f /etc/debian_version ]; then
+        echo "This script only runs on Ubuntu or Ubuntu-based systems." >&2
+        exit 1
+    fi
+}
+
 # Function to check required commands
 check_commands() {
     for cmd in "$@"; do
@@ -58,6 +66,7 @@ list_eol_packages() {
 # Main function to execute the script
 main() {
     check_system
+    check_ubuntu
     check_commands dpkg apt-cache cut tail xargs egrep sed tr sort uniq
     list_eol_packages
 }
