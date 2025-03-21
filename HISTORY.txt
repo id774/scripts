@@ -9,6 +9,7 @@ v1.3.3 (Release Date: TBD)
 - Organized and streamlined numerous installation scripts, strengthening environment checks.
 - Improved sudo privilege handling and added necessary validations.
 - Enhanced error messages by redirecting them to stderr for better logging and debugging.
+- Changed screen prefix keys to Ctrl-t, Ctrl-v, Ctrl-q, and Ctrl-y.
 
 v1.3.2 (2025-02-27)
 -------------------
