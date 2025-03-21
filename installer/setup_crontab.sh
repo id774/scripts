@@ -1,0 +1,77 @@
+#!/bin/sh
+
+########################################################################
+# setup_crontab.sh: Ensure cron.weekday and cron.weekend exist in /etc/crontab
+#
+#  Description:
+#  This script ensures that predefined cron job entries exist in the
+#  system-wide crontab file (/etc/crontab). If the specified entries
+#  for cron.weekday and cron.weekend do not exist, they are automatically added.
+#  Additionally, it ensures that the required directories (/etc/cron.weekday
+#  and /etc/cron.weekend) exist by creating them if necessary.
+#
+#  The script verifies and maintains the following cron jobs:
+#    "05 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
+#    "05 23 * * 0,6 root cd / && run-parts --report /etc/cron.weekend"
+#
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 2025-03-21
+#       Initial release. Ensures cron.weekday and cron.weekend entries exist.
+#
+#  Usage:
+#      ./setup_crontab.sh
+#  Run this script as a general user; it will invoke sudo where necessary.
+#
+#  Notes:
+#  - This script uses sudo internally for privileged operations.
+#  - It ensures that the necessary cron directories exist before modifying /etc/crontab.
+#
+########################################################################
+
+# Path to the system-wide crontab file
+CRONTAB_FILE="/etc/crontab"
+
+# Cron job entries to check and add if missing
+WEEKDAY_ENTRY="05 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
+WEEKEND_ENTRY="05 23 * * 0,6 root cd / && run-parts --report /etc/cron.weekend"
+
+# Function to check if an entry exists in crontab
+check_entry() {
+    entry="$1"
+    grep -Fxq "$entry" "$CRONTAB_FILE"
+}
+
+# Function to add an entry to crontab if it does not exist
+add_entry() {
+    entry="$1"
+    if ! check_entry "$entry"; then
+        printf "%s\n" "$entry" | sudo tee -a "$CRONTAB_FILE" > /dev/null
+        echo "Added entry: $entry"
+    fi
+}
+
+# Function to ensure required directories exist
+ensure_directories() {
+    for dir in /etc/cron.weekday /etc/cron.weekend; do
+        if [ ! -d "$dir" ]; then
+            sudo mkdir -p "$dir"
+            echo "Created directory: $dir"
+        fi
+    done
+}
+
+# Main function to execute all setup tasks
+main() {
+    ensure_directories
+    add_entry "$WEEKDAY_ENTRY"
+    add_entry "$WEEKEND_ENTRY"
+    echo "Crontab setup completed."
+}
+
+# Execute main function
+main "$@"
