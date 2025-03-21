@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.6 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.5 2025-03-05
@@ -36,6 +38,8 @@
 #       dry run option for creation, and custom repository path setting.
 #
 #  Usage:
+#  This script automates the creation and deletion of Git repositories.
+#
 #  To create a new repository:
 #      git-create-repo.sh <repository_name> [repository_path] [--dry-run] [--sudo] [--no-sudo] [--user USER] [--group GROUP]
 #
@@ -44,6 +48,32 @@
 #
 #  For help:
 #      git-create-repo.sh -h
+#
+#  Examples:
+#    Create a new repository at /var/lib/git:
+#      git-create-repo.sh myrepo
+#
+#    Create a new repository at a custom path without sudo:
+#      git-create-repo.sh myrepo /home/user/myrepo --no-sudo
+#
+#    Delete an existing repository at /var/lib/git:
+#      git-create-repo.sh myrepo --delete
+#
+#    Show what would be done without making changes:
+#      git-create-repo.sh myrepo /custom/path --dry-run
+#
+#  Options:
+#  --dry-run           Show what would be done without making any changes.
+#  --delete            Delete the specified repository instead of creating it.
+#  --sudo              Explicitly use sudo for all operations, regardless of the repository path.
+#  --no-sudo           Explicitly do not use sudo for any operations, regardless of the repository path.
+#  --user USER         Specify the user for chown (default: git).
+#  --group GROUP       Specify the group for chown (default: git).
+#
+#  Default Behavior:
+#  - The default repository path is /var/lib/git if not specified.
+#  - Sudo is used by default for system-wide paths like /var/lib/git.
+#  - Sudo is not used by default for paths within the user's home directory.
 #
 #  Note: The script may require sudo permissions for certain operations,
 #  especially when dealing with system-wide paths like /var/lib/git. By default,
@@ -54,37 +84,12 @@
 
 # Display script usage information
 usage() {
-    cat << EOF
-Usage: $0 <repository_name> [repository_path] [--dry-run] [--delete] [--sudo] [--no-sudo] [--user USER] [--group GROUP]
-
-This script automates the creation and deletion of Git repositories.
-
-Options:
-  --dry-run           Show what would be done without making any changes.
-  --delete            Delete the specified repository instead of creating it.
-  --sudo              Explicitly use sudo for all operations, regardless of the repository path.
-  --no-sudo           Explicitly do not use sudo for any operations, regardless of the repository path.
-  --user USER         Specify the user for chown (default: git).
-  --group GROUP       Specify the group for chown (default: git).
-
-Default Behavior:
-- The default repository path is /var/lib/git if not specified.
-- Sudo is used by default for system-wide paths like /var/lib/git.
-- Sudo is not used by default for paths within the user's home directory.
-
-Examples:
-  Create a new repository at /var/lib/git:
-    $0 myrepo
-
-  Create a new repository at a custom path without sudo:
-    $0 myrepo /home/user/myrepo --no-sudo
-
-  Delete an existing repository at /var/lib/git:
-    $0 myrepo --delete
-
-  Show what would be done without making changes:
-    $0 myrepo /custom/path --dry-run
-EOF
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
     exit 0
 }
 
