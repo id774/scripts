@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-21
+#       Moved clamscan_exclude from /root/bin to /root/etc and updated references.
 #  v1.0 2025-03-16
 #       Refactored script for POSIX compliance and improved maintainability.
 #       Added safety checks and validation for exclusion file handling.
@@ -45,7 +47,7 @@
 TARGETDIRS="/"
 LOGFILE="/var/log/clamav/clamav.log"
 EXECDIR="$(dirname "$0")"
-EXCLUDEFILE="$EXECDIR/clamscan_exclude"
+EXCLUDEFILE="$EXECDIR/../etc/clamscan_exclude"
 
 # Update virus definitions
 systemctl stop clamav-freshclam.service

@@ -87,9 +87,10 @@ install_clamscan() {
     sudo chmod 700 /root/bin/clamscan.sh
     sudo chown root:root /root/bin/clamscan.sh
 
-    sudo cp "$SCRIPTS/cron/etc/clamscan_exclude" /root/bin/
-    sudo chmod 600 /root/bin/clamscan_exclude
-    sudo chown root:root /root/bin/clamscan_exclude
+    sudo cp "$SCRIPTS/cron/etc/clamscan_exclude" /root/etc/
+    sudo rm -vf /root/bin/clamscan_exclude
+    sudo chmod 600 /root/etc/clamscan_exclude
+    sudo chown root:root /root/etc/clamscan_exclude
 
     # Deploy clamscan cron job
     sudo cp "$SCRIPTS/cron/bin/clamscan" /etc/cron.weekly/
@@ -112,7 +113,7 @@ install_clamscan() {
 # Main function to execute the script
 main() {
     check_system
-    check_commands sudo cp chmod chown mkdir touch
+    check_commands sudo cp rm chmod chown mkdir touch
     check_scripts
     check_sudo
     install_clamscan
