@@ -40,6 +40,9 @@ CRONTAB_FILE="/etc/crontab"
 WEEKDAY_ENTRY="01 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
 WEEKEND_ENTRY="01 23 * * 0,6 root cd / && run-parts --report /etc/cron.weekend"
 
+# Track changes
+CHANGES_MADE=0
+
 # Function to check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
@@ -82,6 +85,7 @@ add_entry() {
     if ! check_entry "$entry"; then
         printf "%s\n" "$entry" | sudo tee -a "$CRONTAB_FILE" > /dev/null
         echo "Added entry: $entry"
+        CHANGES_MADE=1
     fi
 }
 
@@ -103,7 +107,11 @@ main() {
     create_directories
     add_entry "$WEEKDAY_ENTRY"
     add_entry "$WEEKEND_ENTRY"
-    echo "Crontab setup completed."
+    if [ "$CHANGES_MADE" -eq 1 ]; then
+        echo "Crontab setup completed."
+    else
+        echo "No changes were made. Everything is already set up."
+    fi
 }
 
 # Execute main function
