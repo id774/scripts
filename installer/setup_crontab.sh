@@ -40,6 +40,36 @@ CRONTAB_FILE="/etc/crontab"
 WEEKDAY_ENTRY="05 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
 WEEKEND_ENTRY="05 23 * * 0,6 root cd / && run-parts --report /etc/cron.weekend"
 
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
+
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
 # Function to check if an entry exists in crontab
 check_entry() {
     entry="$1"
@@ -56,7 +86,7 @@ add_entry() {
 }
 
 # Function to ensure required directories exist
-ensure_directories() {
+create_directories() {
     for dir in /etc/cron.weekday /etc/cron.weekend; do
         if [ ! -d "$dir" ]; then
             sudo mkdir -p "$dir"
@@ -67,7 +97,10 @@ ensure_directories() {
 
 # Main function to execute all setup tasks
 main() {
-    ensure_directories
+    check_system
+    check_commands grep uname sudo mkdir tee
+    check_sudo
+    create_directories
     add_entry "$WEEKDAY_ENTRY"
     add_entry "$WEEKEND_ENTRY"
     echo "Crontab setup completed."
