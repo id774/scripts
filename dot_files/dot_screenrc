@@ -6,9 +6,15 @@ encoding utf-8 utf-8
 defencoding utf-8
 
 escape ^Tt
+bind ^A escape ^Aa
+bind ^B escape ^Bb
+bind ^E escape ^Ee
+bind ^O escape ^Oo
 bind ^V escape ^Vv
 bind ^Q escape ^Qq
+bind ^X escape ^Xx
 bind ^Y escape ^Yy
+bind ^Z escape ^Zz
 bind -c REGION 2 split
 bind -c REGION 1 only
 bind -c REGION 0 remove
