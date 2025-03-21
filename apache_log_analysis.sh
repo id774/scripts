@@ -59,6 +59,7 @@ check_commands() {
     done
 }
 
+# Load list of IP addresses to ignore from a configuration file.
 load_ignore_list() {
     SCRIPT_DIR=$(dirname "$0")
     IGNORE_FILE="$SCRIPT_DIR/etc/apache_ignore.list"
@@ -74,6 +75,7 @@ load_ignore_list() {
     fi
 }
 
+# Analyze the log file and output various access statistics.
 analyze_logs() {
     echo "[Access Count]"
     zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 100
