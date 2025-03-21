@@ -96,6 +96,7 @@
 #
 ########################################################################
 
+# Display usage help and script options.
 show_help() {
     cat << EOF
 Usage: ${0##*/} [--reset] [--no-sync] [--account ACCOUNT_NAME] [--help]
@@ -143,6 +144,7 @@ Error Conditions:
 EOF
 }
 
+# Load configuration file and validate required variables and paths.
 load_and_validate_config() {
     # Determine the script's directory
     SCRIPT_DIR=$(dirname "$0")
@@ -185,11 +187,12 @@ check_commands() {
     done
 }
 
-# Define a function to trim and ignore comments
+# Trim whitespace and ignore comment lines.
 trim_and_ignore_comments() {
     echo "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^#'
 }
 
+# Parse command-line options and set script flags accordingly.
 parse_options() {
     RESET=false
     NO_SYNC=false
@@ -231,6 +234,7 @@ parse_options() {
     done
 }
 
+# Run downloader and synchronization scripts for the given subdirectory.
 update_content() {
     subdir="$1"
 
@@ -258,6 +262,7 @@ update_content() {
     fi
 }
 
+# Determine whether a subdirectory should be processed.
 should_process() {
     subdir_name=$(basename "$1")
 
@@ -294,7 +299,7 @@ should_process() {
     return 0  # Default to process if no include list is provided and no account is specified
 }
 
-# Function to change to the target directory
+# Change to the target directory specified in the configuration.
 change_to_target_dir() {
     cd "$TARGET_DIR" || exit
 }
