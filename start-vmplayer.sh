@@ -35,27 +35,32 @@ test -n "$TMP" || export TMP=$HOME/.tmp
 test -n "$1" && export DISPLAY=$1
 test -n "$1" || export DISPLAY=:99
 
+# Start a virtual X server using Xvfb.
 start_xvfb() {
     sudo Xvfb $DISPLAY -screen 0 1024x768x24 2>&1 >> $TMP/xvfb.log &
     sleep 10
 }
 
+# Launch the Fluxbox window manager.
 start_fluxbox() {
     fluxbox 2>&1 >> $TMP/window-manager.log &
     sleep 5
 }
 
+# Start x11vnc server to expose the virtual display over VNC.
 start_vnc() {
     x11vnc -display $DISPLAY -loop -bg -nopw -listen localhost -xkb 2>&1 >> $TMP/vnc.log &
     sleep 10
 }
 
+# Launch VMware Player twice (for redundancy or multiple instances).
 start_vmplayer() {
     vmplayer 2>&1 >> $TMP/vmplayer1.log &
     vmplayer 2>&1 >> $TMP/vmplayer2.log &
     sleep 10
 }
 
+# Start all required background processes in sequence.
 start_daemon() {
     start_xvfb
     start_fluxbox
