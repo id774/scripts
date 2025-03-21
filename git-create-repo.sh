@@ -229,7 +229,7 @@ parse_arguments() {
 main() {
     parse_arguments "$@"
 
-    check_commands git
+    check_commands awk git
 
     if [ "$use_sudo" = "sudo" ]; then
         check_sudo
