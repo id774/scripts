@@ -36,8 +36,6 @@
 #
 ########################################################################
 
-set -e  # Exit immediately on error
-
 # Display script usage information
 usage() {
     awk '
@@ -82,42 +80,71 @@ check_sudo() {
 # Install AWStats package
 install_awstats() {
     echo "Installing AWStats..."
-    sudo apt-get update
-    sudo apt-get install -y awstats
+    if ! sudo apt-get update; then
+        echo "Error: Failed to update package list." >&2
+        exit 1
+    fi
+
+    if ! sudo apt-get install -y awstats; then
+        echo "Error: Failed to install AWStats." >&2
+        exit 1
+    fi
 }
 
 # Configure AWStats
 configure_awstats() {
     echo "Configuring AWStats and Apache..."
 
-    # Ensure configuration files exist before opening with vi
     for file in /etc/awstats/awstats.conf* /etc/apache2/sites-available/custom* /etc/logrotate.d/apache2; do
         if [ ! -f "$file" ]; then
             echo "Warning: File $file does not exist. Skipping edit."
         else
-            sudo vi "$file"
+            echo "Please edit $file"
         fi
     done
 
-    # Set correct permissions on log files
     echo "Setting permissions on Apache logs..."
-    sudo chmod 440 /var/log/apache2/*
-    sudo chown www-data:adm /var/log/apache2/*
-    sudo chmod 550 /var/log/apache2
-    sudo chown www-data:adm /var/log/apache2
+    if ! sudo chmod 440 /var/log/apache2/*; then
+        echo "Error: Failed to set log file permissions." >&2
+        exit 1
+    fi
+
+    if ! sudo chown www-data:adm /var/log/apache2/*; then
+        echo "Error: Failed to change ownership of log files." >&2
+        exit 1
+    fi
+
+    if ! sudo chmod 550 /var/log/apache2; then
+        echo "Error: Failed to set directory permissions." >&2
+        exit 1
+    fi
+
+    if ! sudo chown www-data:adm /var/log/apache2; then
+        echo "Error: Failed to change ownership of log directory." >&2
+        exit 1
+    fi
 }
 
 # Restart Apache and update AWStats
 restart_services() {
     echo "Restarting Apache..."
     if command -v systemctl >/dev/null 2>&1; then
-        sudo systemctl restart apache2
+        if ! sudo systemctl restart apache2; then
+            echo "Error: Failed to restart Apache with systemctl." >&2
+            exit 1
+        fi
     else
-        sudo /etc/init.d/apache2 restart
+        if ! sudo /etc/init.d/apache2 restart; then
+            echo "Error: Failed to restart Apache with init.d." >&2
+            exit 1
+        fi
     fi
 
     echo "Updating AWStats statistics..."
-    sudo -u www-data /usr/lib/cgi-bin/awstats.pl -config=awstats -update
+    if ! sudo -u www-data /usr/lib/cgi-bin/awstats.pl -config=awstats -update; then
+        echo "Error: Failed to update AWStats statistics." >&2
+        exit 1
+    fi
 }
 
 # Main function to execute the script
