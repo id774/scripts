@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.7 2025-03-17
 #       Encapsulated all logic into functions and introduced main function.
 #  v1.6 2025-03-13
@@ -48,6 +50,9 @@
 #  directory as this script.
 #      ./insta_sync.sh <instagram_account_name>
 #
+#  Options:
+#    --help, -h       Display this help and exit.
+#
 #  Configuration file ('insta_sync.conf') requirements:
 #  - INSTA_DIR: Base directory for Instagram account data.
 #  - BACKUP_DIR: Local backup directory.
@@ -75,42 +80,15 @@
 #
 ########################################################################
 
-# Display usage help and script options.
-show_help() {
-    cat << EOF
-Usage: ${0##*/} [--help] [-h] <instagram_account_name>
-This script is designed to manage and synchronize Instagram account data.
-It updates directory permissions, syncs data with a local backup directory,
-and conditionally syncs with a remote server if reachable.
-
-Options:
-  --help, -h       Display this help and exit.
-
-Configuration file ('insta_sync.conf') requirements:
-  - INSTA_DIR: Base directory for Instagram account data.
-  - BACKUP_DIR: Local backup directory.
-  - REMOTE_USER: Username for remote server access.
-  - REMOTE_HOST: Hostname or IP address of the remote server.
-  - REMOTE_DIR: Remote directory for data synchronization.
-  - DIR_PERMISSIONS: Permissions for directories within INSTA_DIR.
-  - FILE_PERMISSIONS: Permissions for files within INSTA_DIR.
-Ensure all these variables are set in 'insta_sync.conf'.
-
-Notes:
-  - Ensure the specified Instagram account directory exists within INSTA_DIR.
-  - The script updates file permissions recursively within the account directory.
-  - Local backup directory must exist prior to running this script.
-  - Remote sync is attempted only if the remote server is reachable.
-
-Error Conditions:
-  1. No argument provided.
-  2. Instagram account directory does not exist.
-  3. Local backup directory does not exist.
-  4. Configuration file not found.
-  5. One or more configuration variables not set.
-  126. Required command(s) not executable.
-  127. Required command(s) not installed.
-EOF
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
 }
 
 # Function to check required commands
@@ -181,11 +159,9 @@ check_remote_sync() {
 
 # Main function to execute the script
 main() {
-    # Check for help option
-    if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
-        show_help
-        exit 0
-    fi
+    case "$1" in
+        -h|--help) usage ;;
+    esac
 
     # Check for Instagram account name argument
     if [ -z "$1" ]; then
