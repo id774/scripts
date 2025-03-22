@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.3 2025-03-17
 #       Encapsulated all logic in functions and introduced main function.
 #  v1.2 2025-03-13
@@ -24,9 +26,20 @@
 #       Initial release. Removes trailing whitespace from files.
 #
 #  Usage:
-#  find [directory...] -type f -name "*" -exec /path/to/remove_space_eol.sh {} \;
+#      find [directory...] -type f -name "*" -exec /path/to/remove_space_eol.sh {} \;
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Function to check required commands
 check_commands() {
@@ -60,6 +73,10 @@ process_file() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     check_commands sed mv
 
     while [ $# -gt 0 ]; do

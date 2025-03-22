@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.5 2025-03-17
 #       Encapsulated all logic into functions and introduced main function.
 #  v1.4 2025-03-13
@@ -28,7 +30,7 @@
 #
 #  Usage:
 #  Run the script from the command line:
-#    ./vacuum-fastladder-db.sh
+#      ./vacuum-fastladder-db.sh
 #
 #  Notes:
 #  - Ensure that the Fastladder application is not actively using the database when this script is run.
@@ -41,6 +43,17 @@
 # Define the Fastladder database directory and file path
 DB_DIR="$HOME/fastladder/db"
 DB_PATH="$DB_DIR/fastladder.db"
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Function to check required commands
 check_commands() {
@@ -88,6 +101,10 @@ vacuum_and_optimize_db() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     check_commands sqlite3 rm
     check_database
     change_to_db_dir

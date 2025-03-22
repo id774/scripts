@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v2.0 2025-03-17
 #       Encapsulated all logic into functions and introduced main function.
 #  v1.9 2025-03-14
@@ -85,6 +87,17 @@
 #  127. Required command(s) not installed.
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Determine the script's directory
 SCRIPT_DIR=$(dirname "$0")
@@ -184,6 +197,10 @@ remove_files() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     load_configuration
     check_commands chmod cp rsync rm find
     parse_arguments "$@"

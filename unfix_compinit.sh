@@ -23,6 +23,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.3 2025-03-16
 #       Encapsulated all logic in functions and introduced main function.
 #  v1.2 2025-03-13
@@ -33,15 +35,34 @@
 #       Initial release. Sets Homebrew-recommended ownership and permissions.
 #
 #  Usage:
-#  ./unfix_compinit.sh
-#  This script requires root privileges to execute. Run it with `sudo`.
+#      ./unfix_compinit.sh
 #
 #  Notes:
+#  - This script requires root privileges to execute. Run it with `sudo`.
 #  - This script is specifically tailored for macOS and will not function
 #    on other operating systems.
 #  - After using Homebrew, execute `fix_compinit.sh` to restore secure settings.
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
+# Function to check if the system is macOS
+check_system() {
+    if [ "$(uname)" != "Darwin" ]; then
+        echo "Error: This script is intended for macOS only." >&2
+        exit 1
+    fi
+}
 
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
@@ -92,14 +113,11 @@ adjust_homebrew_permissions() {
 
 # Main function to execute the script
 main() {
-    os=$(uname)
+    case "$1" in
+        -h|--help) usage ;;
+    esac
 
-    # Exit if not macOS
-    if [ "$os" != "Darwin" ]; then
-        echo "This script is designed for macOS only." >&2
-        exit 1
-    fi
-
+    check_system
     adjust_homebrew_permissions
 }
 

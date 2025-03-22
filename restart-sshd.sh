@@ -95,6 +95,7 @@ main() {
     esac
 
     check_sudo
+
     UNAME=$(uname)
     case $UNAME in
         Darwin*)

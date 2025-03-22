@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.6 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v0.5 2025-03-17
 #       Encapsulated all logic into functions and introduced main function.
 #  v0.4 2025-03-13
@@ -27,9 +29,20 @@
 #       First release.
 #
 #  Usage:
-#  ./hadoop-start.sh [start|stop] [Hadoop version]
+#      ./hadoop-start.sh [start|stop] [Hadoop version]
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
@@ -39,17 +52,9 @@ check_sudo() {
     fi
 }
 
-# Function to check arguments
-check_arguments() {
-    if [ -z "$1" ]; then
-        echo "Error: No command provided. Usage: $0 [start|stop]" >&2
-        exit 1
-    fi
-}
-
 # Function to define environment variables
 set_environment() {
-    HADOOP_VER=${1:-0.20}
+    HADOOP_VER=${2:-0.20}
     export JAVA_HOME=/opt/java/jdk
 }
 
@@ -72,8 +77,11 @@ control_hadoop_services() {
 
 # Main function to execute the script
 main() {
-    check_arguments "$1"
-    set_environment "$2"
+    if [ ! "$1" = "start" ] && [ ! "$1" = "stop" ]; then
+        usage
+    fi
+
+    set_environment "$@"
     verify_hadoop_scripts
     check_sudo
     control_hadoop_services "$1"

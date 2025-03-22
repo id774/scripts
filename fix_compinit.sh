@@ -35,10 +35,10 @@
 #       Zsh-related directories used by Homebrew.
 #
 #  Usage:
-#  ./fix_compinit.sh
-#  This script requires root privileges to execute. Run it with `sudo`.
+#      ./fix_compinit.sh
 #
 #  Notes:
+#  - This script requires root privileges to execute. Run it with `sudo`.
 #  - This script is specifically tailored for macOS and will not function
 #    on other operating systems.
 #  - It is recommended to verify the ownership and permissions of the
@@ -56,6 +56,14 @@ usage() {
         in_usage && /^#/ { print substr($0, 4) }
     ' "$0"
     exit 0
+}
+
+# Function to check if the system is macOS
+check_system() {
+    if [ "$(uname)" != "Darwin" ]; then
+        echo "Error: This script is intended for macOS only." >&2
+        exit 1
+    fi
 }
 
 # Check if the user has sudo privileges (password may be required)
@@ -104,14 +112,7 @@ main() {
         -h|--help) usage ;;
     esac
 
-    os=$(uname)
-
-    # Exit if not macOS
-    if [ "$os" != "Darwin" ]; then
-        echo "This script is designed for macOS only." >&2
-        exit 1
-    fi
-
+    check_system
     fix_permissions
 }
 
