@@ -193,6 +193,10 @@ setup_securetty() {
     "$SCRIPTS/installer/securetty.sh"
 }
 
+setup_dot_ipython() {
+    test -x /opt/python/current/bin/python && "$SCRIPTS/installer/setup_dot_ipython.sh"
+}
+
 # Set permissions for /usr/src
 permission_for_src() {
     sudo chown -R root:root /usr/src
@@ -234,6 +238,7 @@ main() {
     setup_crontab
     setup_munin
     setup_securetty
+    setup_dot_ipython
     permission_for_src
     configure_sysctl
     erase_history
