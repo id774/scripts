@@ -25,6 +25,8 @@
 #  Version History:
 #  v1.3 2025-03-22
 #       Unify usage information by extracting help text from header comments.
+#       Removed set -e and added explicit error handling.
+#       Refactored main logic into separate functions.
 #  v1.2 2025-03-16
 #       Encapsulated all logic in functions and introduced main function.
 #  v1.1 2025-03-13
@@ -63,64 +65,82 @@ check_commands() {
     done
 }
 
+# Check TMP variable and argument count
+validate_environment() {
+    # Ensure TMP is defined and an argument is provided
+    if [ -z "$TMP" ]; then
+        echo "Error: TMP environment variable is not set." >&2
+        exit 1
+    fi
+
+    if [ "$#" -ne 1 ]; then
+        echo "Usage: $0 <string>"
+        exit 0
+    fi
+}
+
+# Create a backup of the history file
+create_backup() {
+    # Backup the original history file
+    BACKUP_FILE="$TMP/$(basename "$HISTORY_FILE").bak.$(date +%Y%m%d%H%M%S)"
+    if ! cp "$HISTORY_FILE" "$BACKUP_FILE"; then
+        echo "Error: Failed to create backup file." >&2
+        exit 1
+    fi
+    echo "Backup created: $BACKUP_FILE"
+}
+
+# Count matching lines in the history file
+count_matches() {
+    # Count number of entries matching the pattern
+    MATCH_COUNT=$(grep -c "$PATTERN" "$HISTORY_FILE" 2>/dev/null)
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to count matches in history file." >&2
+        exit 1
+    fi
+}
+
+# Filter out matching lines and overwrite the original file
+filter_history() {
+    # Remove matching lines and replace the original history file
+    if ! grep -v "$PATTERN" "$HISTORY_FILE" > "$HISTORY_FILE.tmp"; then
+        echo "Error: Failed to create temporary file." >&2
+        exit 1
+    fi
+
+    if ! mv "$HISTORY_FILE.tmp" "$HISTORY_FILE"; then
+        echo "Error: Failed to overwrite the original history file." >&2
+        exit 1
+    fi
+
+    echo "Lines containing '$PATTERN' have been removed from $HISTORY_FILE"
+    echo "Total removed entries: $MATCH_COUNT"
+}
+
+# Show the diff between backup and modified file
+show_diff() {
+    # Show difference between backup and updated file
+    echo "Displaying changes:"
+    diff "$BACKUP_FILE" "$HISTORY_FILE" || true
+}
+
 # Main function to execute the script
 main() {
     case "$1" in
         -h|--help) usage ;;
     esac
 
-    # Required commands
     check_commands grep cp mv basename diff
 
     HISTORY_FILE="$HOME/.zsh_history"
 
-    # Check if TMP is defined
-    if [ -z "$TMP" ]; then
-        echo "Error: TMP environment variable is not set." >&2
-        exit 1
-    fi
-
-    BACKUP_FILE="$TMP/$(basename "$HISTORY_FILE").bak.$(date +%Y%m%d%H%M%S)"
-
-    # Check if an argument is provided
-    if [ "$#" -ne 1 ]; then
-        echo "Usage: $0 <string>"
-        exit 0
-    fi
-
+    validate_environment "$@"
     PATTERN="$1"
 
-    # Create a backup of the history file
-    if ! cp "$HISTORY_FILE" "$BACKUP_FILE"; then
-        echo "Error: Failed to create backup file." >&2
-        exit 1
-    fi
-    echo "Backup created: $BACKUP_FILE"
-
-    # Count the number of matching lines
-    MATCH_COUNT=$(grep -c "$PATTERN" "$HISTORY_FILE" 2>/dev/null)
-    if [ $? -ne 0 ]; then
-        echo "Error: Failed to count matches in history file." >&2
-        exit 1
-    fi
-
-    # Remove lines containing the specified pattern
-    if ! grep -v "$PATTERN" "$HISTORY_FILE" > "$HISTORY_FILE.tmp"; then
-        echo "Error: Failed to create temporary file." >&2
-        exit 1
-    fi
-
-    # Overwrite the original history file
-    if ! mv "$HISTORY_FILE.tmp" "$HISTORY_FILE"; then
-        echo "Error: Failed to overwrite the original history file." >&2
-        exit 1
-    fi
-    echo "Lines containing '$PATTERN' have been removed from $HISTORY_FILE"
-    echo "Total removed entries: $MATCH_COUNT"
-
-    # Show the difference between the backup and the modified file
-    echo "Displaying changes:"
-    diff "$BACKUP_FILE" "$HISTORY_FILE" || true
+    create_backup
+    count_matches
+    filter_history
+    show_diff
 }
 
 # Execute main function
