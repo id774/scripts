@@ -35,8 +35,6 @@
 #
 ########################################################################
 
-set -e  # Exit immediately on error
-
 # Display script usage information
 usage() {
     awk '
@@ -101,33 +99,36 @@ main() {
 
     # Ensure required directory exists
     if [ ! -d /var/log/sysadmin ]; then
-        sudo mkdir -p /var/log/sysadmin
-        sudo chmod 750 /var/log/sysadmin
-        sudo chown root:adm /var/log/sysadmin
+        sudo mkdir -p /var/log/sysadmin || {
+            echo "Error: Failed to create /var/log/sysadmin." >&2
+            exit 1
+        }
+        sudo chmod 750 /var/log/sysadmin || exit 1
+        sudo chown root:adm /var/log/sysadmin || exit 1
     fi
 
     # Deploy restorecon script
-    sudo cp "$SCRIPTS/cron/bin/restorecon.sh" /root/bin/
-    sudo chmod 700 /root/bin/restorecon.sh
-    sudo chown root:root /root/bin/restorecon.sh
+    sudo cp "$SCRIPTS/cron/bin/restorecon.sh" /root/bin/ || exit 1
+    sudo chmod 700 /root/bin/restorecon.sh || exit 1
+    sudo chown root:root /root/bin/restorecon.sh || exit 1
 
     # Set up restorecon cron job
-    sudo cp "$SCRIPTS/cron/bin/restorecon" /etc/cron.weekly/
-    sudo chmod 750 /etc/cron.weekly/restorecon
-    sudo chown root:adm /etc/cron.weekly/restorecon
+    sudo cp "$SCRIPTS/cron/bin/restorecon" /etc/cron.weekly/ || exit 1
+    sudo chmod 750 /etc/cron.weekly/restorecon || exit 1
+    sudo chown root:adm /etc/cron.weekly/restorecon || exit 1
 
     # Ensure restorecon log file exists and set permissions
     if [ ! -f /var/log/sysadmin/restorecon.log ]; then
-        sudo touch /var/log/sysadmin/restorecon.log
-        sudo chmod 640 /var/log/sysadmin/restorecon.log
-        sudo chown root:adm /var/log/sysadmin/restorecon.log
+        sudo touch /var/log/sysadmin/restorecon.log || exit 1
+        sudo chmod 640 /var/log/sysadmin/restorecon.log || exit 1
+        sudo chown root:adm /var/log/sysadmin/restorecon.log || exit 1
     fi
 
     # Deploy log rotation configuration for restorecon logs
     if [ ! -f /etc/logrotate.d/restorecon ]; then
-        sudo cp "$SCRIPTS/cron/etc/logrotate.d/restorecon" /etc/logrotate.d/
-        sudo chmod 644 /etc/logrotate.d/restorecon
-        sudo chown root:root /etc/logrotate.d/restorecon
+        sudo cp "$SCRIPTS/cron/etc/logrotate.d/restorecon" /etc/logrotate.d/ || exit 1
+        sudo chmod 644 /etc/logrotate.d/restorecon || exit 1
+        sudo chown root:root /etc/logrotate.d/restorecon || exit 1
     fi
 
     echo "Restorecon cron job setup completed successfully."
