@@ -9,12 +9,6 @@
 #  all operations and sends the log file to the system administrator via
 #  email.
 #
-#  Key Features:
-#  - Recursively changes ownership of specific directories to root.
-#  - Sets appropriate permissions for cron directories and files.
-#  - Logs all operations with timestamps and host details.
-#  - Sends a summary of operations to a specified admin email.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -30,13 +24,19 @@
 #  Execute the script directly without any arguments:
 #      ./fix-permissions.sh
 #
+#  Features:
+#  - Recursively changes ownership of specific directories to root.
+#  - Sets appropriate permissions for cron directories and files.
+#  - Logs all operations with timestamps and host details.
+#  - Sends a summary of operations to a specified admin email.
+#
 #  Requirements:
 #  - Must be executed with sufficient permissions to change ownership
 #    and modify file attributes (typically as root).
 #  - The `mail` command must be installed and configured to send emails.
 #  - Ensure the `nkf` command is installed for UTF-8 email conversion.
 #
-#  Note:
+#  Notes:
 #  - The `ADMIN_MAIL_ADDRESS` environment variable can be set to specify
 #    a recipient email address. Default is `root`.
 #  - Logs are written to `/var/log/sysadmin/fix-permissions.log`.
