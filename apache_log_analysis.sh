@@ -124,6 +124,10 @@ main() {
         -h|--help) usage ;;
     esac
 
+    if [ "$#" -eq 0 ]; then
+        usage
+    fi
+
     check_commands grep zgrep awk cut sort uniq wc paste
 
     LOG_FILE=$1

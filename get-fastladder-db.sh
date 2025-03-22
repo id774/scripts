@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-16
 #       Added system validation, command checks, and backup handling.
 #  v0.1 2016-04-09
@@ -33,6 +35,17 @@
 #  - SSH access to the specified host is required.
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Function to check required commands
 check_commands() {
@@ -82,6 +95,10 @@ sync_database() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     check_commands rsync mkdir mv
     check_arguments "$@"
     sync_database

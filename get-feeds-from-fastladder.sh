@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-16
 #       Added system validation, command checks, and database validation.
 #  v0.1 2016-03-23
@@ -31,6 +33,17 @@
 ########################################################################
 
 DBFILE="$HOME/fastladder/db/fastladder.db"
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Function to check required commands
 check_commands() {
@@ -65,6 +78,10 @@ exec_sql() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     check_commands sqlite3
     check_database
 

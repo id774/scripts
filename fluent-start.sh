@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.6 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v0.5 2025-03-17
 #       Encapsulated all logic into functions and introduced main function.
 #  v0.4 2025-02-26
@@ -32,6 +34,17 @@
 #  ./fluent-start.sh [fluentd path] [fluentd conf path] [options]
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Function to determine Fluentd and Fluent-Cat paths
 determine_fluentd_paths() {
@@ -86,6 +99,10 @@ send_test_message() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     determine_fluentd_paths "$1"
     check_fluentd_commands
     determine_fluentd_config "$2"

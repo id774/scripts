@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.3 2025-03-16
 #       Refactored entire script to encapsulate all logic in functions.
 #       Introduced `main()` function for better structure and maintainability.
@@ -28,7 +30,8 @@
 #       Initial release.
 #
 #  Usage:
-#  ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]
+#      ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]
+#      Default behavior is to show this help message. Use '--all' to pull from both github and git directories.
 #
 ########################################################################
 
@@ -40,6 +43,17 @@ GITHUB_ONLY=false
 GIT_ONLY=false
 ALL=false
 SHOW_HELP=false
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Function to check required commands
 check_commands() {
@@ -53,13 +67,6 @@ check_commands() {
             exit 126
         fi
     done
-}
-
-# Display usage information
-usage() {
-    echo "Usage: $0 [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]"
-    echo "Default behavior is to show this help message. Use '--all' to pull from both github and git directories."
-    exit 0
 }
 
 # Parse command-line arguments
@@ -141,6 +148,10 @@ process_directory() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     parse_arguments "$@"
 
     check_commands git
