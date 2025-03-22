@@ -31,8 +31,6 @@
 #
 ########################################################################
 
-set -e  # Exit immediately if a command exits with a non-zero status
-
 # Display script usage information
 usage() {
     awk '
@@ -73,9 +71,16 @@ gsettings_settings() {
     VALUE="$3"
 
     echo "Setting: $SCHEMA $KEY -> $VALUE"
-    gsettings set "$SCHEMA" "$KEY" "$VALUE"
+    if ! gsettings set "$SCHEMA" "$KEY" "$VALUE"; then
+        echo "Error: Failed to set $SCHEMA $KEY to $VALUE" >&2
+        exit 1
+    fi
+
     echo -n "Confirming: $SCHEMA $KEY = "
-    gsettings get "$SCHEMA" "$KEY"
+    if ! gsettings get "$SCHEMA" "$KEY"; then
+        echo "Error: Failed to confirm setting $SCHEMA $KEY" >&2
+        exit 1
+    fi
 }
 
 # Main function to execute the script
@@ -85,8 +90,6 @@ main() {
     esac
 
     check_system
-
-    # Required command
     check_commands gsettings
 
     # Apply GNOME media handling settings
