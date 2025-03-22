@@ -223,7 +223,7 @@ main() {
 
     check_system
     setup_environment
-    check_commands sudo vi zsh git cut getent ln rm chown
+    check_commands sudo zsh git cut getent ln rm chown
     check_sudo
     set_zsh_to_default
     install_dot_files
