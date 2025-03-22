@@ -22,7 +22,7 @@
 #       Initial release.
 #
 #  Usage:
-#      check_sshd_config.sh
+#      ./check_sshd_config.sh
 #
 #  Features:
 #  - Ensures required commands are installed and executable.

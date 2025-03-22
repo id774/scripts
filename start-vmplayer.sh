@@ -23,7 +23,7 @@
 #       First release.
 #
 #  Usage:
-#      start-vmplayer.sh
+#      ./start-vmplayer.sh
 #
 #  Notes:
 #  This script requires xvfb, fluxbox (non-free), x11vnc (non-free),

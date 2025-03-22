@@ -22,7 +22,7 @@
 #       Initial release.
 #
 #  Usage:
-#      vacuum-safari.sh
+#      ./vacuum-safari.sh
 #
 #  Notes:
 #  - Ensure Safari is not running while executing this script.

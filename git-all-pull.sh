@@ -27,7 +27,7 @@
 #       Initial release.
 #
 #  Usage:
-#      git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]
+#      ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]
 #
 #  Default behavior is to show this help message. Use '--all' to pull from both github and git directories.
 #

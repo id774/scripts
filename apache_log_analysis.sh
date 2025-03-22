@@ -42,9 +42,9 @@
 #       Initial release.
 #
 #  Usage:
-#      apache_log_analysis.sh [log_file_path]
+#      ./apache_log_analysis.sh [log_file_path]
 #  Example:
-#      apache_log_analysis.sh /var/log/apache2/ssl_access.log
+#      ./apache_log_analysis.sh /var/log/apache2/ssl_access.log
 #
 ########################################################################
 

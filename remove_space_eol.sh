@@ -26,7 +26,7 @@
 #       Initial release. Removes trailing whitespace from files.
 #
 #  Usage:
-#      find [directory...] -type f -name "*" -exec /path/to/remove_space_eol.sh {} \;
+#      ./find [directory...] -type f -name "*" -exec /path/to/remove_space_eol.sh {} \;
 #
 ########################################################################
 

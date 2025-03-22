@@ -28,7 +28,7 @@
 #       Initial release.
 #
 #  Usage:
-#      exif_drop.sh <directory_path>
+#      ./exif_drop.sh <directory_path>
 #
 #  Options:
 #      -h   Display this help message.

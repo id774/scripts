@@ -24,7 +24,7 @@
 #
 #  Usage:
 #  Run this script to manage favorite pins:
-#      fav-pins-on-fastladder.sh
+#      ./fav-pins-on-fastladder.sh
 #
 #  Requirements:
 #  - Must be executed on Linux or macOS.

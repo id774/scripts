@@ -28,7 +28,7 @@
 #
 #  Usage:
 #  Run the script directly without any arguments:
-#      brew-upgrade.sh
+#      ./brew-upgrade.sh
 #
 #  Requirements:
 #  - Homebrew must be installed prior to executing this script.

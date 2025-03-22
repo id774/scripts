@@ -32,10 +32,10 @@
 #
 #  Usage:
 #  Run the script with the GitHub user's name and the repository name:
-#      git-follow-origin.sh <user> <repo>
+#      ./git-follow-origin.sh <user> <repo>
 #
 #  Example:
-#      git-follow-origin.sh exampleUser exampleRepo
+#      ./git-follow-origin.sh exampleUser exampleRepo
 #
 #  This will merge changes from 'exampleUser/exampleRepo' into the local master branch.
 #

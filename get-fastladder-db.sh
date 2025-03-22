@@ -24,10 +24,10 @@
 #
 #  Usage:
 #  Retrieve the Fastladder database with default user and host:
-#      get-fastladder-db.sh
+#      ./get-fastladder-db.sh
 #
 #  Specify a user and host:
-#      get-fastladder-db.sh <user> <host>
+#      ./get-fastladder-db.sh <user> <host>
 #
 #  Requirements:
 #  - Must be executed on Linux or macOS.

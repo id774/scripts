@@ -35,7 +35,7 @@
 #       Initial release with backup creation and error handling.
 #
 #  Usage:
-#      filter_history.sh <pattern>
+#      ./filter_history.sh <pattern>
 #
 #  <pattern>: The string to remove from the history file (partial match).
 #

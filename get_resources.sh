@@ -28,7 +28,7 @@
 #       Initial release. Gathers system resources and log information.
 #
 #  Usage:
-#      get_resources.sh
+#      ./get_resources.sh
 #
 ########################################################################
 

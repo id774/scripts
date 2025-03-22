@@ -27,7 +27,7 @@
 #
 #  Usage:
 #  Run the script without any arguments:
-#      cltmp.sh
+#      ./cltmp.sh
 #
 #  The script automatically detects the operating system and performs the appropriate
 #  cleanup actions. Ensure to have the necessary permissions before running.

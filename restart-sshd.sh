@@ -34,7 +34,7 @@
 #       Initial release.
 #
 #  Usage:
-#      restart-sshd.sh
+#      ./restart-sshd.sh
 #
 ########################################################################
 

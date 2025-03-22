@@ -53,7 +53,7 @@
 #  Usage:
 #  Run the script with an optional argument to set the file permissions for the copied files.
 #  If no argument is provided, the default permission setting from the configuration file will be used.
-#      sd_extract.sh [permissions]
+#      ./sd_extract.sh [permissions]
 #
 #  Configuration file ('sd_extract.conf') requirements:
 #  - SOURCE_DIRS: Space-separated list of source directories.

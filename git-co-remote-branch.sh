@@ -31,10 +31,10 @@
 #
 #  Usage:
 #  Run the script with the name of the remote branch:
-#      git-co-remote-branch.sh <branch>
+#      ./git-co-remote-branch.sh <branch>
 #
 #  Example:
-#      git-co-remote-branch.sh feature-branch
+#      ./git-co-remote-branch.sh feature-branch
 #
 #  This will create and switch to a local branch called 'feature-branch'
 #  that tracks 'origin/feature-branch'.

@@ -35,7 +35,7 @@
 #       Initial release. Sets Homebrew-recommended ownership and permissions.
 #
 #  Usage:
-#      unfix_compinit.sh
+#      ./unfix_compinit.sh
 #
 #  Notes:
 #  - This script requires root privileges to execute. Run it with `sudo`.

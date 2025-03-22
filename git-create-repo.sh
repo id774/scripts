@@ -41,13 +41,13 @@
 #  This script automates the creation and deletion of Git repositories.
 #
 #  To create a new repository:
-#      git-create-repo.sh <repository_name> [repository_path] [--dry-run] [--sudo] [--no-sudo] [--user USER] [--group GROUP]
+#      ./git-create-repo.sh <repository_name> [repository_path] [--dry-run] [--sudo] [--no-sudo] [--user USER] [--group GROUP]
 #
 #  To delete an existing repository:
-#      git-create-repo.sh <repository_name> [repository_path] [--delete] [--dry-run] [--sudo] [--no-sudo] [--user USER] [--group GROUP]
+#      ./git-create-repo.sh <repository_name> [repository_path] [--delete] [--dry-run] [--sudo] [--no-sudo] [--user USER] [--group GROUP]
 #
 #  For help:
-#      git-create-repo.sh -h
+#      ./git-create-repo.sh -h
 #
 #  Options:
 #  --dry-run           Show what would be done without making any changes.
