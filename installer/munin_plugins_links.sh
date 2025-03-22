@@ -39,6 +39,18 @@
 #
 ########################################################################
 
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
+
 # Function to display help message
 display_help() {
     cat << EOF
@@ -132,6 +144,10 @@ configure_munin_plugins() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     if [ "$#" -eq 0 ]; then
         display_help
         exit 0

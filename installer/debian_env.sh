@@ -39,6 +39,18 @@
 #
 ########################################################################
 
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
+
 # Function to check if the system supports apt-get
 check_environment() {
     if ! command -v apt-get >/dev/null 2>&1; then
@@ -124,6 +136,10 @@ setup_tune2fs() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     check_environment
     setup_environment
     check_commands sudo tee locale locale-gen update-locale

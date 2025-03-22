@@ -30,6 +30,18 @@
 #
 ########################################################################
 
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
+
 # Fixed versions
 MECAB_VERSION="0.996"
 IPADIC_VERSION="2.7.0-20070801"
@@ -108,6 +120,10 @@ install_mecab() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     check_system
     check_commands curl wget tar make sudo
     check_network

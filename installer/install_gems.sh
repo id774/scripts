@@ -51,6 +51,18 @@
 #
 ########################################################################
 
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
+
 # Function to check required commands
 check_commands() {
     for cmd in "$@"; do
@@ -223,6 +235,10 @@ install_gems() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     echo "Starting Ruby gem installation..."
     setup_environment "$1"
     install_gems

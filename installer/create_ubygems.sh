@@ -45,6 +45,18 @@
 #
 ########################################################################
 
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
+
 # Function to check required commands before execution
 check_commands() {
     for cmd in "$@"; do
@@ -133,6 +145,10 @@ create_ubygems() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     # Ensure required commands are available before proceeding
     check_commands find grep sort tail basename ls cat
 

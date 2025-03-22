@@ -33,6 +33,18 @@
 #
 ########################################################################
 
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
+
 # Path to the system-wide crontab file
 CRONTAB_FILE="/etc/crontab"
 
@@ -101,6 +113,10 @@ create_directories() {
 
 # Main function to execute all setup tasks
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     check_system
     check_commands grep uname sudo mkdir tee
     check_sudo

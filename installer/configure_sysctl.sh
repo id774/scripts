@@ -20,24 +20,6 @@
 #  - Ensures changes are applied using sysctl only if needed.
 #  - Verifies the applied configuration.
 #
-#  Security Settings:
-#  - IPv6 disabling to prevent unintended network exposure.
-#  - Disables IPv6 anycast addresses.
-#  - Prevents binding to non-local IPv6 addresses.
-#  - Disables DHCPv6 auto-configuration.
-#  - Disables IPv6 tunneling.
-#  - Source routing and IP spoofing prevention.
-#  - ICMP redirect and source routing protection against MITM attacks.
-#  - Prevents ARP spoofing attacks.
-#  - Martian packet logging for better network monitoring.
-#  - TCP SYN Cookies to mitigate SYN flood attacks.
-#  - ICMP rate limiting and bogus error ignoring for enhanced security.
-#  - Allows ICMP echo requests (ping) while enforcing rate limits to mitigate abuse.
-#  - Optimized TCP timeout settings to mitigate DoS impact.
-#  - TIME-WAIT assassination attack protection (RFC 1337).
-#  - Enables TCP window scaling for better network performance.
-#  - Enables TCP Fast Open (TFO) for improved connection latency.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -62,7 +44,44 @@
 #  ./configure_sysctl.sh --apply
 #  --apply: Configures IPv6 and applies security settings by modifying /etc/sysctl.d/.
 #
+#  Security Settings:
+#  - IPv6 disabling to prevent unintended network exposure.
+#  - Disables IPv6 anycast addresses.
+#  - Prevents binding to non-local IPv6 addresses.
+#  - Disables DHCPv6 auto-configuration.
+#  - Disables IPv6 tunneling.
+#  - Source routing and IP spoofing prevention.
+#  - ICMP redirect and source routing protection against MITM attacks.
+#  - Prevents ARP spoofing attacks.
+#  - Martian packet logging for better network monitoring.
+#  - TCP SYN Cookies to mitigate SYN flood attacks.
+#  - ICMP rate limiting and bogus error ignoring for enhanced security.
+#  - Allows ICMP echo requests (ping) while enforcing rate limits to mitigate abuse.
+#  - Optimized TCP timeout settings to mitigate DoS impact.
+#  - TIME-WAIT assassination attack protection (RFC 1337).
+#  - Enables TCP window scaling for better network performance.
+#  - Enables TCP Fast Open (TFO) for improved connection latency.
+#
+#  Warning:
+#  - If your system relies on IPv6, ensure disabling it does not impact functionality.
+#  - Verify that your firewall settings do not conflict with these configurations.
+#  - This script makes permanent changes to your system settings by modifying /etc/sysctl.d/
+#
+#  This will modify /etc/sysctl.d/ and apply security configurations immediately.
+#
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
 
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
@@ -72,32 +91,13 @@ check_sudo() {
     fi
 }
 
+case "$1" in
+    -h|--help) usage ;;
+esac
+
 # Check for required argument
 if [ "$1" != "--apply" ]; then
-    echo "\n### GNU/Linux Network Security Configuration Tool ###"
-    echo "This script configures IPv6 and network security settings on your system."
-    echo "It modifies settings in /etc/sysctl.d/ to enhance security against network-based attacks."
-    echo "\n### Features:"
-    echo "- Disables IPv6 globally to prevent unintended exposure."
-    echo "- Prevents source routing and IP spoofing for safer networking."
-    echo "- Enables ICMP protection measures to prevent abuse and spoofing."
-    echo "- Applies strict TCP SYN cookie settings to mitigate SYN flood attacks."
-    echo "- Protects against ARP spoofing and enforces reverse path filtering."
-    echo "- Implements ASLR (Address Space Layout Randomization) to enhance memory security."
-    echo "- Configures system-wide TCP timeout and keepalive settings to prevent DoS impact."
-    echo "- Logs abnormal packets for better monitoring."
-    echo "- Enhances TCP retransmission and keepalive settings for better stability."
-    echo "- Enables TCP Fast Open (TFO) to improve connection latency."
-    echo "- Expands local port range for better network scalability."
-    echo "\n### Warning:"
-    echo "- If your system relies on IPv6, ensure disabling it does not impact functionality."
-    echo "- Verify that your firewall settings do not conflict with these configurations."
-    echo "- This script makes permanent changes to your system settings by modifying /etc/sysctl.d/"
-    echo "\n### Usage:"
-    echo "To apply these settings, run the following command:"
-    echo "  $0 --apply"
-    echo "\nThis will modify /etc/sysctl.d/ and apply security configurations immediately."
-    exit 0
+    usage
 fi
 
 # Function to check required commands

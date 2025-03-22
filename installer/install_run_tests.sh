@@ -40,6 +40,18 @@
 #
 ########################################################################
 
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
+
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
@@ -102,6 +114,10 @@ setup_cron_job() {
 
 # Main function to execute all setup tasks
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     check_sudo
     check_scripts
     setup_log_directory
