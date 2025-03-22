@@ -75,7 +75,7 @@
 #  - Sudo is used by default for system-wide paths like /var/lib/git.
 #  - Sudo is not used by default for paths within the user's home directory.
 #
-#  Note: The script may require sudo permissions for certain operations,
+#  Notes: The script may require sudo permissions for certain operations,
 #  especially when dealing with system-wide paths like /var/lib/git. By default,
 #  sudo is used for system-wide paths and not used for paths within the user's
 #  home directory. This behavior can be overridden with the --sudo or --no-sudo options.

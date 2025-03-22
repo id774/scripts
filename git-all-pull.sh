@@ -8,9 +8,6 @@
 #  local directories. It also checks for and creates symbolic links from
 #  the home directory to these repositories.
 #
-#  WARNING: The '--hard' option performs 'git reset --hard' which can
-#  overwrite local changes. Use with caution.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -33,6 +30,9 @@
 #      git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]
 #
 #  Default behavior is to show this help message. Use '--all' to pull from both github and git directories.
+#
+#  WARNING: The '--hard' option performs 'git reset --hard' which can
+#  overwrite local changes. Use with caution.
 #
 ########################################################################
 

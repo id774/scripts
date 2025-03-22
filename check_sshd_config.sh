@@ -6,17 +6,6 @@
 #  Description:
 #  This script checks the SSH daemon configuration for both macOS and Linux.
 #
-#  Features:
-#  - Ensures required commands are installed and executable.
-#  - Displays key SSHD configuration parameters, including:
-#    - Port
-#    - PermitRootLogin
-#    - PasswordAuthentication
-#    - ChallengeResponseAuthentication
-#    - AddressFamily (added in v1.7)
-#    - AllowUsers (newly added in v1.6)
-#  - Detects and supports both macOS and Linux environments.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -34,6 +23,17 @@
 #
 #  Usage:
 #      check_sshd_config.sh
+#
+#  Features:
+#  - Ensures required commands are installed and executable.
+#  - Displays key SSHD configuration parameters, including:
+#    - Port
+#    - PermitRootLogin
+#    - PasswordAuthentication
+#    - ChallengeResponseAuthentication
+#    - AddressFamily
+#    - AllowUsers
+#  - Detects and supports both macOS and Linux environments.
 #
 #  This script does not require any arguments. It automatically detects
 #  the operating system and checks the SSHD configuration accordingly.
