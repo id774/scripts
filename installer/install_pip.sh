@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-01-16
 #       Official release. Removed sudo dependency, improved documentation,
 #       and refined error handling.
@@ -34,8 +36,8 @@
 #  Usage:
 #  Run this script in a terminal to set up your Python environment.
 #  Examples:
-#     ./install_pip.sh /path/to/python
-#     ./install_pip.sh
+#      ./install_pip.sh /path/to/python
+#      ./install_pip.sh
 #
 #  Requirements:
 #  - pip must be installed prior to executing this script.
@@ -60,7 +62,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check required commands
 check_commands() {

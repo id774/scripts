@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-13
 #       Enhanced documentation and comments for better maintainability.
 #       Ensured strict POSIX compliance.
@@ -49,7 +51,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check if the system supports apt-get
 check_environment() {

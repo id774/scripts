@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# install_postgresql_backup.sh: Installer for PostgreSQL Backup Script
+# install_postgres-backup.sh: Installer for PostgreSQL Backup Script
 #
 #  Description:
 #  This script automates the setup of PostgreSQL backup by:
@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-16
 #       Unified structure, added system checks, improved error handling.
 #  v0.2 2016-07-29
@@ -24,7 +26,7 @@
 #
 #  Usage:
 #  Run this script without arguments to install the PostgreSQL backup setup:
-#      ./install_postgresql_backup.sh
+#      ./install_postgres-backup.sh
 #
 #  Requirements:
 #  - The user must have `sudo`, `mkdir`, `cp`, and `chown` installed.
@@ -42,7 +44,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check if the system is Linux
 check_system() {

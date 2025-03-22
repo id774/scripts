@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.0 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.9 2025-03-14
 #       Added command existence check, system check, and environment variable validation.
 #  v1.8 2025-03-13
@@ -26,6 +28,9 @@
 #  [Further version history truncated for brevity]
 #  v1.0 2008-08-15
 #       Stable initial release.
+#
+#  Usage:
+#      ./install_get_resources.sh
 #
 #  Notes:
 #  - Ensure the SCRIPTS environment variable is set to the directory containing
@@ -43,7 +48,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Check if the system is Linux
 check_system() {

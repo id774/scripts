@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v5.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v5.0 2025-03-21
 #       Improved system detection for Debian and Ubuntu.
 #       Enhanced documentation and comments for better maintainability.
@@ -52,7 +54,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check if the system is Linux
 check_system() {

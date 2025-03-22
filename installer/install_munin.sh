@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-13
 #       Added system compatibility check for Linux.
 #       Removed manual vi editing and automated configuration steps.
@@ -49,7 +51,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Check if the system is Linux
 check_system() {

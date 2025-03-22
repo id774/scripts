@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-16
 #       Added support for enabling/disabling localization via arguments.
 #       Improved error handling and environment checks.
@@ -41,7 +43,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check if the system is macOS
 check_system() {
@@ -100,8 +101,7 @@ main() {
             disable_localization
             ;;
         *)
-            echo "Usage: $0 {enable|disable}" >&2
-            exit 0
+            usage
             ;;
     esac
 }

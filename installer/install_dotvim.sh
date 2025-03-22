@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.1 2025-03-14
 #       Added command existence check and environment variable validation.
 #  v1.0 2010-03-07
@@ -44,7 +46,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check required commands
 check_commands() {

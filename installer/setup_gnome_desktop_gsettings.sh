@@ -21,14 +21,17 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-02-26
 #       - Initial release with command validation and setting updates.
 #
 #  Usage:
-#  ./setup_gnome_desktop_gsettings.sh
-#  No arguments required.
+#      ./setup_gnome_desktop_gsettings.sh
 #
 ########################################################################
+
+set -e  # Exit immediately if a command exits with a non-zero status
 
 # Display script usage information
 usage() {
@@ -41,14 +44,13 @@ usage() {
     exit 0
 }
 
-
-set -e  # Exit immediately if a command exits with a non-zero status
-
-# Check if the system is running GNU/Linux
-if [ "$(uname -s)" != "Linux" ]; then
-    echo "Error: This script is intended to run on GNU/Linux only." >&2
-    exit 1
-fi
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
 
 # Function to check required commands
 check_commands() {
@@ -64,9 +66,6 @@ check_commands() {
     done
 }
 
-# Required command
-check_commands gsettings
-
 # Function to set and confirm GNOME settings
 gsettings_settings() {
     SCHEMA="$1"
@@ -79,9 +78,24 @@ gsettings_settings() {
     gsettings get "$SCHEMA" "$KEY"
 }
 
-# Apply GNOME media handling settings
-gsettings_settings org.gnome.desktop.media-handling automount false
-gsettings_settings org.gnome.desktop.media-handling automount-open false
-gsettings_settings org.gnome.desktop.media-handling autorun-never true
+# Main function to execute the script
+main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
 
-echo "GNOME media handling settings updated successfully."
+    check_system
+
+    # Required command
+    check_commands gsettings
+
+    # Apply GNOME media handling settings
+    gsettings_settings org.gnome.desktop.media-handling automount false
+    gsettings_settings org.gnome.desktop.media-handling automount-open false
+    gsettings_settings org.gnome.desktop.media-handling autorun-never true
+
+    echo "GNOME media handling settings updated successfully."
+}
+
+# Execute main function
+main "$@"

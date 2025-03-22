@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.5 2025-03-17
 #       Refactored to encapsulate all logic into functions and introduced main function.
 #  v1.4 2025-03-13
@@ -48,24 +50,6 @@ usage() {
         in_usage && /^#/ { print substr($0, 4) }
     ' "$0"
     exit 0
-}
-
-
-# Function to display help message
-display_help() {
-    cat << EOF
-Usage: $0 [-h] [-c]
-
-Description:
-  This script automates the configuration of Munin plugins by generating
-  and executing a script with commands provided by munin-node-configure.
-  It also handles specific plugin removal and service restart.
-
-Options:
-  -h   Display this help message.
-  -c   Configure and link Munin plugins.
-
-EOF
 }
 
 # Function to check if the system is Linux
@@ -144,27 +128,17 @@ configure_munin_plugins() {
 
 # Main function to execute the script
 main() {
-    case "$1" in
-        -h|--help) usage ;;
-    esac
-
     if [ "$#" -eq 0 ]; then
-        display_help
-        exit 0
+        usage
     fi
 
     while getopts "hc" opt; do
         case $opt in
-            h)
-                display_help
-                exit 0
-                ;;
             c)
                 configure_munin_plugins
                 ;;
             *)
-                display_help
-                exit 0
+                usage
                 ;;
         esac
     done

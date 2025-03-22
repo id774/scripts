@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.2 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v2.1 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v2.0 2025-03-06
@@ -47,7 +49,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check if the system is Linux
 check_system() {
@@ -160,16 +161,6 @@ main() {
     case "$1" in
         -h|--help) usage ;;
     esac
-
-    # Check if -h is provided as an argument
-    if [ "$1" = "-h" ]; then
-        echo "Usage: ./install_des.sh [OPTION]"
-        echo ""
-        echo "Options:"
-        echo "  -h   Display this help message."
-        echo "  -n   Do not save source files after installation."
-        exit 0
-    fi
 
     if command -v des >/dev/null 2>&1; then
         echo "DES is already installed."

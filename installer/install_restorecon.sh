@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.5 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v0.4 2025-03-14
 #       Added Linux system validation, command validation, and improved error handling.
 #  v0.3 2025-03-13
@@ -24,11 +26,16 @@
 #  v0.1 2014-06-02
 #       Initial setup of restorecon cron job.
 #
+#  Usage:
+#      ./install_restorecon.sh
+#
 #  Notes:
 #  - Ensure the SCRIPTS environment variable is set to the directory containing
 #    the restorecon script and configuration files before running this script.
 #
 ########################################################################
+
+set -e  # Exit immediately on error
 
 # Display script usage information
 usage() {
@@ -40,7 +47,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check if the system is Linux
 check_system() {

@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.4 2025-03-21
 #       Refactored script by functionizing all processes without changing behavior.
 #  v1.3 2025-03-13
@@ -27,18 +29,20 @@
 #  v1.0 2024-03-13
 #       Initial deployment script for automated testing setup.
 #
+#  Usage:
+#  Execute this script with sufficient permissions to perform directory
+#  creation, file copying, and cron job scheduling tasks:
+#      ./install_run_tests.sh
+#
 #  Notes:
 #  - The SCRIPTS environment variable must be set to the directory containing
 #    the run_tests script and its configuration file before running this script.
 #  - After deployment, review and potentially edit /root/etc/run_tests.conf
 #    and /etc/cron.d/run_tests to finalize the configuration.
 #
-#  Usage:
-#  Execute this script with sufficient permissions to perform directory
-#  creation, file copying, and cron job scheduling tasks:
-#      ./install_run_tests.sh
-#
 ########################################################################
+
+set -e  # Exit immediately on error
 
 # Display script usage information
 usage() {
@@ -51,6 +55,13 @@ usage() {
     exit 0
 }
 
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
 
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
@@ -118,8 +129,9 @@ main() {
         -h|--help) usage ;;
     esac
 
-    check_sudo
+    check_system
     check_scripts
+    check_sudo
     setup_log_directory
     setup_log_file
     deploy_log_rotation

@@ -20,6 +20,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-21
 #       Initial release. Ensures cron.weekday and cron.weekend entries exist.
 #
@@ -33,6 +35,16 @@
 #
 ########################################################################
 
+# Path to the system-wide crontab file
+CRONTAB_FILE="/etc/crontab"
+
+# Cron job entries to check and add if missing
+WEEKDAY_ENTRY="01 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
+WEEKEND_ENTRY="01 23 * * 0,6 root cd / && run-parts --report /etc/cron.weekend"
+
+# Track changes
+CHANGES_MADE=0
+
 # Display script usage information
 usage() {
     awk '
@@ -43,17 +55,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
-
-# Path to the system-wide crontab file
-CRONTAB_FILE="/etc/crontab"
-
-# Cron job entries to check and add if missing
-WEEKDAY_ENTRY="01 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
-WEEKEND_ENTRY="01 23 * * 0,6 root cd / && run-parts --report /etc/cron.weekend"
-
-# Track changes
-CHANGES_MADE=0
 
 # Function to check if the system is Linux
 check_system() {

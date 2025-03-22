@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v3.0 2025-01-16
 #       Official release. Removed sudo dependency, improved documentation,
 #       and refined error handling.
@@ -35,8 +37,8 @@
 #  Usage:
 #  Run this script in a terminal to set up your Ruby environment.
 #  Examples:
-#     ./install_gems.sh /path/to/ruby
-#     ./install_gems.sh
+#      ./install_gems.sh /path/to/ruby
+#      ./install_gems.sh
 #
 #  Requirements:
 #  - Ruby and gem must be installed prior to executing this script.
@@ -61,7 +63,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check required commands
 check_commands() {

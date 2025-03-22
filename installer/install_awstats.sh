@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-15
 #       Added system, command, and sudo checks.
 #       Improved error handling and permission settings.
@@ -34,6 +36,8 @@
 #
 ########################################################################
 
+set -e  # Exit immediately on error
+
 # Display script usage information
 usage() {
     awk '
@@ -44,9 +48,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
-
-set -e  # Exit immediately on error
 
 # Function to check if the system is Linux
 check_system() {

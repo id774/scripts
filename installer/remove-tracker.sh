@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.3 2025-03-16
 #       Added Linux OS check, systemd check, and command validation.
 #       Improved error handling and robustness.
@@ -62,7 +64,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check if the system is Linux
 check_system() {

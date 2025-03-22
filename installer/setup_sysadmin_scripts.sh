@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.4 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
 #  v1.3 2025-02-14
@@ -68,7 +70,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {

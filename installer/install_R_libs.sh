@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-16
 #       Stable version, installs R libraries from config file.
 #  v0.1 2014-08-09
@@ -39,7 +41,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check if R is installed
 check_R() {

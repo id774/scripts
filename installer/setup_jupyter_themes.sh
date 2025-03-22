@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-16
 #       Added sudo validation, environment checks, and improved error handling.
 #       Replaced direct vim execution with an instructional message.
@@ -42,7 +44,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check if required commands exist
 check_commands() {

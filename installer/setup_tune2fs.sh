@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-13
 #       Improved POSIX compliance and modularization.
 #       Enhanced loop structures and variable handling.
@@ -53,7 +55,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Check if the system is Linux
 check_system() {

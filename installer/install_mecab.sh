@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-20
 #       Unified structure, added system checks, improved error handling.
 #       Removed arguments, fixed versions, and removed source saving.
@@ -40,7 +42,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Fixed versions
 MECAB_VERSION="0.996"

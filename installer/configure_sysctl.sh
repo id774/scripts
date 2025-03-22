@@ -26,6 +26,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.4 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.3 2025-03-05
@@ -42,7 +44,7 @@
 #
 #  Usage:
 #  ./configure_sysctl.sh --apply
-#  --apply: Configures IPv6 and applies security settings by modifying /etc/sysctl.d/.
+#  --apply: Configures IPv6 and applies security settings by modifying /etc/sysctl.d/
 #
 #  Security Settings:
 #  - IPv6 disabling to prevent unintended network exposure.
@@ -82,7 +84,6 @@ usage() {
     exit 0
 }
 
-
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
@@ -90,10 +91,6 @@ check_sudo() {
         exit 1
     fi
 }
-
-case "$1" in
-    -h|--help) usage ;;
-esac
 
 # Check for required argument
 if [ "$1" != "--apply" ]; then

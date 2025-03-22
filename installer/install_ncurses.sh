@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v2.0 2025-03-19
 #       Added network connection check, Linux system validation, command validation, and improved argument handling.
 #  [Further version history truncated for brevity]
@@ -50,7 +52,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check required commands
 check_commands() {

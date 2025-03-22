@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v3.0 2025-03-19
 #       Added network connection check, system validation, command validation, and improved argument handling.
 #       Default Ruby version 3.4.2 installs in '/opt/ruby/3.4' directory.
@@ -56,7 +58,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check required commands
 check_commands() {

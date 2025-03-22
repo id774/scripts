@@ -22,6 +22,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.3 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v2.2 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #       Optimize home directory ownership handling.
@@ -53,7 +55,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {

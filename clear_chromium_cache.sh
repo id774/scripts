@@ -68,9 +68,6 @@ clear_cache() {
 parse_arguments() {
     while getopts "hc" opt; do
         case $opt in
-            h)
-                usage
-                ;;
             c)
                 clear_cache
                 ;;

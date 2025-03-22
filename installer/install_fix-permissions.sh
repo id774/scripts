@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.3 2025-03-14
 #       Added command existence check, system check, and environment variable validation.
 #  v1.2 2025-03-13
@@ -56,7 +58,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Check if the system is Linux
 check_system() {

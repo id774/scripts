@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-20
 #       Added network connection check, system validation, command validation, and improved argument handling.
 #       Default zsh version 5.9 installs in '/opt/zsh/5.9' directory.
@@ -60,7 +62,6 @@ usage() {
     exit 0
 }
 
-
 # Function to check required commands
 check_commands() {
     for cmd in "$@"; do
@@ -90,7 +91,6 @@ check_sudo() {
         exit 1
     fi
 }
-
 
 # Setup version and environment
 setup_environment() {

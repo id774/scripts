@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.3 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v2.2 2025-03-14
 #       Added command existence check, system check, and environment variable validation.
 #  v2.1 2025-03-13
@@ -27,6 +29,9 @@
 #  v1.8 2023-12-17
 #       Refactor rsync_backup script for modular operation definitions.
 #  [Further version history truncated for brevity]
+#
+#  Usage:
+#      ./install_rsync_backup.sh
 #
 #  Notes:
 #  - Ensure the SCRIPTS environment variable is set to the directory containing
@@ -44,7 +49,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Check if the system is Linux
 check_system() {

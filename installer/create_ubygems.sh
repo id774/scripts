@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.1 2025-03-19
 #       Added support for custom Ruby installation paths.
 #       Improved error handling for missing Ruby directories.
@@ -55,7 +57,6 @@ usage() {
     ' "$0"
     exit 0
 }
-
 
 # Function to check required commands before execution
 check_commands() {
