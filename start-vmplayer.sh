@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.3 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v0.2 2023-12-20
 #       Replaced 'which' with 'command -v' for command existence check.
 #       Updated script header for consistency.
@@ -31,9 +33,16 @@
 #
 ########################################################################
 
-test -n "$TMP" || export TMP=$HOME/.tmp
-test -n "$1" && export DISPLAY=$1
-test -n "$1" || export DISPLAY=:99
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Start a virtual X server using Xvfb.
 start_xvfb() {
@@ -70,6 +79,14 @@ start_daemon() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
+    test -n "$TMP" || export TMP=$HOME/.tmp
+    test -n "$1" && export DISPLAY=$1
+    test -n "$1" || export DISPLAY=:99
+
     command -v Xvfb > /dev/null && \
         command -v fluxbox > /dev/null && \
         command -v x11vnc > /dev/null && \
