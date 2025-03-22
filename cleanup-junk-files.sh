@@ -99,14 +99,17 @@ main() {
     # Check if rm and find commands exist
     check_commands rm find
 
-    # Check if a directory is provided
-    if [ -z "$1" ]; then
-        echo "Error: No target directory provided."
-        echo "Usage: $0 <target_directory>"
-        exit 0
+    if [ "$#" -eq 0 ]; then
+        usage
     fi
 
-    cleanup_junk_files "$1"
+    if [ -d "$1" ]; then
+        cleanup_junk_files "$1"
+    else
+        echo "Error: Directory '$1' is not found." >&2
+        exit 1
+    fi
+
 }
 
 # Execute main function
