@@ -59,16 +59,16 @@
 #
 #  Examples:
 #    Create a new repository at /var/lib/git:
-#      git-create-repo.sh myrepo
+#      ./git-create-repo.sh myrepo
 #
 #    Create a new repository at a custom path without sudo:
-#      git-create-repo.sh myrepo /home/user/myrepo --no-sudo
+#      ./git-create-repo.sh myrepo /home/user/myrepo --no-sudo
 #
 #    Delete an existing repository at /var/lib/git:
-#      git-create-repo.sh myrepo --delete
+#      ./git-create-repo.sh myrepo --delete
 #
 #    Show what would be done without making changes:
-#      git-create-repo.sh myrepo /custom/path --dry-run
+#      ./git-create-repo.sh myrepo /custom/path --dry-run
 #
 #  Default Behavior:
 #  - The default repository path is /var/lib/git if not specified.
