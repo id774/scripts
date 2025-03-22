@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.7 2025-03-17
 #       Encapsulated all logic in functions and introduced main function.
 #  v1.6 2025-03-13
@@ -44,6 +46,17 @@
 #  Example: ./apache_log_analysis.sh /var/log/apache2/ssl_access.log
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Function to check required commands
 check_commands() {
@@ -107,13 +120,11 @@ analyze_logs() {
 
 # Main function to execute the script
 main() {
-    check_commands grep zgrep awk cut sort uniq wc paste
+    case "$1" in
+        -h|--help) usage ;;
+    esac
 
-    if [ "$#" -ne 1 ]; then
-        echo "Usage: $0 log_file_path"
-        echo "Example: $0 /var/log/apache2/ssl_access.log"
-        exit 0
-    fi
+    check_commands grep zgrep awk cut sort uniq wc paste
 
     LOG_FILE=$1
 

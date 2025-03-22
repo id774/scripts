@@ -37,20 +37,15 @@
 #
 ########################################################################
 
-# Function to display help message
-display_help() {
-    cat << EOF
-Usage: $0 [-h] [-c]
-
-Options:
-  -h   Display this help message.
-  -c   Clear Chromium "Web Data" directory.
-
-Notes:
-  - This script no longer forcefully terminates Chromium processes.
-  - Ensure that Chromium is closed before running with the -c option
-    to avoid potential data corruption.
-EOF
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
 }
 
 # Function to clear Chromium "Web Data" directory
@@ -72,22 +67,20 @@ parse_arguments() {
     while getopts "hc" opt; do
         case $opt in
             h)
-                display_help
-                exit 0
+                usage
                 ;;
             c)
                 clear_cache
                 ;;
             *)
-                display_help
-                exit 0
+                usage
                 ;;
         esac
     done
 
     # If no options are provided, display help
     if [ $OPTIND -eq 1 ]; then
-        display_help
+        usage
         exit 0
     fi
 }

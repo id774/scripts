@@ -23,6 +23,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v2.0 2025-03-17
 #       Encapsulated all logic into functions and introduced main function.
 #       Redirected error messages to stderr for better logging and debugging.
@@ -36,6 +38,17 @@
 #  the operating system and checks the SSHD configuration accordingly.
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Function to check required commands
 check_commands() {
@@ -76,6 +89,9 @@ check_additional_sshd() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
     check_commands grep
     check_main_sshd
     check_additional_sshd
