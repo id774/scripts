@@ -27,6 +27,7 @@
 #  Usage:
 #  Run the script directly:
 #      ./install_munin.sh
+#
 #  This script installs Munin, configures it, and restarts necessary services.
 #
 #  Notes:

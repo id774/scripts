@@ -29,6 +29,7 @@
 #
 #  Usage:
 #  Run this script in a terminal to set up your Python environment.
+#
 #  Examples:
 #     ./install_conda.sh /path/to/python
 #     ./install_conda.sh

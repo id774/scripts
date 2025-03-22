@@ -31,7 +31,7 @@
 #       Derived from install_crypt.sh.
 #
 #  Usage:
-#  ./install_des.sh [OPTION]
+#      ./install_des.sh [OPTION]
 #
 #  Options:
 #  -h   Display this help message.

@@ -27,6 +27,7 @@
 #  Usage:
 #  Run the script directly:
 #      ./debian_desktop_setup.sh
+#
 #  Ensure that LightDM is installed before executing.
 #
 #  Notes:

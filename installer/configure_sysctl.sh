@@ -10,16 +10,6 @@
 #  and IPv4 security hardening settings are stored in 97-secure-ipv4.conf.
 #  This ensures better compatibility and avoids conflicts with system-managed settings.
 #
-#  Features:
-#  - Checks for necessary commands before execution.
-#  - Ensures /etc/sysctl.d/ exists before modification.
-#  - Uses separate configuration files for IPv6 disabling and IPv4 security hardening.
-#  - Configures IPv6 settings by modifying sysctl parameters.
-#  - Applies recommended security settings to prevent network attacks.
-#  - Enhances TCP/IP security against SYN Flood, ICMP attacks, and spoofing.
-#  - Ensures changes are applied using sysctl only if needed.
-#  - Verifies the applied configuration.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -43,8 +33,19 @@
 #       Initial release with IPv6 disabling functionality.
 #
 #  Usage:
-#  ./configure_sysctl.sh --apply
+#      ./configure_sysctl.sh --apply
+#
 #  --apply: Configures IPv6 and applies security settings by modifying /etc/sysctl.d/
+#
+#  Features:
+#  - Checks for necessary commands before execution.
+#  - Ensures /etc/sysctl.d/ exists before modification.
+#  - Uses separate configuration files for IPv6 disabling and IPv4 security hardening.
+#  - Configures IPv6 settings by modifying sysctl parameters.
+#  - Applies recommended security settings to prevent network attacks.
+#  - Enhances TCP/IP security against SYN Flood, ICMP attacks, and spoofing.
+#  - Ensures changes are applied using sysctl only if needed.
+#  - Verifies the applied configuration.
 #
 #  Security Settings:
 #  - IPv6 disabling to prevent unintended network exposure.
@@ -68,8 +69,7 @@
 #  - If your system relies on IPv6, ensure disabling it does not impact functionality.
 #  - Verify that your firewall settings do not conflict with these configurations.
 #  - This script makes permanent changes to your system settings by modifying /etc/sysctl.d/
-#
-#  This will modify /etc/sysctl.d/ and apply security configurations immediately.
+#  - This will modify /etc/sysctl.d/ and apply security configurations immediately.
 #
 ########################################################################
 

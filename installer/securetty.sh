@@ -8,12 +8,6 @@
 #  to enable root login from any TTY device. This might be necessary for certain
 #  system administration tasks or policy changes.
 #
-#  Warning:
-#  Using this script can decrease system security by allowing root access from any
-#  terminal. It should only be used when absolutely necessary and in secure environments.
-#  This script does nothing if /etc/securetty is a directory, which might be the case
-#  in some systems like macOS.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -32,6 +26,12 @@
 #  Usage:
 #  Run the script without any arguments:
 #      ./securetty.sh
+#
+#  Warning:
+#  Using this script can decrease system security by allowing root access from any
+#  terminal. It should only be used when absolutely necessary and in secure environments.
+#  This script does nothing if /etc/securetty is a directory, which might be the case
+#  in some systems like macOS.
 #
 ########################################################################
 

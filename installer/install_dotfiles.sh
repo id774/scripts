@@ -9,13 +9,6 @@
 #  It ensures consistent user configurations by copying predefined dotfiles
 #  to appropriate locations, managing permissions, and applying necessary settings.
 #
-#  Features:
-#  - Deploys dotfiles such as .zshrc, .vimrc, .gitconfig, .emacs, etc.
-#  - Ensures required directories exist and have correct permissions.
-#  - Configures Emacs settings, including site-lisp and backup directories.
-#  - Supports multiple users on Linux/macOS.
-#  - Uses POSIX-compliant scripting practices for better compatibility.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -38,7 +31,16 @@
 #       Initial release.
 #
 #  Usage:
-#  ./install_dotfiles.sh
+#      ./install_dotfiles.sh
+#
+#  Features:
+#  - Deploys dotfiles such as .zshrc, .vimrc, .gitconfig, .emacs, etc.
+#  - Ensures required directories exist and have correct permissions.
+#  - Configures Emacs settings, including site-lisp and backup directories.
+#  - Supports multiple users on Linux/macOS.
+#  - Uses POSIX-compliant scripting practices for better compatibility.
+#
+#  Notes:
 #  - Deploys dotfiles and configures user environments.
 #  - Automatically detects and sets up configurations for multiple users.
 #  - Run with appropriate permissions if modifying system-wide settings.

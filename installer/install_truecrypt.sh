@@ -32,7 +32,7 @@
 #       Stable release.
 #
 #  Usage:
-#  ./install_truecrypt.sh [VERSION] [OPTION]
+#      ./install_truecrypt.sh [VERSION] [OPTION]
 #
 #  Options:
 #  -h   Display this help message.

@@ -33,7 +33,7 @@
 #       Forked from TrueCrypt Installer.
 #
 #  Usage:
-#  ./install_veracrypt.sh [OPTION]
+#      ./install_veracrypt.sh [OPTION]
 #
 #  Options:
 #  -h   Display this help message.

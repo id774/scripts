@@ -33,7 +33,7 @@
 #       Initial release.
 #
 #  Usage:
-#  ./munin_plugins_links.sh [-h] [-c]
+#      ./munin_plugins_links.sh [-h] [-c]
 #
 #  Options:
 #  -h   Display this help message.

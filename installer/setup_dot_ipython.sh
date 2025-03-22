@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# setup_ipython.sh: IPython Setup Script
+# setup_dot_ipython.sh: IPython Setup Script
 #
 #  Description:
 #  This script automates the setup and configuration of the IPython environment.
@@ -26,6 +26,8 @@
 #       Initial release for automating IPython setup.
 #
 #  Usage:
+#      ./setup_dot_ipython.sh
+#
 #  Run this script to initialize and configure your IPython environment.
 #  This script sets up a default IPython profile and an additional 'nbserver' profile.
 #  It also copies necessary startup files from a predefined 'SCRIPTS' directory.

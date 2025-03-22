@@ -35,6 +35,7 @@
 #
 #  Usage:
 #  Run this script in a terminal to set up your Python environment.
+#
 #  Examples:
 #      ./install_pip.sh /path/to/python
 #      ./install_pip.sh

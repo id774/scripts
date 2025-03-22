@@ -9,12 +9,6 @@
 #  The script verifies required commands before execution and provides
 #  feedback on the applied changes.
 #
-#  Features:
-#  - Checks if the system is running GNU/Linux before execution.
-#  - Checks if 'gsettings' command is available before execution.
-#  - Modifies GNOME settings for security and usability improvements.
-#  - Displays confirmation of changes after each setting update.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -28,6 +22,12 @@
 #
 #  Usage:
 #      ./setup_gnome_desktop_gsettings.sh
+#
+#  Features:
+#  - Checks if the system is running GNU/Linux before execution.
+#  - Checks if 'gsettings' command is available before execution.
+#  - Modifies GNOME settings for security and usability improvements.
+#  - Displays confirmation of changes after each setting update.
 #
 ########################################################################
 

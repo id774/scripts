@@ -10,10 +10,6 @@
 #  Additionally, it ensures that the required directories (/etc/cron.weekday
 #  and /etc/cron.weekend) exist by creating them if necessary.
 #
-#  The script verifies and maintains the following cron jobs:
-#    "01 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
-#    "01 23 * * 0,6 root cd / && run-parts --report /etc/cron.weekend"
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
@@ -28,6 +24,10 @@
 #  Usage:
 #      ./setup_crontab.sh
 #  Run this script as a general user; it will invoke sudo where necessary.
+#
+#  The script verifies and maintains the following cron jobs:
+#    "01 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
+#    "01 23 * * 0,6 root cd / && run-parts --report /etc/cron.weekend"
 #
 #  Notes:
 #  - This script uses sudo internally for privileged operations.

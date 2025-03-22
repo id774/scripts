@@ -36,6 +36,7 @@
 #
 #  Usage:
 #  Run this script in a terminal to set up your Ruby environment.
+#
 #  Examples:
 #      ./install_gems.sh /path/to/ruby
 #      ./install_gems.sh

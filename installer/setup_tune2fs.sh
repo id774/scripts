@@ -30,6 +30,7 @@
 #  Usage:
 #  Run the script directly:
 #      ./setup_tune2fs.sh
+#
 #  This script applies tune2fs settings to detected storage devices.
 #
 #  Notes:

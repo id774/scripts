@@ -22,6 +22,9 @@
 #  v1.0 2012-05-15
 #       Initial release.
 #
+#  Usage:
+#      ./install_chkrootkit.sh
+#
 #  Notes:
 #  - Ensure the SCRIPTS environment variable is set to the directory containing
 #    the chkrootkit script and its related files before running this script.

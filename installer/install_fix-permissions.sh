@@ -38,7 +38,7 @@
 #    directories (typically as root or with sudo).
 #  - Requires `logrotate` to be installed for log rotation setup.
 #
-#  Note:
+#  Notes:
 #  - The script ensures that `/var/log/sysadmin` is created if it does
 #    not exist and configures it securely.
 #  - If a log rotation configuration for `fix-permissions` already exists,
