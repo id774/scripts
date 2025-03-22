@@ -198,15 +198,6 @@ main() {
         -h|--help) usage ;;
     esac
 
-    if [ "$1" = "-h" ]; then
-        echo "Usage: ./install_truecrypt.sh [VERSION] [OPTION]"
-        echo ""
-        echo "Options:"
-        echo "  -h   Display this help message."
-        echo "  -n   Do not save source files after installation."
-        exit 0
-    fi
-
     install_truecrypt "$@"
 }
 
