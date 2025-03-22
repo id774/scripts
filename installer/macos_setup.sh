@@ -150,8 +150,8 @@ fix_compinit() {
     "$SCRIPTS/fix_compinit.sh"
 }
 
-# Set permissions for /usr/src
-permission_for_src() {
+# Set permissions for key directories
+set_permissions() {
     sudo chown -R root:wheel /opt/python
     sudo chown -R root:wheel /opt/ruby
     sudo chown -R root:wheel /usr/local/src
@@ -183,7 +183,7 @@ main() {
     finder_settings
     fix_compinit
     folder_localization
-    permission_for_src
+    set_permissions
     erase_history
 }
 

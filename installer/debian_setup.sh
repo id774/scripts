@@ -197,8 +197,8 @@ setup_dot_ipython() {
     test -x /opt/python/current/bin/python && "$SCRIPTS/installer/setup_dot_ipython.sh"
 }
 
-# Set permissions for /usr/src
-permission_for_src() {
+# Set permissions for key directories
+set_permissions() {
     sudo chown -R root:root /usr/src
     sudo chown -R root:root /usr/local/src
 }
@@ -239,7 +239,7 @@ main() {
     setup_munin
     setup_securetty
     setup_dot_ipython
-    permission_for_src
+    set_permissions
     configure_sysctl
     erase_history
 }
