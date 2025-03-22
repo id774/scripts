@@ -42,8 +42,6 @@
 #
 ########################################################################
 
-set -e  # Exit immediately on error
-
 # Display script usage information
 usage() {
     awk '
@@ -83,44 +81,44 @@ check_scripts() {
 # Create directory for logs
 setup_log_directory() {
     if [ ! -d /var/log/sysadmin ]; then
-        sudo mkdir -p /var/log/sysadmin
-        sudo chmod 750 /var/log/sysadmin
-        sudo chown root:adm /var/log/sysadmin
+        sudo mkdir -p /var/log/sysadmin || exit 1
+        sudo chmod 750 /var/log/sysadmin || exit 1
+        sudo chown root:adm /var/log/sysadmin || exit 1
     fi
 }
 
 # Set up log file and permissions
 setup_log_file() {
     if [ ! -f /var/log/sysadmin/run_tests.log ]; then
-        sudo touch /var/log/sysadmin/run_tests.log
-        sudo chmod 640 /var/log/sysadmin/run_tests.log
-        sudo chown root:adm /var/log/sysadmin/run_tests.log
+        sudo touch /var/log/sysadmin/run_tests.log || exit 1
+        sudo chmod 640 /var/log/sysadmin/run_tests.log || exit 1
+        sudo chown root:adm /var/log/sysadmin/run_tests.log || exit 1
     fi
 }
 
 # Deploy log rotation configuration
 deploy_log_rotation() {
     if [ ! -f /etc/logrotate.d/run_tests ]; then
-        sudo cp "$SCRIPTS/cron/etc/logrotate.d/run_tests" /etc/logrotate.d/run_tests
-        sudo chmod 640 /etc/logrotate.d/run_tests
-        sudo chown root:adm /etc/logrotate.d/run_tests
+        sudo cp "$SCRIPTS/cron/etc/logrotate.d/run_tests" /etc/logrotate.d/run_tests || exit 1
+        sudo chmod 640 /etc/logrotate.d/run_tests || exit 1
+        sudo chown root:adm /etc/logrotate.d/run_tests || exit 1
     fi
 }
 
 # Deploy run_tests script and configuration file
 deploy_scripts() {
-    sudo cp "$SCRIPTS/cron/bin/run_tests" /root/bin/
-    sudo cp "$SCRIPTS/cron/etc/run_tests.conf" /root/etc/
-    sudo chmod 740 /root/bin/run_tests
-    sudo chown root:root /root/bin/run_tests
-    sudo chmod 640 /root/etc/run_tests.conf
-    sudo chown root:root /root/etc/run_tests.conf
+    sudo cp "$SCRIPTS/cron/bin/run_tests" /root/bin/ || exit 1
+    sudo cp "$SCRIPTS/cron/etc/run_tests.conf" /root/etc/ || exit 1
+    sudo chmod 740 /root/bin/run_tests || exit 1
+    sudo chown root:root /root/bin/run_tests || exit 1
+    sudo chmod 640 /root/etc/run_tests.conf || exit 1
+    sudo chown root:root /root/etc/run_tests.conf || exit 1
 }
 
 # Set up cron job for running tests
 setup_cron_job() {
     CRON_JOB="30 22 * * * root test -x /root/bin/run_tests && /root/bin/run_tests"
-    echo "$CRON_JOB" | sudo tee /etc/cron.d/run_tests > /dev/null
+    echo "$CRON_JOB" | sudo tee /etc/cron.d/run_tests > /dev/null || exit 1
 }
 
 # Main function to execute all setup tasks
