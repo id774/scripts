@@ -14,6 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  20250322 - Unify usage information by extracting help text from header comments.
 #  20250317 - Encapsulated all logic in functions and introduced main function.
 #  20250313 - Redirected error messages to stderr for better logging and debugging.
 #  20250304 - Moved .netrwhist cleanup to cltmp.sh.
@@ -32,6 +33,17 @@
 #  cleanup actions. Ensure to have the necessary permissions before running.
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Function to check required commands
 check_commands() {
@@ -130,11 +142,15 @@ perform_cleanup() {
     rm -vf "$HOME"/*.swp "$HOME"/*.swo "$HOME"/*.bak "$HOME"/*.~ "$HOME"/*.old
     rm -vf "$HOME"/.*.swp "$HOME"/.*.swo "$HOME"/.*.bak "$HOME"/.*.~ "$HOME"/.*.old
 
-    echo "cltmp (20250317) done."
+    echo "cltmp (20250322) done."
 }
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     check_commands find rm uname
     perform_cleanup
 }

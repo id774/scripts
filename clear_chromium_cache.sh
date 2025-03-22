@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.3 2025-03-17
 #       Encapsulated all logic into functions and introduced main function.
 #  v1.2 2024-08-11

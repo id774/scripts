@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.4 2025-03-17
 #       Encapsulated all logic into functions and introduced main function.
 #  v1.3 2025-03-16
@@ -54,6 +56,17 @@
 #  5. One or more configuration variables not set.
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Determine the script's directory
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -116,6 +129,10 @@ move_files() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     load_configuration
     check_directories
 

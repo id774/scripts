@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.4 2025-03-17
 #       Encapsulated all logic into functions and introduced main function.
 #  v1.3 2025-03-13
@@ -28,27 +30,27 @@
 #  Usage:
 #  ./exif_drop.sh <directory_path>
 #
+#  Options:
+#    -h   Display this help message.
+#
+#  Notes:
+#    Ensure that the exiftool and jhead utilities are installed before running this script.
+#
 ########################################################################
 
 FIND=find
 EXIFTOOL=exiftool
 JHEAD=jhead
 
-# Function to display help message
-display_help() {
-  cat << EOF
-Usage: $0 <directory_path>
-
-Description:
-  This script searches for image files with GPS information in their EXIF data
-  and removes this data using jhead for privacy reasons.
-
-Options:
-  -h   Display this help message.
-
-Notes:
-  Ensure that the exiftool and jhead utilities are installed before running this script.
-EOF
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
 }
 
 # Function to check required commands
@@ -87,14 +89,12 @@ process_images() {
 
 # Main function to execute the script
 main() {
-    if [ "$#" -eq 0 ]; then
-        display_help
-        exit 0
-    fi
+    case "$1" in
+        -h|--help) usage ;;
+    esac
 
-    if [ "$1" = "-h" ]; then
-        display_help
-        exit 0
+    if [ "$#" -eq 0 ]; then
+        usage
     fi
 
     directory="$1"

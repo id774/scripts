@@ -49,6 +49,14 @@
 #  For help:
 #      git-create-repo.sh -h
 #
+#  Options:
+#  --dry-run           Show what would be done without making any changes.
+#  --delete            Delete the specified repository instead of creating it.
+#  --sudo              Explicitly use sudo for all operations, regardless of the repository path.
+#  --no-sudo           Explicitly do not use sudo for any operations, regardless of the repository path.
+#  --user USER         Specify the user for chown (default: git).
+#  --group GROUP       Specify the group for chown (default: git).
+#
 #  Examples:
 #    Create a new repository at /var/lib/git:
 #      git-create-repo.sh myrepo
@@ -61,14 +69,6 @@
 #
 #    Show what would be done without making changes:
 #      git-create-repo.sh myrepo /custom/path --dry-run
-#
-#  Options:
-#  --dry-run           Show what would be done without making any changes.
-#  --delete            Delete the specified repository instead of creating it.
-#  --sudo              Explicitly use sudo for all operations, regardless of the repository path.
-#  --no-sudo           Explicitly do not use sudo for any operations, regardless of the repository path.
-#  --user USER         Specify the user for chown (default: git).
-#  --group GROUP       Specify the group for chown (default: git).
 #
 #  Default Behavior:
 #  - The default repository path is /var/lib/git if not specified.

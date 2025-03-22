@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.5 2025-03-16
 #       Encapsulated all logic in functions and introduced main function.
 #  v1.4 2025-03-13
@@ -47,6 +49,17 @@
 #
 ########################################################################
 
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
 # Function to check required commands
 check_commands() {
     for cmd in "$@"; do
@@ -74,6 +87,10 @@ set_package_state() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     check_commands dpkg
 
     if [ -n "$2" ]; then
