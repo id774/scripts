@@ -38,8 +38,6 @@
 #
 ########################################################################
 
-set -e  # Exit immediately if a command exits with a non-zero status
-
 # Display script usage information
 usage() {
     awk '
@@ -93,11 +91,18 @@ main() {
     PATTERN="$1"
 
     # Create a backup of the history file
-    cp "$HISTORY_FILE" "$BACKUP_FILE"
+    if ! cp "$HISTORY_FILE" "$BACKUP_FILE"; then
+        echo "Error: Failed to create backup file." >&2
+        exit 1
+    fi
     echo "Backup created: $BACKUP_FILE"
 
     # Count the number of matching lines
-    MATCH_COUNT=$(grep -c "$PATTERN" "$HISTORY_FILE")
+    MATCH_COUNT=$(grep -c "$PATTERN" "$HISTORY_FILE" 2>/dev/null)
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to count matches in history file." >&2
+        exit 1
+    fi
 
     # Remove lines containing the specified pattern
     if ! grep -v "$PATTERN" "$HISTORY_FILE" > "$HISTORY_FILE.tmp"; then
@@ -106,7 +111,10 @@ main() {
     fi
 
     # Overwrite the original history file
-    mv "$HISTORY_FILE.tmp" "$HISTORY_FILE"
+    if ! mv "$HISTORY_FILE.tmp" "$HISTORY_FILE"; then
+        echo "Error: Failed to overwrite the original history file." >&2
+        exit 1
+    fi
     echo "Lines containing '$PATTERN' have been removed from $HISTORY_FILE"
     echo "Total removed entries: $MATCH_COUNT"
 
