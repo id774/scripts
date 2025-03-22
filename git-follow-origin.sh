@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.4 2025-03-17
 #       Encapsulated all logic in functions and introduced main function.
 #  v1.3 2025-03-13
@@ -37,6 +39,17 @@
 #  This will merge changes from 'exampleUser/exampleRepo' into the local master branch.
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Function to check required commands
 check_commands() {
@@ -64,14 +77,16 @@ git_merge() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     if [ -n "$2" ]; then
         # Check if Git is installed
         check_commands git
-        ping -c 1 github.com > /dev/null 2>&1 || exit 1
         git_merge $*
     else
-        echo "usage: git-follow-origin <user> <repo>"
-        exit 0
+        usage
     fi
 }
 

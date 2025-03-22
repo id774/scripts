@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.5 2025-03-16
 #       Encapsulated all logic in functions and introduced main function.
 #  v1.4 2025-03-13
@@ -29,9 +31,20 @@
 #       Initial release. Imports GPG keys for APT from a keyserver.
 #
 #  Usage:
-#  ./gpg-import.sh KEYSERVER PUBKEY
+#      ./gpg-import.sh KEYSERVER PUBKEY
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
@@ -69,16 +82,18 @@ import_gpg_key() {
 
 # Main function to execute the script
 main() {
-    # Check required commands
-    check_commands gpg apt-key sudo
-
-    check_sudo
+    case "$1" in
+        -h|--help) usage ;;
+    esac
 
     # Check if both arguments are provided
     if [ -n "$2" ]; then
+        # Check required commands
+        check_commands gpg apt-key sudo
+        check_sudo
         import_gpg_key "$1" "$2"
     else
-        echo "Usage: $0 KEYSERVER PUBKEY"
+        usage
     fi
 }
 

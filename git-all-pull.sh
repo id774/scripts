@@ -152,9 +152,9 @@ main() {
         -h|--help) usage ;;
     esac
 
-    parse_arguments "$@"
-
     check_commands git
+
+    parse_arguments "$@"
 
     if [ "$ALL" = true ]; then
         process_directory "$HOME/local/github"
