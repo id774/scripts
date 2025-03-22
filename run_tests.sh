@@ -47,13 +47,25 @@
 #
 #  Usage:
 #  Run this script from the command line to execute all tests:
-#  ./run_tests.sh [Python path] [RSpec path]
+#      ./run_tests.sh [Python path] [RSpec path]
+#
 #  If no paths are specified, it will use the default system paths.
 #
 ########################################################################
 
 # Prevent __pycache__ directory creation
 export PYTHONDONTWRITEBYTECODE=1
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Function to check if SCRIPTS variable is set
 check_scripts() {
@@ -216,6 +228,10 @@ display_final_report() {
 
 # Function to run tests
 run_tests() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     cd "$SCRIPTS" || exit
 
     python_path="$1"

@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-03-22
+#       Unify usage information by extracting help text from header comments.
 #  v1.4 2025-03-17
 #       Encapsulated logic into functions and introduced main function.
 #       Added file existence check before processing.
@@ -27,9 +29,20 @@
 #       Initial release. Converts LaTeX files to PDF.
 #
 #  Usage:
-#  ./platex2pdf.sh [tex-file]
+#      ./platex2pdf.sh [tex-file]
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
 # Function to check required commands
 check_commands() {
@@ -86,6 +99,10 @@ convert_to_pdf() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     # Ensure required commands are available
     check_commands platex uplatex dvipdfmx nkf
 
