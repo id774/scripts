@@ -143,7 +143,7 @@ finder_settings() {
 }
 
 folder_localization() {
-    "$SCRIPTS/installer/macos_system_folder_localizations.sh"
+    "$SCRIPTS/installer/macos_system_folder_localizations.sh" enable
 }
 
 fix_compinit() {
