@@ -24,7 +24,7 @@
 #       Initial release.
 #
 #  Usage:
-#  ./anthy_create_aa_dic.sh
+#      anthy_create_aa_dic.sh
 #
 ########################################################################
 

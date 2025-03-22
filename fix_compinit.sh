@@ -35,7 +35,7 @@
 #       Zsh-related directories used by Homebrew.
 #
 #  Usage:
-#      ./fix_compinit.sh
+#      fix_compinit.sh
 #
 #  Notes:
 #  - This script requires root privileges to execute. Run it with `sudo`.

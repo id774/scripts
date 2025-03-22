@@ -29,7 +29,7 @@
 #       Initial release. Converts LaTeX files to PDF.
 #
 #  Usage:
-#      ./platex2pdf.sh [tex-file]
+#      platex2pdf.sh [tex-file]
 #
 ########################################################################
 

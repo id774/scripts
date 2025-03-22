@@ -29,7 +29,7 @@
 #       First release.
 #
 #  Usage:
-#      ./hadoop-start.sh [start|stop] [Hadoop version]
+#      hadoop-start.sh [start|stop] [Hadoop version]
 #
 ########################################################################
 

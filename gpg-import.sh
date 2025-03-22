@@ -31,7 +31,7 @@
 #       Initial release. Imports GPG keys for APT from a keyserver.
 #
 #  Usage:
-#      ./gpg-import.sh KEYSERVER PUBKEY
+#      gpg-import.sh KEYSERVER PUBKEY
 #
 ########################################################################
 

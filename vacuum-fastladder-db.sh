@@ -30,7 +30,7 @@
 #
 #  Usage:
 #  Run the script from the command line:
-#      ./vacuum-fastladder-db.sh
+#      vacuum-fastladder-db.sh
 #
 #  Notes:
 #  - Ensure that the Fastladder application is not actively using the database when this script is run.

@@ -28,13 +28,13 @@
 #       Initial release.
 #
 #  Usage:
-#  ./exif_drop.sh <directory_path>
+#      exif_drop.sh <directory_path>
 #
 #  Options:
-#    -h   Display this help message.
+#      -h   Display this help message.
 #
 #  Notes:
-#    Ensure that the exiftool and jhead utilities are installed before running this script.
+#  - Ensure that the exiftool and jhead utilities are installed before running this script.
 #
 ########################################################################
 

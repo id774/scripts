@@ -47,7 +47,7 @@
 #
 #  Usage:
 #  Run this script from the command line to execute all tests:
-#      ./run_tests.sh [Python path] [RSpec path]
+#      run_tests.sh [Python path] [RSpec path]
 #
 #  If no paths are specified, it will use the default system paths.
 #

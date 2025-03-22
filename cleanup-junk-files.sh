@@ -35,8 +35,9 @@
 #       Initial release.
 #
 #  Usage:
-#  ./cleanup-junk-files.sh <target_directory>
-#  Example: ./cleanup-junk-files.sh /path/to/directory
+#      cleanup-junk-files.sh <target_directory>
+#  Example:
+#      cleanup-junk-files.sh /path/to/directory
 #
 #  Notes:
 #  - This script will recursively delete the specified junk files in the target directory.

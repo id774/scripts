@@ -22,12 +22,17 @@
 #  v0.1 2011-11-07
 #       First release.
 #
+#  Usage:
+#      start-vmplayer.sh
+#
 #  Notes:
 #  This script requires xvfb, fluxbox (non-free), x11vnc (non-free),
 #  and vmplayer (non-free) packages.
 #  Start with the privileges of the user.
+#
 #  To connect from a client, use SSH port forwarding:
-#      $ ssh servername -L5900:localhost:5900
+#      ssh servername -L5900:localhost:5900
+#
 #  Then, connect to localhost:5900 using xtightvncviewer.
 #  Kill the VNC and fluxbox for safety after starting VM.
 #

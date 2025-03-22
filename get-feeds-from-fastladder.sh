@@ -23,7 +23,7 @@
 #
 #  Usage:
 #  Run this script to retrieve feed titles and counts:
-#      ./get-feeds-from-fastladder.sh
+#      get-feeds-from-fastladder.sh
 #
 #  Requirements:
 #  - Must be executed on Linux or macOS.

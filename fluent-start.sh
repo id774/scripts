@@ -31,7 +31,7 @@
 #       First release.
 #
 #  Usage:
-#  ./fluent-start.sh [fluentd path] [fluentd conf path] [options]
+#      fluent-start.sh [fluentd path] [fluentd conf path] [options]
 #
 ########################################################################
 

@@ -48,7 +48,7 @@
 #  Run the script with the Instagram account name as an argument. Make sure
 #  the configuration file 'insta_sync.conf' is properly set up in the same
 #  directory as this script.
-#      ./insta_sync.sh <instagram_account_name>
+#      insta_sync.sh <instagram_account_name>
 #
 #  Options:
 #    --help, -h       Display this help and exit.

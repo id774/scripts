@@ -26,7 +26,7 @@
 #       Initial release.
 #
 #  Usage:
-#  ./clear_chromium_cache.sh -c
+#      clear_chromium_cache.sh -c
 #
 #  Options:
 #  -h   Display this help message.

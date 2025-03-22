@@ -37,7 +37,7 @@
 #       Initial release.
 #
 #  Usage:
-#      ./tree.sh [directory] [-a]
+#      tree.sh [directory] [-a]
 #
 #  Run the script without arguments to display the tree of the current
 #  directory, with a directory path to display the tree of that directory,

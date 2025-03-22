@@ -23,7 +23,7 @@
 #
 #  Usage:
 #  Run this script to vacuum and sync the Fastladder database:
-#      ./put-fastladder-db.sh [user] [host]
+#      put-fastladder-db.sh [user] [host]
 #
 #  Requirements:
 #  - Must be executed on Linux or macOS.

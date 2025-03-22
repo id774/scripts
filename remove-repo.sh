@@ -28,8 +28,9 @@
 #       Initial release. Removes Git repositories and their symbolic links.
 #
 #  Usage:
-#      ./remove-repo.sh [repository_name...]
-#      Add -x to actually execute the removal.
+#      remove-repo.sh [repository_name...]
+#
+#  Add -x to actually execute the removal.
 #
 ########################################################################
 

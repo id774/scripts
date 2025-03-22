@@ -29,7 +29,7 @@
 #
 #  Usage:
 #  Run the script directly without any arguments:
-#      ./apt-upgrade.sh
+#      apt-upgrade.sh
 #
 #  Requirements:
 #  - Must be executed with a user that has `sudo` privileges.

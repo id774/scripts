@@ -37,7 +37,7 @@
 #  Usage:
 #  Run the script without any arguments. Ensure that 'dashcam_sync.conf'
 #  is properly set up with SOURCE_DIR and DEST_DIR variables.
-#      ./dashcam_sync.sh
+#      dashcam_sync.sh
 #
 #  Configuration file ('dashcam_sync.conf') requirements:
 #  - SOURCE_DIR: Directory containing the dashcam files to be synchronized.

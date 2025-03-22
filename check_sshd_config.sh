@@ -33,7 +33,8 @@
 #       Initial release.
 #
 #  Usage:
-#  ./check_sshd_config.sh
+#      check_sshd_config.sh
+#
 #  This script does not require any arguments. It automatically detects
 #  the operating system and checks the SSHD configuration accordingly.
 #

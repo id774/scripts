@@ -59,7 +59,7 @@
 #  Usage:
 #  Run the script with an optional argument to set the file permissions for the copied files.
 #  If no argument is provided, the default permission setting from the configuration file will be used.
-#      ./gpx_sync.sh [permissions]
+#      gpx_sync.sh [permissions]
 #
 #  Configuration file ('gpx_sync.conf') requirements:
 #  - TMP_DIR: Temporary directory for GPX files.

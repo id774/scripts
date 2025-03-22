@@ -32,6 +32,8 @@
 #       Initial release.
 #
 #  Usage:
+#      setup_scripts.sh
+#
 #  Run this script to set up the permissions for a collection of scripts.
 #  Ensure that the SCRIPTS environment variable is set to the path of
 #  your script collection before running this script.

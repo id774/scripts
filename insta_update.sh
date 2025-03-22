@@ -60,7 +60,7 @@
 #       Initial release.
 #
 #  Usage:
-#      ./insta_update.sh [--reset] [--no-sync] [--account ACCOUNT_NAME]
+#      insta_update.sh [--reset] [--no-sync] [--account ACCOUNT_NAME]
 #
 #  Options:
 #    --reset          Safely renames the target directory before downloading new content.
