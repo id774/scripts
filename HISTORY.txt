@@ -10,6 +10,7 @@ v1.3.3 (Release Date: TBD)
 - Improved sudo privilege handling and added necessary validations.
 - Enhanced error messages by redirecting them to stderr for better logging and debugging.
 - Updated screen prefix keys with Ctrl as the modifier where t is the main key and a, b, e, o, q, v, w, x, y, and z are additional keys.
+- Switched the repository license from LGPLv3 to a dual license under GPLv3 or LGPLv3, and updated related documentation.
 
 v1.3.2 (2025-02-27)
 -------------------
