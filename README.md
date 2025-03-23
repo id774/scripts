@@ -10,7 +10,6 @@ Welcome to the `scripts` repository! This is a curated collection of scripts in 
 4. [Testing](#4-testing)
 5. [Contribution](#5-contribution)
 6. [License](#6-license)
-7. [Contact](#7-contact)
 
 ---
 
