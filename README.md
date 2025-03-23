@@ -84,10 +84,10 @@ This script will:
 
 We welcome contributions! Here's how you can help:
 1. Fork the repository.
-2. Add or improve a script.
-3. Open a pull request with detailed changes.
+2. Add or improve a feature, or fix an issue.
+3. Submit a pull request with clear documentation and changes.
 
-For complex contributions, please open an issue first.
+Please ensure your code is well-structured and documented.
 
 ---
 
