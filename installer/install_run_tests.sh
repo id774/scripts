@@ -151,7 +151,7 @@ main() {
     deploy_scripts
     setup_cron_job
     echo "Installation of run_tests setup completed successfully."
-    echo "# Note: Manual editing of '/root/etc/run_tests.conf' and '/etc/cron.d/run_tests' may be required"
+    echo "# Notes: Manual editing of '/root/etc/run_tests.conf' and '/etc/cron.d/run_tests' may be required"
     echo "# to finalize configurations. Please review and edit these files as necessary."
 }
 

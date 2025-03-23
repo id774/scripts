@@ -99,7 +99,7 @@ configure_awstats() {
         if [ ! -f "$file" ]; then
             echo "Warning: File $file does not exist. Skipping edit."
         else
-            echo "Please edit $file"
+            echo "Please edit $file."
         fi
     done
 
@@ -154,7 +154,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo apt-get chmod chown vi systemctl apache2
+    check_commands sudo apt-get chmod chown systemctl apache2
     check_sudo
 
     install_awstats

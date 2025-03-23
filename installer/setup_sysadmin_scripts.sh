@@ -54,7 +54,7 @@
 #      ./install_sysadmin_scripts.sh install /usr/local/sbin
 #      ./install_sysadmin_scripts.sh uninstall
 #
-#  Note:
+#  Notes:
 #  - Ensure that the 'SCRIPTS' environment variable is set to the path containing
 #    the administration scripts.
 #  - Running the script with 'uninstall' will remove all installed administration scripts.

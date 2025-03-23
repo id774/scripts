@@ -34,7 +34,7 @@
 #  Before running this script, ensure that the 'SCRIPTS' environment variable points
 #  to your directory containing the IPython startup files.
 #
-#  Note:
+#  Notes:
 #  - This script is intended to be used with Zsh.
 #  - Make sure to back up any existing IPython configuration before running this script.
 #  - Ensure that the IPython is installed on your system.
