@@ -1,8 +1,8 @@
 Repository Update History
 =========================
 
-v1.3.3 (Release Date: TBD)
---------------------------
+v1.4 (2025-03-23)
+-----------------
 - Added home directory cleanup and command check in cltmp.sh.
 - Refactored many scripts to be POSIX compliant and improved maintainability.
 - Overhauled Debian setup scripts for better idempotency and system compatibility.
