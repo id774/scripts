@@ -9,7 +9,7 @@
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
-#  License: LGPLv3 (Details: https://www.gnu.org/licenses/lgpl-3.0.html)
+#  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:

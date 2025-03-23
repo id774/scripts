@@ -94,14 +94,7 @@ For complex contributions, please open an issue first.
 
 ## 6. License
 
-This repository is licensed under [LGPLv3](https://www.gnu.org/licenses/lgpl-3.0.html). You are free to use, modify, and distribute these scripts within the scope of the license.
-
----
-
-## 7. Contact
-
-**774**
-- [Website](http://id774.net)
-- [GitHub](http://github.com/id774)
+This repository is dual licensed under the [GPL version 3](https://www.gnu.org/licenses/gpl-3.0.html) or the [LGPL version 3](https://www.gnu.org/licenses/lgpl-3.0.html), at your option.  
+For full details, please refer to the [LICENSE](doc/LICENSE) file.
 
 Thank you for using and contributing to this repository!
