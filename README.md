@@ -82,7 +82,7 @@ This script will:
 
 ## 5. Contribution
 
-We welcome contributions! Here’s how you can help:
+We welcome contributions! Here's how you can help:
 1. Fork the repository.
 2. Add or improve a script.
 3. Open a pull request with detailed changes.
@@ -94,6 +94,6 @@ For complex contributions, please open an issue first.
 ## 6. License
 
 This repository is dual licensed under the [GPL version 3](https://www.gnu.org/licenses/gpl-3.0.html) or the [LGPL version 3](https://www.gnu.org/licenses/lgpl-3.0.html), at your option.
-For full details, please refer to the [LICENSE](doc/LICENSE) file.
+For full details, please refer to the [LICENSE](doc/LICENSE) file.  See also [COPYING](doc/COPYING) and [COPYING.LESSER](doc/COPYING.LESSER) for the complete license texts.
 
 Thank you for using and contributing to this repository!
