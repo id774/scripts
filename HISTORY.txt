@@ -1,6 +1,10 @@
 Repository Update History
 =========================
 
+v1.4.1 (Release Date: TBD)
+--------------------------
+- Add startup screen window to display prefix key and custom key bindings.
+
 v1.4 (2025-03-23)
 -----------------
 - Added home directory cleanup and command check in cltmp.sh.
@@ -10,6 +14,7 @@ v1.4 (2025-03-23)
 - Improved sudo privilege handling and added necessary validations.
 - Enhanced error messages by redirecting them to stderr for better logging and debugging.
 - Updated screen prefix keys with Ctrl as the modifier where t is the main key and a, b, e, o, q, v, w, x, y, and z are additional keys.
+- Unify usage information by extracting help text from header comments.
 - Switched the repository license from LGPLv3 to a dual license under GPLv3 or LGPLv3, and updated related documentation.
 
 v1.3.2 (2025-02-27)
