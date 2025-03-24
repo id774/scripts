@@ -43,7 +43,6 @@
 #
 ########################################################################
 
-
 LC_CTYPE=ja_JP.UTF-8
 JOBLOG="/var/log/sysadmin/fix-permissions.log"
 
