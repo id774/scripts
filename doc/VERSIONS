@@ -4,6 +4,7 @@ Repository Update History
 v1.4.1 (Release Date: TBD)
 --------------------------
 - Add startup screen window to display prefix key and custom key bindings.
+- Move this history file to doc directory and rename it to VERSIONS.
 
 v1.4 (2025-03-23)
 -----------------
