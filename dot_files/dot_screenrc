@@ -1,10 +1,13 @@
+# Set scrollback buffer size
 defscrollback 10000
 
+# Set UTF-8 encoding for Japanese and international text
 defutf8 on
 defkanji utf-8
 encoding utf-8 utf-8
 defencoding utf-8
 
+# Set custom command prefix key to ^T and define alternate bindings
 escape ^Tt
 bind ^A escape ^Aa
 bind ^B escape ^Bb
@@ -16,26 +19,41 @@ bind ^W escape ^Ww
 bind ^X escape ^Xx
 bind ^Y escape ^Yy
 bind ^Z escape ^Zz
-bind -c REGION 2 split
-bind -c REGION 1 only
-bind -c REGION 0 remove
-bind -c REGION o focus
-bind -c REGION ^ resize
-bind x command -c REGION
 
+# Define REGION command group for window management
+bind -c REGION 2 split       # Split region
+bind -c REGION 1 only        # Focus only one region
+bind -c REGION 0 remove      # Remove region
+bind -c REGION o focus       # Focus other region
+bind -c REGION ^ resize      # Resize region
+bind x command -c REGION     # Bind x to REGION command mode
+
+# Configure terminal capabilities and bell behavior
 termcap kterm hs@
 terminfo kterm hs@
 vbell off
 bell_msg "Bell in window %"
+
+# Bind 'w' to show the window list
 bind w windowlist -b
+
+# Set hardstatus line to show window list and date/time
 hardstatus alwayslastline "%{= wk} %-w%{=bu dr}%n %t%{-}%+w %= %{=b wk}%y/%m/%d %{=b wk}%c"
+
+# Use the login shell defined in $SHELL
 shell -$SHELL
+
+# Disable startup message
 startup_message off
+
+# Automatically detach session if the connection is lost
 autodetach on
 
+# Configure logging and hardcopy behavior
 log off
 logfile "$TMP/screen-%Y%m%d-%n.log"
 hardcopydir "$TMP"
 deflog on
 
+# Create initial window with a welcome message and fallback shell
 screen sh -c 'screen -v; echo "Command prefix key: ^T (Control-T)"; echo "Custom bindings after prefix: a, b, e, o, q, v, w, x, y, z"; echo ""; exec ${SHELL:-/bin/sh}'
