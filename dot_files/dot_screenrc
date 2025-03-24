@@ -37,3 +37,5 @@ log off
 logfile "$TMP/screen-%Y%m%d-%n.log"
 hardcopydir "$TMP"
 deflog on
+
+screen sh -c 'screen -v; echo "Command prefix key: ^T (Control-T)"; echo "Custom bindings after prefix: a, b, e, o, q, v, w, x, y, z"; echo ""; exec ${SHELL:-/bin/sh}'
