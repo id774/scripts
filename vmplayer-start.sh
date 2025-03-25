@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# start-vmplayer.sh: VMware Player Startup Script
+# vmplayer-start.sh: VMware Player Startup Script
 #
 #  Description:
 #  This script starts VMware Player in a virtual X server environment.
@@ -23,7 +23,7 @@
 #       First release.
 #
 #  Usage:
-#      ./start-vmplayer.sh
+#      ./vmplayer-start.sh
 #
 #  Notes:
 #  This script requires xvfb, fluxbox (non-free), x11vnc (non-free),
