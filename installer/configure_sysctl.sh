@@ -16,6 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-03-25
+#       Modified --apply to create config only if it doesn't exist.
+#       Added --force-apply to always overwrite config files.
 #  v1.5 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.4 2025-03-13
@@ -34,8 +37,10 @@
 #
 #  Usage:
 #      ./configure_sysctl.sh --apply
+#      ./configure_sysctl.sh --force-apply
 #
-#  --apply: Configures IPv6 and applies security settings by modifying /etc/sysctl.d/
+#  --apply:         Creates config files only if they do not exist.
+#  --force-apply:   Always overwrites and recreates config files.
 #
 #  Features:
 #  - Checks for necessary commands before execution.
@@ -84,6 +89,14 @@ usage() {
     exit 0
 }
 
+# Check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
+
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
@@ -92,12 +105,7 @@ check_sudo() {
     fi
 }
 
-# Check for required argument
-if [ "$1" != "--apply" ]; then
-    usage
-fi
-
-# Function to check required commands
+# Verify that required commands are available and executable
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -111,26 +119,13 @@ check_commands() {
     done
 }
 
-# Check required commands
-check_commands sudo sysctl uname tee cat ip grep
-
-check_sudo
-
-# Define sysctl parameters and configuration file paths
-SYSCTL_DIR="/etc/sysctl.d"
-IPV6_CONF="$SYSCTL_DIR/98-disable-ipv6.conf"
-IPV4_CONF="$SYSCTL_DIR/97-secure-ipv4.conf"
-
-# Ensure /etc/sysctl.d/ exists
-if [ ! -d "$SYSCTL_DIR" ]; then
-    echo "Error: $SYSCTL_DIR does not exist. Please create it manually and retry." >&2
-    exit 1
-fi
-
 # Define IPv6 parameters
-sudo tee "$IPV6_CONF" > /dev/null <<EOF
+write_ipv6_config() {
+    cat <<EOF
 # IPv6 Configuration: Disables IPv6 to prevent unintended exposure.
 # This setting is useful for environments that do not rely on IPv6 connectivity.
+
+# Disable all IPv6 interfaces.
 net.ipv6.conf.all.disable_ipv6 = 1
 net.ipv6.conf.default.disable_ipv6 = 1
 net.ipv6.conf.lo.disable_ipv6 = 1
@@ -170,9 +165,11 @@ net.ipv6.conf.all.disable_xfrm = 1
 net.ipv6.conf.all.disable_tunnel = 1
 
 EOF
+}
 
 # Define IPv4 security parameters
-sudo tee "$IPV4_CONF" > /dev/null <<EOF
+write_ipv4_config() {
+    cat <<EOF
 # IPv4 Security Configuration: Enhances network security by applying strict policies.
 # Includes protections against SYN flood attacks, source routing, and ICMP abuse.
 
@@ -279,17 +276,85 @@ net.core.netdev_max_backlog = 5000
 net.ipv4.conf.all.src_valid_mark = 1
 
 EOF
+}
 
-# Apply settings
-echo "Applying sysctl settings..."
-sudo sysctl --system
+# Write the specified sysctl config file.
+# Behavior depends on the ACTION value (--apply or --force-apply).
+write_config_file() {
+    path="$1"
+    writer="$2"
 
-# Verify changes
-echo "\n### IPv6 & Security Configuration Verification ###"
-echo "Checking current IPv6 addresses:"
-ip a | grep inet6 || echo "No IPv6 addresses found."
+    case "$ACTION" in
+        --force-apply)
+            echo "Writing $path (forced)..."
+            $writer | sudo tee "$path" > /dev/null
+            ;;
+        --apply)
+            if [ -e "$path" ]; then
+                echo "Skipping $path: already exists."
+            else
+                echo "Writing $path..."
+                $writer | sudo tee "$path" > /dev/null
+            fi
+            ;;
+        *)
+            echo "Internal Error: Unsupported ACTION '$ACTION'" >&2
+            exit 2
+            ;;
+    esac
+}
 
-echo "Checking IPv6 disable status:"
-cat /proc/sys/net/ipv6/conf/all/disable_ipv6
+# Main function to execute the script
+main() {
+    # Parse script argument (--apply or --force-apply) and validate input.
+    ACTION="$1"
+    case "$ACTION" in
+        --apply|--force-apply)
+            ;;
+        *)
+            usage
+            ;;
+    esac
 
-echo "\nIPv6 and IPv4 security settings have been successfully applied."
+    # Check prerequisites
+    check_system
+    check_commands sudo sysctl uname tee cat ip grep
+    check_sudo
+
+    # Define configuration paths
+    SYSCTL_DIR="/etc/sysctl.d"
+    IPV6_CONF="$SYSCTL_DIR/98-disable-ipv6.conf"
+    IPV4_CONF="$SYSCTL_DIR/97-secure-ipv4.conf"
+
+    # Ensure /etc/sysctl.d exists
+    if [ ! -d "$SYSCTL_DIR" ]; then
+        echo "Error: $SYSCTL_DIR does not exist. Please create it manually and retry." >&2
+        exit 1
+    fi
+
+    # Write config files as needed
+    write_config_file "$IPV6_CONF" write_ipv6_config
+    write_config_file "$IPV4_CONF" write_ipv4_config
+
+    # Apply sysctl changes
+    echo "Applying sysctl settings..."
+    sudo sysctl --system
+
+    # Verify IPv6 status
+    echo ""
+    echo "### IPv6 & Security Configuration Verification ###"
+    echo "Checking current IPv6 addresses:"
+    ip a | grep inet6 || echo "No IPv6 addresses found."
+
+    # Display the current IPv6 address configuration.
+    # This helps verify that IPv6 has been disabled successfully.
+    echo "Checking IPv6 disable status:"
+    cat /proc/sys/net/ipv6/conf/all/disable_ipv6
+
+    # Show current disable_ipv6 setting to confirm it is set to 1 (disabled).
+    echo ""
+    echo "IPv6 and IPv4 security settings have been successfully applied."
+}
+
+# Execute main function
+main "$@"
