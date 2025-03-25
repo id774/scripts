@@ -14,6 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.4 2025-03-25
+#       Rename start-vmplayer.sh to vmplayer-start.sh.
+#       Refactor main function to perform system and command checks.
 #  v0.3 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v0.2 2023-12-20
@@ -47,6 +50,28 @@ usage() {
         in_usage && /^#/ { print substr($0, 4) }
     ' "$0"
     exit 0
+}
+
+# Function to check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "Error: This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
+
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
 }
 
 # Start a virtual X server using Xvfb.
@@ -88,15 +113,14 @@ main() {
         -h|--help) usage ;;
     esac
 
+    check_system
+    check_commands Xvfb fluxbox x11vnc vmplayer
+
     test -n "$TMP" || export TMP=$HOME/.tmp
     test -n "$1" && export DISPLAY=$1
     test -n "$1" || export DISPLAY=:99
 
-    command -v Xvfb > /dev/null && \
-        command -v fluxbox > /dev/null && \
-        command -v x11vnc > /dev/null && \
-        command -v vmplayer > /dev/null && \
-        start_daemon
+    start_daemon
 }
 
 # Execute main function
