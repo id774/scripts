@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.7 2025-03-25
+#       Add config directory and file existence checks to determine_fluentd_config.
 #  v0.6 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v0.5 2025-03-17
@@ -82,7 +84,19 @@ determine_fluentd_config() {
     if [ -n "$1" ]; then
         FLUENT_CONF=$1
     else
-        FLUENT_CONF=~/.fluent
+        FLUENT_CONF="$HOME/.fluent"
+    fi
+
+    # Check if directory exists
+    if [ ! -d "$FLUENT_CONF" ]; then
+        echo "Error: Configuration directory not found: $FLUENT_CONF" >&2
+        exit 1
+    fi
+
+    # Check if fluent.conf exists
+    if [ ! -f "$FLUENT_CONF/fluent.conf" ]; then
+        echo "Error: fluent.conf not found in: $FLUENT_CONF" >&2
+        exit 1
     fi
 }
 
