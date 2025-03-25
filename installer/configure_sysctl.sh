@@ -356,8 +356,8 @@ main() {
 
     changed=0
     # Write config files as needed
-    write_config_file "$IPV6_CONF" write_ipv6_config && changed=1
-    write_config_file "$IPV4_CONF" write_ipv4_config && changed=1
+    write_config_file "$IPV6_CONF" write_ipv6_config || changed=1
+    write_config_file "$IPV4_CONF" write_ipv4_config || changed=1
 
     # Apply sysctl changes
     if [ "$changed" -eq 1 ]; then
