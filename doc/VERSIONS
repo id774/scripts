@@ -6,7 +6,7 @@ v1.4.1 (Release Date: TBD)
 - Add startup screen window to display prefix key and custom key bindings.
 - Move this history file to doc directory and rename it to VERSIONS.
 - Add apply and force apply options and encapsulate logic in main function in configure_sysctl script.
-- Minor bug fixes and formatting adjustments.
+- Minor improvements and formatting adjustments.
 
 v1.4 (2025-03-23)
 -----------------
