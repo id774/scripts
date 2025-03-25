@@ -288,13 +288,16 @@ write_config_file() {
         --force-apply)
             echo "Writing $path (forced)..."
             $writer | sudo tee "$path" > /dev/null
+            return 1  # changed
             ;;
         --apply)
             if [ -e "$path" ]; then
                 echo "Skipping $path: already exists."
+                return 0  # skipped
             else
                 echo "Writing $path..."
                 $writer | sudo tee "$path" > /dev/null
+                return 1  # changed
             fi
             ;;
         *)
@@ -302,6 +305,25 @@ write_config_file() {
             exit 2
             ;;
     esac
+}
+
+# Verify IPv6-related system state after applying sysctl configuration.
+verify_sysctl_status() {
+    # Verify IPv6 status
+    echo ""
+    echo "### IPv6 & Security Configuration Verification ###"
+
+    echo "Checking current IPv6 addresses:"
+    ip a | grep inet6 || echo "No IPv6 addresses found."
+
+    # Display the current IPv6 address configuration.
+    # This helps verify that IPv6 has been disabled successfully.
+    echo "Checking IPv6 disable status:"
+    cat /proc/sys/net/ipv6/conf/all/disable_ipv6
+
+    # Show current disable_ipv6 setting to confirm it is set to 1 (disabled).
+    echo ""
+    echo "IPv6 and IPv4 security settings have been successfully applied."
 }
 
 # Main function to execute the script
@@ -332,28 +354,19 @@ main() {
         exit 1
     fi
 
+    changed=0
     # Write config files as needed
-    write_config_file "$IPV6_CONF" write_ipv6_config
-    write_config_file "$IPV4_CONF" write_ipv4_config
+    write_config_file "$IPV6_CONF" write_ipv6_config && changed=1
+    write_config_file "$IPV4_CONF" write_ipv4_config && changed=1
 
     # Apply sysctl changes
-    echo "Applying sysctl settings..."
-    sudo sysctl --system
-
-    # Verify IPv6 status
-    echo ""
-    echo "### IPv6 & Security Configuration Verification ###"
-    echo "Checking current IPv6 addresses:"
-    ip a | grep inet6 || echo "No IPv6 addresses found."
-
-    # Display the current IPv6 address configuration.
-    # This helps verify that IPv6 has been disabled successfully.
-    echo "Checking IPv6 disable status:"
-    cat /proc/sys/net/ipv6/conf/all/disable_ipv6
-
-    # Show current disable_ipv6 setting to confirm it is set to 1 (disabled).
-    echo ""
-    echo "IPv6 and IPv4 security settings have been successfully applied."
+    if [ "$changed" -eq 1 ]; then
+        echo "Applying sysctl settings..."
+        sudo sysctl --system
+        verify_sysctl_status
+    else
+        echo "No configuration changes detected. Skipping sysctl reload."
+    fi
 }
 
 # Execute main function
