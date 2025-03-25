@@ -48,6 +48,20 @@ usage() {
     exit 0
 }
 
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
 # Function to determine Fluentd and Fluent-Cat paths
 determine_fluentd_paths() {
     if [ -n "$1" ]; then
@@ -70,13 +84,7 @@ check_fluentd_commands() {
         exit 1
     fi
 
-    # Ensure Fluentd and Fluent-Cat are executable
-    for cmd in "$FLUENTD" "$FLUENT_CAT"; do
-        if [ ! -x "$cmd" ]; then
-            echo "Error: Command not found or not executable: $cmd" >&2
-            exit 1
-        fi
-    done
+    check_commands "$FLUENTD" "$FLUENT_CAT"
 }
 
 # Function to determine Fluentd configuration path
