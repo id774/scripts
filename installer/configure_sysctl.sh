@@ -287,14 +287,14 @@ write_config_file() {
     case "$ACTION" in
         --force-apply)
             echo "Writing $path (forced)..."
-            "$writer" | sudo tee "$path" > /dev/null
+            $writer | sudo tee "$path" > /dev/null
             ;;
         --apply)
             if [ -e "$path" ]; then
                 echo "Skipping $path: already exists."
             else
                 echo "Writing $path..."
-                "$writer" | sudo tee "$path" > /dev/null
+                $writer | sudo tee "$path" > /dev/null
             fi
             ;;
         *)
