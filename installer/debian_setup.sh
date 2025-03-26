@@ -187,6 +187,10 @@ setup_crontab() {
     "$SCRIPTS/installer/setup_crontab.sh"
 }
 
+setup_iptables() {
+    "$SCRIPTS/installer/setup_iptables.sh"
+}
+
 setup_munin() {
     test -d "$HOME/local/github" || mkdir -p "$HOME/local/github"
     cd "$HOME/local/github" || exit 1
@@ -252,6 +256,7 @@ main() {
     setup_chkrootkit
     setup_clamscan
     setup_crontab
+    setup_iptables
     setup_munin
     setup_securetty
     setup_dot_ipython
