@@ -107,6 +107,7 @@ apply_template_if_needed() {
     else
         echo "$RULES_PATH already exists, skipping copy."
     fi
+    sudo chmod 400 "$RULES_PATH"
 }
 
 # Load rules into the running kernel
@@ -121,6 +122,18 @@ enable_restore() {
     sudo systemctl restart netfilter-persistent
 }
 
+final_message() {
+    echo ""
+    echo "iptables setup completed successfully."
+    echo ""
+    echo "You may want to review and edit the rules file:"
+    echo "  sudo vi $RULES_PATH"
+    echo ""
+    echo "After editing, re-apply the rules with:"
+    echo "  sudo iptables-restore < $RULES_PATH"
+    echo ""
+}
+
 # Main execution
 main() {
     case "$1" in
@@ -129,7 +142,7 @@ main() {
 
     check_system
     check_scripts
-    check_commands dpkg apt-get debconf-set-selections iptables-restore iptables-save sudo mkdir cp systemctl
+    check_commands dpkg apt-get debconf-set-selections iptables-restore iptables-save sudo chmod mkdir cp systemctl
     check_sudo
 
     TEMPLATE_PATH="$SCRIPTS/etc/iptables/rules.v4"
@@ -139,6 +152,7 @@ main() {
     apply_template_if_needed
     load_rules
     enable_restore
+    final_message
 }
 
 main "$@"
