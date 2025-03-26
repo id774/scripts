@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-03-26
+#       Improve robustness with verbose and forced symbolic link operations in Apache config.
 #  v1.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-13
@@ -93,9 +95,9 @@ install_munin() {
 # Configure Munin
 configure_munin() {
     echo "Configuring Munin..."
-    sudo cp "$SCRIPTS/etc/munin-apache.conf" /etc/munin/apache.conf
+    sudo cp -v "$SCRIPTS/etc/munin-apache.conf" /etc/munin/apache.conf
     sudo chown root:root /etc/munin/apache.conf
-    test -f /etc/munin/apache24.conf && sudo rm -f /etc/munin/apache24.conf && sudo ln -s /etc/munin/apache.conf /etc/munin/apache24.conf
+    test -f /etc/munin/apache24.conf && sudo rm -vf /etc/munin/apache24.conf && sudo ln -snf /etc/munin/apache.conf /etc/munin/apache24.conf
 }
 
 # Configure authentication

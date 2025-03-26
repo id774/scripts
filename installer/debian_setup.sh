@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-03-26
+#       Add setup logic for munin-plugins repository and install process_monitoring plugin.
 #  v1.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-13
@@ -143,7 +145,7 @@ install_dot_emacs() {
         cd "$HOME/local/github" || exit 1
         git clone https://github.com/id774/dot_emacs.git
         cd || exit 1
-        ln -snf "$HOME/local/github/dot_emacs"
+        ln -snf "$HOME/local/github/dot_emacs" "$HOME/dot_emacs"
         "$HOME/local/github/dot_emacs/install_dotemacs.sh"
     fi
 }
@@ -186,6 +188,20 @@ setup_crontab() {
 }
 
 setup_munin() {
+    test -d "$HOME/local/github" || mkdir -p "$HOME/local/github"
+    cd "$HOME/local/github" || exit 1
+
+    if [ ! -d "munin-plugins" ]; then
+        git clone https://github.com/id774/munin-plugins.git
+    else
+        cd munin-plugins || exit 1
+        if [ -d ".git" ]; then
+            git pull
+        fi
+    fi
+    ln -snf "$HOME/local/github/munin-plugins" "$HOME/munin-plugins"
+    "$HOME/local/github/munin-plugins/install_process_monitoring.sh"
+
     "$SCRIPTS/installer/install_munin.sh"
 }
 
