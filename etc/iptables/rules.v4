@@ -4,31 +4,78 @@
 :OUTPUT ACCEPT [0:0]
 :LOG_PINGDEATH - [0:0]
 :fail2ban-ssh - [0:0]
+
+# ----------------------------------------
+# Drop known bad IP ranges (spam/attackers)
+# ----------------------------------------
 -A INPUT -s 207.29.224.0/19 -j DROP
 -A INPUT -s 206.223.144.0/20 -j DROP
+
+# ------------------------
+# Accept trusted traffic
+# ------------------------
 -A INPUT -i lo -j ACCEPT
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# ------------------------
+# Drop fragmented packets
+# ------------------------
 -A INPUT -f -j LOG --log-prefix "[IPTABLES FRAGMENT] : "
 -A INPUT -f -j DROP
+
+# -----------------------------------------
+# Rate limit ping requests (anti DoS)
+# -----------------------------------------
 -A INPUT -p icmp -m icmp --icmp-type 8 -j LOG_PINGDEATH
+
+# --------------------------------------------
+# Block known attacks (e.g. Heartbleed exploit)
+# --------------------------------------------
 -A INPUT -p tcp -m tcp --dport 443 -m u32 --u32 "0x34=0x18030000:0x1803ffff" -j LOG --log-prefix "[OpenSSL HEARTBLEED] : "
 -A INPUT -p tcp -m tcp --dport 443 -m u32 --u32 "0x34=0x18030000:0x1803ffff" -j DROP
+
+# -------------------------------
+# Drop reserved or broadcast traffic
+# -------------------------------
 -A INPUT -d 255.255.255.255/32 -j DROP
 -A INPUT -d 224.0.0.1/32 -j DROP
+
+# -------------------------
+# Block IDENT requests
+# -------------------------
 -A INPUT -p tcp -m tcp --dport 113 -j REJECT --reject-with tcp-reset
+
+# ------------------------------------------------------------------------------
+# WARNING: Replace 99999 with your actual SSH port (e.g., 22 or 2222)
+# This block is intentionally broken (invalid port) to fail if not configured.
+# ------------------------------------------------------------------------------
 -A INPUT -p tcp -m tcp --dport 99999 -m state --state NEW -m recent --set --name SSH --rsource
 -A INPUT -p tcp -m tcp --dport 99999 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH --rsource -j LOG --log-prefix "[ssh attack] : "
 -A INPUT -p tcp -m tcp --dport 99999 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH --rsource -j DROP
+
+# -------------------------------
+# Protection for common services
+# -------------------------------
 -A INPUT -p tcp -m tcp --dport 3306 -m state --state NEW -m recent --set --name MYSQL --rsource
 -A INPUT -p tcp -m tcp --dport 3306 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name MYSQL --rsource -j LOG --log-prefix "[mysql attack] : "
 -A INPUT -p tcp -m tcp --dport 3306 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name MYSQL --rsource -j DROP
+
 -A INPUT -p tcp -m tcp --dport 5432 -m state --state NEW -m recent --set --name POSTGRES --rsource
 -A INPUT -p tcp -m tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES --rsource -j LOG --log-prefix "[postgresql attack] : "
 -A INPUT -p tcp -m tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES --rsource -j DROP
+
 -A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --set --name SSH22 --rsource
 -A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH22 --rsource -j LOG --log-prefix "[ssh(default) attack] : "
 -A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH22 --rsource -j DROP
+
+# ------------------------------------------------------------------------------
+# WARNING: This ACCEPT rule also uses port 99999. It must be changed as above.
+# ------------------------------------------------------------------------------
 -A INPUT -p tcp -m tcp --dport 99999 -j ACCEPT
+
+# -------------------------------
+# Accept essential services
+# -------------------------------
 -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 8080 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
@@ -69,9 +116,22 @@
 -A INPUT -p tcp -m tcp --dport 9997 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 9998 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 9999 -j ACCEPT
+
+# -----------------------------
+# Drop all other INPUT traffic
+# -----------------------------
 -A INPUT -j DROP
+
+# -------------------------------
+# Drop all FORWARD traffic
+# -------------------------------
 -A FORWARD -j DROP
+
+# -------------------------------
+# PING rate limit and logging
+# -------------------------------
 -A LOG_PINGDEATH -m limit --limit 1/sec --limit-burst 4 -j ACCEPT
 -A LOG_PINGDEATH -j LOG --log-prefix "[IPTABLES PINGDEATH] : "
 -A LOG_PINGDEATH -j DROP
+
 COMMIT
