@@ -122,6 +122,7 @@ enable_restore() {
     sudo systemctl restart netfilter-persistent
 }
 
+# Print post-installation instructions and next steps
 final_message() {
     echo ""
     echo "iptables setup completed successfully."
