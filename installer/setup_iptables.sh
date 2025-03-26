@@ -113,7 +113,7 @@ apply_template_if_needed() {
 # Load rules into the running kernel
 load_rules() {
     echo "Applying rules with iptables-restore"
-    sudo iptables-restore < "$RULES_PATH"
+    sudo sh -c "iptables-restore < '$RULES_PATH'"
 }
 
 # Ensure rules are restored on boot
