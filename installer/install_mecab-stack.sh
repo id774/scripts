@@ -230,7 +230,13 @@ install_neologd() {
     echo "[INFO] Installing mecab-ipadic-NEologd..."
     cd "$BUILD_DIR" || exit 1
     rm -rf mecab-ipadic-neologd
-    git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git || exit 1
+
+    if ! git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git; then
+        echo "[WARNING] Failed to clone mecab-ipadic-neologd from GitHub."
+        echo "[WARNING] Skipping NEologd installation."
+        return 0
+    fi
+
     cd mecab-ipadic-neologd || exit 1
 
     ./bin/install-mecab-ipadic-neologd -n -y -p "$PREFIX/lib/mecab/dic/mecab-ipadic-neologd" || exit 1
