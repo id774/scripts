@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-03-27
+#       Refactored final messages and updated cron job time.
 #  v1.5 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.4 2025-03-21
@@ -131,8 +133,15 @@ deploy_scripts() {
 
 # Set up cron job for running tests
 setup_cron_job() {
-    CRON_JOB="30 22 * * * root test -x /root/bin/run_tests && /root/bin/run_tests"
+    CRON_JOB="30 04 * * * root test -x /root/bin/run_tests && /root/bin/run_tests"
     echo "$CRON_JOB" | sudo tee /etc/cron.d/run_tests > /dev/null || exit 1
+}
+
+# Print post-installation instructions and next steps
+final_message() {
+    echo "Installation of run_tests setup completed successfully."
+    echo "# Notes: Manual editing of '/root/etc/run_tests.conf' and '/etc/cron.d/run_tests' may be required"
+    echo "# to finalize configurations. Please review and edit these files as necessary."
 }
 
 # Main function to execute all setup tasks
@@ -150,9 +159,7 @@ main() {
     deploy_log_rotation
     deploy_scripts
     setup_cron_job
-    echo "Installation of run_tests setup completed successfully."
-    echo "# Notes: Manual editing of '/root/etc/run_tests.conf' and '/etc/cron.d/run_tests' may be required"
-    echo "# to finalize configurations. Please review and edit these files as necessary."
+    final_message
 }
 
 # Execute main function

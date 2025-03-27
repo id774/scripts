@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-03-27
+#       Improving iptables restore instruction.
 #  v1.0 2025-03-26
 #       Initial release.
 #
@@ -131,7 +133,7 @@ final_message() {
     echo "  sudo vi $RULES_PATH"
     echo ""
     echo "After editing, re-apply the rules with:"
-    echo "  sudo iptables-restore < $RULES_PATH"
+    echo "  sudo sh -c 'iptables-restore < $RULES_PATH'"
     echo ""
 }
 
