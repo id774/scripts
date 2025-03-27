@@ -48,7 +48,7 @@ usage() {
 # Function to check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
-        echo "Error: This script is intended for Linux systems only." >&2
+        echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
     fi
 }
@@ -58,10 +58,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -70,7 +70,7 @@ check_commands() {
 # Check if the user has sudo privileges
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }
@@ -79,21 +79,21 @@ check_sudo() {
 remove_item() {
     path=$1
     if [ -e "$path" ] || [ -L "$path" ]; then
-        echo "[Info] Removing: $path"
+        echo "[INFO] Removing: $path"
         if sudo rm -rf "$path"; then
-            echo "[Info] Successfully removed: $path"
+            echo "[INFO] Successfully removed: $path"
         else
-            echo "[Warning] Failed to remove: $path" >&2
+            echo "[WARNING] Failed to remove: $path" >&2
         fi
     else
-        echo "[Info] Skipping (not found): $path"
+        echo "[INFO] Skipping (not found): $path"
     fi
     echo
 }
 
 # Uninstall MeCab related files from /usr/local
 uninstall_mecab() {
-    echo "[Info] Removing Mecab..."
+    echo "[INFO] Removing Mecab..."
     remove_item /usr/local/bin/mecab
     remove_item /usr/local/bin/mecab-config
     remove_item /usr/local/include/mecab.h
@@ -112,7 +112,7 @@ uninstall_mecab() {
 
 # Uninstall CaboCha related files from /usr/local
 uninstall_cabocha() {
-    echo "[Info] Removing Cabocha..."
+    echo "[INFO] Removing Cabocha..."
     remove_item /usr/local/bin/cabocha
     remove_item /usr/local/bin/cabocha-config
     remove_item /usr/local/include/cabocha.h
@@ -131,7 +131,7 @@ uninstall_cabocha() {
 
 # Uninstall CRF++ related files from /usr/local
 uninstall_crfpp() {
-    echo "[Info] Removing CRF++..."
+    echo "[INFO] Removing CRF++..."
     remove_item /usr/local/bin/crf_learn
     remove_item /usr/local/bin/crf_test
     remove_item /usr/local/include/crfpp.h
@@ -146,7 +146,7 @@ uninstall_crfpp() {
 
 # Uninstall mecab-ipadic-neologd dictionary
 uninstall_neologd() {
-    echo "[Info] Removing NEologd..."
+    echo "[INFO] Removing NEologd..."
     remove_item /usr/local/lib/mecab/dic/mecab-ipadic-neologd
 }
 
@@ -160,7 +160,7 @@ main() {
     check_commands rm
     check_sudo
 
-    echo "[Info] Starting uninstallation process from /usr/local"
+    echo "[INFO] Starting uninstallation process from /usr/local"
     echo
 
     uninstall_mecab
@@ -168,7 +168,7 @@ main() {
     uninstall_crfpp
     uninstall_neologd
 
-    echo "[Info] Uninstallation process completed."
+    echo "[INFO] Uninstallation process completed."
 }
 
 # Execute main function
