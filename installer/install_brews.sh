@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-03-27
+#       Added explicit 'brew cleanup' step to remove old versions and caches.
 #  v1.2 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.1 2025-03-16
@@ -115,6 +117,10 @@ main() {
     brew install findutils
     brew install moreutils
     brew install binutils
+
+    # Cleanup old versions and caches to free up disk space
+    echo "Cleaning up old versions and caches..."
+    brew cleanup
 
     echo "All specified packages have been successfully installed."
 }
