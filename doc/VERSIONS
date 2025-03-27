@@ -9,6 +9,7 @@ v1.4.1 (Release Date: TBD)
 - Add setup_iptables.sh to install and apply default iptables rules with persistence.
 - Integrate iptables setup into initial system configuration process.
 - Add setup script for custom Munin plugin process_monitoring and revise plugin installation flow.
+- Create new installer for NLP stack under /opt/mecab-stack and remove legacy /usr/local-based installers.
 - Minor improvements and formatting adjustments.
 
 v1.4 (2025-03-23)
