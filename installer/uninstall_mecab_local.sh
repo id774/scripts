@@ -79,7 +79,7 @@ check_sudo() {
 remove_item() {
     path=$1
     if [ -e "$path" ] || [ -L "$path" ]; then
-        echo "Removing: $path"
+        echo "[Info] Removing: $path"
         if sudo rm -rf "$path"; then
             echo "[Info] Successfully removed: $path"
         else
