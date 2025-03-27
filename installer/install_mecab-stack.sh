@@ -229,6 +229,7 @@ install_neologd() {
     rm -rf mecab-ipadic-neologd
     git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git || exit 1
     cd mecab-ipadic-neologd || exit 1
+
     ./bin/install-mecab-ipadic-neologd -n -y -p "$PREFIX/lib/mecab/dic/mecab-ipadic-neologd" || exit 1
 
     cd .. || exit 1
@@ -260,7 +261,14 @@ install_cabocha() {
     wget "http://files.id774.net/archive/cabocha-${CABOCHA_VERSION}.tar.bz2" || exit 1
     tar xjvf "cabocha-${CABOCHA_VERSION}.tar.bz2" || exit 1
     cd "cabocha-${CABOCHA_VERSION}" || exit 1
-    ./configure --with-charset=UTF8 --with-posset=IPA --with-mecab-config="$PREFIX/bin/mecab-config" --prefix="$PREFIX" || exit 1
+
+    CPPFLAGS="-I$PREFIX/include" \
+    LDFLAGS="-L$PREFIX/lib" \
+    ./configure --with-charset=UTF8 \
+                --with-posset=IPA \
+                --with-mecab-config="$PREFIX/bin/mecab-config" \
+                --prefix="$PREFIX" || exit 1
+
     make || exit 1
     sudo make install || exit 1
 
@@ -296,6 +304,10 @@ main() {
 
     echo "[INFO] Starting installation of MeCab stack..."
     echo "[INFO] Installation prefix: $PREFIX"
+
+    # Ensure PREFIX/bin is in PATH so mecab-config and other tools are found
+    export PATH="$PREFIX/bin:$PATH"
+
     prepare_dirs
     install_mecab_stack
     install_neologd
