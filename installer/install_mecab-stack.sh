@@ -63,22 +63,25 @@
 #  - This script does not install Python or Ruby language bindings by default.
 #    If you want to use CaboCha from Python or Ruby, follow the steps below after installation.
 #
-#    For Python:
+#    For Python (CaboCha):
 #      1. Navigate to the CaboCha Python binding directory:
-#         cd $BUILD_DIR/cabocha-${CABOCHA_VERSION}/python
+#         cd /usr/local/src/mecab-stack/cabocha/python
 #      2. Build and install the Python binding:
 #         python3 setup.py build
 #         sudo python3 setup.py install --prefix=$PREFIX
 #      3. Ensure the installed path is included in your PYTHONPATH.
 #
-#    For Ruby:
-#      1. Navigate to the CaboCha root directory:
-#         cd $BUILD_DIR/cabocha-${CABOCHA_VERSION}
+#    For Ruby (CaboCha):
+#      1. Navigate to the CaboCha Ruby binding directory:
+#         cd /usr/local/src/mecab-stack/cabocha/ruby
 #      2. Build and install the Ruby binding:
 #         ruby extconf.rb
 #         make
 #         sudo make install
 #      3. This installs the CaboCha extension for your Ruby environment.
+#
+#  MeCab bindings are not bundled with the official 0.996 release.
+#  Please refer to third-party projects if Python or Ruby integration is needed.
 #
 ########################################################################
 
