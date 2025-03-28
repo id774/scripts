@@ -1,8 +1,8 @@
 Repository Update History
 =========================
 
-v1.4.1 (Release Date: TBD)
---------------------------
+v1.4.1 (2025-03-28)
+-------------------
 - Add startup screen window to display prefix key and custom key bindings.
 - Move this history file to doc directory and rename it to VERSIONS.
 - Add apply and force apply options and encapsulate logic in main function in configure_sysctl script.
