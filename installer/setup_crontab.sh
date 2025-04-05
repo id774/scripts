@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-04-05
+#       Adjusted cron.weekend to only run on Saturdays.
 #  v1.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-21
@@ -25,13 +27,11 @@
 #      ./setup_crontab.sh
 #  Run this script as a general user; it will invoke sudo where necessary.
 #
+#  Notes:
+#  It ensures that the necessary cron directories exist before modifying /etc/crontab.
 #  The script verifies and maintains the following cron jobs:
 #    "01 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
-#    "01 23 * * 0,6 root cd / && run-parts --report /etc/cron.weekend"
-#
-#  Notes:
-#  - This script uses sudo internally for privileged operations.
-#  - It ensures that the necessary cron directories exist before modifying /etc/crontab.
+#    "01 23 * * 6   root cd / && run-parts --report /etc/cron.weekend"
 #
 ########################################################################
 
@@ -40,7 +40,7 @@ CRONTAB_FILE="/etc/crontab"
 
 # Cron job entries to check and add if missing
 WEEKDAY_ENTRY="01 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
-WEEKEND_ENTRY="01 23 * * 0,6 root cd / && run-parts --report /etc/cron.weekend"
+WEEKEND_ENTRY="01 23 * * 6   root cd / && run-parts --report /etc/cron.weekend"
 
 # Track changes
 CHANGES_MADE=0
