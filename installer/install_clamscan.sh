@@ -18,7 +18,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v2.0 2025-04-07
+#  v2.0 2025-04-05
 #       Changed cron job setup from /etc/cron.weekly to /etc/cron.weekend for ClamAV scans.
 #  v1.9 2025-03-22
 #       Unify usage information by extracting help text from header comments.
