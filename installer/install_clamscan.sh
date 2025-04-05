@@ -7,9 +7,9 @@
 #  This script automates the setup for ClamAV scans by:
 #  - Deploying the clamscan.sh script.
 #  - Configuring clamscan exclusions.
-#  - Setting up cron jobs for weekend scanning.
+#  - Setting up cron jobs specifically for weekend scanning in /etc/cron.weekend.
 #  - Managing log rotation for ClamAV logs.
-#  - Ensuring the necessary directories and log files exist.
+#  - Ensuring the necessary directories and log files exist, including creating /etc/cron.weekend if it doesn't exist.
 #  - Setting appropriate permissions.
 #
 #  Author: id774 (More info: http://id774.net)
@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.0 2025-04-07
+#       Changed cron job setup from /etc/cron.weekly to /etc/cron.weekend for ClamAV scans.
 #  v1.9 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.8 2025-03-15
@@ -105,10 +107,11 @@ install_clamscan() {
     sudo chmod 600 /root/etc/clamscan_exclude
     sudo chown root:root /root/etc/clamscan_exclude
 
-    # Deploy clamscan cron job
-    sudo cp "$SCRIPTS/cron/bin/clamscan" /etc/cron.weekly/
-    sudo chmod 740 /etc/cron.weekly/clamscan
-    sudo chown root:adm /etc/cron.weekly/clamscan
+    # Deploy clamscan cron job to weekend directory
+    sudo mkdir -p /etc/cron.weekend
+    sudo cp "$SCRIPTS/cron/bin/clamscan" /etc/cron.weekend/
+    sudo chmod 740 /etc/cron.weekend/clamscan
+    sudo chown root:adm /etc/cron.weekend/clamscan
 
     # Set up ClamAV log files and permissions
     for log_file in /var/log/clamav/clamscan.log /var/log/clamav/clamav.log; do

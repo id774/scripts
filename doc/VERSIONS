@@ -4,7 +4,7 @@ Repository Update History
 v1.4.2 (Release Date: TBD)
 --------------------------
 - Enhance security by excluding /usr/local/bin from secure_path in sudoers template of macOS.
-- Adjust cron.weekend to run only on Saturdays.
+- Adjust cron.weekend to run only on Saturdays and change ClamAV cron setup from /etc/cron.weekly to /etc/cron.weekend.
 
 v1.4.1 (2025-03-28)
 -------------------
