@@ -86,19 +86,21 @@ check_sudo() {
     fi
 }
 
-# Function to check if an entry exists in crontab
-check_entry() {
-    entry="$1"
-    grep -Fxq "$entry" "$CRONTAB_FILE"
+# Extract and check only the command part of the cron entry
+extract_and_check_command() {
+    command_part=$(echo "$1" | cut -d' ' -f6-)
+    grep -q "$command_part" "$CRONTAB_FILE"
 }
 
 # Function to add an entry to crontab if it does not exist
 add_entry() {
     entry="$1"
-    if ! check_entry "$entry"; then
+    if ! extract_and_check_command "$entry"; then
         printf "%s\n" "$entry" | sudo tee -a "$CRONTAB_FILE" > /dev/null
         echo "Added entry: $entry"
         CHANGES_MADE=1
+    else
+        echo "Entry already exists based on command. No changes made."
     fi
 }
 
@@ -119,7 +121,7 @@ main() {
     esac
 
     check_system
-    check_commands grep uname sudo mkdir tee
+    check_commands grep uname sudo mkdir tee cut
     check_sudo
     create_directories
     add_entry "$WEEKDAY_ENTRY"
