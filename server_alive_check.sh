@@ -21,8 +21,6 @@
 #  Version History:
 #  v1.0 2025-04-07
 #       Initial release. Implements _is_alive file monitoring for server health checking.
-#  v1.1 2025-04-07
-#       Added environment checking and command validation via check_commands().
 #
 #  Usage:
 #      ./server_alive_check.sh
