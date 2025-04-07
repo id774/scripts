@@ -103,8 +103,8 @@ is_file_stale() {
         return 1
     fi
 
-    # Check if the file is older than 1 hour (3600 seconds)
-    if [ "$((CURRENT_TIME - FILE_TIME))" -gt 3600 ]; then
+    # Check if the file is older than 10 minites (600 seconds)
+    if [ "$((CURRENT_TIME - FILE_TIME))" -gt 600 ]; then
         return 0
     else
         return 1
