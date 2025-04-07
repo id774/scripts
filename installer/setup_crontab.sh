@@ -114,7 +114,7 @@ create_directories() {
     done
 }
 
-# Main function to execute all setup tasks
+# Main function to execute the script
 main() {
     case "$1" in
         -h|--help) usage ;;

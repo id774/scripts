@@ -91,7 +91,7 @@ sync_logs_to_remote() {
     rsync $RSYNC_OPTS "$LOG_DIR" "$REMOTE_DIR"
 }
 
-# Main function
+# Main function to execute the script
 main() {
     sync_munin_data
     ensure_log_dir
@@ -101,4 +101,4 @@ main() {
 }
 
 # Execute main function
-main
+main "$@"

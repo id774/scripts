@@ -304,7 +304,7 @@ cleanup() {
     rm -rf "$BUILD_DIR"
 }
 
-# Main entry point
+# Main function to execute the script
 main() {
     parse_args "$@"
     check_commands curl git make gcc g++ gzip tar wget awk
@@ -328,4 +328,5 @@ main() {
     final_message
 }
 
+# Execute main function
 main "$@"
