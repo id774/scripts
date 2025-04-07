@@ -46,19 +46,22 @@
 #
 ########################################################################
 
-# VARIABLE DEFINITIONS
-TARGET_USER="munin"
-TARGET_HOST="REMOTE_SERVER_NAME"
-TARGET_DIR="/home/share/received"
-SOURCE_HOST="YOUR_HOST_NAME.id774.net"
-MUNIN_CACHE_DIR="/var/cache/munin"
-GROUP_NAME="id774.net"
-SENT_LOGS="$HOME/sent_logs"
-RSYNC_OPTS="-az --delete"
-LOG_DIR="$SENT_LOGS/$SOURCE_HOST"
-MUNIN_DIR="$MUNIN_CACHE_DIR/www/$GROUP_NAME/$SOURCE_HOST"
-REMOTE_DIR="$TARGET_USER@$TARGET_HOST:$TARGET_DIR/"
-REMOTE_MUNIN_DIR="$TARGET_USER@$TARGET_HOST:$MUNIN_CACHE_DIR/www/$GROUP_NAME/"
+# Load configuration from external file
+load_config() {
+    SCRIPT_DIR=$(dirname "$0")
+    CONFIG_FILE="$SCRIPT_DIR/etc/munin-sync.conf"
+
+    if [ ! -f "$CONFIG_FILE" ]; then
+        CONFIG_FILE="$SCRIPT_DIR/../etc/munin-sync.conf"
+    fi
+
+    if [ -f "$CONFIG_FILE" ]; then
+        . "$CONFIG_FILE"
+    else
+        echo "[ERROR] Configuration file not found: $CONFIG_FILE" >&2
+        exit 1
+    fi
+}
 
 # Sync Munin data to remote server
 sync_munin_data() {
@@ -92,6 +95,7 @@ sync_logs_to_remote() {
 
 # Main function to execute the script
 main() {
+    load_config
     sync_munin_data
     ensure_log_dir
     sync_local_logs
