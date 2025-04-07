@@ -21,6 +21,8 @@
 #  Version History:
 #  v1.0 2025-04-07
 #       Initial release. Implements _is_alive file monitoring for server health checking.
+#  v1.1 2025-04-07
+#       Added environment checking and command validation via check_commands().
 #
 #  Usage:
 #      ./server_alive_check.sh
@@ -30,7 +32,7 @@
 #  Add the following line to /etc/cron.d/server_alive_check to execute every 5 minutes:
 #      */5 * * * * /path/to/server_alive_check.sh
 #
-#  This ensures the script runs every 5 minutes to continuously monitor 
+#  This ensures the script runs every 5 minutes to continuously monitor
 #  server availability based on the presence and freshness of _is_alive files.
 #
 #  Features:
@@ -39,6 +41,7 @@
 #  - Scans a configurable directory for _is_alive files
 #  - Alerts if files are older than one hour
 #  - Outputs errors to standard error for logging and monitoring purposes
+#  - Validates required commands and directory existence before execution
 #
 #  Warning:
 #  - Ensure the monitored servers regularly generate _is_alive files to avoid false alerts.
@@ -52,6 +55,39 @@ BASE_DIR="/home/share/received"
 # Alert message prefix
 ALERT_PREFIX="[ERROR]"
 
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Check if BASE_DIR exists
+check_environment() {
+    if [ ! -d "$BASE_DIR" ]; then
+        echo "$ALERT_PREFIX Directory not found: $BASE_DIR" >&2
+        exit 1
+    fi
+}
+
 # Find all files ending with '_is_alive' under the base directory
 find_is_alive_files() {
     find "$BASE_DIR" -type f -name '*_is_alive'
@@ -62,7 +98,7 @@ is_file_stale() {
     FILE="$1"
     CURRENT_TIME=$(date +%s)
     FILE_TIME=$(stat -c %Y "$FILE" 2>/dev/null || stat -f %m "$FILE" 2>/dev/null)
-    
+
     # Check if the file modification time could be retrieved
     if [ -z "$FILE_TIME" ]; then
         echo "$ALERT_PREFIX Failed to retrieve modification time for: $FILE" >&2
@@ -95,6 +131,12 @@ process_files() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
+    check_environment
+    check_commands find stat date
     process_files
 }
 
