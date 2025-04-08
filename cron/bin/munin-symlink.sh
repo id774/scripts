@@ -108,8 +108,13 @@ update_symlink() {
 
     # Update or remove symbolic link based on the file modification time
     if [ "$TIME_DIFF" -le "$TIME_THRESHOLD" ]; then
-        ln -snf "$LINK_TARGET" "$SYMLINK"
-        #echo "[INFO] Symlink created or updated: $SYMLINK -> $LINK_TARGET"
+        if [ ! -L "$SYMLINK" ] || [ "$(readlink "$SYMLINK")" != "$LINK_TARGET" ]; then
+            ln -snf "$LINK_TARGET" "$SYMLINK"
+            #echo "[INFO] Symlink created or updated: $SYMLINK -> $LINK_TARGET"
+
+            # Remove datafile only if a new symlink was created or modified
+            rm -f /var/lib/munin/datafile
+        fi
     else
         if [ -L "$SYMLINK" ]; then
             rm "$SYMLINK"
