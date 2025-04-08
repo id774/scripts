@@ -8,6 +8,7 @@ v1.4.2 (Release Date: TBD)
 - Transition ClamAV cron setup from /etc/cron.weekly to /etc/cron.weekend.
 - Add munin-sync.sh for synchronizing Munin data and logs to remote server.
 - Add server_alive_check.sh for server availability monitoring.
+- Add munin-symlink.sh for dynamic monitoring target management in Munin.
 
 v1.4.1 (2025-03-28)
 -------------------
