@@ -28,6 +28,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-04-10
+#       Do not overwrite existing configuration file.
 #  v1.0 2025-04-07
 #       First version.
 #
@@ -51,14 +53,6 @@ usage() {
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
         echo "Error: This script is intended for Linux systems only." >&2
-        exit 1
-    fi
-}
-
-# Check if /var/lib/munin exists
-check_munin_dir() {
-    if [ ! -d "/var/lib/munin" ]; then
-        echo "Error: /var/lib/munin directory does not exist. Please ensure Munin is installed properly." >&2
         exit 1
     fi
 }
@@ -93,6 +87,14 @@ check_sudo() {
     fi
 }
 
+# Check if /var/lib/munin exists
+check_munin_dir() {
+    if [ ! -d "/var/lib/munin" ]; then
+        echo "Error: /var/lib/munin directory does not exist. Please ensure Munin is installed properly." >&2
+        exit 1
+    fi
+}
+
 # Setup necessary directories
 setup_directories() {
     echo "Setting up directories..."
@@ -123,9 +125,17 @@ deploy_scripts() {
 # Deploy the configuration file
 deploy_configurations() {
     echo "Deploying configurations..."
-    sudo cp "$SCRIPTS/cron/etc/munin-sync.conf" /var/lib/munin/etc/
-    sudo chmod 640 /var/lib/munin/etc/munin-sync.conf
-    sudo chown munin:munin /var/lib/munin/etc/munin-sync.conf
+    CONFIG_FILE="/var/lib/munin/etc/munin-sync.conf"
+
+    if [ ! -f "$CONFIG_FILE" ]; then
+        sudo cp "$SCRIPTS/cron/etc/munin-sync.conf" "$CONFIG_FILE"
+    else
+        echo "Configuration file already exists: $CONFIG_FILE"
+        echo "Skipping copy to preserve existing configuration."
+    fi
+
+    sudo chmod 640 "$CONFIG_FILE"
+    sudo chown munin:munin "$CONFIG_FILE"
 }
 
 # Setup cron jobs for munin-sync
