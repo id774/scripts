@@ -82,12 +82,14 @@ deploy_script() {
 deploy_configuration() {
     echo "Deploying configuration..."
     CONFIG_FILE="/root/etc/munin-symlink.conf"
-    if [ ! -f "$CONFIG_FILE" ]; then
-        sudo install -m 640 -o root -g root "$SCRIPTS/cron/etc/munin-symlink.conf" "$CONFIG_FILE"
+
+    if ! sudo test -f "$CONFIG_FILE"; then
+        sudo cp "$SCRIPTS/cron/etc/munin-symlink.conf" "$CONFIG_FILE"
     else
         echo "Configuration file already exists: $CONFIG_FILE"
         echo "Skipping copy to preserve existing configuration."
     fi
+
     sudo chmod 640 "$CONFIG_FILE"
     sudo chown root:root "$CONFIG_FILE"
 }
