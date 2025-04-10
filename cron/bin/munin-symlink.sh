@@ -23,6 +23,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-04-10
+#       Externalized configuration to munin-symlink.conf and added dynamic server list.
 #  v1.0 2025-04-08
 #       Initial version implementing symlink control for multiple servers.
 #
@@ -50,18 +52,6 @@
 #
 ########################################################################
 
-# Time threshold in seconds (10 minutes)
-TIME_THRESHOLD=600
-
-# Base directory where the "is_alive" files are located
-RECEIVED_DIR="/home/share/received"
-
-# Directory for Munin configuration files
-MUNIN_CONF_DIR="/etc/munin/munin-conf.d"
-
-# Active monitoring directory (target for symlinks)
-ACTIVE_DIR="/etc/munin/server-available"
-
 # Display script usage information
 usage() {
     awk '
@@ -71,6 +61,23 @@ usage() {
         in_usage && /^#/ { print substr($0, 4) }
     ' "$0"
     exit 0
+}
+
+# Load configuration from external file
+load_config() {
+    SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+    CONFIG_FILE="$SCRIPT_DIR/etc/munin-symlink.conf"
+
+    if [ ! -f "$CONFIG_FILE" ]; then
+        CONFIG_FILE="$SCRIPT_DIR/../etc/munin-symlink.conf"
+    fi
+
+    if [ -f "$CONFIG_FILE" ]; then
+        . "$CONFIG_FILE"
+    else
+        echo "[ERROR] Configuration file not found: $CONFIG_FILE" >&2
+        exit 1
+    fi
 }
 
 # Function to update symlink based on the target file's modification time
@@ -129,11 +136,12 @@ main() {
         -h|--help) usage ;;
     esac
 
-    # Process each server by calling update_symlink()
-    update_symlink YOUR_SERVER_1
-    update_symlink YOUR_SERVER_2
+    load_config
 
-    #echo "[INFO] Symlink monitoring completed."
+    for server in $SERVER_LIST; do
+        update_symlink "$server"
+        #echo "[INFO] Symlink monitoring completed."
+    done
 }
 
 # Execute main function
