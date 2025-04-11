@@ -123,7 +123,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo chmod chown tee test
+    check_commands sudo chmod chown tee
     check_scripts
     check_sudo
 
