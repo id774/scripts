@@ -95,7 +95,7 @@ main() {
 
     # Deploy chkrootkit cron job
     sudo cp "$SCRIPTS/cron/bin/chkrootkit" /etc/cron.weekly/chkrootkit
-    sudo chmod 750 /etc/cron.weekly/chkrootkit
+    sudo chmod 740 /etc/cron.weekly/chkrootkit
     sudo chown root:adm /etc/cron.weekly/chkrootkit
 
     # Create log directory if it does not exist

@@ -12,7 +12,7 @@ echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
 date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
 echo >> "$JOBLOG" 2>&1
 
-ADMIN_MAIL_ADDRESS="root"
+#ADMIN_MAIL_ADDRESS="root"
 case "$ADMIN_MAIL_ADDRESS" in
     *@*)
         [ -r "$JOBLOG" ] && cat -v "$JOBLOG" | nkf -w | mail -s "[cron][$(hostname)] SELinux Restore Context Log" "$ADMIN_MAIL_ADDRESS"
