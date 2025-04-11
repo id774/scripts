@@ -75,7 +75,9 @@ check_sudo() {
 # Deploy the monitor script
 deploy_script() {
     echo "Deploying script..."
-    sudo install -m 750 -o root -g root "$SCRIPTS/cron/bin/munin-symlink.sh" /root/bin/munin-symlink.sh
+    sudo cp "$SCRIPTS/cron/bin/munin-symlink.sh" /root/bin/munin-symlink.sh
+    sudo chown root:root /root/bin/munin-symlink.sh
+    sudo chmod 700 /root/bin/munin-symlink.sh
 }
 
 # Deploy the configuration file
@@ -90,7 +92,7 @@ deploy_configuration() {
         echo "Skipping copy to preserve existing configuration."
     fi
 
-    sudo chmod 640 "$CONFIG_FILE"
+    sudo chmod 600 "$CONFIG_FILE"
     sudo chown root:root "$CONFIG_FILE"
 }
 
@@ -112,7 +114,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo install chmod chown tee test
+    check_commands sudo chmod chown tee test
     check_scripts
     check_sudo
 
