@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-04-11
+#       Prevent overwriting existing configuration file during deployment.
 #  v1.6 2025-03-27
 #       Refactored final messages and updated cron job time.
 #  v1.5 2025-03-22
@@ -97,44 +99,52 @@ check_scripts() {
 # Create directory for logs
 setup_log_directory() {
     if [ ! -d /var/log/sysadmin ]; then
-        sudo mkdir -p /var/log/sysadmin || exit 1
-        sudo chmod 750 /var/log/sysadmin || exit 1
-        sudo chown root:adm /var/log/sysadmin || exit 1
+        sudo mkdir -p /var/log/sysadmin
+        sudo chmod 750 /var/log/sysadmin
+        sudo chown root:adm /var/log/sysadmin
     fi
 }
 
 # Set up log file and permissions
 setup_log_file() {
     if [ ! -f /var/log/sysadmin/run_tests.log ]; then
-        sudo touch /var/log/sysadmin/run_tests.log || exit 1
-        sudo chmod 640 /var/log/sysadmin/run_tests.log || exit 1
-        sudo chown root:adm /var/log/sysadmin/run_tests.log || exit 1
+        sudo touch /var/log/sysadmin/run_tests.log
+        sudo chmod 640 /var/log/sysadmin/run_tests.log
+        sudo chown root:adm /var/log/sysadmin/run_tests.log
     fi
 }
 
 # Deploy log rotation configuration
 deploy_log_rotation() {
     if [ ! -f /etc/logrotate.d/run_tests ]; then
-        sudo cp "$SCRIPTS/cron/etc/logrotate.d/run_tests" /etc/logrotate.d/run_tests || exit 1
-        sudo chmod 640 /etc/logrotate.d/run_tests || exit 1
-        sudo chown root:adm /etc/logrotate.d/run_tests || exit 1
+        sudo cp "$SCRIPTS/cron/etc/logrotate.d/run_tests" /etc/logrotate.d/run_tests
+        sudo chmod 640 /etc/logrotate.d/run_tests
+        sudo chown root:adm /etc/logrotate.d/run_tests
     fi
 }
 
 # Deploy run_tests script and configuration file
 deploy_scripts() {
-    sudo cp "$SCRIPTS/cron/bin/run_tests" /root/bin/ || exit 1
-    sudo cp "$SCRIPTS/cron/etc/run_tests.conf" /root/etc/ || exit 1
-    sudo chmod 740 /root/bin/run_tests || exit 1
-    sudo chown root:root /root/bin/run_tests || exit 1
-    sudo chmod 640 /root/etc/run_tests.conf || exit 1
-    sudo chown root:root /root/etc/run_tests.conf || exit 1
+    sudo cp "$SCRIPTS/cron/bin/run_tests" /root/bin/
+
+    CONFIG_FILE="/root/etc/run_tests.conf"
+    if ! sudo test -f "$CONFIG_FILE"; then
+        sudo cp "$SCRIPTS/cron/etc/run_tests.conf" "$CONFIG_FILE"
+    else
+        echo "Configuration file already exists: $CONFIG_FILE"
+        echo "Skipping copy to preserve existing configuration."
+    fi
+
+    sudo chmod 700 /root/bin/run_tests
+    sudo chown root:root /root/bin/run_tests
+    sudo chmod 600 "$CONFIG_FILE"
+    sudo chown root:root "$CONFIG_FILE"
 }
 
 # Set up cron job for running tests
 setup_cron_job() {
     CRON_JOB="30 04 * * * root test -x /root/bin/run_tests && /root/bin/run_tests"
-    echo "$CRON_JOB" | sudo tee /etc/cron.d/run_tests > /dev/null || exit 1
+    echo "$CRON_JOB" | sudo tee /etc/cron.d/run_tests > /dev/null
 }
 
 # Print post-installation instructions and next steps
