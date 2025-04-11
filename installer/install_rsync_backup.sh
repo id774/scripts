@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.4 2025-04-11
+#       Prevent overwriting existing rsync_backup.conf during deployment.
 #  v2.3 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v2.2 2025-03-14
@@ -113,9 +115,15 @@ main() {
     sudo chmod 700 /root/bin/rsync_backup.sh
     sudo chown root:root /root/bin/rsync_backup.sh
 
-    sudo cp "$SCRIPTS/cron/etc/rsync_backup.conf" /root/etc/
-    sudo chmod 600 /root/etc/rsync_backup.conf
-    sudo chown root:root /root/etc/rsync_backup.conf
+    CONFIG_FILE="/root/etc/rsync_backup.conf"
+    if ! sudo test -f "$CONFIG_FILE"; then
+        sudo cp "$SCRIPTS/cron/etc/rsync_backup.conf" "$CONFIG_FILE"
+    else
+        echo "Configuration file already exists: $CONFIG_FILE"
+        echo "Skipping copy to preserve existing configuration."
+    fi
+    sudo chmod 600 "$CONFIG_FILE"
+    sudo chown root:root "$CONFIG_FILE"
 
     # Deploy rsync backup cron job
     sudo cp "$SCRIPTS/cron/bin/rsync_backup" /etc/cron.hourly/
