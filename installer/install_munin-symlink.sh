@@ -21,6 +21,15 @@
 #  Usage:
 #      ./install_munin-symlink.sh
 #
+#  Notes:
+#  - This script must be executed on a Linux system with root privileges (via sudo).
+#  - The environment variable SCRIPTS must be set to the root of the script repository.
+#  - The deployed configuration file (/root/etc/munin-symlink.conf) will not be overwritten if it already exists.
+#    Please edit it manually if configuration changes are needed after deployment.
+#  - The deployed monitor script (/root/bin/munin-symlink.sh) runs every 5 minutes via a cron job.
+#    Ensure that Munin is properly configured to read its output, typically via symlink checks.
+#  - Permissions and ownership of deployed files are strictly set to restrict access to root only.
+#
 ########################################################################
 
 # Display script usage information
