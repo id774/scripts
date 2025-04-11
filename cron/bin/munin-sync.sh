@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-04-11
+#       Added usage() function and --help option. Added Munin directory existence check.
 #  v1.0 2025-04-07
 #       Initial release. Implements rsync-based data transfer and logging sync with heartbeat file generation.
 #
@@ -46,6 +48,17 @@
 #
 ########################################################################
 
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
 # Load configuration from external file
 load_config() {
     SCRIPT_DIR=$(dirname "$0")
@@ -65,6 +78,12 @@ load_config() {
 
 # Sync Munin data to remote server
 sync_munin_data() {
+    # Check if the target file exists
+    if [ ! -d "$MUNIN_DIR" ]; then
+        echo "[ERROR] Munin directory not found: $MUNIN_DIR" >&2
+        exit 1
+    fi
+
     rsync $RSYNC_OPTS "$MUNIN_DIR" "$REMOTE_MUNIN_DIR"
 }
 
@@ -95,6 +114,10 @@ sync_logs_to_remote() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     load_config
     sync_munin_data
     ensure_log_dir
