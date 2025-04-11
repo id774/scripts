@@ -130,7 +130,7 @@ deploy_configurations() {
 setup_cron_jobs() {
     echo "Setting up cron jobs..."
     sudo cp "$SCRIPTS/cron/bin/apache_log_analysis" /etc/cron.daily/apache_log_analysis
-    sudo chmod 750 /etc/cron.daily/apache_log_analysis
+    sudo chmod 740 /etc/cron.daily/apache_log_analysis
     sudo chown root:adm /etc/cron.daily/apache_log_analysis
 }
 

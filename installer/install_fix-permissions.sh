@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-04-11
+#       Restricted permissions of fix-permissions cron job to root and adm only.
 #  v1.4 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.3 2025-03-14
@@ -133,7 +135,7 @@ main() {
 
     # Deploy the fix-permissions script and cron job
     sudo cp "$SCRIPTS/cron/bin/fix-permissions.sh" /etc/cron.daily/fix-permissions
-    sudo chmod 744 /etc/cron.daily/fix-permissions
+    sudo chmod 740 /etc/cron.daily/fix-permissions
     sudo chown root:adm /etc/cron.daily/fix-permissions
 
     echo "Fix-permissions script setup completed successfully."
