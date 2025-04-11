@@ -12,16 +12,6 @@
 #  This script is designed to run on Linux systems and requires sudo
 #  privileges to modify system directories and files.
 #
-#  Functions:
-#  - setup_directories: Creates necessary directories for storing scripts,
-#    configurations, and log files with appropriate permissions.
-#  - deploy_scripts: Copies the munin-sync.sh script to the appropriate
-#    location and sets the correct ownership and permissions.
-#  - deploy_configurations: Copies the munin-sync.conf configuration file
-#    to the appropriate location and ensures correct permissions.
-#  - setup_cron_jobs: Configures cron jobs to periodically execute the
-#    munin-sync.sh script.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
@@ -35,6 +25,26 @@
 #
 #  Usage:
 #      ./install_munin-sync.sh
+#
+#  Functions:
+#  - setup_directories: Creates necessary directories for storing scripts,
+#    configurations, and log files with appropriate permissions.
+#  - deploy_scripts: Copies the munin-sync.sh script to the appropriate
+#    location and sets the correct ownership and permissions.
+#  - deploy_configurations: Copies the munin-sync.conf configuration file
+#    to the appropriate location and ensures correct permissions.
+#  - setup_cron_jobs: Configures cron jobs to periodically execute the
+#    munin-sync.sh script.
+#
+#  Notes:
+#  - This script must be executed on a Linux system with sudo privileges.
+#  - The SCRIPTS environment variable must be set to the directory containing the munin-sync source files.
+#  - The script assumes that the Munin service is installed and that /var/lib/munin exists.
+#  - The configuration file (/var/lib/munin/etc/munin-sync.conf) will not be overwritten if it already exists.
+#    Please edit it manually if changes are needed after initial deployment.
+#  - The munin-sync.sh script is installed under /var/lib/munin/bin and owned by the 'munin' user.
+#  - Cron jobs are configured under /etc/cron.d/ and run every 5 minutes as the 'munin' user.
+#  - Log and configuration directories are created with restricted permissions for security.
 #
 ########################################################################
 
@@ -127,7 +137,7 @@ deploy_configurations() {
     echo "Deploying configurations..."
     CONFIG_FILE="/var/lib/munin/etc/munin-sync.conf"
 
-    if [ ! -f "$CONFIG_FILE" ]; then
+    if ! sudo test -f "$CONFIG_FILE"; then
         sudo cp "$SCRIPTS/cron/etc/munin-sync.conf" "$CONFIG_FILE"
     else
         echo "Configuration file already exists: $CONFIG_FILE"
