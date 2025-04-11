@@ -127,7 +127,7 @@ main() {
 
     # Deploy rsync backup cron job
     sudo cp "$SCRIPTS/cron/bin/rsync_backup" /etc/cron.hourly/
-    sudo chmod 750 /etc/cron.hourly/rsync_backup
+    sudo chmod 740 /etc/cron.hourly/rsync_backup
     sudo chown root:adm /etc/cron.hourly/rsync_backup
 
     # Set up rsync backup log file and permissions
