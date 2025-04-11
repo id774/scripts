@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-04-11
+#       Prevent overwriting existing configuration file during deployment.
 #  v1.4 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.3 2025-03-15
@@ -111,9 +113,17 @@ deploy_scripts() {
 # Function to deploy configuration files
 deploy_configurations() {
     echo "Deploying configuration files..."
-    sudo cp "$SCRIPTS/etc/apache_ignore.list" /root/etc/apache_ignore.list
-    sudo chmod 600 /root/etc/apache_ignore.list
-    sudo chown root:root /root/etc/apache_ignore.list
+
+    CONFIG_FILE="/root/etc/apache_ignore.list"
+    if ! sudo test -f "$CONFIG_FILE"; then
+        sudo cp "$SCRIPTS/etc/apache_ignore.list" "$CONFIG_FILE"
+    else
+        echo "Configuration file already exists: $CONFIG_FILE"
+        echo "Skipping copy to preserve existing configuration."
+    fi
+
+    sudo chmod 600 "$CONFIG_FILE"
+    sudo chown root:root "$CONFIG_FILE"
 }
 
 # Function to deploy cron jobs
