@@ -9,6 +9,7 @@ v1.4.2 (Release Date: TBD)
 - Add munin-sync.sh for synchronizing Munin data and logs to remote server.
 - Add server_alive_check.sh for server availability monitoring.
 - Add munin-symlink.sh for dynamic monitoring target management in Munin.
+- Unify log message format by replacing 'Error:' with '[ERROR]'.
 
 v1.4.1 (2025-03-28)
 -------------------
