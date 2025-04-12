@@ -6,6 +6,8 @@
 #  Description:
 #  This script sets the appropriate permissions for a collection of scripts.
 #  It adjusts read/write/execute permissions for users, groups, and others.
+#  Additionally, it removes execute permissions from cron job scripts
+#  under scripts/cron/bin to prevent accidental manual execution.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -13,6 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-04-12
+#       Revoke execute permissions from scripts/cron/bin to avoid
+#       accidental manual execution of cron job scripts.
 #  v1.6 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.5 2025-03-17
@@ -42,6 +47,8 @@
 #  - This script should be run from the root directory of the script collection.
 #  - Make sure to back up your scripts before running this script as a precaution.
 #  - SCRIPTS environment variable must be set to the path of the script collection.
+#  - Execute permissions will be removed from all files under scripts/cron/bin
+#    to avoid accidental manual execution of cron job scripts.
 #
 ########################################################################
 
@@ -61,10 +68,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -73,7 +80,7 @@ check_commands() {
 # Function to validate the SCRIPTS environment variable
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
-        echo "Error: SCRIPTS environment variable is not set." >&2
+        echo "[ERROR] SCRIPTS environment variable is not set." >&2
         echo "Please set the SCRIPTS variable to the path of your script collection." >&2
         exit 1
     fi
@@ -83,8 +90,15 @@ check_scripts() {
 set_permissions() {
     chmod -R u+rw,g+r,g-w,o+r,o-w "$SCRIPTS"/*
 
-    # Set execute permissions for script files
+    # Set execute permissions for script files (.sh, .py, .rb)
+    echo "[INFO] Granting execute permissions to script files (*.sh, *.py, *.rb)"
     find "$SCRIPTS"/ -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+
+    # Revoke execute permission under scripts/cron/bin to avoid manual execution
+    if [ -d "$SCRIPTS/cron/bin" ]; then
+        echo "[INFO] Removing execute permissions from scripts/cron/bin/*"
+        find "$SCRIPTS/cron/bin" -type f -exec chmod a-x {} \;
+    fi
 }
 
 # Main function to execute the script
