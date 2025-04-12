@@ -52,10 +52,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -64,7 +64,7 @@ check_commands() {
 # Function to check if the database exists
 check_database() {
     if [ ! -f "$DB_PATH" ]; then
-        echo "Error: Database file '$DB_PATH' not found. Please ensure Fastladder is properly installed." >&2
+        echo "[ERROR] Database file '$DB_PATH' not found. Please ensure Fastladder is properly installed." >&2
         exit 1
     fi
 }
@@ -73,7 +73,7 @@ check_database() {
 vacuum_database() {
     echo "Vacuuming database..."
     sqlite3 "$DB_PATH" vacuum || {
-        echo "Error: Failed to vacuum database." >&2
+        echo "[ERROR] Failed to vacuum database." >&2
         exit 1
     }
 }
@@ -82,7 +82,7 @@ vacuum_database() {
 sync_database() {
     echo "Syncing database to $USER@$HOST..."
     rsync -auvz "$DB_PATH" "$USER@$HOST:$DB_PATH" || {
-        echo "Error: Failed to sync database to remote server." >&2
+        echo "[ERROR] Failed to sync database to remote server." >&2
         exit 1
     }
 }

@@ -129,7 +129,7 @@ load_and_validate_config() {
     if [ ! -f "$CONF_FILE" ]; then
         CONF_FILE="$SCRIPT_DIR/../etc/insta_update.conf"
         if [ ! -f "$CONF_FILE" ]; then
-            echo "Error: Configuration file not found." >&2
+            echo "[ERROR] Configuration file not found." >&2
             exit 1
         fi
     fi
@@ -137,13 +137,13 @@ load_and_validate_config() {
 
     # Check if necessary variables are set
     if [ -z "$PYTHON_BIN" ] || [ -z "$DOWNLOADER_SCRIPT" ] || [ -z "$SYNC_SCRIPT" ] || [ -z "$TARGET_DIR" ]; then
-        echo "Error: One or more configuration variables are not set. Please check your insta_update.conf." >&2
+        echo "[ERROR] One or more configuration variables are not set. Please check your insta_update.conf." >&2
         exit 3
     fi
 
     # Check if specified scripts and target directory exist and are executable
     if [ ! -x "$PYTHON_BIN" ] || [ ! -f "$DOWNLOADER_SCRIPT" ] || [ ! -x "$DOWNLOADER_SCRIPT" ] || [ ! -f "$SYNC_SCRIPT" ] || [ ! -x "$SYNC_SCRIPT" ] || [ ! -d "$TARGET_DIR" ]; then
-        echo "Error: Specified scripts or target directory do not exist or are not executable." >&2
+        echo "[ERROR] Specified scripts or target directory do not exist or are not executable." >&2
         exit 4
     fi
 }
@@ -153,10 +153,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -192,7 +192,7 @@ parse_options() {
                     ACCOUNT_SPECIFIED=$(echo "$2" | sed 's:[/\\]*$::')
                     shift 2
                 else
-                    echo "Error: --account option requires a value." >&2
+                    echo "[ERROR] --account option requires a value." >&2
                     exit 2
                 fi
                 ;;
@@ -201,7 +201,7 @@ parse_options() {
                 ;;
             *)
                 # Unknown option
-                echo "Error: Unknown option $1" >&2
+                echo "[ERROR] Unknown option $1" >&2
                 exit 2
                 ;;
         esac

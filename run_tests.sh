@@ -72,7 +72,7 @@ usage() {
 # Function to check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
-        echo "Error: SCRIPTS environment variable is not set." >&2
+        echo "[ERROR] SCRIPTS environment variable is not set." >&2
         echo "Please set the SCRIPTS variable to the path of your script collection." >&2
         exit 1
     fi
@@ -127,7 +127,7 @@ run_python_tests() {
         echo "Python is not installed. Skipping Python tests."
     else
         if [ ! -x "$python_path" ]; then
-            echo "Error: Specified Python path is either invalid or not executable." >&2
+            echo "[ERROR] Specified Python path is either invalid or not executable." >&2
             exit 1
         fi
         echo "Python path: $python_path"
@@ -163,7 +163,7 @@ run_ruby_tests() {
         echo "RSpec is not installed. Skipping Ruby tests."
     else
         if [ ! -x "$rspec_path" ]; then
-            echo "Error: Specified RSpec path is either invalid or not executable." >&2
+            echo "[ERROR] Specified RSpec path is either invalid or not executable." >&2
             exit 1
         fi
         echo "RSpec path: $rspec_path"

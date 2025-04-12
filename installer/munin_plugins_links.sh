@@ -55,7 +55,7 @@ usage() {
 # Function to check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
-        echo "Error: This script is intended for Linux systems only." >&2
+        echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
     fi
 }
@@ -65,10 +65,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -77,7 +77,7 @@ check_commands() {
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }
@@ -88,12 +88,12 @@ check_directories() {
     PLUGINS_DIR=/etc/munin/plugins
 
     if [ ! -w "$TMP_SCRIPT_DIR" ]; then
-        echo "Error: Temporary directory $TMP_SCRIPT_DIR is not writable." >&2
+        echo "[ERROR] Temporary directory $TMP_SCRIPT_DIR is not writable." >&2
         exit 3
     fi
 
     if [ ! -d "$PLUGINS_DIR" ]; then
-        echo "Error: Plugins directory $PLUGINS_DIR does not exist." >&2
+        echo "[ERROR] Plugins directory $PLUGINS_DIR does not exist." >&2
         exit 4
     fi
 }
@@ -115,7 +115,7 @@ configure_munin_plugins() {
     chmod +x "$SCRIPT_NAME"
 
     # Execute the script in the plugins directory
-    cd "$PLUGINS_DIR" || { echo "Error: Failed to change directory to $PLUGINS_DIR." >&2; exit 5; }
+    cd "$PLUGINS_DIR" || { echo "[ERROR] Failed to change directory to $PLUGINS_DIR." >&2; exit 5; }
     sudo "$SCRIPT_NAME"
     rm "$SCRIPT_NAME"
 

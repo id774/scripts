@@ -42,7 +42,7 @@ usage() {
 # Check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
-        echo "Error: This script is intended for Linux systems only." >&2
+        echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
     fi
 }
@@ -50,7 +50,7 @@ check_system() {
 # Function to check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
-        echo "Error: SCRIPTS environment variable is not set." >&2
+        echo "[ERROR] SCRIPTS environment variable is not set." >&2
         echo "Please set the SCRIPTS variable to this script." >&2
         exit 1
     fi
@@ -61,10 +61,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -72,8 +72,8 @@ check_commands() {
 
 # Function to check for required files and directories
 check_files() {
-    test -f "$SCRIPTS/convert_msime2cannna.rb" || { echo "Error: Missing convert_msime2cannna.rb" >&2; exit 1; }
-    test -f "$SCRIPTS/etc/aa.txt" || { echo "Error: Missing aa.txt" >&2; exit 1; }
+    test -f "$SCRIPTS/convert_msime2cannna.rb" || { echo "[ERROR] Missing convert_msime2cannna.rb" >&2; exit 1; }
+    test -f "$SCRIPTS/etc/aa.txt" || { echo "[ERROR] Missing aa.txt" >&2; exit 1; }
     test -d "$HOME/.anthy" || mkdir -p "$HOME/.anthy"
 }
 

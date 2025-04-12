@@ -52,7 +52,7 @@ EXCLUDEFILE="$EXECDIR/../etc/clamscan_exclude"
 # Update virus definitions
 systemctl stop clamav-freshclam.service
 freshclam || {
-    echo "Error: Failed to update ClamAV virus definitions." >&2
+    echo "[ERROR] Failed to update ClamAV virus definitions." >&2
     exit 1
 }
 systemctl start clamav-freshclam.service

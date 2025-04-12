@@ -49,7 +49,7 @@ usage() {
 # Function to check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
-        echo "Error: This script is intended for Linux systems only." >&2
+        echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
     fi
 }
@@ -59,10 +59,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -71,7 +71,7 @@ check_commands() {
 # Function to check network connectivity
 check_network() {
     if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
-        echo "Error: No network connection detected. Please check your internet access." >&2
+        echo "[ERROR] No network connection detected. Please check your internet access." >&2
         exit 1
     fi
 }
@@ -79,7 +79,7 @@ check_network() {
 # Check if the user has sudo privileges
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }

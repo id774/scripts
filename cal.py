@@ -84,7 +84,7 @@ def run_system_cal(args):
     if cal_path != script_path:
         subprocess.call(['cal'] + args)
     else:
-        print("Error: 'cal' command is the same as this script. Cannot execute to avoid infinite loop.")
+        print("[ERROR] 'cal' command is the same as this script. Cannot execute to avoid infinite loop.")
 
 def is_unix_like():
     """

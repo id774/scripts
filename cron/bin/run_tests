@@ -75,7 +75,7 @@ fi
 
 # Validate essential configuration variables
 if [ -z "$SCRIPTS" ] || [ -z "$JOBLOG" ] || [ -z "$python_versions" ] || [ -z "$ruby_versions" ]; then
-    echo "Error: Configuration variables not set. Check run_tests.conf." >> "$JOBLOG" 2>&1
+    echo "[ERROR] Configuration variables not set. Check run_tests.conf." >> "$JOBLOG" 2>&1
     exit 4
 fi
 

@@ -48,7 +48,7 @@ usage() {
 # Function to check if the system is macOS
 check_system() {
     if [ "$(uname)" != "Darwin" ]; then
-        echo "Error: This script is intended for macOS only." >&2
+        echo "[ERROR] This script is intended for macOS only." >&2
         exit 1
     fi
 }
@@ -105,7 +105,7 @@ main() {
 
             if [ "$CURRENT_SETTING" != "Off" ]; then
                 echo "Disabling IPv6 on $SERVICE..."
-                sudo networksetup -setv6off "$SERVICE" || echo "Error: Failed to disable IPv6 on $SERVICE." >&2
+                sudo networksetup -setv6off "$SERVICE" || echo "[ERROR] Failed to disable IPv6 on $SERVICE." >&2
             else
                 echo "IPv6 is already disabled on $SERVICE. Skipping..."
             fi

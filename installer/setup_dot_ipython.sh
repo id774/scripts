@@ -56,7 +56,7 @@ usage() {
 # Check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
-        echo "Error: SCRIPTS environment variable is not set." >&2
+        echo "[ERROR] SCRIPTS environment variable is not set." >&2
         echo "Please set the SCRIPTS variable to the path of your IPython startup files." >&2
         exit 1
     fi
@@ -67,10 +67,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -79,7 +79,7 @@ check_commands() {
 # Check if IPython is installed and get its path
 check_ipython() {
     if ! command -v ipython >/dev/null 2>&1; then
-        echo "Error: IPython is not installed." >&2
+        echo "[ERROR] IPython is not installed." >&2
         exit 1
     fi
     echo "IPython found at: $(command -v ipython)"

@@ -44,7 +44,7 @@ end
 option_parser.parse!
 
 if ARGV.length != 1 || !/\A\d+\z/.match?(ARGV[0])
-  puts "Error: Length must be a number."
+  puts "[ERROR] Length must be a number."
   puts option_parser
   exit
 end

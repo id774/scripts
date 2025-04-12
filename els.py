@@ -93,7 +93,7 @@ def format_file_entry(path):
 def get_file_info(path="."):
     """ Get file metadata, whether it's a single file or a directory listing """
     if not os.path.exists(path):
-        return "Error: '{}' does not exist.".format(path)
+        return "[ERROR] '{}' does not exist.".format(path)
 
     try:
         if os.path.isfile(path):
@@ -108,9 +108,9 @@ def get_file_info(path="."):
             # If os.scandir() is unavailable or lacks __exit__, fallback to os.listdir()
             return [format_file_entry(os.path.join(path, entry)) for entry in sorted(os.listdir(path))]
         else:
-            return "Error: '{}' is neither a file nor a directory.".format(path)
+            return "[ERROR] '{}' is neither a file nor a directory.".format(path)
     except PermissionError:
-        return "Error: Permission denied for '{}'.".format(path)
+        return "[ERROR] Permission denied for '{}'.".format(path)
 
 def main():
     """ Main function to handle CLI execution """

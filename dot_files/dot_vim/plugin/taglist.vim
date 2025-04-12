@@ -2512,7 +2512,7 @@ function! s:Tlist_Window_Close()
     " Make sure the taglist window exists
     let winnum = bufwinnr(g:TagList_title)
     if winnum == -1
-        call s:Tlist_Warning_Msg('Error: Taglist window is not open')
+        call s:Tlist_Warning_Msg('[ERROR] Taglist window is not open')
         return
     endif
 
@@ -2720,7 +2720,7 @@ endfunction
 function! s:Tlist_Add_Files_Recursive(dir, ...)
     let dir_name = fnamemodify(a:dir, ':p')
     if !isdirectory(dir_name)
-        call s:Tlist_Warning_Msg('Error: ' . dir_name . ' is not a directory')
+        call s:Tlist_Warning_Msg('[ERROR] ' . dir_name . ' is not a directory')
         return
     endif
 
@@ -2752,7 +2752,7 @@ function! s:Tlist_Add_Files(...)
     endwhile
 
     if flist == ''
-        call s:Tlist_Warning_Msg('Error: No matching files are found')
+        call s:Tlist_Warning_Msg('[ERROR] No matching files are found')
         return
     endif
 
@@ -3507,7 +3507,7 @@ function! s:Tlist_Window_Highlight_Tag(filename, cur_lnum, cntx, center)
     " Make sure the taglist window is present
     let winnum = bufwinnr(g:TagList_title)
     if winnum == -1
-        call s:Tlist_Warning_Msg('Error: Taglist window is not open')
+        call s:Tlist_Warning_Msg('[ERROR] Taglist window is not open')
         return
     endif
 

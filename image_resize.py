@@ -74,7 +74,7 @@ def parse_args():
 def main():
     """Main function to execute the script."""
     if not libraries_installed:
-        print("Error: Required libraries not installed.")
+        print("[ERROR] Required libraries not installed.")
         sys.exit(1)
 
     args = parse_args()

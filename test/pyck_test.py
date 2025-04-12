@@ -60,7 +60,7 @@ class TestPyck(unittest.TestCase):
         """ Test check_command with a command that does not exist. """
         mock_find_command.return_value = None
         pyck.check_command('nonexistent')
-        mock_print.assert_called_with("Error: Command 'nonexistent' is not installed. Please install nonexistent and try again.")
+        mock_print.assert_called_with("[ERROR] Command 'nonexistent' is not installed. Please install nonexistent and try again.")
         mock_exit.assert_called_with(127)
 
     @patch('pyck.os.access')
@@ -72,7 +72,7 @@ class TestPyck(unittest.TestCase):
         mock_find_command.return_value = '/usr/bin/nonexecutable'
         mock_access.return_value = False
         pyck.check_command('nonexecutable')
-        mock_print.assert_called_with("Error: Command 'nonexecutable' is not executable. Please check the permissions.")
+        mock_print.assert_called_with("[ERROR] Command 'nonexecutable' is not executable. Please check the permissions.")
         mock_exit.assert_called_with(126)
 
     @patch('pyck.subprocess.Popen')
@@ -261,7 +261,7 @@ class TestPyck(unittest.TestCase):
         # Test behavior when path is neither a file nor a directory
         pyck.execute_formatting(['invalid/path'], 'E302,E402,E501')
         mock_print.assert_called_with(
-            "Error: The specified path 'invalid/path' is neither a file nor a directory.")
+            "[ERROR] The specified path 'invalid/path' is neither a file nor a directory.")
 
     @patch('pyck.format_file')
     @patch('pyck.print')

@@ -45,7 +45,7 @@ usage() {
 # Function to check if the system is macOS
 check_system() {
     if [ "$(uname)" != "Darwin" ]; then
-        echo "Error: This script is intended for macOS only." >&2
+        echo "[ERROR] This script is intended for macOS only." >&2
         exit 1
     fi
 }
@@ -53,7 +53,7 @@ check_system() {
 # Function to check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
-        echo "Error: SCRIPTS environment variable is not set." >&2
+        echo "[ERROR] SCRIPTS environment variable is not set." >&2
         echo "Please set the SCRIPTS variable to the directory containing Karabiner configurations." >&2
         exit 1
     fi
@@ -70,7 +70,7 @@ setup_karabiner() {
 
     # Check if the source configuration file exists
     if [ ! -f "$SRC_CONFIG" ]; then
-        echo "Error: Configuration file '$SRC_CONFIG' not found." >&2
+        echo "[ERROR] Configuration file '$SRC_CONFIG' not found." >&2
         exit 1
     fi
 

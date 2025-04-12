@@ -63,7 +63,7 @@ def error_message(message, exit_code=1):
     Print an error message and exit the program with the specified exit code.
     This function is used for error handling across the script.
     """
-    print("Error: " + message)
+    print("[ERROR] " + message)
     sys.exit(exit_code)
 
 def check_directory(directory):
@@ -120,12 +120,12 @@ def main():
     """
     # Check if the script is running on macOS
     if platform.system() != 'Darwin':
-        print("Error: This script is intended for use on macOS only.")
+        print("[ERROR] This script is intended for use on macOS only.")
         sys.exit(1)
 
     # Check if the required commands 'find' and 'du' exist
     if not is_command_exist('find') or not is_command_exist('du'):
-        print("Error: Required commands 'find' or 'du' are not available.")
+        print("[ERROR] Required commands 'find' or 'du' are not available.")
         sys.exit(2)
 
     parser = argparse.ArgumentParser(

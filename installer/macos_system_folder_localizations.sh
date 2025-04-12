@@ -47,7 +47,7 @@ usage() {
 # Function to check if the system is macOS
 check_system() {
     if [ "$(uname)" != "Darwin" ]; then
-        echo "Error: This script is intended for macOS only." >&2
+        echo "[ERROR] This script is intended for macOS only." >&2
         exit 1
     fi
 }
@@ -55,7 +55,7 @@ check_system() {
 # Function to check if the user has sudo privileges
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges for system directories." >&2
+        echo "[ERROR] This script requires sudo privileges for system directories." >&2
         exit 1
     fi
 }

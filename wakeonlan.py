@@ -64,7 +64,7 @@ if __name__ == '__main__':
         try:
             send_magic_packet(sys.argv[1])
         except Exception as e:
-            print("Error: {}".format(e))
+            print("[ERROR] {}".format(e))
             print_exc()
     else:
         print("This program requires at least 1 argument (MAC address).")

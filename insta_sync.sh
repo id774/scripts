@@ -96,10 +96,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -114,7 +114,7 @@ load_config() {
     CONF_FILE="$SCRIPT_DIR/etc/insta_sync.conf"
     [ ! -f "$CONF_FILE" ] && CONF_FILE="$SCRIPT_DIR/../etc/insta_sync.conf"
     if [ ! -f "$CONF_FILE" ]; then
-        echo "Error: Configuration file not found." >&2
+        echo "[ERROR] Configuration file not found." >&2
         exit 4
     fi
     . "$CONF_FILE"
@@ -125,7 +125,7 @@ validate_config() {
     # Check if necessary variables are set
     if [ -z "$INSTA_DIR" ] || [ -z "$BACKUP_DIR" ] || \
        [ -z "$REMOTE_USER" ] || [ -z "$REMOTE_HOST" ] || [ -z "$REMOTE_DIR" ]; then
-        echo "Error: Configuration variables not set." >&2
+        echo "[ERROR] Configuration variables not set." >&2
         exit 5
     fi
 }
@@ -134,7 +134,7 @@ validate_config() {
 check_dir() {
     # Checks if the specified directory exists
     if [ ! -d "$1" ]; then
-        echo "Error: Directory $1 does not exist." >&2
+        echo "[ERROR] Directory $1 does not exist." >&2
         exit 2
     fi
 }
@@ -165,7 +165,7 @@ main() {
 
     # Check for Instagram account name argument
     if [ -z "$1" ]; then
-        echo "Error: No Instagram account name provided." >&2
+        echo "[ERROR] No Instagram account name provided." >&2
         exit 1
     fi
 

@@ -130,7 +130,7 @@ def main():
 
     # Check if the target directory exists
     if not os.path.isdir(target_dir):
-        print("Error: Directory '{}' does not exist.".format(target_dir))
+        print("[ERROR] Directory '{}' does not exist.".format(target_dir))
         sys.exit(1)
 
     print("*** Searching for Python 3.x compatibility issues in Python files...")

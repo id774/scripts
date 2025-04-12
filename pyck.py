@@ -88,11 +88,11 @@ def check_command(cmd):
     cmd_path = find_command(cmd)
     if not cmd_path:
         # If the command is not found
-        print("Error: Command '{}' is not installed. Please install {} and try again.".format(cmd, cmd))
+        print("[ERROR] Command '{}' is not installed. Please install {} and try again.".format(cmd, cmd))
         sys.exit(127)
     elif not os.access(cmd_path, os.X_OK):
         # If the command is found but not executable
-        print("Error: Command '{}' is not executable. Please check the permissions.".format(cmd))
+        print("[ERROR] Command '{}' is not executable. Please check the permissions.".format(cmd))
         sys.exit(126)
 
 def format_imports(file_path):
@@ -126,7 +126,7 @@ def execute_formatting(paths, ignore_errors):
         elif os.path.isfile(actual_path):
             format_file(actual_path, ignore_errors)
         else:
-            print("Error: The specified path '{}' is neither a file nor a directory.".format(
+            print("[ERROR] The specified path '{}' is neither a file nor a directory.".format(
                 actual_path))
 
 def format_file(file_path, ignore_errors):

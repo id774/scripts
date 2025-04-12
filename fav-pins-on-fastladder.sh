@@ -49,10 +49,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -62,7 +62,7 @@ check_commands() {
 check_db_file() {
     DBFILE="$HOME/fastladder/db/fastladder.db"
     if [ ! -f "$DBFILE" ]; then
-        echo "Error: Fastladder database not found at $DBFILE" >&2
+        echo "[ERROR] Fastladder database not found at $DBFILE" >&2
         exit 1
     fi
 }

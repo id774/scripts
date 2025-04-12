@@ -52,7 +52,7 @@ usage() {
 # Function to check if the system is Linux
 check_system() {
     if [ "$(uname)" != "Linux" ]; then
-        echo "Error: This script is intended for Linux only." >&2
+        echo "[ERROR] This script is intended for Linux only." >&2
         exit 1
     fi
 }
@@ -62,10 +62,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -76,7 +76,7 @@ check_desktop_installed() {
     if tasksel --list-tasks | grep -q '^i.*desktop'; then
         echo "Desktop environment detected."
     else
-        echo "Error: No desktop environment found. Please install a desktop environment before running this script." >&2
+        echo "[ERROR] No desktop environment found. Please install a desktop environment before running this script." >&2
         exit 1
     fi
 }
@@ -89,7 +89,7 @@ setup_dconf_keys() {
 
     for num in 1 2 3 4 5 6 7 8 9; do
         dconf write "/org/gnome/desktop/wm/keybindings/$key_prefix-$num" "['$modifier$num']" || {
-            echo "Error: Failed to set dconf keybinding for $key_prefix-$num" >&2
+            echo "[ERROR] Failed to set dconf keybinding for $key_prefix-$num" >&2
             exit 1
         }
         dconf read "/org/gnome/desktop/wm/keybindings/$key_prefix-$num"

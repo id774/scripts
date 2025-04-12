@@ -122,7 +122,7 @@ class TestEls(unittest.TestCase):
     def test_get_file_info_not_found(self, mock_exists):
         """Ensure get_file_info() handles nonexistent paths correctly."""
         result = els.get_file_info("/nonexistent")
-        self.assertEqual(result, "Error: '/nonexistent' does not exist.")
+        self.assertEqual(result, "[ERROR] '/nonexistent' does not exist.")
 
     @patch('os.scandir', side_effect=PermissionError)
     @patch('os.path.exists', return_value=True)
@@ -130,7 +130,7 @@ class TestEls(unittest.TestCase):
     def test_get_file_info_permission_error(self, mock_isdir, mock_exists, mock_scandir):
         """Ensure get_file_info() handles permission errors correctly."""
         result = els.get_file_info("/restricted")
-        self.assertEqual(result, "Error: Permission denied for '/restricted'.")
+        self.assertEqual(result, "[ERROR] Permission denied for '/restricted'.")
 
 
 if __name__ == '__main__':

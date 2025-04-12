@@ -56,10 +56,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -70,7 +70,7 @@ check_sshd_config() {
     if [ -f "$1" ]; then
         grep -E "^(Port|PermitRootLogin|PasswordAuthentication|ChallengeResponseAuthentication|AddressFamily|AllowUsers)" "$1" | grep -v "#"
     else
-        echo "Error: Configuration file '$1' not found." >&2
+        echo "[ERROR] Configuration file '$1' not found." >&2
     fi
 }
 

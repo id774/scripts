@@ -33,7 +33,7 @@
 # Function to check if SELinux is enabled
 check_selinux() {
     if ! sestatus 2>/dev/null | grep -q "enabled"; then
-        echo "Error: SELinux is not enabled. This script will not proceed." >&2
+        echo "[ERROR] SELinux is not enabled. This script will not proceed." >&2
         exit 1
     fi
 }

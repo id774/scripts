@@ -94,10 +94,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -113,7 +113,7 @@ load_config() {
     if [ ! -f "$CONF_FILE" ]; then
         CONF_FILE="$SCRIPT_DIR/../etc/sd_extract.conf"
         if [ ! -f "$CONF_FILE" ]; then
-            echo "Error: Configuration file not found." >&2
+            echo "[ERROR] Configuration file not found." >&2
             exit 5
         fi
     fi
@@ -124,19 +124,19 @@ load_config() {
 validate_config() {
     # Check if necessary variables are set
     if [ -z "$SOURCE_DIRS" ] || [ -z "$FILE_PATTERNS" ] || [ -z "$DEST_DIR" ] || [ -z "$DEFAULT_PERMISSIONS" ]; then
-        echo "Error: Configuration variables not set. Check sd_extract.conf." >&2
+        echo "[ERROR] Configuration variables not set. Check sd_extract.conf." >&2
         exit 6
     fi
 
     # Check if destination directory exists
     if [ ! -d "$DEST_DIR" ]; then
-        echo "Error: Destination directory $DEST_DIR does not exist." >&2
+        echo "[ERROR] Destination directory $DEST_DIR does not exist." >&2
         exit 2
     fi
 
     # Check if the permissions argument is a valid 3-digit number
     if ! echo "$permissions" | grep -Eq '^[0-7]{3}$'; then
-        echo "Error: Permissions must be a 3-digit octal number." >&2
+        echo "[ERROR] Permissions must be a 3-digit octal number." >&2
         exit 8
     fi
 }
@@ -170,11 +170,11 @@ sync_files() {
                 # If the file is successfully copied, create a flag file
                 touch "$flag_file"
             else
-                echo "Error: Failed to set permissions for $dest_dir/$(basename "$file")"
+                echo "[ERROR] Failed to set permissions for $dest_dir/$(basename "$file")"
                 error_files="$error_files $file"
             fi
         else
-            echo "Error: Rsync failed for $file. Skipping."
+            echo "[ERROR] Rsync failed for $file. Skipping."
             error_files="$error_files $file"
         fi
     done

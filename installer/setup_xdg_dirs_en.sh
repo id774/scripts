@@ -48,7 +48,7 @@ usage() {
 # Function to check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
-        echo "Error: This script is intended for Linux systems only." >&2
+        echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
     fi
 }
@@ -58,10 +58,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -70,7 +70,7 @@ check_commands() {
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }
@@ -82,7 +82,7 @@ install_xdg_user_dirs_gtk() {
         echo "Installing xdg-user-dirs-gtk..."
         sudo apt install -y xdg-user-dirs-gtk
         if [ $? -ne 0 ]; then
-            echo "Error: Failed to install xdg-user-dirs-gtk." >&2
+            echo "[ERROR] Failed to install xdg-user-dirs-gtk." >&2
             exit 1
         fi
     else
@@ -97,7 +97,7 @@ update_xdg_dirs() {
     if [ $? -eq 0 ]; then
         echo "XDG user directories have been successfully updated."
     else
-        echo "Error: Failed to update XDG user directories." >&2
+        echo "[ERROR] Failed to update XDG user directories." >&2
         exit 1
     fi
 }

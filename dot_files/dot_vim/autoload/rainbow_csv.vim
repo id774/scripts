@@ -692,7 +692,7 @@ endfunc
 
 func! rainbow_csv#select_from_file()
     if !rainbow_csv#is_rainbow_table()
-        echoerr "Error: rainbow_csv is disabled for this buffer"
+        echoerr "[ERROR] rainbow_csv is disabled for this buffer"
         return
     endif
 
@@ -715,7 +715,7 @@ func! rainbow_csv#select_from_file()
 
     let lines = getline(1, 10)
     if !len(lines)
-        echoerr "Error: no lines in file"
+        echoerr "[ERROR] no lines in file"
         return
     endif
 
@@ -895,7 +895,7 @@ endfunction
 
 func! s:run_cmd_query(query)
     if !rainbow_csv#is_rainbow_table()
-        echomsg "Error: rainbow_csv is disabled for this buffer"
+        echomsg "[ERROR] rainbow_csv is disabled for this buffer"
         return
     endif
     let rb_script_path = s:get_rb_script_path_for_this_table()
@@ -1101,7 +1101,7 @@ endfunc
 
 func! rainbow_csv#set_header_manually(header_name)
     if !rainbow_csv#is_rainbow_table()
-        echomsg "Error: rainbow_csv is disabled for this buffer"
+        echomsg "[ERROR] rainbow_csv is disabled for this buffer"
         return
     endif
     let b:virtual_header_file = a:header_name

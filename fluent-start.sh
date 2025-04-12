@@ -53,10 +53,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -76,11 +76,11 @@ determine_fluentd_paths() {
 # Function to check if Fluentd and Fluent-Cat exist
 check_fluentd_commands() {
     if [ -z "$FLUENTD" ]; then
-        echo "Error: Fluentd not found. Please specify the path." >&2
+        echo "[ERROR] Fluentd not found. Please specify the path." >&2
         exit 1
     fi
     if [ -z "$FLUENT_CAT" ]; then
-        echo "Error: Fluent-Cat not found. Please specify the path." >&2
+        echo "[ERROR] Fluent-Cat not found. Please specify the path." >&2
         exit 1
     fi
 
@@ -97,13 +97,13 @@ determine_fluentd_config() {
 
     # Check if directory exists
     if [ ! -d "$FLUENT_CONF" ]; then
-        echo "Error: Configuration directory not found: $FLUENT_CONF" >&2
+        echo "[ERROR] Configuration directory not found: $FLUENT_CONF" >&2
         exit 1
     fi
 
     # Check if fluent.conf exists
     if [ ! -f "$FLUENT_CONF/fluent.conf" ]; then
-        echo "Error: fluent.conf not found in: $FLUENT_CONF" >&2
+        echo "[ERROR] fluent.conf not found in: $FLUENT_CONF" >&2
         exit 1
     fi
 }

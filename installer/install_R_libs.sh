@@ -45,7 +45,7 @@ usage() {
 # Function to check if R is installed
 check_R() {
     if ! command -v R >/dev/null 2>&1; then
-        echo "Error: R is not installed. Please install R and try again." >&2
+        echo "[ERROR] R is not installed. Please install R and try again." >&2
         exit 1
     fi
 }
@@ -53,7 +53,7 @@ check_R() {
 # Function to check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
-        echo "Error: SCRIPTS environment variable is not set." >&2
+        echo "[ERROR] SCRIPTS environment variable is not set." >&2
         echo "Please set the SCRIPTS variable to the directory containing the config file." >&2
         exit 1
     fi
@@ -62,7 +62,7 @@ check_scripts() {
 # Function to check if the config file exists
 check_config() {
     if [ ! -f "$SCRIPTS/etc/install_mylibs.R" ]; then
-        echo "Error: Configuration file install_mylibs.R not found in $SCRIPTS/etc/." >&2
+        echo "[ERROR] Configuration file install_mylibs.R not found in $SCRIPTS/etc/." >&2
         exit 1
     fi
 }
@@ -70,7 +70,7 @@ check_config() {
 # Function to check if the user has sudo privileges
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }

@@ -51,7 +51,7 @@ usage() {
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }
@@ -59,7 +59,7 @@ check_sudo() {
 # Check if the system supports apt-get
 check_environment() {
     if ! command -v apt-get >/dev/null 2>&1; then
-        echo "Error: apt-get is not available on this system. This script requires a Debian-based environment." >&2
+        echo "[ERROR] apt-get is not available on this system. This script requires a Debian-based environment." >&2
         exit 1
     fi
 }

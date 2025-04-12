@@ -77,7 +77,7 @@ def html_to_yaml(element):
 
 def main():
     if not libraries_installed:
-        print("Error: Required libraries not installed.")
+        print("[ERROR] Required libraries not installed.")
         sys.exit(1)
 
     if len(sys.argv) != 2:

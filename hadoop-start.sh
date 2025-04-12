@@ -47,7 +47,7 @@ usage() {
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges. Please run as a user with sudo access." >&2
+        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }
@@ -62,7 +62,7 @@ set_environment() {
 verify_hadoop_scripts() {
     for service in namenode jobtracker datanode tasktracker; do
         if [ ! -x "/etc/init.d/hadoop-${HADOOP_VER}-$service" ]; then
-            echo "Error: Hadoop service script not found or not executable: /etc/init.d/hadoop-${HADOOP_VER}-$service" >&2
+            echo "[ERROR] Hadoop service script not found or not executable: /etc/init.d/hadoop-${HADOOP_VER}-$service" >&2
             exit 1
         fi
     done

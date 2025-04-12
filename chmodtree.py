@@ -79,10 +79,10 @@ def check_sudo():
         with open(os.devnull, 'w') as devnull:
             result = subprocess.call(["sudo", "-v"], stdout=devnull, stderr=devnull)
             if result != 0:
-                print("Error: This script requires sudo privileges. Please run as a user with sudo access.", file=sys.stderr)
+                print("[ERROR] This script requires sudo privileges. Please run as a user with sudo access.", file=sys.stderr)
                 sys.exit(1)
     except Exception as e:
-        print("Error: Failed to check sudo privileges: {}".format(e), file=sys.stderr)
+        print("[ERROR] Failed to check sudo privileges: {}".format(e), file=sys.stderr)
         sys.exit(1)
 
 def setup_option_parser():
@@ -111,11 +111,11 @@ def check_command(cmd):
     cmd_path = find_command(cmd)
     if not cmd_path:
         # If the command is not found
-        print("Error: Command '{}' is not installed. Please install {} and try again.".format(cmd, cmd))
+        print("[ERROR] Command '{}' is not installed. Please install {} and try again.".format(cmd, cmd))
         sys.exit(127)
     elif not os.access(cmd_path, os.X_OK):
         # If the command is found but not executable
-        print("Error: Command '{}' is not executable. Please check the permissions.".format(cmd))
+        print("[ERROR] Command '{}' is not executable. Please check the permissions.".format(cmd))
         sys.exit(126)
 
 def os_exec(cmd):

@@ -49,10 +49,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -84,7 +84,7 @@ detect_latex_engine() {
 # Function to convert LaTeX to PDF
 convert_to_pdf() {
     if [ ! -f "$1" ]; then
-        echo "Error: File '$1' does not exist." >&2
+        echo "[ERROR] File '$1' does not exist." >&2
         exit 2
     fi
 

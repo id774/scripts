@@ -57,10 +57,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -70,7 +70,7 @@ check_commands() {
 validate_environment() {
     # Ensure TMP is defined and an argument is provided
     if [ -z "$TMP" ]; then
-        echo "Error: TMP environment variable is not set." >&2
+        echo "[ERROR] TMP environment variable is not set." >&2
         exit 1
     fi
 
@@ -85,7 +85,7 @@ create_backup() {
     # Backup the original history file
     BACKUP_FILE="$TMP/$(basename "$HISTORY_FILE").bak.$(date +%Y%m%d%H%M%S)"
     if ! cp "$HISTORY_FILE" "$BACKUP_FILE"; then
-        echo "Error: Failed to create backup file." >&2
+        echo "[ERROR] Failed to create backup file." >&2
         exit 1
     fi
     echo "Backup created: $BACKUP_FILE"
@@ -96,7 +96,7 @@ count_matches() {
     # Count number of entries matching the pattern
     MATCH_COUNT=$(grep -c "$PATTERN" "$HISTORY_FILE" 2>/dev/null)
     if [ $? -ne 0 ]; then
-        echo "Error: Failed to count matches in history file." >&2
+        echo "[ERROR] Failed to count matches in history file." >&2
         exit 1
     fi
 }
@@ -105,12 +105,12 @@ count_matches() {
 filter_history() {
     # Remove matching lines and replace the original history file
     if ! grep -v "$PATTERN" "$HISTORY_FILE" > "$HISTORY_FILE.tmp"; then
-        echo "Error: Failed to create temporary file." >&2
+        echo "[ERROR] Failed to create temporary file." >&2
         exit 1
     fi
 
     if ! mv "$HISTORY_FILE.tmp" "$HISTORY_FILE"; then
-        echo "Error: Failed to overwrite the original history file." >&2
+        echo "[ERROR] Failed to overwrite the original history file." >&2
         exit 1
     fi
 

@@ -59,10 +59,10 @@ def check_sudo():
         with open(os.devnull, 'w') as devnull:
             result = subprocess.call(["sudo", "-v"], stdout=devnull, stderr=devnull)
             if result != 0:
-                print("Error: This script requires sudo privileges. Please run as a user with sudo access.", file=sys.stderr)
+                print("[ERROR] This script requires sudo privileges. Please run as a user with sudo access.", file=sys.stderr)
                 sys.exit(1)
     except Exception as e:
-        print("Error: Failed to check sudo privileges: {}".format(e), file=sys.stderr)
+        print("[ERROR] Failed to check sudo privileges: {}".format(e), file=sys.stderr)
         sys.exit(1)
 
 class ExecOnWin:

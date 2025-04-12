@@ -50,10 +50,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -62,7 +62,7 @@ check_commands() {
 # Function to check if the user has sudo privileges
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "Error: This script requires sudo privileges." >&2
+        echo "[ERROR] This script requires sudo privileges." >&2
         exit 1
     fi
 }
@@ -84,7 +84,7 @@ setup_environment() {
 # Install Jupyter theme
 install_jupyter_theme() {
     if ! "$PIP" show jupyterthemes >/dev/null 2>&1; then
-        echo "Error: jupyterthemes is not installed. Install it manually before running this script." >&2
+        echo "[ERROR] jupyterthemes is not installed. Install it manually before running this script." >&2
         exit 1
     fi
 

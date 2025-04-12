@@ -76,7 +76,7 @@ def main():
 
     # Check if the directory exists
     if not os.path.exists(directory):
-        print("Error: Directory '{}' does not exist.".format(directory))
+        print("[ERROR] Directory '{}' does not exist.".format(directory))
         sys.exit(1)
 
     total_size = 0
@@ -92,7 +92,7 @@ def main():
 
         print("Total size:", convert_size(total_size))
     except Exception as e:
-        print("Error:", e)
+        print("[ERROR]", e)
 
 
 if __name__ == "__main__":

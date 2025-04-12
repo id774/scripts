@@ -108,7 +108,7 @@ load_configuration() {
     if [ ! -f "$CONF_FILE" ]; then
         CONF_FILE="$SCRIPT_DIR/../etc/gpx_sync.conf"
         if [ ! -f "$CONF_FILE" ]; then
-            echo "Error: Configuration file not found." >&2
+            echo "[ERROR] Configuration file not found." >&2
             exit 3
         fi
     fi
@@ -116,7 +116,7 @@ load_configuration() {
 
     # Check if necessary variables are set
     if [ -z "$TMP_DIR" ] || [ -z "$USER_GPX_DIR" ] || [ -z "$MOUNTED_DIR" ] || [ -z "$RSYNC_USER" ] || [ -z "$RSYNC_HOST" ]; then
-        echo "Error: One or more configuration variables are not set. Please check your gpx_sync.conf." >&2
+        echo "[ERROR] One or more configuration variables are not set. Please check your gpx_sync.conf." >&2
         exit 4
     fi
 }
@@ -126,10 +126,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -142,7 +142,7 @@ parse_arguments() {
 
     # Check if DEFAULT_PERMISSIONS is set in the configuration file if no permissions are provided
     if [ -z "$permissions" ]; then
-        echo "Error: DEFAULT_PERMISSIONS is not set in the configuration file and no permissions argument was provided." >&2
+        echo "[ERROR] DEFAULT_PERMISSIONS is not set in the configuration file and no permissions argument was provided." >&2
         exit 5
     fi
 
@@ -150,7 +150,7 @@ parse_arguments() {
     if echo "$permissions" | grep -E '^[0-7][0-7][0-7]$' >/dev/null 2>&1; then
         :
     else
-        echo "Error: Permissions must be a 3-digit octal number." >&2
+        echo "[ERROR] Permissions must be a 3-digit octal number." >&2
         exit 6
     fi
 }
@@ -171,7 +171,7 @@ copy_files() {
     destination="$2"
     permissions="$3"
     if [ ! -d "$destination" ]; then
-        echo "Error: Destination directory $destination does not exist." >&2
+        echo "[ERROR] Destination directory $destination does not exist." >&2
         return 2
     fi
     echo "Copying files from $source_dir to $destination"

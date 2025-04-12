@@ -63,10 +63,10 @@ check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
         if [ -z "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
         elif [ ! -x "$cmd_path" ]; then
-            echo "Error: Command '$cmd' is not executable. Please check the permissions." >&2
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -78,7 +78,7 @@ get_custom_ruby_path() {
 
     # Ensure the given path contains a valid Ruby library directory
     if [ ! -d "$BASE_DIR/lib/ruby" ]; then
-        echo "Error: Directory $BASE_DIR/lib/ruby does not exist." >&2
+        echo "[ERROR] Directory $BASE_DIR/lib/ruby does not exist." >&2
         exit 1
     fi
 
@@ -87,7 +87,7 @@ get_custom_ruby_path() {
 
     # Ensure a valid directory was found
     if [ -z "$RUBY_VERSION" ]; then
-        echo "Error: No valid Ruby version directory found under $BASE_DIR/lib/ruby/." >&2
+        echo "[ERROR] No valid Ruby version directory found under $BASE_DIR/lib/ruby/." >&2
         exit 1
     fi
 
@@ -103,7 +103,7 @@ get_homebrew_ruby_path() {
     elif [ -x "/usr/local/opt/ruby/bin/ruby" ]; then
         RUBY_BIN="/usr/local/opt/ruby/bin/ruby"
     else
-        echo "Error: Ruby is not installed via Homebrew or the expected path is incorrect." >&2
+        echo "[ERROR] Ruby is not installed via Homebrew or the expected path is incorrect." >&2
         exit 1
     fi
 
@@ -112,7 +112,7 @@ get_homebrew_ruby_path() {
 
     # Check if the directory retrieval was successful
     if [ -z "$TARGET_DIR" ]; then
-        echo "Error: Unable to retrieve the Ruby library directory." >&2
+        echo "[ERROR] Unable to retrieve the Ruby library directory." >&2
         exit 1
     fi
 }
@@ -139,7 +139,7 @@ create_ubygems() {
         echo "Contents of ubygems.rb:"
         cat "$TARGET_DIR/ubygems.rb"
     else
-        echo "Error: Failed to create ubygems.rb." >&2
+        echo "[ERROR] Failed to create ubygems.rb." >&2
         exit 1
     fi
 }
@@ -162,7 +162,7 @@ main() {
 
     # Ensure the target directory exists
     if [ ! -d "$TARGET_DIR" ]; then
-        echo "Error: Target directory $TARGET_DIR does not exist." >&2
+        echo "[ERROR] Target directory $TARGET_DIR does not exist." >&2
         exit 1
     fi
 
