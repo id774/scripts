@@ -152,9 +152,15 @@ deploy_configurations() {
 setup_cron_jobs() {
     echo "Setting up cron jobs..."
     CRON_FILE="/etc/cron.d/munin-sync"
-    sudo tee "$CRON_FILE" > /dev/null <<EOF
+
+    if ! sudo test -f "$CRON_FILE"; then
+        sudo tee "$CRON_FILE" > /dev/null <<EOF
 2-57/5 * * * * munin test -x /var/lib/munin/bin/munin-sync.sh && /var/lib/munin/bin/munin-sync.sh
 EOF
+    else
+        echo "Cron job already exists: $CRON_FILE"
+        echo "Skipping creation to preserve existing configuration."
+    fi
     sudo chmod 644 "$CRON_FILE"
     sudo chown root:root "$CRON_FILE"
 }
