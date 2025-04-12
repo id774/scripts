@@ -143,8 +143,17 @@ deploy_scripts() {
 
 # Set up cron job for running tests
 setup_cron_job() {
+    CRON_FILE="/etc/cron.d/run_tests"
     CRON_JOB="30 04 * * * root test -x /root/bin/run_tests && /root/bin/run_tests"
-    echo "$CRON_JOB" | sudo tee /etc/cron.d/run_tests > /dev/null
+
+    if ! sudo test -f "$CRON_FILE"; then
+        echo "$CRON_JOB" | sudo tee "$CRON_FILE" > /dev/null
+    else
+        echo "Cron job already exists: $CRON_FILE"
+        echo "Skipping creation to preserve existing configuration."
+    fi
+    sudo chmod 644 "$CRON_FILE"
+    sudo chown root:root "$CRON_FILE"
 }
 
 # Print post-installation instructions and next steps
