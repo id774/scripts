@@ -155,7 +155,7 @@ setup_cron_jobs() {
 
     if ! sudo test -f "$CRON_FILE"; then
         sudo tee "$CRON_FILE" > /dev/null <<EOF
-2-57/5 * * * * munin test -x /var/lib/munin/bin/munin-sync.sh && /var/lib/munin/bin/munin-sync.sh
+1-56/5 * * * * munin test -x /var/lib/munin/bin/munin-sync.sh && /var/lib/munin/bin/munin-sync.sh
 EOF
     else
         echo "[INFO] Cron job already exists: $CRON_FILE"

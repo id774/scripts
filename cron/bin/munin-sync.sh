@@ -31,7 +31,7 @@
 #
 #  Cron Usage:
 #  Add the following line to /etc/cron.d/munin-sync to execute every 5 minutes:
-#      2-57/5 * * * * munin test -x /var/lib/munin/bin/munin-sync.sh && /var/lib/munin/bin/munin-sync.sh
+#      1-56/5 * * * * munin test -x /var/lib/munin/bin/munin-sync.sh && /var/lib/munin/bin/munin-sync.sh
 #
 #  This ensures the script runs every 5 minutes starting at the 2nd minute of each 5-minute interval,
 #  reducing overlap with Munin's own cron jobs (which typically run on exact 5-minute marks).
