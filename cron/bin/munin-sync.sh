@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-04-14
+#       Skip sync_munin_data and sync_logs_to_remote if script is running on the target server.
 #  v1.1 2025-04-11
 #       Added usage() function and --help option. Added Munin directory existence check.
 #  v1.0 2025-04-07
@@ -32,19 +34,19 @@
 #      2-57/5 * * * * munin test -x /var/lib/munin/bin/munin-sync.sh && /var/lib/munin/bin/munin-sync.sh
 #
 #  This ensures the script runs every 5 minutes starting at the 2nd minute of each 5-minute interval,
-#  reducing the chance of overlapping with Munin's own cron jobs which typically run on exact multiples of 5 minutes.
+#  reducing overlap with Munin's own cron jobs (which typically run on exact 5-minute marks).
 #
 #  Features:
-#  - POSIX-compliant script structure
-#  - Full function-based structure with main() entry point
-#  - Configurable target server, user, and directory settings via variables
-#  - Efficient data transfer using rsync with delete option
-#  - Heartbeat file generation for health monitoring
-#  - Variable-based path configuration for flexibility
+#  - Configurable target server, user, and directory settings via external config file
+#  - Efficient data transfer using rsync with --delete option
+#  - Heartbeat file generation for external health monitoring
+#  - Automatically skips remote sync when executed on the target server itself
+#  - Local log directory is ensured before collecting system logs
 #
 #  Warning:
-#  - This script modifies the remote server by updating files under the specified directory.
-#  - Use with caution and ensure proper permissions are set on the target server.
+#  - This script updates files on a remote server under specified directories.
+#  - Ensure proper SSH access and permissions are configured for the target.
+#  - When run on the target server, sync operations are skipped to prevent redundant transfers.
 #
 ########################################################################
 
@@ -59,8 +61,15 @@ usage() {
     exit 0
 }
 
+# Determine if the script is running on the target server itself
+is_target_server() {
+    [ "$CURRENT_HOST" = "$TARGET_HOST" ] || echo "$SENDING" | grep -q "localhost"
+}
+
 # Load configuration from external file
 load_config() {
+    CURRENT_HOST=$(hostname -s)
+
     SCRIPT_DIR=$(dirname "$0")
     CONFIG_FILE="$SCRIPT_DIR/etc/munin-sync.conf"
 
@@ -78,7 +87,11 @@ load_config() {
 
 # Sync Munin data to remote server
 sync_munin_data() {
-    # Check if the target file exists
+    if is_target_server; then
+        #echo "[WARN] Running on target server. Skipping sync_munin_data." >&2
+        return
+    fi
+
     if [ ! -d "$MUNIN_DIR" ]; then
         echo "[ERROR] Munin directory not found: $MUNIN_DIR" >&2
         exit 1
@@ -109,6 +122,11 @@ create_heartbeat() {
 
 # Sync local logs to remote server
 sync_logs_to_remote() {
+    if is_target_server; then
+        #echo "[WARN] Running on target server. Skipping sync_logs_to_remote." >&2
+        return
+    fi
+
     rsync $RSYNC_OPTS "$LOG_DIR" "$REMOTE_DIR"
 }
 
