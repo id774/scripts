@@ -138,7 +138,7 @@ main() {
     # Run the installation process
     install_resin "$1" "$2"
 
-    echo "Resin $VERSION installed successfully."
+    echo "[INFO] Resin $VERSION installed successfully."
 }
 
 # Execute main function

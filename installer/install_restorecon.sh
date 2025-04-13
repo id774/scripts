@@ -131,7 +131,7 @@ main() {
         sudo chown root:root /etc/logrotate.d/restorecon || exit 1
     fi
 
-    echo "Restorecon cron job setup completed successfully."
+    echo "[INFO] Restorecon cron job setup completed successfully."
 }
 
 # Execute main function

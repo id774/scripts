@@ -55,7 +55,7 @@ check_system() {
 
 # Apply Finder and screenshot settings
 configure_finder_settings() {
-    echo "Applying macOS Finder and screenshot settings..."
+    echo "[INFO] Applying macOS Finder and screenshot settings..."
 
     # Disable shadow in screenshots
     defaults write com.apple.screencapture disable-shadow -boolean true
@@ -72,7 +72,7 @@ configure_finder_settings() {
     # Restart SystemUIServer to apply changes
     killall SystemUIServer
 
-    echo "macOS Finder settings applied successfully."
+    echo "[INFO] macOS Finder settings applied successfully."
 }
 
 # Main function to execute the script

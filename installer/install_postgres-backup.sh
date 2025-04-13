@@ -116,7 +116,8 @@ main() {
     setup_environment
     check_sudo
     install_script
-    echo "PostgreSQL backup setup completed successfully."
+
+    echo "[INFO] PostgreSQL backup setup completed successfully."
 }
 
 # Execute main function

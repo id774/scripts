@@ -286,22 +286,22 @@ write_config_file() {
 
     case "$ACTION" in
         --force-apply)
-            echo "Writing $path (forced)..."
+            echo "[INFO] Writing $path (forced)..."
             $writer | sudo tee "$path" > /dev/null
             return 1  # changed
             ;;
         --apply)
             if [ -e "$path" ]; then
-                echo "Skipping $path: already exists."
+                echo "[INFO] Skipping $path: already exists."
                 return 0  # skipped
             else
-                echo "Writing $path..."
+                echo "[INFO] Writing $path..."
                 $writer | sudo tee "$path" > /dev/null
                 return 1  # changed
             fi
             ;;
         *)
-            echo "Internal Error: Unsupported ACTION '$ACTION'" >&2
+            echo "[ERROR] Internal Error: Unsupported ACTION '$ACTION'" >&2
             exit 2
             ;;
     esac
@@ -311,19 +311,19 @@ write_config_file() {
 verify_sysctl_status() {
     # Verify IPv6 status
     echo ""
-    echo "### IPv6 & Security Configuration Verification ###"
+    echo "[INFO] ### IPv6 & Security Configuration Verification ###"
 
-    echo "Checking current IPv6 addresses:"
-    ip a | grep inet6 || echo "No IPv6 addresses found."
+    echo "[INFO] Checking current IPv6 addresses:"
+    ip a | grep inet6 || echo "[INFO] No IPv6 addresses found."
 
     # Display the current IPv6 address configuration.
     # This helps verify that IPv6 has been disabled successfully.
-    echo "Checking IPv6 disable status:"
+    echo "[INFO] Checking IPv6 disable status:"
     cat /proc/sys/net/ipv6/conf/all/disable_ipv6
 
     # Show current disable_ipv6 setting to confirm it is set to 1 (disabled).
     echo ""
-    echo "IPv6 and IPv4 security settings have been successfully applied."
+    echo "[INFO] IPv6 and IPv4 security settings have been successfully applied."
 }
 
 # Main function to execute the script
@@ -361,11 +361,11 @@ main() {
 
     # Apply sysctl changes
     if [ "$changed" -eq 1 ]; then
-        echo "Applying sysctl settings..."
+        echo "[INFO] Applying sysctl settings..."
         sudo sysctl --system
         verify_sysctl_status
     else
-        echo "No configuration changes detected. Skipping sysctl reload."
+        echo "[INFO] No configuration changes detected. Skipping sysctl reload."
     fi
 }
 

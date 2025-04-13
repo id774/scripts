@@ -137,7 +137,8 @@ main() {
     check_scripts
     check_sudo
     install_clamscan
-    echo "ClamAV AutoScan setup completed successfully."
+
+    echo "[INFO] ClamAV AutoScan setup completed successfully."
 }
 
 # Execute main function

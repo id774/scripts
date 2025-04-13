@@ -124,6 +124,8 @@ configure_munin_plugins() {
 
     # Restart Munin node service
     sudo systemctl restart munin-node.service
+
+    echo "[INFO] All munin plugins setup completed."
 }
 
 # Main function to execute the script

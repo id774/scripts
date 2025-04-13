@@ -90,44 +90,44 @@ check_commands() {
 # Install iptables-persistent if not already installed
 install_persistent() {
     if ! dpkg -s iptables-persistent >/dev/null 2>&1; then
-        echo "Installing iptables-persistent..."
+        echo "[INFO] Installing iptables-persistent..."
         echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
         echo iptables-persistent iptables-persistent/autosave_v6 boolean false | sudo debconf-set-selections
         sudo apt-get update
         sudo apt-get install -y iptables-persistent
     else
-        echo "iptables-persistent already installed."
+        echo "[INFO] iptables-persistent already installed."
     fi
 }
 
 # Apply template if needed
 apply_template_if_needed() {
     if [ ! -f "$RULES_PATH" ]; then
-        echo "Copying template to $RULES_PATH"
+        echo "[INFO] Copying template to $RULES_PATH"
         sudo mkdir -p "$(dirname "$RULES_PATH")"
         sudo cp "$TEMPLATE_PATH" "$RULES_PATH"
     else
-        echo "$RULES_PATH already exists, skipping copy."
+        echo "[INFO] $RULES_PATH already exists, skipping copy."
     fi
     sudo chmod 400 "$RULES_PATH"
 }
 
 # Load rules into the running kernel
 load_rules() {
-    echo "Applying rules with iptables-restore"
+    echo "[INFO] Applying rules with iptables-restore"
     sudo sh -c "iptables-restore < '$RULES_PATH'"
 }
 
 # Ensure rules are restored on boot
 enable_restore() {
-    echo "Restarting netfilter-persistent"
+    echo "[INFO] Restarting netfilter-persistent"
     sudo systemctl restart netfilter-persistent
 }
 
 # Print post-installation instructions and next steps
 final_message() {
     echo ""
-    echo "iptables setup completed successfully."
+    echo "[INFO] iptables setup completed successfully."
     echo ""
     echo "You may want to review and edit the rules file:"
     echo "  sudo vi $RULES_PATH"

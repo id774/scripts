@@ -86,9 +86,9 @@ check_commands() {
 # Check if a desktop environment is installed
 check_desktop_installed() {
     if tasksel --list-tasks | grep -q '^i.*desktop'; then
-        echo "Desktop environment detected."
+        echo "[INFO] Desktop environment detected."
     else
-        echo "No desktop environment found. Please install a desktop environment before running this script." >&2
+        echo "[ERROR] No desktop environment found. Please install a desktop environment before running this script." >&2
         exit 1
     fi
 }
@@ -106,17 +106,17 @@ disable_guest_session() {
     LIGHTDM_CONF="/etc/lightdm/lightdm.conf"
     sudo mkdir -p /etc/lightdm
     if ! grep -q "^allow-guest=false" "$LIGHTDM_CONF" 2>/dev/null; then
-        echo "Disabling guest sessions in LightDM..."
+        echo "[INFO] Disabling guest sessions in LightDM..."
         echo "allow-guest=false" | sudo tee -a "$LIGHTDM_CONF" >/dev/null
     else
-        echo "Guest sessions are already disabled in LightDM."
+        echo "[INFO] Guest sessions are already disabled in LightDM."
     fi
 }
 
 # Restart LightDM to apply changes
 restart_lightdm() {
-    echo "Restarting LightDM..."
-    sudo systemctl restart lightdm || echo "Warning: Failed to restart LightDM." >&2
+    echo "[INFO] Restarting LightDM..."
+    sudo systemctl restart lightdm || echo "[WARN] Failed to restart LightDM." >&2
 }
 
 # Main function to execute the script

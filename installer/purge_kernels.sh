@@ -68,7 +68,7 @@ check_system() {
 # Function to check if the system is Ubuntu-based
 check_ubuntu() {
     if [ ! -f /etc/lsb-release ] || [ ! -f /etc/debian_version ]; then
-        echo "This script only runs on Ubuntu or Ubuntu-based systems." >&2
+        echo "[ERROR] This script only runs on Ubuntu or Ubuntu-based systems." >&2
         exit 1
     fi
 }
@@ -104,16 +104,16 @@ get_current_kernel() {
 list_old_kernels() {
     OLDKERNELS=$(dpkg --list | awk '/^ii/ && /linux-image-[0-9]/ {print $2}' | grep -v "$CURKERNEL")
     if [ -z "$OLDKERNELS" ]; then
-        echo "No old kernels to remove."
+        echo "[INFO] No old kernels to remove."
         exit 0
     fi
 }
 
 # Function to remove old kernels safely
 remove_old_kernels() {
-    echo "Purging old kernels: $OLDKERNELS"
+    echo "[INFO] Purging old kernels: $OLDKERNELS"
     sudo apt purge -y $OLDKERNELS
-    echo "Kernel cleanup completed."
+    echo "[INFO] Kernel cleanup completed."
 }
 
 # Main function to execute the script

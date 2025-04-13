@@ -100,16 +100,16 @@ setup_environment() {
 
 # Function to install a single Ruby gem
 install_gem() {
-    echo "Installing $1..."
+    echo "[INFO] Installing $1..."
     $GEM install $PROXY "$1"
 }
 
 # Function to install the necessary Ruby gems
 install_gems() {
-    echo "Updating gem system to the latest version..."
+    echo "[INFO] Updating gem system to the latest version..."
     $GEM update --system $PROXY
 
-    echo "Installing essential Ruby gems..."
+    echo "[INFO] Installing essential Ruby gems..."
     # Define the list of gems as a multi-line string
     gems="
     rails
@@ -216,12 +216,12 @@ install_gems() {
     for gem in $gems; do
         # Remove leading and trailing spaces/tabs
         gem=$(echo "$gem" | sed 's/^[ \t]*//;s/[ \t]*$//')
-        echo "Installing $gem..."
+        echo "[INFO] Installing $gem..."
         $GEM install $PROXY "$gem"
     done
 
     # Special installation for tomz-liblinear-ruby-swig
-    echo "Installing tomz-liblinear-ruby-swig from a specific source..."
+    echo "[INFO] Installing tomz-liblinear-ruby-swig from a specific source..."
     $GEM install --source http://gems.github.com tomz-liblinear-ruby-swig $PROXY
 
     # Conditional installation for rsruby based on Linux distribution
@@ -231,7 +231,7 @@ install_gems() {
         $GEM install rsruby $PROXY -- --with-R-include=/usr/share/R/include --with-R-dir=/usr/lib/R
     fi
 
-    echo "Listing installed gems..."
+    echo "[INFO] Listing installed gems..."
     $GEM list --local
 }
 
@@ -241,10 +241,11 @@ main() {
         -h|--help) usage ;;
     esac
 
-    echo "Starting Ruby gem installation..."
+    echo "[INFO] Starting Ruby gem installation..."
     setup_environment "$1"
     install_gems
-    echo "All tasks completed successfully."
+
+    echo "[INFO] All specified packages have been successfully installed."
 }
 
 # Execute main function

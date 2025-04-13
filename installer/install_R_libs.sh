@@ -77,9 +77,9 @@ check_sudo() {
 
 # Function to install R libraries
 install_R_libs() {
-    echo "Installing R libraries..."
+    echo "[INFO] Installing R libraries..."
     sudo R --no-save --no-restore -e "source('$SCRIPTS/etc/install_mylibs.R'); install.packages(required_packages, dependencies=TRUE)"
-    echo "R library installation completed."
+    echo "[INFO] R library installation completed."
 }
 
 # Main function to execute the script

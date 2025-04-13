@@ -120,12 +120,12 @@ get_homebrew_ruby_path() {
 # Function to create ubygems.rb if it does not already exist
 create_ubygems() {
     if [ -f "$TARGET_DIR/ubygems.rb" ]; then
-        echo "Notice: ubygems.rb already exists in $TARGET_DIR. No changes were made."
+        echo "[INFO] Notice: ubygems.rb already exists in $TARGET_DIR. No changes were made."
         ls -l "$TARGET_DIR/ubygems.rb"
         cat "$TARGET_DIR/ubygems.rb"
         exit 0
     else
-        echo "Creating ubygems.rb in $TARGET_DIR as it does not exist."
+        echo "[INFO] Creating ubygems.rb in $TARGET_DIR as it does not exist."
     fi
 
     # Create ubygems.rb with a simple 'require rubygems' statement
@@ -133,10 +133,10 @@ create_ubygems() {
 
     # Verify that the file was successfully created
     if [ $? -eq 0 ]; then
-        echo "ubygems.rb was successfully created in $TARGET_DIR"
-        echo "Listing the contents of $TARGET_DIR:"
+        echo "[INFO] ubygems.rb was successfully created in $TARGET_DIR"
+        echo "[INFO] Listing the contents of $TARGET_DIR:"
         ls -l "$TARGET_DIR/ubygems.rb"
-        echo "Contents of ubygems.rb:"
+        echo "[INFO] Contents of ubygems.rb:"
         cat "$TARGET_DIR/ubygems.rb"
     else
         echo "[ERROR] Failed to create ubygems.rb." >&2

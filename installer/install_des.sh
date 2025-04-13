@@ -90,13 +90,13 @@ check_sudo() {
 
 # Configure environment settings (Linux only)
 setup_environment() {
-    echo "Setting up environment..."
+    echo "[INFO] Setting up environment..."
     check_system
 
-    echo "Checking system requirements..."
+    echo "[INFO] Checking system requirements..."
     check_commands dmsetup curl wget md5sum tar make sudo rm mkdir cp chown
 
-    echo "Checking network connectivity..."
+    echo "[INFO] Checking network connectivity..."
     check_network
 
     check_sudo
@@ -106,35 +106,35 @@ setup_environment() {
 
 # Save source files to /usr/local/src/crypt/des
 save_sources() {
-    echo "Saving source files..."
+    echo "[INFO] Saving source files..."
     if [ -d /usr/local/src/crypt/des ]; then
         sudo rm -rf /usr/local/src/crypt/des
     fi
     sudo mkdir -p /usr/local/src/crypt/des
     sudo cp * /usr/local/src/crypt/des
     sudo chown -R "$OWNER" /usr/local/src/crypt/des
-    echo "Source files saved."
+    echo "[INFO] Source files saved."
 }
 
 # Install DES encryption software
 install_des() {
-    echo "Setting up DES installation..."
+    echo "[INFO] Setting up DES installation..."
     setup_environment
 
     mkdir install_des
     cd install_des || exit 1
 
-    echo "Downloading software archive..."
+    echo "[INFO] Downloading software archive..."
     wget http://id774.net/archive/kmdes.tar.gz
 
-    echo "Verifying archive integrity..."
+    echo "[INFO] Verifying archive integrity..."
     md5sum kmdes.tar.gz
 
-    echo "Extracting files..."
+    echo "[INFO] Extracting files..."
     tar xzvf kmdes.tar.gz
 
-    echo "Removing archive..."
-    rm kmdes.tar.gz
+    echo "[INFO] Removing archive..."
+    rm -f kmdes.tar.gz
 
     cd des || exit 1
 
@@ -142,18 +142,18 @@ install_des() {
         save_sources
     fi
 
-    echo "Compiling source code..."
+    echo "[INFO] Compiling source code..."
     make
 
-    echo "Installing compiled binary..."
+    echo "[INFO] Installing compiled binary..."
     sudo make install
 
-    echo "Cleaning up installation files..."
+    echo "[INFO] Cleaning up installation files..."
     cd .. || exit 1
     rm -rf des
     cd .. || exit 1
     rm -rf install_des
-    echo "DES installation completed."
+    echo "[INFO] DES installation completed."
 }
 
 # Main function to execute the script
@@ -163,7 +163,7 @@ main() {
     esac
 
     if command -v des >/dev/null 2>&1; then
-        echo "DES is already installed."
+        echo "[WARN] DES is already installed."
     else
         install_des "$@"
     fi

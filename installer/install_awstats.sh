@@ -93,17 +93,17 @@ install_awstats() {
 
 # Configure AWStats
 configure_awstats() {
-    echo "Configuring AWStats and Apache..."
+    echo "[INFO] Configuring AWStats and Apache..."
 
     for file in /etc/awstats/awstats.conf* /etc/apache2/sites-available/custom* /etc/logrotate.d/apache2; do
         if [ ! -f "$file" ]; then
-            echo "Warning: File $file does not exist. Skipping edit."
+            echo "[WARN] File $file does not exist. Skipping edit."
         else
-            echo "Please edit $file."
+            echo "[INFO] Please edit $file."
         fi
     done
 
-    echo "Setting permissions on Apache logs..."
+    echo "[INFO] Setting permissions on Apache logs..."
     if ! sudo chmod 440 /var/log/apache2/*; then
         echo "[ERROR] Failed to set log file permissions." >&2
         exit 1
@@ -127,7 +127,7 @@ configure_awstats() {
 
 # Restart Apache and update AWStats
 restart_services() {
-    echo "Restarting Apache..."
+    echo "[INFO] Restarting Apache..."
     if command -v systemctl >/dev/null 2>&1; then
         if ! sudo systemctl restart apache2; then
             echo "[ERROR] Failed to restart Apache with systemctl." >&2
@@ -140,7 +140,7 @@ restart_services() {
         fi
     fi
 
-    echo "Updating AWStats statistics..."
+    echo "[INFO] Updating AWStats statistics..."
     if ! sudo -u www-data /usr/lib/cgi-bin/awstats.pl -config=awstats -update; then
         echo "[ERROR] Failed to update AWStats statistics." >&2
         exit 1
@@ -161,7 +161,7 @@ main() {
     configure_awstats
     restart_services
 
-    echo "AWStats installation and configuration completed successfully."
+    echo "[INFO] AWStats installation and configuration completed successfully."
 }
 
 # Execute main function

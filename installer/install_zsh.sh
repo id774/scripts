@@ -177,7 +177,7 @@ main() {
     setup_environment "$@"
     install_zsh "$VERSION" "$PREFIX" "$SUDO" "$4"
 
-    echo "Zsh $VERSION installed successfully in $PREFIX."
+    echo "[INFO] Zsh $VERSION installed successfully in $PREFIX."
 }
 
 # Execute main function

@@ -74,7 +74,7 @@ check_commands() {
 # Function to check if a desktop environment is installed
 check_desktop_installed() {
     if tasksel --list-tasks | grep -q '^i.*desktop'; then
-        echo "Desktop environment detected."
+        echo "[INFO] Desktop environment detected."
     else
         echo "[ERROR] No desktop environment found. Please install a desktop environment before running this script." >&2
         exit 1
@@ -107,7 +107,8 @@ main() {
     check_desktop_installed
     setup_dconf_keys "Switch workspace" "switch-to-workspace" "<Primary>"
     setup_dconf_keys "Move window" "move-to-workspace" "<Primary><Alt>"
-    echo "GNOME workspace keybindings successfully configured."
+
+    echo "[INFO] GNOME workspace keybindings successfully configured."
 }
 
 # Execute main function

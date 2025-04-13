@@ -115,13 +115,13 @@ setup_environment() {
 
 # Function to ask for confirmation before execution
 confirm_execution() {
-    echo "This script will configure your Debian-based system."
-    printf "Do you want to proceed? [y/N]: "
+    echo "[INFO] This script will configure your Debian-based system."
+    printf "[INFO] Do you want to proceed? [y/N]: "
     read -r response < /dev/tty
 
     case "$response" in
         y|Y) return 0 ;;
-        *) echo "Aborted by user."; exit 1 ;;
+        *) echo "[ERROR] Aborted by user."; exit 1 ;;
     esac
 }
 
@@ -152,6 +152,8 @@ main() {
     # Optional: Install desktop-related packages and customization
     #"$SCRIPTS/installer/debian_desktop_apt.sh"
     #"$SCRIPTS/installer/debian_desktop_setup.sh"
+
+    echo "[INFO] All Debian initial setup completed successfully."
 }
 
 # Execute main function

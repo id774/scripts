@@ -88,13 +88,13 @@ check_commands() {
 
 # Install Munin and dependencies
 install_munin() {
-    echo "Installing Munin and dependencies..."
+    echo "[INFO] Installing Munin and dependencies..."
     sudo apt-get -y install munin munin-node
 }
 
 # Configure Munin
 configure_munin() {
-    echo "Configuring Munin..."
+    echo "[INFO] Configuring Munin..."
     sudo cp -v "$SCRIPTS/etc/munin-apache.conf" /etc/munin/apache.conf
     sudo chown root:root /etc/munin/apache.conf
     test -f /etc/munin/apache24.conf && sudo rm -vf /etc/munin/apache24.conf && sudo ln -snf /etc/munin/apache.conf /etc/munin/apache24.conf
@@ -102,9 +102,9 @@ configure_munin() {
 
 # Configure authentication
 configure_authentication() {
-    echo "Configuring Munin authentication..."
+    echo "[INFO] Configuring Munin authentication..."
     if [ ! -r /etc/apache2/.htpasswd ]; then
-        echo "Creating new Munin admin user..."
+        echo "[INFO] Creating new Munin admin user..."
         sudo htpasswd -cb /etc/apache2/.htpasswd admin adminpassword
     fi
     sudo chown root:www-data /etc/apache2/.htpasswd
@@ -113,7 +113,7 @@ configure_authentication() {
 
 # Restart services
 restart_services() {
-    echo "Restarting services..."
+    echo "[INFO] Restarting services..."
     sudo systemctl restart rsyslog
     sudo systemctl restart munin-node
     sudo systemctl restart apache2
@@ -136,7 +136,8 @@ main() {
     configure_authentication
     restart_services
     "$SCRIPTS/installer/munin_plugins_links.sh" -c
-    echo "Munin installation and configuration completed successfully."
+
+    echo "[INFO] Munin installation and configuration completed successfully."
 }
 
 # Execute main function

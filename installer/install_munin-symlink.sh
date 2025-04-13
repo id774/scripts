@@ -83,7 +83,7 @@ check_sudo() {
 
 # Deploy the monitor script
 deploy_script() {
-    echo "Deploying script..."
+    echo "[INFO] Deploying script..."
     sudo cp "$SCRIPTS/cron/bin/munin-symlink.sh" /root/bin/munin-symlink.sh
     sudo chown root:root /root/bin/munin-symlink.sh
     sudo chmod 700 /root/bin/munin-symlink.sh
@@ -91,14 +91,14 @@ deploy_script() {
 
 # Deploy the configuration file
 deploy_configuration() {
-    echo "Deploying configuration..."
+    echo "[INFO] Deploying configuration..."
     CONFIG_FILE="/root/etc/munin-symlink.conf"
 
     if ! sudo test -f "$CONFIG_FILE"; then
         sudo cp "$SCRIPTS/cron/etc/munin-symlink.conf" "$CONFIG_FILE"
     else
-        echo "Configuration file already exists: $CONFIG_FILE"
-        echo "Skipping copy to preserve existing configuration."
+        echo "[INFO] Configuration file already exists: $CONFIG_FILE"
+        echo "[INFO] Skipping copy to preserve existing configuration."
     fi
 
     sudo chmod 600 "$CONFIG_FILE"
@@ -107,7 +107,7 @@ deploy_configuration() {
 
 # Setup cron jobs for munin-symlink
 setup_cron_job() {
-    echo "Setting up cron job..."
+    echo "[INFO] Setting up cron job..."
     CRON_FILE="/etc/cron.d/munin-symlink"
 
     if ! sudo test -f "$CRON_FILE"; then
@@ -115,8 +115,8 @@ setup_cron_job() {
 */5 * * * * root test -x /root/bin/munin-symlink.sh && /root/bin/munin-symlink.sh
 EOF
     else
-        echo "Cron job already exists: $CRON_FILE"
-        echo "Skipping creation to preserve existing configuration."
+        echo "[INFO] Cron job already exists: $CRON_FILE"
+        echo "[INFO] Skipping creation to preserve existing configuration."
     fi
     sudo chmod 644 "$CRON_FILE"
     sudo chown root:root "$CRON_FILE"
@@ -137,7 +137,7 @@ main() {
     deploy_configuration
     setup_cron_job
 
-    echo "Installation completed successfully."
+    echo "[INFO] Installation completed successfully."
 }
 
 # Execute main function

@@ -89,16 +89,15 @@ check_commands() {
 
 # Apply tune2fs settings if device is a block device
 exec_tune2fs() {
-    echo "Checking device: $1"
     if [ -b "$1" ]; then
-        echo "Applying tune2fs settings to $1"
+        echo "[INFO] Applying tune2fs settings to $1"
         sudo tune2fs -i 0 -c 0 -m 1 "$1"
     fi
 }
 
 # Apply tune2fs to standard /dev/sda partitions
 set_sda() {
-    echo "Processing /dev/sda partitions..."
+    echo "[INFO] Processing /dev/sda partitions..."
     for i in $(seq 0 9); do
         exec_tune2fs "/dev/sda$i"
     done
@@ -115,27 +114,27 @@ set_for_mapper() {
 # Configure LVM partitions for Debian
 set_lvm_debian() {
     mapper="/dev/mapper/$HOSTNAME_S"
-    echo "Configuring LVM for Debian: $mapper"
+    echo "[INFO] Configuring LVM for Debian: $mapper"
     set_for_mapper
 }
 
 # Configure LVM partitions for RHEL
 set_lvm_rhel() {
     mapper="/dev/mapper/vg_$HOSTNAME_S-lv_$HOSTNAME_S"
-    echo "Configuring LVM for RHEL: $mapper"
+    echo "[INFO] Configuring LVM for RHEL: $mapper"
     set_for_mapper
 }
 
 # Configure custom LVM layout
 set_lvm_custom() {
     mapper="/dev/mapper/lv_$HOSTNAME_S"
-    echo "Configuring custom LVM: $mapper"
+    echo "[INFO] Configuring custom LVM: $mapper"
     set_for_mapper
 }
 
 # Configure log-based volume names
 set_lvm_logvol() {
-    echo "Processing log-based LVM volumes..."
+    echo "[INFO] Processing log-based LVM volumes..."
     for i in $(seq 0 9); do
         exec_tune2fs "/dev/mapper/vg_$HOSTNAME_S-LogVol0$i"
     done
@@ -147,18 +146,18 @@ main() {
         -h|--help) usage ;;
     esac
 
-    echo "Starting tune2fs configuration..."
+    echo "[INFO] Starting tune2fs configuration..."
     check_system
     check_commands sudo tune2fs hostname
     check_sudo
     HOSTNAME_S=$(hostname -s)
-    echo "Detected hostname: $HOSTNAME_S"
+    echo "[INFO] Detected hostname: $HOSTNAME_S"
     set_sda
     set_lvm_debian
     set_lvm_rhel
     set_lvm_custom
     set_lvm_logvol
-    echo "tune2fs configuration completed."
+    echo "[INFO] tune2fs configuration completed."
 }
 
 # Execute main function

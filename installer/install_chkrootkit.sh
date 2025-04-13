@@ -117,7 +117,7 @@ main() {
     sudo chmod 644 /etc/logrotate.d/chkrootkit
     sudo chown root:root /etc/logrotate.d/chkrootkit
 
-    echo "chkrootkit setup completed successfully."
+    echo "[INFO] chkrootkit setup completed successfully."
 }
 
 # Execute main function

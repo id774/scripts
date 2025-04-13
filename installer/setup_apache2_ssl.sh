@@ -87,7 +87,7 @@ check_sudo() {
 
 # Function to deploy SSL certificate
 deploy_ssl_cert() {
-    echo "Setting up SSL certificate..."
+    echo "[INFO] Setting up SSL certificate..."
     if [ ! -d /etc/apache2/ssl ]; then
         sudo mkdir -p /etc/apache2/ssl
     fi
@@ -96,18 +96,18 @@ deploy_ssl_cert() {
 
 # Function to deploy Apache site configuration files
 deploy_site_configs() {
-    echo "Deploying site configurations..."
+    echo "[INFO] Deploying site configurations..."
     for site in custom custom-ssl; do
         sudo cp "$SCRIPTS/etc/apache/$site" /etc/apache2/sites-available/
         sudo chmod 644 /etc/apache2/sites-available/$site
         sudo chown root:root /etc/apache2/sites-available/$site
-        echo "Please edit /etc/apache2/sites-available/$site"
+        echo "[INFO] Please edit /etc/apache2/sites-available/$site"
     done
 }
 
 # Function to configure Apache2
 configure_apache() {
-    echo "Configuring Apache2..."
+    echo "[INFO] Configuring Apache2..."
     sudo a2enmod ssl
     sudo a2dissite default
     sudo a2dissite default-ssl
@@ -131,7 +131,7 @@ main() {
     deploy_site_configs
     configure_apache
 
-    echo "Apache2 SSL setup completed successfully."
+    echo "[INFO] Apache2 SSL setup completed successfully."
 }
 
 # Execute main function

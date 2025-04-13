@@ -165,7 +165,7 @@ main() {
     setup_environment "$@"
     install_ruby
 
-    echo "Ruby $VERSION installed successfully in $PREFIX."
+    echo "[INFO] Ruby $VERSION installed successfully in $PREFIX."
 }
 
 # Execute main function

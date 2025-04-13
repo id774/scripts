@@ -104,7 +104,8 @@ main() {
     check_network
     check_sudo
     install_gdm_themes
-    echo "GDM themes installation completed successfully."
+
+    echo "[INFO] GDM themes installation completed successfully."
 }
 
 # Execute main function

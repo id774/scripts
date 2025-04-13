@@ -89,23 +89,23 @@ setup_environment() {
 
     # Warn if Easy Install is not available
     if [ ! -x "$EASY_INSTALL" ]; then
-        echo "Warning: Easy Install (easy_install) is not found or not executable at $EASY_INSTALL. Skipping Easy Install steps." >&2
+        echo "[WARN] Easy Install (easy_install) is not found or not executable at $EASY_INSTALL. Skipping Easy Install steps." >&2
         EASY_INSTALL=""
     fi
 }
 
 # Function to install a single Python library using Conda
 install_lib() {
-    echo "Installing $1..."
+    echo "[INFO] Installing $1..."
     $CONDA install -y "$1"
 }
 
 # Function to install the necessary libraries using Conda
 install_libs() {
-    echo "Updating Conda base environment..."
+    echo "[INFO] Updating Conda base environment..."
     $CONDA update -n base -y conda
 
-    echo "Installing essential libraries using Conda..."
+    echo "[INFO] Installing essential libraries using Conda..."
     # Define the list of libraries as a multi-line string
     libs="
     pip
@@ -197,17 +197,17 @@ install_libs() {
     for lib in $libs; do
         # Remove leading and trailing spaces/tabs
         lib=$(echo "$lib" | sed 's/^[ \t]*//;s/[ \t]*$//')
-        echo "Installing $lib..."
+        echo "[INFO] Installing $lib..."
         $PIP install $PROXY -U "$lib"
     done
 
     # Install additional libraries using Easy Install if available
     if [ -n "$EASY_INSTALL" ]; then
-        echo "Installing additional libraries using easy_install..."
+        echo "[INFO] Installing additional libraries using easy_install..."
         $EASY_INSTALL TA-Lib
         $EASY_INSTALL nltk
     else
-        echo "Skipping Easy Install steps as Easy Install is not available."
+        echo "[INFO] Skipping Easy Install steps as Easy Install is not available."
     fi
 }
 
@@ -217,10 +217,11 @@ main() {
         -h|--help) usage ;;
     esac
 
-    echo "Starting Conda environment setup and library installation..."
+    echo "[INFO] Starting Conda environment setup and library installation..."
     setup_environment "$1"
     install_libs
-    echo "All tasks completed successfully."
+
+    echo "[INFO] All specified packages have been successfully installed."
 }
 
 # Execute main function

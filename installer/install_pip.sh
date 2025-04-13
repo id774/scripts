@@ -93,7 +93,7 @@ setup_environment() {
 
     # Warn if Easy Install is not available
     if ! command -v "$EASY_INSTALL" >/dev/null 2>&1; then
-        echo "Warning: Easy Install (easy_install) is not found in PATH. Skipping Easy Install steps." >&2
+        echo "[WARN] Easy Install (easy_install) is not found in PATH. Skipping Easy Install steps." >&2
         EASY_INSTALL=""
     fi
 
@@ -107,16 +107,16 @@ setup_environment() {
 
 # Function to install a single Python library
 install_lib() {
-    echo "Installing $1..."
+    echo "[INFO] Installing $1..."
     $PIP install $PROXY -U "$1"
 }
 
 # Function to install the necessary Python libraries using pip
 install_libs() {
-    echo "Updating pip to the latest version..."
+    echo "[INFO] Updating pip to the latest version..."
     $PIP install $PROXY -U pip
 
-    echo "Installing essential Python libraries..."
+    echo "[INFO] Installing essential Python libraries..."
     # Define the list of libraries as a multi-line string
     libs="
     IPython
@@ -199,17 +199,17 @@ install_libs() {
     for lib in $libs; do
         # Remove leading and trailing spaces/tabs
         lib=$(echo "$lib" | sed 's/^[ \t]*//;s/[ \t]*$//')
-        echo "Installing $lib..."
+        echo "[INFO] Installing $lib..."
         install_lib "$lib"
     done
 
     # Install additional libraries using Easy Install if available
     if [ -n "$EASY_INSTALL" ]; then
-        echo "Installing additional libraries using Easy Install..."
+        echo "[INFO] Installing additional libraries using Easy Install..."
         $EASY_INSTALL -U TA-Lib
         $EASY_INSTALL -U nltk
     else
-        echo "Skipping Easy Install steps as Easy Install is not available."
+        echo "[WARN] Skipping Easy Install steps as Easy Install is not available."
     fi
 }
 
@@ -219,10 +219,11 @@ main() {
         -h|--help) usage ;;
     esac
 
-    echo "Starting Python library installation..."
+    echo "[INFO] Starting Python library installation..."
     setup_environment "$1"
     install_libs
-    echo "All tasks completed successfully."
+
+    echo "[INFO] All specified packages have been successfully installed."
 }
 
 # Execute main function

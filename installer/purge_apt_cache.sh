@@ -58,7 +58,7 @@ check_system() {
 # Check if the system is Debian-based
 check_debian() {
     if [ ! -f /etc/debian_version ]; then
-        echo "This script only runs on Debian-based systems." >&2
+        echo "[ERROR] This script only runs on Debian-based systems." >&2
         exit 1
     fi
 }
@@ -95,14 +95,14 @@ perform_cleanup() {
     echo "#!/bin/sh" > "$SCRIPT_NAME"
     CONFIGS_TO_PURGE=$(aptitude search . | grep '^c' | awk '{print $2}')
     if [ -z "$CONFIGS_TO_PURGE" ]; then
-        echo "No residual config files to purge."
+        echo "[INFO] No residual config files to purge."
         exit 0
     fi
     echo "$CONFIGS_TO_PURGE" | sed 's/^/sudo apt purge -y /g' >> "$SCRIPT_NAME"
     chmod +x "$SCRIPT_NAME"
-    echo "The following packages will be purged:"
+    echo "[INFO] The following packages will be purged:"
     echo "$CONFIGS_TO_PURGE"
-    echo "Do you want to continue? (y/n): "
+    echo "[INFO] Do you want to continue? (y/n): "
     read REPLY
     if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ]; then
         "$SCRIPT_NAME"
@@ -123,6 +123,8 @@ main() {
     set_temp_file
     trap 'rm -f "$SCRIPT_NAME"' EXIT
     perform_cleanup
+
+    echo "[INFO] Cleanup completed."
 }
 
 # Execute main function

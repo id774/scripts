@@ -83,7 +83,7 @@ remove_item() {
         if sudo rm -rf "$path"; then
             echo "[INFO] Successfully removed: $path"
         else
-            echo "[WARNING] Failed to remove: $path" >&2
+            echo "[WARN] Failed to remove: $path" >&2
         fi
     else
         echo "[INFO] Skipping (not found): $path"

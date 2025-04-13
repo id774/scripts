@@ -119,8 +119,8 @@ main() {
     if ! sudo test -f "$CONFIG_FILE"; then
         sudo cp "$SCRIPTS/cron/etc/rsync_backup.conf" "$CONFIG_FILE"
     else
-        echo "Configuration file already exists: $CONFIG_FILE"
-        echo "Skipping copy to preserve existing configuration."
+        echo "[INFO] Configuration file already exists: $CONFIG_FILE"
+        echo "[INFO] Skipping copy to preserve existing configuration."
     fi
     sudo chmod 600 "$CONFIG_FILE"
     sudo chown root:root "$CONFIG_FILE"
@@ -144,7 +144,7 @@ main() {
         sudo chown root:root /etc/logrotate.d/rsync_backup
     fi
 
-    echo "Rsync backup setup completed successfully."
+    echo "[INFO] Rsync backup setup completed successfully."
 }
 
 # Execute main function

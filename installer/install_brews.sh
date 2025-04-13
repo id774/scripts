@@ -94,15 +94,15 @@ main() {
     check_homebrew
 
     # Check Homebrew environment
-    echo "Running 'brew doctor' to check the system's Homebrew environment..."
+    echo "[INFO] Running 'brew doctor' to check the system's Homebrew environment..."
     brew doctor
 
     # Update Homebrew
-    echo "Updating Homebrew packages..."
+    echo "[INFO] Updating Homebrew packages..."
     brew update
 
     # Install essential tools and libraries
-    echo "Installing essential tools and libraries using Homebrew..."
+    echo "[INFO] Installing essential tools and libraries using Homebrew..."
     brew install openssl
     brew link openssl --force
     brew install wget
@@ -119,10 +119,10 @@ main() {
     brew install binutils
 
     # Cleanup old versions and caches to free up disk space
-    echo "Cleaning up old versions and caches..."
+    echo "[INFO] Cleaning up old versions and caches..."
     brew cleanup
 
-    echo "All specified packages have been successfully installed."
+    echo "[INFO] All specified packages have been successfully installed."
 }
 
 # Execute main function

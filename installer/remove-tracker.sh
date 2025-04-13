@@ -114,12 +114,12 @@ perform_tracker_operations() {
 
 # Stop all tracker-related processes
 stop_tracker_processes() {
-    echo "Stopping all tracker-related processes..."
+    echo "[INFO] Stopping all tracker-related processes..."
     for PROCESS in tracker tracker3 tracker-miner-fs tracker-extract \
                    tracker-miner-apps tracker-miner-rss tracker-store \
                    tracker-daemon tracker-indexer; do
         if pgrep -x "$PROCESS" >/dev/null 2>&1; then
-            echo "Stopping process: $PROCESS"
+            echo "[INFO] Stopping process: $PROCESS"
             pkill -9 "$PROCESS"
         fi
     done
@@ -127,7 +127,7 @@ stop_tracker_processes() {
 
 # Disable systemd user services for tracker
 disable_tracker_services() {
-    echo "Disabling tracker services..."
+    echo "[INFO] Disabling tracker services..."
     for SERVICE in tracker.service tracker3.service tracker-miner-fs.service \
                    tracker-miner-fs-3.service tracker-miner-rss.service; do
         systemctl --user stop "$SERVICE" 2>/dev/null
@@ -138,7 +138,7 @@ disable_tracker_services() {
 
 # Reset the tracker database
 reset_tracker_database() {
-    echo "Resetting tracker database..."
+    echo "[INFO] Resetting tracker database..."
     if command -v tracker3 >/dev/null 2>&1; then
         tracker3 reset --hard
     elif command -v tracker >/dev/null 2>&1; then
@@ -148,14 +148,14 @@ reset_tracker_database() {
 
 # Purge all tracker-related packages
 purge_tracker_packages() {
-    echo "Purging tracker-related packages..."
+    echo "[INFO] Purging tracker-related packages..."
     for PACKAGE in tracker tracker3 tracker-miner-fs tracker-extract \
                    tracker-gui tracker-miners tracker-store tracker-indexer \
                    tracker-doc libtracker-control-2.0-0 libtracker-control-3-0 \
                    libtracker-miner-2.0-0 libtracker-miner-3-0 \
                    libtracker-sparql-2.0-0 libtracker-sparql-3-0; do
         if dpkg -l | grep -q "^ii  $PACKAGE "; then
-            echo "Purging package: $PACKAGE"
+            echo "[INFO] Purging package: $PACKAGE"
             sudo apt purge -y "$PACKAGE"
         fi
     done
@@ -163,7 +163,7 @@ purge_tracker_packages() {
 
 # Prevent reinstallation of tracker packages
 prevent_tracker_reinstallation() {
-    echo "Running cleanup operations..."
+    echo "[INFO] Running cleanup operations..."
     for PACKAGE in tracker tracker3 tracker-miner-fs tracker-extract \
                    tracker-gui tracker-miners tracker-store tracker-indexer \
                    tracker-doc libtracker-control-2.0-0 libtracker-control-3-0 \
@@ -205,7 +205,7 @@ main() {
         exit 1
     fi
     perform_tracker_operations
-    echo "Tracker has been completely removed and cleaned up."
+    echo "[INFO] Tracker has been completely removed and cleaned up."
 }
 
 # Execute main function

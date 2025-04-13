@@ -236,7 +236,7 @@ main() {
     setup_environment "$1"
     check_sudo
     bulk_deploy
-    test -f "$HOME/.zshrc.zwc" && rm -f "$HOME/.zshrc.zwc"
+    rm -f "$HOME/.zshrc.zwc"
     cd || exit 1
     zsh -c 'zcompile "$HOME/.zshrc"'
 
@@ -244,6 +244,8 @@ main() {
       cp "$OPTIONS" "$HOME/etc/config.local/dot_gitconfig" "$HOME/.gitconfig"
 
     test -f "$HOME/.viminfo" && sudo chown "$USER" "$HOME/.viminfo"
+
+    echo "[INFO] dot_files configuration installed successfully."
 }
 
 # Execute main function

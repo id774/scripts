@@ -133,7 +133,7 @@ main() {
     # Run the installation process
     install_autoconf "$1" "$2"
 
-    echo "Autoconf $VERSION installed successfully."
+    echo "[INFO] Autoconf $VERSION installed successfully."
 }
 
 # Execute main function

@@ -80,11 +80,12 @@ check_sudo() {
 clear_securetty() {
     if [ -f /etc/securetty ]; then
         sudo sh -c ": > /etc/securetty"
+        echo "[INFO] Setup completed."
     elif [ -d /etc/securetty ]; then
-        echo "/etc/securetty is a directory, no changes were made." >&2
+        echo "[ERROR] /etc/securetty is a directory, no changes were made." >&2
         exit 1
     else
-        echo "/etc/securetty does not exist as a file or directory." >&2
+        echo "[ERROR] /etc/securetty does not exist as a file or directory." >&2
         exit 1
     fi
 }

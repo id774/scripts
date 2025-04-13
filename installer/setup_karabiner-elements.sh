@@ -77,13 +77,13 @@ setup_karabiner() {
     # Backup existing configuration if present
     if [ -f "$DEST_CONFIG" ]; then
         BACKUP_FILE="$DEST_CONFIG.bak.$(date +%Y%m%d%H%M%S)"
-        echo "Backing up existing configuration to $BACKUP_FILE"
+        echo "[INFO] Backing up existing configuration to $BACKUP_FILE"
         mv "$DEST_CONFIG" "$BACKUP_FILE"
     fi
 
     # Copy new configuration
     cp "$SRC_CONFIG" "$DEST_CONFIG"
-    echo "Karabiner configuration successfully updated."
+    echo "[INFO] Karabiner configuration successfully updated."
 }
 
 # Main function to execute the script

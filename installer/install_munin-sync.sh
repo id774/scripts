@@ -107,7 +107,7 @@ check_munin_dir() {
 
 # Setup necessary directories
 setup_directories() {
-    echo "Setting up directories..."
+    echo "[INFO] Setting up directories..."
     sudo mkdir -p /var/lib/munin/bin
     sudo chmod 750 /var/lib/munin/bin
     sudo chown munin:munin /var/lib/munin/bin
@@ -126,7 +126,7 @@ setup_directories() {
 
 # Deploy the munin-sync script
 deploy_scripts() {
-    echo "Deploying scripts..."
+    echo "[INFO] Deploying scripts..."
     sudo cp "$SCRIPTS/cron/bin/munin-sync.sh" /var/lib/munin/bin/
     sudo chmod 750 /var/lib/munin/bin/munin-sync.sh
     sudo chown munin:munin /var/lib/munin/bin/munin-sync.sh
@@ -134,14 +134,14 @@ deploy_scripts() {
 
 # Deploy the configuration file
 deploy_configurations() {
-    echo "Deploying configurations..."
+    echo "[INFO] Deploying configurations..."
     CONFIG_FILE="/var/lib/munin/etc/munin-sync.conf"
 
     if ! sudo test -f "$CONFIG_FILE"; then
         sudo cp "$SCRIPTS/cron/etc/munin-sync.conf" "$CONFIG_FILE"
     else
-        echo "Configuration file already exists: $CONFIG_FILE"
-        echo "Skipping copy to preserve existing configuration."
+        echo "[INFO] Configuration file already exists: $CONFIG_FILE"
+        echo "[INFO] Skipping copy to preserve existing configuration."
     fi
 
     sudo chmod 640 "$CONFIG_FILE"
@@ -150,7 +150,7 @@ deploy_configurations() {
 
 # Setup cron jobs for munin-sync
 setup_cron_jobs() {
-    echo "Setting up cron jobs..."
+    echo "[INFO] Setting up cron jobs..."
     CRON_FILE="/etc/cron.d/munin-sync"
 
     if ! sudo test -f "$CRON_FILE"; then
@@ -158,8 +158,8 @@ setup_cron_jobs() {
 2-57/5 * * * * munin test -x /var/lib/munin/bin/munin-sync.sh && /var/lib/munin/bin/munin-sync.sh
 EOF
     else
-        echo "Cron job already exists: $CRON_FILE"
-        echo "Skipping creation to preserve existing configuration."
+        echo "[INFO] Cron job already exists: $CRON_FILE"
+        echo "[INFO] Skipping creation to preserve existing configuration."
     fi
     sudo chmod 644 "$CRON_FILE"
     sudo chown root:root "$CRON_FILE"
@@ -182,7 +182,7 @@ main() {
     deploy_configurations
     setup_cron_jobs
 
-    echo "Installation completed successfully."
+    echo "[INFO] Installation completed successfully."
 }
 
 # Execute main function

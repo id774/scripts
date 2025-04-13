@@ -116,7 +116,7 @@ validate_version() {
             VERSION="$1"
             ;;
         "")
-            echo "No version specified. Defaulting to 7.1a."
+            echo "[INFO] No version specified. Defaulting to 7.1a."
             VERSION="7.1a"
             ;;
         *)
@@ -128,13 +128,13 @@ validate_version() {
 
 # Configure environment settings (Linux only)
 setup_environment() {
-    echo "Setting up environment..."
+    echo "[INFO] Setting up environment..."
     check_system
 
-    echo "Checking system requirements..."
+    echo "[INFO] Checking system requirements..."
     check_commands dmsetup curl wget tar sudo rm mkdir cp chown file uname
 
-    echo "Checking network connectivity..."
+    echo "[INFO] Checking network connectivity..."
     check_network
 
     check_sudo
@@ -159,7 +159,7 @@ save_packages() {
 
 # Set proper permissions for TrueCrypt files
 set_truecrypt_permission() {
-    echo "Setting file permissions..."
+    echo "[INFO] Setting file permissions..."
     for path in /usr/local/src/crypt/truecrypt /usr/share/truecrypt \
                 /usr/local/src/crypt /usr/local/src /usr/bin/truecrypt \
                 /usr/bin/truecrypt-uninstall.sh; do
@@ -173,13 +173,13 @@ install_truecrypt() {
 
     get_architecture
     validate_version "$1"
-    echo "Installing TrueCrypt version: $VERSION for architecture: $ARCH"
+    echo "[INFO] Installing TrueCrypt version: $VERSION for architecture: $ARCH"
     mkdir install_truecrypt
     cd install_truecrypt || exit 1
 
     TAR_NAME="truecrypt-$VERSION-linux-console-$ARCH.tar.gz"
     EXEC_NAME="truecrypt-$VERSION-setup-console-$ARCH"
-    echo "Downloading $TAR_NAME..."
+    echo "[INFO] Downloading $TAR_NAME..."
     wget "http://id774.net/truecrypt/$TAR_NAME"
     tar xzvf "$TAR_NAME"
     [ -n "$2" ] || save_packages "$TAR_NAME" /usr/local/src/crypt/truecrypt
@@ -190,6 +190,8 @@ install_truecrypt() {
 
     cd .. || exit 1
     rm -rf install_truecrypt
+
+    echo "[INFO] truecrypt installed successfully."
 }
 
 # Main function to execute the script

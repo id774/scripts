@@ -83,7 +83,7 @@ check_sudo() {
 
 # Function to deploy the apt.conf file
 deploy_aptconf() {
-    echo "Deploying apt.conf..."
+    echo "[INFO] Deploying apt.conf..."
     sudo cp -v "$SCRIPTS/etc/apt.conf" /etc/apt/apt.conf
     sudo chmod 644 /etc/apt/apt.conf
     sudo chown root:root /etc/apt/apt.conf
@@ -91,7 +91,7 @@ deploy_aptconf() {
 
 # Function to allow manual editing of apt.conf
 edit_aptconf() {
-    echo "Opening apt.conf for manual editing..."
+    echo "[INFO] Opening apt.conf for manual editing..."
     echo "Please edit /etc/apt/apt.conf"
 }
 
@@ -109,7 +109,7 @@ main() {
     deploy_aptconf
     edit_aptconf
 
-    echo "APT configuration setup completed successfully."
+    echo "[INFO] APT configuration setup completed successfully."
 }
 
 # Execute main function

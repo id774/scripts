@@ -136,7 +136,8 @@ main() {
     check_network
     check_sudo
     install_cassandra "$@"
-    echo "Apache Cassandra $VERSION installed successfully."
+
+    echo "[INFO] Apache Cassandra $VERSION installed successfully."
 }
 
 # Execute main function

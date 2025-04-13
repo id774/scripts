@@ -97,7 +97,7 @@ main() {
     gsettings_settings org.gnome.desktop.media-handling automount-open false
     gsettings_settings org.gnome.desktop.media-handling autorun-never true
 
-    echo "GNOME media handling settings updated successfully."
+    echo "[INFO] GNOME media handling settings updated successfully."
 }
 
 # Execute main function

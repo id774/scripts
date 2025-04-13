@@ -142,7 +142,7 @@ main() {
     # Run the installation process
     install_paco "$1" "$2"
 
-    echo "paco $PACO_VERSION installed successfully."
+    echo "[INFO] paco $PACO_VERSION installed successfully."
 }
 
 # Execute main function

@@ -82,7 +82,7 @@ check_ipython() {
         echo "[ERROR] IPython is not installed." >&2
         exit 1
     fi
-    echo "IPython found at: $(command -v ipython)"
+    echo "[INFO] IPython found at: $(command -v ipython)"
 }
 
 # Setup environment variables based on system type
@@ -114,7 +114,7 @@ init_nbserver() {
 copy_dotipython() {
     IPYTHON_DIR="${HOME}/.ipython"
     if [ -d "$IPYTHON_DIR" ]; then
-        echo "Warning: Removing existing IPython directory: $IPYTHON_DIR" >&2
+        echo "[WARN] Removing existing IPython directory: $IPYTHON_DIR" >&2
         rm -rf "$IPYTHON_DIR"
     fi
 
@@ -143,6 +143,8 @@ main() {
     setup_environment
     copy_dotipython "$@"
     init_nbserver "$@"
+
+    echo "[INFO] dot_ipython setup completed."
 }
 
 # Execute main function

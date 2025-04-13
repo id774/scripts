@@ -62,7 +62,7 @@ check_sudo() {
 
 # Enable localization by creating .localized files
 enable_localization() {
-    echo "Enabling folder localization..."
+    echo "[INFO] Enabling folder localization..."
     for dir in "$HOME/Applications" "$HOME/Documents" "$HOME/Downloads" "$HOME/Desktop" \
                "$HOME/Public" "$HOME/Pictures" "$HOME/Music" "$HOME/Movies" "$HOME/Library"; do
         [ -d "$dir" ] && touch "$dir/.localized"
@@ -71,12 +71,12 @@ enable_localization() {
     for dir in "/Applications" "/Applications/Utilities"; do
         [ -d "$dir" ] && sudo touch "$dir/.localized"
     done
-    echo "Folder localization enabled."
+    echo "[INFO] Folder localization enabled."
 }
 
 # Disable localization by removing .localized files
 disable_localization() {
-    echo "Disabling folder localization..."
+    echo "[INFO] Disabling folder localization..."
     for dir in "$HOME/Applications" "$HOME/Documents" "$HOME/Downloads" "$HOME/Desktop" \
                "$HOME/Public" "$HOME/Pictures" "$HOME/Music" "$HOME/Movies" "$HOME/Library"; do
         [ -f "$dir/.localized" ] && rm -f "$dir/.localized"
@@ -85,7 +85,7 @@ disable_localization() {
     for dir in "/Applications" "/Applications/Utilities"; do
         [ -f "$dir/.localized" ] && sudo rm -f "$dir/.localized"
     done
-    echo "Folder localization disabled."
+    echo "[INFO] Folder localization disabled."
 }
 
 # Main function to execute the script

@@ -92,10 +92,10 @@ install_xdg_user_dirs_gtk() {
 
 # Update user directories and check for success
 update_xdg_dirs() {
-    echo "Updating XDG user directories..."
+    echo "[INFO] Updating XDG user directories..."
     LANG=C xdg-user-dirs-gtk-update
     if [ $? -eq 0 ]; then
-        echo "XDG user directories have been successfully updated."
+        echo "[INFO] XDG user directories have been successfully updated."
     else
         echo "[ERROR] Failed to update XDG user directories." >&2
         exit 1
@@ -120,7 +120,7 @@ main() {
     update_xdg_dirs
 
     # Notify the user to manually edit the configuration file if needed
-    echo "If you need to customize your directories, edit the file manually:"
+    echo "[INFO] If you need to customize your directories, edit the file manually:"
     echo "    $HOME/.config/user-dirs.dirs"
     echo "Then, log out and log back in for changes to take effect."
 }

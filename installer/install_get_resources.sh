@@ -130,7 +130,7 @@ main() {
     sudo chmod 740 /etc/cron.hourly/get_resources
     sudo chown root:adm /etc/cron.hourly/get_resources
 
-    echo "Server resource report setup completed successfully."
+    echo "[INFO] Server resource report setup completed successfully."
 }
 
 # Execute main function

@@ -138,7 +138,7 @@ main() {
     sudo chmod 740 /etc/cron.daily/fix-permissions
     sudo chown root:adm /etc/cron.daily/fix-permissions
 
-    echo "Fix-permissions script setup completed successfully."
+    echo "[INFO] Fix-permissions script setup completed successfully."
 }
 
 # Execute main function

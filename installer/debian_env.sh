@@ -151,6 +151,8 @@ main() {
     apt_upgrade
     create_admin_group
     setup_tune2fs
+
+    echo "[INFO] All Debian environment setup completed."
 }
 
 # Execute main function

@@ -131,8 +131,8 @@ deploy_scripts() {
     if ! sudo test -f "$CONFIG_FILE"; then
         sudo cp "$SCRIPTS/cron/etc/run_tests.conf" "$CONFIG_FILE"
     else
-        echo "Configuration file already exists: $CONFIG_FILE"
-        echo "Skipping copy to preserve existing configuration."
+        echo "[INFO] Configuration file already exists: $CONFIG_FILE"
+        echo "[INFO] Skipping copy to preserve existing configuration."
     fi
 
     sudo chmod 700 /root/bin/run_tests
@@ -149,8 +149,8 @@ setup_cron_job() {
     if ! sudo test -f "$CRON_FILE"; then
         echo "$CRON_JOB" | sudo tee "$CRON_FILE" > /dev/null
     else
-        echo "Cron job already exists: $CRON_FILE"
-        echo "Skipping creation to preserve existing configuration."
+        echo "[INFO] Cron job already exists: $CRON_FILE"
+        echo "[INFO] Skipping creation to preserve existing configuration."
     fi
     sudo chmod 644 "$CRON_FILE"
     sudo chown root:root "$CRON_FILE"
@@ -158,7 +158,7 @@ setup_cron_job() {
 
 # Print post-installation instructions and next steps
 final_message() {
-    echo "Installation of run_tests setup completed successfully."
+    echo "[INFO] Installation of run_tests setup completed successfully."
     echo "# Notes: Manual editing of '/root/etc/run_tests.conf' and '/etc/cron.d/run_tests' may be required"
     echo "# to finalize configurations. Please review and edit these files as necessary."
 }

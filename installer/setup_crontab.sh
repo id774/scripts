@@ -97,10 +97,10 @@ add_entry() {
     entry="$1"
     if ! extract_and_check_command "$entry"; then
         printf "%s\n" "$entry" | sudo tee -a "$CRONTAB_FILE" > /dev/null
-        echo "Added entry: $entry"
+        echo "[INFO] Added entry: $entry"
         CHANGES_MADE=1
     else
-        echo "Entry already exists based on command. No changes made."
+        echo "[INFO] Entry already exists based on command. No changes made."
     fi
 }
 
@@ -109,7 +109,7 @@ create_directories() {
     for dir in /etc/cron.weekday /etc/cron.weekend; do
         if [ ! -d "$dir" ]; then
             sudo mkdir -p "$dir"
-            echo "Created directory: $dir"
+            echo "[INFO] Created directory: $dir"
         fi
     done
 }
@@ -127,9 +127,9 @@ main() {
     add_entry "$WEEKDAY_ENTRY"
     add_entry "$WEEKEND_ENTRY"
     if [ "$CHANGES_MADE" -eq 1 ]; then
-        echo "Crontab setup completed."
+        echo "[INFO] Crontab setup completed."
     else
-        echo "No changes were made. Everything is already set up."
+        echo "[INFO] No changes were made. Everything is already set up."
     fi
 }
 

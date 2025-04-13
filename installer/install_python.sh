@@ -165,7 +165,7 @@ main() {
     setup_environment "$@"
     install_python
 
-    echo "Python $VERSION installed successfully in $PREFIX."
+    echo "[INFO] Python $VERSION installed successfully in $PREFIX."
 }
 
 # Execute main function

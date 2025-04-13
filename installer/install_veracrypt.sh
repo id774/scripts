@@ -112,13 +112,13 @@ get_architecture() {
 
 # Configure environment settings (Linux only)
 setup_environment() {
-    echo "Setting up environment..."
+    echo "[INFO] Setting up environment..."
     check_system
 
-    echo "Checking system requirements..."
+    echo "[INFO] Checking system requirements..."
     check_commands dmsetup curl wget tar sudo rm mkdir cp chown file
 
-    echo "Checking network connectivity..."
+    echo "[INFO] Checking network connectivity..."
     check_network
 
     check_sudo
@@ -158,12 +158,12 @@ install_veracrypt() {
     setup_environment
 
     get_architecture
-    echo "Installing VeraCrypt version $VERSION for architecture: $ARCH"
+    echo "[INFO] Installing VeraCrypt version $VERSION for architecture: $ARCH"
     mkdir install_veracrypt
     cd install_veracrypt || exit 1
 
     FILE_NAME="veracrypt-$VERSION-setup-console-$ARCH"
-    echo "Downloading $FILE_NAME..."
+    echo "[INFO] Downloading $FILE_NAME..."
     wget "http://id774.net/veracrypt/$FILE_NAME"
     [ -n "$1" ] || save_packages "$FILE_NAME" /usr/local/src/crypt/veracrypt
 
@@ -173,6 +173,8 @@ install_veracrypt() {
 
     cd .. || exit 1
     rm -rf install_veracrypt
+
+    echo "[INFO] veracrypt installed successfully."
 }
 
 # Main function to execute the script

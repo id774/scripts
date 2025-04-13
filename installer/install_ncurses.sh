@@ -154,7 +154,7 @@ main() {
     setup_environment "$@"
     install_ncurses
 
-    echo "ncurses $VERSION installed successfully."
+    echo "[INFO] ncurses $VERSION installed successfully."
 }
 
 # Execute main function

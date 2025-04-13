@@ -125,7 +125,7 @@ uninstall_scripts() {
     while [ $# -gt 0 ]
     do
         if [ -f "$SBIN/$1" ]; then
-            echo "Removing: $SBIN/$1"
+            echo "[INFO] Removing: $SBIN/$1"
             sudo rm -f "$SBIN/$1"
         fi
         shift
@@ -161,6 +161,8 @@ uninstall_sysadmin_scripts() {
         port-upgrade \
         port-cleanup \
         restart-sshd
+
+    echo "[INFO] Uninstallation completed."
 }
 
 # Install a script with the specified permissions and ownership
@@ -194,6 +196,7 @@ setup_debian_scripts() {
 install_sysadmin_scripts() {
     setup_scripts
     test -f /etc/debian_version && setup_debian_scripts
+    echo "[INFO] Installation completed."
 }
 
 # Main function to execute the script

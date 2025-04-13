@@ -138,7 +138,7 @@ main() {
     # Run the installation process
     install_talib "$1" "$2"
 
-    echo "TA-Lib $VERSION installed successfully."
+    echo "[INFO] TA-Lib $VERSION installed successfully."
 }
 
 # Execute main function

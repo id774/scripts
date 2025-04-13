@@ -110,7 +110,7 @@ main() {
     setup_environment "$1"
     install_dotvim "$1"
 
-    echo "dot_vim configuration installed successfully at $TARGET."
+    echo "[INFO] dot_vim configuration installed successfully at $TARGET."
 }
 
 # Execute main function

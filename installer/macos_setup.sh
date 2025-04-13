@@ -159,9 +159,9 @@ set_permissions() {
 
 # Erase history files
 erase_history() {
-    test -f "$HOME/.bash_history" && sudo rm "$HOME/.bash_history"
-    test -f "$HOME/.mysql_history" && sudo rm "$HOME/.mysql_history"
-    test -f "$HOME/.viminfo" && sudo rm "$HOME/.viminfo"
+    sudo rm -vf "$HOME/.bash_history"
+    sudo rm -vf "$HOME/.mysql_history"
+    sudo rm -vf "$HOME/.viminfo"
 }
 
 # Main function to execute the script
@@ -185,6 +185,8 @@ main() {
     folder_localization
     set_permissions
     erase_history
+
+    echo "[INFO] All macOS setup completed."
 }
 
 # Execute main function

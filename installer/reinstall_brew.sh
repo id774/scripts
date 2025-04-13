@@ -105,7 +105,7 @@ check_required_scripts() {
 
 # Reinstall Homebrew
 reinstall_homebrew() {
-    echo "Reinstalling Homebrew..."
+    echo "[INFO] Reinstalling Homebrew..."
 
     # Uninstall Homebrew non-interactively
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
@@ -122,7 +122,7 @@ reinstall_homebrew() {
     # Fix compinit issues
     "$SCRIPTS/fix_compinit.sh"
 
-    echo "Homebrew reinstallation completed successfully."
+    echo "[INFO] Homebrew reinstallation completed successfully."
 }
 
 # Main function to execute the script

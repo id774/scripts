@@ -91,9 +91,9 @@ check_commands() {
 # Check if a desktop environment is installed
 check_desktop_installed() {
     if tasksel --list-tasks | grep -q '^i.*desktop'; then
-        echo "Desktop environment detected."
+        echo "[INFO] Desktop environment detected."
     else
-        echo "No desktop environment found. Please install a desktop environment before running this script." >&2
+        echo "[ERROR] No desktop environment found. Please install a desktop environment before running this script." >&2
         exit 1
     fi
 }
@@ -176,6 +176,8 @@ main() {
     gconf_packages
     utils_packages
     optional_packages
+
+    echo "[INFO] All specified packages have been successfully installed."
 }
 
 # Execute main function

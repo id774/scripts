@@ -102,7 +102,7 @@ main() {
     setup_environment "$@"
     check_commands "$PIP" "$JUPYTER" "$JT"
     install_jupyter_theme
-    echo "Jupyter theme setup completed successfully."
+    echo "[INFO] Jupyter theme setup completed successfully."
 }
 
 # Execute main function

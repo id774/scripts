@@ -200,6 +200,8 @@ main() {
     sqlite_packages
     optional_packages
     # Further package groups can be added here as needed
+
+    echo "[INFO] All specified packages have been successfully installed."
 }
 
 # Execute main function
