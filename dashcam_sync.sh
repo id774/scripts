@@ -115,7 +115,7 @@ move_files() {
 
     # Check if there are files to move
     if [ -z "$(find "$src" -type f | head -n 1)" ]; then
-        echo "[WARN] No files to move from $src."
+        echo "[WARN] No files to move from $src." >&2
         return 0
     fi
 

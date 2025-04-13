@@ -163,7 +163,7 @@ main() {
     esac
 
     if command -v des >/dev/null 2>&1; then
-        echo "[WARN] DES is already installed."
+        echo "[INFO] DES is already installed."
     else
         install_des "$@"
     fi

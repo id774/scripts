@@ -209,7 +209,7 @@ install_libs() {
         $EASY_INSTALL -U TA-Lib
         $EASY_INSTALL -U nltk
     else
-        echo "[WARN] Skipping Easy Install steps as Easy Install is not available."
+        echo "[WARN] Skipping Easy Install steps as Easy Install is not available." >&2
     fi
 }
 

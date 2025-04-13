@@ -232,8 +232,8 @@ install_neologd() {
     rm -rf mecab-ipadic-neologd
 
     if ! git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git; then
-        echo "[WARN] Failed to clone mecab-ipadic-neologd from GitHub."
-        echo "[WARN] Skipping NEologd installation."
+        echo "[WARN] Failed to clone mecab-ipadic-neologd from GitHub." >&2
+        echo "[WARN] Skipping NEologd installation." >&2
         return 0
     fi
 

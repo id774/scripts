@@ -142,7 +142,7 @@ process_directory() {
                 create_symlink "$repo"
             fi
         else
-            echo "[WARN] Skipping non-repository: $repo"
+            echo "[WARN] Skipping non-repository: $repo" >&2
         fi
     done
 }

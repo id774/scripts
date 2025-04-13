@@ -124,7 +124,7 @@ run_python_tests() {
     fi
 
     if [ -z "$python_path" ]; then
-        echo "[WARN] Python is not installed. Skipping Python tests."
+        echo "[WARN] Python is not installed. Skipping Python tests." >&2
     else
         if [ ! -x "$python_path" ]; then
             echo "[ERROR] Specified Python path is either invalid or not executable." >&2
@@ -140,7 +140,7 @@ run_python_tests() {
             output="$("$python_path" "$file" 2>&1)"
             echo "$output"
             if ! echo "$output" | grep -qE "OK|SKIPPED|OK \(skipped=[0-9]+\)" ; then
-                echo "[WARN] Failure in Python test: $file"
+                echo "[WARN] Failure in Python test: $file" >&2
                 python_failures=$((python_failures + 1))
             fi
             extract_python_test_count "$output"
@@ -160,7 +160,7 @@ run_ruby_tests() {
     fi
 
     if [ -z "$rspec_path" ]; then
-        echo "[WARN] RSpec is not installed. Skipping Ruby tests."
+        echo "[WARN] RSpec is not installed. Skipping Ruby tests." >&2
     else
         if [ ! -x "$rspec_path" ]; then
             echo "[ERROR] Specified RSpec path is either invalid or not executable." >&2
@@ -178,7 +178,7 @@ run_ruby_tests() {
             output="$("$rspec_path" "$file" 2>&1)"
             echo "$output"
             if ! echo "$output" | grep -q "0 failures"; then
-                echo "[WARN] Failure in Ruby test: $file"
+                echo "[WARN] Failure in Ruby test: $file" >&2
                 ruby_failures=$((ruby_failures + 1))
             fi
             extract_ruby_test_count "$output"

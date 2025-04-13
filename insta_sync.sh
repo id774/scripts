@@ -153,7 +153,7 @@ check_remote_sync() {
         echo "[INFO] Remote server reachable. Syncing data..."
         sync_files "$1" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR/"
     else
-        echo "[WARN] Remote server not reachable. Skipping remote sync."
+        echo "[WARN] Remote server not reachable. Skipping remote sync." >&2
     fi
 }
 

@@ -97,7 +97,7 @@ configure_awstats() {
 
     for file in /etc/awstats/awstats.conf* /etc/apache2/sites-available/custom* /etc/logrotate.d/apache2; do
         if [ ! -f "$file" ]; then
-            echo "[WARN] File $file does not exist. Skipping edit."
+            echo "[WARN] File $file does not exist. Skipping edit." >&2
         else
             echo "[INFO] Please edit $file."
         fi
