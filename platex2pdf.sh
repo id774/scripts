@@ -103,14 +103,13 @@ main() {
         -h|--help) usage ;;
     esac
 
-    # Ensure required commands are available
-    check_commands platex uplatex dvipdfmx nkf
-
     # Check for input file argument
     if [ -z "$1" ]; then
-        echo "Usage: $0 [tex-file]"
-        exit 0
+        usage
     fi
+
+    # Ensure required commands are available
+    check_commands platex uplatex dvipdfmx nkf
 
     convert_to_pdf "$1"
 }

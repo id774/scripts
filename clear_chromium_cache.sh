@@ -56,10 +56,10 @@ clear_cache() {
 
     if [ -e "$cache_dir" ]; then
         rm -rf "$cache_dir"
-        echo "Cleared: $cache_dir"
+        echo "[INFO] Cleared: $cache_dir"
         exit 0
     else
-        echo "Not found: $cache_dir" >&2
+        echo "[ERROR] Not found: $cache_dir" >&2
         exit 1
     fi
 }

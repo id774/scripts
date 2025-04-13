@@ -82,7 +82,7 @@ process_images() {
     do
         if [ -n "$($EXIFTOOL -gps:GPSLatitude "$file")" ]; then
             $JHEAD -purejpg "$file"
-            echo "Processed: $file"
+            echo "[INFO] Processed: $file"
         fi
     done
 }

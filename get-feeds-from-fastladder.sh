@@ -85,13 +85,13 @@ main() {
     check_commands sqlite3
     check_database
 
-    echo "Retrieving feed titles..."
+    echo "[INFO] Retrieving feed titles..."
     exec_sql "SELECT title FROM feeds;"
 
-    echo "Retrieving feed count..."
+    echo "[INFO] Retrieving feed count..."
     exec_sql "SELECT COUNT(*) FROM feeds;"
 
-    echo "Feed retrieval completed."
+    echo "[INFO] Feed retrieval completed."
 }
 
 # Execute main function

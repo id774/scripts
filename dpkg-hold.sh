@@ -101,7 +101,7 @@ main() {
         show_package_status "$1"
     else
         # If no arguments are provided, display usage instructions
-        echo "usage: $0 package-name [hold|install]"
+        echo "Usage: $0 package-name [hold|install]"
     fi
 }
 

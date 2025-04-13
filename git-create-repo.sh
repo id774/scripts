@@ -145,7 +145,7 @@ create_git_repo() {
     group=$6
 
     if [ "$dry_run" = true ]; then
-        echo "Dry run: A new repository would be created at '${repo_path}'"
+        echo "[INFO] Dry run: A new repository would be created at '${repo_path}'"
         return 0
     fi
 
@@ -160,7 +160,7 @@ create_git_repo() {
         $use_sudo chown -R "${user}:${group}" "${repo_path}"
     fi
 
-    echo "Repository '${repo_name}' created at '${repo_path}'"
+    echo "[INFO] Repository '${repo_name}' created at '${repo_path}'"
 }
 
 # Delete a Git repository
@@ -170,13 +170,13 @@ delete_git_repo() {
     use_sudo=$3
 
     if [ "$dry_run" = true ]; then
-        echo "Dry run: The repository at '${repo_path}' would be deleted."
+        echo "[INFO] DRY RUN: The repository at '${repo_path}' would be deleted."
         return 0
     fi
 
     if is_git_repository "$repo_path" "$use_sudo"; then
         $use_sudo rm -rf "${repo_path}"
-        echo "Repository at '${repo_path}' has been deleted."
+        echo "[INFO] Repository at '${repo_path}' has been deleted."
     else
         echo "[ERROR] '${repo_path}' is not a Git repository." >&2
         exit 4

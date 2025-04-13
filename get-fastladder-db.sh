@@ -78,15 +78,15 @@ sync_database() {
     # Backup existing database if it exists
     if [ -f "$TARGET_DB_PATH" ]; then
         BACKUP_DB_PATH="${TARGET_DB_PATH}.bak.$(date +%Y%m%d%H%M%S)"
-        echo "Backing up existing database to $BACKUP_DB_PATH"
+        echo "[INFO] Backing up existing database to $BACKUP_DB_PATH"
         mv "$TARGET_DB_PATH" "$BACKUP_DB_PATH"
     fi
 
-    echo "Syncing Fastladder database from $USER@$HOST..."
+    echo "[INFO] Syncing Fastladder database from $USER@$HOST..."
     rsync -auvz "$USER@$HOST:~/$SOURCE_DB_PATH" "$TARGET_DB_PATH"
 
     if [ $? -eq 0 ]; then
-        echo "Fastladder database successfully retrieved."
+        echo "[INFO] Fastladder database successfully retrieved."
     else
         echo "[ERROR] Failed to retrieve the database from $USER@$HOST" >&2
         exit 1

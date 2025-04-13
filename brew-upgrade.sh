@@ -56,19 +56,19 @@ check_environment() {
 
 # Perform Homebrew maintenance tasks
 brew_maintenance() {
-    echo "Running Homebrew diagnostics..."
+    echo "[INFO] Running Homebrew diagnostics..."
     brew doctor
 
-    echo "Updating Homebrew package list..."
+    echo "[INFO] Updating Homebrew package list..."
     brew update
 
-    echo "Checking for outdated packages..."
+    echo "[INFO] Checking for outdated packages..."
     brew outdated
 
-    echo "Upgrading outdated packages..."
+    echo "[INFO] Upgrading outdated packages..."
     brew upgrade
 
-    echo "Cleaning up old versions and caches..."
+    echo "[INFO] Cleaning up old versions and caches..."
     brew cleanup
 }
 

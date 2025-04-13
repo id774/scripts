@@ -97,7 +97,7 @@ main() {
     check_database
     vacuum_database
     sync_database
-    echo "Fastladder database successfully synced to $USER@$HOST."
+    echo "[INFO] Fastladder database successfully synced to $USER@$HOST."
 }
 
 # Execute main function

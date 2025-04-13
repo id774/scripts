@@ -142,7 +142,7 @@ perform_cleanup() {
     rm -vf "$HOME"/*.swp "$HOME"/*.swo "$HOME"/*.bak "$HOME"/*.~ "$HOME"/*.old
     rm -vf "$HOME"/.*.swp "$HOME"/.*.swo "$HOME"/.*.bak "$HOME"/.*.~ "$HOME"/.*.old
 
-    echo "cltmp (20250322) done."
+    echo "[INFO] cltmp (20250322) done."
 }
 
 # Main function to execute the script

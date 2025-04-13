@@ -124,23 +124,23 @@ run_python_tests() {
     fi
 
     if [ -z "$python_path" ]; then
-        echo "Python is not installed. Skipping Python tests."
+        echo "[WARN] Python is not installed. Skipping Python tests."
     else
         if [ ! -x "$python_path" ]; then
             echo "[ERROR] Specified Python path is either invalid or not executable." >&2
             exit 1
         fi
-        echo "Python path: $python_path"
+        echo "[INFO] Python path: $python_path"
         python_version=$("$python_path" --version 2>&1)
         echo "$python_version"
 
         # Execute Python tests
         for file in test/*_test.py; do
-            echo "Running Python test: $file"
+            echo "[INFO] Running Python test: $file"
             output="$("$python_path" "$file" 2>&1)"
             echo "$output"
             if ! echo "$output" | grep -qE "OK|SKIPPED|OK \(skipped=[0-9]+\)" ; then
-                echo "Failure in Python test: $file"
+                echo "[WARN] Failure in Python test: $file"
                 python_failures=$((python_failures + 1))
             fi
             extract_python_test_count "$output"
@@ -160,13 +160,13 @@ run_ruby_tests() {
     fi
 
     if [ -z "$rspec_path" ]; then
-        echo "RSpec is not installed. Skipping Ruby tests."
+        echo "[WARN] RSpec is not installed. Skipping Ruby tests."
     else
         if [ ! -x "$rspec_path" ]; then
             echo "[ERROR] Specified RSpec path is either invalid or not executable." >&2
             exit 1
         fi
-        echo "RSpec path: $rspec_path"
+        echo "[INFO] RSpec path: $rspec_path"
         ruby_dir="$(dirname "$rspec_path")"
         ruby_command="$ruby_dir/ruby"
         ruby_version=$("$ruby_command" --version 2>&1)
@@ -174,11 +174,11 @@ run_ruby_tests() {
 
         # Execute Ruby tests
         for file in test/*_test.rb; do
-            echo "Running Ruby test: $file"
+            echo "[INFO] Running Ruby test: $file"
             output="$("$rspec_path" "$file" 2>&1)"
             echo "$output"
             if ! echo "$output" | grep -q "0 failures"; then
-                echo "Failure in Ruby test: $file"
+                echo "[WARN] Failure in Ruby test: $file"
                 ruby_failures=$((ruby_failures + 1))
             fi
             extract_ruby_test_count "$output"
@@ -192,7 +192,7 @@ run_ruby_tests() {
 
 # Function to display a summary of Ruby test results
 display_python_report() {
-    echo "All Python tests completed."
+    echo "[INFO] All Python tests completed."
     echo "  Python path: $python_path"
     echo "  $python_version"
     echo "  Total Python test scripts: $python_scripts"
@@ -202,7 +202,7 @@ display_python_report() {
 
 # Function to display a final test report
 display_ruby_report() {
-    echo "All Ruby tests completed."
+    echo "[INFO] All Ruby tests completed."
     echo "  RSpec path: $rspec_path"
     echo "  $ruby_version"
     echo "  Total Ruby test scripts: $ruby_scripts"
@@ -215,10 +215,10 @@ display_final_report() {
     # Final report
     total_failures=$((python_failures + ruby_failures))
     if [ "$total_failures" -ne 0 ]; then
-        echo "Some tests failed. Total failures: $total_failures." >&2
+        echo "[WARN] Some tests failed. Total failures: $total_failures." >&2
         exit 1
     else
-        echo "All tests passed successfully."
+        echo "[INFO] All tests passed successfully."
         echo "  Python: $python_version"
         echo "  Ruby: $ruby_version"
         echo "  Total test scripts: $total_scripts"

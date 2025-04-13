@@ -55,10 +55,10 @@ remove_from_github() {
     repo_path_github="$HOME/local/github/$repo_name"
     if [ -d "$repo_path_github" ] && is_git_repo "$repo_path_github"; then
         if [ "$DRY_RUN" = false ]; then
-            echo "Removing Git repository: $repo_path_github"
+            echo "[INFO] Removing Git repository: $repo_path_github"
             rm -rf "$repo_path_github"
         else
-            echo "[DRY RUN] Removing Git repository: $repo_path_github"
+            echo "[INFO] DRY RUN: Removing Git repository: $repo_path_github"
         fi
     fi
 }
@@ -68,10 +68,10 @@ remove_from_git() {
     repo_path_git="$HOME/local/git/$repo_name"
     if [ -d "$repo_path_git" ] && is_git_repo "$repo_path_git"; then
         if [ "$DRY_RUN" = false ]; then
-            echo "Removing Git repository: $repo_path_git"
+            echo "[INFO] Removing Git repository: $repo_path_git"
             rm -rf "$repo_path_git"
         else
-            echo "[DRY RUN] Removing Git repository: $repo_path_git"
+            echo "[INFO] DRY RUN: Removing Git repository: $repo_path_git"
         fi
     fi
 }
@@ -81,10 +81,10 @@ remove_symlink() {
     symlink_path="$HOME/$repo_name"
     if [ -L "$symlink_path" ]; then
         if [ "$DRY_RUN" = false ]; then
-            echo "Removing symlink: $symlink_path"
+            echo "[INFO] Removing symlink: $symlink_path"
             rm -f "$symlink_path"
         else
-            echo "[DRY RUN] Removing symlink: $symlink_path"
+            echo "[INFO] DRY RUN: Removing symlink: $symlink_path"
         fi
     fi
 }

@@ -10,7 +10,7 @@ v1.4.2 (Release Date: TBD)
 - Add server_alive_check.sh for server availability monitoring.
 - Add munin-symlink.sh for dynamic monitoring target management in Munin.
 - Prevent overwriting existing configuration files in multiple installer scripts to ensure safe redeployment.
-- Unify log message format by replacing 'Error:' with '[ERROR]'.
+- Standardize log level tags as [INFO], [WARN], and [ERROR] across all scripts.
 
 v1.4.1 (2025-03-28)
 -------------------

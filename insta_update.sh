@@ -213,12 +213,12 @@ update_content() {
     subdir="$1"
 
     if [ "$RESET" = true ]; then
-        echo "Resetting directory: $subdir"
+        echo "[INFO] Resetting directory: $subdir"
         subdir_basename=$(basename "$subdir")  # Extract the directory name
         old_dir="${TARGET_DIR}/${subdir_basename}_old"
 
         if [ -d "$old_dir" ]; then
-            echo "Removing existing backup directory: ${subdir_basename}_old"
+            echo "[INFO] Removing existing backup directory: ${subdir_basename}_old"
             rm -rf "$old_dir"  # Remove existing backup directory if it exists
         fi
 
@@ -226,12 +226,12 @@ update_content() {
         mkdir -p "$subdir"  # Create a new directory with the original name
     fi
 
-    echo "Running: $PYTHON_BIN $DOWNLOADER_SCRIPT in $(cd "$subdir" && pwd)"
+    echo "[INFO] Running: $PYTHON_BIN $DOWNLOADER_SCRIPT in $(cd "$subdir" && pwd)"
     cd "$subdir" || exit
     "$PYTHON_BIN" "$DOWNLOADER_SCRIPT" || exit
     cd "$TARGET_DIR" || exit
     if [ "$NO_SYNC" = false ]; then
-        echo "Synchronizing: $SYNC_SCRIPT $(basename "$subdir")"
+        echo "[INFO] Synchronizing: $SYNC_SCRIPT $(basename "$subdir")"
         "$SYNC_SCRIPT" "$(basename "$subdir")" || exit
     fi
 }

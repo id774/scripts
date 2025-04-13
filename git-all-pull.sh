@@ -99,16 +99,16 @@ pull_repo() {
 
     if [ "$HARD_MODE" = true ]; then
         if [ "$DRY_RUN" = false ]; then
-            echo "Resetting repository: $repo"
+            echo "[INFO] Resetting repository: $repo"
             git -C "$repo" clean -dxf
             git -C "$repo" reset --hard
         else
-            echo "[DRY RUN] Reset repository: $repo"
+            echo "[INFO] DRY RUN: Reset repository: $repo"
         fi
     fi
 
     if [ "$DRY_RUN" = false ]; then
-        echo "Pulling repository: $repo"
+        echo "[INFO] Pulling repository: $repo"
         git -C "$repo" pull
     else
         echo "[DRY RUN] Pull repository: $repo"
@@ -122,10 +122,10 @@ create_symlink() {
 
     if [ ! -L "$link_path" ]; then
         if [ "$DRY_RUN" = false ]; then
-            echo "Creating symlink: $link_path -> $repo"
+            echo "[INFO] Creating symlink: $link_path -> $repo"
             ln -s "$repo" "$link_path"
         else
-            echo "[DRY RUN] Create symlink: $link_path -> $repo"
+            echo "[INFO] DRY RUN: Create symlink: $link_path -> $repo"
         fi
     fi
 }
@@ -142,7 +142,7 @@ process_directory() {
                 create_symlink "$repo"
             fi
         else
-            echo "Skipping non-repository: $repo"
+            echo "[WARN] Skipping non-repository: $repo"
         fi
     done
 }

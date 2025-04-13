@@ -80,7 +80,7 @@ check_files() {
 # Function to create Anthy dictionary for ASCII Art
 create_dictionary() {
     ruby -Ku "$SCRIPTS/convert_msime2cannna.rb" < "$SCRIPTS/etc/aa.txt" > "$HOME/.anthy/private_words_default"
-    echo "Dictionary created."
+    echo "[INFO] Dictionary created."
 }
 
 # Main function to execute the script

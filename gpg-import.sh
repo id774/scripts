@@ -73,10 +73,10 @@ import_gpg_key() {
     keyserver="$1"
     pubkey="$2"
 
-    echo "Importing GPG key from $keyserver..."
+    echo "[INFO] Importing GPG key from $keyserver..."
     gpg --keyserver "$keyserver" --recv-keys "$pubkey"
 
-    echo "Exporting and adding the GPG key to APT keyring..."
+    echo "[INFO] Exporting and adding the GPG key to APT keyring..."
     sudo gpg --armor --export "$pubkey" | sudo apt-key add -
 }
 

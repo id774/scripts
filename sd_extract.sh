@@ -161,7 +161,7 @@ sync_files() {
 
     # Find files matching the pattern in the source directory and sync each file individually
     find "$source_dir" -name "$file_pattern" 2>/dev/null | while IFS= read -r file; do
-        echo "Synchronizing $file to $dest_dir..."
+        echo "[INFO] Synchronizing $file to $dest_dir..."
         rsync -avz "$file" "$dest_dir/"
         if [ $? -eq 0 ]; then
             # Set permissions for the copied file
@@ -220,19 +220,19 @@ main() {
 
     # Check if any files were copied
     if ! $files_copied; then
-        echo "No matching files found to copy." >&2
+        echo "[ERROR] No matching files found to copy." >&2
         exit 1
     fi
 
     # If there are error files, print them and exit with a non-zero status
     if [ -n "$error_files" ]; then
-        echo "The following files failed to sync:" >&2
+        echo "[ERROR] The following files failed to sync:" >&2
         for error_file in $error_files; do
             echo "$error_file" >&2
         done
         exit 7
     else
-        echo "Operation completed successfully."
+        echo "[INFO] Operation completed successfully."
     fi
 }
 

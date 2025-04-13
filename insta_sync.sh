@@ -142,7 +142,7 @@ check_dir() {
 # Function to synchronize files
 sync_files() {
     # Syncs files from source to destination directory
-    echo "Syncing files from $1 to $2..."
+    echo "[INFO] Syncing files from $1 to $2..."
     rsync -avz --delete "$1" "$2" || exit 3
 }
 
@@ -150,10 +150,10 @@ sync_files() {
 check_remote_sync() {
     # Checks remote server reachability and performs sync if possible
     if ping -c 1 "$REMOTE_HOST" >/dev/null 2>&1; then
-        echo "Remote server reachable. Syncing data..."
+        echo "[INFO] Remote server reachable. Syncing data..."
         sync_files "$1" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR/"
     else
-        echo "Warning: Remote server not reachable. Skipping remote sync."
+        echo "[WARN] Remote server not reachable. Skipping remote sync."
     fi
 }
 
@@ -195,7 +195,7 @@ main() {
     # Attempt remote sync
     check_remote_sync "$INSTA_ACCOUNT_DIR"
 
-    echo "Instagram account data sync for '$ACCOUNT_NAME' completed successfully."
+    echo "[INFO] Instagram account data sync for '$ACCOUNT_NAME' completed successfully."
 }
 
 # Execute main function

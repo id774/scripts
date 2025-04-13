@@ -66,14 +66,14 @@ command_exists() {
 restart_macos_sshd() {
     SSH_PLIST="/System/Library/LaunchDaemons/ssh.plist"
     if ! command_exists launchctl; then
-        echo "launchctl command not found. Unable to restart SSH on macOS." >&2
+        echo "[ERROR] launchctl command not found. Unable to restart SSH on macOS." >&2
         exit 1
     fi
 
     if [ -f "$SSH_PLIST" ]; then
         sudo launchctl unload -w "$SSH_PLIST" && sudo launchctl load -w "$SSH_PLIST"
     else
-        echo "SSH plist file not found: $SSH_PLIST" >&2
+        echo "[ERROR] SSH plist file not found: $SSH_PLIST" >&2
         exit 1
     fi
 }
@@ -83,7 +83,7 @@ restart_linux_sshd() {
     if command_exists systemctl; then
         sudo systemctl restart ssh.service
     else
-        echo "systemctl not found. Unable to restart SSH." >&2
+        echo "[ERROR] systemctl not found. Unable to restart SSH." >&2
         exit 1
     fi
 }

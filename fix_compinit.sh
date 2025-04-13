@@ -84,7 +84,7 @@ check_directory() {
 
 # Fix ownership and permissions for Zsh directories
 fix_permissions() {
-    echo "Fixing ownership and permissions for Zsh directories on macOS..."
+    echo "[INFO] Fixing ownership and permissions for Zsh directories on macOS..."
 
     # Check if directories exist before proceeding
     check_directory /usr/local/Homebrew/completions/zsh/
@@ -101,7 +101,7 @@ fix_permissions() {
     sudo chmod -R 755 /usr/local/share/zsh/
 
     # Verify changes
-    echo "Ownership and permissions have been updated:"
+    echo "[INFO] Ownership and permissions have been updated:"
     ls -Tld /usr/local/Homebrew/completions/zsh/
     ls -Tld /usr/local/share/zsh/
 }

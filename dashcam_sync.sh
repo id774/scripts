@@ -100,7 +100,7 @@ check_directories() {
 
 # Function to synchronize files using rsync
 sync_files() {
-    echo "Synchronizing files to $DEST_DIR..."
+    echo "[INFO] Synchronizing files to $DEST_DIR..."
     rsync -avz --delete "$SOURCE_DIR/" "$DEST_DIR/daily/"
     if [ $? -ne 0 ]; then
         echo "[ERROR] Rsync failed." >&2
@@ -115,7 +115,7 @@ move_files() {
 
     # Check if there are files to move
     if [ -z "$(find "$src" -type f | head -n 1)" ]; then
-        echo "No files to move from $src."
+        echo "[WARN] No files to move from $src."
         return 0
     fi
 
@@ -142,7 +142,7 @@ main() {
     move_files "$DEST_DIR/daily" "$DEST_DIR/$YEAR_DIR"
     move_files "$SOURCE_DIR" "$SOURCE_DIR/../$YEAR_DIR"
 
-    echo "Operation completed successfully."
+    echo "[INFO] Operation completed successfully."
 }
 
 # Execute main function

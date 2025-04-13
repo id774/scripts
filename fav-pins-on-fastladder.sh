@@ -81,13 +81,13 @@ main() {
     check_commands sqlite3
     check_db_file
 
-    echo "Deleting feeds with zero subscribers..."
+    echo "[INFO] Deleting feeds with zero subscribers..."
     exec_sql "DELETE FROM feeds WHERE subscribers_count = 0;"
 
-    echo "Extracting favorite pinned links..."
+    echo "[INFO] Extracting favorite pinned links..."
     exec_sql "SELECT 'fav ' || link FROM pins;"
 
-    echo "Deleting all pinned entries..."
+    echo "[INFO] Deleting all pinned entries..."
     exec_sql "DELETE FROM pins;"
 
     echo "Fastladder pin cleanup completed successfully."

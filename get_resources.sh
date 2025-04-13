@@ -52,7 +52,7 @@ command_exists() {
 execute_command() {
     if command_exists "$1"; then
         echo "[$@]"
-        "$@" || echo "Error executing: $@"
+        "$@" || echo "[ERROR] executing: $@"
         echo
     fi
 }

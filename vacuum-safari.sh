@@ -44,7 +44,7 @@ usage() {
 # Function to check if sqlite3 command is available
 check_sqlite3() {
     if ! command -v sqlite3 >/dev/null 2>&1; then
-        echo "sqlite3 command not found. Please install sqlite3." >&2
+        echo "[ERROR] sqlite3 command not found. Please install sqlite3." >&2
         exit 1
     fi
 }
@@ -57,12 +57,13 @@ vacuum_safari_cache() {
         if [ -w "$SAFARI_CACHE_DIR/Cache.db" ]; then
             cd "$SAFARI_CACHE_DIR"
             sqlite3 Cache.db vacuum
-            echo "Safari cache database vacuumed."
+            echo "[INFO] Safari cache database vacuumed."
         else
-            echo "Safari cache Cache.db not found or not writable." >&2
+            echo "[ERROR] Safari cache Cache.db not found or not writable." >&2
+            exit 1
         fi
     else
-        echo "Safari cache directory not found." >&2
+        echo "[ERROR] Safari cache directory not found." >&2
         exit 1
     fi
 }

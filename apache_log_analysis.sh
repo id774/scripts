@@ -85,7 +85,7 @@ load_ignore_list() {
         IGNORE_IPS=$(awk '!/^#/ && NF' "$IGNORE_FILE" | paste -sd "|" -)
     else
         IGNORE_IPS="127.0.0.1"
-        echo "Ignore file not found. Using default ignore IP: $IGNORE_IPS"
+        echo "[WARN] Ignore file not found. Using default ignore IP: $IGNORE_IPS"
     fi
 }
 

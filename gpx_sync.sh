@@ -159,7 +159,7 @@ parse_arguments() {
 check_gpx_files() {
     dir="$1"
     if ! find "$dir" -maxdepth 1 -name '*.gpx' -type f | grep -q .; then
-        echo "No GPX files found in $dir. Exiting." >&2
+        echo "[ERROR] No GPX files found in $dir. Exiting." >&2
         return 1
     fi
     return 0
@@ -174,7 +174,7 @@ copy_files() {
         echo "[ERROR] Destination directory $destination does not exist." >&2
         return 2
     fi
-    echo "Copying files from $source_dir to $destination"
+    echo "[INFO] Copying files from $source_dir to $destination"
     find "$source_dir" -maxdepth 1 -name '*.gpx' -type f -exec chmod "$permissions" {} \; -exec cp {} "$destination" \;
 }
 
@@ -183,14 +183,14 @@ sync_files() {
     source="$1"
     destination_user="$2"
     destination_host="$3"
-    echo "rsync -avz --delete $source $destination_user@$destination_host:~/gpx/"
+    echo "[INFO] rsync -avz --delete $source $destination_user@$destination_host:~/gpx/"
     rsync -avz --delete "$source" "$destination_user@$destination_host:~/gpx/" || return $?
 }
 
 # Function to remove files
 remove_files() {
     for file in "$@"; do
-        echo "Removing file: $file"
+        echo "[INFO] Removing file: $file"
         rm -v "$file" || return $?
     done
 }
@@ -213,7 +213,7 @@ main() {
     sync_files "$HOME/$USER_GPX_DIR" "$RSYNC_USER" "$RSYNC_HOST" || exit $?
     remove_files "$TMP_DIR"/*.gpx || exit $?
 
-    echo "All operations completed successfully."
+    echo "[INFO] All operations completed successfully."
 }
 
 # Execute main function

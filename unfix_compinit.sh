@@ -82,7 +82,7 @@ check_directory() {
 
 # Adjust ownership and permissions for Homebrew directories
 adjust_homebrew_permissions() {
-    echo "Setting ownership and permissions for Homebrew directories on macOS..."
+    echo "[INFO] Setting ownership and permissions for Homebrew directories on macOS..."
 
     # Get the current user and their primary group
     current_user=$(whoami)
@@ -105,7 +105,7 @@ adjust_homebrew_permissions() {
     chmod u+w /usr/local/share/zsh/site-functions
 
     # Verify changes
-    echo "Ownership and permissions have been updated for Homebrew:"
+    echo "[INFO] Ownership and permissions have been updated for Homebrew:"
     ls -Tld /usr/local/Homebrew
     ls -Tld /usr/local/share/zsh/
     ls -Tld /usr/local/share/zsh/site-functions

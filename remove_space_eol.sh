@@ -61,13 +61,13 @@ process_file() {
 
     if mv "$file" "$file.tmp"; then
         if sed -e 's/[[:blank:]]*$//' "$file.tmp" > "$file"; then
-            echo "Removed trailing whitespace from '$file'"
+            echo "[INFO] Removed trailing whitespace from '$file'"
         else
-            echo "Error processing '$file'" >&2
+            echo "[ERROR] Error processing '$file'" >&2
         fi
         rm "$file.tmp"
     else
-        echo "Error moving '$file' to temporary file" >&2
+        echo "[ERROR] Error moving '$file' to temporary file" >&2
     fi
 }
 
