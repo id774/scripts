@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-04-14
+#       Improve argument parsing to only accept explicit 'install' or 'uninstall'.
 #  v1.5 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.4 2025-03-05
@@ -209,9 +211,13 @@ main() {
     check_commands sudo cp chmod chown rm uname
     check_sudo
     setup_environment "$@"
-    test -n "$1" && uninstall_sysadmin_scripts
-    test -n "$1" || install_sysadmin_scripts
-    test "$1" = "install" && install_sysadmin_scripts
+    if [ "$1" = "uninstall" ]; then
+        uninstall_sysadmin_scripts
+    elif [ "$1" = "install" ]; then
+        install_sysadmin_scripts
+    else
+        usage
+    fi
 }
 
 # Execute main function
