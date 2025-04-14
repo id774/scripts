@@ -18,6 +18,7 @@
 #  Version History:
 #  v2.4 2025-04-11
 #       Prevent overwriting existing rsync_backup.conf during deployment.
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v2.3 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v2.2 2025-03-14

@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.1 2023-12-06
 #       Added option to exclude special symbols and improved argument handling.
 #  v1.0 2013-01-07

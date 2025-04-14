@@ -14,6 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  20250413 - Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  20250322 - Unify usage information by extracting help text from header comments.
 #  20250317 - Encapsulated all logic in functions and introduced main function.
 #  20250313 - Redirected error messages to stderr for better logging and debugging.
@@ -142,7 +143,7 @@ perform_cleanup() {
     rm -vf "$HOME"/*.swp "$HOME"/*.swo "$HOME"/*.bak "$HOME"/*.~ "$HOME"/*.old
     rm -vf "$HOME"/.*.swp "$HOME"/.*.swo "$HOME"/.*.bak "$HOME"/.*.~ "$HOME"/.*.old
 
-    echo "[INFO] cltmp (20250322) done."
+    echo "[INFO] cltmp (20250413) done."
 }
 
 # Main function to execute the script

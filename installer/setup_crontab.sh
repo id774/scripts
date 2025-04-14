@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.2 2025-04-05
 #       Adjusted cron.weekend to only run on Saturdays.
 #  v1.1 2025-03-22

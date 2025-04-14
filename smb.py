@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.1 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
 #  v1.0 2024-01-06

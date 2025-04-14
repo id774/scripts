@@ -15,6 +15,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.4  2025-04-13 - Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v2.3  2025-03-19 - Improved code readability by standardizing function indentation.
 #                     Encapsulated script logic in a `main` function for better structure.
 #                     Ensured proper preservation of return codes by storing `$?` in a

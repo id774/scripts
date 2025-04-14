@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v2.0 2025-04-05
 #       Changed cron job setup from /etc/cron.weekly to /etc/cron.weekend for ClamAV scans.
 #  v1.9 2025-03-22

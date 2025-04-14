@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.3 2025-03-27
 #       Added explicit 'brew cleanup' step to remove old versions and caches.
 #  v1.2 2025-03-22

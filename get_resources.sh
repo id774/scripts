@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.4 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.3 2025-03-17

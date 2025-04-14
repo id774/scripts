@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.2 2025-03-26
 #       Add setup logic for munin-plugins repository and install process_monitoring plugin.
 #  v1.1 2025-03-22

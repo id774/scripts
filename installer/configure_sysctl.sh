@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.6 2025-03-25
 #       Modified --apply to create config only if it doesn't exist.
 #       Added --force-apply to always overwrite config files.

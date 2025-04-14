@@ -23,6 +23,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.1 2025-04-10
 #       Externalized configuration to munin-symlink.conf and added dynamic server list.
 #  v1.0 2025-04-08

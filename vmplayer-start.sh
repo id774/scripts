@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.5 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v0.4 2025-03-25
 #       Rename start-vmplayer.sh to vmplayer-start.sh.
 #       Refactor main function to perform system and command checks.

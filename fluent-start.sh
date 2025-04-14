@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.8 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v0.7 2025-03-25
 #       Add config directory and file existence checks to determine_fluentd_config.
 #  v0.6 2025-03-22

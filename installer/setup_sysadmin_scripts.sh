@@ -16,6 +16,7 @@
 #  Version History:
 #  v1.6 2025-04-14
 #       Improve argument parsing to only accept explicit 'install' or 'uninstall'.
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.5 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.4 2025-03-05
