@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
 #  v1.2 2024-02-10
 #       Refactored for better testability. Added function decomposition and extensive comments for maintenance.
 #  v1.1 2023-12-08
@@ -64,7 +66,7 @@ if __name__ == '__main__':
         try:
             send_magic_packet(sys.argv[1])
         except Exception as e:
-            print("[ERROR] {}".format(e))
+            print("[ERROR] {}".format(e), file=sys.stderr)
             print_exc()
     else:
         print("[ERROR] This program requires at least 1 argument (MAC address).", file=sys.stderr)

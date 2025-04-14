@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.4 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
 #  v2.3 2024-01-28
 #       Replaced shutil.which with a custom which function to ensure compatibility
 #       with Python versions prior to 3.3.

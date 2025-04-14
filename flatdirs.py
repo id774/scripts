@@ -20,6 +20,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.0 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
 #  v1.9 2024-12-15
 #       Added confirmation prompt for `-x` option to prevent unintended execution.
 #  v1.8 2024-03-22

@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
 #  v1.3 2024-01-16
 #      Added error handling for non-existent or non-directory paths.
 #      Added option to include or exclude hidden directories in the report.

@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
 #  v1.1 2025-02-17
 #       Replaced f-strings with format() method for compatibility with older Python versions.
 #       Enhanced code comments for better readability and maintainability.

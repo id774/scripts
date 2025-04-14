@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
 #  v1.1 2023-11-29
 #       Updated to pass arguments to system's 'cal' command if provided.
 #  v1.0 2023-11-25

@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v4.4 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
 #  v4.3 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
 #  v4.2 2024-01-26

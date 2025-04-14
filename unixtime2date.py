@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
 #  v1.2 2023-12-11
 #       Modified output format to ISO 8601 in local timezone.
 #  v1.1 2023-12-06

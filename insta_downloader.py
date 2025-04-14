@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.6 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
 #  v2.5 2024-11-03
 #       Added --sleep command-line argument to allow customizable sleep time between downloads.
 #       Set default sleep time to 10 seconds to reduce request rate.

@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
 #  v1.4 2023-12-25
 #       Added error handling for non-existent log files.
 #       Added log format validation and refactored file opening logic.
