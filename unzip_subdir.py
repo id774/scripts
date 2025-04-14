@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-04-14
+#       Fixed SyntaxWarning by converting regex string to raw format in re.sub().
 #  v1.2 2023-12-08
 #       Removed f-strings for compatibility with Python versions below 3.6.
 #  v1.1 2023-12-06
