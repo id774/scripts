@@ -63,7 +63,7 @@ def error_message(message, exit_code=1):
     Print an error message and exit the program with the specified exit code.
     This function is used for error handling across the script.
     """
-    print("[ERROR] " + message)
+    print("[ERROR] " + message, file=sys.stderr)
     sys.exit(exit_code)
 
 def check_directory(directory):
@@ -109,7 +109,7 @@ def run_custom_du(maxdepth, directory, include_hidden):
     result = subprocess.check_output(find_command).decode('utf-8')
     print(result)
     total_size = parse_du_output(result, directory)
-    print("Total: " + total_size)
+    print("[INFO] Total: " + total_size)
 
 def main():
     """
@@ -120,12 +120,12 @@ def main():
     """
     # Check if the script is running on macOS
     if platform.system() != 'Darwin':
-        print("[ERROR] This script is intended for use on macOS only.")
+        print("[ERROR] This script is intended for use on macOS only.", file=sys.stderr)
         sys.exit(1)
 
     # Check if the required commands 'find' and 'du' exist
     if not is_command_exist('find') or not is_command_exist('du'):
-        print("[ERROR] Required commands 'find' or 'du' are not available.")
+        print("[ERROR] Required commands 'find' or 'du' are not available.", file=sys.stderr)
         sys.exit(2)
 
     parser = argparse.ArgumentParser(

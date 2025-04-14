@@ -55,7 +55,7 @@ def send_magic_packet(addr):
     """Main function to format MAC address, create and send magic packet."""
     mac = format_mac_address(addr)
     packet = create_magic_packet(mac)
-    print('Sending magic packet to 255.255.255.255:{} with {}'.format(DEFAULT_PORT, addr))
+    print('[INFO] Sending magic packet to 255.255.255.255:{} with {}'.format(DEFAULT_PORT, addr))
     send_udp_broadcast(packet)
 
 
@@ -67,4 +67,4 @@ if __name__ == '__main__':
             print("[ERROR] {}".format(e))
             print_exc()
     else:
-        print("This program requires at least 1 argument (MAC address).")
+        print("[ERROR] This program requires at least 1 argument (MAC address).", file=sys.stderr)

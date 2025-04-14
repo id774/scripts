@@ -59,7 +59,7 @@ class TestChmodTree(unittest.TestCase):
         """ Test check_command with a command that does not exist. """
         mock_find_command.return_value = None
         chmodtree.check_command('nonexistent')
-        mock_print.assert_called_with("[ERROR] Command 'nonexistent' is not installed. Please install nonexistent and try again.")
+        mock_print.assert_called_with("[ERROR] Command 'nonexistent' is not installed. Please install nonexistent and try again.", file=sys.stderr)
         mock_exit.assert_called_with(127)
 
     @patch('chmodtree.os.access')
@@ -71,7 +71,7 @@ class TestChmodTree(unittest.TestCase):
         mock_find_command.return_value = '/usr/bin/nonexecutable'
         mock_access.return_value = False
         chmodtree.check_command('nonexecutable')
-        mock_print.assert_called_with("[ERROR] Command 'nonexecutable' is not executable. Please check the permissions.")
+        mock_print.assert_called_with("[ERROR] Command 'nonexecutable' is not executable. Please check the permissions.", file=sys.stderr)
         mock_exit.assert_called_with(126)
 
     @patch('chmodtree.os_exec')

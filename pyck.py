@@ -88,11 +88,11 @@ def check_command(cmd):
     cmd_path = find_command(cmd)
     if not cmd_path:
         # If the command is not found
-        print("[ERROR] Command '{}' is not installed. Please install {} and try again.".format(cmd, cmd))
+        print("[ERROR] Command '{}' is not installed. Please install {} and try again.".format(cmd, cmd), file=sys.stderr)
         sys.exit(127)
     elif not os.access(cmd_path, os.X_OK):
         # If the command is found but not executable
-        print("[ERROR] Command '{}' is not executable. Please check the permissions.".format(cmd))
+        print("[ERROR] Command '{}' is not executable. Please check the permissions.".format(cmd), file=sys.stderr)
         sys.exit(126)
 
 def format_imports(file_path):
@@ -127,7 +127,7 @@ def execute_formatting(paths, ignore_errors):
             format_file(actual_path, ignore_errors)
         else:
             print("[ERROR] The specified path '{}' is neither a file nor a directory.".format(
-                actual_path))
+                actual_path), file=sys.stderr)
 
 def format_file(file_path, ignore_errors):
     """ Format a single Python file by cleaning up imports, and applying 'autopep8' and 'isort'. """

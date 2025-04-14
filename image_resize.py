@@ -59,7 +59,7 @@ def read_dir(size, src, out):
             fullname = os.path.join(root, filename)
             if is_image_file(fullname):
                 outpath = os.path.join(out, filename)
-                print("Resize: {0}".format(filename))
+                print("[INFO] Resize: {0}".format(filename))
                 resize_file(size, fullname, outpath)
 
 def parse_args():
@@ -74,7 +74,7 @@ def parse_args():
 def main():
     """Main function to execute the script."""
     if not libraries_installed:
-        print("[ERROR] Required libraries not installed.")
+        print("[ERROR] Required libraries not installed.", file=sys.stderr)
         sys.exit(1)
 
     args = parse_args()

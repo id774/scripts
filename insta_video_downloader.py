@@ -51,7 +51,7 @@ class InstagramVideoDownloader:
 
     def __init__(self, username, permissions=0o640, sleep_time=10):
         if not INSTALOADER_AVAILABLE:
-            print("Instaloader is not available. Functionality will be limited.")
+            print("[ERROR] Instaloader is not available. Functionality will be limited.", file=sys.stderr)
             sys.exit(1)
 
         self.username = username
@@ -62,7 +62,7 @@ class InstagramVideoDownloader:
         try:
             self.profile = instaloader.Profile.from_username(self.loader.context, username)
         except instaloader.exceptions.ConnectionException as e:
-            print("Failed to get profile: {}".format(e))
+            print("[ERROR] Failed to get profile: {}".format(e), file=sys.stderr)
             sys.exit(1)
 
     def download(self):
@@ -74,10 +74,10 @@ class InstagramVideoDownloader:
         total_videos = len(video_posts)
 
         if total_videos == 0:
-            print("No videos found for {}. Exiting.".format(self.username))
+            print("[WARN] No videos found for {}. Exiting.".format(self.username))
             return
 
-        print("This account {} has {} video posts to download.".format(self.username, total_videos))
+        print("[INFO] This account {} has {} video posts to download.".format(self.username, total_videos))
         existing_files = {filename for filename in os.listdir('.') if filename.endswith('.mp4')}
 
         for index, (url, _, post_id, video_index) in enumerate(video_posts, start=1):
@@ -86,15 +86,15 @@ class InstagramVideoDownloader:
             if filename in existing_files:
                 continue
 
-            print("Downloading {}... ({}/{})".format(filename, index, total_videos))
+            print("[INFO] Downloading {}... ({}/{})".format(filename, index, total_videos))
 
             try:
                 self._download_and_save_video(url, filename)
             except HTTPError as e:
-                print("HTTP error occurred: {}".format(e))
+                print("[ERROR] HTTP error occurred: {}".format(e), file=sys.stderr)
                 sys.exit(1)
 
-        print("Download completed.")
+        print("[INFO] Download completed.")
 
     def _get_instagram_video_urls(self):
         """

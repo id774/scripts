@@ -43,13 +43,13 @@ from optparse import OptionParser
 def unzip_files(args, dry_run=False):
     for root, dirs, files in os.walk(args[0]):
         for f in files:
-            d = re.sub("\.zip\Z", "", os.path.basename(f))
+            d = re.sub(r"\.zip\Z", "", os.path.basename(f))
             target_dir = os.path.join(root, d)
             if os.path.exists(target_dir):
                 continue
 
             if dry_run:
-                print("Dry run: Would unzip {} into {}".format(f, target_dir))
+                print("[INFO] DRY RUN: Would unzip {} into {}".format(f, target_dir))
             else:
                 os.mkdir(target_dir)
                 os.chdir(target_dir)

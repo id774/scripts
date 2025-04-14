@@ -130,7 +130,7 @@ def main():
 
     # Check if the target directory exists
     if not os.path.isdir(target_dir):
-        print("[ERROR] Directory '{}' does not exist.".format(target_dir))
+        print("[ERROR] Directory '{}' does not exist.".format(target_dir), file=sys.stderr)
         sys.exit(1)
 
     print("*** Searching for Python 3.x compatibility issues in Python files...")
@@ -157,11 +157,11 @@ def main():
 
     # Check if the set of unique issues contains only 'dummy.py'
     if not detected_issues:
-        print("No Python 3.x compatibility issues found.")
+        print("[INFO] No Python 3.x compatibility issues found.")
     elif unique_issues == {'dummy.py'}:
-        print("Only dummy.py was detected with Python 3.x features, which is expected. No compatibility issues found in other scripts.")
+        print("[INFO] Only dummy.py was detected with Python 3.x features, which is expected. No compatibility issues found in other scripts.")
     else:
-        print("Compatibility issues detected in scripts other than dummy.py. Please review the findings.")
+        print("[WARN] Compatibility issues detected in scripts other than dummy.py. Please review the findings.", file=sys.stderr)
         sys.exit(1)  # Exit with a status code of 1 to indicate an error.
 
 

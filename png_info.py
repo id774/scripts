@@ -69,9 +69,9 @@ def read_png_info(png_file_path):
         return width, height, bit_depth, color_type_name
 
 def print_help():
-    print("Usage: python png_info.py <file_pattern>")
-    print("Example: python png_info.py *.png")
-    print("Reads width, height, bit depth, and color type information from PNG files.")
+    print("[INFO] Usage: python png_info.py <file_pattern>")
+    print("[INFO] Example: python png_info.py *.png")
+    print("[INFO] Reads width, height, bit depth, and color type information from PNG files.")
 
 
 if __name__ == "__main__":
@@ -84,11 +84,11 @@ if __name__ == "__main__":
                 try:
                     width, height, bit_depth, color_type_name = read_png_info(
                         filename)
-                    print("File: {}".format(filename))
+                    print("[INFO] File: {}".format(filename))
                     print("Width:        {:4d}".format(width))
                     print("Height:       {:4d}".format(height))
                     print("Bit Depth:    {:4d}".format(bit_depth))
                     print("Color Type:   {}".format(color_type_name))
                     print("")
                 except Exception as e:
-                    print("Error processing {}: {}".format(filename, e))
+                    print("[ERROR] Error processing {}: {}".format(filename, e), file=sys.stderr)

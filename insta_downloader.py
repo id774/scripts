@@ -68,7 +68,7 @@ class InstagramPhotoDownloader:
     def __init__(self, username, permissions=0o640, sleep_time=10):
         """Initialize with username, permissions, and custom sleep time."""
         if not INSTALOADER_AVAILABLE:
-            print("Instaloader is not available. Functionality will be limited.")
+            print("[ERROR] Instaloader is not available. Functionality will be limited.", file=sys.stderr)
             sys.exit(1)
         self.username = username
         self.permissions = permissions  # Store permissions
@@ -79,7 +79,7 @@ class InstagramPhotoDownloader:
         try:
             self.profile = instaloader.Profile.from_username(self.loader.context, username)
         except instaloader.exceptions.ConnectionException as e:
-            print("Failed to get profile: {}".format(e))
+            print("Failed to get profile: {}".format(e), file=sys.stderr)
             sys.exit(1)
 
     def download(self):
@@ -87,17 +87,17 @@ class InstagramPhotoDownloader:
         try:
             urls_post_ids = self._get_instagram_photo_urls()
         except instaloader.exceptions.ConnectionException as e:
-            print("Failed to get posts: {}".format(e))
+            print("Failed to get posts: {}".format(e), file=sys.stderr)
             sys.exit(1)
 
         total_images = len(urls_post_ids)
         estimated_download_time = 1  # Approximate time in seconds for each download (without sleep)
         processing_time_per_image = max(1, estimated_download_time + self.sleep_time)  # Ensure at least 1 second per image
 
-        print('This account {} has {} image posts to download.'.format(self.username, total_images))
+        print('[INFO] This account {} has {} image posts to download.'.format(self.username, total_images))
         # Estimate and print the total processing time in minutes with updated calculation
         total_estimated_time_minutes = math.ceil((total_images * processing_time_per_image) / 60)
-        print('Estimated processing time is about {} minutes.'.format(total_estimated_time_minutes))
+        print('[INFO] Estimated processing time is about {} minutes.'.format(total_estimated_time_minutes))
 
         # Create a set of existing filenames to avoid re-downloading images
         existing_files = {filename for filename in os.listdir('.') if filename.endswith('.jpg')}
@@ -116,21 +116,21 @@ class InstagramPhotoDownloader:
             estimated_minutes_left = math.ceil((remaining_images * processing_time_per_image) / 60)
 
             # Print the download status with the remaining number of images and approximate time left
-            print("Downloading {}... ({} of {} remaining, approx. {} minutes left)".format(
+            print("[INFO] Downloading {}... ({} of {} remaining, approx. {} minutes left)".format(
                 filename, remaining_images, total_images, estimated_minutes_left))
 
             try:
                 self._download_and_save_image(url, filename)
             except HTTPError as e:
                 if e.code == 401:
-                    print("HTTP 401 Unauthorized Error. Exiting.")
+                    print("HTTP 401 Unauthorized Error. Exiting.", file=sys.stderr)
                     sys.exit(1)
                 else:
-                    print("HTTP error occurred: {}".format(e))
+                    print("HTTP error occurred: {}".format(e), file=sys.stderr)
                     sys.exit(1)
 
         # Print a message upon completing all downloads
-        print("Download completed.")
+        print("[INFO] Download completed.")
 
     def _get_instagram_photo_urls(self):
         """Fetches and returns URLs and metadata for all posts in the specified account, sorted chronologically."""

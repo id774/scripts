@@ -144,7 +144,7 @@ def parse_datetime(args, use_localtime=False):
             else:
                 return parsed_datetime.replace(tzinfo=timezone.utc)
         except ValueError:
-            print("[ERROR] The datetime '{}' does not match the required format.".format(datetime_str))
+            print("[ERROR] The datetime '{}' does not match the required format.".format(datetime_str), file=sys.stderr)
             sys.exit(2)
 
 def check_directory_exists(path):
@@ -152,7 +152,7 @@ def check_directory_exists(path):
     Checks if the specified directory exists. Exits with error if it does not.
     """
     if not os.path.exists(path):
-        print("[ERROR] The specified path '{}' does not exist.".format(path))
+        print("[ERROR] The specified path '{}' does not exist.".format(path), file=sys.stderr)
         sys.exit(1)
 
 def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, filenames_only, fullpath_only, use_localtime=False):
@@ -197,7 +197,7 @@ def main():
     """
     # Ensure the script is run with Python 3.3 or later
     if sys.version_info < (3, 3):
-        print("[ERROR] This script requires Python 3.3 or later.")
+        print("[ERROR] This script requires Python 3.3 or later.", file=sys.stderr)
         sys.exit(3)
 
     args = parse_arguments()

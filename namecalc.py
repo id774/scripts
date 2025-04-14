@@ -89,9 +89,9 @@ def main():
     if len(sys.argv) > 1:
         NameCalc.calc("".join(sys.argv[1:]))
     else:
-        print("Usage: {} [string1 string2 ...]".format(sys.argv[0]))
-        print("Example: {} 111 153 111 115".format(sys.argv[0]))
-        sys.exit(1)
+        print("[INFO] Usage: {} [string1 string2 ...]".format(sys.argv[0]))
+        print("[INFO] Example: {} 111 153 111 115".format(sys.argv[0]))
+        sys.exit(0)
 
 
 if __name__ == "__main__":

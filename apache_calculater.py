@@ -149,13 +149,13 @@ class ApacheCalculater(object):
 
 def main():
     if len(sys.argv) != 2:
-        print("Usage: apache_calculater.py log_file_name")
-        sys.exit(1)
+        print("[INFO] Usage: apache_calculater.py log_file_name")
+        sys.exit(0)
 
     log_file = sys.argv[1]
 
     if not os.path.exists(log_file):
-        print("[ERROR] Log file does not exist - {0}".format(log_file))
+        print("[ERROR] Log file does not exist - {0}".format(log_file), file=sys.stderr)
         sys.exit(2)
 
     # Check for valid log format
@@ -163,13 +163,13 @@ def main():
         for line in contents:
             if not ApacheCalculater.isValidLogFormat(line):
                 print(
-                    "[ERROR] Invalid log format detected in file - {0}".format(log_file))
+                    "[ERROR] Invalid log format detected in file - {0}".format(log_file), file=sys.stderr)
                 sys.exit(3)
             break  # Check only the first line for format
 
     # Calculate and display the results
-    print("IP Hits:", ApacheCalculater.calculateApacheIpHits(log_file))
-    print("Client Cache Percentage:",
+    print("[INFO] IP Hits:", ApacheCalculater.calculateApacheIpHits(log_file))
+    print("[INFO] Client Cache Percentage:",
           ApacheCalculater.clientCachePercentage(log_file))
 
 

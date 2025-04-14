@@ -77,12 +77,12 @@ def html_to_yaml(element):
 
 def main():
     if not libraries_installed:
-        print("[ERROR] Required libraries not installed.")
+        print("[ERROR] Required libraries not installed.", file=sys.stderr)
         sys.exit(1)
 
     if len(sys.argv) != 2:
-        print("Usage: python html2yaml.py URL_OR_PATH")
-        sys.exit(1)
+        print("[INFO] Usage: python html2yaml.py URL_OR_PATH")
+        sys.exit(0)
 
     source = sys.argv[1]
 
@@ -97,7 +97,7 @@ def main():
         yaml_data = html_to_yaml(html)
         print(yaml.dump(yaml_data))
     except Exception as e:
-        print("Error processing HTML: {}".format(e))
+        print("[ERROR] Error processing HTML: {}".format(e), file=sys.stderr)
         sys.exit(2)
 
 

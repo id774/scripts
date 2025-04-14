@@ -75,7 +75,7 @@ def print_checksum(include_subdir, reversed_format, quiet_mode, paths):
     script_name = os.path.basename(sys.argv[0])
     for path in paths:
         if not os.path.exists(path):
-            print("{0}: {1}: No such file or directory".format(script_name, path))
+            print("[ERROR] {0}: {1}: No such file or directory".format(script_name, path), file=sys.stderr)
             continue
         if include_subdir and S_ISDIR(os.stat(path)[ST_MODE]):
             for root, dirs, files in os.walk(path):

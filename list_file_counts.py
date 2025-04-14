@@ -25,6 +25,7 @@
 ########################################################################
 
 import os
+import sys
 
 
 def get_subdirectories(base_dir):
@@ -32,14 +33,14 @@ def get_subdirectories(base_dir):
     try:
         return [d for d in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, d))]
     except OSError as e:
-        raise ValueError("Error accessing directory '{}': {}".format(base_dir, e))
+        raise ValueError("[ERROR] Error accessing directory '{}': {}".format(base_dir, e))
 
 def count_files_in_directory(directory):
     """Return the number of files in a directory."""
     try:
         return len([f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
     except OSError as e:
-        raise ValueError("Error accessing directory '{}': {}".format(directory, e))
+        raise ValueError("[ERROR] Error accessing directory '{}': {}".format(directory, e))
 
 def count_files_in_subdirectories(base_dir):
     """Count the number of files in each subdirectory of a base directory."""
@@ -51,7 +52,7 @@ def count_files_in_subdirectories(base_dir):
         try:
             file_counts[subdir] = count_files_in_directory(subdir_path)
         except ValueError as e:
-            print(e)
+            print(e, file=sys.stderr)
             continue
 
     return file_counts
@@ -62,7 +63,7 @@ def sort_file_counts(file_counts):
 
 def print_file_counts(base_dir, sorted_counts):
     """Print file counts for each subdirectory."""
-    print("File counts in subdirectories of '{}':".format(base_dir))
+    print("[INFO] File counts in subdirectories of '{}':".format(base_dir))
     for subdir, count in sorted_counts:
         print("{:30}: {}".format(subdir, count))
 
@@ -86,11 +87,11 @@ Example:
     base_dir = args[1]
 
     if not os.path.exists(base_dir):
-        print("The directory '{}' does not exist.".format(base_dir))
+        print("[ERROR] The directory '{}' does not exist.".format(base_dir), file=sys.stderr)
         return 1
 
     if not os.path.isdir(base_dir):
-        print("'{}' is not a directory.".format(base_dir))
+        print("[ERROR] '{}' is not a directory.".format(base_dir), file=sys.stderr)
         return 1
 
     file_counts = count_files_in_subdirectories(base_dir)

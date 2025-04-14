@@ -45,10 +45,10 @@ def main(args):
         try:
             print(unixtime2date(int(args[1])))
         except ValueError:
-            print("Invalid timestamp. Please enter a valid Unix timestamp.")
+            print("[ERROR] Invalid timestamp. Please enter a valid Unix timestamp.")
     else:
-        print("Usage: unixtime2date.py <unix_timestamp>")
-        print("Example: unixtime2date.py 1609459200")
+        print("[INFO] Usage: unixtime2date.py <unix_timestamp>")
+        print("[INFO] Example: unixtime2date.py 1609459200")
 
 
 if __name__ == '__main__':

@@ -63,6 +63,7 @@
 
 import os
 import shutil
+import sys
 from optparse import OptionParser
 
 
@@ -90,7 +91,7 @@ def print_action(action, source, destination=None, options=None):
         action_message += " -> {}".format(destination)
 
     if options and not options.execute_mode:
-        print("[DRY RUN] {}".format(action_message))
+        print("[INFO] DRY RUN: {}".format(action_message))
     else:
         print(action_message)
 
@@ -110,7 +111,7 @@ def handle_directory(path, options):
                     if options.execute_mode:
                         os.rmdir(old_path)
                     if not options.quiet_mode:
-                        print_action("Deleted empty directory", old_path, options=options)
+                        print_action("[INFO] Deleted empty directory", old_path, options=options)
             except FileNotFoundError:
                 pass
         else:
@@ -122,31 +123,31 @@ def handle_directory(path, options):
                 if options.execute_mode:
                     os.rename(old_path, new_path)
                 if not options.quiet_mode:
-                    print_action("Renamed", old_path, new_path, options)
+                    print_action("[INFO] Renamed", old_path, new_path, options)
             elif options.copy_mode or (not options.move_mode and not options.copy_mode):
                 if options.execute_mode:
                     shutil.copy(old_path, new_filename)
                 if not options.quiet_mode:
-                    print_action("Copied", old_path, new_filename, options)
+                    print_action("[INFO] Copied", old_path, new_filename, options)
             elif options.move_mode:
                 if options.execute_mode:
                     shutil.move(old_path, new_filename)
                 if not options.quiet_mode:
-                    print_action("Moved", old_path, new_filename, options)
+                    print_action("[INFO] Moved", old_path, new_filename, options)
 
     try:
         if options.delete_mode and not os.listdir(path):
             if options.execute_mode:
                 os.rmdir(path)
             if not options.quiet_mode:
-                print_action("Deleted empty directory", path, options=options)
+                print_action("[INFO] Deleted empty directory", path, options=options)
     except FileNotFoundError:
         pass
 
 def confirm_execution():
     """Prompt the user to confirm execution when the -x option is used."""
     current_dir = os.getcwd()
-    print("Current directory: {}".format(current_dir))
+    print("[INFO] Current directory: {}".format(current_dir))
     confirmation = input("Are you sure you want to execute operations in this directory? (yes/no): ").strip().lower()
     return confirmation in ('yes', 'y')
 
@@ -154,8 +155,8 @@ def main(options):
     """Main function to process directories. Check if any options are set; if not, display help."""
     if options.execute_mode:
         if not confirm_execution():
-            print("Execution cancelled.")
-            exit(0)
+            print("[ERROR] Execution cancelled.", file=sys.stderr)
+            exit(1)
 
     # Check if any option is set. If not, display help and exit.
     if not any(vars(options).values()):

@@ -197,20 +197,20 @@ def process_mounting(options, args):
 
     if options.tc_compat:
         if not is_veracrypt_installed():
-            print("[ERROR] VeraCrypt is not installed, but '-t' option was specified. Please use TrueCrypt or install VeraCrypt and try again.")
+            print("[ERROR] VeraCrypt is not installed, but '-t' option was specified. Please use TrueCrypt or install VeraCrypt and try again.", file=sys.stderr)
             sys.exit(13)
         encryption_tool = "veracrypt -tc"
         unmount_cmd = "veracrypt"
     elif options.veracrypt:
         if not is_veracrypt_installed():
-            print("[ERROR] VeraCrypt is not installed, but '-v' option was specified. Please use TrueCrypt or install VeraCrypt and try again.")
+            print("[ERROR] VeraCrypt is not installed, but '-v' option was specified. Please use TrueCrypt or install VeraCrypt and try again.", file=sys.stderr)
             sys.exit(12)
         encryption_tool = "veracrypt"
         unmount_cmd = "veracrypt"
     else:
         if not is_truecrypt_installed():
             print(
-                "[ERROR] TrueCrypt is not installed. Please use VeraCrypt or install TrueCrypt and try again.")
+                "[ERROR] TrueCrypt is not installed. Please use VeraCrypt or install TrueCrypt and try again.", file=sys.stderr)
             sys.exit(11)
         encryption_tool = "truecrypt"
         unmount_cmd = "truecrypt"
@@ -235,7 +235,7 @@ def main():
         versions.append(get_veracrypt_version())
 
     if not versions:
-        print("[ERROR] Neither TrueCrypt nor VeraCrypt is installed. Please install one of them and try again.")
+        print("[ERROR] Neither TrueCrypt nor VeraCrypt is installed. Please install one of them and try again.", file=sys.stderr)
         sys.exit(1)
 
     version_message = "tcmount.py {} - This script operates with {}.".format(
