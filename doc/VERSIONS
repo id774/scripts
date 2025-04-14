@@ -7,10 +7,12 @@ v1.4.2 (Release Date: TBD)
 - Ensure idempotency of crontab setups, maintaining consistent behavior regardless of the scheduled day or time.
 - Transition ClamAV cron setup from /etc/cron.weekly to /etc/cron.weekend.
 - Add munin-sync.sh for synchronizing Munin data and logs to remote server.
-- Add server_alive_check.sh for server availability monitoring.
 - Add munin-symlink.sh for dynamic monitoring target management in Munin.
+- Add server_alive_check.sh for server availability monitoring.
 - Prevent overwriting existing configuration files in multiple installer scripts to ensure safe redeployment.
+- Fix SyntaxWarning in unzip_subdir.py by using raw string for regex in re.sub.
 - Standardize log level tags as [INFO], [WARN], and [ERROR] across all scripts.
+- Redirect error messages to stderr across scripts for improved log handling and automation support.
 
 v1.4.1 (2025-03-28)
 -------------------
