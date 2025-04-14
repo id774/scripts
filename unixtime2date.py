@@ -47,7 +47,8 @@ def main(args):
         try:
             print(unixtime2date(int(args[1])))
         except ValueError:
-            print("[ERROR] Invalid timestamp. Please enter a valid Unix timestamp.")
+            print("[ERROR] Invalid timestamp. Please enter a valid Unix timestamp.", file=sys.stderr)
+            sys.exit(1)
     else:
         print("[INFO] Usage: unixtime2date.py <unix_timestamp>")
         print("[INFO] Example: unixtime2date.py 1609459200")
