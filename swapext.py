@@ -6,8 +6,7 @@
 #  Description:
 #  This script changes the file extensions within a specified directory.
 #  It walks through the directory, renaming files from one extension to another.
-#  This is useful for batch processing file extensions in a directory.
-#  Added the '-q' option for quiet mode, which disables logging output.
+#  It now includes dry-run capability and safety confirmation before execution.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -15,6 +14,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.0 2025-04-15
+#       Replaced sys.argv parsing with OptionParser.
+#       Added -x option to enable execution (default is dry-run).
+#       Added confirmation prompt before executing changes.
 #  v1.3 2024-01-11
 #       Added '-q' option for quiet mode.
 #  v1.2 2024-01-10
@@ -22,73 +25,87 @@
 #  v1.1 2014-08-14
 #       Minor formatting revisions for readability and consistency.
 #  v1.0 2011-04-19
-#       Initial release. Basic functionality for swapping file extensions in a directory tree.
+#       Initial release.
 #
 #  Usage:
-#  Run the script with the directory and extensions:
-#      python swapext.py dir before_extension after_extension [-q]
-#
-#  Example:
-#      python swapext.py ./images jpg png -q
-#  This will change all '.jpg' files to '.png' within the './images' directory
-#  without producing any output messages.
+#  python swapext.py <dir> <before_ext> <after_ext> [-x] [-q]
+#  Options:
+#    -x    Execute mode (default is dry-run)
+#    -q    Quiet mode (suppress output)
 #
 ########################################################################
 
-import logging
 import os
 import sys
+from optparse import OptionParser
 
 
-def setup_logger(quiet_mode):
-    if quiet_mode:
-        logging.basicConfig(level=logging.CRITICAL)
-    else:
-        logging.basicConfig(level=logging.INFO,
-                            format='%(levelname)s: %(message)s')
+def validate_args(args):
+    if len(args) != 3:
+        parser.error("Invalid number of arguments")
 
-def validate_args(dir, before_ext, after_ext):
-    if not os.path.isdir(dir):
-        logging.error("Specified directory does not exist: %s", dir)
+    target_dir, before_ext, after_ext = args
+
+    if not os.path.isdir(target_dir):
+        print("[ERROR] Specified directory does not exist: {}".format(target_dir), file=sys.stderr)
         sys.exit(1)
 
     if not before_ext.startswith('.') or not after_ext.startswith('.'):
-        logging.error("Extensions must start with a '.'")
+        print("[ERROR] Extensions must start with a '.'", file=sys.stderr)
         sys.exit(1)
 
-def rename_file(old_path, new_path, quiet_mode):
-    try:
-        os.rename(old_path, new_path)
-        if not quiet_mode:
-            logging.info("Renamed: %s -> %s", old_path, new_path)
-    except OSError as e:
-        if not quiet_mode:
-            logging.error("Error renaming %s to %s: %s", old_path, new_path, e)
+    return target_dir, before_ext, after_ext
 
-def swap_extensions(dir, before_ext, after_ext, quiet_mode):
-    if not after_ext.startswith('.'):
-        after_ext = '.' + after_ext
+def confirm_execution(target_dir):
+    print("[INFO] Target directory: {}".format(os.path.abspath(target_dir)))
+    confirmation = input("Are you sure you want to execute the rename operations in this directory? (yes/no): ").strip().lower()
+    if confirmation not in ('yes', 'y'):
+        print("[ERROR] Execution cancelled.", file=sys.stderr)
+        sys.exit(1)
 
-    for path, subdirs, files in os.walk(dir):
+def rename_file(old_path, new_path, dry_run, quiet_mode):
+    if not quiet_mode:
+        msg = "Renamed: {} -> {}".format(old_path, new_path)
+        if dry_run:
+            print("[INFO] DRY RUN: " + msg)
+        else:
+            print("[INFO] " + msg)
+
+    if not dry_run:
+        try:
+            os.rename(old_path, new_path)
+        except OSError as e:
+            print("[ERROR] Error renaming {} to {}: {}".format(old_path, new_path, e), file=sys.stderr)
+            sys.exit(1)
+
+def swap_extensions(target_dir, before_ext, after_ext, dry_run, quiet_mode):
+    for path, _, files in os.walk(target_dir):
         for oldfile in files:
             if oldfile.endswith(before_ext):
                 base_name = os.path.splitext(oldfile)[0]
                 newfile = base_name + after_ext
-                rename_file(os.path.join(path, oldfile),
-                            os.path.join(path, newfile),
-                            quiet_mode)
+                old_path = os.path.join(path, oldfile)
+                new_path = os.path.join(path, newfile)
+                rename_file(old_path, new_path, dry_run, quiet_mode)
 
 def main():
-    quiet_mode = '-q' in sys.argv
-    if len(sys.argv) < 4 or (quiet_mode and len(sys.argv) != 5):
-        logging.error(
-            "Usage: swapext.py <dir> <before_extension> <after_extension> [-q]")
-        sys.exit(1)
+    usage = "usage: %prog <dir> <before_ext> <after_ext> [-x] [-q]"
+    parser = OptionParser(usage=usage)
+    parser.add_option("-x", action="store_true", dest="execute_mode", default=False,
+                      help="execute rename operations (default is dry-run)")
+    parser.add_option("-q", action="store_true", dest="quiet_mode", default=False,
+                      help="suppress output")
+    (options, args) = parser.parse_args()
 
-    dir, before_ext, after_ext = sys.argv[1], sys.argv[2], sys.argv[3]
-    setup_logger(quiet_mode)
-    validate_args(dir, before_ext, after_ext)
-    swap_extensions(dir, before_ext, after_ext, quiet_mode)
+    if len(args) != 3:
+        parser.error("Invalid number of arguments")
+
+    target_dir, before_ext, after_ext = validate_args(args)
+
+    if options.execute_mode:
+        confirm_execution(target_dir)
+
+    swap_extensions(target_dir, before_ext, after_ext, not options.execute_mode, options.quiet_mode)
 
 
 if __name__ == '__main__':
