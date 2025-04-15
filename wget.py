@@ -30,8 +30,8 @@ import requests
 
 
 def usage():
-    print("Usage: {} <URL>".format(sys.argv[0]))
-    sys.exit(1)
+    print("[INFO] Usage: {} <URL>".format(sys.argv[0]))
+    sys.exit(0)
 
 def download_file(url):
     response = requests.get(url)

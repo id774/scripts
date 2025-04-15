@@ -70,3 +70,4 @@ if __name__ == '__main__':
             print_exc()
     else:
         print("[ERROR] This program requires at least 1 argument (MAC address).", file=sys.stderr)
+        sys.exit(1)

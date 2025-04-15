@@ -81,7 +81,7 @@ class InstagramPhotoDownloader:
         try:
             self.profile = instaloader.Profile.from_username(self.loader.context, username)
         except instaloader.exceptions.ConnectionException as e:
-            print("Failed to get profile: {}".format(e), file=sys.stderr)
+            print("[ERROR] Failed to get profile: {}".format(e), file=sys.stderr)
             sys.exit(1)
 
     def download(self):
@@ -89,7 +89,7 @@ class InstagramPhotoDownloader:
         try:
             urls_post_ids = self._get_instagram_photo_urls()
         except instaloader.exceptions.ConnectionException as e:
-            print("Failed to get posts: {}".format(e), file=sys.stderr)
+            print("[ERROR] Failed to get posts: {}".format(e), file=sys.stderr)
             sys.exit(1)
 
         total_images = len(urls_post_ids)
@@ -125,10 +125,10 @@ class InstagramPhotoDownloader:
                 self._download_and_save_image(url, filename)
             except HTTPError as e:
                 if e.code == 401:
-                    print("HTTP 401 Unauthorized Error. Exiting.", file=sys.stderr)
+                    print("[ERROR] HTTP 401 Unauthorized Error. Exiting.", file=sys.stderr)
                     sys.exit(1)
                 else:
-                    print("HTTP error occurred: {}".format(e), file=sys.stderr)
+                    print("[ERROR] HTTP error occurred: {}".format(e), file=sys.stderr)
                     sys.exit(1)
 
         # Print a message upon completing all downloads

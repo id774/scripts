@@ -49,7 +49,8 @@ if __name__ == '__main__':
 
     if len(args) != 1 or not args[0].isdigit():
         parser.print_help()
-        sys.exit("[ERROR] Length must be a number.")
+        print("[ERROR] Length must be a number.", file=sys.stderr)
+        sys.exit(1)
 
     length = int(args[0])
     generate_passwd(length, options.use_symbols)

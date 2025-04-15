@@ -163,7 +163,7 @@ def main(options):
     # Check if any option is set. If not, display help and exit.
     if not any(vars(options).values()):
         parser.print_help()
-        exit()
+        exit(1)
 
     # Process each subdirectory in the current directory
     subdirectories = [d for d in os.listdir('.') if os.path.isdir(d)]
