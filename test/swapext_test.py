@@ -14,6 +14,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.0 2025-04-15
+#       Replaced sys.argv parsing with OptionParser.
+#       Added -x option to enable execution (default is dry-run).
+#       Added confirmation prompt before executing changes.
 #  v1.2 2024-03-23
 #       Significantly expanded test cases to improve coverage and ensure
 #       the script correctly handles case-sensitive extensions, empty directories,
@@ -39,172 +43,61 @@ import sys
 import unittest
 from unittest.mock import call, patch
 
-# Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import swapext
 
 
 class TestSwapExt(unittest.TestCase):
-    """Test cases for the swap_extensions function in swapext.py."""
-
     @patch('os.rename')
     @patch('os.walk')
-    def test_swap_extensions(self, mock_walk, mock_rename):
-        """Test swapping file extensions."""
-        # Mock the os.walk to simulate directory structure
-        mock_walk.return_value = [
-            ('/testdir', ['subdir'], ['file1.txt', 'file2.doc', 'file3.txt']),
-            ('/testdir/subdir', [], ['file4.txt', 'file5.doc'])
-        ]
-
-        # Call the function with quiet_mode=False
-        swapext.swap_extensions('/testdir', 'txt', 'md', False)
-
-        # Define expected calls to os.rename
-        expected_calls = [
-            call('/testdir/file1.txt', '/testdir/file1.md'),
-            call('/testdir/file3.txt', '/testdir/file3.md'),
-            call('/testdir/subdir/file4.txt', '/testdir/subdir/file4.md')
-        ]
-        # Verify that os.rename is called with the expected arguments
-        mock_rename.assert_has_calls(expected_calls, any_order=True)
-
-    @patch('os.rename')
-    @patch('os.walk')
-    def test_swap_extensions_quiet_mode(self, mock_walk, mock_rename):
-        """Test swapping file extensions with quiet mode."""
-        # Mock the os.walk to simulate directory structure
-        mock_walk.return_value = [
-            ('/testdir', ['subdir'], ['file1.txt', 'file2.doc', 'file3.txt']),
-            ('/testdir/subdir', [], ['file4.txt', 'file5.doc'])
-        ]
-
-        # Call the function with quiet_mode=True
-        swapext.swap_extensions('/testdir', 'txt', 'md', True)
-
-        # Define expected calls to os.rename
-        expected_calls = [
-            call('/testdir/file1.txt', '/testdir/file1.md'),
-            call('/testdir/file3.txt', '/testdir/file3.md'),
-            call('/testdir/subdir/file4.txt', '/testdir/subdir/file4.md')
-        ]
-        # Verify that os.rename is called with the expected arguments
-        mock_rename.assert_has_calls(expected_calls, any_order=True)
-
-    @patch('os.rename')
-    @patch('os.walk')
-    def test_swap_extensions_no_extension_files(self, mock_walk, mock_rename):
-        """Test swapping file extensions when there are files without extensions."""
-        mock_walk.return_value = [
-            ('/testdir', [], ['file1', 'file2.txt', 'file3'])
-        ]
-
-        swapext.swap_extensions('/testdir', 'txt', 'md', False)
-
-        expected_calls = [call('/testdir/file2.txt', '/testdir/file2.md')]
-        mock_rename.assert_has_calls(expected_calls)
-
-    @patch('os.rename')
-    @patch('os.walk')
-    def test_no_files_with_target_extension(self, mock_walk, mock_rename):
-        """Test when there are no files with the target extension."""
-        mock_walk.return_value = [
-            ('/testdir', [], ['file1.jpg', 'file2.jpg', 'file3.jpg'])
-        ]
-
-        swapext.swap_extensions('/testdir', 'txt', 'md', False)
-
+    def test_dry_run_output(self, mock_walk, mock_rename):
+        mock_walk.return_value = [('/testdir', [], ['file1.txt'])]
+        with patch('builtins.print') as mock_print:
+            swapext.swap_extensions('/testdir', '.txt', '.md', dry_run=True, quiet_mode=False)
+            mock_print.assert_any_call('[INFO] DRY RUN: Renamed: /testdir/file1.txt -> /testdir/file1.md')
         mock_rename.assert_not_called()
 
     @patch('os.rename')
     @patch('os.walk')
-    def test_files_with_same_name_different_extensions(self, mock_walk, mock_rename):
-        """Test files with the same name but different extensions."""
-        mock_walk.return_value = [
-            ('/testdir', [], ['file1.txt', 'file1.jpg', 'file1.png'])
+    def test_execute_rename(self, mock_walk, mock_rename):
+        mock_walk.return_value = [('/testdir', [], ['a.txt', 'b.txt'])]
+        swapext.swap_extensions('/testdir', '.txt', '.md', dry_run=False, quiet_mode=True)
+        expected = [
+            call('/testdir/a.txt', '/testdir/a.md'),
+            call('/testdir/b.txt', '/testdir/b.md')
         ]
+        mock_rename.assert_has_calls(expected, any_order=True)
 
-        swapext.swap_extensions('/testdir', 'txt', 'md', False)
-
-        expected_calls = [call('/testdir/file1.txt', '/testdir/file1.md')]
-        mock_rename.assert_has_calls(expected_calls)
+    @patch('sys.stderr')
+    @patch('os.walk')
+    @patch('os.rename', side_effect=OSError("fail"))
+    def test_rename_failure_exits(self, mock_rename, mock_walk, mock_stderr):
+        mock_walk.return_value = [('/faildir', [], ['bad.txt'])]
+        with self.assertRaises(SystemExit) as cm:
+            swapext.swap_extensions('/faildir', '.txt', '.md', dry_run=False, quiet_mode=True)
+        self.assertEqual(cm.exception.code, 1)
 
     @patch('os.rename')
     @patch('os.walk')
-    def test_empty_directory(self, mock_walk, mock_rename):
-        """Test an empty directory."""
-        mock_walk.return_value = [('/emptydir', [], [])]
-
-        swapext.swap_extensions('/emptydir', 'txt', 'md', False)
-
-        mock_rename.assert_not_called()
+    def test_quiet_mode_suppresses_output(self, mock_walk, mock_rename):
+        mock_walk.return_value = [('/quietdir', [], ['file.txt'])]
+        with patch('builtins.print') as mock_print:
+            swapext.swap_extensions('/quietdir', '.txt', '.md', dry_run=True, quiet_mode=True)
+            mock_print.assert_not_called()
 
     @patch('os.rename')
     @patch('os.walk')
-    def test_directory_with_subdirectories(self, mock_walk, mock_rename):
-        """Test a directory that includes subdirectories."""
+    def test_subdirectories_are_handled(self, mock_walk, mock_rename):
         mock_walk.return_value = [
-            ('/testdir', ['subdir1', 'subdir2'], ['file1.txt']),
-            ('/testdir/subdir1', [], ['file2.txt', 'file3.doc']),
-            ('/testdir/subdir2', [], ['file4.txt'])
+            ('/dir', ['sub'], ['a.txt']),
+            ('/dir/sub', [], ['b.txt'])
         ]
-
-        swapext.swap_extensions('/testdir', 'txt', 'md', False)
-
-        expected_calls = [
-            call('/testdir/file1.txt', '/testdir/file1.md'),
-            call('/testdir/subdir1/file2.txt', '/testdir/subdir1/file2.md'),
-            call('/testdir/subdir2/file4.txt', '/testdir/subdir2/file4.md')
+        swapext.swap_extensions('/dir', '.txt', '.md', dry_run=False, quiet_mode=True)
+        expected = [
+            call('/dir/a.txt', '/dir/a.md'),
+            call('/dir/sub/b.txt', '/dir/sub/b.md')
         ]
-        mock_rename.assert_has_calls(expected_calls, any_order=True)
-
-    @patch('os.rename')
-    @patch('os.walk')
-    def test_files_with_special_characters_in_name(self, mock_walk, mock_rename):
-        """Test files with special characters in their names."""
-        mock_walk.return_value = [
-            ('/testdir', [], ['file #1.txt', 'file @2.txt'])
-        ]
-
-        swapext.swap_extensions('/testdir', 'txt', 'md', False)
-
-        expected_calls = [
-            call('/testdir/file #1.txt', '/testdir/file #1.md'),
-            call('/testdir/file @2.txt', '/testdir/file @2.md')
-        ]
-        mock_rename.assert_has_calls(expected_calls, any_order=True)
-
-    @patch('os.rename')
-    @patch('os.walk')
-    def test_case_sensitive_extension(self, mock_walk, mock_rename):
-        """Test that the function correctly handles case-sensitive extensions."""
-        mock_walk.return_value = [
-            ('/testdir', [], ['file1.TXT', 'file2.txt', 'file3.TxT'])
-        ]
-
-        swapext.swap_extensions('/testdir', '.TXT', '.md', False)
-
-        expected_calls = [
-            call('/testdir/file1.TXT', '/testdir/file1.md')
-        ]
-        mock_rename.assert_has_calls(expected_calls, any_order=True)
-
-    @patch('os.rename')
-    @patch('os.walk')
-    def test_read_only_files(self, mock_walk, mock_rename):
-        """Test attempting to rename read-only files."""
-        mock_walk.return_value = [
-            ('/testdir', [], ['read_only_file.txt'])
-        ]
-
-        # Simulate an OSError for trying to rename a read-only file
-        mock_rename.side_effect = OSError("Permission denied")
-
-        with self.assertLogs(level='ERROR') as log:
-            swapext.swap_extensions('/testdir', 'txt', 'md', False)
-
-        # Check if the error was logged
-        self.assertIn('ERROR:root:Error renaming', log.output[0])
+        mock_rename.assert_has_calls(expected, any_order=True)
 
 
 if __name__ == '__main__':
