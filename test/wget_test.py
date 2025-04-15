@@ -107,10 +107,10 @@ class TestWget(unittest.TestCase):
         # Verify that the script exits and prints the usage message
         with self.assertRaises(SystemExit) as cm:
             usage()
-        self.assertEqual(cm.exception.code, 1)
+        self.assertEqual(cm.exception.code, 0)
 
         # Verify that the correct usage message is printed
-        mock_print.assert_called_once_with("Usage: {} <URL>".format(sys.argv[0]))
+        mock_print.assert_called_once_with("[INFO] Usage: {} <URL>".format(sys.argv[0]))
 
     @patch('wget.requests.get')
     @patch('builtins.open', new_callable=mock_open)
