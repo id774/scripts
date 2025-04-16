@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2025-04-16
+#       Replace inline usage message with usage function call for consistency.
 #  v1.7 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.6 2025-03-22
@@ -103,7 +105,7 @@ main() {
         show_package_status "$1"
     else
         # If no arguments are provided, display usage instructions
-        echo "Usage: $0 package-name [hold|install]"
+        usage
     fi
 }
 
