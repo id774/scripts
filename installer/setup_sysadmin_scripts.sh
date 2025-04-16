@@ -50,10 +50,11 @@
 #
 #  Usage:
 #  Run this script with the desired action (install or uninstall) and the installation
-#      $1 = uninstall
+#      $1 = install or uninstall
 #      $2 = install path (ex. /usr/local/sbin)
 #
 #  path as arguments. For example:
+#      ./install_sysadmin_scripts.sh install
 #      ./install_sysadmin_scripts.sh install /usr/local/sbin
 #      ./install_sysadmin_scripts.sh uninstall
 #
