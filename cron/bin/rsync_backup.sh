@@ -15,7 +15,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v2.4  2025-04-13 - Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v2.4  2025-04-17 - Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v2.3  2025-03-19 - Improved code readability by standardizing function indentation.
 #                     Encapsulated script logic in a `main` function for better structure.
 #                     Ensured proper preservation of return codes by storing `$?` in a
@@ -55,8 +55,10 @@
 # Function to display the timestamp of the last backup and update it
 display_and_update_timestamp() {
     if [ -f "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp" ]; then
+        echo "[INFO] ls -l $T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
         ls -l "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
     fi
+    echo "[INFO touch $T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
     touch "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
 }
 
@@ -73,9 +75,11 @@ version_info() {
 # Function to retrieve SMART information of the backup and target devices
 smart_info() {
     if [ -b /dev/$B_DEVICE ]; then
+        echo "[INFO] smartctl -a /dev/$B_DEVICE"
         smartctl -a /dev/$B_DEVICE
     fi
     if [ -b /dev/$T_DEVICE ]; then
+        echo "[INFO] smartctl -a /dev/$T_DEVICE"
         smartctl -a /dev/$T_DEVICE
     fi
 }
@@ -85,35 +89,38 @@ smart_check() {
     if [ -b /dev/$T_DEVICE ]; then
         if [ -f "$T_HOME/$T_MOUNT/$T_DEVICE/smart_longtest" ]; then
             touch "$T_HOME/$T_MOUNT/$T_DEVICE/smart_longtest"
+            echo "[INFO] smartctl -t long /dev/$T_DEVICE"
             smartctl -t long /dev/$T_DEVICE
         else
             touch "$T_HOME/$T_MOUNT/$T_DEVICE/smart_shorttest"
+            echo "[INFO] smartctl -t short /dev/$T_DEVICE"
             smartctl -t short /dev/$T_DEVICE
         fi
     else
-        echo "The device /dev/$T_DEVICE does not exist or is not a block device."
+        echo "[WARN] The device /dev/$T_DEVICE does not exist or is not a block device." >&2
     fi
 }
 
 # Function to show disk space usage of backup directories
 show_capacity_of_directories() {
     if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ]; then
+        echo "[INFO] Disk usage of $B_HOME/$B_MOUNT/$B_DEVICE."
         du -h --max-depth=2 "$B_HOME/$B_MOUNT/$B_DEVICE"
     fi
 }
 
 # Function to remove unnecessary files such as macOS metadata and temp files
 cleanup() {
-    echo "Removing junk files in $B_HOME/$B_MOUNT/$B_DEVICE..."
-    echo "Removing ._* AppleDouble files..."
+    echo "[INFO] Removing junk files in $B_HOME/$B_MOUNT/$B_DEVICE..."
+    echo "[INFO] Removing ._* AppleDouble files..."
     find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '._*' -exec rm -vf {} \;
-    echo "Removing .DS_Store files..."
+    echo "[INFO] Removing .DS_Store files..."
     find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '.DS_Store' -exec rm -vf {} \;
-    echo "Removing temporary Unix files ending with '.un~'..."
+    echo "[INFO] Removing temporary Unix files ending with '.un~'..."
     find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '.*.un~' -exec rm -vf {} \;
-    echo "Removing __pycache__ directories..."
+    echo "[INFO] Removing __pycache__ directories..."
     find "$B_HOME/$B_MOUNT/$B_DEVICE" -type d -name '__pycache__' -exec rm -vrf {} \;
-    echo "Cleanup completed."
+    echo "[INFO] Cleanup completed."
 }
 
 # Function to create a local backup of Git repositories
@@ -121,28 +128,34 @@ git_backup() {
     if [ -f /root/local/git.tar.gz ]; then
         rm /root/local/git.tar.gz
     fi
+    echo "[INFO] rsync -avz --no-o --no-g --delete "$1"@"$2":/home/repo /root/local/"
     rsync -avz --no-o --no-g --delete "$1"@"$2":/home/repo /root/local/
     cd /root/local
+    echo "[INFO] tar czvf git.tar.gz repo/"
     tar czvf git.tar.gz repo/ > /dev/null
+    echo "[INFO] cp -v /root/local/git.tar.gz $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
     cp -v /root/local/git.tar.gz "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
     cd
 }
 
 # Function to back up GitHub repositories locally
 github_backup() {
-    test -f /root/local/github.tar.gz && rm -f /root/local/github.tar.gz
+    rm -f /root/local/github.tar.gz
     test -d $B_HOME/local/github && tar czvf /root/local/github.tar.gz $B_HOME/local/github > /dev/null
+    echo "[INFO] du -h --max-depth=1 $B_HOME/local/github"
     du -h --max-depth=1 $B_HOME/local/github
+    echo "[INFO] du -h --max-depth=1 $B_HOME/local/git"
     du -h --max-depth=1 $B_HOME/local/git
 
     if [ -f /root/local/github.tar.gz ] && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git" ]; then
+        echo "[INFO] cp -v /root/local/github.tar.gz $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
         cp -v /root/local/github.tar.gz "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
     fi
 }
 
 # Function to sync user directories from disk to remote server via SSH
 rsync_disk2ssh_1() {
-    echo -n "* Executing rsync_disk2ssh_1 $B_DEVICE -> $T_DEVICE of $T_HOST on "
+    echo -n "[INFO] * Executing rsync_disk2ssh_1 $B_DEVICE -> $T_DEVICE of $T_HOST on "
     date "+%Y/%m/%d %T"
     if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user1" ]; then
         rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
@@ -151,7 +164,7 @@ rsync_disk2ssh_1() {
         false
     fi
     RC=$?
-    echo "Return code is $RC"
+    echo "[INFO] Return code is $RC"
 
     if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2" ]; then
         rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
@@ -160,7 +173,7 @@ rsync_disk2ssh_1() {
         false
     fi
     RC=$?
-    echo "Return code is $RC"
+    echo "[INFO] Return code is $RC"
 
     if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user3" ]; then
         rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
@@ -169,12 +182,12 @@ rsync_disk2ssh_1() {
         false
     fi
     RC=$?
-    echo "Return code is $RC"
+    echo "[INFO] Return code is $RC"
 }
 
 # Function to sync large files from disk to remote server via SSH
 rsync_disk2ssh_2() {
-    echo -n "* Executing rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST on "
+    echo -n "[INFO] * Executing rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST on "
     date "+%Y/%m/%d %T"
     if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ]; then
         rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
@@ -183,12 +196,12 @@ rsync_disk2ssh_2() {
         false
     fi
     RC=$?
-    echo "Return code is $RC"
+    echo "[INFO] Return code is $RC"
 }
 
 # Function to sync user directories between two local disks
 rsync_disk2disk_1() {
-    echo -n "* Executing rsync_disk2disk_1 $B_DEVICE -> $T_DEVICE on "
+    echo -n "[INFO] * Executing rsync_disk2disk_1 $B_DEVICE -> $T_DEVICE on "
     date "+%Y/%m/%d %T"
     if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user1" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user1" ]; then
         rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
@@ -197,7 +210,7 @@ rsync_disk2disk_1() {
         false
     fi
     RC=$?
-    echo "Return code is $RC"
+    echo "[INFO] Return code is $RC"
 
     if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user2" ]; then
         rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
@@ -206,7 +219,7 @@ rsync_disk2disk_1() {
         false
     fi
     RC=$?
-    echo "Return code is $RC"
+    echo "[INFO] Return code is $RC"
 
     if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user3" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user3" ]; then
         rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
@@ -215,12 +228,12 @@ rsync_disk2disk_1() {
         false
     fi
     RC=$?
-    echo "Return code is $RC"
+    echo "[INFO] Return code is $RC"
 }
 
 # Function to sync large files between two local disks
 rsync_disk2disk_2() {
-    echo -n "* Executing rsync_disk2disk_2 $B_DEVICE -> $T_DEVICE on "
+    echo -n "[INFO] * Executing rsync_disk2disk_2 $B_DEVICE -> $T_DEVICE on "
     date "+%Y/%m/%d %T"
     if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/largefiles" ]; then
         rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
@@ -229,7 +242,7 @@ rsync_disk2disk_2() {
         false
     fi
     RC=$?
-    echo "Return code is $RC"
+    echo "[INFO] Return code is $RC"
 }
 
 # Main function to execute the script
@@ -240,7 +253,7 @@ main() {
     if [ -f "$CONFIG_FILE" ]; then
         . "$CONFIG_FILE"
     else
-        echo "Configuration file not found: $CONFIG_FILE">&2
+        echo "[ERROR] Configuration file not found: $CONFIG_FILE">&2
         exit 99
     fi
 }
