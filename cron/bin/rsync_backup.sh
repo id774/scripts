@@ -128,7 +128,7 @@ git_backup() {
     if [ -f /root/local/git.tar.gz ]; then
         rm /root/local/git.tar.gz
     fi
-    echo "[INFO] rsync -avz --no-o --no-g --delete "$1"@"$2":/home/repo /root/local/"
+    echo "[INFO] Saving Git repositories to local storage"
     rsync -avz --no-o --no-g --delete "$1"@"$2":/home/repo /root/local/
     cd /root/local
     echo "[INFO] tar czvf git.tar.gz repo/"
