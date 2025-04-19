@@ -58,7 +58,7 @@ display_and_update_timestamp() {
         echo "[INFO] ls -l $T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
         ls -l "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
     fi
-    echo "[INFO touch $T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
+    echo "[INFO] touch $T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
     touch "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
 }
 
