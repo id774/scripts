@@ -6,6 +6,4 @@
   missingok
   create 0640 root adm
   rotate 999
-  dateext
-  extension .log
 }
