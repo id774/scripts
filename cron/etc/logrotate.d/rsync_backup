@@ -1,9 +1,11 @@
-/var/log/sysadmin/rsync_backup {
+/var/log/sysadmin/rsync_backup.log {
   daily
   compress
   delaycompress
   notifempty
   missingok
   create 0640 root adm
-  rotate 365
+  rotate 999
+  dateext
+  extension .log
 }

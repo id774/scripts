@@ -9,6 +9,7 @@ v1.4.2 (Release Date: TBD)
 - Add server_alive_check.sh for server availability monitoring.
 - Fix SyntaxWarning in unzip_subdir.py by using raw string for regex in re.sub.
 - Fix inaccurate rsync return code logging by assigning RC immediately after execution in rsync_backup.sh.
+- Rename rsync_backup log file to rsync_backup.log and update logrotate settings with dateext and extension directives.
 - Remove smb.py script as it is no longer in use.
 - Rewrite swapext.py with dry-run mode, safety prompt, and OptionParser integration.
 - Prevent overwriting existing configuration files in multiple installer scripts to ensure safe redeployment.
