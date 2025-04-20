@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.5  2025-04-20 - Fix inaccurate rsync return code logging by
+#                     assigning RC immediately after execution.
 #  v2.4  2025-04-17 - Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v2.3  2025-03-19 - Improved code readability by standardizing function indentation.
 #                     Encapsulated script logic in a `main` function for better structure.
@@ -198,31 +200,31 @@ rsync_disk2ssh_1() {
     if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user1" ]; then
         rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
         "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
+        RC=$?
     else
         echo "[WARN] Skipped syncing user1: either host unreachable or source directory missing." >&2
-        false
+        RC=1
     fi
-    RC=$?
     echo "[INFO] Return code is $RC"
 
     if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2" ]; then
         rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
         "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
+        RC=$?
     else
         echo "[WARN] Skipped syncing user2: either host unreachable or source directory missing." >&2
-        false
+        RC=1
     fi
-    RC=$?
     echo "[INFO] Return code is $RC"
 
     if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user3" ]; then
         rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
         "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
+        RC=$?
     else
         echo "[WARN] Skipped syncing user3: either host unreachable or source directory missing." >&2
-        false
+        RC=1
     fi
-    RC=$?
     echo "[INFO] Return code is $RC"
 }
 
@@ -233,11 +235,11 @@ rsync_disk2ssh_2() {
     if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ]; then
         rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
         "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
+        RC=$?
     else
         echo "[WARN] Skipped syncing largefiles: either host unreachable or source directory missing." >&2
-        false
+        RC=1
     fi
-    RC=$?
     echo "[INFO] Return code is $RC"
 }
 
@@ -248,31 +250,31 @@ rsync_disk2disk_1() {
     if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user1" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user1" ]; then
         rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
         "$T_HOME/$T_MOUNT/$T_DEVICE/"
+        RC=$?
     else
         echo "[WARN] Skipped syncing user1: source or target directory does not exist." >&2
-        false
+        RC=1
     fi
-    RC=$?
     echo "[INFO] Return code is $RC"
 
     if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user2" ]; then
         rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
         "$T_HOME/$T_MOUNT/$T_DEVICE/"
+        RC=$?
     else
         echo "[WARN] Skipped syncing user2: source or target directory does not exist." >&2
-        false
+        RC=1
     fi
-    RC=$?
     echo "[INFO] Return code is $RC"
 
     if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user3" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user3" ]; then
         rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
         "$T_HOME/$T_MOUNT/$T_DEVICE/"
+        RC=$?
     else
         echo "[WARN] Skipped syncing user3: source or target directory does not exist." >&2
-        false
+        RC=1
     fi
-    RC=$?
     echo "[INFO] Return code is $RC"
 }
 
@@ -283,11 +285,11 @@ rsync_disk2disk_2() {
     if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/largefiles" ]; then
         rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
         "$T_HOME/$T_MOUNT/$T_DEVICE/"
+        RC=$?
     else
         echo "[WARN] Skipped syncing largefiles: source or target directory does not exist." >&2
-        false
+        RC=1
     fi
-    RC=$?
     echo "[INFO] Return code is $RC"
 }
 
