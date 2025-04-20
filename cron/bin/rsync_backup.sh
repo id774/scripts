@@ -125,31 +125,67 @@ cleanup() {
 
 # Function to create a local backup of Git repositories
 git_backup() {
-    if [ -f /root/local/git.tar.gz ]; then
-        rm /root/local/git.tar.gz
+    rm -f /root/local/git.tar.gz
+
+    echo "[INFO] Saving Git repositories to local storage."
+    if rsync -avz --no-o --no-g --delete "$1@$2:/home/repo" /root/local/; then
+        echo "[INFO] rsync completed successfully."
+    else
+        echo "[WARN] rsync failed" >&2
+        return 1
     fi
-    echo "[INFO] Saving Git repositories to local storage"
-    rsync -avz --no-o --no-g --delete "$1"@"$2":/home/repo /root/local/
-    cd /root/local
-    echo "[INFO] tar czvf git.tar.gz repo/"
-    tar czvf git.tar.gz repo/ > /dev/null
-    echo "[INFO] cp -v /root/local/git.tar.gz $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
-    cp -v /root/local/git.tar.gz "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
+
+    if cd /root/local; then
+        echo "[INFO] Creating archive git.tar.gz from repo/"
+        if tar czvf git.tar.gz repo/ > /dev/null; then
+            echo "[INFO] Archive created: /root/local/git.tar.gz"
+        else
+            echo "[WARN] Failed to create archive." >&2
+            return 1
+        fi
+    else
+        echo "[WARN] Failed to change directory to /root/local" >&2
+        return 1
+    fi
+
+    DEST_DIR="$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git"
+    if [ -d "$DEST_DIR" ]; then
+        echo "[INFO] Copying archive to $DEST_DIR"
+        cp -v /root/local/git.tar.gz "$DEST_DIR/"
+    else
+        echo "[WARN] Destination directory not found: $DEST_DIR" >&2
+        return 1
+    fi
+
     cd
 }
 
 # Function to back up GitHub repositories locally
 github_backup() {
     rm -f /root/local/github.tar.gz
-    test -d $B_HOME/local/github && tar czvf /root/local/github.tar.gz $B_HOME/local/github > /dev/null
-    echo "[INFO] du -h --max-depth=1 $B_HOME/local/github"
-    du -h --max-depth=1 $B_HOME/local/github
-    echo "[INFO] du -h --max-depth=1 $B_HOME/local/git"
-    du -h --max-depth=1 $B_HOME/local/git
+
+    if [ -d "$B_HOME/local/github" ]; then
+        echo "[INFO] Creating archive: /root/local/github.tar.gz from $B_HOME/local/github"
+        tar czvf /root/local/github.tar.gz "$B_HOME/local/github" > /dev/null
+    else
+        echo "[WARN] Directory not found: $B_HOME/local/github" >&2
+    fi
+
+    if [ -d "$B_HOME/local/github" ]; then
+        echo "[INFO] Disk usage for $B_HOME/local/github:"
+        du -h --max-depth=1 "$B_HOME/local/github"
+    fi
+
+    if [ -d "$B_HOME/local/git" ]; then
+        echo "[INFO] Disk usage for $B_HOME/local/git:"
+        du -h --max-depth=1 "$B_HOME/local/git"
+    fi
 
     if [ -f /root/local/github.tar.gz ] && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git" ]; then
-        echo "[INFO] cp -v /root/local/github.tar.gz $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
+        echo "[INFO] Copying archive to $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
         cp -v /root/local/github.tar.gz "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
+    else
+        echo "[WARN] Skipping copy: archive or destination not available." >&2
     fi
 }
 
