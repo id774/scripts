@@ -65,9 +65,11 @@ display_and_update_timestamp() {
 # Function to display the installed versions of TrueCrypt and VeraCrypt
 version_info() {
     if [ -x /usr/bin/truecrypt ]; then
+        echo "[INFO] Checking installed version of TrueCrypt."
         /usr/bin/truecrypt -t --version
     fi
     if [ -x /usr/bin/veracrypt ]; then
+        echo "[INFO] Checking installed version of VeraCrypt."
         /usr/bin/veracrypt -t --version
     fi
 }
@@ -197,6 +199,7 @@ rsync_disk2ssh_1() {
         rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
         "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
     else
+        echo "[WARN] Skipped syncing user1: either host unreachable or source directory missing." >&2
         false
     fi
     RC=$?
@@ -206,6 +209,7 @@ rsync_disk2ssh_1() {
         rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
         "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
     else
+        echo "[WARN] Skipped syncing user2: either host unreachable or source directory missing." >&2
         false
     fi
     RC=$?
@@ -215,6 +219,7 @@ rsync_disk2ssh_1() {
         rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
         "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
     else
+        echo "[WARN] Skipped syncing user3: either host unreachable or source directory missing." >&2
         false
     fi
     RC=$?
@@ -229,6 +234,7 @@ rsync_disk2ssh_2() {
         rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
         "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
     else
+        echo "[WARN] Skipped syncing largefiles: either host unreachable or source directory missing." >&2
         false
     fi
     RC=$?
@@ -243,6 +249,7 @@ rsync_disk2disk_1() {
         rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
         "$T_HOME/$T_MOUNT/$T_DEVICE/"
     else
+        echo "[WARN] Skipped syncing user1: source or target directory does not exist." >&2
         false
     fi
     RC=$?
@@ -252,6 +259,7 @@ rsync_disk2disk_1() {
         rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
         "$T_HOME/$T_MOUNT/$T_DEVICE/"
     else
+        echo "[WARN] Skipped syncing user2: source or target directory does not exist." >&2
         false
     fi
     RC=$?
@@ -261,6 +269,7 @@ rsync_disk2disk_1() {
         rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
         "$T_HOME/$T_MOUNT/$T_DEVICE/"
     else
+        echo "[WARN] Skipped syncing user3: source or target directory does not exist." >&2
         false
     fi
     RC=$?
@@ -275,6 +284,7 @@ rsync_disk2disk_2() {
         rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
         "$T_HOME/$T_MOUNT/$T_DEVICE/"
     else
+        echo "[WARN] Skipped syncing largefiles: source or target directory does not exist." >&2
         false
     fi
     RC=$?
@@ -287,6 +297,7 @@ main() {
     CONFIG_FILE="$SCRIPT_DIR/../etc/rsync_backup.conf"
 
     if [ -f "$CONFIG_FILE" ]; then
+        echo "[INFO] Loaded configuration from $CONFIG_FILE"
         . "$CONFIG_FILE"
     else
         echo "[ERROR] Configuration file not found: $CONFIG_FILE">&2
