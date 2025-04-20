@@ -129,9 +129,9 @@ git_backup() {
 
     echo "[INFO] Saving Git repositories to local storage."
     if rsync -avz --no-o --no-g --delete "$1@$2:/home/repo" /root/local/; then
-        echo "[INFO] rsync completed successfully."
+        echo "[INFO] Synchronization completed successfully."
     else
-        echo "[WARN] rsync failed" >&2
+        echo "[WARN] Synchronization failed while retrieving repositories from the remote host." >&2
         return 1
     fi
 
