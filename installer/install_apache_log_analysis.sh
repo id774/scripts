@@ -94,7 +94,7 @@ check_sudo() {
 
 # Function to create required directories with proper permissions
 setup_directories() {
-    echo "[INFO] Setting up directories..."
+    echo "[INFO] Setting up directories."
     if [ ! -d /var/log/sysadmin ]; then
         sudo mkdir -p /var/log/sysadmin
         sudo chmod 750 /var/log/sysadmin
@@ -104,7 +104,7 @@ setup_directories() {
 
 # Function to deploy Apache log analysis scripts
 deploy_scripts() {
-    echo "[INFO] Deploying log analysis scripts..."
+    echo "[INFO] Deploying log analysis scripts."
     for script in apache_log_analysis.sh apache_calculater.py; do
         sudo cp "$SCRIPTS/$script" "/root/bin/$script"
         sudo chmod 700 "/root/bin/$script"
@@ -114,7 +114,7 @@ deploy_scripts() {
 
 # Function to deploy configuration files
 deploy_configurations() {
-    echo "[INFO] Deploying configuration files..."
+   echo "[INFO] Deploying configuration files."
 
     CONFIG_FILE="/root/etc/apache_ignore.list"
     if ! sudo test -f "$CONFIG_FILE"; then
@@ -130,7 +130,7 @@ deploy_configurations() {
 
 # Function to deploy cron jobs
 setup_cron_jobs() {
-    echo "[INFO] Setting up cron jobs..."
+    echo "[INFO] Setting up cron jobs."
     sudo cp "$SCRIPTS/cron/bin/apache_log_analysis" /etc/cron.daily/apache_log_analysis
     sudo chmod 740 /etc/cron.daily/apache_log_analysis
     sudo chown root:adm /etc/cron.daily/apache_log_analysis
@@ -138,7 +138,7 @@ setup_cron_jobs() {
 
 # Function to set up log files
 setup_log_files() {
-    echo "[INFO] Setting up log files..."
+    echo "[INFO] Setting up log files."
     if [ ! -f /var/log/sysadmin/apache_summary.log ]; then
         sudo touch /var/log/sysadmin/apache_summary.log
         sudo chmod 640 /var/log/sysadmin/apache_summary.log
@@ -148,7 +148,7 @@ setup_log_files() {
 
 # Function to deploy log rotation configuration
 setup_log_rotation() {
-    echo "[INFO] Deploying log rotation configuration..."
+    echo "[INFO] Deploying log rotation configuration."
     sudo cp "$SCRIPTS/cron/etc/logrotate.d/apache_summary" /etc/logrotate.d/apache_summary
     sudo chmod 644 /etc/logrotate.d/apache_summary
     sudo chown root:root /etc/logrotate.d/apache_summary

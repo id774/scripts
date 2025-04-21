@@ -106,14 +106,28 @@ save_sources() {
 # Install Autoconf
 install_autoconf() {
     setup_environment "$1"
+
+    echo "[INFO] Creating temporary build directory."
     mkdir install_autoconf
+
+    echo "[INFO] Downloading Autoconf $VERSION."
     cd install_autoconf || exit 1
     wget "ftp://ftp.gnu.org/gnu/autoconf/autoconf-$VERSION.tar.gz"
+
+    echo "[INFO] Extracting archive."
     tar xzvf "autoconf-$VERSION.tar.gz"
+
+    echo "[INFO] Configuring build."
     cd "autoconf-$VERSION" || exit 1
     ./configure --prefix=/usr/local
+
+    echo "[INFO] Building Autoconf."
     make
+
+    echo "[INFO] Installing Autoconf."
     sudo make install
+
+    echo "[INFO] Cleaning up temporary files."
     cd .. || exit 1
     [ -n "$2" ] || save_sources
     cd .. || exit 1
