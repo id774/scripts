@@ -122,6 +122,7 @@ setup_environment() {
 # Save sources if requested
 save_sources() {
     [ "$SUDO" = "sudo" ] || return
+    echo "[INFO] Saving source files to /usr/local/src/zsh."
     $SUDO mkdir -p /usr/local/src/zsh
     $SUDO cp $OPTIONS "zsh-$VERSION" /usr/local/src/zsh
     $SUDO chown $OWNER /usr/local/src/zsh
@@ -139,6 +140,7 @@ make_and_install() {
 
 # Download and extract Zsh
 install_zsh() {
+    echo "[INFO] Creating temporary directory for Zsh build."
     mkdir install_zsh
     cd install_zsh || exit 1
 
@@ -148,14 +150,22 @@ install_zsh() {
         ZSH_URL="https://www.zsh.org/pub/zsh-$VERSION.tar.xz"
     fi
 
+    echo "[INFO] Downloading Zsh $VERSION from $ZSH_URL."
     wget "$ZSH_URL"
     if [ ! -f "zsh-$VERSION.tar.xz" ]; then
         echo "[ERROR] Failed to download Zsh $VERSION." >&2
         exit 1
     fi
+
+    echo "[INFO] Extracting Zsh archive."
     tar xvf "zsh-$VERSION.tar.xz"
+
+    echo "[INFO] Starting build and installation."
     make_and_install
+
     [ "$DOWNLOAD_SOURCE" = "auto" ] && save_sources
+
+    echo "[INFO] Cleaning up temporary build files."
     cd .. || exit 1
     rm -rf install_zsh
 }
