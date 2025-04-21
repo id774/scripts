@@ -96,11 +96,13 @@ main() {
     check_sudo
 
     # Deploy chkrootkit cron job
+    echo "[INFO] Deploying chkrootkit cron job."
     sudo cp "$SCRIPTS/cron/bin/chkrootkit" /etc/cron.weekly/chkrootkit
     sudo chmod 740 /etc/cron.weekly/chkrootkit
     sudo chown root:adm /etc/cron.weekly/chkrootkit
 
     # Create log directory if it does not exist
+    echo "[INFO] Creating /var/log/chkrootkit directory if not exists."
     if [ ! -d /var/log/chkrootkit ]; then
         sudo mkdir -p /var/log/chkrootkit
         sudo chmod 750 /var/log/chkrootkit
@@ -108,6 +110,7 @@ main() {
     fi
 
     # Set up chkrootkit log file and permissions
+    echo "[INFO] Initializing chkrootkit log file."
     if [ ! -f /var/log/chkrootkit/chkrootkit.log ]; then
         sudo touch /var/log/chkrootkit/chkrootkit.log
         sudo chmod 640 /var/log/chkrootkit/chkrootkit.log
@@ -115,6 +118,7 @@ main() {
     fi
 
     # Deploy log rotation configuration
+    echo "[INFO] Deploying logrotate configuration for chkrootkit."
     sudo cp "$SCRIPTS/cron/etc/logrotate.d/chkrootkit" /etc/logrotate.d/chkrootkit
     sudo chmod 644 /etc/logrotate.d/chkrootkit
     sudo chown root:root /etc/logrotate.d/chkrootkit
