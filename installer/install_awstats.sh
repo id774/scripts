@@ -81,7 +81,7 @@ check_sudo() {
 
 # Install AWStats package
 install_awstats() {
-    echo "Installing AWStats..."
+    echo "[INFO] Installing AWStats."
     if ! sudo apt-get update; then
         echo "[ERROR] Failed to update package list." >&2
         exit 1
@@ -95,7 +95,7 @@ install_awstats() {
 
 # Configure AWStats
 configure_awstats() {
-    echo "[INFO] Configuring AWStats and Apache..."
+    echo "[INFO] Configuring AWStats and Apache."
 
     for file in /etc/awstats/awstats.conf* /etc/apache2/sites-available/custom* /etc/logrotate.d/apache2; do
         if [ ! -f "$file" ]; then
@@ -105,7 +105,7 @@ configure_awstats() {
         fi
     done
 
-    echo "[INFO] Setting permissions on Apache logs..."
+    echo "[INFO] Setting permissions on Apache logs."
     if ! sudo chmod 440 /var/log/apache2/*; then
         echo "[ERROR] Failed to set log file permissions." >&2
         exit 1

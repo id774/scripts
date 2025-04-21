@@ -96,6 +96,7 @@ setup_environment() {
 
 # Create necessary directories for Cassandra
 mkdir_lib_and_log() {
+    echo "[INFO] Creating /var/lib/cassandra and /var/log/cassandra directories."
     [ -d /var/lib/cassandra ] || sudo mkdir /var/lib/cassandra
     sudo chown -R "$OWNER" /var/lib/cassandra
     [ -d /var/log/cassandra ] || sudo mkdir /var/log/cassandra
@@ -106,20 +107,30 @@ mkdir_lib_and_log() {
 install_cassandra() {
     setup_environment "$1"
 
+    echo "[INFO] Creating temporary directory."
     mkdir install_cassandra
     cd install_cassandra || exit 1
 
+    echo "[INFO] Downloading Apache Cassandra $VERSION."
     wget "http://ftp.riken.jp/net/apache/cassandra/$VERSION/apache-cassandra-$VERSION-bin.tar.gz"
+
+    echo "[INFO] Extracting archive."
     tar xzvf "apache-cassandra-$VERSION-bin.tar.gz"
+
+    echo "[INFO] Renaming extracted directory."
     mv "apache-cassandra-$VERSION" "$VERSION"
 
+    echo "[INFO] Moving Cassandra to /opt."
     [ -d /opt/cassandra ] || sudo mkdir -p /opt/cassandra
     [ -d "/opt/cassandra/$VERSION" ] && sudo rm -rf "/opt/cassandra/$VERSION"
     sudo mv "$VERSION" /opt/cassandra/
     sudo chown -R "$OWNER" "/opt/cassandra/$VERSION"
+
+    echo "[INFO] Cleaning up temporary files."
     cd .. || exit 1
     rm -rf install_cassandra
 
+    echo "[INFO] Creating 'current' symlink."
     cd /opt/cassandra || exit 1
     [ -L current ] || sudo ln -s "$VERSION" current
     sudo chown -h "$OWNER" current
