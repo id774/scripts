@@ -88,8 +88,10 @@ setup_environment() {
 # Install dot_vim configuration
 install_dotvim() {
     if [ ! -d "$TARGET" ]; then
+        echo "[INFO] Creating target directory at $TARGET."
         mkdir -p "$TARGET"
     fi
+    echo "[INFO] Copying dot_vim files to $TARGET."
     cp $OPTIONS "$SCRIPTS/dot_files/dot_vim"/* "$TARGET"/
 }
 
@@ -109,6 +111,7 @@ main() {
         exit 1
     fi
 
+    echo "[INFO] Starting dot_vim installation..."
     setup_environment "$1"
     install_dotvim "$1"
 
