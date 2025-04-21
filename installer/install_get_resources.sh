@@ -102,8 +102,11 @@ main() {
     check_scripts
     check_sudo
 
+    echo "[INFO] Starting server resource report setup."
+
     # Make Directory if it doesn't exist and set permissions
     if [ ! -d /var/log/sysadmin ]; then
+        echo "[INFO] Creating /var/log/sysadmin directory."
         sudo mkdir -p /var/log/sysadmin
         sudo chmod 750 /var/log/sysadmin
         sudo chown root:adm /var/log/sysadmin
@@ -111,6 +114,7 @@ main() {
 
     # Set up log file and permissions
     if [ ! -f /var/log/sysadmin/resources.log ]; then
+        echo "[INFO] Creating resources.log file."
         sudo touch /var/log/sysadmin/resources.log
         sudo chmod 640 /var/log/sysadmin/resources.log
         sudo chown root:adm /var/log/sysadmin/resources.log
@@ -118,16 +122,19 @@ main() {
 
     # Deploy log rotation configuration
     if [ ! -f /etc/logrotate.d/resources ]; then
+        echo "[INFO] Deploying logrotate configuration."
         sudo cp "$SCRIPTS/cron/etc/logrotate.d/resources" /etc/logrotate.d/resources
         sudo chmod 640 /etc/logrotate.d/resources
         sudo chown root:adm /etc/logrotate.d/resources
     fi
 
     # Deploy the get_resources script and cron job
+    echo "[INFO] Deploying get_resources.sh to /root/bin."
     sudo cp "$SCRIPTS/get_resources.sh" /root/bin/
     sudo chmod 700 /root/bin/get_resources.sh
     sudo chown root:root /root/bin/get_resources.sh
 
+    echo "[INFO] Installing cron job to /etc/cron.hourly."
     sudo cp "$SCRIPTS/cron/bin/get_resources" /etc/cron.hourly/
     sudo chmod 740 /etc/cron.hourly/get_resources
     sudo chown root:adm /etc/cron.hourly/get_resources
