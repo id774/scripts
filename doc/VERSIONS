@@ -16,6 +16,7 @@ v1.4.2 (Release Date: TBD)
 - Ensure idempotency of crontab setups, maintaining consistent behavior regardless of the scheduled day or time.
 - Transition ClamAV cron setup from /etc/cron.weekly to /etc/cron.weekend.
 - Standardize log level tags as [INFO], [WARN], and [ERROR] across all scripts.
+- Add detailed [INFO] log messages to many installer scripts to improve traceability during execution.
 - Redirect error messages to stderr across scripts for improved log handling and automation support.
 
 v1.4.1 (2025-03-28)

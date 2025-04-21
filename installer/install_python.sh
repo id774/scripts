@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.3 2025-04-21
+#       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v2.2 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v2.1 2025-03-22

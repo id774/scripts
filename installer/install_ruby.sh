@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.3 2025-04-21
+#       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v3.2 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v3.1 2025-03-22
@@ -119,6 +121,7 @@ setup_environment() {
 # Save sources if requested
 save_sources() {
     [ "$SUDO" = "sudo" ] || return
+    echo "[INFO] Saving source files to /usr/local/src/ruby."
     $SUDO mkdir -p /usr/local/src/ruby
     $SUDO cp -a "ruby-$VERSION" /usr/local/src/ruby/
     $SUDO chown $OWNER /usr/local/src/ruby
