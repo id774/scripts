@@ -126,6 +126,7 @@ deploy_dotfile() {
 
 # Set up Emacs configuration directories and permissions
 setup_dotemacs() {
+    echo "[INFO] Setting up Emacs configuration under $1/.emacs.d"
     mkdir_if_not_exist \
       "$1/.emacs.d" \
       "$1/.emacs.d/site-lisp" \
@@ -153,6 +154,7 @@ mkdir_skelton() {
 
 # Deploy dotfiles and create necessary directories for a given user
 deploy_dotfiles() {
+    echo "[INFO] Copying dotfiles to $1"
     deploy_dotfile "$1"
     mkdir_skelton "$1"
 }
@@ -170,6 +172,7 @@ deploy_dotfiles_to_mac() {
     while [ "$#" -gt 0 ]
     do
         if [ -d "/Users/$1" ]; then
+            echo "[INFO] Deploying dotfiles to macOS user: $1"
             deploy_dotfiles "/Users/$1"
         fi
         shift
@@ -181,6 +184,7 @@ deploy_dotfiles_to_linux() {
     while [ "$#" -gt 0 ]
     do
         if [ -d "/home/$1" ]; then
+            echo "[INFO] Deploying dotfiles to Linux user: $1"
             deploy_dotfiles "/home/$1"
             sudo chown "$1:$(id -gn "$1")" "/home/$1"
             sudo find "/home/$1" -maxdepth 1 -mindepth 1 -exec chown "$1:$(id -gn "$1")" {} +
@@ -237,6 +241,8 @@ main() {
     check_scripts
     setup_environment "$1"
     check_sudo
+
+    echo "[INFO] Starting dotfiles deployment process."
     bulk_deploy
     rm -f "$HOME/.zshrc.zwc"
     cd || exit 1
