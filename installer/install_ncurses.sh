@@ -121,8 +121,11 @@ save_sources() {
 
 # Install ncurses
 install_ncurses() {
+    echo "[INFO] Creating temporary build directory."
     mkdir install_ncurses
     cd install_ncurses || exit 1
+
+    echo "[INFO] Downloading ncurses $VERSION..."
     wget "http://ftp.gnu.org/pub/gnu/ncurses/ncurses-$VERSION.tar.gz"
 
     # Check if the file was downloaded successfully
@@ -131,13 +134,23 @@ install_ncurses() {
         exit 1
     fi
 
+    echo "[INFO] Extracting archive."
     tar xzvf "ncurses-$VERSION.tar.gz"
     cd "ncurses-$VERSION" || exit 1
+
+    echo "[INFO] Configuring build with prefix: $PREFIX"
     ./configure --with-shared --with-normal --prefix="$PREFIX"
+
+    echo "[INFO] Compiling source code."
     make
+
+    echo "[INFO] Installing to: $PREFIX"
     $SUDO make install
+
     cd .. || exit 1
     [ "$DOWNLOAD_SOURCE" = "auto" ] && save_sources
+
+    echo "[INFO] Cleaning up temporary files."
     cd .. || exit 1
     $SUDO rm -rf install_ncurses
 }
