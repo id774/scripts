@@ -115,6 +115,7 @@ main() {
 
     # Make Directory if it doesn't exist and set permissions
     if [ ! -d /var/log/sysadmin ]; then
+        echo "[INFO] Creating /var/log/sysadmin directory."
         sudo mkdir -p /var/log/sysadmin
         sudo chmod 750 /var/log/sysadmin
         sudo chown root:adm /var/log/sysadmin
@@ -122,6 +123,7 @@ main() {
 
     # Set up log file and permissions
     if [ ! -f /var/log/sysadmin/fix-permissions.log ]; then
+        echo "[INFO] Creating fix-permissions log file."
         sudo touch /var/log/sysadmin/fix-permissions.log
         sudo chmod 640 /var/log/sysadmin/fix-permissions.log
         sudo chown root:adm /var/log/sysadmin/fix-permissions.log
@@ -129,12 +131,14 @@ main() {
 
     # Deploy log rotation configuration
     if [ ! -f /etc/logrotate.d/fix-permissions ]; then
+        echo "[INFO] Deploying logrotate configuration."
         sudo cp "$SCRIPTS/cron/etc/logrotate.d/fix-permissions" /etc/logrotate.d/fix-permissions
         sudo chmod 640 /etc/logrotate.d/fix-permissions
         sudo chown root:adm /etc/logrotate.d/fix-permissions
     fi
 
     # Deploy the fix-permissions script and cron job
+    echo "[INFO] Deploying fix-permissions cron job."
     sudo cp "$SCRIPTS/cron/bin/fix-permissions.sh" /etc/cron.daily/fix-permissions
     sudo chmod 740 /etc/cron.daily/fix-permissions
     sudo chown root:adm /etc/cron.daily/fix-permissions
