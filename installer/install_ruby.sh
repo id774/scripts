@@ -127,17 +127,26 @@ save_sources() {
 
 # Compile and install Ruby
 make_and_install() {
+    echo "[INFO] Configuring the build..."
     cd "ruby-$VERSION" || exit 1
     ./configure --prefix="$PREFIX"
+
+    echo "[INFO] Building Ruby..."
     make
+
+    echo "[INFO] Installing Ruby to $PREFIX..."
     $SUDO make install
     cd .. || exit 1
 }
 
 # Download and install Ruby
 install_ruby() {
+    echo "[INFO] Creating temporary build directory."
     mkdir install_ruby
+
     cd install_ruby || exit 1
+
+    echo "[INFO] Downloading Ruby $VERSION from https://cache.ruby-lang.org..."
     curl -L "https://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR/ruby-$VERSION.tar.gz" -O
 
     # Check if the file was downloaded successfully
@@ -146,8 +155,11 @@ install_ruby() {
         exit 1
     fi
 
+    echo "[INFO] Extracting archive."
     tar xzvf "ruby-$VERSION.tar.gz"
+
     make_and_install
+
     [ "$DOWNLOAD_SOURCE" = "auto" ] && save_sources
     cd .. || exit 1
     $SUDO rm -rf install_ruby

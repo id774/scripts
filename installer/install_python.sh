@@ -127,17 +127,26 @@ save_sources() {
 
 # Compile and install Python
 make_and_install() {
+    echo "[INFO] Configuring build..."
     cd "Python-$VERSION" || exit 1
     ./configure --prefix="$PREFIX"
+
+    echo "[INFO] Compiling source..."
     make
+
+    echo "[INFO] Installing Python..."
     $SUDO make install
     cd .. || exit 1
 }
 
 # Download and install Python
 install_python() {
+    echo "[INFO] Creating temporary build directory."
     mkdir install_python
+
     cd install_python || exit 1
+
+    echo "[INFO] Downloading Python $VERSION from python.org..."
     curl -L "http://www.python.org/ftp/python/$VERSION/Python-$VERSION.tgz" -O
 
     # Check if the file was downloaded successfully
@@ -146,9 +155,13 @@ install_python() {
         exit 1
     fi
 
+    echo "[INFO] Extracting archive..."
     tar xzvf "Python-$VERSION.tgz"
+
     make_and_install
     [ "$DOWNLOAD_SOURCE" = "auto" ] && save_sources
+
+    echo "[INFO] Cleaning up temporary files."
     cd .. || exit 1
     $SUDO rm -rf install_python
 }
