@@ -101,6 +101,7 @@ check_scripts() {
 # Create directory for logs
 setup_log_directory() {
     if [ ! -d /var/log/sysadmin ]; then
+        echo "[INFO] Ensuring /var/log/sysadmin exists."
         sudo mkdir -p /var/log/sysadmin
         sudo chmod 750 /var/log/sysadmin
         sudo chown root:adm /var/log/sysadmin
@@ -110,6 +111,7 @@ setup_log_directory() {
 # Set up log file and permissions
 setup_log_file() {
     if [ ! -f /var/log/sysadmin/run_tests.log ]; then
+        echo "[INFO] Creating run_tests log file."
         sudo touch /var/log/sysadmin/run_tests.log
         sudo chmod 640 /var/log/sysadmin/run_tests.log
         sudo chown root:adm /var/log/sysadmin/run_tests.log
@@ -119,6 +121,7 @@ setup_log_file() {
 # Deploy log rotation configuration
 deploy_log_rotation() {
     if [ ! -f /etc/logrotate.d/run_tests ]; then
+        echo "[INFO] Deploying logrotate configuration for run_tests."
         sudo cp "$SCRIPTS/cron/etc/logrotate.d/run_tests" /etc/logrotate.d/run_tests
         sudo chmod 640 /etc/logrotate.d/run_tests
         sudo chown root:adm /etc/logrotate.d/run_tests
@@ -127,10 +130,12 @@ deploy_log_rotation() {
 
 # Deploy run_tests script and configuration file
 deploy_scripts() {
+    echo "[INFO] Copying run_tests script to /root/bin."
     sudo cp "$SCRIPTS/cron/bin/run_tests" /root/bin/
 
     CONFIG_FILE="/root/etc/run_tests.conf"
     if ! sudo test -f "$CONFIG_FILE"; then
+        echo "[INFO] Copying run_tests.conf to /root/etc."
         sudo cp "$SCRIPTS/cron/etc/run_tests.conf" "$CONFIG_FILE"
     else
         echo "[INFO] Configuration file already exists: $CONFIG_FILE"
@@ -149,6 +154,7 @@ setup_cron_job() {
     CRON_JOB="30 04 * * * root test -x /root/bin/run_tests && /root/bin/run_tests"
 
     if ! sudo test -f "$CRON_FILE"; then
+        echo "[INFO] Creating cron job at /etc/cron.d/run_tests."
         echo "$CRON_JOB" | sudo tee "$CRON_FILE" > /dev/null
     else
         echo "[INFO] Cron job already exists: $CRON_FILE"
