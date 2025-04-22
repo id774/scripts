@@ -195,7 +195,7 @@ github_backup() {
 
 # Function to sync user directories from disk to remote server via SSH
 rsync_disk2ssh_1() {
-    echo -n "[INFO] Executing: rsync_disk2ssh_1 $B_DEVICE -> $T_DEVICE of $T_HOST on "
+    echo -n "[INFO] Executing: rsync_disk2ssh_1 $B_DEVICE -> $T_DEVICE of $T_HOST at "
     date "+%Y/%m/%d %T"
     if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user1" ]; then
         rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
@@ -230,7 +230,7 @@ rsync_disk2ssh_1() {
 
 # Function to sync large files from disk to remote server via SSH
 rsync_disk2ssh_2() {
-    echo -n "[INFO] Executing: rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST on "
+    echo -n "[INFO] Executing: rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST at "
     date "+%Y/%m/%d %T"
     if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ]; then
         rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
@@ -245,7 +245,7 @@ rsync_disk2ssh_2() {
 
 # Function to sync user directories between two local disks
 rsync_disk2disk_1() {
-    echo -n "[INFO] Executing: rsync_disk2disk_1 $B_DEVICE -> $T_DEVICE on "
+    echo -n "[INFO] Executing: rsync_disk2disk_1 $B_DEVICE -> $T_DEVICE at "
     date "+%Y/%m/%d %T"
     if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user1" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user1" ]; then
         rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
@@ -280,7 +280,7 @@ rsync_disk2disk_1() {
 
 # Function to sync large files between two local disks
 rsync_disk2disk_2() {
-    echo -n "[INFO] Executing: rsync_disk2disk_2 $B_DEVICE -> $T_DEVICE on "
+    echo -n "[INFO] Executing: rsync_disk2disk_2 $B_DEVICE -> $T_DEVICE at "
     date "+%Y/%m/%d %T"
     if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/largefiles" ]; then
         rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
