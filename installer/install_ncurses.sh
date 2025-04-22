@@ -115,6 +115,7 @@ setup_environment() {
 # Save sources if requested
 save_sources() {
     [ "$SUDO" = "sudo" ] || return
+    echo "[INFO] Saving source files to /usr/local/src/ncurses."
     if [ ! -d /usr/local/src/ncurses ]; then
         $SUDO mkdir -p /usr/local/src/ncurses
     fi

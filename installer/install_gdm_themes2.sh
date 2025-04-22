@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.3 2025-04-22
+#       Improved log granularity with [INFO] tags for each processing step.
 #  v2.2 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v2.1 2025-03-22
@@ -88,11 +90,27 @@ check_sudo() {
 
 # Install GDM Themes 2
 install_gdm_themes2() {
-    [ -d /usr/share/gdm/themes ] || exit 1
+    echo "[INFO] Checking if /usr/share/gdm/themes exists."
+    if [ ! -d /usr/share/gdm/themes ]; then
+        echo "[ERROR] /usr/share/gdm/themes does not exist. Aborting." >&2
+        exit 1
+    fi
+
+    echo "[INFO] Downloading GDM themes archive..."
     wget http://id774.net/archive/gdmthemes2.tar.gz
+    if [ $? -ne 0 ]; then
+        echo "[ERROR] Failed to download gdmthemes2.tar.gz." >&2
+        exit 1
+    fi
+
+    echo "[INFO] Extracting archive to /usr/share/gdm/themes..."
     sudo tar xzvf gdmthemes2.tar.gz -C /usr/share/gdm/themes
+
+    echo "[INFO] Setting ownership to root:root..."
     sudo chown -R root:root /usr/share/gdm/themes
-    rm gdmthemes2.tar.gz
+
+    echo "[INFO] Cleaning up downloaded archive."
+    rm -f gdmthemes2.tar.gz
 }
 
 # Main function to execute the script

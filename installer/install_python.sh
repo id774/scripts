@@ -121,6 +121,7 @@ setup_environment() {
 # Save sources if requested
 save_sources() {
     [ "$SUDO" = "sudo" ] || return
+    echo "[INFO] Saving source files to /usr/local/src/python."
     $SUDO mkdir -p /usr/local/src/python
     $SUDO cp $OPTIONS "Python-$VERSION" /usr/local/src/python
     $SUDO chown $OWNER /usr/local/src/python

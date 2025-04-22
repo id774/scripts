@@ -140,6 +140,7 @@ setup_environment() {
 
 # Save downloaded packages
 save_packages() {
+    echo "[INFO] Saving source package to $2"
     sudo cp "$1" "$2"
     sudo chown "$OWNER" "$2/$1"
 }
@@ -165,6 +166,7 @@ install_veracrypt() {
     cd install_veracrypt || exit 1
 
     FILE_NAME="veracrypt-$VERSION-setup-console-$ARCH"
+
     echo "[INFO] Downloading $FILE_NAME..."
     wget "http://id774.net/veracrypt/$FILE_NAME"
     [ -n "$1" ] || save_packages "$FILE_NAME" /usr/local/src/crypt/veracrypt

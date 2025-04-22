@@ -155,6 +155,7 @@ setup_environment() {
 
 # Save downloaded packages
 save_packages() {
+    echo "[INFO] Saving source package to $2"
     sudo cp "$1" "$2"
     sudo chown "$OWNER" "$2/$1"
 }
@@ -181,6 +182,7 @@ install_truecrypt() {
 
     TAR_NAME="truecrypt-$VERSION-linux-console-$ARCH.tar.gz"
     EXEC_NAME="truecrypt-$VERSION-setup-console-$ARCH"
+
     echo "[INFO] Downloading $TAR_NAME..."
     wget "http://id774.net/truecrypt/$TAR_NAME"
     tar xzvf "$TAR_NAME"

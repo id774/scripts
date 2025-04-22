@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.6 2025-04-21
+#       Refined [INFO] log messages for clearer and more meaningful execution steps.
 #  v0.5 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v0.4 2025-03-22
@@ -99,6 +101,7 @@ setup_environment() {
 
 # Save sources if requested
 save_sources() {
+    echo "[INFO] Saving sources to /usr/local/src/ta-lib"
     sudo mkdir -p /usr/local/src
     sudo cp -av ta-lib /usr/local/src/
     sudo chown -R root:root /usr/local/src/
@@ -107,22 +110,37 @@ save_sources() {
 # Install TA-Lib
 install_talib() {
     setup_environment "$1"
+
+    echo "[INFO] Downloading TA-Lib version $VERSION..."
     mkdir install_talib
     cd install_talib || exit 1
+
     curl -L "http://files.id774.net/archive/$FILENAME" -O
     if [ ! -f "$FILENAME" ]; then
         echo "[ERROR] Failed to download TA-Lib $VERSION." >&2
         exit 1
     fi
+    echo "[INFO] Download completed: $FILENAME"
+
+    echo "[INFO] Extracting archive: $FILENAME"
     tar xzvf "$FILENAME"
     cd ta-lib || exit 1
+
+    echo "[INFO] Building TA-Lib..."
     ./configure --prefix=/usr/local
     make
+    echo "[INFO] Build completed successfully."
+
+    echo "[INFO] Installing TA-Lib to /usr/local..."
     sudo make install
+    echo "[INFO] TA-Lib installed to /usr/local"
+
     cd .. || exit 1
     [ -n "$2" ] || save_sources
+
     cd .. || exit 1
     rm -rf install_talib
+    echo "[INFO] Installation process completed."
 }
 
 # Main function to execute the script
