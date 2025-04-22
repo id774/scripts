@@ -99,7 +99,7 @@ extract_and_check_command() {
 # Function to add an entry to crontab if it does not exist
 add_entry() {
     entry="$1"
-    echo "[INFO] Verifying crontab entry for: $(echo "$entry" | cut -d' ' -f6-)"
+    echo "[INFO] Verifying crontab entry for: $entry"
     if ! extract_and_check_command "$entry"; then
         printf "%s\n" "$entry" | sudo tee -a "$CRONTAB_FILE" > /dev/null
         echo "[INFO] Added entry: $entry"
