@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.6 2025-04-22
+#       Improved log granularity with [INFO] and [ERROR] tags for each step.
 #  v0.5 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v0.4 2025-03-22
@@ -99,6 +101,7 @@ setup_environment() {
 
 # Save sources if requested
 save_sources() {
+    echo "[INFO] Saving sources to /usr/local/src/resin"
     sudo mkdir -p /usr/local/src/resin
     sudo cp -av "$RESIN" /usr/local/src/resin/
     sudo chown -R root:root /usr/local/src/resin
@@ -107,21 +110,37 @@ save_sources() {
 # Install Resin
 install_resin() {
     setup_environment "$1"
+
+    echo "[INFO] Creating temporary build directory: install_resin"
     mkdir install_resin
     cd install_resin || exit 1
+
+    echo "[INFO] Downloading Resin $VERSION..."
     wget "http://www.caucho.com/download/$RESIN.zip"
     if [ ! -f "$RESIN.zip" ]; then
         echo "[ERROR] Failed to download Resin $VERSION." >&2
         exit 1
     fi
+    echo "[INFO] Download complete: $RESIN.zip"
+
+    echo "[INFO] Extracting archive..."
     unzip "$RESIN.zip"
+
+    echo "[INFO] Configuring Resin..."
     cd "$RESIN" || exit 1
     ./configure --prefix="/opt/resin/$VERSION"
+
+    echo "[INFO] Building Resin..."
     make
+
+    echo "[INFO] Installing Resin..."
     sudo make install
+
     cd .. || exit 1
     [ -n "$2" ] || save_sources
     cd .. || exit 1
+
+    echo "[INFO] Cleaning up temporary files..."
     rm -rf install_resin
 }
 
