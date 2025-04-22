@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-04-22
+#       Improved log granularity with [INFO] and [ERROR] tags for each step.
 #  v1.6 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.5 2025-03-22
@@ -102,6 +104,7 @@ setup_environment() {
 
 # Save sources if requested
 save_sources() {
+    echo "[INFO] Saving sources to /usr/local/src/paco"
     sudo mkdir -p /usr/local/src/paco
     sudo cp -av "paco-$PACO_VERSION" /usr/local/src/paco/
     sudo chown -R root:root /usr/local/src/paco
@@ -110,22 +113,40 @@ save_sources() {
 # Install paco
 install_paco() {
     setup_environment "$1"
+
+    echo "[INFO] Creating temporary build directory: install_paco"
     mkdir install_paco
     cd install_paco || exit 1
+
+    echo "[INFO] Downloading paco version $PACO_VERSION..."
     wget "http://downloads.sourceforge.net/paco/paco-$PACO_VERSION.tar.gz"
     if [ ! -f "paco-$PACO_VERSION.tar.gz" ]; then
         echo "[ERROR] Failed to download paco $PACO_VERSION." >&2
         exit 1
     fi
+    echo "[INFO] Download complete: paco-$PACO_VERSION.tar.gz"
+
+    echo "[INFO] Extracting archive..."
     tar xzvf "paco-$PACO_VERSION.tar.gz"
+
+    echo "[INFO] Configuring paco..."
     cd "paco-$PACO_VERSION" || exit 1
     ./configure --disable-gpaco
+
+    echo "[INFO] Building paco..."
     make
+
+    echo "[INFO] Installing paco..."
     sudo make install
+
+    echo "[INFO] Logging installation..."
     sudo make logme
+
     cd .. || exit 1
     [ -n "$2" ] || save_sources
     cd .. || exit 1
+
+    echo "[INFO] Cleaning up build directory..."
     rm -rf install_paco
 }
 
