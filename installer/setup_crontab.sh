@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-04-22
+#       Improved log granularity with [INFO] and [ERROR] tags at each step.
 #  v1.3 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.2 2025-04-05
@@ -97,6 +99,7 @@ extract_and_check_command() {
 # Function to add an entry to crontab if it does not exist
 add_entry() {
     entry="$1"
+    echo "[INFO] Verifying crontab entry for: $(echo "$entry" | cut -d' ' -f6-)"
     if ! extract_and_check_command "$entry"; then
         printf "%s\n" "$entry" | sudo tee -a "$CRONTAB_FILE" > /dev/null
         echo "[INFO] Added entry: $entry"
@@ -108,6 +111,7 @@ add_entry() {
 
 # Function to ensure required directories exist
 create_directories() {
+    echo "[INFO] Ensuring cron directories exist..."
     for dir in /etc/cron.weekday /etc/cron.weekend; do
         if [ ! -d "$dir" ]; then
             sudo mkdir -p "$dir"
