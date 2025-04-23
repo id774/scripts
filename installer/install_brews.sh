@@ -111,6 +111,7 @@ main() {
     brew install nkf
     brew install vim
     brew install freetype
+    brew install rsync
     brew install mecab
     brew install cabocha
     brew install ta-lib

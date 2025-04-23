@@ -4,6 +4,7 @@ Repository Update History
 v1.4.2 (Release Date: TBD)
 --------------------------
 - Enhance security by excluding /usr/local/bin from secure_path in sudoers template of macOS.
+- Add `rsync` installation via Homebrew to support full-featured GNU rsync instead of openrsync in macOS.
 - Add munin-sync.sh for synchronizing Munin data and logs to remote server.
 - Add munin-symlink.sh for dynamic monitoring target management in Munin.
 - Add server_alive_check.sh for server availability monitoring.
