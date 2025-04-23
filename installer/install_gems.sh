@@ -218,7 +218,6 @@ install_gems() {
     for gem in $gems; do
         # Remove leading and trailing spaces/tabs
         gem=$(echo "$gem" | sed 's/^[ \t]*//;s/[ \t]*$//')
-        echo "[INFO] Installing $gem..."
         $GEM install $PROXY "$gem"
     done
 

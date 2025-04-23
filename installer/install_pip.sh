@@ -201,7 +201,6 @@ install_libs() {
     for lib in $libs; do
         # Remove leading and trailing spaces/tabs
         lib=$(echo "$lib" | sed 's/^[ \t]*//;s/[ \t]*$//')
-        echo "[INFO] Installing $lib..."
         install_lib "$lib"
     done
 
