@@ -106,7 +106,7 @@ def dry_run_formatting(paths, ignore_errors):
     """ Perform a dry run to show which files would be formatted and cleaned without making actual changes. """
     for path in paths:
         print(
-            "Dry run: No files will be modified for '{}'. Use -i to auto-fix.".format(path))
+            "[INFO] DRY RUN: No files will be modified for '{}'. Use -i to auto-fix.".format(path))
         run_command("flake8 --ignore={} {}".format(ignore_errors,
                     path), show_files="Would format:")
         run_command("autoflake --imports=django,requests,urllib3 --check {}".format(path),
