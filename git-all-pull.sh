@@ -113,7 +113,7 @@ pull_repo() {
         echo "[INFO] Pulling repository: $repo"
         git -C "$repo" pull
     else
-        echo "[DRY RUN] Pull repository: $repo"
+        echo "[INFO] DRY RUN: Pull repository: $repo"
     fi
 }
 
