@@ -147,7 +147,7 @@ create_git_repo() {
     group=$6
 
     if [ "$dry_run" = true ]; then
-        echo "[INFO] Dry run: A new repository would be created at '${repo_path}'"
+        echo "[INFO] DRY RUN: A new repository would be created at '${repo_path}'"
         return 0
     fi
 
