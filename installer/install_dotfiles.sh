@@ -118,14 +118,25 @@ mkdir_if_not_exist() {
 
 # Deploy user dotfiles such as .zshrc, .vimrc, etc.
 deploy_dotfile() {
-    for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore condarc gemrc Rprofile emacs
-    do
-        test -d "$1" && sudo cp "$OPTIONS" "$SCRIPTS/dot_files/dot_$DOT_FILES" "$1/.$DOT_FILES"
+    for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore condarc gemrc Rprofile emacs; do
+        if test -d "$1"; then
+            if ! sudo cp "$OPTIONS" "$SCRIPTS/dot_files/dot_$DOT_FILES" "$1/.$DOT_FILES"; then
+                echo "[ERROR] Failed to copy dot_$DOT_FILES to $1" >&2
+                return 1
+            fi
+        fi
     done
-    for DOT_FILES in pryrc
-    do
-        test -d "$1" && test -f "$1/.$DOT_FILES" && sudo rm -vf "$1/.$DOT_FILES"
+
+    for DOT_FILES in pryrc; do
+        if test -d "$1" && test -f "$1/.$DOT_FILES"; then
+            if ! sudo rm -vf "$1/.$DOT_FILES"; then
+                echo "[ERROR] Failed to remove $1/.$DOT_FILES" >&2
+                return 1
+            fi
+        fi
     done
+
+    return 0
 }
 
 # Set up Emacs configuration directories and permissions
