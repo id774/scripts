@@ -88,6 +88,7 @@ check_scripts() {
 
 # Function to set file permissions
 set_permissions() {
+    echo "[INFO] Setting read/write permissions for all script files"
     chmod -R u+rw,g+r,g-w,o+r,o-w "$SCRIPTS"/*
 
     # Set execute permissions for script files (.sh, .py, .rb)
