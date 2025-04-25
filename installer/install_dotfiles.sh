@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.6 2025-04-25
+#       Exit on failure during dotfile deployment and show success only if all steps succeed.
 #  v2.5 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v2.4 2025-04-13
@@ -157,8 +159,8 @@ mkdir_skelton() {
 # Deploy dotfiles and create necessary directories for a given user
 deploy_dotfiles() {
     echo "[INFO] Copying dotfiles to $1"
-    deploy_dotfile "$1"
-    mkdir_skelton "$1"
+    deploy_dotfile "$1" || return 1
+    mkdir_skelton "$1" || return 1
 }
 
 # Deploy dotfiles to a specific user and adjust ownership
@@ -187,9 +189,9 @@ deploy_dotfiles_to_linux() {
     do
         if [ -d "/home/$1" ]; then
             echo "[INFO] Deploying dotfiles to Linux user: $1"
-            deploy_dotfiles "/home/$1"
-            sudo chown "$1:$(id -gn "$1")" "/home/$1"
-            sudo find "/home/$1" -maxdepth 1 -mindepth 1 -exec chown "$1:$(id -gn "$1")" {} +
+            deploy_dotfiles "/home/$1" || return 1
+            sudo chown "$1:$(id -gn "$1")" "/home/$1" || return 1
+            sudo find "/home/$1" -maxdepth 1 -mindepth 1 -exec chown "$1:$(id -gn "$1")" {} + || return 1
         fi
         shift
     done
@@ -215,21 +217,22 @@ bulk_deploy() {
       plagger \
       twitter \
       tiarra \
-      testuser
+      testuser || return 1
     deploy_dotfiles_to_mac \
       mac \
       apple \
       adm \
       demo \
       work \
-      testuser
-    deploy_dotfiles_to_others /var/root root
-    deploy_dotfiles_to_others /root root
-    deploy_dotfiles_to_others /var/lib/postgresql postgres
-    deploy_dotfiles_to_others /var/lib/pgsql postgres
-    deploy_dotfiles_to_others /usr/lib/oracle/xe oracle
-    deploy_dotfiles_to_others /export/home/solaris solaris
-    deploy_dotfiles_to_others /var/lib/jenkins jenkins
+      testuser || return 1
+    deploy_dotfiles_to_others /var/root root || return 1
+    deploy_dotfiles_to_others /root root || return 1
+    deploy_dotfiles_to_others /var/lib/postgresql postgres || return 1
+    deploy_dotfiles_to_others /var/lib/pgsql postgres || return 1
+    deploy_dotfiles_to_others /usr/lib/oracle/xe oracle || return 1
+    deploy_dotfiles_to_others /export/home/solaris solaris || return 1
+    deploy_dotfiles_to_others /var/lib/jenkins jenkins || return 1
+    return 0
 }
 
 # Main function to execute the script
@@ -245,7 +248,10 @@ main() {
     check_sudo
 
     echo "[INFO] Starting dotfiles deployment process."
-    bulk_deploy
+    if ! bulk_deploy; then
+        echo "[ERROR] One or more dotfile deployments failed." >&2
+        exit 1
+    fi
     rm -f "$HOME/.zshrc.zwc"
     cd || exit 1
     zsh -c 'zcompile "$HOME/.zshrc"'

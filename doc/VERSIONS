@@ -12,6 +12,7 @@ v1.4.2 (Release Date: TBD)
 - Fix SyntaxWarning in unzip_subdir.py by using raw string for regex in re.sub.
 - Fix inaccurate rsync return code logging by assigning RC immediately after execution in rsync_backup.sh.
 - Rename rsync_backup to rsync_backup.log and update logrotate configuration to preserve numbered rotation format.
+- Exit on failure during deployment and show success only if all steps succeed in install_dotfiles.sh.
 - Remove smb.py script as it is no longer in use.
 - Rewrite swapext.py with dry-run mode, safety prompt, and OptionParser integration.
 - Prevent overwriting existing configuration files in multiple installer scripts to ensure safe redeployment.
