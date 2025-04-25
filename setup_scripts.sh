@@ -15,6 +15,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2025-04-25
+#       Add INFO log before each permission operation to improve clarity.
+#       Verify all return codes to ensure successful completion before final message.
+#       Output [ERROR] message if any permission operation fails.
 #  v1.7 2025-04-12
 #       Revoke execute permissions from scripts/cron/bin to avoid
 #       accidental manual execution of cron job scripts.
@@ -90,15 +94,25 @@ check_scripts() {
 set_permissions() {
     echo "[INFO] Setting read/write permissions for all script files"
     chmod -R u+rw,g+r,g-w,o+r,o-w "$SCRIPTS"/*
+    RC1=$?
 
-    # Set execute permissions for script files (.sh, .py, .rb)
     echo "[INFO] Granting execute permissions to script files (*.sh, *.py, *.rb)"
     find "$SCRIPTS"/ -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+    RC2=$?
 
-    # Revoke execute permission under scripts/cron/bin to avoid manual execution
     if [ -d "$SCRIPTS/cron/bin" ]; then
         echo "[INFO] Removing execute permissions from scripts/cron/bin/*"
         find "$SCRIPTS/cron/bin" -type f -exec chmod a-x {} \;
+        RC3=$?
+    else
+        RC3=0
+    fi
+
+    if [ "$RC1" -eq 0 ] && [ "$RC2" -eq 0 ] && [ "$RC3" -eq 0 ]; then
+        echo "[INFO] All permission settings completed successfully"
+    else
+        echo "[ERROR] One or more permission operations failed" >&2
+        exit 1
     fi
 }
 

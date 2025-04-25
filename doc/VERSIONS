@@ -8,6 +8,7 @@ v1.4.2 (Release Date: TBD)
 - Add munin-sync.sh for synchronizing Munin data and logs to remote server.
 - Add munin-symlink.sh for dynamic monitoring target management in Munin.
 - Add server_alive_check.sh for server availability monitoring.
+- Validate all return codes before declaring successful completion in setup_scripts.sh.
 - Fix SyntaxWarning in unzip_subdir.py by using raw string for regex in re.sub.
 - Fix inaccurate rsync return code logging by assigning RC immediately after execution in rsync_backup.sh.
 - Rename rsync_backup to rsync_backup.log and update logrotate configuration to preserve numbered rotation format.
