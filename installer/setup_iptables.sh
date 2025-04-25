@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-04-25
+#       Exit immediately on failure in load_rules or enable_restore.
 #  v1.2 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.1 2025-03-27
@@ -117,13 +119,19 @@ apply_template_if_needed() {
 # Load rules into the running kernel
 load_rules() {
     echo "[INFO] Applying rules with iptables-restore"
-    sudo sh -c "iptables-restore < '$RULES_PATH'"
+    if ! sudo sh -c "iptables-restore < '$RULES_PATH'"; then
+        echo "[ERROR] Failed to apply iptables rules with iptables-restore" >&2
+        exit 1
+    fi
 }
 
 # Ensure rules are restored on boot
 enable_restore() {
     echo "[INFO] Restarting netfilter-persistent"
-    sudo systemctl restart netfilter-persistent
+    if ! sudo systemctl restart netfilter-persistent; then
+        echo "[ERROR] Failed to restart netfilter-persistent" >&2
+        exit 1
+    fi
 }
 
 # Print post-installation instructions and next steps
