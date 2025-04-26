@@ -216,7 +216,9 @@ setup_securetty() {
 }
 
 setup_dot_ipython() {
-    test -x /opt/python/current/bin/python && "$SCRIPTS/installer/setup_dot_ipython.sh"
+    if [ ! -d "$HOME/.ipython" ] && [ -x /opt/python/current/bin/python ]; then
+        "$SCRIPTS/installer/setup_dot_ipython.sh"
+    fi
 }
 
 # Set permissions for key directories
