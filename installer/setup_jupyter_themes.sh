@@ -104,6 +104,7 @@ install_jupyter_theme() {
     fi
 
     echo "[INFO] Jupyter theme configuration applied successfully."
+    echo "[INFO] If further customization is needed, edit: $HOME/.jupyter/custom/custom.css"
 }
 
 # Main function to execute the script
