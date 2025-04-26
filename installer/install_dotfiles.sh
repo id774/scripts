@@ -111,7 +111,7 @@ setup_environment() {
 mkdir_if_not_exist() {
     while [ "$#" -gt 0 ]
     do
-        sudo test -d "$1" || sudo mkdir "$1"
+        sudo test -d "$1" || sudo mkdir -p "$1"
         shift
     done
 }
@@ -122,7 +122,7 @@ deploy_dotfile() {
         if test -d "$1"; then
             if ! sudo cp "$OPTIONS" "$SCRIPTS/dot_files/dot_$DOT_FILES" "$1/.$DOT_FILES"; then
                 echo "[ERROR] Failed to copy dot_$DOT_FILES to $1" >&2
-                return 1
+                exit 1
             fi
         fi
     done
@@ -131,7 +131,7 @@ deploy_dotfile() {
         if test -d "$1" && test -f "$1/.$DOT_FILES"; then
             if ! sudo rm -vf "$1/.$DOT_FILES"; then
                 echo "[ERROR] Failed to remove $1/.$DOT_FILES" >&2
-                return 1
+                exit 1
             fi
         fi
     done
@@ -170,8 +170,12 @@ mkdir_skelton() {
 # Deploy dotfiles and create necessary directories for a given user
 deploy_dotfiles() {
     echo "[INFO] Copying dotfiles to $1"
-    deploy_dotfile "$1" || return 1
-    mkdir_skelton "$1" || return 1
+    if ! deploy_dotfile "$1"; then
+        echo "[ERROR] Failed to deploy dotfiles to $1" >&2
+        exit 1
+    fi
+
+    mkdir_skelton "$1"
 }
 
 # Deploy dotfiles to a specific user and adjust ownership
@@ -200,9 +204,9 @@ deploy_dotfiles_to_linux() {
     do
         if [ -d "/home/$1" ]; then
             echo "[INFO] Deploying dotfiles to Linux user: $1"
-            deploy_dotfiles "/home/$1" || return 1
-            sudo chown "$1:$(id -gn "$1")" "/home/$1" || return 1
-            sudo find "/home/$1" -maxdepth 1 -mindepth 1 -exec chown "$1:$(id -gn "$1")" {} + || return 1
+            deploy_dotfiles "/home/$1"
+            sudo chown "$1:$(id -gn "$1")" "/home/$1"
+            sudo find "/home/$1" -maxdepth 1 -mindepth 1 -exec chown "$1:$(id -gn "$1")" {} +
         fi
         shift
     done
@@ -228,22 +232,21 @@ bulk_deploy() {
       plagger \
       twitter \
       tiarra \
-      testuser || return 1
+      testuser
     deploy_dotfiles_to_mac \
       mac \
       apple \
       adm \
       demo \
       work \
-      testuser || return 1
-    deploy_dotfiles_to_others /var/root root || return 1
-    deploy_dotfiles_to_others /root root || return 1
-    deploy_dotfiles_to_others /var/lib/postgresql postgres || return 1
-    deploy_dotfiles_to_others /var/lib/pgsql postgres || return 1
-    deploy_dotfiles_to_others /usr/lib/oracle/xe oracle || return 1
-    deploy_dotfiles_to_others /export/home/solaris solaris || return 1
-    deploy_dotfiles_to_others /var/lib/jenkins jenkins || return 1
-    return 0
+      testuser
+    deploy_dotfiles_to_others /var/root root
+    deploy_dotfiles_to_others /root root
+    deploy_dotfiles_to_others /var/lib/postgresql postgres
+    deploy_dotfiles_to_others /var/lib/pgsql postgres
+    deploy_dotfiles_to_others /usr/lib/oracle/xe oracle
+    deploy_dotfiles_to_others /export/home/solaris solaris
+    deploy_dotfiles_to_others /var/lib/jenkins jenkins
 }
 
 # Main function to execute the script
@@ -259,10 +262,8 @@ main() {
     check_sudo
 
     echo "[INFO] Starting dotfiles deployment process."
-    if ! bulk_deploy; then
-        echo "[ERROR] One or more dotfile deployments failed." >&2
-        exit 1
-    fi
+    bulk_deploy
+
     rm -f "$HOME/.zshrc.zwc"
     cd || exit 1
     zsh -c 'zcompile "$HOME/.zshrc"'
