@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-04-27
+#       Add critical failure checks to script installation steps.
 #  v1.6 2025-04-14
 #       Improve argument parsing to only accept explicit 'install' or 'uninstall'.
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
@@ -130,7 +132,10 @@ uninstall_scripts() {
     do
         if [ -f "$SBIN/$1" ]; then
             echo "[INFO] Removing: $SBIN/$1"
-            sudo rm -f "$SBIN/$1"
+            if ! sudo rm -f "$SBIN/$1"; then
+                echo "[ERROR] Failed to remove $SBIN/$1." >&2
+                exit 1
+            fi
         fi
         shift
     done
@@ -171,9 +176,18 @@ uninstall_sysadmin_scripts() {
 
 # Install a script with the specified permissions and ownership
 install_scripts() {
-    sudo cp -v $OPTIONS $SCRIPTS/$2 $SBIN/$3
-    sudo chmod $1 $SBIN/$3
-    sudo chown $OWNER $SBIN/$3
+    if ! sudo cp -v $OPTIONS "$SCRIPTS/$2" "$SBIN/$3"; then
+        echo "[ERROR] Failed to copy $2 to $SBIN/$3." >&2
+        exit 1
+    fi
+    if ! sudo chmod "$1" "$SBIN/$3"; then
+        echo "[ERROR] Failed to set permissions on $SBIN/$3." >&2
+        exit 1
+    fi
+    if ! sudo chown "$OWNER" "$SBIN/$3"; then
+        echo "[ERROR] Failed to set ownership on $SBIN/$3." >&2
+        exit 1
+    fi
 }
 
 # Install general system administration scripts
