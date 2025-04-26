@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.7 2025-04-26
+#       Add critical failure checks during restorecon setup.
 #  v0.6 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v0.5 2025-03-22
@@ -99,38 +101,50 @@ main() {
     check_scripts
     check_sudo
 
-    # Ensure required directory exists
+    echo "[INFO] Setting up directories..."
     if [ ! -d /var/log/sysadmin ]; then
         sudo mkdir -p /var/log/sysadmin || {
             echo "[ERROR] Failed to create /var/log/sysadmin." >&2
             exit 1
         }
-        sudo chmod 750 /var/log/sysadmin || exit 1
-        sudo chown root:adm /var/log/sysadmin || exit 1
+        sudo chmod 750 /var/log/sysadmin
+        sudo chown root:adm /var/log/sysadmin
     fi
 
-    # Deploy restorecon script
-    sudo cp "$SCRIPTS/cron/bin/restorecon.sh" /root/bin/ || exit 1
-    sudo chmod 700 /root/bin/restorecon.sh || exit 1
-    sudo chown root:root /root/bin/restorecon.sh || exit 1
+    echo "[INFO] Deploying restorecon script..."
+    if ! sudo cp "$SCRIPTS/cron/bin/restorecon.sh" /root/bin/; then
+        echo "[ERROR] Failed to deploy restorecon.sh." >&2
+        exit 1
+    fi
+    sudo chmod 700 /root/bin/restorecon.sh
+    sudo chown root:root /root/bin/restorecon.sh
 
-    # Set up restorecon cron job
-    sudo cp "$SCRIPTS/cron/bin/restorecon" /etc/cron.weekly/ || exit 1
-    sudo chmod 750 /etc/cron.weekly/restorecon || exit 1
-    sudo chown root:adm /etc/cron.weekly/restorecon || exit 1
+    echo "[INFO] Setting up restorecon cron job..."
+    if ! sudo cp "$SCRIPTS/cron/bin/restorecon" /etc/cron.weekly/; then
+        echo "[ERROR] Failed to deploy restorecon cron job." >&2
+        exit 1
+    fi
+    sudo chmod 750 /etc/cron.weekly/restorecon
+    sudo chown root:adm /etc/cron.weekly/restorecon
 
-    # Ensure restorecon log file exists and set permissions
+    echo "[INFO] Preparing restorecon log file..."
     if [ ! -f /var/log/sysadmin/restorecon.log ]; then
-        sudo touch /var/log/sysadmin/restorecon.log || exit 1
-        sudo chmod 640 /var/log/sysadmin/restorecon.log || exit 1
-        sudo chown root:adm /var/log/sysadmin/restorecon.log || exit 1
+        if ! sudo touch /var/log/sysadmin/restorecon.log; then
+            echo "[ERROR] Failed to create restorecon.log." >&2
+            exit 1
+        fi
+        sudo chmod 640 /var/log/sysadmin/restorecon.log
+        sudo chown root:adm /var/log/sysadmin/restorecon.log
     fi
 
-    # Deploy log rotation configuration for restorecon logs
+    echo "[INFO] Deploying logrotate configuration..."
     if [ ! -f /etc/logrotate.d/restorecon ]; then
-        sudo cp "$SCRIPTS/cron/etc/logrotate.d/restorecon" /etc/logrotate.d/ || exit 1
-        sudo chmod 644 /etc/logrotate.d/restorecon || exit 1
-        sudo chown root:root /etc/logrotate.d/restorecon || exit 1
+        if ! sudo cp "$SCRIPTS/cron/etc/logrotate.d/restorecon" /etc/logrotate.d/; then
+            echo "[ERROR] Failed to deploy logrotate configuration." >&2
+            exit 1
+        fi
+        sudo chmod 644 /etc/logrotate.d/restorecon
+        sudo chown root:root /etc/logrotate.d/restorecon
     fi
 
     echo "[INFO] Restorecon cron job setup completed successfully."
