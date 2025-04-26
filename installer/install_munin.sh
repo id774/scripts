@@ -14,6 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-04-26
+#       Exit immediately on critical failures and
+#       ensure success message is shown only if all steps succeed.
 #  v1.3 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.2 2025-03-26
@@ -91,13 +94,19 @@ check_commands() {
 # Install Munin and dependencies
 install_munin() {
     echo "[INFO] Installing Munin and dependencies..."
-    sudo apt-get -y install munin munin-node
+    if ! sudo apt-get -y install munin munin-node; then
+        echo "[ERROR] Failed to install Munin packages." >&2
+        exit 1
+    fi
 }
 
 # Configure Munin
 configure_munin() {
     echo "[INFO] Configuring Munin..."
-    sudo cp -v "$SCRIPTS/etc/munin-apache.conf" /etc/munin/apache.conf
+    if ! sudo cp -v "$SCRIPTS/etc/munin-apache.conf" /etc/munin/apache.conf; then
+        echo "[ERROR] Failed to copy apache.conf for Munin." >&2
+        exit 1
+    fi
     sudo chown root:root /etc/munin/apache.conf
     test -f /etc/munin/apache24.conf && sudo rm -vf /etc/munin/apache24.conf && sudo ln -snf /etc/munin/apache.conf /etc/munin/apache24.conf
 }
@@ -107,7 +116,10 @@ configure_authentication() {
     echo "[INFO] Configuring Munin authentication..."
     if [ ! -r /etc/apache2/.htpasswd ]; then
         echo "[INFO] Creating new Munin admin user..."
-        sudo htpasswd -cb /etc/apache2/.htpasswd admin adminpassword
+        if ! sudo htpasswd -cb /etc/apache2/.htpasswd admin adminpassword; then
+            echo "[ERROR] Failed to create .htpasswd for Munin." >&2
+            exit 1
+        fi
     fi
     sudo chown root:www-data /etc/apache2/.htpasswd
     sudo chmod 640 /etc/apache2/.htpasswd
@@ -116,9 +128,14 @@ configure_authentication() {
 # Restart services
 restart_services() {
     echo "[INFO] Restarting services..."
-    sudo systemctl restart rsyslog
-    sudo systemctl restart munin-node
-    sudo systemctl restart apache2
+    if ! sudo systemctl restart munin-node; then
+        echo "[ERROR] Failed to restart munin-node." >&2
+        exit 1
+    fi
+    if ! sudo systemctl restart apache2; then
+        echo "[ERROR] Failed to restart apache2." >&2
+        exit 1
+    fi
 }
 
 # Main function to execute the script
