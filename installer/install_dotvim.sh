@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-04-26
+#       Add critical failure checks to dot_vim installation steps.
 #  v1.4 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v1.3 2025-04-13
@@ -91,10 +93,17 @@ setup_environment() {
 install_dotvim() {
     if [ ! -d "$TARGET" ]; then
         echo "[INFO] Creating target directory at $TARGET."
-        mkdir -p "$TARGET"
+        if ! mkdir -p "$TARGET"; then
+            echo "[ERROR] Failed to create target directory: $TARGET." >&2
+            exit 1
+        fi
     fi
+
     echo "[INFO] Copying dot_vim files to $TARGET."
-    cp $OPTIONS "$SCRIPTS/dot_files/dot_vim"/* "$TARGET"/
+    if ! cp $OPTIONS "$SCRIPTS/dot_files/dot_vim"/* "$TARGET"/; then
+        echo "[ERROR] Failed to copy dot_vim files to $TARGET." >&2
+        exit 1
+    fi
 }
 
 # Main function to execute the script
