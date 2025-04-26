@@ -4,13 +4,13 @@
 # server_alive_check.sh: Monitor server availability via _is_alive files
 #
 #  Description:
-#  This script checks for the existence and freshness of _is_alive files 
-#  sent from various servers to the specified directory. The presence and 
-#  last modified timestamp of these files determine the availability of 
+#  This script checks for the existence and freshness of _is_alive files
+#  sent from various servers to the specified directory. The presence and
+#  last modified timestamp of these files determine the availability of
 #  the servers.
 #
-#  It scans all files ending with '_is_alive' under the configured directory 
-#  and triggers an alert if any file is older than one hour, indicating 
+#  It scans all files ending with '_is_alive' under the configured directory
+#  and triggers an alert if any file is older than one hour, indicating
 #  potential server downtime or connectivity issues.
 #
 #  Author: id774 (More info: http://id774.net)
@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-04-26
+#       Remove ALERT_PREFIX and refine log levels to use [ERROR] and [WARN] appropriately.
 #  v1.1 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.0 2025-04-07
@@ -52,9 +54,6 @@
 # Base directory containing the files to be checked
 BASE_DIR="/home/share/received"
 
-# Alert message prefix
-ALERT_PREFIX="[ERROR]"
-
 # Display script usage information
 usage() {
     awk '
@@ -83,7 +82,7 @@ check_commands() {
 # Check if BASE_DIR exists
 check_environment() {
     if [ ! -d "$BASE_DIR" ]; then
-        echo "$ALERT_PREFIX Directory not found: $BASE_DIR" >&2
+        echo "[ERROR] Directory not found: $BASE_DIR" >&2
         exit 1
     fi
 }
@@ -93,7 +92,7 @@ find_is_alive_files() {
     find "$BASE_DIR" -type f -name '*_is_alive'
 }
 
-# Check if a file is older than 1 hour
+# Check if a file is older than 10 minites
 is_file_stale() {
     FILE="$1"
     CURRENT_TIME=$(date +%s)
@@ -101,7 +100,7 @@ is_file_stale() {
 
     # Check if the file modification time could be retrieved
     if [ -z "$FILE_TIME" ]; then
-        echo "$ALERT_PREFIX Failed to retrieve modification time for: $FILE" >&2
+        echo "[WARN] Failed to retrieve modification time for: $FILE" >&2
         return 1
     fi
 
@@ -118,13 +117,13 @@ process_files() {
     FILES=$(find_is_alive_files)
 
     if [ -z "$FILES" ]; then
-        echo "$ALERT_PREFIX No '_is_alive' files found in: $BASE_DIR" >&2
+        echo "[ERROR] No '_is_alive' files found in: $BASE_DIR" >&2
         exit 1
     fi
 
     for FILE in $FILES; do
         if is_file_stale "$FILE"; then
-            echo "$ALERT_PREFIX File is stale: $FILE" >&2
+            echo "[WARN] File is stale: $FILE" >&2
         fi
     done
 }
