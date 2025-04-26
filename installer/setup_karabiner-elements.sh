@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-04-27
+#       Add critical failure checks to Karabiner setup steps.
 #  v1.2 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.1 2025-03-22
@@ -67,24 +69,32 @@ setup_karabiner() {
     SRC_CONFIG="$SCRIPTS/dot_files/dot_karabiner.d/configuration/karabiner.json"
     DEST_CONFIG="$CONFIG_DIR/karabiner.json"
 
-    # Ensure configuration directory exists
-    mkdir -p "$CONFIG_DIR"
+    echo "[INFO] Ensuring configuration directory exists."
+    if ! mkdir -p "$CONFIG_DIR"; then
+        echo "[ERROR] Failed to create configuration directory: $CONFIG_DIR." >&2
+        exit 1
+    fi
 
-    # Check if the source configuration file exists
     if [ ! -f "$SRC_CONFIG" ]; then
         echo "[ERROR] Configuration file '$SRC_CONFIG' not found." >&2
         exit 1
     fi
 
-    # Backup existing configuration if present
     if [ -f "$DEST_CONFIG" ]; then
         BACKUP_FILE="$DEST_CONFIG.bak.$(date +%Y%m%d%H%M%S)"
         echo "[INFO] Backing up existing configuration to $BACKUP_FILE"
-        mv "$DEST_CONFIG" "$BACKUP_FILE"
+        if ! mv "$DEST_CONFIG" "$BACKUP_FILE"; then
+            echo "[ERROR] Failed to backup existing configuration file." >&2
+            exit 1
+        fi
     fi
 
-    # Copy new configuration
-    cp "$SRC_CONFIG" "$DEST_CONFIG"
+    echo "[INFO] Copying new configuration."
+    if ! cp "$SRC_CONFIG" "$DEST_CONFIG"; then
+        echo "[ERROR] Failed to copy new configuration file." >&2
+        exit 1
+    fi
+
     echo "[INFO] Karabiner configuration successfully updated."
 }
 
