@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-04-26
+#       Add error checks to Jupyter theme setup process.
 #  v1.2 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.1 2025-03-22
@@ -90,9 +92,18 @@ install_jupyter_theme() {
         exit 1
     fi
 
-    "$JT" -t monokai -f inconsolata -N -T -fs 10 -nfs 10 -ofs 10 -cellw 90% -lineh 140
-    echo "div.output_area img, div.output_area svg { background: #C6D3DF; }" >> "$HOME/.jupyter/custom/custom.css"
-    echo "Jupyter theme configuration applied. If further customization is needed, edit: $HOME/.jupyter/custom/custom.css"
+    echo "[INFO] Applying Jupyter theme settings..."
+    if ! "$JT" -t monokai -f inconsolata -N -T -fs 10 -nfs 10 -ofs 10 -cellw 90% -lineh 140; then
+        echo "[ERROR] Failed to apply Jupyter theme settings." >&2
+        exit 1
+    fi
+
+    if ! echo "div.output_area img, div.output_area svg { background: #C6D3DF; }" >> "$HOME/.jupyter/custom/custom.css"; then
+        echo "[ERROR] Failed to append custom CSS to Jupyter configuration." >&2
+        exit 1
+    fi
+
+    echo "[INFO] Jupyter theme configuration applied successfully."
 }
 
 # Main function to execute the script
