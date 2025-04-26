@@ -72,15 +72,15 @@ gsettings_settings() {
     KEY="$2"
     VALUE="$3"
 
-    echo "Setting: $SCHEMA $KEY -> $VALUE"
+    echo "[INFO] Setting: $SCHEMA $KEY -> $VALUE"
     if ! gsettings set "$SCHEMA" "$KEY" "$VALUE"; then
-        echo "[ERROR] Failed to set $SCHEMA $KEY to $VALUE" >&2
+        echo "[ERROR] Failed to set $SCHEMA $KEY to $VALUE." >&2
         exit 1
     fi
 
-    echo -n "Confirming: $SCHEMA $KEY = "
+    echo -n "[INFO] Confirming: $SCHEMA $KEY = "
     if ! gsettings get "$SCHEMA" "$KEY"; then
-        echo "[ERROR] Failed to confirm setting $SCHEMA $KEY" >&2
+        echo "[ERROR] Failed to confirm setting $SCHEMA $KEY." >&2
         exit 1
     fi
 }
