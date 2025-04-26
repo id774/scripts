@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.7 2025-04-26
+#       Add critical failure checks to TA-Lib installation process.
 #  v0.6 2025-04-21
 #       Refined [INFO] log messages for clearer and more meaningful execution steps.
 #  v0.5 2025-04-13
@@ -112,27 +114,48 @@ install_talib() {
     setup_environment "$1"
 
     echo "[INFO] Downloading TA-Lib version $VERSION..."
-    mkdir install_talib
+    if ! mkdir install_talib; then
+        echo "[ERROR] Failed to create install_talib directory." >&2
+        exit 1
+    fi
     cd install_talib || exit 1
 
-    curl -L "http://files.id774.net/archive/$FILENAME" -O
+    if ! curl -L "http://files.id774.net/archive/$FILENAME" -O; then
+        echo "[ERROR] Failed to download TA-Lib archive." >&2
+        exit 1
+    fi
+
     if [ ! -f "$FILENAME" ]; then
-        echo "[ERROR] Failed to download TA-Lib $VERSION." >&2
+        echo "[ERROR] Downloaded file not found: $FILENAME" >&2
         exit 1
     fi
     echo "[INFO] Download completed: $FILENAME"
 
     echo "[INFO] Extracting archive: $FILENAME"
-    tar xzvf "$FILENAME"
+    if ! tar xzvf "$FILENAME"; then
+        echo "[ERROR] Failed to extract TA-Lib archive." >&2
+        exit 1
+    fi
+
     cd ta-lib || exit 1
 
     echo "[INFO] Building TA-Lib..."
-    ./configure --prefix=/usr/local
-    make
+    if ! ./configure --prefix=/usr/local; then
+        echo "[ERROR] Configure failed." >&2
+        exit 1
+    fi
+
+    if ! make; then
+        echo "[ERROR] Build failed." >&2
+        exit 1
+    fi
     echo "[INFO] Build completed successfully."
 
     echo "[INFO] Installing TA-Lib to /usr/local..."
-    sudo make install
+    if ! sudo make install; then
+        echo "[ERROR] Installation failed." >&2
+        exit 1
+    fi
     echo "[INFO] TA-Lib installed to /usr/local"
 
     cd .. || exit 1
