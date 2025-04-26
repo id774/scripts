@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2025-04-26
+#       Add critical failure checks to script deployment steps.
 #  v1.7 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v1.6 2025-04-13
@@ -108,7 +110,10 @@ setup_directories() {
 deploy_scripts() {
     echo "[INFO] Deploying log analysis scripts."
     for script in apache_log_analysis.sh apache_calculater.py; do
-        sudo cp "$SCRIPTS/$script" "/root/bin/$script"
+        if ! sudo cp "$SCRIPTS/$script" "/root/bin/$script"; then
+            echo "[ERROR] Failed to copy $script to /root/bin." >&2
+            exit 1
+        fi
         sudo chmod 700 "/root/bin/$script"
         sudo chown root:root "/root/bin/$script"
     done
@@ -133,7 +138,10 @@ deploy_configurations() {
 # Function to deploy cron jobs
 setup_cron_jobs() {
     echo "[INFO] Setting up cron jobs."
-    sudo cp "$SCRIPTS/cron/bin/apache_log_analysis" /etc/cron.daily/apache_log_analysis
+    if ! sudo cp "$SCRIPTS/cron/bin/apache_log_analysis" /etc/cron.daily/apache_log_analysis; then
+        echo "[ERROR] Failed to deploy apache_log_analysis cron job." >&2
+        exit 1
+    fi
     sudo chmod 740 /etc/cron.daily/apache_log_analysis
     sudo chown root:adm /etc/cron.daily/apache_log_analysis
 }
@@ -151,7 +159,10 @@ setup_log_files() {
 # Function to deploy log rotation configuration
 setup_log_rotation() {
     echo "[INFO] Deploying log rotation configuration."
-    sudo cp "$SCRIPTS/cron/etc/logrotate.d/apache_summary" /etc/logrotate.d/apache_summary
+    if ! sudo cp "$SCRIPTS/cron/etc/logrotate.d/apache_summary" /etc/logrotate.d/apache_summary; then
+        echo "[ERROR] Failed to deploy logrotate configuration for apache_summary." >&2
+        exit 1
+    fi
     sudo chmod 644 /etc/logrotate.d/apache_summary
     sudo chown root:root /etc/logrotate.d/apache_summary
 }
