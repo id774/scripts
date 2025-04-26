@@ -15,6 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-04-26
+#       Exit immediately on critical failures and
+#       ensure success message is shown only if all steps succeed.
 #  v1.2 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.1 2025-03-22
@@ -93,14 +96,20 @@ deploy_ssl_cert() {
     if [ ! -d /etc/apache2/ssl ]; then
         sudo mkdir -p /etc/apache2/ssl
     fi
-    sudo make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /etc/apache2/ssl/apache.pem
+    if ! sudo make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /etc/apache2/ssl/apache.pem; then
+        echo "[ERROR] Failed to generate SSL certificate." >&2
+        exit 1
+    fi
 }
 
 # Function to deploy Apache site configuration files
 deploy_site_configs() {
     echo "[INFO] Deploying site configurations..."
     for site in custom custom-ssl; do
-        sudo cp "$SCRIPTS/etc/apache/$site" /etc/apache2/sites-available/
+        if ! sudo cp "$SCRIPTS/etc/apache/$site" /etc/apache2/sites-available/; then
+            echo "[ERROR] Failed to copy $site configuration." >&2
+            exit 1
+        fi
         sudo chmod 644 /etc/apache2/sites-available/$site
         sudo chown root:root /etc/apache2/sites-available/$site
         echo "[INFO] Please edit /etc/apache2/sites-available/$site"
@@ -110,12 +119,32 @@ deploy_site_configs() {
 # Function to configure Apache2
 configure_apache() {
     echo "[INFO] Configuring Apache2..."
-    sudo a2enmod ssl
-    sudo a2dissite default
-    sudo a2dissite default-ssl
-    sudo a2ensite custom
-    sudo a2ensite custom-ssl
-    sudo systemctl reload apache2 || sudo /etc/init.d/apache2 reload
+    if ! sudo a2enmod ssl; then
+        echo "[ERROR] Failed to enable SSL module." >&2
+        exit 1
+    fi
+    if ! sudo a2dissite default; then
+        echo "[ERROR] Failed to disable default site." >&2
+        exit 1
+    fi
+    if ! sudo a2dissite default-ssl; then
+        echo "[ERROR] Failed to disable default-ssl site." >&2
+        exit 1
+    fi
+    if ! sudo a2ensite custom; then
+        echo "[ERROR] Failed to enable custom site." >&2
+        exit 1
+    fi
+    if ! sudo a2ensite custom-ssl; then
+        echo "[ERROR] Failed to enable custom-ssl site." >&2
+        exit 1
+    fi
+    if ! sudo systemctl reload apache2; then
+        if ! sudo /etc/init.d/apache2 reload; then
+            echo "[ERROR] Failed to reload Apache2 service." >&2
+            exit 1
+        fi
+    fi
 }
 
 # Main function to execute the script
