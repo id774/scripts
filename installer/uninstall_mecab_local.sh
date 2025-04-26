@@ -82,11 +82,11 @@ remove_item() {
     path=$1
     if [ -e "$path" ] || [ -L "$path" ]; then
         echo "[INFO] Removing: $path"
-        if sudo rm -rf "$path"; then
-            echo "[INFO] Successfully removed: $path"
-        else
-            echo "[WARN] Failed to remove: $path" >&2
+        if ! sudo rm -rf "$path"; then
+            echo "[ERROR] Failed to remove: $path" >&2
+            exit 1
         fi
+        echo "[INFO] Successfully removed: $path"
     else
         echo "[INFO] Skipping (not found): $path"
     fi
