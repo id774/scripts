@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.4 2025-04-27
+#       Add failure checks to Python build and installation steps.
 #  v2.3 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v2.2 2025-04-13
@@ -132,41 +134,64 @@ save_sources() {
 make_and_install() {
     echo "[INFO] Configuring build..."
     cd "Python-$VERSION" || exit 1
-    ./configure --prefix="$PREFIX"
+    if ! ./configure --prefix="$PREFIX"; then
+        echo "[ERROR] Configure failed." >&2
+        exit 1
+    fi
 
     echo "[INFO] Compiling source..."
-    make
+    if ! make; then
+        echo "[ERROR] Compilation failed." >&2
+        exit 1
+    fi
 
     echo "[INFO] Installing Python..."
-    $SUDO make install
+    if ! $SUDO make install; then
+        echo "[ERROR] Installation failed." >&2
+        exit 1
+    fi
     cd .. || exit 1
 }
 
 # Download and install Python
 install_python() {
     echo "[INFO] Creating temporary build directory."
-    mkdir install_python
+    if ! mkdir install_python; then
+        echo "[ERROR] Failed to create build directory." >&2
+        exit 1
+    fi
 
     cd install_python || exit 1
 
     echo "[INFO] Downloading Python $VERSION from python.org..."
-    curl -L "http://www.python.org/ftp/python/$VERSION/Python-$VERSION.tgz" -O
+    if ! curl -L "http://www.python.org/ftp/python/$VERSION/Python-$VERSION.tgz" -O; then
+        echo "[ERROR] Failed to download Python archive." >&2
+        exit 1
+    fi
 
-    # Check if the file was downloaded successfully
     if [ ! -f "Python-$VERSION.tgz" ]; then
-        echo "[ERROR] Failed to download Python $VERSION." >&2
+        echo "[ERROR] Downloaded archive not found: Python-$VERSION.tgz" >&2
         exit 1
     fi
 
     echo "[INFO] Extracting archive..."
-    tar xzvf "Python-$VERSION.tgz"
+    if ! tar xzvf "Python-$VERSION.tgz"; then
+        echo "[ERROR] Failed to extract archive." >&2
+        exit 1
+    fi
 
     make_and_install
-    [ "$DOWNLOAD_SOURCE" = "auto" ] && save_sources
+
+    if [ "$DOWNLOAD_SOURCE" = "auto" ]; then
+        save_sources
+    fi
 
     echo "[INFO] Cleaning up temporary files."
     cd .. || exit 1
-    $SUDO rm -rf install_python
+    if ! $SUDO rm -rf install_python; then
+        echo "[ERROR] Failed to remove temporary directory." >&2
+        exit 1
+    fi
 }
 
 # Main function to execute the script
