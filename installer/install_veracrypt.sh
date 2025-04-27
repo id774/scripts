@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-04-27
+#       Add strict error checking for file copy and permission operations.
 #  v1.3 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.2 2025-03-22
@@ -125,10 +127,20 @@ setup_environment() {
 
     check_sudo
 
-    [ -d /usr/local/src/crypt/veracrypt ] || sudo mkdir -p /usr/local/src/crypt/veracrypt
-    [ -d "$HOME/.tmp" ] || mkdir "$HOME/.tmp"
+    if [ ! -d /usr/local/src/crypt/veracrypt ]; then
+        if ! sudo mkdir -p /usr/local/src/crypt/veracrypt; then
+            echo "[ERROR] Failed to create /usr/local/src/crypt/veracrypt" >&2
+            exit 1
+        fi
+    fi
 
-    # Ensure TMP is correctly set to $HOME/.tmp
+    if [ ! -d "$HOME/.tmp" ]; then
+        if ! mkdir "$HOME/.tmp"; then
+            echo "[ERROR] Failed to create $HOME/.tmp" >&2
+            exit 1
+        fi
+    fi
+
     if [ "${TMP:-}" != "$HOME/.tmp" ]; then
         echo "[ERROR] TMP environment variable is not set correctly. Expected '$HOME/.tmp', but got '${TMP:-unset}'."
         exit 1
@@ -141,8 +153,15 @@ setup_environment() {
 # Save downloaded packages
 save_packages() {
     echo "[INFO] Saving source package to $2"
-    sudo cp "$1" "$2"
-    sudo chown "$OWNER" "$2/$1"
+    if ! sudo cp "$1" "$2"; then
+        echo "[ERROR] Failed to copy $1 to $2" >&2
+        exit 1
+    fi
+
+    if ! sudo chown "$OWNER" "$2/$1"; then
+        echo "[ERROR] Failed to change ownership for $2/$1" >&2
+        exit 1
+    fi
 }
 
 # Set proper permissions for VeraCrypt files
@@ -168,10 +187,19 @@ install_veracrypt() {
     FILE_NAME="veracrypt-$VERSION-setup-console-$ARCH"
 
     echo "[INFO] Downloading $FILE_NAME..."
-    wget "http://id774.net/veracrypt/$FILE_NAME"
+    if ! wget "http://id774.net/veracrypt/$FILE_NAME"; then
+        echo "[ERROR] Failed to download $FILE_NAME" >&2
+        exit 1
+    fi
+
     [ -n "$1" ] || save_packages "$FILE_NAME" /usr/local/src/crypt/veracrypt
 
-    chmod +x "./$FILE_NAME" && "./$FILE_NAME"
+    chmod +x "./$FILE_NAME"
+    if ! "./$FILE_NAME"; then
+        echo "[ERROR] Failed to execute installer $FILE_NAME" >&2
+        exit 1
+    fi
+
     file /usr/bin/veracrypt
     set_veracrypt_permission
 

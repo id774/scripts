@@ -143,10 +143,20 @@ setup_environment() {
 
     check_sudo
 
-    [ -d /usr/local/src/crypt/truecrypt ] || sudo mkdir -p /usr/local/src/crypt/truecrypt
-    [ -d "$HOME/.tmp" ] || mkdir "$HOME/.tmp"
+    if [ ! -d /usr/local/src/crypt/truecrypt ]; then
+        if ! sudo mkdir -p /usr/local/src/crypt/truecrypt; then
+            echo "[ERROR] Failed to create /usr/local/src/crypt/truecrypt" >&2
+            exit 1
+        fi
+    fi
 
-    # Ensure TMP is correctly set to $HOME/.tmp
+    if [ ! -d "$HOME/.tmp" ]; then
+        if ! mkdir "$HOME/.tmp"; then
+            echo "[ERROR] Failed to create $HOME/.tmp" >&2
+            exit 1
+        fi
+    fi
+
     if [ "${TMP:-}" != "$HOME/.tmp" ]; then
         echo "[ERROR] TMP environment variable is not set correctly. Expected '$HOME/.tmp', but got '${TMP:-unset}'."
         exit 1
@@ -177,10 +187,7 @@ set_truecrypt_permission() {
                 /usr/local/src/crypt /usr/local/src /usr/bin/truecrypt \
                 /usr/bin/truecrypt-uninstall.sh; do
         if [ -e "$path" ]; then
-            if ! sudo chown -R "$OWNER" "$path"; then
-                echo "[ERROR] Failed to change owner of $path" >&2
-                exit 1
-            fi
+            sudo chown -R "$OWNER" "$path" 2>/dev/null
         fi
     done
 }
