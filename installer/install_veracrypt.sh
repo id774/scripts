@@ -167,11 +167,11 @@ save_packages() {
 # Set proper permissions for VeraCrypt files
 set_veracrypt_permission() {
     echo "Setting file permissions..."
-    for path in /usr/local/src/crypt/veracrypt /usr/share/veracrypt \
+    for veracrypt_path in /usr/local/src/crypt/veracrypt /usr/share/veracrypt \
                 /usr/share/doc/veracrypt /usr/sbin/mount.veracrypt \
                 /usr/local/src/crypt /usr/local/src /usr/bin/veracrypt \
                 /usr/bin/veracrypt-uninstall.sh; do
-        sudo chown -R "$OWNER" "$path" 2>/dev/null
+        sudo chown -R "$OWNER" "$veracrypt_path" 2>/dev/null
     done
 }
 

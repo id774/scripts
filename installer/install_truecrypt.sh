@@ -183,10 +183,10 @@ save_packages() {
 # Set proper permissions for TrueCrypt files
 set_truecrypt_permission() {
     echo "[INFO] Setting file permissions..."
-    for path in /usr/local/src/crypt/truecrypt /usr/share/truecrypt \
+    for truecrypt_path in /usr/local/src/crypt/truecrypt /usr/share/truecrypt \
                 /usr/local/src/crypt /usr/local/src /usr/bin/truecrypt \
                 /usr/bin/truecrypt-uninstall.sh; do
-        if [ -e "$path" ]; then
+        if [ -e "$truecrypt_path" ]; then
             sudo chown -R "$OWNER" "$path" 2>/dev/null
         fi
     done
