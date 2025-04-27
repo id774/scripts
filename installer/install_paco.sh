@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2025-04-27
+#       Add strict error checking for make and make install processes during paco installation.
 #  v1.7 2025-04-22
 #       Improved log granularity with [INFO] and [ERROR] tags for each step.
 #  v1.6 2025-04-13
@@ -106,7 +108,10 @@ setup_environment() {
 save_sources() {
     echo "[INFO] Saving sources to /usr/local/src/paco"
     sudo mkdir -p /usr/local/src/paco
-    sudo cp -av "paco-$PACO_VERSION" /usr/local/src/paco/
+    if ! sudo cp -av "paco-$PACO_VERSION" /usr/local/src/paco/; then
+        echo "[ERROR] Failed to copy source directory to /usr/local/src/paco" >&2
+        exit 1
+    fi
     sudo chown -R root:root /usr/local/src/paco
 }
 
@@ -119,28 +124,39 @@ install_paco() {
     cd install_paco || exit 1
 
     echo "[INFO] Downloading paco version $PACO_VERSION..."
-    wget "http://downloads.sourceforge.net/paco/paco-$PACO_VERSION.tar.gz"
-    if [ ! -f "paco-$PACO_VERSION.tar.gz" ]; then
-        echo "[ERROR] Failed to download paco $PACO_VERSION." >&2
+    if ! wget "http://downloads.sourceforge.net/paco/paco-$PACO_VERSION.tar.gz"; then
+        echo "[ERROR] Failed to download paco-$PACO_VERSION.tar.gz" >&2
         exit 1
     fi
     echo "[INFO] Download complete: paco-$PACO_VERSION.tar.gz"
 
     echo "[INFO] Extracting archive..."
-    tar xzvf "paco-$PACO_VERSION.tar.gz"
+    if ! tar xzvf "paco-$PACO_VERSION.tar.gz"; then
+        echo "[ERROR] Failed to extract paco-$PACO_VERSION.tar.gz" >&2
+        exit 1
+    fi
 
     echo "[INFO] Configuring paco..."
     cd "paco-$PACO_VERSION" || exit 1
     ./configure --disable-gpaco
 
     echo "[INFO] Building paco..."
-    make
+    if ! make; then
+        echo "[ERROR] Build failed during make." >&2
+        exit 1
+    fi
 
     echo "[INFO] Installing paco..."
-    sudo make install
+    if ! sudo make install; then
+        echo "[ERROR] Install failed during make install." >&2
+        exit 1
+    fi
 
     echo "[INFO] Logging installation..."
-    sudo make logme
+    if ! sudo make logme; then
+        echo "[ERROR] Failed to log installation." >&2
+        exit 1
+    fi
 
     cd .. || exit 1
     [ -n "$2" ] || save_sources
