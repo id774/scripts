@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# toggle_ipv6_macos.sh: Enable/Disable IPv6 on macOS
+# set_ipv6_macos.sh: Enable or Disable IPv6 on macOS
 #
 #  Description:
 #  This script enables or disables IPv6 on all network interfaces detected on macOS.
@@ -29,7 +29,7 @@
 #       Initial release with full macOS IPv6 disabling support.
 #
 #  Usage:
-#      ./toggle_ipv6_macos.sh --enable | --disable
+#      ./set_ipv6_macos.sh --enable | --disable
 #
 #  --enable: Enables IPv6 on all detected network services.
 #  --disable: Disables IPv6 on all detected network services.
