@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-04-27
+#       Add strict error checking for deployment steps.
 #  v1.1 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.0 2025-04-10
@@ -86,9 +88,18 @@ check_sudo() {
 # Deploy the monitor script
 deploy_script() {
     echo "[INFO] Deploying script..."
-    sudo cp "$SCRIPTS/cron/bin/munin-symlink.sh" /root/bin/munin-symlink.sh
-    sudo chown root:root /root/bin/munin-symlink.sh
-    sudo chmod 700 /root/bin/munin-symlink.sh
+    if ! sudo cp "$SCRIPTS/cron/bin/munin-symlink.sh" /root/bin/munin-symlink.sh; then
+        echo "[ERROR] Failed to copy munin-symlink.sh." >&2
+        exit 1
+    fi
+    if ! sudo chown root:root /root/bin/munin-symlink.sh; then
+        echo "[ERROR] Failed to change ownership of munin-symlink.sh." >&2
+        exit 1
+    fi
+    if ! sudo chmod 700 /root/bin/munin-symlink.sh; then
+        echo "[ERROR] Failed to set permissions on munin-symlink.sh." >&2
+        exit 1
+    fi
 }
 
 # Deploy the configuration file
@@ -97,14 +108,23 @@ deploy_configuration() {
     CONFIG_FILE="/root/etc/munin-symlink.conf"
 
     if ! sudo test -f "$CONFIG_FILE"; then
-        sudo cp "$SCRIPTS/cron/etc/munin-symlink.conf" "$CONFIG_FILE"
+        if ! sudo cp "$SCRIPTS/cron/etc/munin-symlink.conf" "$CONFIG_FILE"; then
+            echo "[ERROR] Failed to copy configuration file." >&2
+            exit 1
+        fi
     else
         echo "[INFO] Configuration file already exists: $CONFIG_FILE"
         echo "[INFO] Skipping copy to preserve existing configuration."
     fi
 
-    sudo chmod 600 "$CONFIG_FILE"
-    sudo chown root:root "$CONFIG_FILE"
+    if ! sudo chmod 600 "$CONFIG_FILE"; then
+        echo "[ERROR] Failed to set permissions on configuration file." >&2
+        exit 1
+    fi
+    if ! sudo chown root:root "$CONFIG_FILE"; then
+        echo "[ERROR] Failed to change ownership of configuration file." >&2
+        exit 1
+    fi
 }
 
 # Setup cron jobs for munin-symlink
@@ -113,15 +133,26 @@ setup_cron_job() {
     CRON_FILE="/etc/cron.d/munin-symlink"
 
     if ! sudo test -f "$CRON_FILE"; then
-        sudo tee "$CRON_FILE" > /dev/null <<EOF
+        if ! sudo tee "$CRON_FILE" > /dev/null <<EOF
 */5 * * * * root test -x /root/bin/munin-symlink.sh && /root/bin/munin-symlink.sh
 EOF
+        then
+            echo "[ERROR] Failed to create cron job file." >&2
+            exit 1
+        fi
     else
         echo "[INFO] Cron job already exists: $CRON_FILE"
         echo "[INFO] Skipping creation to preserve existing configuration."
     fi
-    sudo chmod 644 "$CRON_FILE"
-    sudo chown root:root "$CRON_FILE"
+
+    if ! sudo chmod 644 "$CRON_FILE"; then
+        echo "[ERROR] Failed to set permissions on cron file." >&2
+        exit 1
+    fi
+    if ! sudo chown root:root "$CRON_FILE"; then
+        echo "[ERROR] Failed to change ownership of cron file." >&2
+        exit 1
+    fi
 }
 
 # Main function to execute the script
