@@ -15,6 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.3 2025-04-27
+#       Skip deployment if get_resources.sh or its cron job already exists,
+#       and add error handling for copy failures.
 #  v2.2 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v2.1 2025-04-13
@@ -106,38 +109,59 @@ main() {
 
     echo "[INFO] Starting server resource report setup."
 
-    # Make Directory if it doesn't exist and set permissions
     if [ ! -d /var/log/sysadmin ]; then
         echo "[INFO] Creating /var/log/sysadmin directory."
-        sudo mkdir -p /var/log/sysadmin
-        sudo chmod 750 /var/log/sysadmin
-        sudo chown root:adm /var/log/sysadmin
+        if ! sudo mkdir -p /var/log/sysadmin; then
+            echo "[ERROR] Failed to create /var/log/sysadmin" >&2
+            exit 1
+        fi
     fi
+    sudo chmod 750 /var/log/sysadmin
+    sudo chown root:adm /var/log/sysadmin
 
-    # Set up log file and permissions
     if [ ! -f /var/log/sysadmin/resources.log ]; then
         echo "[INFO] Creating resources.log file."
-        sudo touch /var/log/sysadmin/resources.log
-        sudo chmod 640 /var/log/sysadmin/resources.log
-        sudo chown root:adm /var/log/sysadmin/resources.log
+        if ! sudo touch /var/log/sysadmin/resources.log; then
+            echo "[ERROR] Failed to create /var/log/sysadmin/resources.log" >&2
+            exit 1
+        fi
     fi
+    sudo chmod 640 /var/log/sysadmin/resources.log
+    sudo chown root:adm /var/log/sysadmin/resources.log
 
-    # Deploy log rotation configuration
     if [ ! -f /etc/logrotate.d/resources ]; then
         echo "[INFO] Deploying logrotate configuration."
-        sudo cp "$SCRIPTS/cron/etc/logrotate.d/resources" /etc/logrotate.d/resources
-        sudo chmod 640 /etc/logrotate.d/resources
-        sudo chown root:adm /etc/logrotate.d/resources
+        if ! sudo cp "$SCRIPTS/cron/etc/logrotate.d/resources" /etc/logrotate.d/resources; then
+            echo "[ERROR] Failed to copy logrotate configuration." >&2
+            exit 1
+        fi
+    else
+        echo "[INFO] /etc/logrotate.d/resources already exists. Skipping deployment."
     fi
+    sudo chmod 640 /etc/logrotate.d/resources
+    sudo chown root:adm /etc/logrotate.d/resources
 
-    # Deploy the get_resources script and cron job
     echo "[INFO] Deploying get_resources.sh to /root/bin."
-    sudo cp "$SCRIPTS/get_resources.sh" /root/bin/
+    if [ -f /root/bin/get_resources.sh ]; then
+        echo "[INFO] /root/bin/get_resources.sh already exists. Skipping deployment."
+    else
+        if ! sudo cp "$SCRIPTS/get_resources.sh" /root/bin/; then
+            echo "[ERROR] Failed to copy get_resources.sh to /root/bin/" >&2
+            exit 1
+        fi
+    fi
     sudo chmod 700 /root/bin/get_resources.sh
     sudo chown root:root /root/bin/get_resources.sh
 
     echo "[INFO] Installing cron job to /etc/cron.hourly."
-    sudo cp "$SCRIPTS/cron/bin/get_resources" /etc/cron.hourly/
+    if [ -f /etc/cron.hourly/get_resources ]; then
+        echo "[INFO] /etc/cron.hourly/get_resources already exists. Skipping deployment."
+    else
+        if ! sudo cp "$SCRIPTS/cron/bin/get_resources" /etc/cron.hourly/; then
+            echo "[ERROR] Failed to copy cron job to /etc/cron.hourly/" >&2
+            exit 1
+        fi
+    fi
     sudo chmod 740 /etc/cron.hourly/get_resources
     sudo chown root:adm /etc/cron.hourly/get_resources
 
