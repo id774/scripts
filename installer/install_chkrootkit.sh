@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-04-27
+#       Simplified error checking to critical filesystem operations.
 #  v1.4 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v1.3 2025-04-13
@@ -99,29 +101,38 @@ main() {
 
     # Deploy chkrootkit cron job
     echo "[INFO] Deploying chkrootkit cron job."
-    sudo cp "$SCRIPTS/cron/bin/chkrootkit" /etc/cron.weekly/chkrootkit
+    if ! sudo cp "$SCRIPTS/cron/bin/chkrootkit" /etc/cron.weekly/chkrootkit; then
+        echo "[ERROR] Failed to copy chkrootkit cron script." >&2
+        exit 1
+    fi
     sudo chmod 740 /etc/cron.weekly/chkrootkit
     sudo chown root:adm /etc/cron.weekly/chkrootkit
 
     # Create log directory if it does not exist
-    echo "[INFO] Creating /var/log/chkrootkit directory if not exists."
+    echo "[INFO] Ensuring /var/log/chkrootkit directory exists."
     if [ ! -d /var/log/chkrootkit ]; then
-        sudo mkdir -p /var/log/chkrootkit
-        sudo chmod 750 /var/log/chkrootkit
-        sudo chown root:adm /var/log/chkrootkit
+        if ! sudo mkdir -p /var/log/chkrootkit; then
+            echo "[ERROR] Failed to create /var/log/chkrootkit directory." >&2
+            exit 1
+        fi
     fi
+    sudo chmod 750 /var/log/chkrootkit
+    sudo chown root:adm /var/log/chkrootkit
 
-    # Set up chkrootkit log file and permissions
+    # Set up chkrootkit log file
     echo "[INFO] Initializing chkrootkit log file."
     if [ ! -f /var/log/chkrootkit/chkrootkit.log ]; then
         sudo touch /var/log/chkrootkit/chkrootkit.log
-        sudo chmod 640 /var/log/chkrootkit/chkrootkit.log
-        sudo chown root:adm /var/log/chkrootkit/chkrootkit.log
     fi
+    sudo chmod 640 /var/log/chkrootkit/chkrootkit.log
+    sudo chown root:adm /var/log/chkrootkit/chkrootkit.log
 
     # Deploy log rotation configuration
     echo "[INFO] Deploying logrotate configuration for chkrootkit."
-    sudo cp "$SCRIPTS/cron/etc/logrotate.d/chkrootkit" /etc/logrotate.d/chkrootkit
+    if ! sudo cp "$SCRIPTS/cron/etc/logrotate.d/chkrootkit" /etc/logrotate.d/chkrootkit; then
+        echo "[ERROR] Failed to deploy logrotate configuration." >&2
+        exit 1
+    fi
     sudo chmod 644 /etc/logrotate.d/chkrootkit
     sudo chown root:root /etc/logrotate.d/chkrootkit
 
