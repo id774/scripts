@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-04-27
+#       Add strict error checking after all filesystem operations.
 #  v1.5 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.4 2025-03-22
@@ -101,13 +103,23 @@ setup_environment() {
 
 # Initialize the nbserver IPython profile
 init_nbserver() {
-    ipython profile create nbserver
+    if ! ipython profile create nbserver; then
+        echo "[ERROR] Failed to create IPython nbserver profile." >&2
+        exit 1
+    fi
+
     NB_SERVER_DIR="${HOME}/.ipython/profile_nbserver/startup"
 
     if [ -d "$NB_SERVER_DIR" ]; then
-        cp $OPTIONS "${SCRIPTS}/dot_files/dot_ipython/profile_default/startup/00-init.py" "$NB_SERVER_DIR"
+        if ! cp $OPTIONS "${SCRIPTS}/dot_files/dot_ipython/profile_default/startup/00-init.py" "$NB_SERVER_DIR"; then
+            echo "[ERROR] Failed to copy 00-init.py to $NB_SERVER_DIR" >&2
+            exit 1
+        fi
         if [ -f "${NB_SERVER_DIR}/00-init.py" ] && [ -x "${NB_SERVER_DIR}/00-init.py" ]; then
-            chmod -x "${NB_SERVER_DIR}/00-init.py"
+            if ! chmod -x "${NB_SERVER_DIR}/00-init.py"; then
+                echo "[ERROR] Failed to remove executable bit from 00-init.py in nbserver profile" >&2
+                exit 1
+            fi
         fi
     fi
 }
@@ -116,21 +128,48 @@ init_nbserver() {
 copy_dotipython() {
     IPYTHON_DIR="${HOME}/.ipython"
     if [ -d "$IPYTHON_DIR" ]; then
-        echo "[WARN] Removing existing IPython directory: $IPYTHON_DIR" >&2
-        rm -rf "$IPYTHON_DIR"
+        echo "[INFO] Removing existing IPython directory: $IPYTHON_DIR"
+        if ! rm -rf "$IPYTHON_DIR"; then
+            echo "[ERROR] Failed to remove existing IPython directory: $IPYTHON_DIR" >&2
+            exit 1
+        fi
     fi
 
-    ipython profile create default
+    if ! ipython profile create default; then
+        echo "[ERROR] Failed to create IPython default profile." >&2
+        exit 1
+    fi
+
     DEFAULT_PROFILE_DIR="${IPYTHON_DIR}/profile_default/startup"
 
-    [ -d "$DEFAULT_PROFILE_DIR" ] || mkdir -p "$DEFAULT_PROFILE_DIR"
-    cp $OPTIONS "${SCRIPTS}/dot_files/dot_ipython/profile_default/startup/00-init.py" "$DEFAULT_PROFILE_DIR"
-    if [ -f "${DEFAULT_PROFILE_DIR}/00-init.py" ] && [ -x "${DEFAULT_PROFILE_DIR}/00-init.py" ]; then
-        chmod -x "${DEFAULT_PROFILE_DIR}/00-init.py"
+    if [ ! -d "$DEFAULT_PROFILE_DIR" ]; then
+        if ! mkdir -p "$DEFAULT_PROFILE_DIR"; then
+            echo "[ERROR] Failed to create startup directory: $DEFAULT_PROFILE_DIR" >&2
+            exit 1
+        fi
     fi
 
-    cp $OPTIONS "${SCRIPTS}/dot_files/dot_zshrc" "${HOME}/.zshrc"
-    cp $OPTIONS "${SCRIPTS}/dot_files/dot_zshrc_local" "${HOME}/.zshrc_local"
+    if ! cp $OPTIONS "${SCRIPTS}/dot_files/dot_ipython/profile_default/startup/00-init.py" "$DEFAULT_PROFILE_DIR"; then
+        echo "[ERROR] Failed to copy 00-init.py to $DEFAULT_PROFILE_DIR" >&2
+        exit 1
+    fi
+
+    if [ -f "${DEFAULT_PROFILE_DIR}/00-init.py" ] && [ -x "${DEFAULT_PROFILE_DIR}/00-init.py" ]; then
+        if ! chmod -x "${DEFAULT_PROFILE_DIR}/00-init.py"; then
+            echo "[ERROR] Failed to remove executable bit from 00-init.py" >&2
+            exit 1
+        fi
+    fi
+
+    if ! cp $OPTIONS "${SCRIPTS}/dot_files/dot_zshrc" "${HOME}/.zshrc"; then
+        echo "[ERROR] Failed to copy dot_zshrc to ${HOME}/.zshrc" >&2
+        exit 1
+    fi
+
+    if ! cp $OPTIONS "${SCRIPTS}/dot_files/dot_zshrc_local" "${HOME}/.zshrc_local"; then
+        echo "[ERROR] Failed to copy dot_zshrc_local to ${HOME}/.zshrc_local" >&2
+        exit 1
+    fi
 }
 
 # Main function to execute the script
@@ -146,7 +185,7 @@ main() {
     copy_dotipython "$@"
     init_nbserver "$@"
 
-    echo "[INFO] dot_ipython setup completed."
+    echo "[INFO] dot_ipython setup successfully completed."
 }
 
 # Execute main function
