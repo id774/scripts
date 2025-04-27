@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-04-27
+#       Add strict error checking for deployment steps.
 #  v1.1 2025-04-10
 #       Do not overwrite existing configuration file.
 #  v1.0 2025-04-07
@@ -108,16 +110,25 @@ check_munin_dir() {
 # Setup necessary directories
 setup_directories() {
     echo "[INFO] Setting up directories..."
-    sudo mkdir -p /var/lib/munin/bin
+    if ! sudo mkdir -p /var/lib/munin/bin; then
+        echo "[ERROR] Failed to create /var/lib/munin/bin." >&2
+        exit 1
+    fi
     sudo chmod 750 /var/lib/munin/bin
     sudo chown munin:munin /var/lib/munin/bin
 
-    sudo mkdir -p /var/lib/munin/etc
+    if ! sudo mkdir -p /var/lib/munin/etc; then
+        echo "[ERROR] Failed to create /var/lib/munin/etc." >&2
+        exit 1
+    fi
     sudo chmod 750 /var/lib/munin/etc
     sudo chown munin:munin /var/lib/munin/etc
 
     SENDING_DIR="/var/lib/munin/sending/$(hostname)"
-    sudo mkdir -p "$SENDING_DIR"
+    if ! sudo mkdir -p "$SENDING_DIR"; then
+        echo "[ERROR] Failed to create $SENDING_DIR." >&2
+        exit 1
+    fi
     sudo chmod 750 /var/lib/munin/sending
     sudo chmod 750 "$SENDING_DIR"
     sudo chown munin:munin /var/lib/munin/sending
@@ -127,7 +138,10 @@ setup_directories() {
 # Deploy the munin-sync script
 deploy_scripts() {
     echo "[INFO] Deploying scripts..."
-    sudo cp "$SCRIPTS/cron/bin/munin-sync.sh" /var/lib/munin/bin/
+    if ! sudo cp "$SCRIPTS/cron/bin/munin-sync.sh" /var/lib/munin/bin/; then
+        echo "[ERROR] Failed to copy munin-sync.sh." >&2
+        exit 1
+    fi
     sudo chmod 750 /var/lib/munin/bin/munin-sync.sh
     sudo chown munin:munin /var/lib/munin/bin/munin-sync.sh
 }
@@ -138,7 +152,10 @@ deploy_configurations() {
     CONFIG_FILE="/var/lib/munin/etc/munin-sync.conf"
 
     if ! sudo test -f "$CONFIG_FILE"; then
-        sudo cp "$SCRIPTS/cron/etc/munin-sync.conf" "$CONFIG_FILE"
+        if ! sudo cp "$SCRIPTS/cron/etc/munin-sync.conf" "$CONFIG_FILE"; then
+            echo "[ERROR] Failed to copy configuration file." >&2
+            exit 1
+        fi
     else
         echo "[INFO] Configuration file already exists: $CONFIG_FILE"
         echo "[INFO] Skipping copy to preserve existing configuration."
@@ -154,9 +171,13 @@ setup_cron_jobs() {
     CRON_FILE="/etc/cron.d/munin-sync"
 
     if ! sudo test -f "$CRON_FILE"; then
-        sudo tee "$CRON_FILE" > /dev/null <<EOF
+        if ! sudo tee "$CRON_FILE" > /dev/null <<EOF
 1-56/5 * * * * munin test -x /var/lib/munin/bin/munin-sync.sh && /var/lib/munin/bin/munin-sync.sh
 EOF
+        then
+            echo "[ERROR] Failed to create cron job file." >&2
+            exit 1
+        fi
     else
         echo "[INFO] Cron job already exists: $CRON_FILE"
         echo "[INFO] Skipping creation to preserve existing configuration."
