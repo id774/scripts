@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.0 2025-04-27
+#       Add error handling for critical copy and cron setup steps.
 #  v1.9 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v1.8 2025-04-13
@@ -103,44 +105,62 @@ check_scripts() {
 # Create directory for logs
 setup_log_directory() {
     if [ ! -d /var/log/sysadmin ]; then
-        echo "[INFO] Ensuring /var/log/sysadmin exists."
-        sudo mkdir -p /var/log/sysadmin
-        sudo chmod 750 /var/log/sysadmin
-        sudo chown root:adm /var/log/sysadmin
+        echo "[INFO] Creating /var/log/sysadmin"
+        if ! sudo mkdir -p /var/log/sysadmin; then
+            echo "[ERROR] Failed to create /var/log/sysadmin" >&2
+            exit 1
+        fi
     fi
+
+    sudo chmod 750 /var/log/sysadmin
+    sudo chown root:adm /var/log/sysadmin
 }
 
 # Set up log file and permissions
 setup_log_file() {
     if [ ! -f /var/log/sysadmin/run_tests.log ]; then
         echo "[INFO] Creating run_tests log file."
-        sudo touch /var/log/sysadmin/run_tests.log
-        sudo chmod 640 /var/log/sysadmin/run_tests.log
-        sudo chown root:adm /var/log/sysadmin/run_tests.log
+        if ! sudo touch /var/log/sysadmin/run_tests.log; then
+            echo "[ERROR] Failed to create /var/log/sysadmin/run_tests.log" >&2
+            exit 1
+        fi
     fi
+
+    sudo chmod 640 /var/log/sysadmin/run_tests.log
+    sudo chown root:adm /var/log/sysadmin/run_tests.log
 }
 
 # Deploy log rotation configuration
 deploy_log_rotation() {
     if [ ! -f /etc/logrotate.d/run_tests ]; then
-        echo "[INFO] Deploying logrotate configuration for run_tests."
-        sudo cp "$SCRIPTS/cron/etc/logrotate.d/run_tests" /etc/logrotate.d/run_tests
-        sudo chmod 640 /etc/logrotate.d/run_tests
-        sudo chown root:adm /etc/logrotate.d/run_tests
+        echo "[INFO] Deploying logrotate configuration."
+        if ! sudo cp "$SCRIPTS/cron/etc/logrotate.d/run_tests" /etc/logrotate.d/run_tests; then
+            echo "[ERROR] Failed to copy logrotate configuration" >&2
+            exit 1
+        fi
     fi
+
+    sudo chmod 640 /etc/logrotate.d/run_tests
+    sudo chown root:adm /etc/logrotate.d/run_tests
 }
 
 # Deploy run_tests script and configuration file
 deploy_scripts() {
-    echo "[INFO] Copying run_tests script to /root/bin."
-    sudo cp "$SCRIPTS/cron/bin/run_tests" /root/bin/
+    echo "[INFO] Copying run_tests script to /root/bin"
+    if ! sudo cp "$SCRIPTS/cron/bin/run_tests" /root/bin/; then
+        echo "[ERROR] Failed to copy run_tests script" >&2
+        exit 1
+    fi
 
     CONFIG_FILE="/root/etc/run_tests.conf"
-    if ! sudo test -f "$CONFIG_FILE"; then
-        echo "[INFO] Copying run_tests.conf to /root/etc."
-        sudo cp "$SCRIPTS/cron/etc/run_tests.conf" "$CONFIG_FILE"
+    if [ ! -f "$CONFIG_FILE" ]; then
+        echo "[INFO] Copying run_tests.conf to /root/etc"
+        if ! sudo cp "$SCRIPTS/cron/etc/run_tests.conf" "$CONFIG_FILE"; then
+            echo "[ERROR] Failed to copy run_tests.conf" >&2
+            exit 1
+        fi
     else
-        echo "[INFO] Configuration file already exists: $CONFIG_FILE"
+        echo "[INFO] Configuration already exists: $CONFIG_FILE"
         echo "[INFO] Skipping copy to preserve existing configuration."
     fi
 
@@ -155,13 +175,17 @@ setup_cron_job() {
     CRON_FILE="/etc/cron.d/run_tests"
     CRON_JOB="30 04 * * * root test -x /root/bin/run_tests && /root/bin/run_tests"
 
-    if ! sudo test -f "$CRON_FILE"; then
-        echo "[INFO] Creating cron job at /etc/cron.d/run_tests."
-        echo "$CRON_JOB" | sudo tee "$CRON_FILE" > /dev/null
-    else
+    if [ -f "$CRON_FILE" ]; then
         echo "[INFO] Cron job already exists: $CRON_FILE"
         echo "[INFO] Skipping creation to preserve existing configuration."
+    else
+        echo "[INFO] Creating cron job at /etc/cron.d/run_tests"
+        if ! echo "$CRON_JOB" | sudo tee "$CRON_FILE" > /dev/null; then
+            echo "[ERROR] Failed to create cron job file" >&2
+            exit 1
+        fi
     fi
+
     sudo chmod 644 "$CRON_FILE"
     sudo chown root:root "$CRON_FILE"
 }
