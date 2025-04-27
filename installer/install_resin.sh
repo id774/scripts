@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.7 2025-04-27
+#       Add error handling for critical build and install steps
 #  v0.6 2025-04-22
 #       Improved log granularity with [INFO] and [ERROR] tags for each step.
 #  v0.5 2025-04-13
@@ -103,7 +105,12 @@ setup_environment() {
 save_sources() {
     echo "[INFO] Saving sources to /usr/local/src/resin"
     sudo mkdir -p /usr/local/src/resin
-    sudo cp -av "$RESIN" /usr/local/src/resin/
+
+    if ! sudo cp -av "$RESIN" /usr/local/src/resin/; then
+        echo "[ERROR] Failed to copy source directory $RESIN" >&2
+        exit 1
+    fi
+
     sudo chown -R root:root /usr/local/src/resin
 }
 
@@ -116,25 +123,36 @@ install_resin() {
     cd install_resin || exit 1
 
     echo "[INFO] Downloading Resin $VERSION..."
-    wget "http://www.caucho.com/download/$RESIN.zip"
-    if [ ! -f "$RESIN.zip" ]; then
+    if ! wget "http://www.caucho.com/download/$RESIN.zip"; then
         echo "[ERROR] Failed to download Resin $VERSION." >&2
         exit 1
     fi
     echo "[INFO] Download complete: $RESIN.zip"
 
     echo "[INFO] Extracting archive..."
-    unzip "$RESIN.zip"
+    if ! unzip "$RESIN.zip"; then
+        echo "[ERROR] Failed to extract $RESIN.zip." >&2
+        exit 1
+    fi
 
     echo "[INFO] Configuring Resin..."
     cd "$RESIN" || exit 1
-    ./configure --prefix="/opt/resin/$VERSION"
+    if ! ./configure --prefix="/opt/resin/$VERSION"; then
+        echo "[ERROR] Configure step failed." >&2
+        exit 1
+    fi
 
     echo "[INFO] Building Resin..."
-    make
+    if ! make; then
+        echo "[ERROR] Build step failed." >&2
+        exit 1
+    fi
 
     echo "[INFO] Installing Resin..."
-    sudo make install
+    if ! sudo make install; then
+        echo "[ERROR] Install step failed." >&2
+        exit 1
+    fi
 
     cd .. || exit 1
     [ -n "$2" ] || save_sources
