@@ -21,6 +21,7 @@ v1.4.2 (Release Date: TBD)
 - Standardize log level tags as [INFO], [WARN], and [ERROR] across all scripts.
 - Add detailed [INFO] log messages to many installer scripts to improve traceability during execution.
 - Redirect error messages to stderr across scripts for improved log handling and automation support.
+- Add strict error handling across installer scripts to ensure proper validation of operations.
 
 v1.4.1 (2025-03-28)
 -------------------
