@@ -16,6 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-04-27
+#       Skip deployment of fix-permissions cron job if it already exists, with [INFO] message.
+#       Add error checks for fix-permissions installer and unify log messages.
 #  v1.6 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v1.5 2025-04-11
@@ -42,6 +45,8 @@
 #  - Must be executed with sufficient permissions to modify system
 #    directories (typically as root or with sudo).
 #  - Requires `logrotate` to be installed for log rotation setup.
+#  - The script will not overwrite an existing fix-permissions cron job
+#    if it already exists.
 #
 #  Notes:
 #  - The script ensures that `/var/log/sysadmin` is created if it does
@@ -115,33 +120,59 @@ main() {
     check_scripts
     check_sudo
 
-    # Make Directory if it doesn't exist and set permissions
+    # Create /var/log/sysadmin if needed
     if [ ! -d /var/log/sysadmin ]; then
         echo "[INFO] Creating /var/log/sysadmin directory."
-        sudo mkdir -p /var/log/sysadmin
-        sudo chmod 750 /var/log/sysadmin
-        sudo chown root:adm /var/log/sysadmin
+        if ! sudo mkdir -p /var/log/sysadmin; then
+            echo "[ERROR] Failed to create /var/log/sysadmin" >&2
+            exit 1
+        fi
     fi
 
-    # Set up log file and permissions
+    sudo chmod 750 /var/log/sysadmin
+    sudo chown root:adm /var/log/sysadmin
+
+    # Create fix-permissions log file if needed
     if [ ! -f /var/log/sysadmin/fix-permissions.log ]; then
         echo "[INFO] Creating fix-permissions log file."
-        sudo touch /var/log/sysadmin/fix-permissions.log
-        sudo chmod 640 /var/log/sysadmin/fix-permissions.log
-        sudo chown root:adm /var/log/sysadmin/fix-permissions.log
+        if ! sudo touch /var/log/sysadmin/fix-permissions.log; then
+            echo "[ERROR] Failed to create fix-permissions.log" >&2
+            exit 1
+        fi
+    else
+        echo "[INFO] Log file already exists: /var/log/sysadmin/fix-permissions.log"
     fi
 
-    # Deploy log rotation configuration
+    sudo chmod 640 /var/log/sysadmin/fix-permissions.log
+    sudo chown root:adm /var/log/sysadmin/fix-permissions.log
+
+    # Deploy logrotate configuration
     if [ ! -f /etc/logrotate.d/fix-permissions ]; then
         echo "[INFO] Deploying logrotate configuration."
-        sudo cp "$SCRIPTS/cron/etc/logrotate.d/fix-permissions" /etc/logrotate.d/fix-permissions
-        sudo chmod 640 /etc/logrotate.d/fix-permissions
-        sudo chown root:adm /etc/logrotate.d/fix-permissions
+        if ! sudo cp "$SCRIPTS/cron/etc/logrotate.d/fix-permissions" /etc/logrotate.d/fix-permissions; then
+            echo "[ERROR] Failed to deploy logrotate configuration" >&2
+            exit 1
+        fi
+    else
+        echo "[INFO] Logrotate config already exists: /etc/logrotate.d/fix-permissions"
     fi
 
-    # Deploy the fix-permissions script and cron job
+    sudo chmod 640 /etc/logrotate.d/fix-permissions
+    sudo chown root:adm /etc/logrotate.d/fix-permissions
+
+    # Deploy the fix-permissions script
     echo "[INFO] Deploying fix-permissions cron job."
-    sudo cp "$SCRIPTS/cron/bin/fix-permissions.sh" /etc/cron.daily/fix-permissions
+    if [ -f /etc/cron.daily/fix-permissions ]; then
+        echo "[INFO] Cron job already exists: /etc/cron.daily/fix-permissions"
+        echo "[INFO] Skipping deployment to preserve existing file."
+    else
+        if ! sudo cp "$SCRIPTS/cron/bin/fix-permissions.sh" /etc/cron.daily/fix-permissions; then
+            echo "[ERROR] Failed to deploy fix-permissions cron job" >&2
+            exit 1
+        fi
+        echo "[INFO] Cron job deployed: /etc/cron.daily/fix-permissions"
+    fi
+
     sudo chmod 740 /etc/cron.daily/fix-permissions
     sudo chown root:adm /etc/cron.daily/fix-permissions
 
