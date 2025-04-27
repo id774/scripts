@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-04-27
+#       Add strict error checking for file copy and permission operations.
 #  v1.3 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.2 2025-03-22
@@ -156,8 +158,16 @@ setup_environment() {
 # Save downloaded packages
 save_packages() {
     echo "[INFO] Saving source package to $2"
-    sudo cp "$1" "$2"
-    sudo chown "$OWNER" "$2/$1"
+
+    if ! sudo cp "$1" "$2"; then
+        echo "[ERROR] Failed to copy $1 to $2" >&2
+        exit 1
+    fi
+
+    if ! sudo chown "$OWNER" "$2/$1"; then
+        echo "[ERROR] Failed to change owner of $2/$1" >&2
+        exit 1
+    fi
 }
 
 # Set proper permissions for TrueCrypt files
@@ -166,7 +176,12 @@ set_truecrypt_permission() {
     for path in /usr/local/src/crypt/truecrypt /usr/share/truecrypt \
                 /usr/local/src/crypt /usr/local/src /usr/bin/truecrypt \
                 /usr/bin/truecrypt-uninstall.sh; do
-        sudo chown -R "$OWNER" "$path" 2>/dev/null
+        if [ -e "$path" ]; then
+            if ! sudo chown -R "$OWNER" "$path"; then
+                echo "[ERROR] Failed to change owner of $path" >&2
+                exit 1
+            fi
+        fi
     done
 }
 
@@ -177,6 +192,7 @@ install_truecrypt() {
     get_architecture
     validate_version "$1"
     echo "[INFO] Installing TrueCrypt version: $VERSION for architecture: $ARCH"
+
     mkdir install_truecrypt
     cd install_truecrypt || exit 1
 
@@ -184,12 +200,24 @@ install_truecrypt() {
     EXEC_NAME="truecrypt-$VERSION-setup-console-$ARCH"
 
     echo "[INFO] Downloading $TAR_NAME..."
-    wget "http://id774.net/truecrypt/$TAR_NAME"
-    tar xzvf "$TAR_NAME"
+    if ! wget "http://id774.net/truecrypt/$TAR_NAME"; then
+        echo "[ERROR] Failed to download $TAR_NAME" >&2
+        exit 1
+    fi
+
+    if ! tar xzvf "$TAR_NAME"; then
+        echo "[ERROR] Failed to extract $TAR_NAME" >&2
+        exit 1
+    fi
+
     [ -n "$2" ] || save_packages "$TAR_NAME" /usr/local/src/crypt/truecrypt
 
-    chmod +x "./$EXEC_NAME" && "./$EXEC_NAME"
-    file /usr/bin/truecrypt
+    chmod +x "./$EXEC_NAME"
+    if ! "./$EXEC_NAME"; then
+        echo "[ERROR] Failed to execute installer $EXEC_NAME" >&2
+        exit 1
+    fi
+
     set_truecrypt_permission
 
     cd .. || exit 1
