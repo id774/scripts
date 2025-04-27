@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.4 2025-04-27
+#       Add failure checks to ncurses download, build, and installation steps.
 #  v2.3 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v2.2 2025-04-13
@@ -116,46 +118,76 @@ setup_environment() {
 save_sources() {
     [ "$SUDO" = "sudo" ] || return
     echo "[INFO] Saving source files to /usr/local/src/ncurses."
+
     if [ ! -d /usr/local/src/ncurses ]; then
-        $SUDO mkdir -p /usr/local/src/ncurses
+        if ! $SUDO mkdir -p /usr/local/src/ncurses; then
+            echo "[ERROR] Failed to create /usr/local/src/ncurses." >&2
+            exit 1
+        fi
     fi
-    $SUDO cp $OPTIONS "ncurses-$VERSION" /usr/local/src/ncurses
+
+    if ! $SUDO cp $OPTIONS "ncurses-$VERSION" /usr/local/src/ncurses; then
+        echo "[ERROR] Failed to copy source files to /usr/local/src/ncurses." >&2
+        exit 1
+    fi
 }
 
 # Install ncurses
 install_ncurses() {
     echo "[INFO] Creating temporary build directory."
-    mkdir install_ncurses
+    if ! mkdir install_ncurses; then
+        echo "[ERROR] Failed to create install_ncurses directory." >&2
+        exit 1
+    fi
     cd install_ncurses || exit 1
 
     echo "[INFO] Downloading ncurses $VERSION..."
-    wget "http://ftp.gnu.org/pub/gnu/ncurses/ncurses-$VERSION.tar.gz"
+    if ! wget "http://ftp.gnu.org/pub/gnu/ncurses/ncurses-$VERSION.tar.gz"; then
+        echo "[ERROR] Failed to download ncurses archive." >&2
+        exit 1
+    fi
 
-    # Check if the file was downloaded successfully
     if [ ! -f "ncurses-$VERSION.tar.gz" ]; then
-        echo "[ERROR] Failed to download ncurses $VERSION." >&2
+        echo "[ERROR] Downloaded archive not found: ncurses-$VERSION.tar.gz" >&2
         exit 1
     fi
 
     echo "[INFO] Extracting archive."
-    tar xzvf "ncurses-$VERSION.tar.gz"
+    if ! tar xzvf "ncurses-$VERSION.tar.gz"; then
+        echo "[ERROR] Failed to extract archive." >&2
+        exit 1
+    fi
     cd "ncurses-$VERSION" || exit 1
 
     echo "[INFO] Configuring build with prefix: $PREFIX"
-    ./configure --with-shared --with-normal --prefix="$PREFIX"
+    if ! ./configure --with-shared --with-normal --prefix="$PREFIX"; then
+        echo "[ERROR] Configure failed." >&2
+        exit 1
+    fi
 
     echo "[INFO] Compiling source code."
-    make
+    if ! make; then
+        echo "[ERROR] Compilation failed." >&2
+        exit 1
+    fi
 
     echo "[INFO] Installing to: $PREFIX"
-    $SUDO make install
+    if ! $SUDO make install; then
+        echo "[ERROR] Installation failed." >&2
+        exit 1
+    fi
 
     cd .. || exit 1
-    [ "$DOWNLOAD_SOURCE" = "auto" ] && save_sources
+    if [ "$DOWNLOAD_SOURCE" = "auto" ]; then
+        save_sources
+    fi
 
     echo "[INFO] Cleaning up temporary files."
     cd .. || exit 1
-    $SUDO rm -rf install_ncurses
+    if ! $SUDO rm -rf install_ncurses; then
+        echo "[ERROR] Failed to remove temporary directory." >&2
+        exit 1
+    fi
 }
 
 # Main function to execute the script
