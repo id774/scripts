@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-04-27
+#       Add strict error checking after applying each macOS Finder setting.
 #  v1.2 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.1 2025-03-22
@@ -59,20 +61,30 @@ check_system() {
 configure_finder_settings() {
     echo "[INFO] Applying macOS Finder and screenshot settings..."
 
-    # Disable shadow in screenshots
-    defaults write com.apple.screencapture disable-shadow -boolean true
+    if ! defaults write com.apple.screencapture disable-shadow -boolean true; then
+        echo "[ERROR] Failed to disable screenshot shadow." >&2
+        exit 1
+    fi
 
-    # Show hidden files in Finder
-    defaults write com.apple.finder AppleShowAllFiles true
+    if ! defaults write com.apple.finder AppleShowAllFiles true; then
+        echo "[ERROR] Failed to show hidden files in Finder." >&2
+        exit 1
+    fi
 
-    # Change the default screenshot file name
-    defaults write com.apple.screencapture name "Screenshot"
+    if ! defaults write com.apple.screencapture name "Screenshot"; then
+        echo "[ERROR] Failed to change default screenshot file name." >&2
+        exit 1
+    fi
 
-    # Prevent .DS_Store file creation on network shares
-    defaults write com.apple.desktopservices DSDontWriteNetworkStores true
+    if ! defaults write com.apple.desktopservices DSDontWriteNetworkStores true; then
+        echo "[ERROR] Failed to prevent .DS_Store file creation on network shares." >&2
+        exit 1
+    fi
 
-    # Restart SystemUIServer to apply changes
-    killall SystemUIServer
+    if ! killall SystemUIServer; then
+        echo "[ERROR] Failed to restart SystemUIServer." >&2
+        exit 1
+    fi
 
     echo "[INFO] macOS Finder settings applied successfully."
 }
