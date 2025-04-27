@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.5 2025-04-27
+#       Strengthen error handling during build, installation, and source saving processes.
 #  v2.4 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v2.3 2025-04-13
@@ -111,12 +113,23 @@ setup_environment() {
 # Save source files to /usr/local/src/crypt/des
 save_sources() {
     echo "[INFO] Saving source files..."
+
     if [ -d /usr/local/src/crypt/des ]; then
         sudo rm -rf /usr/local/src/crypt/des
     fi
-    sudo mkdir -p /usr/local/src/crypt/des
-    sudo cp * /usr/local/src/crypt/des
+
+    if ! sudo mkdir -p /usr/local/src/crypt/des; then
+        echo "[ERROR] Failed to create /usr/local/src/crypt/des" >&2
+        exit 1
+    fi
+
+    if ! sudo cp * /usr/local/src/crypt/des; then
+        echo "[ERROR] Failed to copy source files to /usr/local/src/crypt/des" >&2
+        exit 1
+    fi
+
     sudo chown -R "$OWNER" /usr/local/src/crypt/des
+
     echo "[INFO] Source files saved."
 }
 
@@ -129,13 +142,19 @@ install_des() {
     cd install_des || exit 1
 
     echo "[INFO] Downloading software archive..."
-    wget http://id774.net/archive/kmdes.tar.gz
+    if ! wget http://id774.net/archive/kmdes.tar.gz; then
+        echo "[ERROR] Failed to download kmdes.tar.gz" >&2
+        exit 1
+    fi
 
     echo "[INFO] Verifying archive integrity..."
     md5sum kmdes.tar.gz
 
     echo "[INFO] Extracting files..."
-    tar xzvf kmdes.tar.gz
+    if ! tar xzvf kmdes.tar.gz; then
+        echo "[ERROR] Failed to extract kmdes.tar.gz" >&2
+        exit 1
+    fi
 
     echo "[INFO] Removing archive..."
     rm -f kmdes.tar.gz
@@ -147,10 +166,16 @@ install_des() {
     fi
 
     echo "[INFO] Compiling source code..."
-    make
+    if ! make; then
+        echo "[ERROR] Compilation failed" >&2
+        exit 1
+    fi
 
     echo "[INFO] Installing compiled binary..."
-    sudo make install
+    if ! sudo make install; then
+        echo "[ERROR] Installation failed" >&2
+        exit 1
+    fi
 
     echo "[INFO] Cleaning up installation files..."
     cd .. || exit 1
