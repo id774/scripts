@@ -124,10 +124,26 @@ setup_environment() {
 save_sources() {
     [ "$SUDO" = "sudo" ] || return
     echo "[INFO] Saving source files to /usr/local/src/ruby."
-    $SUDO mkdir -p /usr/local/src/ruby
-    $SUDO cp -a "ruby-$VERSION" /usr/local/src/ruby/
-    $SUDO chown $OWNER /usr/local/src/ruby
-    $SUDO chown -R $OWNER /usr/local/src/ruby/ruby-$VERSION
+
+    if ! $SUDO mkdir -p /usr/local/src/ruby; then
+        echo "[ERROR] Failed to create /usr/local/src/ruby." >&2
+        exit 1
+    fi
+
+    if ! $SUDO cp -a "ruby-$VERSION" /usr/local/src/ruby/; then
+        echo "[ERROR] Failed to copy ruby-$VERSION to /usr/local/src/ruby/." >&2
+        exit 1
+    fi
+
+    if ! $SUDO chown $OWNER /usr/local/src/ruby; then
+        echo "[ERROR] Failed to change owner of /usr/local/src/ruby." >&2
+        exit 1
+    fi
+
+    if ! $SUDO chown -R $OWNER /usr/local/src/ruby/ruby-$VERSION; then
+        echo "[ERROR] Failed to recursively change owner of ruby-$VERSION." >&2
+        exit 1
+    fi
 }
 
 # Compile and install Ruby

@@ -15,7 +15,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v0.7 2025-04-26
+#  v0.7 2025-04-27
 #       Add critical failure checks to TA-Lib installation process.
 #  v0.6 2025-04-21
 #       Refined [INFO] log messages for clearer and more meaningful execution steps.
@@ -104,9 +104,21 @@ setup_environment() {
 # Save sources if requested
 save_sources() {
     echo "[INFO] Saving sources to /usr/local/src/ta-lib"
-    sudo mkdir -p /usr/local/src
-    sudo cp -av ta-lib /usr/local/src/
-    sudo chown -R root:root /usr/local/src/
+
+    if ! sudo mkdir -p /usr/local/src; then
+        echo "[ERROR] Failed to create /usr/local/src." >&2
+        exit 1
+    fi
+
+    if ! sudo cp -av ta-lib /usr/local/src/; then
+        echo "[ERROR] Failed to copy ta-lib to /usr/local/src/." >&2
+        exit 1
+    fi
+
+    if ! sudo chown -R root:root /usr/local/src/; then
+        echo "[ERROR] Failed to change owner of /usr/local/src/." >&2
+        exit 1
+    fi
 }
 
 # Install TA-Lib

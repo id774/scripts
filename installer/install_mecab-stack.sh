@@ -292,11 +292,26 @@ install_cabocha() {
 save_source() {
     dir="$1"
     name="$2"
+
     if [ "$SAVE_SOURCE" -eq 1 ]; then
         echo "[INFO] Saving source for $name to $SRC_BASE/$name"
-        sudo mkdir -p "$SRC_BASE"
-        sudo rm -rf "$SRC_BASE/$name"
-        sudo cp -r "$dir" "$SRC_BASE/$name"
+
+        if ! sudo mkdir -p "$SRC_BASE"; then
+            echo "[ERROR] Failed to create directory: $SRC_BASE" >&2
+            exit 1
+        fi
+
+        if [ -e "$SRC_BASE/$name" ] || [ -L "$SRC_BASE/$name" ]; then
+            if ! sudo rm -rf "$SRC_BASE/$name"; then
+                echo "[ERROR] Failed to remove existing source directory: $SRC_BASE/$name" >&2
+                exit 1
+            fi
+        fi
+
+        if ! sudo cp -r "$dir" "$SRC_BASE/$name"; then
+            echo "[ERROR] Failed to copy source from $dir to $SRC_BASE/$name" >&2
+            exit 1
+        fi
     fi
 }
 

@@ -124,10 +124,26 @@ setup_environment() {
 save_sources() {
     [ "$SUDO" = "sudo" ] || return
     echo "[INFO] Saving source files to /usr/local/src/python."
-    $SUDO mkdir -p /usr/local/src/python
-    $SUDO cp $OPTIONS "Python-$VERSION" /usr/local/src/python
-    $SUDO chown $OWNER /usr/local/src/python
-    $SUDO chown -R $OWNER /usr/local/src/python/Python-$VERSION
+
+    if ! $SUDO mkdir -p /usr/local/src/python; then
+        echo "[ERROR] Failed to create /usr/local/src/python." >&2
+        exit 1
+    fi
+
+    if ! $SUDO cp $OPTIONS "Python-$VERSION" /usr/local/src/python; then
+        echo "[ERROR] Failed to copy source files to /usr/local/src/python." >&2
+        exit 1
+    fi
+
+    if ! $SUDO chown $OWNER /usr/local/src/python; then
+        echo "[ERROR] Failed to change owner of /usr/local/src/python." >&2
+        exit 1
+    fi
+
+    if ! $SUDO chown -R $OWNER /usr/local/src/python/Python-$VERSION; then
+        echo "[ERROR] Failed to change owner recursively for Python-$VERSION." >&2
+        exit 1
+    fi
 }
 
 # Compile and install Python

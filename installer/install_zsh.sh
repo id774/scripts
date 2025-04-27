@@ -127,10 +127,26 @@ setup_environment() {
 save_sources() {
     [ "$SUDO" = "sudo" ] || return
     echo "[INFO] Saving source files to /usr/local/src/zsh."
-    $SUDO mkdir -p /usr/local/src/zsh
-    $SUDO cp $OPTIONS "zsh-$VERSION" /usr/local/src/zsh
-    $SUDO chown $OWNER /usr/local/src/zsh
-    $SUDO chown -R $OWNER /usr/local/src/zsh/zsh-$VERSION
+
+    if ! $SUDO mkdir -p /usr/local/src/zsh; then
+        echo "[ERROR] Failed to create /usr/local/src/zsh." >&2
+        exit 1
+    fi
+
+    if ! $SUDO cp $OPTIONS "zsh-$VERSION" /usr/local/src/zsh; then
+        echo "[ERROR] Failed to copy zsh-$VERSION to /usr/local/src/zsh." >&2
+        exit 1
+    fi
+
+    if ! $SUDO chown $OWNER /usr/local/src/zsh; then
+        echo "[ERROR] Failed to change owner of /usr/local/src/zsh." >&2
+        exit 1
+    fi
+
+    if ! $SUDO chown -R $OWNER /usr/local/src/zsh/zsh-$VERSION; then
+        echo "[ERROR] Failed to recursively change owner of zsh-$VERSION." >&2
+        exit 1
+    fi
 }
 
 # Compile and install Zsh
