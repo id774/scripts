@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-04-27
+#       Add failure checks to Zsh download, build, and installation steps.
 #  v1.3 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v1.2 2025-04-13
@@ -134,16 +136,31 @@ save_sources() {
 # Compile and install Zsh
 make_and_install() {
     cd "zsh-$VERSION" || exit 1
-    ./configure --enable-multibyte --prefix="$PREFIX"
-    make
-    $SUDO make install
+    if ! ./configure --enable-multibyte --prefix="$PREFIX"; then
+        echo "[ERROR] Configure failed." >&2
+        exit 1
+    fi
+
+    if ! make; then
+        echo "[ERROR] Compilation failed." >&2
+        exit 1
+    fi
+
+    if ! $SUDO make install; then
+        echo "[ERROR] Installation failed." >&2
+        exit 1
+    fi
     cd .. || exit 1
 }
 
 # Download and extract Zsh
 install_zsh() {
     echo "[INFO] Creating temporary directory for Zsh build."
-    mkdir install_zsh
+    if ! mkdir install_zsh; then
+        echo "[ERROR] Failed to create install_zsh directory." >&2
+        exit 1
+    fi
+
     cd install_zsh || exit 1
 
     if [ "$USER_SPECIFIED_VERSION" -eq 1 ]; then
@@ -153,23 +170,35 @@ install_zsh() {
     fi
 
     echo "[INFO] Downloading Zsh $VERSION from $ZSH_URL."
-    wget "$ZSH_URL"
-    if [ ! -f "zsh-$VERSION.tar.xz" ]; then
+    if ! wget "$ZSH_URL"; then
         echo "[ERROR] Failed to download Zsh $VERSION." >&2
         exit 1
     fi
 
+    if [ ! -f "zsh-$VERSION.tar.xz" ]; then
+        echo "[ERROR] Downloaded archive not found: zsh-$VERSION.tar.xz" >&2
+        exit 1
+    fi
+
     echo "[INFO] Extracting Zsh archive."
-    tar xvf "zsh-$VERSION.tar.xz"
+    if ! tar xvf "zsh-$VERSION.tar.xz"; then
+        echo "[ERROR] Failed to extract Zsh archive." >&2
+        exit 1
+    fi
 
     echo "[INFO] Starting build and installation."
     make_and_install
 
-    [ "$DOWNLOAD_SOURCE" = "auto" ] && save_sources
+    if [ "$DOWNLOAD_SOURCE" = "auto" ]; then
+        save_sources
+    fi
 
     echo "[INFO] Cleaning up temporary build files."
     cd .. || exit 1
-    rm -rf install_zsh
+    if ! rm -rf install_zsh; then
+        echo "[ERROR] Failed to remove temporary directory." >&2
+        exit 1
+    fi
 }
 
 # Main function to execute the script
