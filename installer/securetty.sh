@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-04-27
+#       Add strict error checking for clearing /etc/securetty operation.
 #  v1.4 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.3 2025-03-22
@@ -81,7 +83,10 @@ check_sudo() {
 # Function to check the type of /etc/securetty and take action
 clear_securetty() {
     if [ -f /etc/securetty ]; then
-        sudo sh -c ": > /etc/securetty"
+        if ! sudo sh -c ": > /etc/securetty"; then
+            echo "[ERROR] Failed to clear /etc/securetty." >&2
+            exit 1
+        fi
         echo "[INFO] Setup completed."
     elif [ -d /etc/securetty ]; then
         echo "[ERROR] /etc/securetty is a directory, no changes were made." >&2
