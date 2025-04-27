@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.4 2025-04-27
+#       Add failure checks to Ruby download, build, and installation steps.
 #  v3.3 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v3.2 2025-04-13
@@ -132,40 +134,63 @@ save_sources() {
 make_and_install() {
     echo "[INFO] Configuring the build..."
     cd "ruby-$VERSION" || exit 1
-    ./configure --prefix="$PREFIX"
+    if ! ./configure --prefix="$PREFIX"; then
+        echo "[ERROR] Configure failed." >&2
+        exit 1
+    fi
 
     echo "[INFO] Building Ruby..."
-    make
+    if ! make; then
+        echo "[ERROR] Build failed." >&2
+        exit 1
+    fi
 
     echo "[INFO] Installing Ruby to $PREFIX..."
-    $SUDO make install
+    if ! $SUDO make install; then
+        echo "[ERROR] Installation failed." >&2
+        exit 1
+    fi
     cd .. || exit 1
 }
 
 # Download and install Ruby
 install_ruby() {
     echo "[INFO] Creating temporary build directory."
-    mkdir install_ruby
+    if ! mkdir install_ruby; then
+        echo "[ERROR] Failed to create install_ruby directory." >&2
+        exit 1
+    fi
 
     cd install_ruby || exit 1
 
     echo "[INFO] Downloading Ruby $VERSION from https://cache.ruby-lang.org..."
-    curl -L "https://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR/ruby-$VERSION.tar.gz" -O
+    if ! curl -L "https://cache.ruby-lang.org/pub/ruby/$RUBY_MAJOR/ruby-$VERSION.tar.gz" -O; then
+        echo "[ERROR] Failed to download Ruby archive." >&2
+        exit 1
+    fi
 
-    # Check if the file was downloaded successfully
     if [ ! -f "ruby-$VERSION.tar.gz" ]; then
-        echo "[ERROR] Failed to download Ruby $VERSION." >&2
+        echo "[ERROR] Downloaded archive not found: ruby-$VERSION.tar.gz" >&2
         exit 1
     fi
 
     echo "[INFO] Extracting archive."
-    tar xzvf "ruby-$VERSION.tar.gz"
+    if ! tar xzvf "ruby-$VERSION.tar.gz"; then
+        echo "[ERROR] Failed to extract Ruby archive." >&2
+        exit 1
+    fi
 
     make_and_install
 
-    [ "$DOWNLOAD_SOURCE" = "auto" ] && save_sources
+    if [ "$DOWNLOAD_SOURCE" = "auto" ]; then
+        save_sources
+    fi
+
     cd .. || exit 1
-    $SUDO rm -rf install_ruby
+    if ! $SUDO rm -rf install_ruby; then
+        echo "[ERROR] Failed to remove temporary build directory." >&2
+        exit 1
+    fi
 }
 
 # Main function to execute the script
