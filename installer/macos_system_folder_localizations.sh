@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-04-27
+#       Add strict error checking for folder localization file operations.
 #  v1.2 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.1 2025-03-22
@@ -67,13 +69,23 @@ enable_localization() {
     echo "[INFO] Enabling folder localization..."
     for dir in "$HOME/Applications" "$HOME/Documents" "$HOME/Downloads" "$HOME/Desktop" \
                "$HOME/Public" "$HOME/Pictures" "$HOME/Music" "$HOME/Movies" "$HOME/Library"; do
-        [ -d "$dir" ] && touch "$dir/.localized"
+        if [ -d "$dir" ]; then
+            if ! touch "$dir/.localized"; then
+                echo "[ERROR] Failed to create $dir/.localized" >&2
+                exit 1
+            fi
+        fi
     done
 
     for dir in "/Applications" "/Applications/Utilities"; do
-        [ -d "$dir" ] && sudo touch "$dir/.localized"
+        if [ -d "$dir" ]; then
+            if ! sudo touch "$dir/.localized"; then
+                echo "[ERROR] Failed to create $dir/.localized" >&2
+                exit 1
+            fi
+        fi
     done
-    echo "[INFO] Folder localization enabled."
+    echo "[INFO] Folder localization successfully enabled."
 }
 
 # Disable localization by removing .localized files
@@ -81,13 +93,23 @@ disable_localization() {
     echo "[INFO] Disabling folder localization..."
     for dir in "$HOME/Applications" "$HOME/Documents" "$HOME/Downloads" "$HOME/Desktop" \
                "$HOME/Public" "$HOME/Pictures" "$HOME/Music" "$HOME/Movies" "$HOME/Library"; do
-        [ -f "$dir/.localized" ] && rm -f "$dir/.localized"
+        if [ -f "$dir/.localized" ]; then
+            if ! rm -f "$dir/.localized"; then
+                echo "[ERROR] Failed to remove $dir/.localized" >&2
+                exit 1
+            fi
+        fi
     done
 
     for dir in "/Applications" "/Applications/Utilities"; do
-        [ -f "$dir/.localized" ] && sudo rm -f "$dir/.localized"
+        if [ -f "$dir/.localized" ]; then
+            if ! sudo rm -f "$dir/.localized"; then
+                echo "[ERROR] Failed to remove $dir/.localized" >&2
+                exit 1
+            fi
+        fi
     done
-    echo "[INFO] Folder localization disabled."
+    echo "[INFO] Folder localization successfully disabled."
 }
 
 # Main function to execute the script
