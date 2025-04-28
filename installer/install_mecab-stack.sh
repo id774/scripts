@@ -24,6 +24,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-04-28
+#       Refine error handling: apply checks only where critical, improve readability.
 #  v1.1 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.0 2025-03-27
@@ -36,15 +38,14 @@
 #  -n            : Optional. If specified, skips saving source files.
 #
 #  Features:
-#  - POSIX-compliant script structure
-#  - Installs MeCab morphological analyzer (v0.996)
-#  - Installs mecab-ipadic-NEologd enhanced dictionary
-#  - Installs CaboCha Japanese syntactic analyzer (v0.69)
-#  - Installs all binaries, libraries, dictionaries, and configs under a unified prefix
-#  - Performs sudo installation steps where required
-#  - Includes network and dependency checks
+#  - Installs MeCab morphological analyzer (v0.996).
+#  - Installs mecab-ipadic-NEologd enhanced dictionary.
+#  - Installs CaboCha Japanese syntactic analyzer (v0.69).
+#  - Installs all binaries, libraries, dictionaries, and configs under a unified prefix.
 #
 #  Warning:
+#  - Performs sudo installation steps where required.
+#  - Includes network and dependency checks.
 #  - This script modifies your system by installing files under the specified prefix.
 #  - Use with caution and test in a controlled environment.
 #
@@ -172,116 +173,229 @@ parse_args() {
 prepare_dirs() {
     echo "[INFO] Preparing directories..."
     mkdir -p "$BUILD_DIR" || exit 1
-    sudo mkdir -p "$PREFIX" || exit 1
+    sudo mkdir -p "${PREFIX}" || exit 1
 }
 
 # Download, extract, and install MeCab core
 install_mecab() {
-    echo "[INFO] Installing MeCab $MECAB_VERSION"
-    wget "http://files.id774.net/archive/mecab-$MECAB_VERSION.tar.gz"
-    tar xzvf "mecab-$MECAB_VERSION.tar.gz"
+    echo "[INFO] Installing MeCab ${MECAB_VERSION}..."
+
+    if ! wget "http://files.id774.net/archive/mecab-${MECAB_VERSION}.tar.gz"; then
+        echo "[ERROR] Failed to download mecab-${MECAB_VERSION}.tar.gz." >&2
+        exit 1
+    fi
+
+    if ! tar xzvf "mecab-${MECAB_VERSION}.tar.gz"; then
+        echo "[ERROR] Failed to extract mecab-${MECAB_VERSION}.tar.gz." >&2
+        exit 1
+    fi
+
     cd "mecab-$MECAB_VERSION" || exit 1
-    ./configure --enable-utf8-only --prefix="$PREFIX"
-    make
-    sudo make install
+
+    if ! ./configure --enable-utf8-only --prefix="${PREFIX}"; then
+        echo "[ERROR] Failed to configure MeCab." >&2
+        exit 1
+    fi
+
+    if ! make; then
+        echo "[ERROR] Failed to build MeCab." >&2
+        exit 1
+    fi
+
+    if ! sudo make install; then
+        echo "[ERROR] Failed to install MeCab." >&2
+        exit 1
+    fi
 
     cd .. || exit 1
+
     save_source "mecab-${MECAB_VERSION}" "mecab-${MECAB_VERSION}"
 }
 
 # Download, extract, and install IPADIC dictionary
 install_ipadic() {
-    echo "[INFO] Installing IPADIC $IPADIC_VERSION"
-    wget "http://files.id774.net/archive/mecab-ipadic-$IPADIC_VERSION.tar.gz"
-    tar xzvf "mecab-ipadic-$IPADIC_VERSION.tar.gz"
-    cd "mecab-ipadic-$IPADIC_VERSION" || exit 1
-    ./configure --with-charset=utf8 --prefix="$PREFIX"
-    make
-    sudo make install
+    echo "[INFO] Installing IPADIC ${IPADIC_VERSION}..."
+
+    if ! wget "http://files.id774.net/archive/mecab-ipadic-${IPADIC_VERSION}.tar.gz"; then
+        echo "[ERROR] Failed to download mecab-ipadic-${IPADIC_VERSION}.tar.gz." >&2
+        exit 1
+    fi
+
+    if ! tar xzvf "mecab-ipadic-${IPADIC_VERSION}.tar.gz"; then
+        echo "[ERROR] Failed to extract mecab-ipadic-${IPADIC_VERSION}.tar.gz." >&2
+        exit 1
+    fi
+
+    cd "mecab-ipadic-${IPADIC_VERSION}" || exit 1
+
+    if ! ./configure --with-charset=utf8 --prefix="${PREFIX}"; then
+        echo "[ERROR] Failed to configure mecab-ipadic." >&2
+        exit 1
+    fi
+
+    if ! make; then
+        echo "[ERROR] Failed to build mecab-ipadic." >&2
+        exit 1
+    fi
+
+    if ! sudo make install; then
+        echo "[ERROR] Failed to install mecab-ipadic." >&2
+        exit 1
+    fi
 
     cd .. || exit 1
+
     save_source "mecab-ipadic-${IPADIC_VERSION}" "mecab-ipadic-${IPADIC_VERSION}"
 }
 
 # Download, extract, and install NAIST-JDIC dictionary
 install_naistdic() {
-    echo "[INFO] Installing NAIST-JDIC $NAISTDIC_VERSION"
-    wget "http://files.id774.net/archive/naistdic.tar.gz"
-    tar xzvf "naistdic.tar.gz"
-    cd "mecab-naist-jdic-$NAISTDIC_VERSION" || exit 1
-    ./configure --with-charset=utf8 --prefix="$PREFIX"
-    make
-    sudo make install
+    echo "[INFO] Installing NAIST-JDIC ${NAISTDIC_VERSION}..."
+
+    if ! wget "http://files.id774.net/archive/naistdic.tar.gz"; then
+        echo "[ERROR] Failed to download naistdic.tar.gz." >&2
+        exit 1
+    fi
+
+    if ! tar xzvf "naistdic.tar.gz"; then
+        echo "[ERROR] Failed to extract naistdic.tar.gz." >&2
+        exit 1
+    fi
+
+    cd "mecab-naist-jdic-${NAISTDIC_VERSION}" || exit 1
+
+    if ! ./configure --with-charset=utf8 --prefix="${PREFIX}"; then
+        echo "[ERROR] Failed to configure mecab-naist-jdic." >&2
+        exit 1
+    fi
+
+    if ! make; then
+        echo "[ERROR] Failed to build mecab-naist-jdic." >&2
+        exit 1
+    fi
+
+    if ! sudo make install; then
+        echo "[ERROR] Failed to install mecab-naist-jdic." >&2
+        exit 1
+    fi
+
     cd .. || exit 1
+
     save_source "mecab-naist-jdic-${NAISTDIC_VERSION}" "mecab-naist-jdic-${NAISTDIC_VERSION}"
 }
 
 # Install MeCab and dictionaries
 install_mecab_stack() {
     echo "[INFO] Installing MeCab and dictionaries..."
+
     cd "$BUILD_DIR" || exit 1
+
     install_mecab
     install_ipadic
     install_naistdic
+
     cd .. || exit 1
+
     rm -rf install_mecab
 }
 
 # Download and install NEologd dictionary
 install_neologd() {
     echo "[INFO] Installing mecab-ipadic-NEologd..."
+
     cd "$BUILD_DIR" || exit 1
+
     rm -rf mecab-ipadic-neologd
 
     if ! git clone --depth 1 https://github.com/neologd/mecab-ipadic-neologd.git; then
-        echo "[WARN] Failed to clone mecab-ipadic-neologd from GitHub." >&2
-        echo "[WARN] Skipping NEologd installation." >&2
+        echo "[WARN] Failed to clone mecab-ipadic-neologd from GitHub. Skipping NEologd installation." >&2
         return 0
     fi
 
     cd mecab-ipadic-neologd || exit 1
 
-    ./bin/install-mecab-ipadic-neologd -n -y -p "$PREFIX/lib/mecab/dic/mecab-ipadic-neologd" || exit 1
+    if ! ./bin/install-mecab-ipadic-neologd -n -y -p "${PREFIX}/lib/mecab/dic/mecab-ipadic-neologd"; then
+        echo "[ERROR] Failed to install mecab-ipadic-neologd." >&2
+        exit 1
+    fi
 
     cd .. || exit 1
     save_source "mecab-ipadic-neologd" "mecab-ipadic-neologd"
+
     cd .. || exit 1
 }
 
 # Install CRF++
 install_crfpp() {
     echo "[INFO] Installing CRF++ $CRF_VERSION..."
+
     cd "$BUILD_DIR" || exit 1
-    wget "http://files.id774.net/archive/CRF%2B%2B-${CRF_VERSION}.tar.gz" || exit 1
-    tar xzvf "CRF++-${CRF_VERSION}.tar.gz" || exit 1
+
+    if ! wget "http://files.id774.net/archive/CRF%2B%2B-${CRF_VERSION}.tar.gz"; then
+        echo "[ERROR] Failed to download CRF++-${CRF_VERSION}.tar.gz." >&2
+        exit 1
+    fi
+
+    if ! tar xzvf "CRF++-${CRF_VERSION}.tar.gz"; then
+        echo "[ERROR] Failed to extract CRF++-${CRF_VERSION}.tar.gz." >&2
+        exit 1
+    fi
+
     cd "CRF++-${CRF_VERSION}" || exit 1
-    ./configure --prefix="$PREFIX" || exit 1
-    make || exit 1
-    sudo make install || exit 1
+
+    if ! ./configure --prefix="${PREFIX}"; then
+        echo "[ERROR] Failed to configure CRF++." >&2
+        exit 1
+    fi
+
+    if ! make; then
+        echo "[ERROR] Failed to build CRF++." >&2
+        exit 1
+    fi
+
+    if ! sudo make install; then
+        echo "[ERROR] Failed to install CRF++." >&2
+        exit 1
+    fi
 
     cd .. || exit 1
     save_source "CRF++-${CRF_VERSION}" "CRF++-${CRF_VERSION}"
+
     cd .. || exit 1
 }
 
 # Install CaboCha
 install_cabocha() {
     echo "[INFO] Installing CaboCha ${CABOCHA_VERSION}..."
+
     cd "$BUILD_DIR" || exit 1
-    echo "[INFO] Downloading CaboCha from id774.net..."
-    wget "http://files.id774.net/archive/cabocha-${CABOCHA_VERSION}.tar.bz2" || exit 1
-    tar xjvf "cabocha-${CABOCHA_VERSION}.tar.bz2" || exit 1
+
+    if ! wget "http://files.id774.net/archive/cabocha-${CABOCHA_VERSION}.tar.bz2"; then
+        echo "[ERROR] Failed to download cabocha-${CABOCHA_VERSION}.tar.bz2." >&2
+        exit 1
+    fi
+
+    if ! tar xjvf "cabocha-${CABOCHA_VERSION}.tar.bz2"; then
+        echo "[ERROR] Failed to extract cabocha-${CABOCHA_VERSION}.tar.bz2." >&2
+        exit 1
+    fi
+
     cd "cabocha-${CABOCHA_VERSION}" || exit 1
 
-    CPPFLAGS="-I$PREFIX/include" \
-    LDFLAGS="-L$PREFIX/lib" \
-    ./configure --with-charset=UTF8 \
-                --with-posset=IPA \
-                --with-mecab-config="$PREFIX/bin/mecab-config" \
-                --prefix="$PREFIX" || exit 1
+    if ! CPPFLAGS="-I${PREFIX}/include" LDFLAGS="-L${PREFIX}/lib" ./configure --with-charset=UTF8 --with-posset=IPA --with-mecab-config="${PREFIX}/bin/mecab-config" --prefix="${PREFIX}"; then
+        echo "[ERROR] Failed to configure CaboCha." >&2
+        exit 1
+    fi
 
-    make || exit 1
-    sudo make install || exit 1
+    if ! make; then
+        echo "[ERROR] Failed to build CaboCha." >&2
+        exit 1
+    fi
+
+    if ! sudo make install; then
+        echo "[ERROR] Failed to install CaboCha." >&2
+        exit 1
+    fi
 
     cd .. || exit 1
     save_source "cabocha-${CABOCHA_VERSION}" "cabocha-${CABOCHA_VERSION}"
@@ -329,10 +443,10 @@ main() {
     check_sudo
 
     echo "[INFO] Starting installation of MeCab stack..."
-    echo "[INFO] Installation prefix: $PREFIX"
+    echo "[INFO] Installation prefix: ${PREFIX}"
 
     # Ensure PREFIX/bin is in PATH so mecab-config and other tools are found
-    export PATH="$PREFIX/bin:$PATH"
+    export PATH="${PREFIX}/bin:$PATH"
 
     prepare_dirs
     install_mecab_stack
