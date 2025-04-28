@@ -90,7 +90,7 @@ create_backup() {
         echo "[ERROR] Failed to create backup file." >&2
         exit 1
     fi
-    echo "[INFO] Backup created: $BACKUP_FILE"
+    echo "[INFO] Backup created: $BACKUP_FILE."
 }
 
 # Count matching lines in the history file
@@ -116,8 +116,8 @@ filter_history() {
         exit 1
     fi
 
-    echo "[INFO] Lines containing '$PATTERN' have been removed from $HISTORY_FILE"
-    echo "[INFO] Total removed entries: $MATCH_COUNT"
+    echo "[INFO] Lines containing '$PATTERN' have been removed from $HISTORY_FILE."
+    echo "[INFO] Total removed entries: $MATCH_COUNT."
 }
 
 # Show the diff between backup and modified file

@@ -134,7 +134,7 @@ create_ubygems() {
 
     # Create ubygems.rb with a simple 'require rubygems' statement
     if printf "require 'rubygems'\n" > "$TARGET_DIR/ubygems.rb"; then
-        echo "[INFO] ubygems.rb was successfully created in $TARGET_DIR"
+        echo "[INFO] ubygems.rb was successfully created in $TARGET_DIR."
         echo "[INFO] Listing the contents of $TARGET_DIR:"
         ls -l "$TARGET_DIR/ubygems.rb"
         echo "[INFO] Contents of ubygems.rb:"

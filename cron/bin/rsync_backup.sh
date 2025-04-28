@@ -140,7 +140,7 @@ git_backup() {
     fi
 
     if cd /root/local; then
-        echo "[INFO] Creating archive git.tar.gz from repo/"
+        echo "[INFO] Creating archive git.tar.gz from repo/."
         if tar czvf git.tar.gz repo/ > /dev/null; then
             echo "[INFO] Archive created: /root/local/git.tar.gz"
         else
@@ -154,7 +154,7 @@ git_backup() {
 
     DEST_DIR="$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git"
     if [ -d "$DEST_DIR" ]; then
-        echo "[INFO] Copying archive to $DEST_DIR"
+        echo "[INFO] Copying archive to $DEST_DIR".
         cp -v /root/local/git.tar.gz "$DEST_DIR/"
     else
         echo "[WARN] Destination directory not found: $DEST_DIR" >&2
@@ -186,7 +186,7 @@ github_backup() {
     fi
 
     if [ -f /root/local/github.tar.gz ] && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git" ]; then
-        echo "[INFO] Copying archive to $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
+        echo "[INFO] Copying archive to $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/."
         cp -v /root/local/github.tar.gz "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
     else
         echo "[WARN] Skipping copy: archive or destination not available." >&2
@@ -299,7 +299,7 @@ main() {
     CONFIG_FILE="$SCRIPT_DIR/../etc/rsync_backup.conf"
 
     if [ -f "$CONFIG_FILE" ]; then
-        echo "[INFO] Loaded configuration from $CONFIG_FILE"
+        echo "[INFO] Loaded configuration from $CONFIG_FILE."
         . "$CONFIG_FILE"
     else
         echo "[ERROR] Configuration file not found: $CONFIG_FILE">&2

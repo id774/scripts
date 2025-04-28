@@ -105,7 +105,7 @@ check_scripts() {
 # Create directory for logs
 setup_log_directory() {
     if [ ! -d /var/log/sysadmin ]; then
-        echo "[INFO] Creating /var/log/sysadmin"
+        echo "[INFO] Creating /var/log/sysadmin."
         if ! sudo mkdir -p /var/log/sysadmin; then
             echo "[ERROR] Failed to create /var/log/sysadmin" >&2
             exit 1
@@ -146,7 +146,7 @@ deploy_log_rotation() {
 
 # Deploy run_tests script and configuration file
 deploy_scripts() {
-    echo "[INFO] Copying run_tests script to /root/bin"
+    echo "[INFO] Copying run_tests script to /root/bin."
     if ! sudo cp "$SCRIPTS/cron/bin/run_tests" /root/bin/; then
         echo "[ERROR] Failed to copy run_tests script" >&2
         exit 1
@@ -154,7 +154,7 @@ deploy_scripts() {
 
     CONFIG_FILE="/root/etc/run_tests.conf"
     if [ ! -f "$CONFIG_FILE" ]; then
-        echo "[INFO] Copying run_tests.conf to /root/etc"
+        echo "[INFO] Copying run_tests.conf to /root/etc."
         if ! sudo cp "$SCRIPTS/cron/etc/run_tests.conf" "$CONFIG_FILE"; then
             echo "[ERROR] Failed to copy run_tests.conf" >&2
             exit 1
@@ -179,7 +179,7 @@ setup_cron_job() {
         echo "[INFO] Cron job already exists: $CRON_FILE"
         echo "[INFO] Skipping creation to preserve existing configuration."
     else
-        echo "[INFO] Creating cron job at /etc/cron.d/run_tests"
+        echo "[INFO] Creating cron job at /etc/cron.d/run_tests."
         if ! echo "$CRON_JOB" | sudo tee "$CRON_FILE" > /dev/null; then
             echo "[ERROR] Failed to create cron job file" >&2
             exit 1

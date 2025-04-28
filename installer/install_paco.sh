@@ -106,7 +106,7 @@ setup_environment() {
 
 # Save sources if requested
 save_sources() {
-    echo "[INFO] Saving sources to /usr/local/src/paco"
+    echo "[INFO] Saving sources to /usr/local/src/paco."
     sudo mkdir -p /usr/local/src/paco
     if ! sudo cp -av "paco-$PACO_VERSION" /usr/local/src/paco/; then
         echo "[ERROR] Failed to copy source directory to /usr/local/src/paco" >&2
@@ -128,11 +128,11 @@ install_paco() {
         echo "[ERROR] Failed to download paco-$PACO_VERSION.tar.gz" >&2
         exit 1
     fi
-    echo "[INFO] Download complete: paco-$PACO_VERSION.tar.gz"
+    echo "[INFO] Download complete: paco-$PACO_VERSION.tar.gz."
 
     echo "[INFO] Extracting archive..."
     if ! tar xzvf "paco-$PACO_VERSION.tar.gz"; then
-        echo "[ERROR] Failed to extract paco-$PACO_VERSION.tar.gz" >&2
+        echo "[ERROR] Failed to extract paco-$PACO_VERSION.tar.gz." >&2
         exit 1
     fi
 

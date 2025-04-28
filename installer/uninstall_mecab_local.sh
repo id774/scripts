@@ -162,7 +162,7 @@ main() {
     check_commands rm
     check_sudo
 
-    echo "[INFO] Starting uninstallation process from /usr/local"
+    echo "[INFO] Starting uninstallation process from /usr/local."
     echo
 
     uninstall_mecab

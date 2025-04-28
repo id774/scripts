@@ -152,7 +152,7 @@ setup_environment() {
 
 # Save downloaded packages
 save_packages() {
-    echo "[INFO] Saving source package to $2"
+    echo "[INFO] Saving source package to $2."
     if ! sudo cp "$1" "$2"; then
         echo "[ERROR] Failed to copy $1 to $2" >&2
         exit 1

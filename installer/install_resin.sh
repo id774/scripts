@@ -118,7 +118,7 @@ save_sources() {
 install_resin() {
     setup_environment "$1"
 
-    echo "[INFO] Creating temporary build directory: install_resin"
+    echo "[INFO] Creating temporary build directory: install_resin."
     mkdir install_resin
     cd install_resin || exit 1
 

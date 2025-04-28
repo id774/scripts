@@ -102,13 +102,13 @@ setup_environment() {
 
 # Save sources if requested
 save_sources() {
-    echo "[INFO] Saving sources to /usr/local/src/autoconf"
+    echo "[INFO] Saving sources to /usr/local/src/autoconf."
     if ! sudo mkdir -p /usr/local/src/autoconf; then
-        echo "[ERROR] Failed to create /usr/local/src/autoconf" >&2
+        echo "[ERROR] Failed to create /usr/local/src/autoconf." >&2
         exit 1
     fi
     if ! sudo cp -av "autoconf-$VERSION" /usr/local/src/autoconf/; then
-        echo "[ERROR] Failed to copy autoconf-$VERSION to /usr/local/src/autoconf" >&2
+        echo "[ERROR] Failed to copy autoconf-$VERSION to /usr/local/src/autoconf." >&2
         exit 1
     fi
     sudo chown -R root:root /usr/local/src/autoconf
@@ -124,32 +124,32 @@ install_autoconf() {
 
     echo "[INFO] Downloading Autoconf $VERSION."
     if ! wget "ftp://ftp.gnu.org/gnu/autoconf/autoconf-$VERSION.tar.gz"; then
-        echo "[ERROR] Failed to download autoconf-$VERSION.tar.gz" >&2
+        echo "[ERROR] Failed to download autoconf-$VERSION.tar.gz." >&2
         exit 1
     fi
 
     echo "[INFO] Extracting archive."
     if ! tar xzvf "autoconf-$VERSION.tar.gz"; then
-        echo "[ERROR] Failed to extract autoconf-$VERSION.tar.gz" >&2
+        echo "[ERROR] Failed to extract autoconf-$VERSION.tar.gz." >&2
         exit 1
     fi
 
     echo "[INFO] Configuring build."
     cd "autoconf-$VERSION" || exit 1
     if ! ./configure --prefix=/usr/local; then
-        echo "[ERROR] Failed to configure autoconf-$VERSION" >&2
+        echo "[ERROR] Failed to configure autoconf-$VERSION." >&2
         exit 1
     fi
 
     echo "[INFO] Building Autoconf."
     if ! make; then
-        echo "[ERROR] Failed to build autoconf-$VERSION" >&2
+        echo "[ERROR] Failed to build autoconf-$VERSION." >&2
         exit 1
     fi
 
     echo "[INFO] Installing Autoconf."
     if ! sudo make install; then
-        echo "[ERROR] Failed to install autoconf-$VERSION" >&2
+        echo "[ERROR] Failed to install autoconf-$VERSION." >&2
         exit 1
     fi
 

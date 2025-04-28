@@ -82,7 +82,7 @@ setup_karabiner() {
 
     if [ -f "$DEST_CONFIG" ]; then
         BACKUP_FILE="$DEST_CONFIG.bak.$(date +%Y%m%d%H%M%S)"
-        echo "[INFO] Backing up existing configuration to $BACKUP_FILE"
+        echo "[INFO] Backing up existing configuration to $BACKUP_FILE."
         if ! mv "$DEST_CONFIG" "$BACKUP_FILE"; then
             echo "[ERROR] Failed to backup existing configuration file." >&2
             exit 1

@@ -141,7 +141,7 @@ deploy_dotfile() {
 
 # Set up Emacs configuration directories and permissions
 setup_dotemacs() {
-    echo "[INFO] Setting up Emacs configuration under $1/.emacs.d"
+    echo "[INFO] Setting up Emacs configuration under $1/.emacs.d."
     mkdir_if_not_exist \
       "$1/.emacs.d" \
       "$1/.emacs.d/site-lisp" \
@@ -169,7 +169,7 @@ mkdir_skelton() {
 
 # Deploy dotfiles and create necessary directories for a given user
 deploy_dotfiles() {
-    echo "[INFO] Copying dotfiles to $1"
+    echo "[INFO] Copying dotfiles to $1."
     if ! deploy_dotfile "$1"; then
         echo "[ERROR] Failed to deploy dotfiles to $1" >&2
         exit 1

@@ -92,7 +92,7 @@ check_commands() {
 # Apply tune2fs settings if device is a block device
 exec_tune2fs() {
     if [ -b "$1" ]; then
-        echo "[INFO] Applying tune2fs settings to $1"
+        echo "[INFO] Applying tune2fs settings to $1."
         sudo tune2fs -i 0 -c 0 -m 1 "$1"
     fi
 }
