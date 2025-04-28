@@ -92,8 +92,14 @@ initialize() {
 run_tests() {
     python_version="$1"
     ruby_version="$2"
+
     echo "=== Running Tests with Python $python_version and Ruby $ruby_version. ===" >> "$JOBLOG" 2>&1
-    "$SCRIPTS/run_tests.sh" "/opt/python/$python_version/bin/python" "/opt/ruby/$ruby_version/bin/rspec" >> "$JOBLOG" 2>&1
+
+    if [ -n "$ruby_version" ]; then
+        "$SCRIPTS/run_tests.sh" "/opt/python/$python_version/bin/python" "/opt/ruby/$ruby_version/bin/rspec" >> "$JOBLOG" 2>&1
+    else
+        "$SCRIPTS/run_tests.sh" "/opt/python/$python_version/bin/python" >> "$JOBLOG" 2>&1
+    fi
 }
 
 # Function to run shell script validation if available

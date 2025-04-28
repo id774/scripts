@@ -5,10 +5,11 @@ v1.4.2 (Release Date: TBD)
 --------------------------
 - Add check_scripts.sh to validate installer scripts with POSIX-compliant structure and sequential help-option testing.
 - Rewrite run_tests.sh for full POSIX compliance by removing Bash-specific syntax and structures.
-- Add `rsync` installation via Homebrew to support full-featured GNU rsync instead of openrsync in macOS.
+- Modify test iteration to pair each Python version with the corresponding Ruby version in run_tests.
 - Add munin-sync.sh for synchronizing Munin data and logs to remote server.
 - Add munin-symlink.sh for dynamic monitoring target management in Munin.
 - Add server_alive_check.sh for server availability monitoring.
+- Add `rsync` installation via Homebrew to support full-featured GNU rsync instead of openrsync in macOS.
 - Enhance security by excluding /usr/local/bin from secure_path in sudoers template of macOS.
 - Fix SyntaxWarning in unzip_subdir.py by using raw string for regex in re.sub.
 - Fix inaccurate rsync return code logging by assigning RC immediately after execution in rsync_backup.sh.

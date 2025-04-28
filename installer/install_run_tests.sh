@@ -153,7 +153,7 @@ deploy_scripts() {
     fi
 
     CONFIG_FILE="/root/etc/run_tests.conf"
-    if [ ! -f "$CONFIG_FILE" ]; then
+    if ! sudo test -f "$CONFIG_FILE"; then
         echo "[INFO] Copying run_tests.conf to /root/etc."
         if ! sudo cp "$SCRIPTS/cron/etc/run_tests.conf" "$CONFIG_FILE"; then
             echo "[ERROR] Failed to copy run_tests.conf" >&2
