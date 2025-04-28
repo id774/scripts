@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-04-28
+#       Improve create_ubygems with direct error detection and enhanced messages.
 #  v1.3 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.2 2025-03-22
@@ -131,17 +133,14 @@ create_ubygems() {
     fi
 
     # Create ubygems.rb with a simple 'require rubygems' statement
-    printf "require 'rubygems'\\n" > "$TARGET_DIR/ubygems.rb"
-
-    # Verify that the file was successfully created
-    if [ $? -eq 0 ]; then
+    if printf "require 'rubygems'\n" > "$TARGET_DIR/ubygems.rb"; then
         echo "[INFO] ubygems.rb was successfully created in $TARGET_DIR"
         echo "[INFO] Listing the contents of $TARGET_DIR:"
         ls -l "$TARGET_DIR/ubygems.rb"
         echo "[INFO] Contents of ubygems.rb:"
         cat "$TARGET_DIR/ubygems.rb"
     else
-        echo "[ERROR] Failed to create ubygems.rb." >&2
+        echo "[ERROR] Failed to create ubygems.rb. Please check write permissions for $TARGET_DIR." >&2
         exit 1
     fi
 }
