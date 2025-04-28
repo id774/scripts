@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.4 2025-04-28
+#       Add error handling to critical operations during GDM themes installation.
 #  v2.3 2025-04-22
 #       Improved log granularity with [INFO] tags for each processing step.
 #  v2.2 2025-04-13
@@ -97,20 +99,28 @@ install_gdm_themes() {
     fi
 
     echo "[INFO] Downloading GDM themes archive..."
-    wget http://id774.net/archive/gdmthemes.tar.gz
-    if [ $? -ne 0 ]; then
+    if ! wget http://id774.net/archive/gdmthemes.tar.gz; then
         echo "[ERROR] Failed to download gdmthemes.tar.gz." >&2
         exit 1
     fi
 
     echo "[INFO] Extracting archive to /usr/share/gdm/themes..."
-    sudo tar xzvf gdmthemes.tar.gz -C /usr/share/gdm/themes
+    if ! sudo tar xzvf gdmthemes.tar.gz -C /usr/share/gdm/themes; then
+        echo "[ERROR] Failed to extract gdmthemes.tar.gz to /usr/share/gdm/themes." >&2
+        exit 1
+    fi
 
     echo "[INFO] Setting ownership to root:root..."
-    sudo chown -R root:root /usr/share/gdm/themes
+    if ! sudo chown -R root:root /usr/share/gdm/themes; then
+        echo "[ERROR] Failed to set ownership for /usr/share/gdm/themes." >&2
+        exit 1
+    fi
 
     echo "[INFO] Cleaning up downloaded archive."
-    rm -f gdmthemes.tar.gz
+    if ! rm -f gdmthemes.tar.gz; then
+        echo "[ERROR] Failed to remove gdmthemes.tar.gz." >&2
+        exit 1
+    fi
 }
 
 # Main function to execute the script
