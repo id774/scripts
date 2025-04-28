@@ -104,32 +104,36 @@ for ruby_version in $ruby_versions; do
     done
 done
 
+# Run check_scripts.sh if it exists and is executable
+if [ -x "$SCRIPTS/test/check_scripts.sh" ]; then
+    echo "=== Running check_scripts.sh for shell script validation. ===" >> "$JOBLOG" 2>&1
+    "$SCRIPTS/test/check_scripts.sh" >> "$JOBLOG" 2>&1
+    result=$?
+    if [ "$result" -ge 1 ]; then
+        echo "*** $0: Some tests failed. Check logs for details." >> "$JOBLOG" 2>&1
+    else
+        echo "*** $0: All shell script tests completed successfully." >> "$JOBLOG" 2>&1
+    fi
+fi
+
 # Perform compatibility check with the last Python version used
 echo "=== Checking Python compatibility with Python $last_python_version. ===" >> "$JOBLOG" 2>&1
 "/opt/python/$last_python_version/bin/python" "$SCRIPTS/find_pycompat.py" "$SCRIPTS" >> "$JOBLOG" 2>&1
 result=$?
 
-echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
-date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
-
 # Exit based on test results
 if [ "$result" -ge 1 ]; then
     echo "*** $0: Python compatibility inspection failed. Check logs for details." >> "$JOBLOG" 2>&1
-    exit "$result"
 elif grep -q "Some tests failed" "$JOBLOG"; then
     echo "*** $0: Some tests failed. Check logs for details." >> "$JOBLOG" 2>&1
-    exit 1
 else
     echo "*** $0: All tests completed successfully for all versions." >> "$JOBLOG" 2>&1
 fi
 
 echo >> "$JOBLOG" 2>&1
 
-# Run check_scripts.sh if it exists and is executable
-if [ -x "$SCRIPTS/test/check_scripts.sh" ]; then
-    echo "=== Running check_scripts.sh for shell script validation. ===" >> "$JOBLOG" 2>&1
-    "$SCRIPTS/test/check_scripts.sh" >> "$JOBLOG" 2>&1
-fi
+echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
+date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
 
 # Function to send a summary email to the administrator
 send_mail_to_admin() {
