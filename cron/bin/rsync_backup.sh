@@ -148,7 +148,7 @@ git_backup() {
             return 1
         fi
     else
-        echo "[WARN] Failed to change directory to /root/local" >&2
+        echo "[WARN] Failed to change directory to /root/local." >&2
         return 1
     fi
 
