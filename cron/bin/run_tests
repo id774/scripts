@@ -20,6 +20,7 @@
 #  v1.4 2025-04-28
 #       Add execution of test/check_scripts.sh after Python and Ruby tests if available.
 #       Fully refactor run_tests into function-based structure.
+#       Modify test iteration logic to pair each Python version with the corresponding Ruby version.
 #  v1.3 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.2 2025-03-19
@@ -141,17 +142,29 @@ send_mail_to_admin() {
       "$ADMIN_MAIL_ADDRESS"
 }
 
-# Main function
+# Main function to execute the script
 main() {
     initialize
 
     last_python_version=""
 
-    for ruby_version in $ruby_versions; do
-        for python_version in $python_versions; do
+    py_list=$(echo "$python_versions")
+    rb_list=$(echo "$ruby_versions")
+
+    py_index=1
+    rb_index=1
+
+    set -- $py_list
+    for python_version; do
+        # Get the corresponding ruby_version
+        ruby_version=$(echo "$rb_list" | awk -v n="$rb_index" '{print $n}')
+        if [ -n "$ruby_version" ]; then
             run_tests "$python_version" "$ruby_version"
-            last_python_version="$python_version"
-        done
+        else
+            run_tests "$python_version" ""
+        fi
+        last_python_version="$python_version"
+        rb_index=$((rb_index + 1))
     done
 
     run_check_scripts
@@ -163,5 +176,5 @@ main() {
     fi
 }
 
-# Execute main
+# Execute main function
 main "$@"
