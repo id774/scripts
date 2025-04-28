@@ -103,9 +103,9 @@ run_check_scripts() {
         "$SCRIPTS/test/check_scripts.sh" >> "$JOBLOG" 2>&1
         result=$?
         if [ "$result" -ge 1 ]; then
-            echo "*** $0: Some tests failed. Check logs for details." >> "$JOBLOG" 2>&1
+            echo "[WARN] Some tests failed in shell script tests. Check logs for details." >> "$JOBLOG" 2>&1
         else
-            echo "*** $0: All shell script tests completed successfully." >> "$JOBLOG" 2>&1
+            echo "[INFO] All shell script tests completed successfully." >> "$JOBLOG" 2>&1
         fi
         echo >> "$JOBLOG" 2>&1
     fi
@@ -118,11 +118,11 @@ run_compatibility_check() {
     result=$?
 
     if [ "$result" -ge 1 ]; then
-        echo "*** $0: Python compatibility inspection failed. Check logs for details." >> "$JOBLOG" 2>&1
+        echo "[WARN] Python compatibility inspection failed. Check logs for details." >> "$JOBLOG" 2>&1
     elif grep -q "Some tests failed" "$JOBLOG"; then
-        echo "*** $0: Some tests failed. Check logs for details." >> "$JOBLOG" 2>&1
+        echo "[WARN] Some tests failed. Check logs for details." >> "$JOBLOG" 2>&1
     else
-        echo "*** $0: All tests completed successfully for all versions." >> "$JOBLOG" 2>&1
+        echo "[INFO] All tests completed successfully for all versions." >> "$JOBLOG" 2>&1
     fi
 }
 
@@ -131,6 +131,7 @@ log_job_end() {
     echo >> "$JOBLOG" 2>&1
     echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
     date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
+    echo >> "$JOBLOG" 2>&1
 }
 
 # Function to send a summary email to the administrator
