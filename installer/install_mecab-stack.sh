@@ -408,7 +408,7 @@ save_source() {
     name="$2"
 
     if [ "$SAVE_SOURCE" -eq 1 ]; then
-        echo "[INFO] Saving source for $name to $SRC_BASE/$name"
+        echo "[INFO] Saving source for $name to $SRC_BASE/$name."
 
         if ! sudo mkdir -p "$SRC_BASE"; then
             echo "[ERROR] Failed to create directory: $SRC_BASE" >&2
@@ -417,13 +417,13 @@ save_source() {
 
         if [ -e "$SRC_BASE/$name" ] || [ -L "$SRC_BASE/$name" ]; then
             if ! sudo rm -rf "$SRC_BASE/$name"; then
-                echo "[ERROR] Failed to remove existing source directory: $SRC_BASE/$name" >&2
+                echo "[ERROR] Failed to remove existing source directory: $SRC_BASE/$name." >&2
                 exit 1
             fi
         fi
 
         if ! sudo cp -r "$dir" "$SRC_BASE/$name"; then
-            echo "[ERROR] Failed to copy source from $dir to $SRC_BASE/$name" >&2
+            echo "[ERROR] Failed to copy source from $dir to $SRC_BASE/$name." >&2
             exit 1
         fi
     fi
@@ -443,7 +443,7 @@ main() {
     check_sudo
 
     echo "[INFO] Starting installation of MeCab stack..."
-    echo "[INFO] Installation prefix: ${PREFIX}"
+    echo "[INFO] Installation prefix: ${PREFIX}."
 
     # Ensure PREFIX/bin is in PATH so mecab-config and other tools are found
     export PATH="${PREFIX}/bin:$PATH"
@@ -455,7 +455,7 @@ main() {
     install_cabocha
     cleanup
 
-    echo "[INFO] Installation complete at $PREFIX"
+    echo "[INFO] Installation complete at ${PREFIX}."
     final_message
 }
 
