@@ -88,7 +88,7 @@ def is_excluded_line(line):
     return line.strip().startswith("#")
 
 def search_feature(directory, feature_name, pattern):
-    print("[INFO] *** Searching for " + feature_name + "...")
+    print("[INFO] Searching for " + feature_name + "...")
 
     # Get the base name of the current script without extension
     script_base_name = os.path.basename(__file__).replace('.py', '')
@@ -135,7 +135,7 @@ def main():
         print("[ERROR] Directory '{}' does not exist.".format(target_dir), file=sys.stderr)
         sys.exit(1)
 
-    print("[INFO] *** Searching for Python 3.x compatibility issues in Python files...")
+    print("[INFO] Searching for Python 3.x compatibility issues in Python files...")
 
     # Define patterns for each feature
     features = {
