@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 ########################################################################
 # run_tests.sh: Run all Python and Ruby tests in the test directory
@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.2 2025-04-28
+#       Fully POSIX-compliant rewrite. Removed Bash-specific syntax and structures.
 #  v2.1 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v2.0 2025-03-22
@@ -82,74 +84,72 @@ check_scripts() {
 
 # Function to extract test count from Python test result
 extract_python_test_count() {
-    local result="$1"
-    local total_regex='Ran ([0-9]+) tests?'
-    local skipped_regex='\(skipped=([0-9]+)\)'
+    result="$1"
 
-    if [[ $result =~ $total_regex ]]; then
-        python_tests="${BASH_REMATCH[1]}"
-    else
-        python_tests=0
+    python_tests=0
+    python_skipped_tests_in_test=0
+
+    if echo "$result" | grep -q "Ran [0-9][0-9]* test"; then
+        python_tests=`echo "$result" | awk '/Ran [0-9]+/ {for (i=1;i<=NF;i++) if ($i ~ /^[0-9]+$/) {print $i; exit}}'`
     fi
 
-    if [[ $result =~ $skipped_regex ]]; then
-        python_skipped_tests=$((python_skipped_tests + ${BASH_REMATCH[1]}))
-    else
-        python_skipped_tests=$((python_skipped_tests + 0))
-    fi
+    python_skipped_tests_in_test=`echo "$result" | awk 'match($0, /\(skipped=[0-9]+\)/) {print substr($0, RSTART+9, RLENGTH-10); exit}'`
+    python_skipped_tests_in_test=${python_skipped_tests_in_test:-0}
+    python_skipped_tests=`expr "$python_skipped_tests" + "$python_skipped_tests_in_test"`
 }
 
 # Function to extract test count from Ruby test result
 extract_ruby_test_count() {
-    local result="$1"
-    local total_regex='([0-9]+) examples?, [0-9]+ failures?'
-    local skipped_regex='([0-9]+) pending'
+    result="$1"
 
-    if [[ $result =~ $total_regex ]]; then
-        ruby_tests="${BASH_REMATCH[1]}"
-    else
-        ruby_tests=0
+    ruby_tests=0
+    ruby_skipped_tests_in_test=0
+
+    if echo "$result" | grep -q "[0-9][0-9]* examples\?, [0-9][0-9]* failures\?"; then
+        ruby_tests=`echo "$result" | awk '{for (i=1;i<=NF;i++) if ($i ~ /^[0-9]+$/) {print $i; exit}}'`
     fi
 
-    if [[ $result =~ $skipped_regex ]]; then
-        ruby_skipped_tests=$((ruby_skipped_tests + ${BASH_REMATCH[1]}))
-    else
-        ruby_skipped_tests=$((ruby_skipped_tests + 0))
+    if echo "$result" | grep -q "[0-9][0-9]* pending"; then
+        ruby_skipped_tests_in_test=`echo "$result" | awk '{for (i=1;i<=NF;i++) if ($i ~ /^[0-9]+$/ && $(i+1) == "pending") {print $i; exit}}'`
     fi
+    ruby_skipped_tests_in_test=${ruby_skipped_tests_in_test:-0}
+    ruby_skipped_tests=`expr "$ruby_skipped_tests" + "$ruby_skipped_tests_in_test"`
 }
 
 # Function to run Python tests
 run_python_tests() {
     # Check if Python is installed
     if [ -z "$python_path" ]; then
-        python_path=$(command -v python)
+        python_path=`command -v python`
     fi
 
     if [ -z "$python_path" ]; then
         echo "[WARN] Python is not installed. Skipping Python tests." >&2
     else
         if [ ! -x "$python_path" ]; then
-            echo "[ERROR] Specified Python path is either invalid or not executable." >&2
+            echo "[ERROR] Specified Python path is invalid or not executable." >&2
             exit 1
         fi
         echo "[INFO] Python path: $python_path"
-        python_version=$("$python_path" --version 2>&1)
+        python_version=`"$python_path" --version 2>&1`
         echo "$python_version"
 
         # Execute Python tests
         for file in test/*_test.py; do
-            echo "[INFO] Running Python test: $file"
-            output="$("$python_path" "$file" 2>&1)"
-            echo "$output"
-            if ! echo "$output" | grep -qE "OK|SKIPPED|OK \(skipped=[0-9]+\)" ; then
-                echo "[WARN] Failure in Python test: $file" >&2
-                python_failures=$((python_failures + 1))
+            if [ -f "$file" ]; then
+                echo "[INFO] Running Python test: $file"
+                output=`"$python_path" "$file" 2>&1`
+                echo "$output"
+                if ! echo "$output" | grep -qE "OK|SKIPPED|OK (skipped=[0-9]\+)"; then
+                    echo "[WARN] Failure in Python test: $file" >&2
+                    python_failures=`expr "$python_failures" + 1`
+                fi
+                extract_python_test_count "$output"
+                python_scripts=`expr "$python_scripts" + 1`
+                total_tests=`expr "$total_tests" + "$python_tests"`
             fi
-            extract_python_test_count "$output"
-            python_scripts=$((python_scripts + 1))
-            total_tests=$((total_tests + python_tests))
         done
-        total_scripts=$((total_scripts + python_scripts))
+        total_scripts=`expr "$total_scripts" + "$python_scripts"`
         display_python_report
     fi
 }
@@ -158,41 +158,43 @@ run_python_tests() {
 run_ruby_tests() {
     # Check if RSpec is installed
     if [ -z "$rspec_path" ]; then
-        rspec_path=$(command -v rspec)
+        rspec_path=`command -v rspec`
     fi
 
     if [ -z "$rspec_path" ]; then
         echo "[WARN] RSpec is not installed. Skipping Ruby tests." >&2
     else
         if [ ! -x "$rspec_path" ]; then
-            echo "[ERROR] Specified RSpec path is either invalid or not executable." >&2
+            echo "[ERROR] Specified RSpec path is invalid or not executable." >&2
             exit 1
         fi
         echo "[INFO] RSpec path: $rspec_path"
-        ruby_dir="$(dirname "$rspec_path")"
+        ruby_dir=`dirname "$rspec_path"`
         ruby_command="$ruby_dir/ruby"
-        ruby_version=$("$ruby_command" --version 2>&1)
+        ruby_version=`"$ruby_command" --version 2>&1`
         echo "$ruby_version"
 
         # Execute Ruby tests
         for file in test/*_test.rb; do
-            echo "[INFO] Running Ruby test: $file"
-            output="$("$rspec_path" "$file" 2>&1)"
-            echo "$output"
-            if ! echo "$output" | grep -q "0 failures"; then
-                echo "[WARN] Failure in Ruby test: $file" >&2
-                ruby_failures=$((ruby_failures + 1))
+            if [ -f "$file" ]; then
+                echo "[INFO] Running Ruby test: $file"
+                output=`"$rspec_path" "$file" 2>&1`
+                echo "$output"
+                if ! echo "$output" | grep -q "0 failures"; then
+                    echo "[WARN] Failure in Ruby test: $file" >&2
+                    ruby_failures=`expr "$ruby_failures" + 1`
+                fi
+                extract_ruby_test_count "$output"
+                ruby_scripts=`expr "$ruby_scripts" + 1`
+                total_tests=`expr "$total_tests" + "$ruby_tests"`
             fi
-            extract_ruby_test_count "$output"
-            ruby_scripts=$((ruby_scripts + 1))
-            total_tests=$((total_tests + ruby_tests))
         done
-        total_scripts=$((total_scripts + ruby_scripts))
+        total_scripts=`expr "$total_scripts" + "$ruby_scripts"`
         display_ruby_report
     fi
 }
 
-# Function to display a summary of Ruby test results
+# Display Python report
 display_python_report() {
     echo "[INFO] All Python tests completed."
     echo "  Python path: $python_path"
@@ -202,7 +204,7 @@ display_python_report() {
     echo "  Skipped Python test cases: $python_skipped_tests"
 }
 
-# Function to display a final test report
+# Display Ruby report
 display_ruby_report() {
     echo "[INFO] All Ruby tests completed."
     echo "  RSpec path: $rspec_path"
@@ -212,10 +214,9 @@ display_ruby_report() {
     echo "  Skipped Ruby test cases: $ruby_skipped_tests"
 }
 
-# Function to run all tests
+# Display final report
 display_final_report() {
-    # Final report
-    total_failures=$((python_failures + ruby_failures))
+    total_failures=`expr "$python_failures" + "$ruby_failures"`
     if [ "$total_failures" -ne 0 ]; then
         echo "[WARN] Some tests failed. Total failures: $total_failures." >&2
         exit 1
@@ -225,12 +226,12 @@ display_final_report() {
         echo "  Ruby: $ruby_version"
         echo "  Total test scripts: $total_scripts"
         echo "  Total test cases: $total_tests"
-        echo "  Skipped test cases: $((python_skipped_tests + ruby_skipped_tests))"
+        echo "  Skipped test cases: `expr "$python_skipped_tests" + "$ruby_skipped_tests"`"
         exit 0
     fi
 }
 
-# Function to run tests
+# Run all tests
 run_tests() {
     case "$1" in
         -h|--help) usage ;;
