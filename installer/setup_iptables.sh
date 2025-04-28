@@ -107,7 +107,7 @@ install_persistent() {
 # Apply template if needed
 apply_template_if_needed() {
     if [ ! -f "$RULES_PATH" ]; then
-        echo "[INFO] Copying template to $RULES_PATH"
+        echo "[INFO] Copying template to $RULES_PATH."
         sudo mkdir -p "$(dirname "$RULES_PATH")"
         sudo cp "$TEMPLATE_PATH" "$RULES_PATH"
     else
@@ -118,18 +118,18 @@ apply_template_if_needed() {
 
 # Load rules into the running kernel
 load_rules() {
-    echo "[INFO] Applying rules with iptables-restore"
+    echo "[INFO] Applying rules with iptables-restore."
     if ! sudo sh -c "iptables-restore < '$RULES_PATH'"; then
-        echo "[ERROR] Failed to apply iptables rules with iptables-restore" >&2
+        echo "[ERROR] Failed to apply iptables rules with iptables-restore." >&2
         exit 1
     fi
 }
 
 # Ensure rules are restored on boot
 enable_restore() {
-    echo "[INFO] Restarting netfilter-persistent"
+    echo "[INFO] Restarting netfilter-persistent."
     if ! sudo systemctl restart netfilter-persistent; then
-        echo "[ERROR] Failed to restart netfilter-persistent" >&2
+        echo "[ERROR] Failed to restart netfilter-persistent." >&2
         exit 1
     fi
 }
@@ -139,11 +139,11 @@ final_message() {
     echo ""
     echo "[INFO] iptables setup completed successfully."
     echo ""
-    echo "You may want to review and edit the rules file:"
-    echo "  sudo vi $RULES_PATH"
+    echo " You may want to review and edit the rules file:"
+    echo "   sudo vi $RULES_PATH"
     echo ""
-    echo "After editing, re-apply the rules with:"
-    echo "  sudo sh -c 'iptables-restore < $RULES_PATH'"
+    echo " After editing, re-apply the rules with:"
+    echo "   sudo sh -c 'iptables-restore < $RULES_PATH'"
     echo ""
 }
 
