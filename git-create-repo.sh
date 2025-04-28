@@ -147,7 +147,7 @@ create_git_repo() {
     group=$6
 
     if [ "$dry_run" = true ]; then
-        echo "[INFO] DRY RUN: A new repository would be created at '${repo_path}'"
+        echo "[INFO] DRY RUN: A new repository would be created at '${repo_path}'."
         return 0
     fi
 
@@ -162,7 +162,7 @@ create_git_repo() {
         $use_sudo chown -R "${user}:${group}" "${repo_path}"
     fi
 
-    echo "[INFO] Repository '${repo_name}' created at '${repo_path}'"
+    echo "[INFO] Repository '${repo_name}' created at '${repo_path}'."
 }
 
 # Delete a Git repository

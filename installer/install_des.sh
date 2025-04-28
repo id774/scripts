@@ -119,12 +119,12 @@ save_sources() {
     fi
 
     if ! sudo mkdir -p /usr/local/src/crypt/des; then
-        echo "[ERROR] Failed to create /usr/local/src/crypt/des" >&2
+        echo "[ERROR] Failed to create /usr/local/src/crypt/des." >&2
         exit 1
     fi
 
     if ! sudo cp * /usr/local/src/crypt/des; then
-        echo "[ERROR] Failed to copy source files to /usr/local/src/crypt/des" >&2
+        echo "[ERROR] Failed to copy source files to /usr/local/src/crypt/des." >&2
         exit 1
     fi
 
@@ -143,7 +143,7 @@ install_des() {
 
     echo "[INFO] Downloading software archive..."
     if ! wget http://id774.net/archive/kmdes.tar.gz; then
-        echo "[ERROR] Failed to download kmdes.tar.gz" >&2
+        echo "[ERROR] Failed to download kmdes.tar.gz." >&2
         exit 1
     fi
 
@@ -152,7 +152,7 @@ install_des() {
 
     echo "[INFO] Extracting files..."
     if ! tar xzvf kmdes.tar.gz; then
-        echo "[ERROR] Failed to extract kmdes.tar.gz" >&2
+        echo "[ERROR] Failed to extract kmdes.tar.gz." >&2
         exit 1
     fi
 
@@ -167,13 +167,13 @@ install_des() {
 
     echo "[INFO] Compiling source code..."
     if ! make; then
-        echo "[ERROR] Compilation failed" >&2
+        echo "[ERROR] Compilation failed." >&2
         exit 1
     fi
 
     echo "[INFO] Installing compiled binary..."
     if ! sudo make install; then
-        echo "[ERROR] Installation failed" >&2
+        echo "[ERROR] Installation failed." >&2
         exit 1
     fi
 

@@ -108,7 +108,7 @@ install_clamscan() {
 
     echo "[INFO] Deploying clamscan.sh to /root/bin."
     if ! sudo cp "$SCRIPTS/cron/bin/clamscan.sh" /root/bin/; then
-        echo "[ERROR] Failed to copy clamscan.sh" >&2
+        echo "[ERROR] Failed to copy clamscan.sh." >&2
         exit 1
     fi
     sudo chmod 700 /root/bin/clamscan.sh
@@ -116,7 +116,7 @@ install_clamscan() {
 
     echo "[INFO] Deploying clamscan_exclude to /root/etc."
     if ! sudo cp "$SCRIPTS/cron/etc/clamscan_exclude" /root/etc/; then
-        echo "[ERROR] Failed to copy clamscan_exclude" >&2
+        echo "[ERROR] Failed to copy clamscan_exclude." >&2
         exit 1
     fi
     sudo rm -vf /root/bin/clamscan_exclude
@@ -153,7 +153,7 @@ install_clamscan() {
         echo "[INFO] Skipping logrotate configuration: /etc/logrotate.d/clamscan already exists."
     else
         if ! sudo cp "$SCRIPTS/cron/etc/logrotate.d/clamscan" /etc/logrotate.d/; then
-            echo "[ERROR] Failed to copy logrotate configuration" >&2
+            echo "[ERROR] Failed to copy logrotate configuration." >&2
             exit 1
         fi
         sudo chmod 640 /etc/logrotate.d/clamscan

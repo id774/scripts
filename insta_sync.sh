@@ -197,7 +197,7 @@ main() {
     # Attempt remote sync
     check_remote_sync "$INSTA_ACCOUNT_DIR"
 
-    echo "[INFO] Instagram account data sync for '$ACCOUNT_NAME' completed successfully."
+    echo "[INFO] Instagram account data sync for '$ACCOUNT_NAME' completed."
 }
 
 # Execute main function

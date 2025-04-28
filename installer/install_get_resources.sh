@@ -112,7 +112,7 @@ main() {
     if [ ! -d /var/log/sysadmin ]; then
         echo "[INFO] Creating /var/log/sysadmin directory."
         if ! sudo mkdir -p /var/log/sysadmin; then
-            echo "[ERROR] Failed to create /var/log/sysadmin" >&2
+            echo "[ERROR] Failed to create /var/log/sysadmin." >&2
             exit 1
         fi
     fi
@@ -122,7 +122,7 @@ main() {
     if [ ! -f /var/log/sysadmin/resources.log ]; then
         echo "[INFO] Creating resources.log file."
         if ! sudo touch /var/log/sysadmin/resources.log; then
-            echo "[ERROR] Failed to create /var/log/sysadmin/resources.log" >&2
+            echo "[ERROR] Failed to create /var/log/sysadmin/resources.log." >&2
             exit 1
         fi
     fi
@@ -146,7 +146,7 @@ main() {
         echo "[INFO] /root/bin/get_resources.sh already exists. Skipping deployment."
     else
         if ! sudo cp "$SCRIPTS/get_resources.sh" /root/bin/; then
-            echo "[ERROR] Failed to copy get_resources.sh to /root/bin/" >&2
+            echo "[ERROR] Failed to copy get_resources.sh to /root/bin/." >&2
             exit 1
         fi
     fi
@@ -158,7 +158,7 @@ main() {
         echo "[INFO] /etc/cron.hourly/get_resources already exists. Skipping deployment."
     else
         if ! sudo cp "$SCRIPTS/cron/bin/get_resources" /etc/cron.hourly/; then
-            echo "[ERROR] Failed to copy cron job to /etc/cron.hourly/" >&2
+            echo "[ERROR] Failed to copy cron job to /etc/cron.hourly/." >&2
             exit 1
         fi
     fi

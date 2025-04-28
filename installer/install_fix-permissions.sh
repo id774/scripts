@@ -124,7 +124,7 @@ main() {
     if [ ! -d /var/log/sysadmin ]; then
         echo "[INFO] Creating /var/log/sysadmin directory."
         if ! sudo mkdir -p /var/log/sysadmin; then
-            echo "[ERROR] Failed to create /var/log/sysadmin" >&2
+            echo "[ERROR] Failed to create /var/log/sysadmin." >&2
             exit 1
         fi
     fi
@@ -136,7 +136,7 @@ main() {
     if [ ! -f /var/log/sysadmin/fix-permissions.log ]; then
         echo "[INFO] Creating fix-permissions log file."
         if ! sudo touch /var/log/sysadmin/fix-permissions.log; then
-            echo "[ERROR] Failed to create fix-permissions.log" >&2
+            echo "[ERROR] Failed to create fix-permissions.log." >&2
             exit 1
         fi
     else
@@ -150,11 +150,11 @@ main() {
     if [ ! -f /etc/logrotate.d/fix-permissions ]; then
         echo "[INFO] Deploying logrotate configuration."
         if ! sudo cp "$SCRIPTS/cron/etc/logrotate.d/fix-permissions" /etc/logrotate.d/fix-permissions; then
-            echo "[ERROR] Failed to deploy logrotate configuration" >&2
+            echo "[ERROR] Failed to deploy logrotate configuration." >&2
             exit 1
         fi
     else
-        echo "[INFO] Logrotate config already exists: /etc/logrotate.d/fix-permissions"
+        echo "[INFO] Logrotate config already exists: /etc/logrotate.d/fix-permissions."
     fi
 
     sudo chmod 640 /etc/logrotate.d/fix-permissions
@@ -163,11 +163,11 @@ main() {
     # Deploy the fix-permissions script
     echo "[INFO] Deploying fix-permissions cron job."
     if [ -f /etc/cron.daily/fix-permissions ]; then
-        echo "[INFO] Cron job already exists: /etc/cron.daily/fix-permissions"
+        echo "[INFO] Cron job already exists: /etc/cron.daily/fix-permissions."
         echo "[INFO] Skipping deployment to preserve existing file."
     else
         if ! sudo cp "$SCRIPTS/cron/bin/fix-permissions.sh" /etc/cron.daily/fix-permissions; then
-            echo "[ERROR] Failed to deploy fix-permissions cron job" >&2
+            echo "[ERROR] Failed to deploy fix-permissions cron job." >&2
             exit 1
         fi
         echo "[INFO] Cron job deployed: /etc/cron.daily/fix-permissions"

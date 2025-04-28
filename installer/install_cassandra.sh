@@ -152,7 +152,7 @@ install_cassandra() {
     [ -d /opt/cassandra ] || sudo mkdir -p /opt/cassandra
 
     if [ -d "/opt/cassandra/$VERSION" ]; then
-        echo "[INFO] Removing directory: /opt/cassandra/$VERSION"
+        echo "[INFO] Removing directory: /opt/cassandra/$VERSION."
         sudo rm -rf "/opt/cassandra/$VERSION"
     fi
 

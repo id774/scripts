@@ -92,16 +92,16 @@ check_scripts() {
 
 # Function to set file permissions
 set_permissions() {
-    echo "[INFO] Setting read/write permissions for all script files"
+    echo "[INFO] Setting read/write permissions for all script files."
     chmod -R u+rw,g+r,g-w,o+r,o-w "$SCRIPTS"/*
     RC1=$?
 
-    echo "[INFO] Granting execute permissions to script files (*.sh, *.py, *.rb)"
+    echo "[INFO] Granting execute permissions to script files (*.sh, *.py, *.rb)."
     find "$SCRIPTS"/ -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
     RC2=$?
 
     if [ -d "$SCRIPTS/cron/bin" ]; then
-        echo "[INFO] Removing execute permissions from scripts/cron/bin/*"
+        echo "[INFO] Removing execute permissions from scripts/cron/bin/*."
         find "$SCRIPTS/cron/bin" -type f -exec chmod a-x {} \;
         RC3=$?
     else
@@ -109,9 +109,9 @@ set_permissions() {
     fi
 
     if [ "$RC1" -eq 0 ] && [ "$RC2" -eq 0 ] && [ "$RC3" -eq 0 ]; then
-        echo "[INFO] All permission settings completed successfully"
+        echo "[INFO] All permission settings completed successfully."
     else
-        echo "[ERROR] One or more permission operations failed" >&2
+        echo "[ERROR] One or more permission operations failed." >&2
         exit 1
     fi
 }

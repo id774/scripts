@@ -92,7 +92,7 @@ main() {
     echo "[INFO] Deleting all pinned entries..."
     exec_sql "DELETE FROM pins;"
 
-    echo "Fastladder pin cleanup completed successfully."
+    echo "Fastladder pin cleanup completed."
 }
 
 # Execute main function

@@ -293,7 +293,7 @@ write_config_file() {
         --force-apply)
             echo "[INFO] Writing $path (forced)..."
             if ! $writer | sudo tee "$path" > /dev/null; then
-                echo "[ERROR] Failed to write $path" >&2
+                echo "[ERROR] Failed to write $path." >&2
                 exit 1
             fi
             return 1  # changed

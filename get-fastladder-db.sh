@@ -80,7 +80,7 @@ sync_database() {
     # Backup existing database if it exists
     if [ -f "$TARGET_DB_PATH" ]; then
         BACKUP_DB_PATH="${TARGET_DB_PATH}.bak.$(date +%Y%m%d%H%M%S)"
-        echo "[INFO] Backing up existing database to $BACKUP_DB_PATH"
+        echo "[INFO] Backing up existing database to $BACKUP_DB_PATH."
         mv "$TARGET_DB_PATH" "$BACKUP_DB_PATH"
     fi
 
@@ -90,7 +90,7 @@ sync_database() {
     if [ $? -eq 0 ]; then
         echo "[INFO] Fastladder database successfully retrieved."
     else
-        echo "[ERROR] Failed to retrieve the database from $USER@$HOST" >&2
+        echo "[ERROR] Failed to retrieve the database from $USER@$HOST." >&2
         exit 1
     fi
 }
