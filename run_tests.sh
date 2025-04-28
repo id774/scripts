@@ -124,7 +124,7 @@ run_python_tests() {
     fi
 
     if [ -z "$python_path" ]; then
-        echo "[WARN] Python is not installed. Skipping Python tests." >&2
+        echo "[INFO] Python is not installed. Skipping Python tests." >&2
     else
         if [ ! -x "$python_path" ]; then
             echo "[ERROR] Specified Python path is invalid or not executable." >&2
@@ -162,7 +162,7 @@ run_ruby_tests() {
     fi
 
     if [ -z "$rspec_path" ]; then
-        echo "[WARN] RSpec is not installed. Skipping Ruby tests." >&2
+        echo "[INFO] RSpec is not installed. Skipping Ruby tests." >&2
     else
         if [ ! -x "$rspec_path" ]; then
             echo "[ERROR] Specified RSpec path is invalid or not executable." >&2
