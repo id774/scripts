@@ -21,6 +21,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.5 2025-04-28
+#       Allow -h/--help usage without requiring configuration or command checks by adjusting main function flow.
 #  v2.4 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v2.3 2025-03-22
@@ -282,12 +284,12 @@ change_to_target_dir() {
 
 # Main function to execute the script
 main() {
-    load_and_validate_config
-
-    # Ensure necessary commands are available
-    check_commands mv mkdir rm grep sed
-
+    # First, parse options to handle --help/-h immediately
     parse_options "$@"
+
+    # After parsing options, proceed with normal execution
+    load_and_validate_config
+    check_commands mv mkdir rm grep sed
     change_to_target_dir
 
     # Check if include_accounts.txt exists and process in the order listed
