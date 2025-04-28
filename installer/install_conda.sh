@@ -222,7 +222,7 @@ main() {
     setup_environment "$1"
     install_libs
 
-    echo "[INFO] All specified packages have been successfully installed."
+    echo "[INFO] All specified conda packages have been installed."
 }
 
 # Execute main function

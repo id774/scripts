@@ -179,7 +179,7 @@ main() {
     utils_packages
     optional_packages
 
-    echo "[INFO] All specified packages have been successfully installed."
+    echo "[INFO] All specified desktop packages have been installed."
 }
 
 # Execute main function

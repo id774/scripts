@@ -246,7 +246,7 @@ main() {
     setup_environment "$1"
     install_gems
 
-    echo "[INFO] All specified packages have been successfully installed."
+    echo "[INFO] All specified Ruby gem packages have been installed."
 }
 
 # Execute main function

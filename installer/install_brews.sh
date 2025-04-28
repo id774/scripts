@@ -125,7 +125,7 @@ main() {
     echo "[INFO] Cleaning up old versions and caches..."
     brew cleanup
 
-    echo "[INFO] All specified packages have been successfully installed."
+    echo "[INFO] All specified brew packages have been installed."
 }
 
 # Execute main function

@@ -203,7 +203,7 @@ main() {
     optional_packages
     # Further package groups can be added here as needed
 
-    echo "[INFO] All specified packages have been successfully installed."
+    echo "[INFO] All specified packages have been installed."
 }
 
 # Execute main function

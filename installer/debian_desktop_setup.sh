@@ -134,6 +134,8 @@ main() {
     check_sudo
     disable_guest_session
     restart_lightdm
+
+    echo "[INFO] All Debian desktop setup completed."
 }
 
 # Execute main function
