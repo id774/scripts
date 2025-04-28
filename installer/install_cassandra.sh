@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-04-28
+#       Add error handling to important operations to ensure safe execution flow.
 #  v1.3 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v1.2 2025-04-13
@@ -99,10 +101,28 @@ setup_environment() {
 # Create necessary directories for Cassandra
 mkdir_lib_and_log() {
     echo "[INFO] Creating /var/lib/cassandra and /var/log/cassandra directories."
-    [ -d /var/lib/cassandra ] || sudo mkdir /var/lib/cassandra
-    sudo chown -R "$OWNER" /var/lib/cassandra
-    [ -d /var/log/cassandra ] || sudo mkdir /var/log/cassandra
-    sudo chown -R "$OWNER" /var/log/cassandra
+
+    if [ ! -d /var/lib/cassandra ]; then
+        if ! sudo mkdir /var/lib/cassandra; then
+            echo "[ERROR] Failed to create /var/lib/cassandra." >&2
+            exit 1
+        fi
+    fi
+    if ! sudo chown -R "$OWNER" /var/lib/cassandra; then
+        echo "[ERROR] Failed to set ownership for /var/lib/cassandra." >&2
+        exit 1
+    fi
+
+    if [ ! -d /var/log/cassandra ]; then
+        if ! sudo mkdir /var/log/cassandra; then
+            echo "[ERROR] Failed to create /var/log/cassandra." >&2
+            exit 1
+        fi
+    fi
+    if ! sudo chown -R "$OWNER" /var/log/cassandra; then
+        echo "[ERROR] Failed to set ownership for /var/log/cassandra." >&2
+        exit 1
+    fi
 }
 
 # Install Apache Cassandra
@@ -114,17 +134,29 @@ install_cassandra() {
     cd install_cassandra || exit 1
 
     echo "[INFO] Downloading Apache Cassandra $VERSION."
-    wget "http://ftp.riken.jp/net/apache/cassandra/$VERSION/apache-cassandra-$VERSION-bin.tar.gz"
+    if ! wget "http://ftp.riken.jp/net/apache/cassandra/$VERSION/apache-cassandra-$VERSION-bin.tar.gz"; then
+        echo "[ERROR] Failed to download Apache Cassandra version $VERSION." >&2
+        exit 1
+    fi
 
     echo "[INFO] Extracting archive."
-    tar xzvf "apache-cassandra-$VERSION-bin.tar.gz"
+    if ! tar xzvf "apache-cassandra-$VERSION-bin.tar.gz"; then
+        echo "[ERROR] Failed to extract apache-cassandra-$VERSION-bin.tar.gz." >&2
+        exit 1
+    fi
 
     echo "[INFO] Renaming extracted directory."
     mv "apache-cassandra-$VERSION" "$VERSION"
 
-    echo "[INFO] Moving Cassandra to /opt."
+    echo "[INFO] Preparing installation directory."
     [ -d /opt/cassandra ] || sudo mkdir -p /opt/cassandra
-    [ -d "/opt/cassandra/$VERSION" ] && sudo rm -rf "/opt/cassandra/$VERSION"
+
+    if [ -d "/opt/cassandra/$VERSION" ]; then
+        echo "[INFO] Removing directory: /opt/cassandra/$VERSION"
+        sudo rm -rf "/opt/cassandra/$VERSION"
+    fi
+
+    echo "[INFO] Moving Cassandra to /opt."
     sudo mv "$VERSION" /opt/cassandra/
     sudo chown -R "$OWNER" "/opt/cassandra/$VERSION"
 
