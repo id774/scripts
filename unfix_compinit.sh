@@ -23,6 +23,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-04-28
+#       Add error handling to ownership and permission operations.
 #  v1.5 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.4 2025-03-22
@@ -98,13 +100,30 @@ adjust_homebrew_permissions() {
     check_sudo
 
     # Change ownership to the current user and their primary group
-    sudo chown -R "$current_user":"$current_group" /usr/local/Homebrew
-    sudo chown -R "$current_user":"$current_group" /usr/local/share/zsh/
-    sudo chown -R "$current_user":"$current_group" /usr/local/share/zsh/site-functions
+    echo "[INFO] Changing ownership to $current_user:$current_group..."
+    if ! sudo chown -R "$current_user":"$current_group" /usr/local/Homebrew; then
+        echo "[ERROR] Failed to change ownership of /usr/local/Homebrew." >&2
+        exit 1
+    fi
+    if ! sudo chown -R "$current_user":"$current_group" /usr/local/share/zsh/; then
+        echo "[ERROR] Failed to change ownership of /usr/local/share/zsh/." >&2
+        exit 1
+    fi
+    if ! sudo chown -R "$current_user":"$current_group" /usr/local/share/zsh/site-functions; then
+        echo "[ERROR] Failed to change ownership of /usr/local/share/zsh/site-functions." >&2
+        exit 1
+    fi
 
     # Set write permissions for the current user
-    chmod u+w /usr/local/share/zsh/
-    chmod u+w /usr/local/share/zsh/site-functions
+    echo "[INFO] Setting write permissions for the user..."
+    if ! chmod u+w /usr/local/share/zsh/; then
+        echo "[ERROR] Failed to set write permission on /usr/local/share/zsh/." >&2
+        exit 1
+    fi
+    if ! chmod u+w /usr/local/share/zsh/site-functions; then
+        echo "[ERROR] Failed to set write permission on /usr/local/share/zsh/site-functions." >&2
+        exit 1
+    fi
 
     # Verify changes
     echo "[INFO] Ownership and permissions have been updated for Homebrew:"

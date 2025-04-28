@@ -22,6 +22,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-04-28
+#       Add error handling to ownership and permission operations.
 #  v1.5 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.4 2025-03-22
@@ -95,12 +97,26 @@ fix_permissions() {
     check_sudo
 
     # Change ownership to root:wheel
-    sudo chown -R root:wheel /usr/local/Homebrew/completions/zsh/
-    sudo chown -R root:wheel /usr/local/share/zsh/
+    echo "[INFO] Changing ownership to root:wheel..."
+    if ! sudo chown -R root:wheel /usr/local/Homebrew/completions/zsh/; then
+        echo "[ERROR] Failed to change ownership of /usr/local/Homebrew/completions/zsh/." >&2
+        exit 1
+    fi
+    if ! sudo chown -R root:wheel /usr/local/share/zsh/; then
+        echo "[ERROR] Failed to change ownership of /usr/local/share/zsh/." >&2
+        exit 1
+    fi
 
     # Set secure permissions
-    sudo chmod -R 755 /usr/local/Homebrew/completions/zsh/
-    sudo chmod -R 755 /usr/local/share/zsh/
+    echo "[INFO] Setting directory permissions to 755..."
+    if ! sudo chmod -R 755 /usr/local/Homebrew/completions/zsh/; then
+        echo "[ERROR] Failed to set permissions on /usr/local/Homebrew/completions/zsh/." >&2
+        exit 1
+    fi
+    if ! sudo chmod -R 755 /usr/local/share/zsh/; then
+        echo "[ERROR] Failed to set permissions on /usr/local/share/zsh/." >&2
+        exit 1
+    fi
 
     # Verify changes
     echo "[INFO] Ownership and permissions have been updated:"
