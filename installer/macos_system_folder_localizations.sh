@@ -13,8 +13,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.3 2025-04-27
+#  v1.3 2025-04-28
 #       Add strict error checking for folder localization file operations.
+#       Allow -h/--help usage on non-macOS environments by checking arguments
+#       before invoking macOS-specific checks.
 #  v1.2 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.1 2025-03-22
@@ -114,15 +116,18 @@ disable_localization() {
 
 # Main function to execute the script
 main() {
-    check_system
     case "$1" in
-        enable)
-            check_sudo
-            enable_localization
+        -h|--help)
+            usage
             ;;
-        disable)
+        enable|disable)
+            check_system
             check_sudo
-            disable_localization
+            if [ "$1" = "enable" ]; then
+                enable_localization
+            else
+                disable_localization
+            fi
             ;;
         *)
             usage
