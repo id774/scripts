@@ -16,6 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2025-04-28
+#       Added error detection and exit handling to write_config_file()
+#       for safer configuration file creation.
 #  v1.7 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.6 2025-03-25
@@ -289,7 +292,10 @@ write_config_file() {
     case "$ACTION" in
         --force-apply)
             echo "[INFO] Writing $path (forced)..."
-            $writer | sudo tee "$path" > /dev/null
+            if ! $writer | sudo tee "$path" > /dev/null; then
+                echo "[ERROR] Failed to write $path" >&2
+                exit 1
+            fi
             return 1  # changed
             ;;
         --apply)
@@ -298,7 +304,10 @@ write_config_file() {
                 return 0  # skipped
             else
                 echo "[INFO] Writing $path..."
-                $writer | sudo tee "$path" > /dev/null
+                if ! $writer | sudo tee "$path" > /dev/null; then
+                    echo "[ERROR] Failed to write $path" >&2
+                    exit 1
+                fi
                 return 1  # changed
             fi
             ;;
