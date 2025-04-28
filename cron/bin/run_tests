@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-04-28
+#       Add execution of test/check_scripts.sh after Python and Ruby tests if available.
 #  v1.3 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.2 2025-03-19
@@ -122,6 +124,12 @@ else
 fi
 
 echo >> "$JOBLOG" 2>&1
+
+# Run check_scripts.sh if it exists and is executable
+if [ -x "$SCRIPTS/test/check_scripts.sh" ]; then
+    echo "=== Running check_scripts.sh for shell script validation. ===" >> "$JOBLOG" 2>&1
+    "$SCRIPTS/test/check_scripts.sh" >> "$JOBLOG" 2>&1
+fi
 
 # Function to send a summary email to the administrator
 send_mail_to_admin() {
