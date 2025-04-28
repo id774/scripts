@@ -124,7 +124,7 @@ reinstall_homebrew() {
     # Fix compinit issues
     "$SCRIPTS/fix_compinit.sh"
 
-    echo "[INFO] Homebrew reinstallation completed successfully."
+    echo "[INFO] Homebrew reinstallation completed."
 }
 
 # Main function to execute the script
