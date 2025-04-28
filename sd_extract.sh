@@ -172,7 +172,7 @@ sync_files() {
                 # If the file is successfully copied, create a flag file
                 touch "$flag_file"
             else
-                echo "[ERROR] Failed to set permissions for $dest_dir/$(basename "$file")"
+                echo "[ERROR] Failed to set permissions for $dest_dir/$(basename "$file")."
                 error_files="$error_files $file"
             fi
         else

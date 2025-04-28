@@ -136,7 +136,7 @@ main() {
     LOG_FILE=$1
 
     if [ ! -f "$LOG_FILE" ]; then
-        echo "[ERROR] Log file not found at $LOG_FILE" >&2
+        echo "[ERROR] Log file not found at $LOG_FILE." >&2
         exit 1
     fi
 

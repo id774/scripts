@@ -121,7 +121,7 @@ deploy_dotfile() {
     for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore condarc gemrc Rprofile emacs; do
         if test -d "$1"; then
             if ! sudo cp "$OPTIONS" "$SCRIPTS/dot_files/dot_$DOT_FILES" "$1/.$DOT_FILES"; then
-                echo "[ERROR] Failed to copy dot_$DOT_FILES to $1" >&2
+                echo "[ERROR] Failed to copy dot_$DOT_FILES to $1." >&2
                 exit 1
             fi
         fi
@@ -130,7 +130,7 @@ deploy_dotfile() {
     for DOT_FILES in pryrc; do
         if test -d "$1" && test -f "$1/.$DOT_FILES"; then
             if ! sudo rm -vf "$1/.$DOT_FILES"; then
-                echo "[ERROR] Failed to remove $1/.$DOT_FILES" >&2
+                echo "[ERROR] Failed to remove $1/.$DOT_FILES." >&2
                 exit 1
             fi
         fi
@@ -171,7 +171,7 @@ mkdir_skelton() {
 deploy_dotfiles() {
     echo "[INFO] Copying dotfiles to $1."
     if ! deploy_dotfile "$1"; then
-        echo "[ERROR] Failed to deploy dotfiles to $1" >&2
+        echo "[ERROR] Failed to deploy dotfiles to $1." >&2
         exit 1
     fi
 

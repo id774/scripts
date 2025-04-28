@@ -112,12 +112,12 @@ init_nbserver() {
 
     if [ -d "$NB_SERVER_DIR" ]; then
         if ! cp $OPTIONS "${SCRIPTS}/dot_files/dot_ipython/profile_default/startup/00-init.py" "$NB_SERVER_DIR"; then
-            echo "[ERROR] Failed to copy 00-init.py to $NB_SERVER_DIR" >&2
+            echo "[ERROR] Failed to copy 00-init.py to $NB_SERVER_DIR." >&2
             exit 1
         fi
         if [ -f "${NB_SERVER_DIR}/00-init.py" ] && [ -x "${NB_SERVER_DIR}/00-init.py" ]; then
             if ! chmod -x "${NB_SERVER_DIR}/00-init.py"; then
-                echo "[ERROR] Failed to remove executable bit from 00-init.py in nbserver profile" >&2
+                echo "[ERROR] Failed to remove executable bit from 00-init.py in nbserver profile." >&2
                 exit 1
             fi
         fi
@@ -150,24 +150,24 @@ copy_dotipython() {
     fi
 
     if ! cp $OPTIONS "${SCRIPTS}/dot_files/dot_ipython/profile_default/startup/00-init.py" "$DEFAULT_PROFILE_DIR"; then
-        echo "[ERROR] Failed to copy 00-init.py to $DEFAULT_PROFILE_DIR" >&2
+        echo "[ERROR] Failed to copy 00-init.py to $DEFAULT_PROFILE_DIR." >&2
         exit 1
     fi
 
     if [ -f "${DEFAULT_PROFILE_DIR}/00-init.py" ] && [ -x "${DEFAULT_PROFILE_DIR}/00-init.py" ]; then
         if ! chmod -x "${DEFAULT_PROFILE_DIR}/00-init.py"; then
-            echo "[ERROR] Failed to remove executable bit from 00-init.py" >&2
+            echo "[ERROR] Failed to remove executable bit from 00-init.py." >&2
             exit 1
         fi
     fi
 
     if ! cp $OPTIONS "${SCRIPTS}/dot_files/dot_zshrc" "${HOME}/.zshrc"; then
-        echo "[ERROR] Failed to copy dot_zshrc to ${HOME}/.zshrc" >&2
+        echo "[ERROR] Failed to copy dot_zshrc to ${HOME}/.zshrc." >&2
         exit 1
     fi
 
     if ! cp $OPTIONS "${SCRIPTS}/dot_files/dot_zshrc_local" "${HOME}/.zshrc_local"; then
-        echo "[ERROR] Failed to copy dot_zshrc_local to ${HOME}/.zshrc_local" >&2
+        echo "[ERROR] Failed to copy dot_zshrc_local to ${HOME}/.zshrc_local." >&2
         exit 1
     fi
 }

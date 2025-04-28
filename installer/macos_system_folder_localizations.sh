@@ -71,7 +71,7 @@ enable_localization() {
                "$HOME/Public" "$HOME/Pictures" "$HOME/Music" "$HOME/Movies" "$HOME/Library"; do
         if [ -d "$dir" ]; then
             if ! touch "$dir/.localized"; then
-                echo "[ERROR] Failed to create $dir/.localized" >&2
+                echo "[ERROR] Failed to create $dir/.localized." >&2
                 exit 1
             fi
         fi
@@ -80,7 +80,7 @@ enable_localization() {
     for dir in "/Applications" "/Applications/Utilities"; do
         if [ -d "$dir" ]; then
             if ! sudo touch "$dir/.localized"; then
-                echo "[ERROR] Failed to create $dir/.localized" >&2
+                echo "[ERROR] Failed to create $dir/.localized." >&2
                 exit 1
             fi
         fi
@@ -95,7 +95,7 @@ disable_localization() {
                "$HOME/Public" "$HOME/Pictures" "$HOME/Music" "$HOME/Movies" "$HOME/Library"; do
         if [ -f "$dir/.localized" ]; then
             if ! rm -f "$dir/.localized"; then
-                echo "[ERROR] Failed to remove $dir/.localized" >&2
+                echo "[ERROR] Failed to remove $dir/.localized." >&2
                 exit 1
             fi
         fi
@@ -104,7 +104,7 @@ disable_localization() {
     for dir in "/Applications" "/Applications/Utilities"; do
         if [ -f "$dir/.localized" ]; then
             if ! sudo rm -f "$dir/.localized"; then
-                echo "[ERROR] Failed to remove $dir/.localized" >&2
+                echo "[ERROR] Failed to remove $dir/.localized." >&2
                 exit 1
             fi
         fi

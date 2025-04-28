@@ -154,12 +154,12 @@ setup_environment() {
 save_packages() {
     echo "[INFO] Saving source package to $2."
     if ! sudo cp "$1" "$2"; then
-        echo "[ERROR] Failed to copy $1 to $2" >&2
+        echo "[ERROR] Failed to copy $1 to $2." >&2
         exit 1
     fi
 
     if ! sudo chown "$OWNER" "$2/$1"; then
-        echo "[ERROR] Failed to change ownership for $2/$1" >&2
+        echo "[ERROR] Failed to change ownership for $2/$1." >&2
         exit 1
     fi
 }
@@ -188,7 +188,7 @@ install_veracrypt() {
 
     echo "[INFO] Downloading $FILE_NAME..."
     if ! wget "http://id774.net/veracrypt/$FILE_NAME"; then
-        echo "[ERROR] Failed to download $FILE_NAME" >&2
+        echo "[ERROR] Failed to download $FILE_NAME." >&2
         exit 1
     fi
 
@@ -196,7 +196,7 @@ install_veracrypt() {
 
     chmod +x "./$FILE_NAME"
     if ! "./$FILE_NAME"; then
-        echo "[ERROR] Failed to execute installer $FILE_NAME" >&2
+        echo "[ERROR] Failed to execute installer $FILE_NAME." >&2
         exit 1
     fi
 
