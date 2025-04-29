@@ -177,7 +177,7 @@ setup_cron_job() {
     CRON_FILE="/etc/cron.d/run_tests"
     CRON_JOB="30 04 * * * root test -x /root/bin/run_tests && /root/bin/run_tests"
 
-    if ! sudo test -f "$CRON_FILE"; then
+    if sudo test -f "$CRON_FILE"; then
         echo "[INFO] Cron job already exists: $CRON_FILE"
         echo "[INFO] Skipping creation to preserve existing configuration."
     else
