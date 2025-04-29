@@ -16,6 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.6 2025-04-29
+#       Use sudo for directory and file existence checks to ensure correct behavior under restricted permissions.
+#       Correct the log filename from rsync_backup to rsync_backup.log for consistency.
 #  v2.5 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v2.4 2025-04-11
@@ -108,7 +111,7 @@ main() {
 
     echo "[INFO] Starting rsync backup installation."
     # Make Directory if it doesn't exist and set permissions
-    if [ ! -d /var/log/sysadmin ]; then
+    if ! sudo test -d /var/log/sysadmin; then
         echo "[INFO] Creating /var/log/sysadmin."
         sudo mkdir -p /var/log/sysadmin
         sudo chmod 750 /var/log/sysadmin
@@ -140,15 +143,15 @@ main() {
     sudo chown root:adm /etc/cron.hourly/rsync_backup
 
     # Set up rsync backup log file and permissions
-    if [ ! -f /var/log/sysadmin/rsync_backup ]; then
+    if ! sudo test -f /var/log/sysadmin/rsync_backup.log; then
         echo "[INFO] Creating rsync_backup log file."
-        sudo touch /var/log/sysadmin/rsync_backup
-        sudo chmod 640 /var/log/sysadmin/rsync_backup
-        sudo chown root:adm /var/log/sysadmin/rsync_backup
+        sudo touch /var/log/sysadmin/rsync_backup.log
+        sudo chmod 640 /var/log/sysadmin/rsync_backup.log
+        sudo chown root:adm /var/log/sysadmin/rsync_backup.log
     fi
 
     # Deploy log rotation configuration for rsync backup logs
-    if [ ! -f /etc/logrotate.d/rsync_backup ]; then
+    if ! sudo test -f /etc/logrotate.d/rsync_backup; then
         echo "[INFO] Installing logrotate configuration."
         sudo cp "$SCRIPTS/cron/etc/logrotate.d/rsync_backup" /etc/logrotate.d/
         sudo chmod 644 /etc/logrotate.d/rsync_backup
