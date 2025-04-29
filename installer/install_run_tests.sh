@@ -16,8 +16,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v2.0 2025-04-27
+#  v2.0 2025-04-29
 #       Add error handling for critical copy and cron setup steps.
+#       Use sudo when checking existence of files and directories
+#       to handle permission-restricted environments safely.
 #  v1.9 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v1.8 2025-04-13
@@ -104,7 +106,7 @@ check_scripts() {
 
 # Create directory for logs
 setup_log_directory() {
-    if [ ! -d /var/log/sysadmin ]; then
+    if ! sudo test -d /var/log/sysadmin; then
         echo "[INFO] Creating /var/log/sysadmin."
         if ! sudo mkdir -p /var/log/sysadmin; then
             echo "[ERROR] Failed to create /var/log/sysadmin" >&2
@@ -118,7 +120,7 @@ setup_log_directory() {
 
 # Set up log file and permissions
 setup_log_file() {
-    if [ ! -f /var/log/sysadmin/run_tests.log ]; then
+    if ! sudo test -f /var/log/sysadmin/run_tests.log; then
         echo "[INFO] Creating run_tests log file."
         if ! sudo touch /var/log/sysadmin/run_tests.log; then
             echo "[ERROR] Failed to create /var/log/sysadmin/run_tests.log" >&2
@@ -132,7 +134,7 @@ setup_log_file() {
 
 # Deploy log rotation configuration
 deploy_log_rotation() {
-    if [ ! -f /etc/logrotate.d/run_tests ]; then
+    if ! sudo test -f /etc/logrotate.d/run_tests; then
         echo "[INFO] Deploying logrotate configuration."
         if ! sudo cp "$SCRIPTS/cron/etc/logrotate.d/run_tests" /etc/logrotate.d/run_tests; then
             echo "[ERROR] Failed to copy logrotate configuration" >&2
@@ -175,7 +177,7 @@ setup_cron_job() {
     CRON_FILE="/etc/cron.d/run_tests"
     CRON_JOB="30 04 * * * root test -x /root/bin/run_tests && /root/bin/run_tests"
 
-    if [ -f "$CRON_FILE" ]; then
+    if ! sudo test -f "$CRON_FILE"; then
         echo "[INFO] Cron job already exists: $CRON_FILE"
         echo "[INFO] Skipping creation to preserve existing configuration."
     else
