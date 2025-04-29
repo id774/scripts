@@ -1,8 +1,8 @@
 Repository Update History
 =========================
 
-v1.4.2 (Release Date: TBD)
---------------------------
+v1.4.2 (2025-04-29)
+-------------------
 - Add check_scripts.sh to validate installer scripts with POSIX-compliant structure and sequential help-option testing.
 - Rewrite run_tests.sh for full POSIX compliance by removing Bash-specific syntax and structures.
 - Modify test iteration to pair each Python version with the corresponding Ruby version in run_tests.
