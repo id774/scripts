@@ -15,7 +15,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v2.2 2025-04-28
+#  v3.0 2025-04-29
 #       Fully POSIX-compliant rewrite. Removed Bash-specific syntax and structures.
 #  v2.1 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
