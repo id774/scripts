@@ -1,6 +1,10 @@
 Repository Update History
 =========================
 
+v1.4.3 (Release Date: TBD)
+--------------------------
+- Add send_files.sh script to securely archive a directory and send it via Gmail with external config support.
+
 v1.4.2 (2025-04-29)
 -------------------
 - Add check_scripts.sh to validate installer scripts with POSIX-compliant structure and sequential help-option testing.
