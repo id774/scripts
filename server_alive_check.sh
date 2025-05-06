@@ -19,6 +19,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-05-06
+#       Show timestamp and success/failure status for each file.
+#       Add final summary of result, and define configurable STALE_THRESHOLD.
 #  v1.2 2025-04-26
 #       Remove ALERT_PREFIX and refine log levels to use [ERROR] and [WARN] appropriately.
 #  v1.1 2025-04-13
@@ -53,6 +56,9 @@
 
 # Base directory containing the files to be checked
 BASE_DIR="/home/share/received"
+
+# Threshold in seconds to consider a file stale (default: 600 seconds = 10 minutes)
+STALE_THRESHOLD=600
 
 # Display script usage information
 usage() {
@@ -121,11 +127,35 @@ process_files() {
         exit 1
     fi
 
+    CURRENT_TIME=$(date +%s)
+    STALE_FOUND=0
+
     for FILE in $FILES; do
-        if is_file_stale "$FILE"; then
-            echo "[WARN] File is stale: $FILE" >&2
+        FILE_TIME=$(stat -c %Y "$FILE" 2>/dev/null || stat -f %m "$FILE" 2>/dev/null)
+        FILE_DATE=$(date -d "@$FILE_TIME" "+%Y-%m-%d %H:%M:%S" 2>/dev/null || date -r "$FILE_TIME" "+%Y-%m-%d %H:%M:%S" 2>/dev/null)
+
+        if [ -z "$FILE_TIME" ] || [ -z "$FILE_DATE" ]; then
+            echo "[WARN] Failed to retrieve modification time for: $FILE" >&2
+            STALE_FOUND=1
+            continue
+        fi
+
+        AGE=$((CURRENT_TIME - FILE_TIME))
+
+        if [ "$AGE" -gt "$STALE_THRESHOLD" ]; then
+            echo "[WARN] File is stale: $FILE (last updated: $FILE_DATE)" >&2
+            STALE_FOUND=1
+        else
+            echo "[INFO] File is fresh: $FILE (last updated: $FILE_DATE)"
         fi
     done
+
+    if [ "$STALE_FOUND" -eq 1 ]; then
+        echo "[ERROR] One or more files are stale." >&2
+        exit 1
+    else
+        echo "[INFO] All files are fresh."
+    fi
 }
 
 # Main function to execute the script
