@@ -166,7 +166,7 @@ main() {
     esac
 
     check_environment
-    check_commands find stat date
+    check_commands find stat date basename
     process_files
 }
 
