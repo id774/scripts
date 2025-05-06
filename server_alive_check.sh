@@ -145,13 +145,15 @@ process_files() {
         fi
 
         AGE=$((CURRENT_TIME - FILE_TIME))
-
+        AGE_MIN=$((AGE / 60))
+        AGE_SEC=$((AGE % 60))
+        ELAPSED="elapsed time: ${AGE_MIN}m ${AGE_SEC}s"
         BASENAME=$(basename "$FILE")
         if [ "$AGE" -gt "$STALE_THRESHOLD" ]; then
-            echo "[WARN] File is stale: $BASENAME (last updated: $FILE_DATE)" >&2
+            echo "[WARN] File is stale: $BASENAME (last updated: $FILE_DATE, $ELAPSED)" >&2
             STALE_FOUND=1
         else
-            echo "[INFO] File is fresh: $BASENAME (last updated: $FILE_DATE)"
+            echo "[INFO] File is fresh: $BASENAME (last updated: $FILE_DATE, $ELAPSED)"
         fi
     done
 
