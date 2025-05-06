@@ -53,8 +53,8 @@
 #  - Use appropriate permissions and ownership for the monitored directory.
 #
 #  Error Conditions:
-#  2. Source directory does not exist.
-#  3. No '_is_alive' files found.
+#  2. No '_is_alive' files found.
+#  3. Source directory does not exist.
 #
 ########################################################################
 
@@ -93,7 +93,7 @@ check_commands() {
 check_environment() {
     if [ ! -d "$BASE_DIR" ]; then
         echo "[ERROR] Directory not found: $BASE_DIR" >&2
-        exit 2
+        exit 3
     fi
 }
 
@@ -128,7 +128,7 @@ process_files() {
 
     if [ -z "$FILES" ]; then
         echo "[ERROR] No '_is_alive' files found in: $BASE_DIR" >&2
-        exit 3
+        exit 2
     fi
 
     CURRENT_TIME=$(date +%s)
