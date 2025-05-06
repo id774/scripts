@@ -151,7 +151,7 @@ process_files() {
     done
 
     if [ "$STALE_FOUND" -eq 1 ]; then
-        echo "[ERROR] One or more files are stale." >&2
+        echo "[WARN] One or more files are stale." >&2
         exit 1
     else
         echo "[INFO] All files are fresh."
