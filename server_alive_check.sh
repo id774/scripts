@@ -52,6 +52,10 @@
 #  - Ensure the monitored servers regularly generate _is_alive files to avoid false alerts.
 #  - Use appropriate permissions and ownership for the monitored directory.
 #
+#  Error Conditions:
+#  2. Source directory does not exist.
+#  3. No '_is_alive' files found.
+#
 ########################################################################
 
 # Base directory containing the files to be checked
@@ -89,7 +93,7 @@ check_commands() {
 check_environment() {
     if [ ! -d "$BASE_DIR" ]; then
         echo "[ERROR] Directory not found: $BASE_DIR" >&2
-        exit 1
+        exit 2
     fi
 }
 
@@ -124,7 +128,7 @@ process_files() {
 
     if [ -z "$FILES" ]; then
         echo "[ERROR] No '_is_alive' files found in: $BASE_DIR" >&2
-        exit 1
+        exit 3
     fi
 
     CURRENT_TIME=$(date +%s)
