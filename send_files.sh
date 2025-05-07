@@ -123,7 +123,13 @@ generate_password() {
 
 create_zip() {
     TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-    ZIP_PATH="$TMP/secure_$(basename "$SOURCE_DIR")_$TIMESTAMP.7z"
+
+    if [ -z "$ARCHIVE_FILE_NAME" ]; then
+        echo "[WARN] ARCHIVE_FILE_NAME is not set; using default: secure_archive.7z" >&2
+    fi
+
+    ARCHIVE_BASENAME="${ARCHIVE_FILE_NAME:-secure_archive}"
+    ZIP_PATH="$TMP/${ARCHIVE_BASENAME}_${TIMESTAMP}.7z"
     PASSWORD=$(generate_password)
 
     echo "$PASSWORD" > "$TMP/$PASSWORD_FILE_NAME"
