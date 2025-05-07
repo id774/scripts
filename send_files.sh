@@ -20,6 +20,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-05-07
+#       Replace weak ZIP password encryption with AES-256 protected 7z archive.
+#       Add return code handling for 7z to improve reliability.
 #  v1.0 2025-05-05
 #       Initial release. Implemented archive, password generation,
 #       and email delivery using external configuration.
@@ -118,20 +121,23 @@ generate_password() {
     fi
 }
 
-# Create a password-protected zip archive
 create_zip() {
     TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-    ZIP_PATH="$TMP/secure_$(basename "$SOURCE_DIR")_$TIMESTAMP.zip"
+    ZIP_PATH="$TMP/secure_$(basename "$SOURCE_DIR")_$TIMESTAMP.7z"
     PASSWORD=$(generate_password)
 
     echo "$PASSWORD" > "$TMP/$PASSWORD_FILE_NAME"
 
-    cd "$(dirname "$SOURCE_DIR")" || exit 1
-    zip -r -P "$PASSWORD" "$ZIP_PATH" "$(basename "$SOURCE_DIR")" > /dev/null 2>&1
+    7z a -p"$PASSWORD" -mhe=on "$ZIP_PATH" "$SOURCE_DIR" > /dev/null 2>&1
+    RC=$?
 
-    if [ ! -f "$ZIP_PATH" ]; then
-        echo "[ERROR] Failed to create ZIP archive." >&2
-        exit 1
+    if [ "$RC" -eq 0 ]; then
+        echo "[INFO] 7z archive successfully created: $ZIP_PATH"
+    elif [ "$RC" -eq 1 ]; then
+        echo "[WARN] 7z created archive with warnings: $ZIP_PATH" >&2
+    else
+        echo "[ERROR] Failed to create 7z archive (exit code: $RC)" >&2
+        exit "$RC"
     fi
 }
 
@@ -166,7 +172,7 @@ main() {
         -h|--help) usage ;;
     esac
 
-    check_commands zip uuencode mail head basename dirname date
+    check_commands 7z uuencode mail head basename dirname date
     load_config
     check_environment
 
