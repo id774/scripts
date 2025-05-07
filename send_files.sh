@@ -150,11 +150,17 @@ create_zip() {
 # Send the archive via email using mailx
 send_mail() {
     SUBJECT="$MAIL_SUBJECT"
-    BODY="The password-protected archive is attached.\nPassword is stored locally in $TMP/$PASSWORD_FILE_NAME"
+    RENAMED_PATH="${ZIP_PATH%.7z}.txt"
+
+    cp "$ZIP_PATH" "$RENAMED_PATH"
+
+    BODY="The archive has been renamed to .txt for delivery.
+Please rename it back to .7z before extracting.
+Password is stored locally in $TMP/$PASSWORD_FILE_NAME"
 
     # Compose and send mail
     echo "$BODY" > "$TMP/mail_body.txt"
-    uuencode "$ZIP_PATH" "$(basename "$ZIP_PATH")" > "$TMP/mail_attachment.txt"
+    uuencode "$RENAMED_PATH" "$(basename "$RENAMED_PATH")" > "$TMP/mail_attachment.txt"
 
     if [ ! -s "$TMP/mail_attachment.txt" ]; then
         echo "[ERROR] Failed to encode attachment." >&2
