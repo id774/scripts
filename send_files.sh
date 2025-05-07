@@ -21,8 +21,8 @@
 #
 #  Version History:
 #  v1.1 2025-05-07
-#       Replace weak ZIP password encryption with AES-256 protected 7z archive.
-#       Add return code handling for 7z to improve reliability.
+#       Add ARCHIVE_FILE_NAME support to load archive filename base from external config.
+#       This allows custom naming of output ZIP files using timestamp suffix.
 #  v1.0 2025-05-05
 #       Initial release. Implemented archive, password generation,
 #       and email delivery using external configuration.
@@ -125,24 +125,23 @@ create_zip() {
     TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
     if [ -z "$ARCHIVE_FILE_NAME" ]; then
-        echo "[WARN] ARCHIVE_FILE_NAME is not set; using default: secure_archive.7z" >&2
+        echo "[WARN] ARCHIVE_FILE_NAME is not set; using default: secure_archive.zip" >&2
     fi
 
     ARCHIVE_BASENAME="${ARCHIVE_FILE_NAME:-secure_archive}"
-    ZIP_PATH="$TMP/${ARCHIVE_BASENAME}_${TIMESTAMP}.7z"
+    ZIP_PATH="$TMP/${ARCHIVE_BASENAME}_${TIMESTAMP}.zip"
     PASSWORD=$(generate_password)
 
     echo "$PASSWORD" > "$TMP/$PASSWORD_FILE_NAME"
 
-    7z a -p"$PASSWORD" -mhe=on "$ZIP_PATH" "$SOURCE_DIR" > /dev/null 2>&1
+    cd "$(dirname "$SOURCE_DIR")" || exit 1
+    zip -r -P "$PASSWORD" "$ZIP_PATH" "$(basename "$SOURCE_DIR")" > /dev/null 2>&1
     RC=$?
 
     if [ "$RC" -eq 0 ]; then
-        echo "[INFO] 7z archive successfully created: $ZIP_PATH"
-    elif [ "$RC" -eq 1 ]; then
-        echo "[WARN] 7z created archive with warnings: $ZIP_PATH" >&2
+        echo "[INFO] zip archive successfully created: $ZIP_PATH"
     else
-        echo "[ERROR] Failed to create 7z archive (exit code: $RC)" >&2
+        echo "[ERROR] Failed to create zip archive (exit code: $RC)" >&2
         exit "$RC"
     fi
 }
@@ -150,17 +149,12 @@ create_zip() {
 # Send the archive via email using mailx
 send_mail() {
     SUBJECT="$MAIL_SUBJECT"
-    RENAMED_PATH="${ZIP_PATH%.7z}.txt"
-
-    cp "$ZIP_PATH" "$RENAMED_PATH"
-
-    BODY="The archive has been renamed to .txt for delivery.
-Please rename it back to .7z before extracting.
+    BODY="The password-protected archive is attached.
 Password is stored locally in $TMP/$PASSWORD_FILE_NAME"
 
     # Compose and send mail
     echo "$BODY" > "$TMP/mail_body.txt"
-    uuencode "$RENAMED_PATH" "$(basename "$RENAMED_PATH")" > "$TMP/mail_attachment.txt"
+    uuencode "$ZIP_PATH" "$(basename "$ZIP_PATH")" > "$TMP/mail_attachment.txt"
 
     if [ ! -s "$TMP/mail_attachment.txt" ]; then
         echo "[ERROR] Failed to encode attachment." >&2
@@ -184,7 +178,7 @@ main() {
         -h|--help) usage ;;
     esac
 
-    check_commands 7z uuencode mail head basename dirname date
+    check_commands zip uuencode mail head basename dirname date
     load_config
     check_environment
 
