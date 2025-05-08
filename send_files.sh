@@ -5,10 +5,10 @@
 #
 #  Description:
 #  This script compresses a specified source directory into a password-
-#  protected ZIP archive, stores the archive in a configurable temporary
-#  directory, generates a secure random password, and saves it to a
-#  specified password file. The archive is then sent via Gmail using
-#  standard POSIX tools (`mail`, `uuencode`).
+#  protected ZIP archive, generates a secure random password, and saves both
+#  to a temporary directory. By default, the archive is copied to a configured
+#  output directory. Optionally, the archive can be emailed via Gmail using
+#  standard POSIX tools (`mail`, `uuencode`) if -s or --send is specified.
 #
 #  The configuration values such as temporary directory, target email
 #  address, archive source, archive password file name, and password
@@ -20,6 +20,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-05-08
+#       Add support for ARCHIVE_OUTPUT_DIR from external config.
+#       Introduced -s|--send option to enable legacy email behavior.
+#       Default behavior is now to save the archive to a configured directory.
 #  v1.1 2025-05-07
 #       Add ARCHIVE_FILE_NAME support to load archive filename base from external config.
 #       This allows custom naming of output ZIP files using timestamp suffix.
@@ -28,8 +32,10 @@
 #       and email delivery using external configuration.
 #
 #  Usage:
-#      ./send_files.sh
+#      ./send_files.sh [-s|--send]
 #      This script is intended to be executed manually or via cron.
+#      Without -s, the archive is saved to a local directory.
+#      With -s, the archive is sent as an email attachment (legacy behavior).
 #
 #  Features:
 #  - Compress a target directory into a password-protected ZIP
@@ -44,9 +50,15 @@
 #  - No password is sent in the email — it is stored locally only
 #
 #  Error Conditions:
-#  2. Source directory does not exist.
-#  3. Configuration file not found.
+#  1. General failure (e.g., password generation or ZIP failure).
+#  2. Configuration file not found.
+#  3. Source directory does not exist.
+#  4. GMAIL_TO address is not set.
+#  5. ARCHIVE_OUTPUT_DIR is not set in config.
+#  6. Archive output directory does not exist.
 #  9. Failed to send mail.
+#  126. Required command is not executable.
+#  127. Required command is not installed.
 #
 ########################################################################
 
@@ -61,16 +73,31 @@ usage() {
     exit 0
 }
 
-# Check if BASE_DIR exists
+# Validate configuration based on mode
 check_environment() {
-    if [ -z "$GMAIL_TO" ]; then
-        echo "[ERROR] GMAIL_TO address is not set." >&2
-        exit 1
-    fi
+    if [ "$SEND_MODE" = "yes" ]; then
+        # Mail send mode.
+        check_commands zip uuencode mail head basename dirname date
 
-    if [ ! -d "$SOURCE_DIR" ]; then
-        echo "[ERROR] Directory not found: $SOURCE_DIR" >&2
-        exit 2
+        if [ ! -d "$SOURCE_DIR" ]; then
+            echo "[ERROR] Directory not found: $SOURCE_DIR" >&2
+            exit 3
+        fi
+        if [ -z "$GMAIL_TO" ]; then
+            echo "[ERROR] GMAIL_TO address is not set." >&2
+            exit 4
+        fi
+    else
+        # File store mode.
+        check_commands zip head basename dirname date cp
+
+        if [ -z "$ARCHIVE_OUTPUT_DIR" ]; then
+            echo "[ERROR] ARCHIVE_OUTPUT_DIR is not set in config." >&2
+            exit 5
+        elif [ ! -d "$ARCHIVE_OUTPUT_DIR" ]; then
+            echo "[ERROR] Archive output directory does not exist: $ARCHIVE_OUTPUT_DIR" >&2
+            exit 6
+        fi
     fi
 }
 
@@ -101,7 +128,7 @@ load_config() {
         . "$CONFIG_FILE"
     else
         echo "[ERROR] Configuration file not found: $CONFIG_FILE" >&2
-        exit 3
+        exit 2
     fi
 
     # Set defaults if not configured
@@ -172,18 +199,29 @@ Password is stored locally in $TMP/$PASSWORD_FILE_NAME"
     fi
 }
 
+# Output directory for archive (if not sending)
+store_archive() {
+    cp "$ZIP_PATH" "$ARCHIVE_OUTPUT_DIR"
+    echo "[INFO] Archive copied to $ARCHIVE_OUTPUT_DIR"
+}
+
 # Main function to execute the script
 main() {
     case "$1" in
         -h|--help) usage ;;
+        -s|--send) SEND_MODE="yes"; shift ;;
+        *) SEND_MODE="no" ;;
     esac
 
-    check_commands zip uuencode mail head basename dirname date
     load_config
     check_environment
 
     create_zip
-    send_mail
+    if [ "$SEND_MODE" = "yes" ]; then
+        send_mail
+    else
+        store_archive
+    fi
 }
 
 # Execute main function
