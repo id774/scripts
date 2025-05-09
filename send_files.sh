@@ -177,11 +177,11 @@ create_archive() {
 
     echo "$PASSWORD" > "$TMP/$PASSWORD_FILE_NAME"
 
+    cd "$(dirname "$SOURCE_DIR")" || exit 1
     if [ "$USE_7Z" = "yes" ]; then
-        7z a -p"$PASSWORD" -mhe=on "$ZIP_PATH" "$SOURCE_DIR" > /dev/null 2>&1
+        7z a -p"$PASSWORD" -mhe=on "$ZIP_PATH" "$(basename "$SOURCE_DIR")" > /dev/null 2>&1
         RC=$?
     else
-        cd "$(dirname "$SOURCE_DIR")" || exit 1
         zip -r -P "$PASSWORD" "$ZIP_PATH" "$(basename "$SOURCE_DIR")" > /dev/null 2>&1
         RC=$?
     fi
