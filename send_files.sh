@@ -113,14 +113,15 @@ check_environment() {
         ARCHIVE_EXT=".zip"
     fi
 
+    if [ ! -d "$SOURCE_DIR" ]; then
+        echo "[ERROR] Directory not found: $SOURCE_DIR" >&2
+        exit 3
+    fi
+
     if [ "$SEND_MODE" = "yes" ]; then
         # Mail send mode.
         check_commands uuencode mail head basename dirname date
 
-        if [ ! -d "$SOURCE_DIR" ]; then
-            echo "[ERROR] Directory not found: $SOURCE_DIR" >&2
-            exit 3
-        fi
         if [ -z "$GMAIL_TO" ]; then
             echo "[ERROR] GMAIL_TO address is not set." >&2
             exit 4
