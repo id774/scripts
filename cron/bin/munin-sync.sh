@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-05-10
+#       Added cron.log and Apache logs to local log synchronization.
 #  v1.2 2025-04-14
 #       Skip sync_munin_data and sync_logs_to_remote if script is running on the target server.
 #  v1.1 2025-04-11
@@ -109,6 +111,8 @@ ensure_log_dir() {
 sync_local_logs() {
     rsync $RSYNC_OPTS /var/log/syslog "$LOG_DIR/"
     test -f /var/log/message && rsync $RSYNC_OPTS /var/log/message "$LOG_DIR/"
+    test -f /var/log/cron.log && rsync $RSYNC_OPTS /var/log/cron.log "$LOG_DIR/"
+    rsync $RSYNC_OPTS /var/log/apache2/*.log "$LOG_DIR/"
     rsync $RSYNC_OPTS /var/log/sysadmin/*.log "$LOG_DIR/"
     rsync $RSYNC_OPTS /var/log/deferred-sync/*.log "$LOG_DIR/"
     rsync $RSYNC_OPTS /var/log/clamav/clamscan.log "$LOG_DIR/"

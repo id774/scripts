@@ -6,6 +6,7 @@ v1.4.3 (Release Date: TBD)
 - Add send_files.sh script to securely archive a directory and send it via Gmail with external config support.
 - Enhance server_alive_check.sh to show timestamps and status per file with summary result and configurable threshold.
 - Enhance get_resources.sh to suppress repeated "Accepted publickey for munin" entries in auth.log output.
+- Add cron.log and Apache logs to munin-sync local log synchronization in munin-sync.sh
 
 v1.4.2 (2025-04-29)
 -------------------
