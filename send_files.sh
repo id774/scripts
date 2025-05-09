@@ -26,6 +26,9 @@
 #       Maintains full backward compatibility with default ZIP behavior.
 #       Added safety confirmation when both -s and -z options are specified.
 #       Prevents accidental Gmail rejection of .7z attachments unless explicitly approved.
+#       Add -d|--dir option to override SOURCE_DIR at runtime.
+#       Enables flexible archive input without modifying config file.
+#       Ensures option validation and proper integration with existing modes.
 #  v1.2 2025-05-08
 #       Add support for ARCHIVE_OUTPUT_DIR from external config.
 #       Introduced -s|--send option to enable legacy email behavior.
@@ -38,16 +41,18 @@
 #       and email delivery using external configuration.
 #
 #  Usage:
-#      ./send_files.sh [-s|--send] [-z|--7z]
+#      ./send_files.sh [-s|--send] [-z|--7z] [-d|--dir <directory>]
 #      This script is intended to be executed manually or via cron.
 #      Without -s, the archive is saved to a local directory.
 #      With -s, the archive is sent as an email attachment (legacy behavior).
 #      If -z is specified, the archive is created using 7z (AES-256 encrypted).
 #      Otherwise, ZIP is used by default.
+#      If -d is specified, overrides the SOURCE_DIR from config.
 #
 #  Features:
 #  - Compress a target directory into a password-protected ZIP
 #  - Optionally use 7z format with AES-256 encryption (via -z)
+#  - Override archive source directory via -d <dir> option
 #  - Generate a secure random password (configurable length)
 #  - Save password to a local text file (configurable name)
 #  - Email the archive as attachment to a configured Gmail address
@@ -249,18 +254,32 @@ confirm_send_7z() {
 main() {
     SEND_MODE="no"
     USE_7Z="no"
+    OVERRIDE_SOURCE_DIR=""
 
     while [ $# -gt 0 ]; do
         case "$1" in
             -h|--help) usage ;;
             -s|--send) SEND_MODE="yes" ;;
             -z|--7z)   USE_7Z="yes" ;;
+            -d|--dir)
+                shift
+                if [ -z "$1" ]; then
+                    echo "[ERROR] Missing argument for -d|--dir" >&2
+                    exit 1
+                fi
+                OVERRIDE_SOURCE_DIR="$1"
+                ;;
             *) echo "[ERROR] Unknown option: $1" >&2; exit 1 ;;
         esac
         shift
     done
 
     load_config
+
+    if [ -n "$OVERRIDE_SOURCE_DIR" ]; then
+        SOURCE_DIR="$OVERRIDE_SOURCE_DIR"
+    fi
+
     check_environment
 
     if [ "$SEND_MODE" = "yes" ] && [ "$USE_7Z" = "yes" ]; then
