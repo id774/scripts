@@ -20,6 +20,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-05-09
+#       Add support for -z|--7z option to create 7z archive instead of ZIP.
+#       Uses AES-256 encryption and full-directory protection via 7z.
+#       Maintains full backward compatibility with default ZIP behavior.
 #  v1.2 2025-05-08
 #       Add support for ARCHIVE_OUTPUT_DIR from external config.
 #       Introduced -s|--send option to enable legacy email behavior.
@@ -32,13 +36,16 @@
 #       and email delivery using external configuration.
 #
 #  Usage:
-#      ./send_files.sh [-s|--send]
+#      ./send_files.sh [-s|--send] [-z|--7z]
 #      This script is intended to be executed manually or via cron.
 #      Without -s, the archive is saved to a local directory.
 #      With -s, the archive is sent as an email attachment (legacy behavior).
+#      If -z is specified, the archive is created using 7z (AES-256 encrypted).
+#      Otherwise, ZIP is used by default.
 #
 #  Features:
 #  - Compress a target directory into a password-protected ZIP
+#  - Optionally use 7z format with AES-256 encryption (via -z)
 #  - Generate a secure random password (configurable length)
 #  - Save password to a local text file (configurable name)
 #  - Email the archive as attachment to a configured Gmail address
@@ -48,6 +55,7 @@
 #  - Ensure `mail` and `uuencode` are installed and properly configured
 #  - Gmail SMTP setup may be required (via mailx configuration)
 #  - No password is sent in the email — it is stored locally only
+#  - To use 7z, the `7z` command must be available in PATH
 #
 #  Error Conditions:
 #  1. General failure (e.g., password generation or ZIP failure).
@@ -75,9 +83,17 @@ usage() {
 
 # Validate configuration based on mode
 check_environment() {
+    if [ "$USE_7Z" = "yes" ]; then
+        check_commands 7z
+        ARCHIVE_EXT=".7z"
+    else
+        check_commands zip
+        ARCHIVE_EXT=".zip"
+    fi
+
     if [ "$SEND_MODE" = "yes" ]; then
         # Mail send mode.
-        check_commands zip uuencode mail head basename dirname date
+        check_commands uuencode mail head basename dirname date
 
         if [ ! -d "$SOURCE_DIR" ]; then
             echo "[ERROR] Directory not found: $SOURCE_DIR" >&2
@@ -89,7 +105,7 @@ check_environment() {
         fi
     else
         # File store mode.
-        check_commands zip head basename dirname date cp
+        check_commands head basename dirname date cp
 
         if [ -z "$ARCHIVE_OUTPUT_DIR" ]; then
             echo "[ERROR] ARCHIVE_OUTPUT_DIR is not set in config." >&2
@@ -148,27 +164,32 @@ generate_password() {
     fi
 }
 
-create_zip() {
+create_archive() {
     TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
     if [ -z "$ARCHIVE_FILE_NAME" ]; then
-        echo "[WARN] ARCHIVE_FILE_NAME is not set; using default: secure_archive.zip" >&2
+        echo "[WARN] ARCHIVE_FILE_NAME is not set; using default: secure_archive$ARCHIVE_EXT" >&2
     fi
 
     ARCHIVE_BASENAME="${ARCHIVE_FILE_NAME:-secure_archive}"
-    ZIP_PATH="$TMP/${ARCHIVE_BASENAME}_${TIMESTAMP}.zip"
+    ZIP_PATH="$TMP/${ARCHIVE_BASENAME}_${TIMESTAMP}${ARCHIVE_EXT}"
     PASSWORD=$(generate_password)
 
     echo "$PASSWORD" > "$TMP/$PASSWORD_FILE_NAME"
 
-    cd "$(dirname "$SOURCE_DIR")" || exit 1
-    zip -r -P "$PASSWORD" "$ZIP_PATH" "$(basename "$SOURCE_DIR")" > /dev/null 2>&1
-    RC=$?
+    if [ "$USE_7Z" = "yes" ]; then
+        7z a -p"$PASSWORD" -mhe=on "$ZIP_PATH" "$SOURCE_DIR" > /dev/null 2>&1
+        RC=$?
+    else
+        cd "$(dirname "$SOURCE_DIR")" || exit 1
+        zip -r -P "$PASSWORD" "$ZIP_PATH" "$(basename "$SOURCE_DIR")" > /dev/null 2>&1
+        RC=$?
+    fi
 
     if [ "$RC" -eq 0 ]; then
-        echo "[INFO] zip archive successfully created: $ZIP_PATH"
+        echo "[INFO] Archive successfully created: $ZIP_PATH"
     else
-        echo "[ERROR] Failed to create zip archive (exit code: $RC)" >&2
+        echo "[ERROR] Failed to create archive (exit code: $RC)" >&2
         exit "$RC"
     fi
 }
@@ -210,13 +231,14 @@ main() {
     case "$1" in
         -h|--help) usage ;;
         -s|--send) SEND_MODE="yes"; shift ;;
-        *) SEND_MODE="no" ;;
+        -z|--7z) USE_7Z="yes"; shift ;;
+        *) SEND_MODE="no"; USE_7Z="no" ;;
     esac
 
     load_config
     check_environment
 
-    create_zip
+    create_archive
     if [ "$SEND_MODE" = "yes" ]; then
         send_mail
     else
