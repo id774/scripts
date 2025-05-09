@@ -24,6 +24,8 @@
 #       Add support for -z|--7z option to create 7z archive instead of ZIP.
 #       Uses AES-256 encryption and full-directory protection via 7z.
 #       Maintains full backward compatibility with default ZIP behavior.
+#       Added safety confirmation when both -s and -z options are specified.
+#       Prevents accidental Gmail rejection of .7z attachments unless explicitly approved.
 #  v1.2 2025-05-08
 #       Add support for ARCHIVE_OUTPUT_DIR from external config.
 #       Introduced -s|--send option to enable legacy email behavior.
@@ -64,6 +66,7 @@
 #  4. GMAIL_TO address is not set.
 #  5. ARCHIVE_OUTPUT_DIR is not set in config.
 #  6. Archive output directory does not exist.
+#  8. Unsafe operation: sending .7z archive via email without user confirmation.
 #  9. Failed to send mail.
 #  126. Required command is not executable.
 #  127. Required command is not installed.
@@ -79,6 +82,20 @@ usage() {
         in_usage && /^#/ { print substr($0, 4) }
     ' "$0"
     exit 0
+}
+
+# Function to check required commands
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
 }
 
 # Validate configuration based on mode
@@ -115,20 +132,6 @@ check_environment() {
             exit 6
         fi
     fi
-}
-
-# Function to check required commands
-check_commands() {
-    for cmd in "$@"; do
-        cmd_path=$(command -v "$cmd" 2>/dev/null)
-        if [ -z "$cmd_path" ]; then
-            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
-            exit 127
-        elif [ ! -x "$cmd_path" ]; then
-            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
-            exit 126
-        fi
-    done
 }
 
 # Load configuration from external file
@@ -226,6 +229,22 @@ store_archive() {
     echo "[INFO] Archive copied to $ARCHIVE_OUTPUT_DIR"
 }
 
+confirm_send_7z() {
+    echo "[WARN] You have specified both --send and --7z options."
+    echo
+    echo "Sending .7z archives via Gmail is strongly discouraged due to the following risks:"
+    echo "- Gmail often blocks .7z attachments even if they are harmless."
+    echo "- This is because 7z files can contain encrypted content that cannot be malware-scanned."
+    echo "- Your email may be rejected with a 552 5.7.0 error or silently discarded."
+    echo
+    echo "Do you still want to proceed? Type 'yes' or 'y' to continue:"
+    read REPLY
+    case "$REPLY" in
+        y|yes) echo "[INFO] Proceeding despite risk." ;;
+        *) echo "[ERROR] Aborted due to security risk of sending .7z file via Gmail." >&2; exit 8 ;;
+    esac
+}
+
 # Main function to execute the script
 main() {
     case "$1" in
@@ -238,7 +257,12 @@ main() {
     load_config
     check_environment
 
+    if [ "$SEND_MODE" = "yes" ] && [ "$USE_7Z" = "yes" ]; then
+        confirm_send_7z
+    fi
+
     create_archive
+
     if [ "$SEND_MODE" = "yes" ]; then
         send_mail
     else
