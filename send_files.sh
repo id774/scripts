@@ -247,12 +247,18 @@ confirm_send_7z() {
 
 # Main function to execute the script
 main() {
-    case "$1" in
-        -h|--help) usage ;;
-        -s|--send) SEND_MODE="yes"; shift ;;
-        -z|--7z) USE_7Z="yes"; shift ;;
-        *) SEND_MODE="no"; USE_7Z="no" ;;
-    esac
+    SEND_MODE="no"
+    USE_7Z="no"
+
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -h|--help) usage ;;
+            -s|--send) SEND_MODE="yes" ;;
+            -z|--7z)   USE_7Z="yes" ;;
+            *) echo "[ERROR] Unknown option: $1" >&2; exit 1 ;;
+        esac
+        shift
+    done
 
     load_config
     check_environment
