@@ -1,16 +1,107 @@
 #!/bin/sh
 
-JOBLOG="/var/log/sysadmin/apache_summary.log"
+########################################################################
+# apache_log_analysis: Apache Log Summary and IP Hit Analysis Script
+#
+#  Description:
+#  This script performs Apache log summarization and IP hit analysis.
+#  It is intended to be executed automatically by cron and uses helper
+#  scripts to process access logs and extract useful patterns.
+#
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: The GPL version 3, or LGPL version 3 (Dual License).
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 2025-05-10
+#       Refactor into POSIX-compliant, function-based structure with cron validation.
+#  v0.1 2022-10-11
+#       Initial release. Summary and IP hit analysis of Apache logs.
+#
+#  Usage:
+#      ./apache_log_analysis
+#      This script is intended to be executed periodically by cron.
+#
+#  Cron Usage:
+#      Place this script into /etc/cron.daily or similar.
+#      Or create a specific cron entry like the following:
+#      45 3 * * * root /path/to/apache_log_analysis
+#
+########################################################################
 
-echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
-date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
-[ -x "/root/bin/apache_log_analysis.sh" ] && /root/bin/apache_log_analysis.sh /var/log/apache2/ssl_access.log >> "$JOBLOG" 2>&1
-[ -x "/root/bin/apache_calculater.py" ] && echo "[Recent IP Hits]" >> "$JOBLOG" 2>&1
-[ -x "/root/bin/apache_calculater.py" ] && /root/bin/apache_calculater.py /var/log/apache2/ssl_access.log.1 >> "$JOBLOG" 2>&1
+# Function to check if the script is running from cron
+is_running_from_cron() {
+    if tty -s; then
+        return 1  # Terminal attached → interactive session
+    else
+        return 0  # No terminal → likely cron
+    fi
+}
 
-echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
-date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
-echo >> "$JOBLOG" 2>&1
+# Setup variables and log start time
+initialize() {
+    JOBLOG="/var/log/sysadmin/apache_summary.log"
+    SCRIPT1="/root/bin/apache_log_analysis.sh"
+    SCRIPT2="/root/bin/apache_calculater.py"
+    ACCESS_LOG="/var/log/apache2/ssl_access.log"
+    ACCESS_LOG_ROTATED="/var/log/apache2/ssl_access.log.1"
 
-exit 0
+    if ! is_running_from_cron; then
+        echo "[ERROR] This script is intended to be run by cron only." >&2
+        exit 1
+    fi
+
+    echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
+    date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
+}
+
+# Call helper scripts to analyze logs
+call_main_scripts() {
+    if [ -x "$SCRIPT1" ]; then
+        echo "[INFO] Running $SCRIPT1 on $ACCESS_LOG" >> "$JOBLOG" 2>&1
+        "$SCRIPT1" "$ACCESS_LOG" >> "$JOBLOG" 2>&1
+    else
+        echo "[WARN] Log summary script not found: $SCRIPT1" >> "$JOBLOG" 2>&1
+    fi
+
+    if [ -x "$SCRIPT2" ]; then
+        echo "[INFO] Running $SCRIPT2 on $ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
+        echo "[Recent IP Hits]" >> "$JOBLOG" 2>&1
+        "$SCRIPT2" "$ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
+    else
+        echo "[WARN] IP analysis script not found: $SCRIPT2" >> "$JOBLOG" 2>&1
+    fi
+}
+
+# Finalize and log job completion
+finalize() {
+    echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
+    date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
+    echo >> "$JOBLOG" 2>&1
+}
+
+# Main function to execute the script
+main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
+    initialize
+    call_main_scripts
+    finalize
+}
+
+# Execute main function
+main "$@"
