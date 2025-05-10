@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.4 2025-05-10
+#       Always overwrite existing get_resources cron job to ensure consistency.
 #  v2.3 2025-04-27
 #       Skip deployment if get_resources.sh or its cron job already exists,
 #       and add error handling for copy failures.
@@ -154,13 +156,9 @@ main() {
     sudo chown root:root /root/bin/get_resources.sh
 
     echo "[INFO] Installing cron job to /etc/cron.hourly."
-    if [ -f /etc/cron.hourly/get_resources ]; then
-        echo "[INFO] /etc/cron.hourly/get_resources already exists. Skipping deployment."
-    else
-        if ! sudo cp "$SCRIPTS/cron/bin/get_resources" /etc/cron.hourly/; then
-            echo "[ERROR] Failed to copy cron job to /etc/cron.hourly/." >&2
-            exit 1
-        fi
+    if ! sudo cp "$SCRIPTS/cron/bin/get_resources" /etc/cron.hourly/; then
+        echo "[ERROR] Failed to copy cron job to /etc/cron.hourly/." >&2
+        exit 1
     fi
     sudo chmod 740 /etc/cron.hourly/get_resources
     sudo chown root:adm /etc/cron.hourly/get_resources
