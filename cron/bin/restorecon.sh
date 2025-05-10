@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-05-10
+#       Add cron execution check and usage support with unified structure.
 #  v1.1 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.0 2025-03-16
@@ -31,6 +33,26 @@
 #  - Requires `restorecon` and `sestatus` commands to be available.
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
+# Function to check if the script is running from cron
+is_running_from_cron() {
+    if tty -s; then
+        return 1  # Terminal attached → interactive session
+    else
+        return 0  # No terminal → likely cron
+    fi
+}
 
 # Function to check if SELinux is enabled
 check_selinux() {
@@ -52,6 +74,15 @@ restore_selinux_context() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
+    if ! is_running_from_cron; then
+        echo "[ERROR] This script is intended to be run by cron only." >&2
+        exit 1
+    fi
+
     check_selinux
     restore_selinux_context
 }

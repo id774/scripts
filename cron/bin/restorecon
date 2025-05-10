@@ -50,7 +50,6 @@ is_running_from_cron() {
     fi
 }
 
-
 # Initialize environment and log start
 initialize() {
     LC_CTYPE=ja_JP.UTF-8

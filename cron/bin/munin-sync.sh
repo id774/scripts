@@ -20,6 +20,7 @@
 #  Version History:
 #  v1.3 2025-05-10
 #       Added cron.log and Apache logs to local log synchronization.
+#       Add cron execution check and usage support with unified structure.
 #  v1.2 2025-04-14
 #       Skip sync_munin_data and sync_logs_to_remote if script is running on the target server.
 #  v1.1 2025-04-11
@@ -61,6 +62,15 @@ usage() {
         in_usage && /^#/ { print substr($0, 4) }
     ' "$0"
     exit 0
+}
+
+# Function to check if the script is running from cron
+is_running_from_cron() {
+    if tty -s; then
+        return 1  # Terminal attached → interactive session
+    else
+        return 0  # No terminal → likely cron
+    fi
 }
 
 # Determine if the script is running on the target server itself
@@ -139,6 +149,11 @@ main() {
     case "$1" in
         -h|--help) usage ;;
     esac
+
+    if ! is_running_from_cron; then
+        echo "[ERROR] This script is intended to be run by cron only." >&2
+        exit 1
+    fi
 
     load_config
     sync_munin_data

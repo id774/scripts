@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2025-05-10
+#       Add cron execution check and usage support with unified structure.
 #  v2.0 2025-04-29
 #       Add execution of test/check_scripts.sh after Python and Ruby tests if available.
 #       Fully refactor run_tests into function-based structure.
@@ -66,8 +68,33 @@
 #
 ########################################################################
 
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
+# Function to check if the script is running from cron
+is_running_from_cron() {
+    if tty -s; then
+        return 1  # Terminal attached → interactive session
+    else
+        return 0  # No terminal → likely cron
+    fi
+}
+
 # Function to determine the script's directory and load configuration
 initialize() {
+    if ! is_running_from_cron; then
+        echo "[ERROR] This script is intended to be run by cron only." >&2
+        exit 1
+    fi
+
     SCRIPT_DIR=$(dirname "$0")
 
     CONF_FILE="$SCRIPT_DIR/etc/run_tests.conf"
@@ -134,8 +161,8 @@ run_compatibility_check() {
     fi
 }
 
-# Function to log job ending
-log_job_end() {
+# Finalize and log job completion
+finalize() {
     echo >> "$JOBLOG" 2>&1
     echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
     date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
@@ -151,6 +178,10 @@ send_mail_to_admin() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
     initialize
 
     first_python_version=""
@@ -180,7 +211,7 @@ main() {
     if [ ! -z "$first_python_version" ]; then
         run_compatibility_check
     fi
-    log_job_end
+    finalize
 
     if [ -n "$ADMIN_MAIL_ADDRESS" ]; then
         send_mail_to_admin

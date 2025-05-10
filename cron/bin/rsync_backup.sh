@@ -15,6 +15,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.6  2025-05-10 - Add cron execution check and usage support with unified structure.
 #  v2.5  2025-04-20 - Fix inaccurate rsync return code logging by
 #                     assigning RC immediately after execution.
 #  v2.4  2025-04-17 - Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
@@ -53,6 +54,26 @@
 #  settings and available devices.
 #
 ########################################################################
+
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
+
+# Function to check if the script is running from cron
+is_running_from_cron() {
+    if tty -s; then
+        return 1  # Terminal attached → interactive session
+    else
+        return 0  # No terminal → likely cron
+    fi
+}
 
 # Function to display the timestamp of the last backup and update it
 display_and_update_timestamp() {
@@ -295,6 +316,15 @@ rsync_disk2disk_2() {
 
 # Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
+    if ! is_running_from_cron; then
+        echo "[ERROR] This script is intended to be run by cron only." >&2
+        exit 1
+    fi
+
     SCRIPT_DIR="$(cd "$(dirname "$0")" >/dev/null 2>&1 && pwd)"
     CONFIG_FILE="$SCRIPT_DIR/../etc/rsync_backup.conf"
 

@@ -23,6 +23,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-05-10
+#       Add cron execution check and usage support with unified structure.
 #  v1.2 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.1 2025-04-10
@@ -63,6 +65,15 @@ usage() {
         in_usage && /^#/ { print substr($0, 4) }
     ' "$0"
     exit 0
+}
+
+# Function to check if the script is running from cron
+is_running_from_cron() {
+    if tty -s; then
+        return 1  # Terminal attached → interactive session
+    else
+        return 0  # No terminal → likely cron
+    fi
 }
 
 # Load configuration from external file
@@ -137,6 +148,11 @@ main() {
     case "$1" in
         -h|--help) usage ;;
     esac
+
+    if ! is_running_from_cron; then
+        echo "[ERROR] This script is intended to be run by cron only." >&2
+        exit 1
+    fi
 
     load_config
 
