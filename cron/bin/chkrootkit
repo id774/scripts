@@ -1,22 +1,111 @@
 #!/bin/sh
 
-LC_CTYPE=ja_JP.UTF-8
-JOBLOG="/var/log/chkrootkit/chkrootkit.log"
+########################################################################
+# chkrootkit: Rootkit Scan and Notification Script
+#
+#  Description:
+#  This script runs `chkrootkit` to detect potential rootkits on the system.
+#  It is designed to be run automatically via cron, logs the result to a
+#  designated file, and optionally sends an email alert if infections are found.
+#
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: The GPL version 3, or LGPL version 3 (Dual License).
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 2025-05-10
+#       Refactor into POSIX-compliant, function-based structure with cron check and mail support.
+#  v0.1 2012-03-15
+#       Initial release. Basic chkrootkit execution and logging.
+#
+#  Usage:
+#      ./chkrootkit
+#      This script is intended to be executed periodically by cron.
+#
+#  Cron Usage:
+#      Place this script into /etc/cron.daily or similar.
+#      Or create a specific cron entry like the following:
+#      0 4 * * * root /path/to/chkrootkit
+#
+########################################################################
 
-echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
-date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
-chkrootkit >> "$JOBLOG" 2>&1
+# Function to check if the script is running from cron
+is_running_from_cron() {
+    if tty -s; then
+        return 1  # Terminal attached → interactive session
+    else
+        return 0  # No terminal → likely cron
+    fi
+}
 
-echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
-date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
-echo >> "$JOBLOG" 2>&1
+# Initialize environment and log job start
+initialize() {
+    LC_CTYPE=ja_JP.UTF-8
+    JOBLOG="/var/log/chkrootkit/chkrootkit.log"
+    #ADMIN_MAIL_ADDRESS="root"
 
-#ADMIN_MAIL_ADDRESS="root"
-case "$ADMIN_MAIL_ADDRESS" in
-    *@*)
-        grep "INFECTED" "$JOBLOG" | grep -v "/sbin/init" && (cat -v "$JOBLOG" | nkf -w | mail -s "[cron][$(hostname)] Infected rootkit" "$ADMIN_MAIL_ADDRESS")
-        ;;
-esac
+    if ! is_running_from_cron; then
+        echo "[ERROR] This script is intended to be run by cron only." >&2
+        exit 1
+    fi
 
-exit 0
+    echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
+    date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
+}
+
+# Execute the main script
+call_main_script() {
+    if command -v chkrootkit >/dev/null 2>&1; then
+        echo "[INFO] Running chkrootkit" >> "$JOBLOG" 2>&1
+        chkrootkit >> "$JOBLOG" 2>&1
+    else
+        echo "[ERROR] chkrootkit command not found." >> "$JOBLOG" 2>&1
+    fi
+}
+
+# Send alert if infection is detected
+send_mail_to_admin() {
+    case "$ADMIN_MAIL_ADDRESS" in
+        *@*)
+            if grep "INFECTED" "$JOBLOG" | grep -v "/sbin/init" >/dev/null 2>&1; then
+                echo "[WARN] Infection detected. Sending alert to $ADMIN_MAIL_ADDRESS." >> "$JOBLOG" 2>&1
+                cat -v "$JOBLOG" | nkf -w | mail -s "[cron][$(hostname)] Infected rootkit" "$ADMIN_MAIL_ADDRESS"
+            fi
+            ;;
+    esac
+}
+
+# Finalize and log job completion
+finalize() {
+    echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
+    date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
+    echo >> "$JOBLOG" 2>&1
+}
+
+# Main function to execute the script
+main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
+    initialize
+    call_main_script
+    finalize
+
+    send_mail_to_admin
+}
+
+# Execute main function
+main "$@"

@@ -42,6 +42,15 @@ usage() {
     exit 0
 }
 
+# Function to check if the script is running from cron
+is_running_from_cron() {
+    if tty -s; then
+        return 1  # Terminal attached → interactive session
+    else
+        return 0  # No terminal → likely cron
+    fi
+}
+
 # Initialize environment and log job start
 initialize() {
     JOBLOG="/var/log/sysadmin/resources.log"
@@ -56,22 +65,13 @@ initialize() {
     date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
 }
 
-# Function to check if the script is running from cron
-is_running_from_cron() {
-    if tty -s; then
-        return 1  # Terminal attached → interactive session
-    else
-        return 0  # No terminal → likely cron
-    fi
-}
-
 # Execute the main script
 call_main_script() {
     if [ -x "$SCRIPT" ]; then
         echo "[INFO] Running $SCRIPT" >> "$JOBLOG" 2>&1
         "$SCRIPT" >> "$JOBLOG" 2>&1
     else
-        echo "[WARN] Resource script not found or not executable: $SCRIPT" >> "$JOBLOG" 2>&1
+        echo "[ERROR] Resource script not found or not executable: $SCRIPT" >> "$JOBLOG" 2>&1
     fi
 }
 
