@@ -26,6 +26,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-05-10
+#       Test all scripts in $SCRIPTS/cron/bin regardless of file extension.
 #  v1.0 2025-04-28
 #       Initial release. Implements sequential help-option testing with POSIX-compliant structure.
 #
@@ -122,6 +124,13 @@ test_function() {
             done
         fi
     done
+
+    # Include all files (with or without extension) in cron/bin
+    if [ -d "$SCRIPTS/cron/bin" ]; then
+        for script in "$SCRIPTS/cron/bin"/*; do
+            [ -f "$script" ] && test_script "$script"
+        done
+    fi
 
     final_report
 
