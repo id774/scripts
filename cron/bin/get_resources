@@ -1,14 +1,97 @@
 #!/bin/sh
 
-JOBLOG="/var/log/sysadmin/resources.log"
+########################################################################
+# get_resources: System Resource Snapshot Collector
+#
+#  Description:
+#  This script is designed to be executed automatically via cron (e.g.,
+#  in /etc/cron.daily) to collect system resource information. It delegates
+#  the actual collection logic to a separate script (`get_resources.sh`)
+#  and captures the output into a unified job log.
+#
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: The GPL version 3, or LGPL version 3 (Dual License).
+#  Contact: idnanashi@gmail.com
+#
+#  Version History:
+#  v1.0 2025-05-10
+#       Refactor into POSIX-compliant, function-based structure with unified logging.
+#  v0.1 2008-08-22
+#       Initial release. Simple wrapper for get_resources.sh with logging.
+#
+#  Usage:
+#      ./get_resources
+#      This script is intended to be executed periodically by cron.
+#
+#  Cron Usage:
+#      Place this script into /etc/cron.hourly to run it once a day.
+#      Or create a specific cron entry like the following:
+#      5 * * * * root /path/to/get_resources
+#
+########################################################################
 
-echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
-date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
+# Display script usage information
+usage() {
+    awk '
+        BEGIN { in_usage = 0 }
+        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
+        /^#{10}/ { if (in_usage) exit }
+        in_usage && /^#/ { print substr($0, 4) }
+    ' "$0"
+    exit 0
+}
 
-[ -x "/root/bin/get_resources.sh" ] && /root/bin/get_resources.sh >> "$JOBLOG" 2>&1
+# Initialize environment and log job start
+initialize() {
+    JOBLOG="/var/log/sysadmin/resources.log"
+    SCRIPT="/root/bin/get_resources.sh"
 
-echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
-date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
-echo >> "$JOBLOG" 2>&1
+    if ! is_running_from_cron; then
+        echo "[ERROR] This script is intended to be run by cron only." >&2
+        exit 1
+    fi
 
-exit 0
+    echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
+    date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
+}
+
+# Function to check if the script is running from cron
+is_running_from_cron() {
+    if tty -s; then
+        return 1  # Terminal attached → interactive session
+    else
+        return 0  # No terminal → likely cron
+    fi
+}
+
+# Execute the main script
+call_main_script() {
+    if [ -x "$SCRIPT" ]; then
+        echo "[INFO] Running $SCRIPT" >> "$JOBLOG" 2>&1
+        "$SCRIPT" >> "$JOBLOG" 2>&1
+    else
+        echo "[WARN] Resource script not found or not executable: $SCRIPT" >> "$JOBLOG" 2>&1
+    fi
+}
+
+# Finalize job and log completion
+finalize() {
+    echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
+    date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
+    echo >> "$JOBLOG" 2>&1
+}
+
+# Main function to execute the script
+main() {
+    case "$1" in
+        -h|--help) usage ;;
+    esac
+
+    initialize
+    call_main_script
+    finalize
+}
+
+# Execute main function
+main "$@"
