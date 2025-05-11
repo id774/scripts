@@ -107,14 +107,12 @@ finalize() {
 
 # Optionally send the job log via email
 send_mail_to_admin() {
-    case "$ADMIN_MAIL_ADDRESS" in
-        *@*)
-            if [ -r "$JOBLOG" ]; then
-                echo "[INFO] Sending log to $ADMIN_MAIL_ADDRESS" >> "$JOBLOG" 2>&1
-                cat -v "$JOBLOG" | nkf -w | mail -s "[cron][$(hostname)] Fixed Permissions Log" "$ADMIN_MAIL_ADDRESS"
-            fi
-            ;;
-    esac
+    if [ -n "$ADMIN_MAIL_ADDRESS" ]; then
+        if [ -r "$JOBLOG" ]; then
+            echo "[INFO] Sending log to $ADMIN_MAIL_ADDRESS" >> "$JOBLOG" 2>&1
+            cat -v "$JOBLOG" | nkf -w | mail -s "[cron][$(hostname)] Fixed Permissions Log" "$ADMIN_MAIL_ADDRESS"
+        fi
+    fi
 }
 
 # Main function to execute the script

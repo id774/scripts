@@ -77,14 +77,12 @@ call_main_script() {
 
 # Send alert if infection is detected
 send_mail_to_admin() {
-    case "$ADMIN_MAIL_ADDRESS" in
-        *@*)
-            if grep "INFECTED" "$JOBLOG" | grep -v "/sbin/init" >/dev/null 2>&1; then
-                echo "[WARN] Infection detected. Sending alert to $ADMIN_MAIL_ADDRESS." >> "$JOBLOG" 2>&1
-                cat -v "$JOBLOG" | nkf -w | mail -s "[cron][$(hostname)] Infected rootkit" "$ADMIN_MAIL_ADDRESS"
-            fi
-            ;;
-    esac
+    if [ -n "$ADMIN_MAIL_ADDRESS" ]; then
+        if grep "INFECTED" "$JOBLOG" | grep -v "/sbin/init" >/dev/null 2>&1; then
+            echo "[WARN] Infection detected. Sending alert to $ADMIN_MAIL_ADDRESS." >> "$JOBLOG" 2>&1
+            cat -v "$JOBLOG" | nkf -w | mail -s "[cron][$(hostname)] Infected rootkit" "$ADMIN_MAIL_ADDRESS"
+        fi
+    fi
 }
 
 # Finalize and log job completion
