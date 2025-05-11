@@ -14,6 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-05-11
+#       Restrict cron file permissions by removing all rights from others,
+#       allowing only read for group, and changing group ownership to adm.
 #  v1.2 2025-05-10
 #       Refactor into function-based, POSIX-compliant structure with cron check and usage display.
 #  v1.1 2025-03-19
@@ -91,11 +94,10 @@ fix_permissions() {
     chown -R root:root /usr/local/src
 
     echo "[INFO] Setting permission for /etc/cron.*" >> "$JOBLOG" 2>&1
-    chmod -R 744 /etc/cron.hourly/* 2>> "$JOBLOG"
-    chmod -R 744 /etc/cron.daily/* 2>> "$JOBLOG"
-    chmod -R 744 /etc/cron.weekly/* 2>> "$JOBLOG"
-    chmod -R 744 /etc/cron.monthly/* 2>> "$JOBLOG"
-    chmod -R 644 /etc/cron.d/* 2>> "$JOBLOG"
+    for dir in /etc/cron.hourly /etc/cron.daily /etc/cron.weekly /etc/cron.monthly; do
+        find "$dir" -type f -exec chmod u=rw,g=r,o= {} \; -exec chown :adm {} \; 2>> "$JOBLOG"
+    done
+    find /etc/cron.d -type f -exec chmod u=rw,g=r,o= {} \; -exec chown :adm {} \; 2>> "$JOBLOG"
 }
 
 # Finalize job and log completion
