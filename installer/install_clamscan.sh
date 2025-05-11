@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.4 2025-05-11
+#       Always overwrite clamscan cron job in /etc/cron.weekend during installation.
 #  v2.3 2025-04-27
 #       Add error checking for deployment steps and improve logrotate configuration handling.
 #  v2.2 2025-04-21
@@ -127,16 +129,12 @@ install_clamscan() {
     sudo mkdir -p /etc/cron.weekend
 
     echo "[INFO] Deploying clamscan cron job to /etc/cron.weekend."
-    if [ -f /etc/cron.weekend/clamscan ]; then
-        echo "[INFO] Skipping deployment: /etc/cron.weekend/clamscan already exists."
-    else
-        if ! sudo cp "$SCRIPTS/cron/bin/clamscan" /etc/cron.weekend/; then
-            echo "[ERROR] Failed to copy clamscan cron job" >&2
-            exit 1
-        fi
-        sudo chmod 740 /etc/cron.weekend/clamscan
-        sudo chown root:adm /etc/cron.weekend/clamscan
+    if ! sudo cp "$SCRIPTS/cron/bin/clamscan" /etc/cron.weekend/; then
+        echo "[ERROR] Failed to copy clamscan cron job" >&2
+        exit 1
     fi
+    sudo chmod 740 /etc/cron.weekend/clamscan
+    sudo chown root:adm /etc/cron.weekend/clamscan
 
     echo "[INFO] Setting up ClamAV log files."
     for log_file in /var/log/clamav/clamscan.log /var/log/clamav/clamav.log; do
