@@ -83,7 +83,6 @@ send_mail_to_admin() {
             echo "[INFO] Sending mail to $ADMIN_MAIL_ADDRESS" >> "$JOBLOG" 2>&1
             cat -v "$JOBLOG" | nkf -w | mail -s "[cron][$(hostname)] SELinux Restore Context Log" "$ADMIN_MAIL_ADDRESS"
         fi
-        ;;
     fi
 }
 
