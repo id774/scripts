@@ -95,7 +95,7 @@ fix_permissions() {
 
     echo "[INFO] Setting permission for /etc/cron.*" >> "$JOBLOG" 2>&1
     for dir in /etc/cron.hourly /etc/cron.daily /etc/cron.weekly /etc/cron.monthly; do
-        find "$dir" -type f -exec chmod u=rw,g=r,o= {} \; -exec chown :adm {} \; 2>> "$JOBLOG"
+        find "$dir" -type f -exec chmod u=rwx,g=r,o= {} \; -exec chown :adm {} \; 2>> "$JOBLOG"
     done
     find /etc/cron.d -type f -exec chmod u=rw,g=r,o= {} \; -exec chown :adm {} \; 2>> "$JOBLOG"
 }
