@@ -11,7 +11,7 @@ v1.4.3 (Release Date: TBD)
 - Add disable_freshclam_syslog.sh to suppress freshclam output to syslog via systemd override.
 - Refactor all cron scripts to unify structure: POSIX compliance, function-based design, cron execution check, and usage display.
 - Remove execute permission suppression for scripts/cron/bin in setup_scripts.sh.
-- Refactor sudoers to remove unsafe editor permissions, isolate iptables, and eliminate redundant entries
+- Refactor sudoers to reduced timestamp_timeout, improved passprompt and restricted NOPASSWD to safe commands only.
 
 v1.4.2 (2025-04-29)
 -------------------

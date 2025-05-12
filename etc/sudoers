@@ -12,8 +12,8 @@ Defaults env_keep+="https_proxy"
 Defaults mail_badpass
 Defaults secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 Defaults !lecture,tty_tickets,!fqdn
-Defaults timestamp_timeout = 180
-Defaults passprompt = "[sudo] <%U@%h> Enter %u's password: "
+Defaults timestamp_timeout = 30
+Defaults passprompt = "[%U@%h] Enter %u's password: "
 
 # Host alias specification
 
@@ -21,24 +21,18 @@ Defaults passprompt = "[sudo] <%U@%h> Enter %u's password: "
 
 # Cmnd alias specification
 Cmnd_Alias SHUTDOWN = /sbin/shutdown
-Cmnd_Alias SERVICES = /bin/systemctl
-Cmnd_Alias SOFTWARE = /usr/bin/apt, /usr/bin/apt-get, /usr/bin/aptitude, /usr/bin/dpkg
-Cmnd_Alias STORAGE = /sbin/fdisk, /sbin/sfdisk, /sbin/parted, /sbin/partprobe, /bin/mount, /bin/umount
-Cmnd_Alias DRIVERS = /sbin/modprobe, /usr/sbin/dmidecode
-Cmnd_Alias EDITORS = /usr/bin/vi, /usr/bin/vim, /usr/bin/emacs
-Cmnd_Alias NETWORKING = /sbin/route, /sbin/ifconfig, /bin/ping, /sbin/dhclient, /usr/bin/net, /usr/bin/rfcomm, /usr/bin/wvdial, /sbin/iwconfig, /sbin/mii-tool
-Cmnd_Alias PROCESSES = /usr/bin/nice, /usr/bin/kill, /usr/bin/killall, /usr/bin/pkill
-Cmnd_Alias SMARTOOLS = /usr/sbin/smartctl
-Cmnd_Alias POSTMASTER = /usr/sbin/postalias, /usr/sbin/postcat, /usr/sbin/postconf, /usr/sbin/postfix, /usr/sbin/postkick, /usr/sbin/postlock, /usr/sbin/postlog, /usr/sbin/postmap, /usr/sbin/postqueue, /usr/sbin/postsuper, /usr/bin/mailq, /usr/bin/newaliases, /usr/sbin/sendmail
-Cmnd_Alias TRUECRYPT = /usr/bin/truecrypt, /usr/bin/veracrypt
+Cmnd_Alias PROCESSES = /usr/bin/kill, /usr/bin/killall, /usr/bin/pkill
+Cmnd_Alias NETWORKING = /sbin/route, /sbin/ifconfig, /sbin/dhclient, /usr/bin/net, /usr/bin/rfcomm, /usr/bin/wvdial, /sbin/iwconfig, /sbin/mii-tool
 Cmnd_Alias IPTABLES = /sbin/iptables, /usr/sbin/iptables
+Cmnd_Alias POSTMASTER = /usr/sbin/postalias, /usr/sbin/postcat, /usr/sbin/postconf, /usr/sbin/postfix, /usr/sbin/postkick, /usr/sbin/postlock, /usr/sbin/postlog, /usr/sbin/postmap, /usr/sbin/postqueue, /usr/sbin/postsuper, /usr/bin/mailq, /usr/bin/newaliases, /usr/sbin/sendmail
+Cmnd_Alias SMARTTOOLS = /usr/sbin/smartctl
 
 # User privilege specification
 root ALL=(ALL:ALL) ALL
 
 # Allow members of group sudo to execute any command
 %sudo ALL=(ALL:ALL) ALL
-%sudo ALL=(root) NOPASSWD: SHUTDOWN, SERVICES, NETWORKING, PROCESSES, SMARTOOLS, POSTMASTER, TRUECRYPT, IPTABLES
+%sudo ALL=(root) NOPASSWD: SHUTDOWN, PROCESSES, NETWORKING, IPTABLES, POSTMASTER, SMARTTOOLS
 %munin ALL=(root) NOPASSWD: IPTABLES
 
 # See sudoers(5) for more information on "#include" directives:
