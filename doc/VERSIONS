@@ -10,7 +10,7 @@ v1.4.3 (Release Date: TBD)
 - Restrict cron file permissions by removing all rights from others, allowing only read for group, and changing group ownership to adm.
 - Add disable_freshclam_syslog.sh to suppress freshclam output to syslog via systemd override.
 - Refactor all cron scripts to unify structure: POSIX compliance, function-based design, cron execution check, and usage display.
-- Remove execute permission suppression for scripts/cron/bin in setup_scripts.sh.
+- Refactor setup_scripts.sh to use find-based permission setting and grant execute permission to all scripts/cron/bin files.
 - Refactor sudoers to reduced timestamp_timeout, improved passprompt and restricted NOPASSWD to safe commands only.
 
 v1.4.2 (2025-04-29)
