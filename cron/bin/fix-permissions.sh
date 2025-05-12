@@ -62,9 +62,9 @@ usage() {
 # Function to check if the script is running from cron
 is_running_from_cron() {
     if tty -s; then
-        return 1  # Terminal attached → interactive session
+        return 1  # Terminal attached (interactive session)
     else
-        return 0  # No terminal → likely cron
+        return 0  # No terminal (likely cron)
     fi
 }
 
