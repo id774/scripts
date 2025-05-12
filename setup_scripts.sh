@@ -15,8 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.9 2025-05-10
-#       Remove execute permission suppression for cron scripts and simplify permission handling.
+#  v1.9 2025-05-12
+#       Replace chmod -R with find-based permission control for finer safety.
+#       Grant execute permissions to all files under scripts/cron/bin regardless of extension.
 #  v1.8 2025-04-25
 #       Add INFO log before each permission operation to improve clarity.
 #       Verify all return codes to ensure successful completion before final message.
@@ -95,14 +96,18 @@ check_scripts() {
 # Function to set file permissions
 set_permissions() {
     echo "[INFO] Setting read/write permissions for all script files."
-    chmod -R u+rw,g+r,g-w,o+r,o-w "$SCRIPTS"/*
+    find "$SCRIPTS" -type f -exec chmod u+rw,g+r,g-w,o+r,o-w {} \;
     RC1=$?
 
     echo "[INFO] Granting execute permissions to script files (*.sh, *.py, *.rb)."
-    find "$SCRIPTS"/ -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+    find "$SCRIPTS" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
     RC2=$?
 
-    if [ "$RC1" -eq 0 ] && [ "$RC2" -eq 0 ]; then
+    echo "[INFO] Granting execute permissions to all files under scripts/cron/bin."
+    find "$SCRIPTS/cron/bin" -type f -exec chmod u+x,g+x,o+x {} \;
+    RC3=$?
+
+    if [ "$RC1" -eq 0 ] && [ "$RC2" -eq 0 ] && [ "$RC3" -eq 0 ]; then
         echo "[INFO] All permission settings completed successfully."
     else
         echo "[ERROR] One or more permission operations failed." >&2
