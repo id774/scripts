@@ -25,7 +25,7 @@ Cmnd_Alias PROCESSES = /usr/bin/kill, /usr/bin/killall, /usr/bin/pkill
 Cmnd_Alias NETWORKING = /sbin/route, /sbin/ifconfig, /sbin/dhclient, /usr/bin/net, /usr/bin/rfcomm, /usr/bin/wvdial, /sbin/iwconfig, /sbin/mii-tool
 Cmnd_Alias IPTABLES = /sbin/iptables, /usr/sbin/iptables
 Cmnd_Alias POSTMASTER = /usr/sbin/postalias, /usr/sbin/postcat, /usr/sbin/postconf, /usr/sbin/postfix, /usr/sbin/postkick, /usr/sbin/postlock, /usr/sbin/postlog, /usr/sbin/postmap, /usr/sbin/postqueue, /usr/sbin/postsuper, /usr/bin/mailq, /usr/bin/newaliases, /usr/sbin/sendmail
-Cmnd_Alias SMARTTOOLS = /usr/sbin/smartctl
+Cmnd_Alias SMARTTOOLS = /sbin/smartctl, /usr/sbin/smartctl
 
 # User privilege specification
 root ALL=(ALL:ALL) ALL
