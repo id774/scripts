@@ -68,7 +68,7 @@ initialize() {
 # Execute the main script
 call_main_script() {
     if command -v chkrootkit >/dev/null 2>&1; then
-        echo "[INFO] Running chkrootkit" >> "$JOBLOG" 2>&1
+        echo "[INFO] Loading: chkrootkit" >> "$JOBLOG" 2>&1
         chkrootkit >> "$JOBLOG" 2>&1
     else
         echo "[ERROR] chkrootkit command not found." >> "$JOBLOG" 2>&1

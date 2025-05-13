@@ -68,7 +68,7 @@ initialize() {
 # Execute the main script
 call_main_script() {
     if [ -x "$SCRIPT" ]; then
-        echo "[INFO] Running $SCRIPT" >> "$JOBLOG" 2>&1
+        echo "[INFO] Loading: $SCRIPT" >> "$JOBLOG" 2>&1
         "$SCRIPT" >> "$JOBLOG" 2>&1
     else
         echo "[ERROR] Resource script not found or not executable: $SCRIPT" >> "$JOBLOG" 2>&1
