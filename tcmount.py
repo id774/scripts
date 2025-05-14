@@ -17,6 +17,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v4.5 2025-05-14
+#       Replaced use of 'which' with POSIX-compliant 'command -v' in installation checks.
+#       Added reusable command_exists() function for path resolution.
 #  v4.4 2025-04-14
 #       Unify error and info message formatting with stderr and prefix tags.
 #  v4.3 2025-03-05
@@ -100,19 +103,24 @@ def os_exec(cmd):
     """
     subprocess.call(cmd, shell=True)
 
+def command_exists(cmd):
+    """
+    Checks if a command exists in the system path using 'command -v'.
+    """
+    with open(os.devnull, 'w') as devnull:
+        return subprocess.call(f'command -v {cmd}', shell=True, stdout=devnull, stderr=devnull) == 0
+
 def is_truecrypt_installed():
     """
     Checks if TrueCrypt is installed by searching for its command in the system path.
     """
-    with open(os.devnull, 'w') as devnull:
-        return subprocess.call(['which', 'truecrypt'], stdout=devnull, stderr=devnull) == 0
+    return command_exists('truecrypt')
 
 def is_veracrypt_installed():
     """
     Checks if VeraCrypt is installed by searching for its command in the system path.
     """
-    with open(os.devnull, 'w') as devnull:
-        return subprocess.call(['which', 'veracrypt'], stdout=devnull, stderr=devnull) == 0
+    return command_exists('veracrypt')
 
 def get_truecrypt_version():
     """
