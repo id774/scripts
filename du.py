@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-05-15
+#       Replaced use of 'which' with POSIX-compliant 'command -v' in installation checks.
 #  v1.4 2025-04-14
 #       Unify error and info message formatting with stderr and prefix tags.
 #  v1.3 2024-01-16
@@ -52,13 +54,12 @@ import subprocess
 import sys
 
 
-def is_command_exist(command):
+def command_exists(command):
     """
-    Check if a given command exists in the system.
-    Uses the 'which' command to determine if the specified command is available.
-    Returns True if the command exists, False otherwise.
+    Checks if a given command exists in the system path using 'command -v'.
     """
-    return subprocess.call(['which', command], stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
+    with open(os.devnull, 'w') as devnull:
+        return subprocess.call('command -v {}'.format(command), shell=True, stdout=devnull, stderr=devnull) == 0
 
 def error_message(message, exit_code=1):
     """
@@ -126,7 +127,7 @@ def main():
         sys.exit(1)
 
     # Check if the required commands 'find' and 'du' exist
-    if not is_command_exist('find') or not is_command_exist('du'):
+    if not command_exists('find') or not command_exists('du'):
         print("[ERROR] Required commands 'find' or 'du' are not available.", file=sys.stderr)
         sys.exit(2)
 
