@@ -16,6 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-05-15
+#       Replaced deprecated 'which' usage with POSIX-compliant 'command -v'.
+#       Added command_exists() and get_command_path() for command checks and path resolution.
 #  v1.2 2025-04-14
 #       Unify error and info message formatting with stderr and prefix tags.
 #  v1.1 2023-11-29
@@ -66,18 +69,29 @@ def print_cal_month(year, month):
     """
     subprocess.call(['cal', str(month), str(year)])
 
-def is_command_exist(command):
+def command_exists(command):
     """
-    Check if a given command exists in the system.
+    Checks if a given command exists in the system path using 'command -v'.
     """
-    return subprocess.call(['which', command], stdout=subprocess.PIPE, stderr=subprocess.PIPE) == 0
+    with open(os.devnull, 'w') as devnull:
+        return subprocess.call(f'command -v {command}', shell=True, stdout=devnull, stderr=devnull) == 0
+
+def get_command_path(command):
+    """
+    Gets the full path of a command using 'command -v'.
+    """
+    try:
+        output = subprocess.check_output(f'command -v {command}', shell=True, stderr=subprocess.DEVNULL)
+        return output.decode().strip()
+    except subprocess.CalledProcessError:
+        return None
 
 def run_system_cal(args):
     """
     Run the system's 'cal' command with the given arguments.
     Checks if the 'cal' command is different from this script itself to avoid infinite loop.
     """
-    cal_path = subprocess.check_output(['which', 'cal']).decode().strip()
+    cal_path = get_command_path('cal')
 
     # Get the absolute path of the current script
     script_path = os.path.abspath(__file__)
@@ -97,7 +111,7 @@ def is_unix_like():
 
 # Main execution
 if __name__ == '__main__':
-    if is_unix_like() and is_command_exist('cal') and len(sys.argv) > 1:
+    if is_unix_like() and command_exists('cal') and len(sys.argv) > 1:
         # Pass arguments to the system's 'cal' command
         run_system_cal(sys.argv[1:])
     else:
@@ -113,7 +127,7 @@ if __name__ == '__main__':
         next_year = year if month < 12 else year + 1
 
         if is_unix_like():
-            if is_command_exist('cal'):
+            if command_exists('cal'):
                 print_cal_month(last_year, last_month)
                 print_cal_month(year, month)
                 print_cal_month(next_year, next_month)
