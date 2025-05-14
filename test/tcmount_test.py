@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-05-14
+#       Added unit tests for command_exists() to verify command detection logic.
 #  v1.0 2023-12-15
 #       First release of the test suite for tcmount.py, with expanded tests
 #       covering both TrueCrypt and VeraCrypt compatibility.
@@ -93,6 +95,22 @@ class TestTcMount(unittest.TestCase):
     def test_is_veracrypt_installed(self, mock_call):
         mock_call.return_value = 0
         self.assertTrue(tcmount.is_veracrypt_installed())
+
+    @patch('tcmount.subprocess.call')
+    def test_command_exists_true(self, mock_call):
+        """
+        Tests that command_exists returns True when the command is found.
+        """
+        mock_call.return_value = 0
+        self.assertTrue(tcmount.command_exists('truecrypt'))
+
+    @patch('tcmount.subprocess.call')
+    def test_command_exists_false(self, mock_call):
+        """
+        Tests that command_exists returns False when the command is not found.
+        """
+        mock_call.return_value = 1
+        self.assertFalse(tcmount.command_exists('nonexistent'))
 
     @patch('tcmount.subprocess.call')
     def test_os_exec(self, mock_call):
