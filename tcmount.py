@@ -103,12 +103,12 @@ def os_exec(cmd):
     """
     subprocess.call(cmd, shell=True)
 
-def command_exists(cmd):
+def command_exists(command):
     """
-    Checks if a command exists in the system path using 'command -v'.
+    Checks if a given command exists in the system path using 'command -v'.
     """
     with open(os.devnull, 'w') as devnull:
-        return subprocess.call(f'command -v {cmd}', shell=True, stdout=devnull, stderr=devnull) == 0
+        return subprocess.call('command -v {}'.format(command), shell=True, stdout=devnull, stderr=devnull) == 0
 
 def is_truecrypt_installed():
     """

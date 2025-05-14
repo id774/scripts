@@ -74,14 +74,15 @@ def command_exists(command):
     Checks if a given command exists in the system path using 'command -v'.
     """
     with open(os.devnull, 'w') as devnull:
-        return subprocess.call(f'command -v {command}', shell=True, stdout=devnull, stderr=devnull) == 0
+        return subprocess.call('command -v {}'.format(command), shell=True, stdout=devnull, stderr=devnull) == 0
 
 def get_command_path(command):
     """
     Gets the full path of a command using 'command -v'.
     """
     try:
-        output = subprocess.check_output(f'command -v {command}', shell=True, stderr=subprocess.DEVNULL)
+        with open(os.devnull, 'w') as devnull:
+            output = subprocess.check_output('command -v {}'.format(command), shell=True, stderr=devnull)
         return output.decode().strip()
     except subprocess.CalledProcessError:
         return None
