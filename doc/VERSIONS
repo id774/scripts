@@ -12,6 +12,7 @@ v1.4.3 (Release Date: TBD)
 - Refactor all cron scripts to unify structure: POSIX compliance, function-based design, cron execution check, and usage display.
 - Refactor setup_scripts.sh to use find-based permission setting and grant execute permission to all scripts/cron/bin files.
 - Refactor sudoers to reduced timestamp_timeout, improved passprompt and restricted NOPASSWD to safe commands only.
+- Replaced all uses of 'which' with POSIX-compliant 'command -v' across scripts for improved compatibility.
 
 v1.4.2 (2025-04-29)
 -------------------
