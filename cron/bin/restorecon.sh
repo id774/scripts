@@ -66,8 +66,8 @@ check_selinux() {
 restore_selinux_context() {
     echo "Restoring SELinux security contexts..."
     for dir in /usr /opt /etc /var /root /home; do
-        echo "Loading: restorecon on $dir"
-        sudo restorecon -RFv "$dir"
+        echo "Executing: restorecon on $dir"
+        restorecon -RFv "$dir"
     done
     echo "SELinux context restoration completed."
 }

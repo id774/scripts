@@ -70,14 +70,14 @@ initialize() {
 # Call helper scripts to analyze logs
 call_main_scripts() {
     if [ -x "$SCRIPT1" ]; then
-        echo "[INFO] Loading: $SCRIPT1 on $ACCESS_LOG" >> "$JOBLOG" 2>&1
+        echo "[INFO] Executing: $SCRIPT1 on $ACCESS_LOG" >> "$JOBLOG" 2>&1
         "$SCRIPT1" "$ACCESS_LOG" >> "$JOBLOG" 2>&1
     else
         echo "[WARN] Log summary script not found: $SCRIPT1" >> "$JOBLOG" 2>&1
     fi
 
     if [ -x "$SCRIPT2" ]; then
-        echo "[INFO] Loading: $SCRIPT2 on $ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
+        echo "[INFO] Executing: $SCRIPT2 on $ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
         echo "[Recent IP Hits]" >> "$JOBLOG" 2>&1
         "$SCRIPT2" "$ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
     else
