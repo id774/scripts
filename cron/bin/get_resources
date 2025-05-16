@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-05-16
+#       Add return 0 to main and exit $? at script end for consistent exit status.
 #  v1.0 2025-05-10
 #       Refactor into POSIX-compliant, function-based structure with unified logging.
 #  v0.1 2008-08-22
@@ -91,7 +93,10 @@ main() {
     initialize
     call_main_script
     finalize
+
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-05-16
+#       Add return 0 to main and exit $? at script end for consistent exit status.
 #  v1.0 2025-05-10
 #       Refactor into POSIX-compliant, function-based structure with trigger check and mail support.
 #  v0.1 2008-08-22
@@ -111,7 +113,10 @@ main() {
     finalize
 
     send_mail_to_admin
+
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

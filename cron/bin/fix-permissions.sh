@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-05-16
+#       Add return 0 to main and exit $? at script end for consistent exit status.
 #  v1.3 2025-05-11
 #       Restrict cron file permissions by removing all rights from others,
 #       allowing only read for group, and changing group ownership to adm.
@@ -128,7 +130,10 @@ main() {
     finalize
 
     send_mail_to_admin
+
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

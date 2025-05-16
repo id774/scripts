@@ -15,6 +15,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.7  2025-05-16 - Add return 0 to main and exit $? at script end for consistent exit status.
 #  v2.6  2025-05-10 - Add cron execution check and usage support with unified structure.
 #  v2.5  2025-04-20 - Fix inaccurate rsync return code logging by
 #                     assigning RC immediately after execution.
@@ -335,7 +336,10 @@ main() {
         echo "[ERROR] Configuration file not found: $CONFIG_FILE">&2
         exit 99
     fi
+
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-05-16
+#       Add return 0 to main and exit $? at script end for consistent exit status.
 #  v1.2 2025-05-10
 #       Add cron execution check and usage support with unified structure.
 #  v1.1 2025-04-13
@@ -85,7 +87,10 @@ main() {
 
     check_selinux
     restore_selinux_context
+
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

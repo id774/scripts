@@ -8,6 +8,7 @@ v1.4.3 (Release Date: TBD)
 - Enhance get_resources.sh to suppress repeated "Accepted publickey for munin" entries in auth.log output.
 - Add cron.log and Apache logs to munin-sync local log synchronization.
 - Restrict cron file permissions by removing all rights from others, allowing only read for group, and changing group ownership to adm.
+- Add return 0 to all main functions and exit $? at end of all cron scripts for consistent exit status handling.
 - Add disable_freshclam_syslog.sh to suppress freshclam output to syslog via systemd override.
 - Refactor all cron scripts to unify structure: POSIX compliance, function-based design, cron execution check, and usage display.
 - Refactor setup_scripts.sh to use find-based permission setting and grant execute permission to all scripts/cron/bin files.

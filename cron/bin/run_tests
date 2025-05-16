@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.2 2025-05-16
+#       Add return 0 to main and exit $? at script end for consistent exit status.
 #  v2.1 2025-05-10
 #       Add cron execution check and usage support with unified structure.
 #  v2.0 2025-04-29
@@ -216,7 +218,10 @@ main() {
     if [ -n "$ADMIN_MAIL_ADDRESS" ]; then
         send_mail_to_admin
     fi
+
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

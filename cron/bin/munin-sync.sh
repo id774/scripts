@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-05-16
+#       Add return 0 to main and exit $? at script end for consistent exit status.
 #  v1.3 2025-05-10
 #       Added cron.log and Apache logs to local log synchronization.
 #       Add cron execution check and usage support with unified structure.
@@ -161,7 +163,10 @@ main() {
     sync_local_logs
     create_heartbeat
     sync_logs_to_remote
+
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

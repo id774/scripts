@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-05-16
+#       Add return 0 to main and exit $? at script end for consistent exit status.
 #  v1.3 2025-05-10
 #       Refactor into POSIX-compliant, function-based structure with cron check and usage display.
 #  v1.2 2025-04-13
@@ -121,7 +123,10 @@ main() {
     update_virus_definitions
     load_exclude_options
     run_clamscan
+
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?
