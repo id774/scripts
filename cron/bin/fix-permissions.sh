@@ -125,7 +125,7 @@ main() {
     CONFIG_FILE="/etc/cron.config/${SCRIPT_NAME}.conf"
 
     if [ -f "$CONFIG_FILE" ]; then
-        echo "[INFO] Loaded configuration from $CONFIG_FILE." >> "$JOBLOG" 2>&1
+        echo "[INFO] Loading: configuration from $CONFIG_FILE." >> "$JOBLOG" 2>&1
         . "$CONFIG_FILE"
     else
         echo "[ERROR] Configuration file not found: $CONFIG_FILE" >> "$JOBLOG" 2>&1
