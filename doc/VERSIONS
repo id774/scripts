@@ -6,12 +6,14 @@ v1.4.3 (Release Date: TBD)
 - Add send_files.sh script to securely archive a directory and send it via Gmail with external config support.
 - Enhance server_alive_check.sh to show timestamps and status per file with summary result and configurable threshold.
 - Enhance get_resources.sh to suppress repeated "Accepted publickey for munin" entries in auth.log output.
+- Add disable_freshclam_syslog.sh to suppress freshclam output to syslog via systemd override.
 - Add cron.log and Apache logs to munin-sync local log synchronization.
 - Restrict cron file permissions by removing all rights from others, allowing only read for group, and changing group ownership to adm.
 - Add return 0 to all main functions and exit $? at end of all cron scripts for consistent exit status handling.
-- Add disable_freshclam_syslog.sh to suppress freshclam output to syslog via systemd override.
+- Add is_joblog_writable check to all cron scripts for early failure on unwritable log files.
 - Refactor all cron scripts to unify structure: POSIX compliance, function-based design, cron execution check, and usage display.
 - Refactor setup_scripts.sh to use find-based permission setting and grant execute permission to all scripts/cron/bin files.
+- Refactor fix-permissions.sh to load config from /etc/cron.config and update installer and log message format.
 - Refactor sudoers to reduced timestamp_timeout, improved passprompt and restricted NOPASSWD to safe commands only.
 - Replaced all uses of 'which' with POSIX-compliant 'command -v' across scripts for improved compatibility.
 
