@@ -334,7 +334,7 @@ main() {
         . "$CONFIG_FILE"
     else
         echo "[ERROR] Configuration file not found: $CONFIG_FILE">&2
-        exit 99
+        exit 9
     fi
 
     return 0
