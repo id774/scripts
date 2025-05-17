@@ -92,7 +92,6 @@ call_main_script() {
 send_mail_to_admin() {
     if [ -n "$ADMIN_MAIL_ADDRESS" ]; then
         if [ -r "$JOBLOG" ]; then
-            echo "[INFO] Sending mail to $ADMIN_MAIL_ADDRESS" >> "$JOBLOG" 2>&1
             cat -v "$JOBLOG" | nkf -w | mail -s "[cron][$(hostname)] SELinux Restore Context Log" "$ADMIN_MAIL_ADDRESS"
         fi
     fi
