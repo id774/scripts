@@ -14,6 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-05-17
+#       Refactor to load settings and operations from external fix-permissions.conf.
+#       Separated configuration from script logic for host-specific customization.
 #  v1.4 2025-05-16
 #       Add return 0 to main and exit $? at script end for consistent exit status.
 #  v1.3 2025-05-11
@@ -82,7 +85,6 @@ is_joblog_writable() {
 initialize() {
     LC_CTYPE=ja_JP.UTF-8
     JOBLOG="/var/log/sysadmin/fix-permissions.log"
-    #ADMIN_MAIL_ADDRESS="root"
 
     if ! is_running_from_cron; then
         echo "[ERROR] This script is intended to be run by cron only." >&2
@@ -93,23 +95,6 @@ initialize() {
 
     echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
     date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
-}
-
-# Adjust permissions and ownership
-fix_permissions() {
-    echo "[INFO] Setting permission for /opt/python, /opt/ruby" >> "$JOBLOG" 2>&1
-    chown -R root:root /opt/python
-    chown -R root:root /opt/ruby
-
-    echo "[INFO] Setting permission for /usr/local/etc, /usr/local/src" >> "$JOBLOG" 2>&1
-    chown -R root:root /usr/local/etc
-    chown -R root:root /usr/local/src
-
-    echo "[INFO] Setting permission for /etc/cron.*" >> "$JOBLOG" 2>&1
-    for dir in /etc/cron.hourly /etc/cron.daily /etc/cron.weekly /etc/cron.monthly; do
-        find "$dir" -type f -exec chmod u=rwx,g=r,o= {} \; -exec chown :adm {} \; 2>> "$JOBLOG"
-    done
-    find /etc/cron.d -type f -exec chmod u=rw,g=r,o= {} \; -exec chown :adm {} \; 2>> "$JOBLOG"
 }
 
 # Finalize job and log completion
@@ -123,7 +108,6 @@ finalize() {
 send_mail_to_admin() {
     if [ -n "$ADMIN_MAIL_ADDRESS" ]; then
         if [ -r "$JOBLOG" ]; then
-            echo "[INFO] Sending log to $ADMIN_MAIL_ADDRESS" >> "$JOBLOG" 2>&1
             cat -v "$JOBLOG" | nkf -w | mail -s "[cron][$(hostname)] Fixed Permissions Log" "$ADMIN_MAIL_ADDRESS"
         fi
     fi
@@ -136,6 +120,18 @@ main() {
     esac
 
     initialize
+
+    SCRIPT_NAME="$(basename "$0")"
+    CONFIG_FILE="/etc/cron.config/${SCRIPT_NAME}.conf"
+
+    if [ -f "$CONFIG_FILE" ]; then
+        echo "[INFO] Loaded configuration from $CONFIG_FILE." >> "$JOBLOG" 2>&1
+        . "$CONFIG_FILE"
+    else
+        echo "[ERROR] Configuration file not found: $CONFIG_FILE" >> "$JOBLOG" 2>&1
+        exit 9
+    fi
+
     fix_permissions
     finalize
 
