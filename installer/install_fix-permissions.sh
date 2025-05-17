@@ -16,8 +16,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2025-05-17
+#       Add deployment of fix-permissions.conf to /etc/cron.config with secure permissions.
 #  v1.7 2025-04-27
-#       Skip deployment of fix-permissions cron job if it already exists, with [INFO] message.
 #       Add error checks for fix-permissions installer and unify log messages.
 #  v1.6 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
@@ -162,19 +163,41 @@ main() {
 
     # Deploy the fix-permissions script
     echo "[INFO] Deploying fix-permissions cron job."
-    if [ -f /etc/cron.daily/fix-permissions ]; then
-        echo "[INFO] Cron job already exists: /etc/cron.daily/fix-permissions."
-        echo "[INFO] Skipping deployment to preserve existing file."
-    else
-        if ! sudo cp "$SCRIPTS/cron/bin/fix-permissions.sh" /etc/cron.daily/fix-permissions; then
-            echo "[ERROR] Failed to deploy fix-permissions cron job." >&2
-            exit 1
-        fi
-        echo "[INFO] Cron job deployed: /etc/cron.daily/fix-permissions"
+    if ! sudo cp "$SCRIPTS/cron/bin/fix-permissions.sh" /etc/cron.daily/fix-permissions; then
+        echo "[ERROR] Failed to deploy fix-permissions cron job." >&2
+        exit 1
     fi
+    echo "[INFO] Cron job deployed: /etc/cron.daily/fix-permissions"
 
     sudo chmod 740 /etc/cron.daily/fix-permissions
     sudo chown root:adm /etc/cron.daily/fix-permissions
+
+    # Create /etc/cron.config if needed
+    if [ ! -d /etc/cron.config ]; then
+        echo "[INFO] Creating /etc/cron.config directory."
+        if ! sudo mkdir -p /etc/cron.config; then
+            echo "[ERROR] Failed to create /etc/cron.config." >&2
+            exit 1
+        fi
+    fi
+
+    sudo chmod 750 /etc/cron.config
+    sudo chown root:adm /etc/cron.config
+
+    # Deploy fix-permissions.conf
+    if [ ! -f /etc/cron.config/fix-permissions.conf ]; then
+        echo "[INFO] Deploying fix-permissions.conf configuration file."
+        if ! sudo cp "$SCRIPTS/cron/etc/fix-permissions.conf" /etc/cron.config/fix-permissions.conf; then
+            echo "[ERROR] Failed to copy fix-permissions.conf." >&2
+            exit 1
+        fi
+    else
+        echo "[INFO] Configuration file already exists: /etc/cron.config/fix-permissions.conf."
+        echo "[INFO] Skipping deployment to preserve existing configuration."
+    fi
+
+    sudo chmod 640 /etc/cron.config/fix-permissions.conf
+    sudo chown root:adm /etc/cron.config/fix-permissions.conf
 
     echo "[INFO] Fix-permissions script setup completed successfully."
 }
