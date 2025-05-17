@@ -70,6 +70,14 @@ is_running_from_cron() {
     fi
 }
 
+# Check if JOBLOG is writable
+is_joblog_writable() {
+    if [ ! -w "$JOBLOG" ] && ! touch "$JOBLOG" 2>/dev/null; then
+        echo "[ERROR] JOBLOG is not writable: $JOBLOG" >&2
+        exit 1
+    fi
+}
+
 # Initialize environment and log start
 initialize() {
     LC_CTYPE=ja_JP.UTF-8
@@ -80,6 +88,8 @@ initialize() {
         echo "[ERROR] This script is intended to be run by cron only." >&2
         exit 1
     fi
+
+    is_joblog_writable
 
     echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
     date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1

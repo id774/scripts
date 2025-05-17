@@ -78,6 +78,14 @@ is_running_from_cron() {
     fi
 }
 
+# Check if JOBLOG is writable
+is_joblog_writable() {
+    if [ ! -w "$JOBLOG" ] && ! touch "$JOBLOG" 2>/dev/null; then
+        echo "[ERROR] JOBLOG is not writable: $JOBLOG" >&2
+        exit 1
+    fi
+}
+
 # Load configuration from external file
 load_config() {
     SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
@@ -155,6 +163,8 @@ main() {
         echo "[ERROR] This script is intended to be run by cron only." >&2
         exit 1
     fi
+
+    is_joblog_writable
 
     load_config
 
