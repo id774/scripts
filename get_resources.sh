@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-05-20
+#       Suppress munin and git entries in auth.log using extended regex.
 #  v1.6 2025-05-07
 #       Enhance display_log function to support optional exclusion pattern as third argument.
 #  v1.5 2025-04-13
@@ -68,7 +70,7 @@ display_log() {
         if [ -z "$3" ]; then
             grep "$2" "$1"
         else
-            grep "$2" "$1" | grep -v "$3"
+            grep "$2" "$1" | grep -Ev "$3"
         fi
         echo
     fi
@@ -132,7 +134,7 @@ check_fail2ban_status() {
 
 # Function to gather logs
 gather_logs() {
-    display_log "/var/log/auth.log" "Accepted" "Accepted publickey for munin"
+    display_log "/var/log/auth.log" "Accepted" "Accepted publickey for (munin|git)"
     display_log "/var/log/messages" "attack"
     display_log "/var/log/auth.log" '(Fail|refuse)'
     display_log "/var/log/fail2ban.log" "WARNING"

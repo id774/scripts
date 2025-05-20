@@ -5,7 +5,7 @@ v1.4.3 (Release Date: TBD)
 --------------------------
 - Add send_files.sh script to securely archive a directory and send it via Gmail with external config support.
 - Enhance server_alive_check.sh to show timestamps and status per file with summary result and configurable threshold.
-- Enhance get_resources.sh to suppress repeated "Accepted publickey for munin" entries in auth.log output.
+- Enhance get_resources.sh to suppress repeated munin or git entries in auth.log output.
 - Add disable_freshclam_syslog.sh to suppress freshclam output to syslog via systemd override.
 - Add cron.log and Apache logs to munin-sync local log synchronization.
 - Restrict cron file permissions by removing all rights from others, allowing only read for group, and changing group ownership to adm.
