@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-05-21
+#       Modify sync_local_logs to include *.log.1 files while excluding *.log.2 and older logs.
 #  v1.4 2025-05-16
 #       Add return 0 to main and exit $? at script end for consistent exit status.
 #  v1.3 2025-05-10
@@ -127,16 +129,27 @@ ensure_log_dir() {
     [ -d "$LOG_DIR" ] || mkdir -p "$LOG_DIR"
 }
 
-# Sync log files to local directory
 sync_local_logs() {
-    rsync $RSYNC_OPTS /var/log/syslog "$LOG_DIR/"
+    # Sync individual log files if they exist
+    test -f /var/log/syslog && rsync $RSYNC_OPTS /var/log/syslog "$LOG_DIR/"
+    test -f /var/log/syslog.1 && rsync $RSYNC_OPTS /var/log/syslog.1 "$LOG_DIR/"
+
     test -f /var/log/message && rsync $RSYNC_OPTS /var/log/message "$LOG_DIR/"
+    test -f /var/log/message.1 && rsync $RSYNC_OPTS /var/log/message.1 "$LOG_DIR/"
+
     test -f /var/log/cron.log && rsync $RSYNC_OPTS /var/log/cron.log "$LOG_DIR/"
-    rsync $RSYNC_OPTS /var/log/apache2/*.log "$LOG_DIR/"
-    rsync $RSYNC_OPTS /var/log/sysadmin/*.log "$LOG_DIR/"
-    rsync $RSYNC_OPTS /var/log/deferred-sync/*.log "$LOG_DIR/"
-    rsync $RSYNC_OPTS /var/log/clamav/clamscan.log "$LOG_DIR/"
-    rsync $RSYNC_OPTS /var/log/chkrootkit/*.log "$LOG_DIR/"
+    test -f /var/log/cron.log.1 && rsync $RSYNC_OPTS /var/log/cron.log.1 "$LOG_DIR/"
+
+    test -f /var/log/clamav/clamscan.log && rsync $RSYNC_OPTS /var/log/clamav/clamscan.log "$LOG_DIR/"
+    test -f /var/log/clamav/clamscan.log.1 && rsync $RSYNC_OPTS /var/log/clamav/clamscan.log.1 "$LOG_DIR/"
+
+    # Sync *.log and *.log.1 files from selected log directories
+    for dir in /var/log/apache2 /var/log/sysadmin /var/log/deferred-sync /var/log/chkrootkit; do
+        if [ -d "$dir" ]; then
+            find "$dir" -maxdepth 1 \( -name '*.log' -o -name '*.log.1' \) -type f \
+                -exec rsync $RSYNC_OPTS {} "$LOG_DIR/" \;
+        fi
+    done
 }
 
 # Create heartbeat file
