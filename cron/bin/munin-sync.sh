@@ -129,6 +129,7 @@ ensure_log_dir() {
     [ -d "$LOG_DIR" ] || mkdir -p "$LOG_DIR"
 }
 
+# Sync log files to local directory
 sync_local_logs() {
     # Sync individual log files if they exist
     test -f /var/log/syslog && rsync $RSYNC_OPTS /var/log/syslog "$LOG_DIR/"
@@ -143,11 +144,13 @@ sync_local_logs() {
     test -f /var/log/clamav/clamscan.log && rsync $RSYNC_OPTS /var/log/clamav/clamscan.log "$LOG_DIR/"
     test -f /var/log/clamav/clamscan.log.1 && rsync $RSYNC_OPTS /var/log/clamav/clamscan.log.1 "$LOG_DIR/"
 
-    # Sync *.log and *.log.1 files from selected log directories
+    # Sync *.log and *.log.1 files from selected log directories safely
     for dir in /var/log/apache2 /var/log/sysadmin /var/log/deferred-sync /var/log/chkrootkit; do
         if [ -d "$dir" ]; then
-            find "$dir" -maxdepth 1 \( -name '*.log' -o -name '*.log.1' \) -type f \
-                -exec rsync $RSYNC_OPTS {} "$LOG_DIR/" \;
+            find "$dir" -maxdepth 1 \( -name '*.log' -o -name '*.log.1' \) -type f | \
+            while IFS= read -r file; do
+                rsync $RSYNC_OPTS "$file" "$LOG_DIR/"
+            done
         fi
     done
 }
