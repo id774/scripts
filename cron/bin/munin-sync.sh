@@ -77,14 +77,6 @@ is_running_from_cron() {
     fi
 }
 
-# Check if JOBLOG is writable
-is_joblog_writable() {
-    if [ ! -w "$JOBLOG" ] && ! touch "$JOBLOG" 2>/dev/null; then
-        echo "[ERROR] JOBLOG is not writable: $JOBLOG" >&2
-        exit 1
-    fi
-}
-
 # Determine if the script is running on the target server itself
 is_target_server() {
     [ "$CURRENT_HOST" = "$TARGET_HOST" ] || echo "$SENDING" | grep -q "localhost"
@@ -184,7 +176,6 @@ main() {
         exit 1
     fi
 
-    is_joblog_writable
     load_config
     sync_munin_data
     ensure_log_dir
