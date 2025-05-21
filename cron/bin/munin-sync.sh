@@ -147,9 +147,12 @@ sync_local_logs() {
     # Sync *.log and *.log.1 files from selected log directories safely
     for dir in /var/log/apache2 /var/log/sysadmin /var/log/deferred-sync /var/log/chkrootkit; do
         if [ -d "$dir" ]; then
-            find "$dir" -maxdepth 1 \( -name '*.log' -o -name '*.log.1' \) -type f | \
-            while IFS= read -r file; do
-                rsync $RSYNC_OPTS "$file" "$LOG_DIR/"
+            find "$dir" -type f | while IFS= read -r file; do
+                case "$file" in
+                    *.log|*.log.1)
+                        rsync $RSYNC_OPTS "$file" "$LOG_DIR/"
+                        ;;
+                esac
             done
         fi
     done
