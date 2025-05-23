@@ -187,7 +187,8 @@ create_archive() {
     ZIP_PATH="$TMP/${ARCHIVE_BASENAME}_${TIMESTAMP}${ARCHIVE_EXT}"
     PASSWORD=$(generate_password)
 
-    echo "$PASSWORD" > "$TMP/$PASSWORD_FILE_NAME"
+    PASSWORD_FILE="${TMP}/${PASSWORD_FILE_NAME%.txt}_${TIMESTAMP}.txt"
+    echo "$PASSWORD" > "$PASSWORD_FILE"
     echo "[INFO] Generated password: $PASSWORD"
 
     cd "$(dirname "$SOURCE_DIR")" || exit 1
