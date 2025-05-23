@@ -4,10 +4,11 @@
 # setup_scripts.sh: Setup Script for Scripts Collection
 #
 #  Description:
-#  This script sets the appropriate permissions for a collection of scripts.
-#  It adjusts read/write/execute permissions for users, groups, and others.
-#  Additionally, it removes execute permissions from cron job scripts
-#  under scripts/cron/bin to prevent accidental manual execution.
+#  This script sets permissions for a collection of scripts.
+#  - Grants read/write permissions to the owner, and read-only to group and others.
+#  - Grants execute permissions to all files with .sh, .py, or .rb extensions.
+#  - Grants execute permissions to all files under scripts/cron/bin,
+#    regardless of file extension.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -54,8 +55,8 @@
 #  - This script should be run from the root directory of the script collection.
 #  - Make sure to back up your scripts before running this script as a precaution.
 #  - SCRIPTS environment variable must be set to the path of the script collection.
-#  - Execute permissions will be removed from all files under scripts/cron/bin
-#    to avoid accidental manual execution of cron job scripts.
+#  - Execute permissions will be added to all files under scripts/cron/bin
+#    and to all scripts with .sh, .py, or .rb extensions.
 #
 ########################################################################
 
