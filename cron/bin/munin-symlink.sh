@@ -47,13 +47,13 @@
 #      - Required commands: stat, ln, rm, date, find
 #
 #  Notes:
-#      - Ensure that all directories and files are accessible by the user 
+#      - Ensure that all directories and files are accessible by the user
 #        executing this script (typically root or munin user).
-#      - Make sure that Munin is configured to include configurations from 
+#      - Make sure that Munin is configured to include configurations from
 #        /etc/munin/munin-conf.d.
-#      - Symbolic links in /etc/munin/munin-conf.d point to files in 
+#      - Symbolic links in /etc/munin/munin-conf.d point to files in
 #        /etc/munin/server-available.
-#      - This script only removes symbolic links, it does not delete 
+#      - This script only removes symbolic links, it does not delete
 #        configuration files from /etc/munin/server-available.
 #
 ########################################################################

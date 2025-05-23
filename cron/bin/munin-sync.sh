@@ -44,11 +44,11 @@
 #  reducing overlap with Munin's own cron jobs (which typically run on exact 5-minute marks).
 #
 #  Features:
-#  - Configurable target server, user, and directory settings via external config file
-#  - Efficient data transfer using rsync with --delete option
-#  - Heartbeat file generation for external health monitoring
-#  - Automatically skips remote sync when executed on the target server itself
-#  - Local log directory is ensured before collecting system logs
+#  - Configurable target server, user, and directory settings via external config file.
+#  - Efficient data transfer using rsync with --delete option.
+#  - Heartbeat file generation for external health monitoring.
+#  - Automatically skips remote sync when executed on the target server itself.
+#  - Local log directory is ensured before collecting system logs.
 #
 #  Warning:
 #  - This script updates files on a remote server under specified directories.
