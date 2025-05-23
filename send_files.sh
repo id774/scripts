@@ -20,6 +20,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-05-23
+#       Show generated password after archive creation.
+#       Display download URL when storing archive locally using DOWNLOAD_BASE_URL.
 #  v1.3 2025-05-09
 #       Add support for -z|--7z option to create 7z archive instead of ZIP.
 #       Uses AES-256 encryption and full-directory protection via 7z.
@@ -185,6 +188,7 @@ create_archive() {
     PASSWORD=$(generate_password)
 
     echo "$PASSWORD" > "$TMP/$PASSWORD_FILE_NAME"
+    echo "[INFO] Generated password: $PASSWORD"
 
     cd "$(dirname "$SOURCE_DIR")" || exit 1
     if [ "$USE_7Z" = "yes" ]; then
@@ -233,6 +237,10 @@ Password is stored locally in $TMP/$PASSWORD_FILE_NAME"
 store_archive() {
     cp "$ZIP_PATH" "$ARCHIVE_OUTPUT_DIR"
     echo "[INFO] Archive copied to $ARCHIVE_OUTPUT_DIR"
+
+    if [ -n "$DOWNLOAD_BASE_URL" ]; then
+        echo "[INFO] Download URL: ${DOWNLOAD_BASE_URL}/$(basename "$ZIP_PATH")"
+    fi
 }
 
 confirm_send_7z() {
