@@ -18,7 +18,7 @@ Welcome to the `scripts` repository! This is a curated collection of scripts in 
 This repository contains various utility scripts to address common tasks efficiently. Whether you are an experienced developer or just getting started, you'll find tools to optimize your workflow.
 
 Supported languages:
-- Shell
+- Shell Script
 - Python (requires version 3.6 or later)
 - Ruby
 
