@@ -41,12 +41,10 @@
 #  server availability based on the presence and freshness of _is_alive files.
 #
 #  Features:
-#  - POSIX-compliant script structure
-#  - Full function-based structure with main() entry point
-#  - Scans a configurable directory for _is_alive files
-#  - Alerts if files are older than one hour
-#  - Outputs errors to standard error for logging and monitoring purposes
-#  - Validates required commands and directory existence before execution
+#  - Scans a configurable directory for _is_alive files.
+#  - Alerts if files are older than 10 minutes.
+#  - Outputs errors to standard error for logging and monitoring purposes.
+#  - Validates required commands and directory existence before execution.
 #
 #  Warning:
 #  - Ensure the monitored servers regularly generate _is_alive files to avoid false alerts.
