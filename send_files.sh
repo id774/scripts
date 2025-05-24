@@ -53,19 +53,19 @@
 #      If -d is specified, overrides the SOURCE_DIR from config.
 #
 #  Features:
-#  - Compress a target directory into a password-protected ZIP
-#  - Optionally use 7z format with AES-256 encryption (via -z)
-#  - Override archive source directory via -d <dir> option
-#  - Generate a secure random password (configurable length)
-#  - Save password to a local text file (configurable name)
-#  - Email the archive as attachment to a configured Gmail address
-#  - POSIX-compliant and portable across Unix-like systems
+#  - Compress a target directory into a password-protected ZIP.
+#  - Optionally use 7z format with AES-256 encryption (via -z).
+#  - Override archive source directory via -d <dir> option.
+#  - Generate a secure random password (configurable length).
+#  - Save password to a local text file (configurable name).
+#  - Email the archive as attachment to a configured Gmail address.
+#  - POSIX-compliant and portable across Unix-like systems.
 #
 #  Notes:
-#  - Ensure `mail` and `uuencode` are installed and properly configured
-#  - Gmail SMTP setup may be required (via mailx configuration)
-#  - No password is sent in the email — it is stored locally only
-#  - To use 7z, the `7z` command must be available in PATH
+#  - Ensure `mail` and `uuencode` are installed and properly configured.
+#  - Gmail SMTP setup may be required (via mailx configuration).
+#  - No password is sent in the email — it is stored locally only.
+#  - To use 7z, the `7z` command must be available in PATH.
 #
 #  Error Conditions:
 #  1. General failure (e.g., password generation or ZIP failure).
