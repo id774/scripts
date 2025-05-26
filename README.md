@@ -1,6 +1,6 @@
 # Scripts Collection
 
-Welcome to the `scripts` repository! This is a curated collection of scripts in Shell, Python, Ruby, and more to help you automate tasks and improve productivity.
+Welcome to the `scripts` repository! This is a curated collection of scripts in Shell Script, Python, Ruby, and more to help you automate tasks and improve productivity.
 
 ## Contents
 
