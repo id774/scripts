@@ -1,6 +1,10 @@
 Repository Update History
 =========================
 
+v1.4.4 (Release Date: TBD)
+--------------------------
+- Add print_serial_number function to display device serials using udevadm before processing in rsync_backup.sh.
+
 v1.4.3 (2025-05-30)
 -------------------
 - Add send_files.sh script to securely archive a directory and send it via Gmail with external config support.
