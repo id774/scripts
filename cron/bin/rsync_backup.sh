@@ -81,7 +81,7 @@ is_running_from_cron() {
 # Function to display the serial number of a given device
 print_serial_number() {
     if [ -n "$T_DEVICE" ] && [ -b "/dev/$T_DEVICE" ]; then
-        SERIAL=$(udevadm info --query=all --name="/dev/$T_DEVICE" 2>/dev/null | sed -n 's/^E: ID_SERIAL=//p')
+        SERIAL=$(udevadm info --query=all --name="/dev/$T_DEVICE" 2>/dev/null | sed -n 's/^E: ID_SERIAL_SHORT=//p')
         if [ -n "$SERIAL" ]; then
             echo "[INFO] Serial number of /dev/$T_DEVICE: $SERIAL"
         else
