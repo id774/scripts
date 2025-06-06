@@ -15,7 +15,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v2.8  2025-06-03 - Add print_serial_number function to
+#  v2.8  2025-06-06 - Add print_serial_number function to
 #                     display device serials using udevadm before processing.
 #  v2.7  2025-05-16 - Add return 0 to main and exit $? at script end for consistent exit status.
 #  v2.6  2025-05-10 - Add cron execution check and usage support with unified structure.
@@ -80,15 +80,15 @@ is_running_from_cron() {
 
 # Function to display the serial number of a given device
 print_serial_number() {
-    if [ -n "$1" ] && [ -b "/dev/$1" ]; then
-        SERIAL=$(udevadm info --query=all --name="/dev/$1" 2>/dev/null | sed -n 's/^E: ID_SERIAL=//p')
+    if [ -n "$T_DEVICE" ] && [ -b "/dev/$T_DEVICE" ]; then
+        SERIAL=$(udevadm info --query=all --name="/dev/$T_DEVICE" 2>/dev/null | sed -n 's/^E: ID_SERIAL=//p')
         if [ -n "$SERIAL" ]; then
-            echo "[INFO] Serial number of /dev/$1: $SERIAL"
+            echo "[INFO] Serial number of /dev/$T_DEVICE: $SERIAL"
         else
-            echo "[WARN] Serial number of /dev/$1 could not be determined." >&2
+            echo "[WARN] Serial number of /dev/$T_DEVICE could not be determined." >&2
         fi
     else
-        echo "[WARN] Invalid or non-block device: /dev/$1" >&2
+        echo "[WARN] Invalid or non-block device: /dev/$T_DEVICE" >&2
     fi
 }
 
