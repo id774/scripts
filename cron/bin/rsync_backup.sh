@@ -15,7 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v2.8  2025-06-06 - Add print_serial_number function to
+#  v2.8  2025-06-06 - Add fallback logic to smartctl calls using -d sat for better USB device compatibility.
+#                     Preserve default behavior if -d sat fails.
+#                     Add print_serial_number function to
 #                     display device serials using udevadm before processing.
 #  v2.7  2025-05-16 - Add return 0 to main and exit $? at script end for consistent exit status.
 #  v2.6  2025-05-10 - Add cron execution check and usage support with unified structure.
@@ -116,27 +118,34 @@ version_info() {
 
 # Function to retrieve SMART information of the backup and target devices
 smart_info() {
-    if [ -b /dev/$B_DEVICE ]; then
-        echo "[INFO] smartctl -a /dev/$B_DEVICE"
-        smartctl -a /dev/$B_DEVICE
-    fi
-    if [ -b /dev/$T_DEVICE ]; then
-        echo "[INFO] smartctl -a /dev/$T_DEVICE"
-        smartctl -a /dev/$T_DEVICE
-    fi
+    for DEV in "$B_DEVICE" "$T_DEVICE"; do
+        if [ -b "/dev/$DEV" ]; then
+            echo "[INFO] Attempting smartctl -a -d sat /dev/$DEV"
+            if ! smartctl -a -d sat "/dev/$DEV"; then
+                echo "[INFO] -d sat failed for /dev/$DEV, falling back to default"
+                smartctl -a "/dev/$DEV"
+            fi
+        fi
+    done
 }
 
 # Function to perform a SMART diagnostic check on the target device
 smart_check() {
-    if [ -b /dev/$T_DEVICE ]; then
+    if [ -b "/dev/$T_DEVICE" ]; then
         if [ -f "$T_HOME/$T_MOUNT/$T_DEVICE/smart_longtest" ]; then
             touch "$T_HOME/$T_MOUNT/$T_DEVICE/smart_longtest"
-            echo "[INFO] smartctl -t long /dev/$T_DEVICE"
-            smartctl -t long /dev/$T_DEVICE
+            echo "[INFO] Attempting smartctl -t long -d sat /dev/$T_DEVICE"
+            if ! smartctl -t long -d sat "/dev/$T_DEVICE"; then
+                echo "[INFO] -d sat failed, falling back to smartctl -t long"
+                smartctl -t long "/dev/$T_DEVICE"
+            fi
         else
             touch "$T_HOME/$T_MOUNT/$T_DEVICE/smart_shorttest"
-            echo "[INFO] smartctl -t short /dev/$T_DEVICE"
-            smartctl -t short /dev/$T_DEVICE
+            echo "[INFO] Attempting smartctl -t short -d sat /dev/$T_DEVICE"
+            if ! smartctl -t short -d sat "/dev/$T_DEVICE"; then
+                echo "[INFO] -d sat failed, falling back to smartctl -t short"
+                smartctl -t short "/dev/$T_DEVICE"
+            fi
         fi
     else
         echo "[WARN] The device /dev/$T_DEVICE does not exist or is not a block device." >&2
