@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.3 2025-06-10
+#       Fix initialization order to defer JOBLOG write check until after config load.
 #  v2.2 2025-05-16
 #       Add return 0 to main and exit $? at script end for consistent exit status.
 #  v2.1 2025-05-10
@@ -105,24 +107,24 @@ initialize() {
         exit 1
     fi
 
-    is_joblog_writable
-
     SCRIPT_DIR=$(dirname "$0")
 
     CONF_FILE="$SCRIPT_DIR/etc/run_tests.conf"
     if [ ! -f "$CONF_FILE" ]; then
         CONF_FILE="$SCRIPT_DIR/../etc/run_tests.conf"
         if [ ! -f "$CONF_FILE" ]; then
-            echo "Configuration file not found." >> "$JOBLOG" 2>&1
+            echo "[ERROR] Configuration file not found." >&2
             exit 3
         fi
     fi
     . "$CONF_FILE"
 
     if [ -z "$SCRIPTS" ] || [ -z "$JOBLOG" ] || [ -z "$python_versions" ] || [ -z "$ruby_versions" ]; then
-        echo "[ERROR] Configuration variables not set. Check run_tests.conf." >> "$JOBLOG" 2>&1
+        echo "[ERROR] Configuration variables not set. Check run_tests.conf." >&2
         exit 4
     fi
+
+    is_joblog_writable
 
     echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
     date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
