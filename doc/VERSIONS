@@ -5,6 +5,7 @@ v1.4.4 (Release Date: TBD)
 --------------------------
 - Add print_serial_number function to display device serials using udevadm before processing in rsync_backup.sh.
 - Add smartctl fallback logic using -d sat option for USB-SATA compatibility in rsync_backup.sh.
+- Always recreate .vim directory from scratch before installation to ensure clean setup in install_dotvim.sh
 
 v1.4.3 (2025-05-30)
 -------------------

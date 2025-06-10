@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-06-10
+#       Always recreate .vim directory from scratch before installation to ensure clean setup.
 #  v1.5 2025-04-26
 #       Add critical failure checks to dot_vim installation steps.
 #  v1.4 2025-04-21
@@ -91,12 +93,18 @@ setup_environment() {
 
 # Install dot_vim configuration
 install_dotvim() {
-    if [ ! -d "$TARGET" ]; then
-        echo "[INFO] Creating target directory at $TARGET."
-        if ! mkdir -p "$TARGET"; then
-            echo "[ERROR] Failed to create target directory: $TARGET." >&2
+    if [ -d "$TARGET" ]; then
+        echo "[INFO] Removing existing vim directory: $TARGET"
+        if ! rm -rf "$TARGET"; then
+            echo "[ERROR] Failed to remove existing vim directory: $TARGET." >&2
             exit 1
         fi
+    fi
+
+    echo "[INFO] Creating target directory at $TARGET."
+    if ! mkdir -p "$TARGET"; then
+        echo "[ERROR] Failed to create target directory: $TARGET." >&2
+        exit 1
     fi
 
     echo "[INFO] Copying dot_vim files to $TARGET."

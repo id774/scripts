@@ -114,7 +114,7 @@ install_dot_zsh() {
 }
 
 install_dot_vim() {
-    if [ ! -d "$HOME/.vim" ] && command -v vim >/dev/null 2>&1; then
+    if command -v vim >/dev/null 2>&1; then
         "$SCRIPTS/installer/install_dotvim.sh"
     fi
 }
