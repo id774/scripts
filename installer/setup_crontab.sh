@@ -34,8 +34,8 @@
 #  Notes:
 #  It ensures that the necessary cron directories exist before modifying /etc/crontab.
 #  The script verifies and maintains the following cron jobs:
-#    "01 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
-#    "01 23 * * 6   root cd / && run-parts --report /etc/cron.weekend"
+#    "01 03 * * 1-6 root cd / && run-parts --report /etc/cron.weekday"
+#    "01 03 * * 0   root cd / && run-parts --report /etc/cron.weekend"
 #
 ########################################################################
 
@@ -43,8 +43,8 @@
 CRONTAB_FILE="/etc/crontab"
 
 # Cron job entries to check and add if missing
-WEEKDAY_ENTRY="01 23 * * 1-5 root cd / && run-parts --report /etc/cron.weekday"
-WEEKEND_ENTRY="01 23 * * 7   root cd / && run-parts --report /etc/cron.weekend"
+WEEKDAY_ENTRY="01 03 * * 1-6 root cd / && run-parts --report /etc/cron.weekday"
+WEEKEND_ENTRY="01 03 * * 0   root cd / && run-parts --report /etc/cron.weekend"
 
 # Track changes
 CHANGES_MADE=0
