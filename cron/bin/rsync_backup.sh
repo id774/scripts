@@ -16,7 +16,6 @@
 #
 #  Version History:
 #  v2.9  2025-06-14 - Refactor git_backup to eliminate path redundancy using variables.
-#                     Store archive in encrypted volume /mnt/sdc to enhance security.
 #  v2.8  2025-06-06 - Add fallback logic to smartctl calls using -d sat for better USB device compatibility.
 #                     Preserve default behavior if -d sat fails.
 #                     Add print_serial_number function to
