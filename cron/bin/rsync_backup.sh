@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.9  2025-06-14 - Refactor git_backup to eliminate path redundancy using variables.
+#                     Store archive in encrypted volume /mnt/sdc to enhance security.
 #  v2.8  2025-06-06 - Add fallback logic to smartctl calls using -d sat for better USB device compatibility.
 #                     Preserve default behavior if -d sat fails.
 #                     Add print_serial_number function to
@@ -176,33 +178,37 @@ cleanup() {
 
 # Function to create a local backup of Git repositories
 git_backup() {
-    rm -f /root/local/git.tar.gz
+    ENCRYPTED_DIR="/mnt/sdc/home/root/local"
+    REMOTE_GIT_DIR="/mnt/sdc/home/git"
+    ARCHIVE_NAME="git.tar.gz"
+    DEST_DIR="$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git"
+
+    rm -f "$ENCRYPTED_DIR/$ARCHIVE_NAME"
 
     echo "[INFO] Saving Git repositories to local storage."
-    if rsync -avz --no-o --no-g --delete "$1@$2:/home/repo" /root/local/; then
+    if rsync -avz --no-o --no-g --delete "$1@$2:$REMOTE_GIT_DIR" "$ENCRYPTED_DIR/"; then
         echo "[INFO] Synchronization completed successfully."
     else
         echo "[WARN] Synchronization failed while retrieving repositories from the remote host." >&2
         return 1
     fi
 
-    if cd /root/local; then
-        echo "[INFO] Creating archive git.tar.gz from repo/."
-        if tar czvf git.tar.gz repo/ > /dev/null; then
-            echo "[INFO] Archive created: /root/local/git.tar.gz"
+    if cd "$ENCRYPTED_DIR"; then
+        echo "[INFO] Creating archive $ARCHIVE_NAME from git/."
+        if tar czvf "$ARCHIVE_NAME" git/ > /dev/null; then
+            echo "[INFO] Archive created: $ENCRYPTED_DIR/$ARCHIVE_NAME"
         else
             echo "[WARN] Failed to create archive." >&2
             return 1
         fi
     else
-        echo "[WARN] Failed to change directory to /root/local." >&2
+        echo "[WARN] Failed to change directory to $ENCRYPTED_DIR." >&2
         return 1
     fi
 
-    DEST_DIR="$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git"
     if [ -d "$DEST_DIR" ]; then
-        echo "[INFO] Copying archive to $DEST_DIR".
-        cp -v /root/local/git.tar.gz "$DEST_DIR/"
+        echo "[INFO] Copying archive to $DEST_DIR"
+        cp -v "$ENCRYPTED_DIR/$ARCHIVE_NAME" "$DEST_DIR/"
     else
         echo "[WARN] Destination directory not found: $DEST_DIR" >&2
         return 1
