@@ -1,3 +1,0 @@
-MAILTO=root
-
-15 02 * * * postgres cd / && /usr/bin/pg_dumpall -c > /var/lib/postgresql/pg_dump/all.dump && gzip -f /var/lib/postgresql/pg_dump/all.dump 1>/dev/null

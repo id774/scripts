@@ -1,3 +1,0 @@
-MAILTO=root
-
-45 03 * * * root systemctl restart memcached.service && systemctl restart httpd.service
