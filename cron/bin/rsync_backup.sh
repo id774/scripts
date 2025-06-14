@@ -178,7 +178,7 @@ cleanup() {
 
 # Function to create a local backup of Git repositories
 git_backup() {
-    ENCRYPTED_DIR="/mnt/sdc/home/root/local"
+    ENCRYPTED_DIR="/root/local"
     REMOTE_GIT_DIR="/mnt/sdc/home/git"
     ARCHIVE_NAME="git.tar.gz"
     DEST_DIR="$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git"
