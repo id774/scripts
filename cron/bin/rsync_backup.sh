@@ -229,11 +229,6 @@ github_backup() {
         du -h --max-depth=1 "$GITHUB_SRC"
     fi
 
-    if [ -d "$SOURCE_DIR/git" ]; then
-        echo "[INFO] Disk usage for $SOURCE_DIR/git:"
-        du -h --max-depth=1 "$SOURCE_DIR/git"
-    fi
-
     if [ -f "$ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB" ] && [ -d "$DEST_GIT_ARCHIVE" ]; then
         echo "[INFO] Copying archive to $DEST_GIT_ARCHIVE"
         cp -v "$ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB" "$DEST_GIT_ARCHIVE/"
