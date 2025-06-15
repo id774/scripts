@@ -20,24 +20,20 @@
 #                     Refactor all rsync functions to use internal SRC_DIR and DEST_DIR variables.
 #  v2.8  2025-06-06 - Add fallback logic to smartctl calls using -d sat for better USB device compatibility.
 #                     Preserve default behavior if -d sat fails.
-#                     Add print_serial_number function to
-#                     display device serials using udevadm before processing.
+#                     Add print_serial_number function to display device serials using udevadm before processing.
 #  v2.7  2025-05-16 - Add return 0 to main and exit $? at script end for consistent exit status.
 #  v2.6  2025-05-10 - Add cron execution check and usage support with unified structure.
-#  v2.5  2025-04-20 - Fix inaccurate rsync return code logging by
-#                     assigning RC immediately after execution.
+#  v2.5  2025-04-20 - Fix inaccurate rsync return code logging by assigning RC immediately after execution.
 #  v2.4  2025-04-17 - Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v2.3  2025-03-19 - Improved code readability by standardizing function indentation.
 #                     Encapsulated script logic in a `main` function for better structure.
-#                     Ensured proper preservation of return codes by storing `$?` in a
-#                     variable before use.
+#                     Ensured proper preservation of return codes by storing `$?` in a variable before use.
 #  v2.2  2023-12-23 - Refactored for POSIX compliance. Replaced Bash-specific syntax
 #                     with POSIX standard commands and structures. Enhanced portability
 #                     and compatibility across different UNIX-like systems.
 #  v2.1  2023-12-17 - Refactored script to separate logic and operations.
 #                     Operations are now defined in an external file
-#                     'etc/rsync_backup.conf' for enhanced modularity and
-#                     maintainability.
+#                     'etc/rsync_backup.conf' for enhanced modularity and maintainability.
 #                     Integrated github-arc.sh and cleanup-junk-files.sh scripts.
 #  v2.0  2023-07-04 - Major version upgrade with no functional changes.
 #  v1.27 2023-07-02 - Convert script to POSIX-compatible syntax. Show return
