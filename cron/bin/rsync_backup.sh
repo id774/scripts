@@ -218,28 +218,34 @@ git_backup() {
 
 # Function to back up GitHub repositories locally
 github_backup() {
-    rm -f /root/local/github.tar.gz
+    ARCHIVE_DIR="/root/local"
+    ARCHIVE_NAME_GIT="git.tar.gz"
+    ARCHIVE_NAME_GITHUB="github.tar.gz"
+    GITHUB_SRC="$B_HOME/local/github"
+    DEST_GIT_ARCHIVE="$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git"
 
-    if [ -d "$B_HOME/local/github" ]; then
-        echo "[INFO] Creating archive: /root/local/github.tar.gz from $B_HOME/local/github"
-        tar czvf /root/local/github.tar.gz "$B_HOME/local/github" > /dev/null
+    rm -f "$ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB"
+
+    if [ -d "$GITHUB_SRC" ]; then
+        echo "[INFO] Creating archive: $ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB from $GITHUB_SRC"
+        tar czvf "$ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB" "$GITHUB_SRC" > /dev/null
     else
-        echo "[WARN] Directory not found: $B_HOME/local/github" >&2
+        echo "[WARN] Directory not found: $GITHUB_SRC" >&2
     fi
 
-    if [ -d "$B_HOME/local/github" ]; then
-        echo "[INFO] Disk usage for $B_HOME/local/github:"
-        du -h --max-depth=1 "$B_HOME/local/github"
+    if [ -d "$GITHUB_SRC" ]; then
+        echo "[INFO] Disk usage for $GITHUB_SRC:"
+        du -h --max-depth=1 "$GITHUB_SRC"
     fi
 
-    if [ -d "$B_HOME/local/git" ]; then
-        echo "[INFO] Disk usage for $B_HOME/local/git:"
-        du -h --max-depth=1 "$B_HOME/local/git"
+    if [ -d "$SOURCE_DIR/git" ]; then
+        echo "[INFO] Disk usage for $SOURCE_DIR/git:"
+        du -h --max-depth=1 "$SOURCE_DIR/git"
     fi
 
-    if [ -f /root/local/github.tar.gz ] && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git" ]; then
-        echo "[INFO] Copying archive to $B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/."
-        cp -v /root/local/github.tar.gz "$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git/"
+    if [ -f "$ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB" ] && [ -d "$DEST_GIT_ARCHIVE" ]; then
+        echo "[INFO] Copying archive to $DEST_GIT_ARCHIVE"
+        cp -v "$ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB" "$DEST_GIT_ARCHIVE/"
     else
         echo "[WARN] Skipping copy: archive or destination not available." >&2
     fi
