@@ -202,11 +202,11 @@ git_backup() {
         return 1
     fi
 
-    if [ -d "$DEST_DIR" ]; then
-        echo "[INFO] Copying archive to $DEST_DIR"
-        cp -v "$ARCHIVE_DIR/$ARCHIVE_NAME_GIT" "$DEST_DIR/"
+    if [ -d "$DEST_GIT_ARCHIVE" ]; then
+        echo "[INFO] Copying archive to $DEST_GIT_ARCHIVE"
+        cp -v "$ARCHIVE_DIR/$ARCHIVE_NAME_GIT" "$DEST_GIT_ARCHIVE/"
     else
-        echo "[WARN] Destination directory not found: $DEST_DIR" >&2
+        echo "[WARN] Destination directory not found: $DEST_GIT_ARCHIVE" >&2
         return 1
     fi
 
