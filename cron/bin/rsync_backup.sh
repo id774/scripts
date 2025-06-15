@@ -17,6 +17,7 @@
 #  Version History:
 #  v2.9  2025-06-15 - Externalize archive and repository path variables to rsync_backup.conf.
 #                     Remove hardcoded paths from git_backup and github_backup functions.
+#                     Refactor all rsync functions to use internal SRC_DIR and DEST_DIR variables.
 #  v2.8  2025-06-06 - Add fallback logic to smartctl calls using -d sat for better USB device compatibility.
 #                     Preserve default behavior if -d sat fails.
 #                     Add print_serial_number function to
@@ -54,11 +55,11 @@
 #
 #  Usage:
 #  Run the script without any arguments. Ensure all the necessary paths
-#  and variables are correctly set within the script:
-#      test -x /root/bin/rsync_backup.sh && /root/bin/rsync_backup.sh>>$JOBLOG 2>&1;
+#  and variables are correctly set within the script or the config file:
+#      test -x /root/bin/rsync_backup.sh && /root/bin/rsync_backup.sh >> $JOBLOG 2>&1
 #
 #  The script will automatically execute operations based on the configured
-#  settings and available devices.
+#  settings and available devices, as defined in cron/etc/rsync_backup.conf.
 #
 ########################################################################
 
@@ -245,49 +246,42 @@ github_backup() {
 rsync_disk2ssh_1() {
     echo -n "[INFO] Executing: rsync_disk2ssh_1 $B_DEVICE -> $T_DEVICE of $T_HOST at "
     date "+%Y/%m/%d %T"
-    if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user1" ]; then
-        rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
-        "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
-        RC=$?
-    else
-        echo "[WARN] Skipped syncing user1: either host unreachable or source directory missing." >&2
-        RC=1
-    fi
-    echo "[INFO] Return code is $RC"
 
-    if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2" ]; then
-        rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
-        "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
-        RC=$?
-    else
-        echo "[WARN] Skipped syncing user2: either host unreachable or source directory missing." >&2
-        RC=1
-    fi
-    echo "[INFO] Return code is $RC"
+    SRC_DIR="$B_HOME/$B_MOUNT/$B_DEVICE"
+    DEST_DIR="$T_HOME/$T_MOUNT/$T_DEVICE"
+    SSH_TARGET="$T_USER@$T_HOST"
 
-    if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user3" ]; then
-        rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
-        "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
-        RC=$?
-    else
-        echo "[WARN] Skipped syncing user3: either host unreachable or source directory missing." >&2
-        RC=1
-    fi
-    echo "[INFO] Return code is $RC"
+    for USER_DIR in user1 user2 user3; do
+        if ping -c 1 "$T_HOST" > /dev/null 2>&1 && [ -d "$SRC_DIR/$USER_DIR" ]; then
+            echo "[INFO] Syncing $USER_DIR via SSH"
+            rsync -avz --no-o --no-g --delete -e ssh "$SRC_DIR/$USER_DIR" "$SSH_TARGET:$DEST_DIR/"
+            RC=$?
+        else
+            echo "[WARN] Skipped syncing $USER_DIR: either host unreachable or source directory missing." >&2
+            RC=1
+        fi
+        echo "[INFO] Return code is $RC"
+    done
 }
 
 # Function to sync large files from disk to remote server via SSH
 rsync_disk2ssh_2() {
     echo -n "[INFO] Executing: rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST at "
     date "+%Y/%m/%d %T"
-    if ping -c 1 $T_HOST > /dev/null 2>&1 && [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ]; then
-        rsync -avz --no-o --no-g --delete -e ssh "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
-        "$T_USER@$T_HOST:$T_HOME/$T_MOUNT/$T_DEVICE/"
+
+    SRC_DIR="$B_HOME/$B_MOUNT/$B_DEVICE"
+    DEST_DIR="$T_HOME/$T_MOUNT/$T_DEVICE"
+    SSH_TARGET="$T_USER@$T_HOST"
+
+    if ping -c 1 "$T_HOST" > /dev/null 2>&1 && [ -d "$SRC_DIR/largefiles" ]; then
+        echo "[INFO] Syncing largefiles via SSH"
+        rsync -avz --no-o --no-g --delete -e ssh "$SRC_DIR/largefiles" "$SSH_TARGET:$DEST_DIR/"
         RC=$?
     else
         echo "[WARN] Skipped syncing largefiles: either host unreachable or source directory missing." >&2
         RC=1
     fi
+
     echo "[INFO] Return code is $RC"
 }
 
@@ -295,49 +289,40 @@ rsync_disk2ssh_2() {
 rsync_disk2disk_1() {
     echo -n "[INFO] Executing: rsync_disk2disk_1 $B_DEVICE -> $T_DEVICE at "
     date "+%Y/%m/%d %T"
-    if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user1" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user1" ]; then
-        rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user1" \
-        "$T_HOME/$T_MOUNT/$T_DEVICE/"
-        RC=$?
-    else
-        echo "[WARN] Skipped syncing user1: source or target directory does not exist." >&2
-        RC=1
-    fi
-    echo "[INFO] Return code is $RC"
 
-    if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user2" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user2" ]; then
-        rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user2" \
-        "$T_HOME/$T_MOUNT/$T_DEVICE/"
-        RC=$?
-    else
-        echo "[WARN] Skipped syncing user2: source or target directory does not exist." >&2
-        RC=1
-    fi
-    echo "[INFO] Return code is $RC"
+    SRC_DIR="$B_HOME/$B_MOUNT/$B_DEVICE"
+    DEST_DIR="$T_HOME/$T_MOUNT/$T_DEVICE"
 
-    if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/user3" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/user3" ]; then
-        rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/user3" \
-        "$T_HOME/$T_MOUNT/$T_DEVICE/"
-        RC=$?
-    else
-        echo "[WARN] Skipped syncing user3: source or target directory does not exist." >&2
-        RC=1
-    fi
-    echo "[INFO] Return code is $RC"
+    for USER_DIR in user1 user2 user3; do
+        if [ -d "$SRC_DIR/$USER_DIR" ] && [ -d "$DEST_DIR/$USER_DIR" ]; then
+            echo "[INFO] Syncing $USER_DIR locally"
+            rsync -avz --no-o --no-g --delete "$SRC_DIR/$USER_DIR" "$DEST_DIR/"
+            RC=$?
+        else
+            echo "[WARN] Skipped syncing $USER_DIR: source or target directory does not exist." >&2
+            RC=1
+        fi
+        echo "[INFO] Return code is $RC"
+    done
 }
 
 # Function to sync large files between two local disks
 rsync_disk2disk_2() {
     echo -n "[INFO] Executing: rsync_disk2disk_2 $B_DEVICE -> $T_DEVICE at "
     date "+%Y/%m/%d %T"
-    if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ] && [ -d "$T_HOME/$T_MOUNT/$T_DEVICE/largefiles" ]; then
-        rsync -avz --no-o --no-g --delete "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" \
-        "$T_HOME/$T_MOUNT/$T_DEVICE/"
+
+    SRC_DIR="$B_HOME/$B_MOUNT/$B_DEVICE"
+    DEST_DIR="$T_HOME/$T_MOUNT/$T_DEVICE"
+
+    if [ -d "$SRC_DIR/largefiles" ] && [ -d "$DEST_DIR/largefiles" ]; then
+        echo "[INFO] Syncing largefiles locally"
+        rsync -avz --no-o --no-g --delete "$SRC_DIR/largefiles" "$DEST_DIR/"
         RC=$?
     else
         echo "[WARN] Skipped syncing largefiles: source or target directory does not exist." >&2
         RC=1
     fi
+
     echo "[INFO] Return code is $RC"
 }
 
