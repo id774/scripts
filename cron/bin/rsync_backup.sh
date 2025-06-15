@@ -15,7 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v2.9  2025-06-14 - Refactor git_backup to eliminate path redundancy using variables.
+#  v2.9  2025-06-15 - Externalize archive and repository path variables to rsync_backup.conf.
+#                     Remove hardcoded paths from git_backup and github_backup functions.
 #  v2.8  2025-06-06 - Add fallback logic to smartctl calls using -d sat for better USB device compatibility.
 #                     Preserve default behavior if -d sat fails.
 #                     Add print_serial_number function to
@@ -177,11 +178,6 @@ cleanup() {
 
 # Function to create a local backup of Git repositories
 git_backup() {
-    ENCRYPTED_DIR="/root/local"
-    REMOTE_GIT_DIR="/mnt/sdc/home/git"
-    ARCHIVE_NAME="git.tar.gz"
-    DEST_DIR="$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git"
-
     rm -f "$ENCRYPTED_DIR/$ARCHIVE_NAME"
 
     echo "[INFO] Saving Git repositories to local storage."
@@ -218,12 +214,6 @@ git_backup() {
 
 # Function to back up GitHub repositories locally
 github_backup() {
-    ARCHIVE_DIR="/root/local"
-    ARCHIVE_NAME_GIT="git.tar.gz"
-    ARCHIVE_NAME_GITHUB="github.tar.gz"
-    GITHUB_SRC="$B_HOME/local/github"
-    DEST_GIT_ARCHIVE="$B_HOME/$B_MOUNT/$B_DEVICE/user2/arc/git"
-
     rm -f "$ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB"
 
     if [ -d "$GITHUB_SRC" ]; then
