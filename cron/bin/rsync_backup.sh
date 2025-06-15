@@ -179,32 +179,32 @@ cleanup() {
 
 # Function to create a local backup of Git repositories
 git_backup() {
-    rm -f "$ENCRYPTED_DIR/$ARCHIVE_NAME"
+    rm -f "$ARCHIVE_DIR/$ARCHIVE_NAME_GIT"
 
     echo "[INFO] Saving Git repositories to local storage."
-    if rsync -avz --no-o --no-g --delete "$1@$2:$REMOTE_GIT_DIR" "$ENCRYPTED_DIR/"; then
+    if rsync -avz --no-o --no-g --delete "$1@$2:$REMOTE_GIT_DIR" "$ARCHIVE_DIR/"; then
         echo "[INFO] Synchronization completed successfully."
     else
         echo "[WARN] Synchronization failed while retrieving repositories from the remote host." >&2
         return 1
     fi
 
-    if cd "$ENCRYPTED_DIR"; then
-        echo "[INFO] Creating archive $ARCHIVE_NAME from git/."
-        if tar czvf "$ARCHIVE_NAME" git/ > /dev/null; then
-            echo "[INFO] Archive created: $ENCRYPTED_DIR/$ARCHIVE_NAME"
+    if cd "$ARCHIVE_DIR"; then
+        echo "[INFO] Creating archive $ARCHIVE_NAME_GIT from git/."
+        if tar czvf "$ARCHIVE_NAME_GIT" git/ > /dev/null; then
+            echo "[INFO] Archive created: $ARCHIVE_DIR/$ARCHIVE_NAME_GIT"
         else
             echo "[WARN] Failed to create archive." >&2
             return 1
         fi
     else
-        echo "[WARN] Failed to change directory to $ENCRYPTED_DIR." >&2
+        echo "[WARN] Failed to change directory to $ARCHIVE_DIR." >&2
         return 1
     fi
 
     if [ -d "$DEST_DIR" ]; then
         echo "[INFO] Copying archive to $DEST_DIR"
-        cp -v "$ENCRYPTED_DIR/$ARCHIVE_NAME" "$DEST_DIR/"
+        cp -v "$ARCHIVE_DIR/$ARCHIVE_NAME_GIT" "$DEST_DIR/"
     else
         echo "[WARN] Destination directory not found: $DEST_DIR" >&2
         return 1
