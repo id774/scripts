@@ -8,6 +8,7 @@ v1.4.4 (Release Date: TBD)
 - Externalize archive paths and unify rsync variables in rsync_backup.sh.
 - Recreate .vim directory before install to ensure clean setup in install_dotvim.sh.
 - Fix joblog writability check after config load in run_tests.
+- Fix missing execute permission handling for all files under scripts/installer in setup_scripts.sh.
 
 v1.4.3 (2025-05-30)
 -------------------

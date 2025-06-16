@@ -7,8 +7,8 @@
 #  This script sets permissions for a collection of scripts.
 #  - Grants read/write permissions to the owner, and read-only to group and others.
 #  - Grants execute permissions to all files with .sh, .py, or .rb extensions.
-#  - Grants execute permissions to all files under scripts/cron/bin,
-#    regardless of file extension.
+#  - Grants execute permissions to all files under scripts/installer.
+#  - Grants execute permissions to all files under scripts/cron/bin.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.0 2025-06-16
+#       Add execute permission handling for all files under scripts/installer.
 #  v1.9 2025-05-12
 #       Replace chmod -R with find-based permission control for finer safety.
 #       Grant execute permissions to all files under scripts/cron/bin regardless of extension.
@@ -104,11 +106,15 @@ set_permissions() {
     find "$SCRIPTS" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
     RC2=$?
 
-    echo "[INFO] Granting execute permissions to all files under scripts/cron/bin."
-    find "$SCRIPTS/cron/bin" -type f -exec chmod u+x,g+x,o+x {} \;
+    echo "[INFO] Granting execute permissions to all files under scripts/installer."
+    find "$SCRIPTS/installer" -type f -exec chmod u+x,g+x,o+x {} \;
     RC3=$?
 
-    if [ "$RC1" -eq 0 ] && [ "$RC2" -eq 0 ] && [ "$RC3" -eq 0 ]; then
+    echo "[INFO] Granting execute permissions to all files under scripts/cron/bin."
+    find "$SCRIPTS/cron/bin" -type f -exec chmod u+x,g+x,o+x {} \;
+    RC4=$?
+
+    if [ "$RC1" -eq 0 ] && [ "$RC2" -eq 0 ] && [ "$RC3" -eq 0 ] && [ "$RC4" -eq 0 ]; then
         echo "[INFO] All permission settings completed successfully."
     else
         echo "[ERROR] One or more permission operations failed." >&2
