@@ -64,7 +64,15 @@ check_user_exists() {
     fi
 }
 
+set_home_permission() {
+    echo "[INFO] Setting permission 700 for /Users/$USERNAME"
+    sudo chmod 700 "/Users/$USERNAME"
+    ls -ld "/Users/$USERNAME"
+}
+
 verify_account_status() {
+    set_home_permission
+
     echo "[INFO] Verifying account status..."
 
     sudo sysadminctl -secureTokenStatus "$USERNAME"
