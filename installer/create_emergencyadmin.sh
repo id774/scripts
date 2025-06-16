@@ -69,6 +69,9 @@ verify_account_status() {
 
     sudo sysadminctl -secureTokenStatus "$USERNAME"
     sudo fdesetup list | grep "^$USERNAME,"
+
+    echo "[INFO] Current HiddenUsersList:"
+    sudo defaults read /Library/Preferences/com.apple.loginwindow HiddenUsersList
 }
 
 prompt_passwords() {
@@ -109,6 +112,11 @@ add_to_filevault() {
     echo "$USER_PASSWORD" | sudo fdesetup add -user "$USERNAME"
 }
 
+hide_user_from_loginwindow() {
+    echo "[INFO] Hiding '$USERNAME' from login window..."
+    sudo defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add "$USERNAME"
+}
+
 main() {
     case "$1" in
         -h|--help) usage ;;
@@ -122,6 +130,7 @@ main() {
     create_admin_user
     grant_securetoken
     add_to_filevault
+    hide_user_from_loginwindow
 
     echo "[INFO] Setup complete. '$USERNAME' is now a FileVault user."
 
