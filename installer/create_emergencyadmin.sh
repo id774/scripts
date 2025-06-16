@@ -15,8 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.0  2025-06-16 - Initial implementation. Wrap all logic in functions.
-#                     Use interactive password input. Ensure internal sudo use.
+#  v1.0 2025-06-16
+#       First version.
 #
 #  Usage:
 #  Execute the script as a normal user with administrator privileges.
