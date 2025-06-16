@@ -142,6 +142,10 @@ setup_dot_ipython() {
     fi
 }
 
+setup_emergencyadmin() {
+    "$SCRIPTS/installer/create_emergencyadmin.sh"
+}
+
 finder_settings() {
     "$SCRIPTS/installer/macos_finder_settings.sh"
 }
@@ -184,6 +188,7 @@ main() {
     install_dot_emacs
     setup_sysadmin_scripts
     setup_dot_ipython
+    setup_emergencyadmin
     finder_settings
     fix_compinit
     folder_localization
