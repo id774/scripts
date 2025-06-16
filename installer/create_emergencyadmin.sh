@@ -59,8 +59,16 @@ check_sudo() {
 check_user_exists() {
     if id "$USERNAME" >/dev/null 2>&1; then
         echo "[INFO] User '$USERNAME' already exists. Skipping creation."
+        verify_account_status
         exit 0
     fi
+}
+
+verify_account_status() {
+    echo "[INFO] Verifying account status..."
+
+    sudo sysadminctl -secureTokenStatus "$USERNAME"
+    sudo fdesetup list | grep "^$USERNAME,"
 }
 
 prompt_passwords() {
@@ -114,7 +122,10 @@ main() {
     create_admin_user
     grant_securetoken
     add_to_filevault
+
     echo "[INFO] Setup complete. '$USERNAME' is now a FileVault user."
+
+    verify_account_status
     return 0
 }
 
