@@ -3,6 +3,7 @@ Repository Update History
 
 v1.4.4 (Release Date: TBD)
 --------------------------
+- Add create_emergencyadmin.sh for secure creation of a fallback admin user with SecureToken and FileVault access.
 - Add device serial display using udevadm in rsync_backup.sh.
 - Improve smartctl USB compatibility in rsync_backup.sh.
 - Externalize archive paths and unify rsync variables in rsync_backup.sh.
