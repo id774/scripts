@@ -220,11 +220,6 @@ github_backup() {
         echo "[WARN] Directory not found: $GITHUB_SRC" >&2
     fi
 
-    if [ -d "$GITHUB_SRC" ]; then
-        echo "[INFO] Disk usage for $GITHUB_SRC:"
-        du -h --max-depth=1 "$GITHUB_SRC"
-    fi
-
     if [ -f "$ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB" ] && [ -d "$DEST_GIT_ARCHIVE" ]; then
         echo "[INFO] Copying archive to $DEST_GIT_ARCHIVE"
         cp -v "$ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB" "$DEST_GIT_ARCHIVE/"
