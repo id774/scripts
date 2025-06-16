@@ -206,7 +206,7 @@ git_backup() {
         return 1
     fi
 
-    cd
+    cd "$HOME"
 }
 
 # Function to back up GitHub repositories locally
@@ -330,7 +330,7 @@ main() {
         echo "[INFO] Loaded configuration from $CONFIG_FILE."
         . "$CONFIG_FILE"
     else
-        echo "[ERROR] Configuration file not found: $CONFIG_FILE">&2
+        echo "[ERROR] Configuration file not found: $CONFIG_FILE" >&2
         exit 9
     fi
 
