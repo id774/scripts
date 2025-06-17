@@ -56,6 +56,7 @@ check_sudo() {
     fi
 }
 
+# Check if the specified user already exists and verify status if so
 check_user_exists() {
     if id "$USERNAME" >/dev/null 2>&1; then
         echo "[INFO] User '$USERNAME' already exists. Skipping creation."
@@ -64,24 +65,27 @@ check_user_exists() {
     fi
 }
 
+# Set the home directory permission to 700 for the new user
 set_home_permission() {
     echo "[INFO] Setting permission 700 for /Users/$USERNAME"
     sudo chmod 700 "/Users/$USERNAME"
     ls -ld "/Users/$USERNAME"
 }
 
+# Verify the account's SecureToken, FileVault status, and login window visibility
 verify_account_status() {
     set_home_permission
 
     echo "[INFO] Verifying account status..."
 
     sudo sysadminctl -secureTokenStatus "$USERNAME"
-    sudo fdesetup list | grep "^$USERNAME,"
+    sudo fdesetup list
 
     echo "[INFO] Current HiddenUsersList:"
     sudo defaults read /Library/Preferences/com.apple.loginwindow HiddenUsersList
 }
 
+# Prompt for admin and new user passwords with hidden input
 prompt_passwords() {
     printf "Enter password for current admin user: "
     stty -echo
@@ -96,6 +100,7 @@ prompt_passwords() {
     printf "\n"
 }
 
+# Create a new admin user with a unique UID
 create_admin_user() {
     MAX_UID=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -n | tail -1)
     NEW_UID=$((MAX_UID + 1))
@@ -108,6 +113,7 @@ create_admin_user() {
         -admin
 }
 
+# Grant SecureToken to the newly created user
 grant_securetoken() {
     CURRENT_USER=$(logname)
     echo "[INFO] Granting SecureToken to '$USERNAME'..."
@@ -115,16 +121,19 @@ grant_securetoken() {
         -secureTokenOn "$USERNAME" -password "$USER_PASSWORD"
 }
 
+# Add the new user to FileVault authorized users
 add_to_filevault() {
     echo "[INFO] Adding '$USERNAME' to FileVault users..."
     echo "$USER_PASSWORD" | sudo fdesetup add -user "$USERNAME"
 }
 
+# Hide the new user from the macOS login window
 hide_user_from_loginwindow() {
     echo "[INFO] Hiding '$USERNAME' from login window..."
     sudo defaults write /Library/Preferences/com.apple.loginwindow HiddenUsersList -array-add "$USERNAME"
 }
 
+# Main function to execute the script
 main() {
     case "$1" in
         -h|--help) usage ;;
@@ -146,5 +155,6 @@ main() {
     return 0
 }
 
+# Execute main function
 main "$@"
 exit $?
