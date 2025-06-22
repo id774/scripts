@@ -298,9 +298,6 @@ def main():
 
     (options, args) = parser.parse_args()
 
-    if "-V" in sys.argv or "--version" in sys.argv:
-        parser.print_help()
-        sys.exit(0)
     check_sudo()
 
     process_mounting(options, args)
