@@ -36,13 +36,12 @@
 
 DBFILE="$HOME/fastladder/db/fastladder.db"
 
-# Display script usage information
+# Display full script header information extracted from the top comment block
 usage() {
     awk '
-        BEGIN { in_usage = 0 }
-        /^#  Usage:/ { in_usage = 1; print substr($0, 4); next }
-        /^#{10}/ { if (in_usage) exit }
-        in_usage && /^#/ { print substr($0, 4) }
+        BEGIN { in_header = 0 }
+        /^#{10,}$/ { if (!in_header) { in_header = 1; next } else exit }
+        in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0
 }
