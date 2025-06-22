@@ -28,7 +28,6 @@
 #      python md5.py -s "string"
 #
 #  Options:
-#   -v, --version: Show the version of the script and exit.
 #   -d, --subdirectory: Include subdirectories when calculating checksums for files.
 #   -r, --reversed: Reverse the format of the output (checksum first, then file path).
 #   -q, --quiet: Quiet mode, only the checksum is printed.
@@ -53,6 +52,24 @@ import sys
 from optparse import OptionParser
 from stat import S_ISDIR, ST_MODE
 
+
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_header = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip().startswith('#' * 10):
+                if not in_header:
+                    in_header = True
+                    continue
+                else:
+                    break
+            if in_header and line.startswith('#'):
+                if line.startswith('# '):
+                    print(line[2:], end='')
+                else:
+                    print(line[1:], end='')
+    sys.exit(0)
 
 class Md5Checksum:
 
@@ -120,10 +137,7 @@ def main():
     parser.add_option("-s", "--string", help="print a checksum of the given string",
                       action="store", type="string", dest="input_string")
     (options, args) = parser.parse_args()
-    if options.version:
-        print("{0} Version 1.0 Copyright (c) 2023 id774 <idnanashi@gmail.com>".format(
-            os.path.basename(sys.argv[0])))
-    elif options.input_string:
+    if options.input_string:
         checksum = Md5Checksum.calculate_checksum_for_string(
             options.input_string)
         print_formatted_checksum(checksum, options.input_string,
@@ -133,12 +147,12 @@ def main():
         print(input_data, end='')
         checksum = Md5Checksum.calculate_checksum_for_string(input_data)
         print("{0}".format(checksum))
-    elif len(args) < 1:
-        parser.print_help()
     else:
         print_checksum(options.include_subdir,
                        options.reversed_format, options.quiet_mode, args)
 
 
 if __name__ == '__main__':
+    if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
+        usage()
     main()
