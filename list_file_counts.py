@@ -30,6 +30,24 @@ import os
 import sys
 
 
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_header = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip().startswith('#' * 10):
+                if not in_header:
+                    in_header = True
+                    continue
+                else:
+                    break
+            if in_header and line.startswith('#'):
+                if line.startswith('# '):
+                    print(line[2:], end='')
+                else:
+                    print(line[1:], end='')
+    sys.exit(0)
+
 def get_subdirectories(base_dir):
     """Return a list of subdirectories in the specified directory."""
     try:
@@ -71,21 +89,6 @@ def print_file_counts(base_dir, sorted_counts):
 
 def main(args):
     """Main function for script execution."""
-    if len(args) != 2:
-        print("""
-Usage: python list_file_counts.py [directory]
-
-This script lists the number of files in each subdirectory of the specified directory.
-The output is sorted in descending order by file count.
-
-Arguments:
-  directory    The path of the directory to analyze.
-
-Example:
-  python list_file_counts.py /path/to/directory
-        """)
-        return 1
-
     base_dir = args[1]
 
     if not os.path.exists(base_dir):
@@ -103,5 +106,7 @@ Example:
 
 
 if __name__ == '__main__':
-    import sys
+    if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
+        usage()
+
     sys.exit(main(sys.argv))
