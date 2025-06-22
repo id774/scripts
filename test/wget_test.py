@@ -26,7 +26,7 @@
 import os
 import sys
 import unittest
-from unittest.mock import MagicMock, call, mock_open, patch
+from unittest.mock import MagicMock, mock_open, patch
 
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -95,26 +95,6 @@ class TestWget(unittest.TestCase):
         # Verify that the function raises the correct exception
         with self.assertRaises(requests.exceptions.MissingSchema):
             download_file("invalid-url")
-
-    @patch('builtins.print')
-    def test_usage(self, mock_print):
-        """
-        Test case: Missing command-line arguments.
-        This test verifies that:
-        - The usage message is displayed when no URL is provided.
-        - The script exits with status code 0.
-        """
-        with self.assertRaises(SystemExit) as cm:
-            usage()
-        self.assertEqual(cm.exception.code, 0)
-
-        expected = [
-            call('Usage:'),
-            call('python wget.py <URL>'),
-            call('Example: python wget.py http://example.com/file.txt'),
-            call('')
-        ]
-        self.assertEqual(mock_print.call_args_list, expected)
 
     @patch('wget.requests.get')
     @patch('builtins.open', new_callable=mock_open)

@@ -95,18 +95,20 @@ from datetime import datetime, timezone
 
 def usage():
     script_path = os.path.abspath(__file__)
-    in_usage = False
+    in_header = False
     with open(script_path, 'r', encoding='utf-8') as f:
         for line in f:
-            if line.startswith('#  Usage:'):
-                in_usage = True
-                print(line[2:].strip())
-                continue
-            if in_usage:
-                if line.startswith('#' * 10):
+            if line.strip().startswith('#' * 10):
+                if not in_header:
+                    in_header = True
+                    continue
+                else:
                     break
-                if line.startswith('#'):
-                    print(line[2:].strip())
+            if in_header and line.startswith('#'):
+                if line.startswith('# '):
+                    print(line[2:], end='')
+                else:
+                    print(line[1:], end='')
     sys.exit(0)
 
 def parse_arguments():
@@ -202,9 +204,9 @@ def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, fi
                 else:
                     # Format the modification time in ISO 8601 format, indicating UTC with 'Z'
                     if use_localtime:
-                        # Convert timezone offset to '賊hh:mm' format
+                        # Convert timezone offset to '雉撹h:mm' format
                         tz_offset = mtime.strftime('%z')  # Get timezone offset, e.g., '+0900'
-                        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '賊hh:mm'
+                        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '雉撹h:mm'
                         print("{}{} - {}".format(mtime.strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, file_path))
                     else:
                         print("{} - {}".format(mtime.strftime('%Y-%m-%dT%H:%M:%SZ'), file_path))

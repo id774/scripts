@@ -54,6 +54,24 @@ import subprocess
 import sys
 
 
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_header = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.strip().startswith('#' * 10):
+                if not in_header:
+                    in_header = True
+                    continue
+                else:
+                    break
+            if in_header and line.startswith('#'):
+                if line.startswith('# '):
+                    print(line[2:], end='')
+                else:
+                    print(line[1:], end='')
+    sys.exit(0)
+
 def command_exists(command):
     """
     Checks if a given command exists in the system path using 'command -v'.
