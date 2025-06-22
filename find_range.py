@@ -204,9 +204,9 @@ def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, fi
                 else:
                     # Format the modification time in ISO 8601 format, indicating UTC with 'Z'
                     if use_localtime:
-                        # Convert timezone offset to '雉撹h:mm' format
+                        # Convert timezone offset to '髮画鳥h:mm' format
                         tz_offset = mtime.strftime('%z')  # Get timezone offset, e.g., '+0900'
-                        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '雉撹h:mm'
+                        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '髮画鳥h:mm'
                         print("{}{} - {}".format(mtime.strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, file_path))
                     else:
                         print("{} - {}".format(mtime.strftime('%Y-%m-%dT%H:%M:%SZ'), file_path))
@@ -230,7 +230,7 @@ def main():
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help'):
+    if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
 
     main()

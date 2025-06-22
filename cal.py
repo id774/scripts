@@ -130,7 +130,7 @@ def is_unix_like():
 
 # Main execution
 if __name__ == '__main__':
-    if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help'):
+    if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
     if is_unix_like() and command_exists('cal') and len(sys.argv) > 1:
         # Pass arguments to the system's 'cal' command

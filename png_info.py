@@ -92,7 +92,7 @@ def read_png_info(png_file_path):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1 or sys.argv[1] in ('-h', '--help'):
+    if len(sys.argv) == 1 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
     else:
         # Process each file matching the provided glob pattern

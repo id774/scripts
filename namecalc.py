@@ -107,7 +107,7 @@ class NameCalc:
 
 
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help'):
+    if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
 
     NameCalc.calc("".join(sys.argv[1:]))

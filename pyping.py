@@ -122,7 +122,7 @@ def main(subnet, start_ip, end_ip, ordered):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3 or sys.argv[1] in ('-h', '--help'):
+    if len(sys.argv) < 3 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
 
     # Setup argparse for command-line arguments
