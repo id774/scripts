@@ -137,7 +137,9 @@ main() {
     sudo chown root:root /etc/logrotate.d/chkrootkit
 
     echo "[INFO] chkrootkit setup completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

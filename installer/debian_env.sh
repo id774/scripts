@@ -155,7 +155,9 @@ main() {
     setup_tune2fs
 
     echo "[INFO] All Debian environment setup completed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -166,7 +166,9 @@ main() {
     restart_services
 
     echo "[INFO] AWStats installation and configuration completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

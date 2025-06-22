@@ -163,7 +163,9 @@ main() {
     configure_apache
 
     echo "[INFO] Apache2 SSL setup completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

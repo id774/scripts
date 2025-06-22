@@ -196,7 +196,9 @@ main() {
     erase_history
 
     echo "[INFO] All macOS setup completed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

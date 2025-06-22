@@ -127,7 +127,9 @@ main() {
     reload_systemd
     restart_service
     echo "[INFO] Syslog output for $SERVICE_NAME has been suppressed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

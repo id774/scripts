@@ -178,7 +178,9 @@ main() {
     install_resin "$1" "$2"
 
     echo "[INFO] Resin $VERSION installed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -205,7 +205,9 @@ main() {
     install_ncurses
 
     echo "[INFO] ncurses $VERSION installed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

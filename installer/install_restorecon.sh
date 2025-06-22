@@ -148,7 +148,9 @@ main() {
     fi
 
     echo "[INFO] Restorecon cron job setup completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

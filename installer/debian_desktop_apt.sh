@@ -180,7 +180,9 @@ main() {
     optional_packages
 
     echo "[INFO] All specified desktop packages have been installed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

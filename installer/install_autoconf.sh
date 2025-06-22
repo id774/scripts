@@ -177,7 +177,9 @@ main() {
     install_autoconf "$1" "$2"
 
     echo "[INFO] Autoconf $VERSION installed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

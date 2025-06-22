@@ -200,7 +200,9 @@ main() {
     sudo chown root:adm /etc/cron.config/fix-permissions.conf
 
     echo "[INFO] Fix-permissions script setup completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

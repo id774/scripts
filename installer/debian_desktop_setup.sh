@@ -136,7 +136,9 @@ main() {
     restart_lightdm
 
     echo "[INFO] All Debian desktop setup completed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

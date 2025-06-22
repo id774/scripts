@@ -274,7 +274,9 @@ main() {
     test -f "$HOME/.viminfo" && sudo chown "$USER" "$HOME/.viminfo"
 
     echo "[INFO] dot_files configuration installed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -171,7 +171,9 @@ main() {
     setup_cron_job
 
     echo "[INFO] Installation completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

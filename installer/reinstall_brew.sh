@@ -140,7 +140,9 @@ main() {
     check_required_scripts
     check_sudo
     reinstall_homebrew
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

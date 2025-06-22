@@ -269,7 +269,9 @@ main() {
     erase_history
 
     echo "[INFO] All Debian setup completed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

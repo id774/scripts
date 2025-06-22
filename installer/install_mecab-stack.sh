@@ -122,7 +122,6 @@ final_message() {
         /^#{10}/ { if (in_usage) exit }
         in_usage && /^#/ { print substr($0, 4) }
     ' "$0"
-    exit 0
 }
 
 # Function to check required commands
@@ -457,7 +456,9 @@ main() {
 
     echo "[INFO] Installation complete at ${PREFIX}."
     final_message
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

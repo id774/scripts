@@ -86,7 +86,7 @@ main() {
         done
 
         echo "[INFO] IPv6 has been enabled where necessary."
-        exit 0
+        return 0
     fi
 
     if [ "$1" = "--disable" ]; then
@@ -119,7 +119,7 @@ main() {
         done
 
         echo "[INFO] IPv6 has been modified where necessary."
-        exit 0
+        return 0
     fi
 
     # If an invalid argument is provided, show usage
@@ -128,3 +128,4 @@ main() {
 
 # Execute main function
 main "$@"
+exit $?

@@ -156,7 +156,9 @@ main() {
     #"$SCRIPTS/installer/debian_desktop_setup.sh"
 
     echo "[INFO] All Debian initial setup completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -172,7 +172,9 @@ main() {
     install_clamscan
 
     echo "[INFO] ClamAV AutoScan setup completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

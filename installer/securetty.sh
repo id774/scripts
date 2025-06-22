@@ -107,7 +107,9 @@ main() {
     check_commands sudo sh
     check_sudo
     clear_securetty
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

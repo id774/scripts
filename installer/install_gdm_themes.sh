@@ -136,7 +136,9 @@ main() {
     install_gdm_themes
 
     echo "[INFO] GDM themes installation completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

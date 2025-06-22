@@ -135,7 +135,9 @@ main() {
     install_dotvim "$1"
 
     echo "[INFO] dot_vim configuration installed successfully at $TARGET."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

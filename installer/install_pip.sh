@@ -225,7 +225,9 @@ main() {
     install_libs
 
     echo "[INFO] All specified python packages have been installed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

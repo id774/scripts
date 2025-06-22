@@ -204,7 +204,9 @@ main() {
     # Further package groups can be added here as needed
 
     echo "[INFO] All specified packages have been installed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

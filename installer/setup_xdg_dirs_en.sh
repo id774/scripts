@@ -125,7 +125,9 @@ main() {
     echo "[INFO] If you need to customize your directories, edit the file manually:"
     echo "    $HOME/.config/user-dirs.dirs"
     echo "Then, log out and log back in for changes to take effect."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

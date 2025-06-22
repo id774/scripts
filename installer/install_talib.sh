@@ -194,7 +194,9 @@ main() {
     install_talib "$1" "$2"
 
     echo "[INFO] TA-Lib $VERSION installed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

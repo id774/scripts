@@ -216,7 +216,9 @@ main() {
     esac
 
     install_veracrypt "$@"
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -117,7 +117,9 @@ main() {
     check_commands "$PIP" "$JUPYTER" "$JT"
     install_jupyter_theme
     echo "[INFO] Jupyter theme setup completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -182,7 +182,9 @@ main() {
     install_paco "$1" "$2"
 
     echo "[INFO] paco $PACO_VERSION installed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

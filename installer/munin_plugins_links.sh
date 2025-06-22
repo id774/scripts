@@ -146,7 +146,9 @@ main() {
                 ;;
         esac
     done
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

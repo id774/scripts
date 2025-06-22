@@ -134,10 +134,13 @@ main() {
     add_entry "$WEEKEND_ENTRY"
     if [ "$CHANGES_MADE" -eq 1 ]; then
         echo "[INFO] Crontab setup completed."
+        return 0
     else
         echo "[INFO] No changes were made. Everything is already set up."
+        return 0
     fi
 }
 
 # Execute main function
 main "$@"
+exit $?

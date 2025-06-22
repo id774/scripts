@@ -215,7 +215,9 @@ main() {
     deploy_scripts
     setup_cron_job
     final_message
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

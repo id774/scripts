@@ -127,7 +127,9 @@ main() {
     brew cleanup
 
     echo "[INFO] All specified brew packages have been installed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

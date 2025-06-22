@@ -186,7 +186,9 @@ main() {
     init_nbserver "$@"
 
     echo "[INFO] dot_ipython setup successfully completed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -186,7 +186,9 @@ main() {
     setup_log_rotation
 
     echo "[INFO] Apache log analysis setup completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -164,7 +164,9 @@ main() {
     sudo chown root:adm /etc/cron.hourly/get_resources
 
     echo "[INFO] Server resource report setup completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -224,7 +224,9 @@ main() {
     install_ruby
 
     echo "[INFO] Ruby $VERSION installed successfully in $PREFIX."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

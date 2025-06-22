@@ -95,7 +95,9 @@ main() {
     check_config
     check_sudo
     install_R_libs
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

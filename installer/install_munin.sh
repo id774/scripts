@@ -157,7 +157,9 @@ main() {
     "$SCRIPTS/installer/munin_plugins_links.sh" -c
 
     echo "[INFO] Munin installation and configuration completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

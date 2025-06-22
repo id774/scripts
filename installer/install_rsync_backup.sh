@@ -159,7 +159,9 @@ main() {
     fi
 
     echo "[INFO] Rsync backup setup completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

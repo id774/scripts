@@ -127,7 +127,9 @@ main() {
     perform_cleanup
 
     echo "[INFO] Cleanup completed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

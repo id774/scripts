@@ -378,7 +378,9 @@ main() {
     else
         echo "[INFO] No configuration changes detected. Skipping sysctl reload."
     fi
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

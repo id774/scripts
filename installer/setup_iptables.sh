@@ -166,6 +166,8 @@ main() {
     load_rules
     enable_restore
     final_message
+    return 0
 }
 
 main "$@"
+exit $?

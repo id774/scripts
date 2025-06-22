@@ -247,7 +247,9 @@ main() {
     install_gems
 
     echo "[INFO] All specified Ruby gem packages have been installed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -185,7 +185,9 @@ main() {
     install_cassandra "$@"
 
     echo "[INFO] Apache Cassandra $VERSION installed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

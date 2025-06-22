@@ -107,7 +107,9 @@ main() {
     check_system
     check_scripts
     setup_karabiner
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

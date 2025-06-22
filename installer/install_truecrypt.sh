@@ -240,7 +240,9 @@ main() {
     esac
 
     install_truecrypt "$@"
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

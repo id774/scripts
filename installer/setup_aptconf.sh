@@ -112,7 +112,9 @@ main() {
     edit_aptconf
 
     echo "[INFO] APT configuration setup completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

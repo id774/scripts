@@ -97,7 +97,9 @@ main() {
 
     check_system
     configure_finder_settings
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

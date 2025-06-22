@@ -160,7 +160,9 @@ main() {
     set_lvm_custom
     set_lvm_logvol
     echo "[INFO] tune2fs configuration completed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

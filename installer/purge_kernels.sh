@@ -131,7 +131,9 @@ main() {
     get_current_kernel
     list_old_kernels
     remove_old_kernels
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

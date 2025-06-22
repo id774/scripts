@@ -237,7 +237,9 @@ main() {
     install_zsh "$VERSION" "$PREFIX" "$SUDO" "$4"
 
     echo "[INFO] Zsh $VERSION installed successfully in $PREFIX."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

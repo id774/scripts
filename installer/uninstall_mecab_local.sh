@@ -171,7 +171,9 @@ main() {
     uninstall_neologd
 
     echo "[INFO] Uninstallation process completed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

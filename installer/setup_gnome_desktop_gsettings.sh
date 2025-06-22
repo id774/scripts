@@ -100,7 +100,9 @@ main() {
     gsettings_settings org.gnome.desktop.media-handling autorun-never true
 
     echo "[INFO] GNOME media handling settings updated successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

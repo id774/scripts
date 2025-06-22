@@ -111,7 +111,9 @@ main() {
     setup_dconf_keys "Move window" "move-to-workspace" "<Primary><Alt>"
 
     echo "[INFO] GNOME workspace keybindings successfully configured."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

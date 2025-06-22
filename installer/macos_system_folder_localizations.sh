@@ -133,7 +133,9 @@ main() {
             usage
             ;;
     esac
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

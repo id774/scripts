@@ -208,7 +208,9 @@ main() {
     fi
     perform_tracker_operations
     echo "[INFO] Tracker has been completely removed and cleaned up."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -225,7 +225,9 @@ main() {
     install_python
 
     echo "[INFO] Python $VERSION installed successfully in $PREFIX."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

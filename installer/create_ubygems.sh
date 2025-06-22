@@ -169,7 +169,9 @@ main() {
 
     # Create ubygems.rb if necessary
     create_ubygems
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?
