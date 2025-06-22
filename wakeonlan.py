@@ -25,16 +25,33 @@
 #  Usage:
 #  Run the script with a MAC address as the argument.
 #  Example:
-#      python wakeonlan.py 00:11:22:33:44:55
+#      wakeonlan.py 00:11:22:33:44:55
 #  This will send a magic packet to the specified MAC address.
 #
 ########################################################################
 
+import os
 import socket
 import sys
 from traceback import print_exc
 
 DEFAULT_PORT = 9
+
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_usage = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('#  Usage:'):
+                in_usage = True
+                print(line[2:].strip())
+                continue
+            if in_usage:
+                if line.startswith('#' * 10):
+                    break
+                if line.startswith('#'):
+                    print(line[2:].strip())
+    sys.exit(0)
 
 def format_mac_address(mac):
     """Remove delimiters from a MAC address and convert to uppercase."""
@@ -63,6 +80,8 @@ def send_magic_packet(addr):
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
+        if sys.argv[1] in ('-h', '--help'):
+            usage()
         try:
             send_magic_packet(sys.argv[1])
         except Exception as e:

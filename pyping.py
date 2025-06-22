@@ -23,8 +23,18 @@
 #      Initial release. Python version of the rubyping.rb script.
 #
 #  Usage:
-#  pyping.py <subnet> <start_ip> <end_ip> [--ordered|-o]
-#  Example: pyping.py 192.168.11. 1 32 --ordered
+#  pyping.py [-h] [-o] subnet start_ip end_ip
+#
+#  Ping a range of IP addresses in a subnet.
+#
+#  positional arguments:
+#    subnet         Subnet part of the IP. Example: "192.168.11."
+#    start_ip       Start of the IP range. Example: 1
+#    end_ip         End of the IP range. Example: 32
+#
+#  options:
+#    -h, --help     show this help message and exit
+#    -o, --ordered  Display results in ascending order of IP addresses.
 #
 #  Notes:
 #  - Ensure you have permissions to send pings to the target IPs.
@@ -35,8 +45,25 @@
 import argparse
 import os
 import subprocess
+import sys
 import threading
 
+
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_usage = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('#  Usage:'):
+                in_usage = True
+                print(line[2:].strip())
+                continue
+            if in_usage:
+                if line.startswith('#' * 10):
+                    break
+                if line.startswith('#'):
+                    print(line[2:].strip())
+    sys.exit(0)
 
 def ping(ip, results):
     """
@@ -93,6 +120,9 @@ def main(subnet, start_ip, end_ip, ordered):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) < 3 or sys.argv[1] in ('-h', '--help'):
+        usage()
+
     # Setup argparse for command-line arguments
     parser = argparse.ArgumentParser(
         description='Ping a range of IP addresses in a subnet.')

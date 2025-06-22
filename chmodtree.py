@@ -40,7 +40,7 @@
 #
 #  Usage:
 #  Run the script with a directory and options:
-#      python chmodtree.py [options] dir
+#      chmodtree.py [options] dir
 #
 #  Options:
 #    -h, --help            show this help message and exit
@@ -74,6 +74,22 @@ import subprocess
 import sys
 from optparse import OptionParser
 
+
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_usage = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('#  Usage:'):
+                in_usage = True
+                print(line[2:].strip())
+                continue
+            if in_usage:
+                if line.startswith('#' * 10):
+                    break
+                if line.startswith('#'):
+                    print(line[2:].strip())
+    sys.exit(0)
 
 def check_sudo():
     """Check if the user has sudo privileges (password may be required)."""
@@ -168,4 +184,7 @@ def main():
 
 
 if __name__ == "__main__":
+    if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help'):
+        usage()
+
     main()

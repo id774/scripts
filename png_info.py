@@ -28,13 +28,31 @@
 #  Usage:
 #  python png_info.py <file_pattern>
 #  Example: python png_info.py *.png
+#  Reads width, height, bit depth, and color type information from PNG files.
 #
 ########################################################################
 
 import glob
+import os
 import struct
 import sys
 
+
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_usage = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('#  Usage:'):
+                in_usage = True
+                print(line[2:].strip())
+                continue
+            if in_usage:
+                if line.startswith('#' * 10):
+                    break
+                if line.startswith('#'):
+                    print(line[2:].strip())
+    sys.exit(0)
 
 def read_png_info(png_file_path):
     """
@@ -70,15 +88,10 @@ def read_png_info(png_file_path):
 
         return width, height, bit_depth, color_type_name
 
-def print_help():
-    print("[INFO] Usage: python png_info.py <file_pattern>")
-    print("[INFO] Example: python png_info.py *.png")
-    print("[INFO] Reads width, height, bit depth, and color type information from PNG files.")
-
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        print_help()
+    if len(sys.argv) == 1 or sys.argv[1] in ('-h', '--help'):
+        usage()
     else:
         # Process each file matching the provided glob pattern
         for arg in sys.argv[1:]:

@@ -29,7 +29,7 @@
 #
 #  Usage:
 #  Run the script with or without arguments:
-#      python cal.py [arguments]
+#      cal.py [arguments]
 #
 #  Without arguments, it prints the calendars for the current, previous,
 #  and next month. With arguments, it executes the system's 'cal' command
@@ -44,6 +44,22 @@ import platform
 import subprocess
 import sys
 
+
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_usage = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('#  Usage:'):
+                in_usage = True
+                print(line[2:].strip())
+                continue
+            if in_usage:
+                if line.startswith('#' * 10):
+                    break
+                if line.startswith('#'):
+                    print(line[2:].strip())
+    sys.exit(0)
 
 def print_month_calendar(year, month, highlight_day=None):
     """
@@ -112,6 +128,8 @@ def is_unix_like():
 
 # Main execution
 if __name__ == '__main__':
+    if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help'):
+        usage()
     if is_unix_like() and command_exists('cal') and len(sys.argv) > 1:
         # Pass arguments to the system's 'cal' command
         run_system_cal(sys.argv[1:])

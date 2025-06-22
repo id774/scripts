@@ -28,8 +28,14 @@
 #       using binary prefixes.
 #
 #  Usage:
-#  ./dirsize.py [directory]
-#  If no directory is specified, the current directory is used.
+#      dirsize.py [options] [directory]
+#
+#  Options:
+#    -h                Display this help message and exit
+#
+#  If no directory is specified, it displays this help message.
+#  To check the current directory, use:
+#    ./dirsize.py .
 #
 ########################################################################
 
@@ -38,6 +44,22 @@ import subprocess
 import sys
 from decimal import Decimal, getcontext
 
+
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_usage = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('#  Usage:'):
+                in_usage = True
+                print(line[2:].strip())
+                continue
+            if in_usage:
+                if line.startswith('#' * 10):
+                    break
+                if line.startswith('#'):
+                    print(line[2:].strip())
+    sys.exit(0)
 
 def convert_size(size_bytes):
     if size_bytes == 0:
@@ -54,25 +76,9 @@ def convert_size(size_bytes):
 
     return "{:.2f} {}".format(size_bytes, prefix[i])
 
-def display_help():
-    print("""
-Usage: ./dirsize.py [options] [directory]
-
-Options:
-  -h                Display this help message and exit
-
-If no directory is specified, it displays this help message.
-To check the current directory, use:
-  ./dirsize.py .
-""")
-
 def main():
-    if len(sys.argv) == 1:
-        display_help()
-        sys.exit(0)
-    elif sys.argv[1] == '-h':
-        display_help()
-        sys.exit(0)
+    if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help'):
+        usage()
 
     directory = sys.argv[1]
 

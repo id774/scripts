@@ -24,18 +24,35 @@
 #
 #  Usage:
 #  Run the script with one or more strings:
-#      ./namecalc.py [string1 string2 ...]
+#      namecalc.py [string1 string2 ...]
 #
 #  Example:
-#      ./namecalc.py 111 153 111 115
+#      namecalc.py 111 153 111 115
 #  This will perform numerology calculations on the provided strings and
 #  display the results.
 #
 ########################################################################
 
+import os
 import re
 import sys
 
+
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_usage = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('#  Usage:'):
+                in_usage = True
+                print(line[2:].strip())
+                continue
+            if in_usage:
+                if line.startswith('#' * 10):
+                    break
+                if line.startswith('#'):
+                    print(line[2:].strip())
+    sys.exit(0)
 
 class NameCalc:
     @staticmethod
@@ -88,12 +105,10 @@ class NameCalc:
 
 
 def main():
-    if len(sys.argv) > 1:
-        NameCalc.calc("".join(sys.argv[1:]))
-    else:
-        print("[INFO] Usage: {} [string1 string2 ...]".format(sys.argv[0]))
-        print("[INFO] Example: {} 111 153 111 115".format(sys.argv[0]))
-        sys.exit(0)
+    if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help'):
+        usage()
+
+    NameCalc.calc("".join(sys.argv[1:]))
 
 
 if __name__ == "__main__":

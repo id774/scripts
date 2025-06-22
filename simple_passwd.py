@@ -21,9 +21,11 @@
 #       Initial release.
 #
 #  Usage:
-#  python simple_password.py [options] length
+#  simple_passwd.py [options] length
+#
 #  Options:
-#    -s, --no-symbols: Do not include symbols in the password
+#    -h, --help        show this help message and exit
+#    -s, --no-symbols  Do not include symbols in the password
 #
 ########################################################################
 

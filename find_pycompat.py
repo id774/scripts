@@ -62,8 +62,14 @@
 #       Initial release. Search for f-strings in Python files.
 #
 #  Usage:
-#  ./find_pycompat.py [directory]
-#  If no directory is specified, it searches in the current directory.
+#      find_pycompat.py [options] [directory]
+#
+#  Options:
+#    -h                Display this help message and exit
+#
+#  If no directory is specified, it displays this help message.
+#  To check the current directory, use:
+#      find_pycompat.py .
 #
 #  Notes:
 #  This script excludes certain lines from the search to avoid false positives. Specifically,
@@ -78,6 +84,22 @@ import re
 import sys
 
 detected_issues = []  # List to store detected issues
+
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_usage = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('#  Usage:'):
+                in_usage = True
+                print(line[2:].strip())
+                continue
+            if in_usage:
+                if line.startswith('#' * 10):
+                    break
+                if line.startswith('#'):
+                    print(line[2:].strip())
+    sys.exit(0)
 
 def is_excluded_line(line):
     """ Check if the line should be excluded from search (e.g., comments). """
@@ -108,26 +130,7 @@ def search_feature(directory, feature_name, pattern):
                             print(file_path + ":" + str(i + 1) + ": " + line.strip())
                             detected_issues.append(os.path.basename(file_path))  # Store only the file name, not the entire path
 
-def display_help():
-    print("""
-Usage: ./find_pycompat.py [options] [directory]
-
-Options:
-  -h                Display this help message and exit
-
-If no directory is specified, it displays this help message.
-To check the current directory, use:
-  ./find_pycompat.py .
-""")
-
 def main():
-    if len(sys.argv) == 1:
-        display_help()
-        sys.exit(0)
-    elif sys.argv[1] == '-h':
-        display_help()
-        sys.exit(0)
-
     target_dir = sys.argv[1]
 
     # Check if the target directory exists
@@ -168,4 +171,7 @@ def main():
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help'):
+        usage()
+
     main()

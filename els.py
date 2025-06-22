@@ -23,10 +23,10 @@
 #
 #  Usage:
 #  Run the script without arguments to list the current directory:
-#      ./els.py
+#      els.py
 #
 #  Specify a directory path to list its contents:
-#      ./els.py /path/to/directory
+#      els.py /path/to/directory
 #
 #  Requirements:
 #  - Python 3.x must be installed.
@@ -55,6 +55,22 @@ import time
 
 # Exported functions for testing and external usage
 __all__ = ["format_time", "get_owner", "get_group", "format_file_entry", "get_file_info"]
+
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_usage = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('#  Usage:'):
+                in_usage = True
+                print(line[2:].strip())
+                continue
+            if in_usage:
+                if line.startswith('#' * 10):
+                    break
+                if line.startswith('#'):
+                    print(line[2:].strip())
+    sys.exit(0)
 
 def format_time(timestamp):
     """ Convert timestamp to 'YYYY-MM-DD HH:MM:SS' format in local time """
@@ -138,4 +154,7 @@ def main():
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help'):
+        usage()
+
     main()

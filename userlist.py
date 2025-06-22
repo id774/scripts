@@ -26,7 +26,7 @@
 #
 #  Usage:
 #  Run the script without any arguments:
-#      python userlist.py
+#      userlist.py
 #
 #  The script automatically detects the system type and sets the UID threshold
 #  accordingly. It then displays a list of user accounts with UIDs above this threshold.
@@ -36,7 +36,24 @@
 import os
 import platform
 import subprocess
+import sys
 
+
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_usage = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('#  Usage:'):
+                in_usage = True
+                print(line[2:].strip())
+                continue
+            if in_usage:
+                if line.startswith('#' * 10):
+                    break
+                if line.startswith('#'):
+                    print(line[2:].strip())
+    sys.exit(0)
 
 def show_userlist(threshold):
     if platform.system() == 'Darwin':
@@ -75,4 +92,6 @@ def main():
 
 
 if __name__ == '__main__':
+    if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help'):
+        usage()
     main()

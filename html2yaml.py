@@ -51,6 +51,7 @@
 #
 ########################################################################
 
+import os
 import sys
 
 # Importing necessary libraries
@@ -62,6 +63,22 @@ except ImportError as e:
     libraries_installed = False
 else:
     libraries_installed = True
+
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_usage = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('#  Usage:'):
+                in_usage = True
+                print(line[2:].strip())
+                continue
+            if in_usage:
+                if line.startswith('#' * 10):
+                    break
+                if line.startswith('#'):
+                    print(line[2:].strip())
+    sys.exit(0)
 
 def html_to_yaml(element):
     """ Convert HTML element to YAML-structured data. """
@@ -82,10 +99,6 @@ def main():
         print("[ERROR] Required libraries not installed.", file=sys.stderr)
         sys.exit(1)
 
-    if len(sys.argv) != 2:
-        print("[INFO] Usage: python html2yaml.py URL_OR_PATH")
-        sys.exit(0)
-
     source = sys.argv[1]
 
     try:
@@ -104,4 +117,7 @@ def main():
 
 
 if __name__ == "__main__":
+    if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help'):
+        usage()
+
     main()

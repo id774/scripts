@@ -26,7 +26,7 @@
 #  v1.6 2024-06-07
 #       Fixed the issue where the local time range was not properly handled.
 #  v1.5 2024-03-28
-#       Enhanced the output format to include timezone offset in '±hh:mm' format
+#       Enhanced the output format to include timezone offset in a format like '+09:00' or '-05:00'
 #       when using local timezone with '-l' option.
 #  v1.4 2024-03-16
 #       Fixed a bug where hidden files and directories were not properly excluded
@@ -47,14 +47,15 @@
 #
 #  Usage:
 #  Run this script with the appropriate options to list files modified within a specified datetime range.
+#      find_range.py [-h] [-d DATETIME [DATETIME ...]] [-s START [START ...]] [-e END [END ...]] [-p PATH] [-a] [-f] [-fp] [-l]
 #  Examples:
-#     ./find_range.py -d "2024-01-01"
-#     ./find_range.py -s "2024-01-01" -e "2024-01-02 13:00"
-#     ./find_range.py -d "2024-01-01" -p "/path/to/directory"
-#     ./find_range.py -d "2024-03-02" -f
-#     ./find_range.py -e "2024-01-02"
-#     ./find_range.py -l -s "2024-01-01" -e "2024-01-02 13:00"
-#     ./find_range.py -fp -s "2024-11-15 00:47" -e "2024-11-15 00:48"
+#      find_range.py -d "2024-01-01"
+#      find_range.py -s "2024-01-01" -e "2024-01-02 13:00"
+#      find_range.py -d "2024-01-01" -p "/path/to/directory"
+#      find_range.py -d "2024-03-02" -f
+#      find_range.py -e "2024-01-02"
+#      find_range.py -l -s "2024-01-01" -e "2024-01-02 13:00"
+#      find_range.py -fp -s "2024-11-15 00:47" -e "2024-11-15 00:48"
 #
 #  Options:
 #  -d, --datetime:  Date and optional time in ISO format (YYYY-MM-DD [HH:MM]).
@@ -91,6 +92,22 @@ import os
 import sys
 from datetime import datetime, timezone
 
+
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_usage = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('#  Usage:'):
+                in_usage = True
+                print(line[2:].strip())
+                continue
+            if in_usage:
+                if line.startswith('#' * 10):
+                    break
+                if line.startswith('#'):
+                    print(line[2:].strip())
+    sys.exit(0)
 
 def parse_arguments():
     """
@@ -185,9 +202,9 @@ def list_recent_files(root_dir, start_datetime, end_datetime, include_hidden, fi
                 else:
                     # Format the modification time in ISO 8601 format, indicating UTC with 'Z'
                     if use_localtime:
-                        # Convert timezone offset to '±hh:mm' format
+                        # Convert timezone offset to '賊hh:mm' format
                         tz_offset = mtime.strftime('%z')  # Get timezone offset, e.g., '+0900'
-                        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '±hh:mm'
+                        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '賊hh:mm'
                         print("{}{} - {}".format(mtime.strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, file_path))
                     else:
                         print("{} - {}".format(mtime.strftime('%Y-%m-%dT%H:%M:%SZ'), file_path))
@@ -211,4 +228,7 @@ def main():
 
 
 if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help'):
+        usage()
+
     main()

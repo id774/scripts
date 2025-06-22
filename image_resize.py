@@ -40,6 +40,22 @@ except ImportError as e:
 else:
     libraries_installed = True
 
+def usage():
+    script_path = os.path.abspath(__file__)
+    in_usage = False
+    with open(script_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if line.startswith('#  Usage:'):
+                in_usage = True
+                print(line[2:].strip())
+                continue
+            if in_usage:
+                if line.startswith('#' * 10):
+                    break
+                if line.startswith('#'):
+                    print(line[2:].strip())
+    sys.exit(0)
+
 def resize_file(size, filename, outpath):
     """Resizes an image to a square of the given size."""
     img = Image.open(filename, 'r')
@@ -84,4 +100,7 @@ def main():
 
 
 if __name__ == '__main__':
+    if len(sys.argv) < 4 or sys.argv[1] in ('-h', '--help'):
+        usage()
+
     main()
