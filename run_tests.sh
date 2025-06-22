@@ -237,7 +237,7 @@ display_final_report() {
 # Run all tests
 run_tests() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     cd "$SCRIPTS" || exit

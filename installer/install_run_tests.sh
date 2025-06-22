@@ -201,7 +201,7 @@ final_message() {
 # Main function to execute all setup tasks
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     check_system

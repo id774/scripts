@@ -76,7 +76,7 @@ exec_sql() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     check_commands sqlite3

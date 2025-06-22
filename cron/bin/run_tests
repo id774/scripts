@@ -192,7 +192,7 @@ send_mail_to_admin() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     initialize

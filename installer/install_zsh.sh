@@ -219,7 +219,7 @@ install_zsh() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     # Perform initial checks

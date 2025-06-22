@@ -76,7 +76,7 @@ restore_selinux_context() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     if ! is_running_from_cron; then

@@ -72,7 +72,7 @@ vacuum_safari_cache() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     check_sqlite3

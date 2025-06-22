@@ -123,7 +123,7 @@ send_test_message() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     determine_fluentd_paths "$1"

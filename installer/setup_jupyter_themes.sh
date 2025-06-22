@@ -109,7 +109,7 @@ install_jupyter_theme() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     setup_environment "$@"

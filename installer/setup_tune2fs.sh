@@ -144,7 +144,7 @@ set_lvm_logvol() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     echo "[INFO] Starting tune2fs configuration..."

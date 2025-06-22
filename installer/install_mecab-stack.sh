@@ -156,7 +156,7 @@ check_sudo() {
 # Parse command line arguments
 parse_args() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
         -*) : ;;
         "") : ;;
         *) PREFIX="$1"; shift ;;

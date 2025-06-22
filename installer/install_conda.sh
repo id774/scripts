@@ -214,7 +214,7 @@ install_libs() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     echo "[INFO] Starting Conda environment setup and library installation..."

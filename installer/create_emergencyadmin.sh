@@ -142,7 +142,7 @@ hide_user_from_loginwindow() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     check_system

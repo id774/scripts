@@ -84,7 +84,7 @@ import_gpg_key() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     # Check if both arguments are provided

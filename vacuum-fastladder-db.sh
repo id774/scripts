@@ -103,7 +103,7 @@ vacuum_and_optimize_db() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     check_commands sqlite3 rm

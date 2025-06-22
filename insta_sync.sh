@@ -161,7 +161,7 @@ check_remote_sync() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     # Check for Instagram account name argument

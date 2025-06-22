@@ -267,7 +267,7 @@ main() {
 
     while [ $# -gt 0 ]; do
         case "$1" in
-            -h|--help) usage ;;
+            -h|--help|-v|--version) usage ;;
             -s|--send) SEND_MODE="yes" ;;
             -z|--7z)   USE_7Z="yes" ;;
             -d|--dir)

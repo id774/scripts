@@ -187,7 +187,7 @@ install_des() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
 
     if command -v des >/dev/null 2>&1; then

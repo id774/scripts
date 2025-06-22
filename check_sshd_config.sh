@@ -92,7 +92,7 @@ check_additional_sshd() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help) usage ;;
+        -h|--help|-v|--version) usage ;;
     esac
     check_commands grep
     check_main_sshd

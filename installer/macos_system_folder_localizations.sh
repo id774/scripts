@@ -116,7 +116,7 @@ disable_localization() {
 # Main function to execute the script
 main() {
     case "$1" in
-        -h|--help)
+        -h|--help|-v|--version)
             usage
             ;;
         enable|disable)
