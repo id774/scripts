@@ -81,14 +81,11 @@ def send_magic_packet(addr):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        if sys.argv[1] in ('-h', '--help', '-v', '--version'):
-            usage()
-        try:
-            send_magic_packet(sys.argv[1])
-        except Exception as e:
-            print("[ERROR] {}".format(e), file=sys.stderr)
-            print_exc()
-    else:
-        print("[ERROR] This program requires at least 1 argument (MAC address).", file=sys.stderr)
-        sys.exit(1)
+    if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
+        usage()
+
+    try:
+        send_magic_packet(sys.argv[1])
+    except Exception as e:
+        print("[ERROR] {}".format(e), file=sys.stderr)
+        print_exc()
