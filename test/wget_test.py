@@ -26,7 +26,7 @@
 import os
 import sys
 import unittest
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import MagicMock, call, mock_open, patch
 
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -102,15 +102,19 @@ class TestWget(unittest.TestCase):
         Test case: Missing command-line arguments.
         This test verifies that:
         - The usage message is displayed when no URL is provided.
-        - The script exits with status code 1.
+        - The script exits with status code 0.
         """
-        # Verify that the script exits and prints the usage message
         with self.assertRaises(SystemExit) as cm:
             usage()
         self.assertEqual(cm.exception.code, 0)
 
-        # Verify that the correct usage message is printed
-        mock_print.assert_called_once_with("[INFO] Usage: {} <URL>".format(sys.argv[0]))
+        expected = [
+            call('Usage:'),
+            call('python wget.py <URL>'),
+            call('Example: python wget.py http://example.com/file.txt'),
+            call('')
+        ]
+        self.assertEqual(mock_print.call_args_list, expected)
 
     @patch('wget.requests.get')
     @patch('builtins.open', new_callable=mock_open)
