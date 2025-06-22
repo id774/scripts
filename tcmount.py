@@ -298,7 +298,7 @@ def main():
 
     (options, args) = parser.parse_args()
 
-    if "-h" in sys.argv or "--help" in sys.argv or "-V" in sys.argv or "--version" in sys.argv:
+    if "-V" in sys.argv or "--version" in sys.argv:
         parser.print_help()
         sys.exit(0)
     check_sudo()
@@ -307,6 +307,6 @@ def main():
 
 
 if __name__ == "__main__":
-    if len(sys.argv) == 1 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
+    if len(sys.argv) == 1 or sys.argv[1] in ('-h', '--help'):
         usage()
     main()
