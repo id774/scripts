@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2023-12-06
 #       Refactored for improved readability and added detailed comments.
 #  v1.0 2012-02-29
@@ -26,24 +28,28 @@
 
 require 'open-uri'
 
-# Prints the usage message and exits the script
 def usage
-  prog = __FILE__
-  puts "Usage: #{prog} <URL>"
-  exit 1
+  script = File.expand_path(__FILE__)
+  in_header = false
+  File.foreach(script) do |line|
+    if line.strip.start_with?('#' * 10)
+      in_header = !in_header
+      next
+    end
+    puts line.sub(/^# ?/, '') if in_header && line.strip.start_with?('#')
+  end
+  exit 0
 end
 
-# Check if URL is provided
-url = ARGV.shift
-usage unless url
+if ARGV.empty? || ['-h', '--help', '-v', '--version'].include?(ARGV[0])
+  usage
+end
 
-# Extract filename from URL
+url = ARGV.shift
 filename = url.split(/\//).last
 
-# Download and save the file
 open(url) do |source|
   open(filename, "w+b") do |o|
     o.print source.read
   end
 end
-
