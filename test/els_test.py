@@ -35,28 +35,28 @@ import els
 
 
 class TestEls(unittest.TestCase):
-    """Test suite for els.py"""
+    """ Test suite for els.py """
 
     # Test Cases for format_time()
     def test_format_time(self):
-        """Ensure timestamps are converted to 'YYYY-MM-DD HH:MM:SS' in local time."""
+        """ Ensure timestamps are converted to 'YYYY-MM-DD HH:MM:SS' in local time. """
         test_timestamp = 1706700000  # Corresponds to 2024-02-01 00:00:00 UTC
         expected_output = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(test_timestamp))
         self.assertEqual(els.format_time(test_timestamp), expected_output)
 
     def test_format_time_none(self):
-        """Ensure format_time() handles None gracefully by raising ValueError."""
+        """ Ensure format_time() handles None gracefully by raising ValueError. """
         with self.assertRaises(ValueError):
             els.format_time(None)
 
     def test_format_time_negative(self):
-        """Ensure format_time() handles timestamps before 1970."""
+        """ Ensure format_time() handles timestamps before 1970. """
         test_timestamp = -1000000000  # Before Unix epoch
         expected_output = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(test_timestamp))
         self.assertEqual(els.format_time(test_timestamp), expected_output)
 
     def test_format_time_float(self):
-        """Ensure format_time() handles float timestamps."""
+        """ Ensure format_time() handles float timestamps. """
         test_timestamp = 1706700000.123456  # Float timestamp
         expected_output = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(test_timestamp))
         self.assertEqual(els.format_time(test_timestamp), expected_output)
@@ -65,7 +65,7 @@ class TestEls(unittest.TestCase):
     @patch('os.path.isfile', return_value=True)
     @patch('os.stat')
     def test_get_file_info_single_file(self, mock_stat, mock_isfile):
-        """Ensure get_file_info() returns correct metadata for a single file."""
+        """ Ensure get_file_info() returns correct metadata for a single file. """
         mock_stat.return_value.st_mode = 0o100644
         mock_stat.return_value.st_size = 1234
         mock_stat.return_value.st_uid = 1000
@@ -88,7 +88,7 @@ class TestEls(unittest.TestCase):
     @patch('os.path.isfile', return_value=True)
     @patch('os.stat')
     def test_get_file_info_symlink(self, mock_stat, mock_isfile, mock_islink):
-        """Ensure get_file_info() correctly handles symbolic links."""
+        """ Ensure get_file_info() correctly handles symbolic links. """
         mock_stat.return_value.st_mode = 0o120777  # Symlink mode
         mock_stat.return_value.st_size = 0
         mock_stat.return_value.st_uid = 1000
@@ -110,7 +110,7 @@ class TestEls(unittest.TestCase):
     @patch('os.path.exists', return_value=True)
     @patch('os.path.isdir', return_value=True)
     def test_get_file_info_directory(self, mock_isdir, mock_exists, mock_scandir):
-        """Ensure get_file_info() returns correct metadata for a directory."""
+        """ Ensure get_file_info() returns correct metadata for a directory. """
         mock_entry = MagicMock()
         mock_entry.path = "/fake/path/file.txt"
         mock_scandir.return_value.__enter__.return_value = [mock_entry]
@@ -122,7 +122,7 @@ class TestEls(unittest.TestCase):
 
     @patch('os.path.exists', return_value=False)
     def test_get_file_info_not_found(self, mock_exists):
-        """Ensure get_file_info() handles nonexistent paths correctly."""
+        """ Ensure get_file_info() handles nonexistent paths correctly. """
         result = els.get_file_info("/nonexistent")
         self.assertEqual(result, "[ERROR] '/nonexistent' does not exist.")
 
@@ -130,7 +130,7 @@ class TestEls(unittest.TestCase):
     @patch('os.path.exists', return_value=True)
     @patch('os.path.isdir', return_value=True)
     def test_get_file_info_permission_error(self, mock_isdir, mock_exists, mock_scandir):
-        """Ensure get_file_info() handles permission errors correctly."""
+        """ Ensure get_file_info() handles permission errors correctly. """
         result = els.get_file_info("/restricted")
         self.assertEqual(result, "[ERROR] Permission denied for '/restricted'.")
 

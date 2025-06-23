@@ -32,17 +32,17 @@ import md5
 
 
 class TestMd5Checksum(unittest.TestCase):
-    """Test cases for Md5Checksum class in md5.py."""
+    """ Test cases for Md5Checksum class in md5.py. """
 
     def test_calculate_checksum_for_string(self):
-        """Test MD5 checksum calculation for a given string."""
+        """ Test MD5 checksum calculation for a given string. """
         test_string = "hello world"
         expected_checksum = "5eb63bbbe01eeed093cb22bb8f5acdc3"
         self.assertEqual(md5.Md5Checksum.calculate_checksum_for_string(
             test_string), expected_checksum)
 
     def test_calculate_checksum_for_file(self):
-        """Test MD5 checksum calculation for a given file."""
+        """ Test MD5 checksum calculation for a given file. """
         # Getting the absolute path of the test file
         test_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                                       "md5_testdata.txt")

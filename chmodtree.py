@@ -97,7 +97,7 @@ def usage():
     sys.exit(0)
 
 def check_sudo():
-    """Check if the user has sudo privileges (password may be required)."""
+    """ Check if the user has sudo privileges (password may be required). """
     try:
         with open(os.devnull, 'w') as devnull:
             result = subprocess.call(["sudo", "-v"], stdout=devnull, stderr=devnull)

@@ -42,10 +42,10 @@ import find_pycompat
 
 
 class TestFindPyCompat(unittest.TestCase):
-    """Unit tests for the find_pycompat.py script."""
+    """ Unit tests for the find_pycompat.py script. """
 
     def setUp(self):
-        """Common setup for all tests."""
+        """ Common setup for all tests. """
         self.mock_walk = patch('os.walk').start()
         self.mock_walk.return_value = [('.', [], ['dummy.py'])]
         self.mock_open = patch('builtins.open').start()
@@ -53,7 +53,7 @@ class TestFindPyCompat(unittest.TestCase):
         self.file_content = ""
 
     def tearDown(self):
-        """Tear down mocks after each test."""
+        """ Tear down mocks after each test. """
         patch.stopall()
 
     def mock_file_read(self, *args, **kwargs):

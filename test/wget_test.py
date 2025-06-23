@@ -41,7 +41,7 @@ except ImportError:
 
 
 class TestWget(unittest.TestCase):
-    """Test suite for wget.py"""
+    """ Test suite for wget.py """
 
     def setUp(self):
         if not HAS_REQUESTS:

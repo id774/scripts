@@ -89,7 +89,7 @@ def usage():
 
 class InstagramPhotoDownloader:
     def __init__(self, username, permissions=0o640, sleep_time=10):
-        """Initialize with username, permissions, and custom sleep time."""
+        """ Initialize with username, permissions, and custom sleep time. """
         if not INSTALOADER_AVAILABLE:
             print("[ERROR] Instaloader is not available. Functionality will be limited.", file=sys.stderr)
             sys.exit(1)
@@ -156,7 +156,7 @@ class InstagramPhotoDownloader:
         print("[INFO] Download completed.")
 
     def _get_instagram_photo_urls(self):
-        """Fetches and returns URLs and metadata for all posts in the specified account, sorted chronologically."""
+        """ Fetches and returns URLs and metadata for all posts in the specified account, sorted chronologically. """
         posts_data = []
         for post in self.profile.get_posts():
             if post.typename == "GraphImage":
@@ -169,7 +169,7 @@ class InstagramPhotoDownloader:
         return sorted_posts_data
 
     def _download_and_save_image(self, url, filename):
-        """Downloads an image from the specified URL and saves it with the specified filename and permissions."""
+        """ Downloads an image from the specified URL and saves it with the specified filename and permissions. """
         urllib.request.urlretrieve(url, filename)
         os.chmod(filename, self.permissions)  # Set permissions for the downloaded file
         time.sleep(self.sleep_time)  # Use custom sleep time to prevent too many requests in a short time

@@ -42,10 +42,10 @@ except ImportError:
 
 @unittest.skipIf(not HAS_INSTA_DOWNLOADER, "insta_downloader module is not available")
 class TestInstagramPhotoDownloader(unittest.TestCase):
-    """Test suite for InstagramPhotoDownloader."""
+    """ Test suite for InstagramPhotoDownloader. """
 
     def setUp(self):
-        """Set up mocks for all tests."""
+        """ Set up mocks for all tests. """
         if not HAS_INSTA_DOWNLOADER:
             self.skipTest("insta_downloader module is not available")
 

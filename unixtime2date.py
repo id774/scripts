@@ -58,13 +58,13 @@ def usage():
     sys.exit(0)
 
 def unixtime2date(its):
-    """Convert Unix timestamp to human-readable date in local timezone (ISO 8601 format)."""
+    """ Convert Unix timestamp to human-readable date in local timezone (ISO 8601 format). """
     local_datetime = datetime.datetime.fromtimestamp(
         its, datetime.timezone.utc).astimezone()
     return local_datetime.isoformat()
 
 def main(args):
-    """Process the command line arguments and output the result."""
+    """ Process the command line arguments and output the result. """
     if len(args) > 1:
         try:
             print(unixtime2date(int(args[1])))

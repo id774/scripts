@@ -51,7 +51,7 @@ from html2yaml import html_to_yaml
 
 
 class Html2YamlTest(unittest.TestCase):
-    """Unit tests for the html2yaml.py script."""
+    """ Unit tests for the html2yaml.py script. """
 
     @classmethod
     def setUpClass(cls):

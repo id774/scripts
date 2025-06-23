@@ -38,7 +38,7 @@ import zero_padding
 
 
 class TestZeroPadding(unittest.TestCase):
-    """Test cases for the rename_files function in zero_padding.py."""
+    """ Test cases for the rename_files function in zero_padding.py. """
 
     @patch('os.rename')
     @patch('os.listdir')

@@ -38,7 +38,7 @@ import image_resize
 
 
 class TestImageResize(unittest.TestCase):
-    """Unit tests for the image_resize.py script."""
+    """ Unit tests for the image_resize.py script. """
 
     @classmethod
     def setUpClass(cls):
@@ -50,7 +50,7 @@ class TestImageResize(unittest.TestCase):
     @patch('image_resize.Image.open')
     @patch('image_resize.os.walk')
     def test_read_dir(self, mock_os_walk, mock_image_open, mock_print):
-        """Test the functionality of the read_dir function."""
+        """ Test the functionality of the read_dir function. """
         mock_print.side_effect = lambda *args, **kwargs: None
         test_size = 300
         test_src = 'test_source_dir'

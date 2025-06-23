@@ -75,7 +75,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_recent_files(self, mock_walk, mock_getmtime, mock_print):
-        """Test that only files modified after the specified date are listed."""
+        """ Test that only files modified after the specified date are listed. """
         test_start_date = datetime(2024, 2, 24, 7, 0, tzinfo=timezone.utc)
         test_path = "/path/to/directory"
         include_hidden = False
@@ -102,7 +102,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_hidden_directories_included(self, mock_walk, mock_getmtime, mock_print):
-        """Test that hidden files are included when the '-a' option is used."""
+        """ Test that hidden files are included when the '-a' option is used. """
         test_path = "/path/to/directory"
         include_hidden = True
         test_start_date = datetime(2024, 2, 24, 7, 0, tzinfo=timezone.utc)
@@ -121,7 +121,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_hidden_directories_excluded(self, mock_walk, mock_getmtime, mock_print):
-        """Test that hidden files are excluded by default."""
+        """ Test that hidden files are excluded by default. """
         test_path = "/path/to/directory"
         include_hidden = False
         test_start_date = datetime(2024, 2, 24, 7, 0, tzinfo=timezone.utc)
@@ -139,7 +139,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_filenames_only_option(self, mock_walk, mock_getmtime, mock_print):
-        """Test that only filenames are listed when the '-f' option is used."""
+        """ Test that only filenames are listed when the '-f' option is used. """
         test_path = "/path/to/directory"
         include_hidden = False
         filenames_only = True
@@ -163,7 +163,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_fullpath_only_option(self, mock_walk, mock_getmtime, mock_print):
-        """Test that only full paths are listed when the '-fp' option is used."""
+        """ Test that only full paths are listed when the '-fp' option is used. """
         test_path = "/path/to/directory"
         include_hidden = False
         fullpath_only = True
@@ -186,7 +186,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_files_before_end_date(self, mock_walk, mock_getmtime, mock_print):
-        """Tests that files modified before the specified end date are listed."""
+        """ Tests that files modified before the specified end date are listed. """
         test_start_date = None  # No start date specified
         test_end_date = datetime(2024, 3, 5, 23, 59, tzinfo=timezone.utc)
         test_path = "/path/to/directory"
@@ -210,7 +210,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_files_before_end_date_only(self, mock_walk, mock_getmtime, mock_print):
-        """Tests that files modified before the specified end date only are listed."""
+        """ Tests that files modified before the specified end date only are listed. """
         test_end_date = datetime(2024, 3, 5, tzinfo=timezone.utc)  # End date without time specified
         test_path = "/path/to/directory"
         include_hidden = False
@@ -232,7 +232,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_files_before_end_datetime_only(self, mock_walk, mock_getmtime, mock_print):
-        """Tests that files modified before the specified end datetime only are listed."""
+        """ Tests that files modified before the specified end datetime only are listed. """
         test_end_datetime = datetime(2024, 3, 5, 15, 30, tzinfo=timezone.utc)  # End datetime specified
         test_path = "/path/to/directory"
         include_hidden = False
@@ -254,7 +254,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_files_within_start_end_datetime_range(self, mock_walk, mock_getmtime, mock_print):
-        """Tests that files modified within the specified start and end datetime range are listed, including boundary values."""
+        """ Tests that files modified within the specified start and end datetime range are listed, including boundary values. """
         test_start_datetime = datetime(2024, 3, 4, 8, 0, tzinfo=timezone.utc)
         test_end_datetime = datetime(2024, 3, 5, 18, 0, tzinfo=timezone.utc)
         test_path = "/path/to/directory"
@@ -284,7 +284,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_end_datetime_with_hidden_files_option(self, mock_walk, mock_getmtime, mock_print):
-        """Tests listing files before specified end datetime including hidden files."""
+        """ Tests listing files before specified end datetime including hidden files. """
         test_end_datetime = datetime(2024, 3, 5, 15, 30, tzinfo=timezone.utc)
         test_path = "/path/to/directory"
         include_hidden = True  # Include hidden files
@@ -310,7 +310,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_start_end_datetime_with_filenames_only_option(self, mock_walk, mock_getmtime, mock_print):
-        """Tests listing filenames only within specified start and end datetime range."""
+        """ Tests listing filenames only within specified start and end datetime range. """
         test_start_datetime = datetime(2024, 3, 4, 8, 0, tzinfo=timezone.utc)
         test_end_datetime = datetime(2024, 3, 5, 18, 0, tzinfo=timezone.utc)
         test_path = "/path/to/directory"
@@ -338,7 +338,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.sys.exit')
     @patch('find_range.print')
     def test_invalid_datetime_format(self, mock_print, mock_sys_exit):
-        """Test the script exits with error on incorrect datetime format."""
+        """ Test the script exits with error on incorrect datetime format. """
         with patch('find_range.parse_arguments', return_value=argparse.Namespace(
                 datetime=['2024-02-30'], start=None, end=None, path='.', all=False, filenames=False, fullpath=False, localtime=False)):
             find_range.main()
@@ -347,7 +347,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.sys.exit')
     @patch('find_range.print')
     def test_nonexistent_directory_path(self, mock_print, mock_sys_exit):
-        """Test the script exits with error when the specified path does not exist."""
+        """ Test the script exits with error when the specified path does not exist. """
         with patch('find_range.parse_arguments', return_value=argparse.Namespace(
                 datetime=['2024-02-25'], start=None, end=None, path='/nonexistent/path', all=False, filenames=False, fullpath=False, localtime=False)):
             find_range.main()
@@ -356,7 +356,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.list_recent_files')
     @patch('find_range.print')
     def test_default_directory_path(self, mock_print, mock_list_recent_files):
-        """Test the script uses the current directory as default when no path is specified."""
+        """ Test the script uses the current directory as default when no path is specified. """
         with patch('find_range.parse_arguments', return_value=argparse.Namespace(
                 datetime=['2024-02-25'], start=None, end=None, path='.', all=False, filenames=False, fullpath=False, localtime=False)):
             find_range.main()
@@ -366,7 +366,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_localtime_option(self, mock_walk, mock_getmtime, mock_print):
-        """Test listing files with the local timezone option."""
+        """ Test listing files with the local timezone option. """
         # Set test path and options
         test_path = "/path/to/directory"
         include_hidden = False
@@ -385,7 +385,7 @@ class TestFindRecent(unittest.TestCase):
         find_range.list_recent_files(test_path, test_start_date, None, include_hidden, filenames_only, False, use_localtime)
 
         tz_offset = test_start_date.strftime('%z')
-        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '±hh:mm'
+        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '賊hh:mm'
 
         expected_time_str = '{}{}'.format(test_start_date.strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted)
         mock_print.assert_called_once_with('{} - {}'.format(expected_time_str, os.path.join(test_path, "file1.txt")))
@@ -393,7 +393,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.sys.exit')
     @patch('find_range.print')
     def test_localtime_option_with_incorrect_format(self, mock_print, mock_sys_exit):
-        """Test the script exits with error when datetime format is incorrect with '-l' option."""
+        """ Test the script exits with error when datetime format is incorrect with '-l' option. """
         with patch('find_range.parse_arguments', return_value=argparse.Namespace(
                 datetime=['2024-03-32'], start=None, end=None, path='.', all=False, filenames=False, fullpath=False, localtime=True)):
             find_range.main()
@@ -402,7 +402,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.list_recent_files')
     @patch('find_range.print')
     def test_localtime_option_default_directory_path(self, mock_print, mock_list_recent_files):
-        """Test the script uses the current directory as default when no path is specified with '-l' option."""
+        """ Test the script uses the current directory as default when no path is specified with '-l' option. """
         with patch('find_range.parse_arguments', return_value=argparse.Namespace(
                 datetime=['2024-02-25'], start=None, end=None, path='.', all=False, filenames=False, fullpath=False, localtime=True)):
             find_range.main()
@@ -412,7 +412,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_localtime_range_with_start_and_end(self, mock_walk, mock_getmtime, mock_print):
-        """Test listing files within a specified start and end datetime range in local timezone."""
+        """ Test listing files within a specified start and end datetime range in local timezone. """
         test_path = "/path/to/directory"
         include_hidden = False
         use_localtime = True
@@ -476,7 +476,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_files_within_start_end_datetime_range_localtime(self, mock_walk, mock_getmtime, mock_print):
-        """Tests that files modified within the specified start and end datetime range in local timezone are listed."""
+        """ Tests that files modified within the specified start and end datetime range in local timezone are listed. """
         test_start_datetime = datetime(2024, 3, 4, 8, 0).astimezone()
         test_end_datetime = datetime(2024, 3, 5, 18, 0).astimezone()
         test_path = "/path/to/directory"
@@ -508,7 +508,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_hidden_files_included_with_localtime(self, mock_walk, mock_getmtime, mock_print):
-        """Test that hidden files are included when the '-a' option is used with local timezone."""
+        """ Test that hidden files are included when the '-a' option is used with local timezone. """
         test_path = "/path/to/directory"
         include_hidden = True
         use_localtime = True
@@ -535,7 +535,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_filenames_only_with_localtime(self, mock_walk, mock_getmtime, mock_print):
-        """Test listing filenames only with local timezone."""
+        """ Test listing filenames only with local timezone. """
         test_start_datetime = datetime.now().astimezone() - timedelta(hours=2)
         test_end_datetime = datetime.now().astimezone()
         test_path = "/path/to/directory"
@@ -560,7 +560,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_exclude_hidden_files_and_directories(self, mock_walk, mock_getmtime, mock_print):
-        """Test that hidden files and directories are excluded by default."""
+        """ Test that hidden files and directories are excluded by default. """
         test_path = "/path/to/directory"
         include_hidden = False
         test_datetime = datetime.now(timezone.utc) - timedelta(hours=2)
@@ -581,7 +581,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_hidden_directory_files_excluded_by_default(self, mock_walk, mock_getmtime, mock_print):
-        """Test that files in hidden directories are excluded by default."""
+        """ Test that files in hidden directories are excluded by default. """
         test_path = "/path/to/directory"
         include_hidden = False
         test_datetime = datetime.now(timezone.utc) - timedelta(hours=2)
@@ -602,7 +602,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_hidden_directory_files_included_with_all_option(self, mock_walk, mock_getmtime, mock_print):
-        """Test that files in hidden directories are included when the '-a' option is used."""
+        """ Test that files in hidden directories are included when the '-a' option is used. """
         test_path = "/path/to/directory"
         include_hidden = True
         test_datetime = datetime.now(timezone.utc) - timedelta(hours=2)
@@ -627,7 +627,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_files_within_localtime_range_with_start_and_end(self, mock_walk, mock_getmtime, mock_print):
-        """Test listing files within a specified start and end datetime range in local timezone."""
+        """ Test listing files within a specified start and end datetime range in local timezone. """
         test_path = "/path/to/directory"
         include_hidden = False
         use_localtime = True
@@ -667,7 +667,7 @@ class TestFindRecent(unittest.TestCase):
         find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False, False, use_localtime)
 
         tz_offset = test_start_datetime.strftime('%z')
-        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '±hh:mm'
+        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '賊hh:mm'
 
         expected_calls = [
             call('{}{} - {}'.format(test_start_datetime.strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_at_start.txt"))),
@@ -694,7 +694,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_fp_option_with_localtime(self, mock_walk, mock_getmtime, mock_print):
-        """Test that the '-fp' option works correctly with local timezone."""
+        """ Test that the '-fp' option works correctly with local timezone. """
         test_path = "/path/to/directory"
         include_hidden = False
         fullpath_only = True
@@ -718,7 +718,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_fp_option_with_hidden_files(self, mock_walk, mock_getmtime, mock_print):
-        """Test that the '-fp' option includes hidden files when '-a' is specified."""
+        """ Test that the '-fp' option includes hidden files when '-a' is specified. """
         test_path = "/path/to/directory"
         include_hidden = True
         fullpath_only = True
@@ -745,7 +745,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_fp_option_with_complex_path_structure(self, mock_walk, mock_getmtime, mock_print):
-        """Test that the '-fp' option outputs full paths correctly for complex path structures."""
+        """ Test that the '-fp' option outputs full paths correctly for complex path structures. """
         test_path = "/path/to/directory"
         fullpath_only = True
         test_start_datetime = datetime(2024, 3, 4, 8, 0, tzinfo=timezone.utc)
@@ -772,7 +772,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_empty_directory(self, mock_walk, mock_getmtime, mock_print):
-        """Test that an empty directory does not produce any output."""
+        """ Test that an empty directory does not produce any output. """
         test_path = "/path/to/empty_directory"
         mock_walk.return_value = [
             (test_path, [], [])  # No files or subdirectories
@@ -785,7 +785,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_recent_files_with_various_file_structures(self, mock_walk, mock_getmtime, mock_print):
-        """Test listing recent files in a directory with various file structures."""
+        """ Test listing recent files in a directory with various file structures. """
         test_path = "/path/to/directory"
         mock_walk.return_value = [
             (test_path, ["subdir"], ["recent1.txt", "old1.txt"]),
@@ -809,7 +809,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_recent_files_with_filenames_only_option(self, mock_walk, mock_getmtime, mock_print):
-        """Test that only filenames are listed when the '-f' option is used."""
+        """ Test that only filenames are listed when the '-f' option is used. """
         test_path = "/path/to/directory"
         filenames_only = True
         test_datetime = datetime(2024, 3, 1, 7, 0, tzinfo=timezone.utc)
@@ -829,7 +829,7 @@ class TestFindRecent(unittest.TestCase):
     @patch('find_range.os.path.getmtime')
     @patch('find_range.os.walk')
     def test_deep_directory_structure(self, mock_walk, mock_getmtime, mock_print):
-        """Test listing recent files in a deep directory structure."""
+        """ Test listing recent files in a deep directory structure. """
         test_path = "/path/to/deep_directory"
         mock_walk.return_value = [
             (test_path, ["level1"], []),

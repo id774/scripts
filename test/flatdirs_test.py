@@ -45,10 +45,10 @@ import flatdirs
 
 
 class TestFlatDirs(unittest.TestCase):
-    """Unit tests for the flatdirs.py script."""
+    """ Unit tests for the flatdirs.py script. """
 
     def setUp(self):
-        """Common setup for all tests."""
+        """ Common setup for all tests. """
         self.mock_listdir = patch('flatdirs.os.listdir').start()
         self.mock_isdir = patch('flatdirs.os.path.isdir').start()
         self.mock_rmdir = patch('flatdirs.os.rmdir').start()
@@ -74,32 +74,32 @@ class TestFlatDirs(unittest.TestCase):
         self.mock_rmdir.side_effect = lambda path: None
 
     def tearDown(self):
-        """Tear down all mocks after each test."""
+        """ Tear down all mocks after each test. """
         patch.stopall()
 
     def test_move_files(self):
-        """Test moving files."""
+        """ Test moving files. """
         test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
                                  quiet_mode=False, execute_mode=True, rename_only_mode=False)
         flatdirs.main(test_options)
         self.mock_move.assert_called()
 
     def test_copy_files(self):
-        """Test copying files."""
+        """ Test copying files. """
         test_options = MagicMock(move_mode=False, copy_mode=True, delete_mode=False,
                                  quiet_mode=False, execute_mode=True, rename_only_mode=False)
         flatdirs.main(test_options)
         self.mock_copy.assert_called()
 
     def test_rename_files(self):
-        """Test renaming files without moving or copying."""
+        """ Test renaming files without moving or copying. """
         test_options = MagicMock(move_mode=False, copy_mode=False, delete_mode=False,
                                  quiet_mode=False, execute_mode=True, rename_only_mode=True)
         flatdirs.main(test_options)
         self.mock_rename.assert_called()
 
     def test_delete_empty_directories(self):
-        """Test deleting empty directories."""
+        """ Test deleting empty directories. """
         # Update directory contents to simulate empty directories
         self.dir_contents = {
             '.': ['subdir1', 'subdir2'],
@@ -119,7 +119,7 @@ class TestFlatDirs(unittest.TestCase):
         self.mock_rmdir.assert_any_call('subdir2')
 
     def test_dry_run_mode(self):
-        """Test dry run mode without actual file operations."""
+        """ Test dry run mode without actual file operations. """
         test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
                                  quiet_mode=False, execute_mode=False, rename_only_mode=False)
         flatdirs.main(test_options)
@@ -129,14 +129,14 @@ class TestFlatDirs(unittest.TestCase):
         self.mock_rmdir.assert_not_called()
 
     def test_quiet_mode(self):
-        """Test quiet mode suppressing print statements."""
+        """ Test quiet mode suppressing print statements. """
         test_options = MagicMock(move_mode=False, copy_mode=True, delete_mode=False,
                                  quiet_mode=True, execute_mode=True, rename_only_mode=False)
         flatdirs.main(test_options)
         self.mock_print_action.assert_not_called()
 
     def test_move_files_permission_error(self):
-        """Test handling permission error during file move within subdirectories."""
+        """ Test handling permission error during file move within subdirectories. """
         self.mock_move.side_effect = PermissionError("Permission denied")
         test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
                                  quiet_mode=False, execute_mode=True, rename_only_mode=False)
@@ -144,7 +144,7 @@ class TestFlatDirs(unittest.TestCase):
             flatdirs.main(test_options)
 
     def test_handle_nested_subdirectories(self):
-        """Test handling files in nested subdirectories are moved correctly to the base directory."""
+        """ Test handling files in nested subdirectories are moved correctly to the base directory. """
         self.dir_contents['subdir1'].append('nested_subdir')
         self.dir_contents['subdir1/nested_subdir'] = ['file5.txt']
         test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
@@ -154,7 +154,7 @@ class TestFlatDirs(unittest.TestCase):
         self.mock_move.assert_any_call(os.path.join('subdir1', 'nested_subdir', 'file5.txt'), expected_destination)
 
     def test_move_files_to_correct_destination(self):
-        """Test files are moved to the correct destination in the base directory."""
+        """ Test files are moved to the correct destination in the base directory. """
         test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
                                  quiet_mode=False, execute_mode=True, rename_only_mode=False)
         flatdirs.main(test_options)
@@ -165,7 +165,7 @@ class TestFlatDirs(unittest.TestCase):
         self.mock_move.assert_has_calls(expected_calls, any_order=True)
 
     def test_move_files_with_name_conflict(self):
-        """Test moving files with name conflict results in overwriting in the base directory."""
+        """ Test moving files with name conflict results in overwriting in the base directory. """
         # Simulate a file that would cause a name conflict
         self.dir_contents['.'].append('subdir1_file3.txt')
         test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
@@ -175,7 +175,7 @@ class TestFlatDirs(unittest.TestCase):
         self.mock_move.assert_any_call(os.path.join('subdir1', 'file3.txt'), 'subdir1_file3.txt')
 
     def test_handle_special_characters_in_filenames(self):
-        """Test handling files with special characters in their names are moved correctly to the base directory."""
+        """ Test handling files with special characters in their names are moved correctly to the base directory. """
         self.dir_contents['subdir2'].append('special@file$.txt')
         test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
                                  quiet_mode=False, execute_mode=True, rename_only_mode=False)
@@ -185,7 +185,7 @@ class TestFlatDirs(unittest.TestCase):
 
     @patch('builtins.input', return_value='yes')
     def test_confirmation_prompt_yes(self, mock_input):
-        """Test confirmation prompt with 'yes' response."""
+        """ Test confirmation prompt with 'yes' response. """
         test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
                                  quiet_mode=False, execute_mode=True, rename_only_mode=False)
         flatdirs.main(test_options)
@@ -193,7 +193,7 @@ class TestFlatDirs(unittest.TestCase):
 
     @patch('builtins.input', return_value='y')
     def test_confirmation_prompt_y(self, mock_input):
-        """Test confirmation prompt with 'y' response."""
+        """ Test confirmation prompt with 'y' response. """
         test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
                                  quiet_mode=False, execute_mode=True, rename_only_mode=False)
         flatdirs.main(test_options)
@@ -201,7 +201,7 @@ class TestFlatDirs(unittest.TestCase):
 
     @patch('builtins.input', return_value='no')
     def test_confirmation_prompt_no(self, mock_input):
-        """Test confirmation prompt with 'no' response."""
+        """ Test confirmation prompt with 'no' response. """
         test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
                                  quiet_mode=False, execute_mode=True, rename_only_mode=False)
         with self.assertRaises(SystemExit):  # Script should exit
@@ -210,7 +210,7 @@ class TestFlatDirs(unittest.TestCase):
 
     @patch('builtins.input', return_value='unexpected')
     def test_confirmation_prompt_unexpected(self, mock_input):
-        """Test confirmation prompt with an unexpected response."""
+        """ Test confirmation prompt with an unexpected response. """
         test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
                                  quiet_mode=False, execute_mode=True, rename_only_mode=False)
         with self.assertRaises(SystemExit):  # Script should exit
@@ -219,7 +219,7 @@ class TestFlatDirs(unittest.TestCase):
 
     @patch('builtins.input', return_value='yes')
     def test_no_confirmation_without_execute_mode(self, mock_input):
-        """Test that confirmation prompt is skipped and no execution occurs without execute mode."""
+        """ Test that confirmation prompt is skipped and no execution occurs without execute mode. """
         # Prepare test options with execute_mode=False
         test_options = MagicMock(move_mode=True, copy_mode=False, delete_mode=False,
                                  quiet_mode=False, execute_mode=False, rename_only_mode=False)

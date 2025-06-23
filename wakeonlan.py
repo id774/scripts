@@ -59,24 +59,24 @@ def usage():
     sys.exit(0)
 
 def format_mac_address(mac):
-    """Remove delimiters from a MAC address and convert to uppercase."""
+    """ Remove delimiters from a MAC address and convert to uppercase. """
     return mac.replace('-', '').replace(':', '').upper()
 
 def create_magic_packet(mac):
-    """Create a magic packet from a MAC address."""
+    """ Create a magic packet from a MAC address. """
     if len(mac) != 12:
         raise ValueError("Incorrect MAC address format")
     # Repeat the MAC address 16 times after 6 bytes of FF
     return bytes.fromhex('FF' * 6 + mac * 16)
 
 def send_udp_broadcast(packet, port=DEFAULT_PORT):
-    """Send a packet to the broadcast address using UDP."""
+    """ Send a packet to the broadcast address using UDP. """
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
         s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         s.sendto(packet, ('<broadcast>', port))
 
 def send_magic_packet(addr):
-    """Main function to format MAC address, create and send magic packet."""
+    """ Main function to format MAC address, create and send magic packet. """
     mac = format_mac_address(addr)
     packet = create_magic_packet(mac)
     print('[INFO] Sending magic packet to 255.255.255.255:{} with {}'.format(DEFAULT_PORT, addr))

@@ -52,21 +52,21 @@ def usage():
     sys.exit(0)
 
 def get_subdirectories(base_dir):
-    """Return a list of subdirectories in the specified directory."""
+    """ Return a list of subdirectories in the specified directory. """
     try:
         return [d for d in os.listdir(base_dir) if os.path.isdir(os.path.join(base_dir, d))]
     except OSError as e:
         raise ValueError("[ERROR] Error accessing directory '{}': {}".format(base_dir, e))
 
 def count_files_in_directory(directory):
-    """Return the number of files in a directory."""
+    """ Return the number of files in a directory. """
     try:
         return len([f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))])
     except OSError as e:
         raise ValueError("[ERROR] Error accessing directory '{}': {}".format(directory, e))
 
 def count_files_in_subdirectories(base_dir):
-    """Count the number of files in each subdirectory of a base directory."""
+    """ Count the number of files in each subdirectory of a base directory. """
     subdirs = get_subdirectories(base_dir)
     file_counts = {}
 
@@ -81,17 +81,17 @@ def count_files_in_subdirectories(base_dir):
     return file_counts
 
 def sort_file_counts(file_counts):
-    """Sort file counts dictionary by file count in descending order."""
+    """ Sort file counts dictionary by file count in descending order. """
     return sorted(file_counts.items(), key=lambda x: x[1], reverse=True)
 
 def print_file_counts(base_dir, sorted_counts):
-    """Print file counts for each subdirectory."""
+    """ Print file counts for each subdirectory. """
     print("[INFO] File counts in subdirectories of '{}':".format(base_dir))
     for subdir, count in sorted_counts:
         print("{:30}: {}".format(subdir, count))
 
 def main(args):
-    """Main function for script execution."""
+    """ Main function for script execution. """
     base_dir = args[1]
 
     if not os.path.exists(base_dir):

@@ -32,10 +32,10 @@ from unixtime2date import unixtime2date
 
 
 class TestUnixtime2date(unittest.TestCase):
-    """Test cases for unixtime2date function."""
+    """ Test cases for unixtime2date function. """
 
     def test_unixtime2date_japan_timezone(self):
-        """Test conversion of Unix timestamps assuming Japan timezone (UTC+9)."""
+        """ Test conversion of Unix timestamps assuming Japan timezone (UTC+9). """
         # Example Unix timestamp for 2021-01-01 00:00:00 UTC
         timestamp = 1609459200
         # Expected output in Japan timezone (UTC+9)

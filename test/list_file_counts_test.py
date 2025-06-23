@@ -33,11 +33,11 @@ from list_file_counts import (count_files_in_directory,
 
 
 class TestListFileCounts(unittest.TestCase):
-    """Unit tests for list_file_counts.py."""
+    """ Unit tests for list_file_counts.py. """
 
     @classmethod
     def setUpClass(cls):
-        """Set up a temporary test environment."""
+        """ Set up a temporary test environment. """
         cls.test_dir = "test_env"
         os.mkdir(cls.test_dir)
 
@@ -56,7 +56,7 @@ class TestListFileCounts(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """Clean up the temporary test environment."""
+        """ Clean up the temporary test environment. """
         for root, dirs, files in os.walk(cls.test_dir, topdown=False):
             for file in files:
                 os.remove(os.path.join(root, file))
@@ -65,12 +65,12 @@ class TestListFileCounts(unittest.TestCase):
         os.rmdir(cls.test_dir)
 
     def test_get_subdirectories(self):
-        """Test retrieving subdirectories."""
+        """ Test retrieving subdirectories. """
         subdirs = get_subdirectories(self.test_dir)
         self.assertCountEqual(subdirs, ["subdir1", "subdir2", "subdir_empty"])
 
     def test_count_files_in_directory(self):
-        """Test counting files in a single directory."""
+        """ Test counting files in a single directory. """
         count = count_files_in_directory(os.path.join(self.test_dir, "subdir1"))
         self.assertEqual(count, 5)
 
@@ -81,7 +81,7 @@ class TestListFileCounts(unittest.TestCase):
         self.assertEqual(count, 0)
 
     def test_count_files_in_subdirectories(self):
-        """Test counting files in all subdirectories."""
+        """ Test counting files in all subdirectories. """
         counts = count_files_in_subdirectories(self.test_dir)
         self.assertEqual(counts, {
             "subdir1": 5,
@@ -90,7 +90,7 @@ class TestListFileCounts(unittest.TestCase):
         })
 
     def test_sort_file_counts(self):
-        """Test sorting file counts."""
+        """ Test sorting file counts. """
         counts = {
             "subdir1": 5,
             "subdir2": 3,
@@ -104,19 +104,19 @@ class TestListFileCounts(unittest.TestCase):
         ])
 
     def test_invalid_directory_get_subdirectories(self):
-        """Test handling invalid directory in get_subdirectories."""
+        """ Test handling invalid directory in get_subdirectories. """
         with self.assertRaises(ValueError) as context:
             get_subdirectories("invalid_dir")
         self.assertIn("Error accessing directory", str(context.exception))
 
     def test_invalid_directory_count_files_in_directory(self):
-        """Test handling invalid directory in count_files_in_directory."""
+        """ Test handling invalid directory in count_files_in_directory. """
         with self.assertRaises(ValueError) as context:
             count_files_in_directory("invalid_dir")
         self.assertIn("Error accessing directory", str(context.exception))
 
     def test_invalid_directory_count_files_in_subdirectories(self):
-        """Test handling invalid directory in count_files_in_subdirectories."""
+        """ Test handling invalid directory in count_files_in_subdirectories. """
         with self.assertRaises(ValueError) as context:
             count_files_in_subdirectories("invalid_dir")
         self.assertIn("Error accessing directory", str(context.exception))

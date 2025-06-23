@@ -40,7 +40,7 @@ import pyck
 
 
 class TestPyck(unittest.TestCase):
-    """Unit tests for the pyck.py script."""
+    """ Unit tests for the pyck.py script. """
 
     @patch('pyck.os.access')
     @patch('pyck.find_command')

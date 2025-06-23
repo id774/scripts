@@ -39,7 +39,7 @@ import chmodtree
 
 
 class TestChmodTree(unittest.TestCase):
-    """Unit tests for the chmodtree.py script."""
+    """ Unit tests for the chmodtree.py script. """
 
     @patch('chmodtree.os.access')
     @patch('chmodtree.find_command')

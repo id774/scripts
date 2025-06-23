@@ -38,11 +38,11 @@ import pyping
 
 
 class TestPyPing(unittest.TestCase):
-    """Test suite for pyping.py."""
+    """ Test suite for pyping.py. """
 
     @patch('subprocess.check_output')
     def test_ping_alive(self, mock_check_output):
-        """Test if an IP address responds as alive."""
+        """ Test if an IP address responds as alive. """
         mock_check_output.return_value = b''
         results = {}
         pyping.ping('192.168.11.1', results)
@@ -50,14 +50,14 @@ class TestPyPing(unittest.TestCase):
 
     @patch('subprocess.check_output', side_effect=subprocess.CalledProcessError(1, 'ping'))
     def test_ping_no_response(self, mock_check_output):
-        """Test if an unresponsive IP address is marked correctly."""
+        """ Test if an unresponsive IP address is marked correctly. """
         results = {}
         pyping.ping('192.168.11.2', results)
         self.assertEqual(results['192.168.11.2'], '-----')
 
     @patch('subprocess.check_output')
     def test_ordered_option(self, mock_check_output):
-        """Test if results are sorted when using --ordered option."""
+        """ Test if results are sorted when using --ordered option. """
         mock_check_output.return_value = b''
         results = {}
 

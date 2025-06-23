@@ -62,13 +62,13 @@ def usage():
     sys.exit(0)
 
 def resize_file(size, filename, outpath):
-    """Resizes an image to a square of the given size."""
+    """ Resizes an image to a square of the given size. """
     img = Image.open(filename, 'r')
     img.thumbnail((size, size))
     img.save(outpath)
 
 def is_image_file(filename):
-    """Checks if a file is a JPEG or PNG image using Pillow."""
+    """ Checks if a file is a JPEG or PNG image using Pillow. """
     try:
         with Image.open(filename) as img:
             return img.format.lower() in ['jpeg', 'png']
@@ -76,7 +76,7 @@ def is_image_file(filename):
         return False
 
 def read_dir(size, src, out):
-    """Reads the source directory and resizes images found there."""
+    """ Reads the source directory and resizes images found there. """
     for root, _, files in os.walk(src):
         for filename in files:
             fullname = os.path.join(root, filename)
@@ -86,7 +86,7 @@ def read_dir(size, src, out):
                 resize_file(size, fullname, outpath)
 
 def parse_args():
-    """Parses command line arguments."""
+    """ Parses command line arguments. """
     parser = argparse.ArgumentParser(
         description="Resize images in a directory.")
     parser.add_argument("size", type=int, help="Size of the output image.")
@@ -95,7 +95,7 @@ def parse_args():
     return parser.parse_args()
 
 def main():
-    """Main function to execute the script."""
+    """ Main function to execute the script. """
     if not libraries_installed:
         print("[ERROR] Required libraries not installed.", file=sys.stderr)
         sys.exit(1)
