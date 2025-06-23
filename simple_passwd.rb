@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.1 2023-12-06
@@ -28,6 +30,23 @@
 ########################################################################
 
 require 'optparse'
+
+def usage
+  script = File.expand_path(__FILE__)
+  in_header = false
+  File.foreach(script) do |line|
+    if line.strip.start_with?('#' * 10)
+      in_header = !in_header
+      next
+    end
+    puts line.sub(/^# ?/, '') if in_header && line.strip.start_with?('#')
+  end
+  exit 0
+end
+
+if ARGV.empty? || ['-h', '--help', '-v', '--version'].include?(ARGV[0])
+  usage
+end
 
 def generate_passwd(length, use_symbols=true)
   chars = [*'0'..'9', *'a'..'z', *'A'..'Z']
@@ -53,4 +72,3 @@ end
 
 length = ARGV.shift.to_i
 generate_passwd(length, options[:use_symbols])
-
