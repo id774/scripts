@@ -41,15 +41,19 @@ def usage
   exit 0
 end
 
-if ARGV.empty? || ['-h', '--help', '-v', '--version'].include?(ARGV[0])
-  usage
-end
+def main
+  if ARGV.empty? || ['-h', '--help', '-v', '--version'].include?(ARGV[0])
+    usage
+  end
 
-url = ARGV.shift
-filename = url.split(/\//).last
+  url = ARGV.shift
+  filename = url.split(/\//).last
 
-open(url) do |source|
-  open(filename, "w+b") do |o|
-    o.print source.read
+  URI.open(url) do |source|
+    File.open(filename, "w+b") do |o|
+      o.print source.read
+    end
   end
 end
+
+main if __FILE__ == $PROGRAM_NAME
