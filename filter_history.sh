@@ -76,8 +76,7 @@ validate_environment() {
     fi
 
     if [ "$#" -ne 1 ]; then
-        echo "Usage: $0 <string>"
-        exit 0
+        usage
     fi
 }
 
@@ -132,11 +131,11 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
+    validate_environment "$@"
+
     check_commands grep cp mv basename diff
 
     HISTORY_FILE="$HOME/.zsh_history"
-
-    validate_environment "$@"
     PATTERN="$1"
 
     create_backup
