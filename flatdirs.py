@@ -20,6 +20,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v2.0 2025-04-14
 #       Unify error and info message formatting with stderr and prefix tags.
 #  v1.9 2024-12-15

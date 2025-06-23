@@ -23,6 +23,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2024-03-27
 #       Modified the rename_files function to avoid renaming files that already
 #       conform to the desired naming convention, enhancing efficiency.

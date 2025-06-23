@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v4.6 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v4.5 2025-05-14
 #       Replaced use of 'which' with POSIX-compliant 'command -v' in installation checks.
 #       Added reusable command_exists() function for path resolution.
@@ -255,7 +257,7 @@ def main():
     """
     Main function to handle the mounting process based on user inputs.
     """
-    tcmount_version = "4.5"
+    tcmount_version = "4.6"
 
     versions = []
     if is_truecrypt_installed():

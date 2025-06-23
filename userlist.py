@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2024-01-17
 #       Ported from Shell script to Python. Maintains functionality across
 #       different systems with compatibility considerations.

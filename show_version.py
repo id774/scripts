@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.6 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v2.5 2024-01-18
 #       Refactored function names for clarity.
 #       Improved comments for better understanding.

@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.3 2025-05-15
 #       Replaced deprecated 'which' usage with POSIX-compliant 'command -v'.
 #       Added command_exists() and get_command_path() for command checks and path resolution.
