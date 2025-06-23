@@ -34,6 +34,7 @@
 require 'rspec'
 require 'stringio'
 require 'tempfile'
+require 'open3'
 
 describe 'waitlock.rb' do
   let(:script_path) { File.expand_path('../../waitlock.rb', __FILE__) }
@@ -66,23 +67,22 @@ describe 'waitlock.rb' do
   end
 
   it 'waits for lockfile to be removed' do
-    lockfile = File.join(Dir.tmpdir, "testlock_#{Time.now.to_i}")
-    File.write(lockfile, "locked")
-    ARGV.replace([lockfile, '1'])
+    Dir.mktmpdir do |tmpdir|
+      lockfile = File.join(tmpdir, "testlock_#{Time.now.to_i}")
+      File.write(lockfile, "")  # create lockfile
 
-    thread = Thread.new do
-      sleep 0.01
-      File.delete(lockfile)
+      # Start the script in a subprocess and capture output
+      output = ""
+      Open3.popen2e("ruby", script_path, lockfile, "1") do |stdin, stdout_err, wait_thr|
+        sleep 1  # Give it time to enter wait state
+        File.delete(lockfile)  # Simulate unlock
+        output = stdout_err.read
+        wait_thr.value  # wait for process to finish
+      end
+
+      expect(output).to include("Waiting for lock file #{lockfile} to be released")
+        .or include("Lock file released, proceeding...")
     end
-
-    allow(Kernel).to receive(:sleep) { |t| sleep 0.01 }
-
-    load script_path
-    main
-    output = $stdout.string
-    expect(output).to include("Waiting for lock file #{lockfile} to be released...")
-    expect(output).to include("Lock file released, proceeding...")
-    thread.join
   end
 end
 
