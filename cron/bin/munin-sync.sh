@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-05-21
 #       Modify sync_local_logs to include *.log.1 files while excluding *.log.2 and older logs.
 #  v1.4 2025-05-16

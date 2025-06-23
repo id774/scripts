@@ -15,6 +15,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.0  2025-06-23 - Unified usage output to display full script header and support common help/version options.
 #  v2.9  2025-06-15 - Externalize archive and repository path variables to rsync_backup.conf.
 #                     Remove hardcoded paths from git_backup and github_backup functions.
 #                     Refactor all rsync functions to use internal SRC_DIR and DEST_DIR variables.

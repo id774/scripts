@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.3 2025-04-27
 #       Add critical failure checks to Karabiner setup steps.
 #  v1.2 2025-04-13

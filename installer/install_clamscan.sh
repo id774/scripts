@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.5 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v2.4 2025-05-11
 #       Always overwrite clamscan cron job in /etc/cron.weekend during installation.
 #  v2.3 2025-04-27

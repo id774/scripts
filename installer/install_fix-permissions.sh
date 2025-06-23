@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.9 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.8 2025-05-17
 #       Add deployment of fix-permissions.conf to /etc/cron.config with secure permissions.
 #  v1.7 2025-04-27

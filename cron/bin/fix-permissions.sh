@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-05-17
 #       Refactor to load settings and operations from external fix-permissions.conf.
 #       Separated configuration from script logic for host-specific customization.

@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.5 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v2.4 2025-04-28
 #       Add error handling to critical operations during GDM themes installation.
 #  v2.3 2025-04-22

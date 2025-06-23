@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.9 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.8 2025-04-28
 #       Added error detection and exit handling to write_config_file()
 #       for safer configuration file creation.

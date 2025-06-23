@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.8 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v0.7 2025-04-27
 #       Add error handling for critical build and install steps
 #  v0.6 2025-04-22

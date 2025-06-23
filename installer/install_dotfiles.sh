@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.7 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v2.6 2025-04-25
 #       Exit on failure during dotfile deployment and show success only if all steps succeed.
 #  v2.5 2025-04-21

@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.4 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v2.3 2025-06-10
 #       Fix initialization order to defer JOBLOG write check until after config load.
 #  v2.2 2025-05-16

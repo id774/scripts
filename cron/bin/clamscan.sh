@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.4 2025-05-16
 #       Add return 0 to main and exit $? at script end for consistent exit status.
 #  v1.3 2025-05-10

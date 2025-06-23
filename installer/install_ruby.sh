@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.5 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v3.4 2025-04-27
 #       Add failure checks to Ruby download, build, and installation steps.
 #  v3.3 2025-04-21

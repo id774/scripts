@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.7 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v2.6 2025-04-29
 #       Use sudo for directory and file existence checks to ensure correct behavior under restricted permissions.
 #       Correct the log filename from rsync_backup to rsync_backup.log for consistency.
