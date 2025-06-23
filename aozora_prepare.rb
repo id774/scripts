@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2023-12-06
 #       Refactored for improved readability and documentation.
 #  v1.0 2014-01-22
@@ -23,6 +25,19 @@
 #  ./aozora_prepare.rb [input file] [output file]
 #
 ########################################################################
+
+def usage
+  script = File.expand_path(__FILE__)
+  in_header = false
+  File.foreach(script) do |line|
+    if line.strip.start_with?('#' * 10)
+      in_header = !in_header
+      next
+    end
+    puts line.sub(/^# ?/, '') if in_header && line.strip.start_with?('#')
+  end
+  exit 0
+end
 
 class Aozora
   def initialize(args)
@@ -46,7 +61,6 @@ if __FILE__ == $0
   if ARGV.length == 2
     Aozora.new(ARGV).run
   else
-    puts "Syntax: aozora_prepare.rb [infile] [outfile]"
+    usage
   end
 end
-
