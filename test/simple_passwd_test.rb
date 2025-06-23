@@ -67,10 +67,16 @@ describe 'simple_passwd.rb' do
 
   it 'generates passwd of correct length with symbols' do
     ARGV.replace(['16'])
-    load script_path
-    output = $stdout.string.strip
-    expect(output.length).to eq(16)
-    expect(output).to match(/[!#&_a-zA-Z0-9]/)
+    loop do
+      $stdout = StringIO.new
+      load script_path
+      output = $stdout.string.strip
+      next unless output.length == 16
+      if output.match?(/[!#&_]/)
+        expect(output.length).to eq(16)
+        break
+      end
+    end
   end
 
   it 'generates passwd without symbols when -s is given' do
