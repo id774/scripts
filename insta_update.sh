@@ -21,6 +21,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.6 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v2.5 2025-04-28
 #       Allow -h/--help usage without requiring configuration or command checks by adjusting main function flow.
 #  v2.4 2025-04-13

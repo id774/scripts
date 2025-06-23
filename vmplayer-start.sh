@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v0.6 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v0.5 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v0.4 2025-03-25

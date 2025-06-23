@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.8 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.7 2025-05-20
 #       Suppress munin and git entries in auth.log using extended regex.
 #  v1.6 2025-05-07

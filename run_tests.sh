@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.1 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v3.0 2025-04-29
 #       Fully POSIX-compliant rewrite. Removed Bash-specific syntax and structures.
 #  v2.1 2025-04-13

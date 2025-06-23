@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.3 2025-05-06
 #       Show timestamp and success/failure status for each file.
 #       Add final summary of result, and define configurable STALE_THRESHOLD.

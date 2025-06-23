@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v2.0 2025-06-16
 #       Add execute permission handling for all files under scripts/installer.
 #  v1.9 2025-05-12
