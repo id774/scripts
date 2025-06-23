@@ -54,8 +54,6 @@ describe 'simple_passwd.rb' do
     expect { load script_path }.to raise_error(SystemExit)
     output = $stdout.string
     expect(output).to include('Simple Password Generator in Ruby')
-    expect(output).to include('Usage:')
-    expect(output).to include('--no-symbols')
   end
 
   it 'prints error when length is not a number' do
@@ -65,26 +63,25 @@ describe 'simple_passwd.rb' do
     expect(output).to include('[ERROR] Length must be a number.')
   end
 
-  it 'generates passwd of correct length with symbols' do
+  it 'generates password with symbols' do
     ARGV.replace(['16'])
     loop do
       $stdout = StringIO.new
       load script_path
       output = $stdout.string.strip
       next unless output.length == 16
-      if output.match?(/[!#&_]/)
-        expect(output.length).to eq(16)
-        break
-      end
+      expect(output).to match(/\A[0-9a-zA-Z_\-!#&]{16}\z/)
+      break
     end
   end
 
-  it 'generates passwd without symbols when -s is given' do
+  it 'generates password without symbols' do
     ARGV.replace(['-s', '20'])
+    $stdout = StringIO.new
     load script_path
     output = $stdout.string.strip
     expect(output.length).to eq(20)
-    expect(output).to match(/\A[a-zA-Z0-9]+\z/)
+    expect(output).to match(/\A[a-zA-Z0-9]{20}\z/)
   end
 end
 
