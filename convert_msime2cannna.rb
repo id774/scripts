@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2023-12-06
 #       Refactored for improved readability and added detailed comments.
 #  v1.0 2009-11-16
@@ -24,19 +26,31 @@
 #
 ########################################################################
 
+def usage
+  script = File.expand_path(__FILE__)
+  in_header = false
+  File.foreach(script) do |line|
+    if line.strip.start_with?('#' * 10)
+      in_header = !in_header
+      next
+    end
+    puts line.sub(/^# ?/, '') if in_header && line.strip.start_with?('#')
+  end
+  exit 0
+end
+
+if ARGV[0] && ['-h', '--help', '-v', '--version'].include?(ARGV[0])
+  usage
+end
+
 require 'kconv'
 
 while line = gets
-  # Split the line into components
   str = line.split(/\t/)
-
-  # Skip lines without a third column or not labeled as "顔文字"
   next unless str[2]
   next unless str[2].toutf8.chop == "顔文字"
 
-  # Output the converted line in Canna format
-  print str[0].toutf8  # Original word
-  print " #KJ "       # Canna keyword
-  puts str[1].toutf8.gsub(/ /, "\\ ")  # Converted reading with escaped spaces
+  print str[0].toutf8
+  print " #KJ "
+  puts str[1].toutf8.gsub(/ /, "\\ ")
 end
-
