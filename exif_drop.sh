@@ -105,7 +105,9 @@ main() {
     check_commands $EXIFTOOL $JHEAD $FIND
     check_directory "$directory"
     process_images "$directory"
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

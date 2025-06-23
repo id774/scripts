@@ -124,7 +124,9 @@ main() {
     test -n "$1" || export DISPLAY=:99
 
     start_daemon
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

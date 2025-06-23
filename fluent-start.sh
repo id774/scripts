@@ -133,7 +133,9 @@ main() {
     determine_fluentd_config "$2"
     start_fluentd "$3"
     send_test_message
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

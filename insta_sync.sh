@@ -199,7 +199,9 @@ main() {
     check_remote_sync "$INSTA_ACCOUNT_DIR"
 
     echo "[INFO] Instagram account data sync for '$ACCOUNT_NAME' completed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

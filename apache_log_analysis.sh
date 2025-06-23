@@ -143,7 +143,9 @@ main() {
 
     load_ignore_list
     analyze_logs
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

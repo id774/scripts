@@ -237,7 +237,9 @@ main() {
     else
         echo "[INFO] Operation completed successfully."
     fi
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

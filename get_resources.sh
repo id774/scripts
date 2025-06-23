@@ -152,7 +152,9 @@ main() {
     gather_network_info
     check_fail2ban_status
     gather_logs
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -94,7 +94,9 @@ main() {
     exec_sql "DELETE FROM pins;"
 
     echo "Fastladder pin cleanup completed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

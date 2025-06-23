@@ -146,7 +146,9 @@ main() {
     move_files "$SOURCE_DIR" "$SOURCE_DIR/../$YEAR_DIR"
 
     echo "[INFO] Operation completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

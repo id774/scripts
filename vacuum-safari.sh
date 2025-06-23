@@ -79,7 +79,9 @@ main() {
 
     check_sqlite3
     vacuum_safari_cache
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

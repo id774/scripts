@@ -101,7 +101,9 @@ main() {
     vacuum_database
     sync_database
     echo "[INFO] Fastladder database successfully synced to $USER@$HOST."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

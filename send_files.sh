@@ -304,7 +304,9 @@ main() {
     else
         store_archive
     fi
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

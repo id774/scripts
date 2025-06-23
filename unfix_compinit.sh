@@ -141,7 +141,9 @@ main() {
 
     check_system
     adjust_homebrew_permissions
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

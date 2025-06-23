@@ -108,7 +108,9 @@ main() {
         # If no arguments are provided, display usage instructions
         usage
     fi
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

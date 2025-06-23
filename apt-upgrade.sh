@@ -83,7 +83,9 @@ main() {
     check_environment
     check_sudo
     apt_upgrade
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

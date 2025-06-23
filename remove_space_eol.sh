@@ -86,7 +86,9 @@ main() {
         process_file "$1"
         shift
     done
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

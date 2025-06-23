@@ -217,7 +217,9 @@ main() {
     remove_files "$TMP_DIR"/*.gpx || exit $?
 
     echo "[INFO] All operations completed successfully."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

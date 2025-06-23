@@ -112,7 +112,9 @@ main() {
     check_database
     change_to_db_dir
     vacuum_and_optimize_db
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

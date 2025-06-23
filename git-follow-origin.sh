@@ -92,7 +92,9 @@ main() {
     else
         usage
     fi
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -115,7 +115,9 @@ main() {
     check_commands platex uplatex dvipdfmx nkf
 
     convert_to_pdf "$1"
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

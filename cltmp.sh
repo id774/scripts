@@ -154,7 +154,9 @@ main() {
 
     check_commands find rm uname
     perform_cleanup
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

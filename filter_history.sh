@@ -144,7 +144,9 @@ main() {
     count_matches
     filter_history
     show_diff
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -133,7 +133,9 @@ main() {
 
     check_system
     fix_permissions
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

@@ -316,7 +316,9 @@ main() {
             fi
         done
     fi
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

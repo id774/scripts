@@ -95,7 +95,9 @@ main() {
     exec_sql "SELECT COUNT(*) FROM feeds;"
 
     echo "[INFO] Feed retrieval completed."
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

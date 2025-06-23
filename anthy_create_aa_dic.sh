@@ -96,7 +96,9 @@ main() {
     check_commands ruby mkdir
     check_files
     create_dictionary
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

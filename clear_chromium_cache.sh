@@ -90,7 +90,9 @@ parse_arguments() {
 # Main function to execute the script
 main() {
     parse_arguments "$@"
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

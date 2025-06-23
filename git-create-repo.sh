@@ -245,7 +245,9 @@ main() {
 
     check_directory "$repo_base_path"
     create_git_repo "${repo_name}" "${repo_full_path}" "$dry_run" "$use_sudo" "$user" "$group"
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

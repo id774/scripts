@@ -114,7 +114,9 @@ main() {
     check_commands find sort sed
     parse_arguments "$@"
     display_tree
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

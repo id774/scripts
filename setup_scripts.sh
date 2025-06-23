@@ -132,7 +132,9 @@ main() {
     check_scripts
     check_commands chmod find
     set_permissions
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

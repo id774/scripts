@@ -88,7 +88,9 @@ main() {
     verify_hadoop_scripts
     check_sudo
     control_hadoop_services "$1"
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

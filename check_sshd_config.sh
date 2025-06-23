@@ -99,7 +99,9 @@ main() {
     check_commands grep
     check_main_sshd
     check_additional_sshd
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

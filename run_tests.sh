@@ -268,7 +268,9 @@ run_tests() {
 main() {
     check_scripts
     run_tests "$@"
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

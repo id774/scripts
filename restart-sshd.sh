@@ -108,7 +108,9 @@ main() {
             restart_linux_sshd
             ;;
     esac
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

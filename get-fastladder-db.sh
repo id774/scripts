@@ -105,7 +105,9 @@ main() {
     check_commands rsync mkdir mv
     check_arguments "$@"
     sync_database
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?

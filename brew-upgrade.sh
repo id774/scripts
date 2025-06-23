@@ -82,7 +82,9 @@ main() {
     esac
     check_environment
     brew_maintenance
+    return 0
 }
 
 # Execute main function
 main "$@"
+exit $?
