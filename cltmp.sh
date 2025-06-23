@@ -143,7 +143,7 @@ perform_cleanup() {
     rm -vf "$HOME"/*.swp "$HOME"/*.swo "$HOME"/*.bak "$HOME"/*.~ "$HOME"/*.old
     rm -vf "$HOME"/.*.swp "$HOME"/.*.swo "$HOME"/.*.bak "$HOME"/.*.~ "$HOME"/.*.old
 
-    echo "[INFO] Cleanup Temporary and Cached Files done."
+    echo "[INFO] Temporary and cached files cleanup completed."
 }
 
 # Main function to execute the script
