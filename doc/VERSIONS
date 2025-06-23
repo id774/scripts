@@ -3,7 +3,7 @@ Repository Update History
 
 v1.4.4 (Release Date: TBD)
 --------------------------
-- Update shell scripts and Python scripts to display full header block as help message.
+- Update shell scripts and Python/Ruby scripts to display full header block as help message.
 - Add create_emergencyadmin.sh for secure creation of a fallback admin user with SecureToken and FileVault access.
 - Add device serial display using udevadm and improve smartctl USB compatibility in rsync_backup.sh.
 - Externalize archive paths and unify rsync variables in rsync_backup.sh.

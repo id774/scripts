@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2023-12-14
 #       Refactored namecalc.rb for improved code readability and maintainability,
 #       adapting the structure and style from the Python version while keeping
@@ -25,14 +27,27 @@
 #
 #  Usage:
 #  Run the script with one or more strings:
-#      ./namecalc.rb [string1 string2 ...]
+#      namecalc.rb [string1 string2 ...]
 #
 #  Example:
-#      ./namecalc.rb 111 153 111 115
+#      namecalc.rb 111 153 111 115
 #  This will perform numerology calculations on the provided strings and
 #  display the results.
 #
 ########################################################################
+
+def usage
+  script = File.expand_path(__FILE__)
+  in_header = false
+  File.foreach(script) do |line|
+    if line.strip.start_with?('#' * 10)
+      in_header = !in_header
+      next
+    end
+    puts line.sub(/^# ?/, '') if in_header && line.strip.start_with?('#')
+  end
+  exit 0
+end
 
 class NameCalc
   class << self
@@ -87,13 +102,10 @@ class NameCalc
 end
 
 def main
-  if ARGV.size > 1
-    NameCalc.calc(ARGV.join)
-  else
-    puts "Usage: #{$0} [string1 string2 ...]"
-    puts "Example: #{$0} 111 153 111 115"
-    exit 1
+  if ARGV.empty? || ['-h', '--help', '-v', '--version'].include?(ARGV[0])
+    usage
   end
+  NameCalc.calc(ARGV.join)
 end
 
 main if __FILE__ == $0
