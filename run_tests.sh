@@ -17,6 +17,7 @@
 #  Version History:
 #  v3.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
+#       Fixed bug where Ruby test case count only reflected last script instead of total.
 #  v3.0 2025-04-29
 #       Fully POSIX-compliant rewrite. Removed Bash-specific syntax and structures.
 #  v2.1 2025-04-13
@@ -187,6 +188,7 @@ run_ruby_tests() {
                 fi
                 extract_ruby_test_count "$output"
                 ruby_scripts=`expr "$ruby_scripts" + 1`
+                ruby_tests_total=`expr "$ruby_tests_total" + "$ruby_tests"`
                 total_tests=`expr "$total_tests" + "$ruby_tests"`
             fi
         done
@@ -211,7 +213,7 @@ display_ruby_report() {
     echo "  RSpec path: $rspec_path"
     echo "  $ruby_version"
     echo "  Total Ruby test scripts: $ruby_scripts"
-    echo "  Total Ruby test cases: $ruby_tests"
+    echo "  Total Ruby test cases: $ruby_tests_total"
     echo "  Skipped Ruby test cases: $ruby_skipped_tests"
 }
 
@@ -258,6 +260,7 @@ run_tests() {
     ruby_scripts=0
     total_tests=0
     total_scripts=0
+    ruby_tests_total=0
 
     run_python_tests
     run_ruby_tests
