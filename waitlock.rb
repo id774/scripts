@@ -34,6 +34,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2023-11-29
 #       Refactored the script for improved readability and maintainability.
 #       Removed unnecessary class structure and streamlined command-line argument processing.
@@ -45,6 +47,19 @@
 #
 ########################################################################
 
+def usage
+  script = File.expand_path(__FILE__)
+  in_header = false
+  File.foreach(script) do |line|
+    if line.strip.start_with?('#' * 10)
+      in_header = !in_header
+      next
+    end
+    puts line.sub(/^# ?/, '') if in_header && line.strip.start_with?('#')
+  end
+  exit 0
+end
+
 # Check for the existence of a lock file at regular intervals
 def wait_for_lock_release(lockfile, interval)
   while File.exist?(lockfile)
@@ -55,8 +70,12 @@ end
 
 # Main execution logic
 def main
+  if ARGV.empty? || ['-h', '--help', '-v', '--version'].include?(ARGV[0])
+    usage
+  end
+
   if ARGV.length != 2
-    puts "Usage: #{$PROGRAM_NAME} lockfile_name interval_in_seconds"
+    puts "[ERROR] Two arguments required: lockfile_name and interval_in_seconds"
     exit(1)
   end
 
@@ -68,4 +87,3 @@ def main
 end
 
 main if __FILE__ == $PROGRAM_NAME
-
