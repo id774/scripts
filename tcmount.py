@@ -86,6 +86,7 @@ from optparse import OptionParser
 
 
 def usage():
+    """ Display the script header as usage information and exit. """
     script_path = os.path.abspath(__file__)
     in_header = False
     with open(script_path, 'r', encoding='utf-8') as f:
