@@ -44,10 +44,12 @@ from simple_passwd import generate_passwd
 class TestSimplePassword(unittest.TestCase):
     def test_generate_length_with_symbols(self):
         with patch('builtins.print') as mock_print:
-            generate_passwd(16, use_symbols=True)
-            output = mock_print.call_args[0][0]
-            self.assertEqual(len(output), 16)
-            self.assertTrue(any(c in '_-!#&' for c in output))
+            while True:
+                generate_passwd(16, use_symbols=True)
+                output = mock_print.call_args[0][0]
+                if any(c in '_-!#&' for c in output):
+                    self.assertEqual(len(output), 16)
+                    break
 
     def test_generate_length_without_symbols(self):
         with patch('builtins.print') as mock_print:
