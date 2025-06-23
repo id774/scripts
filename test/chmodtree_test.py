@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# test/chmodtree_test.py: Tests for chmodtree.py
+# chmodtree_test.py: Tests for chmodtree.py
 #
 #  Description:
 #  This test suite is designed to test the chmodtree.py script, focusing on

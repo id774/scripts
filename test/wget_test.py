@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# test/wget_test.py: Test suite for wget.py
+# wget_test.py: Test suite for wget.py
 #
 #  Description:
 #  This test suite verifies the functionality of the wget.py script.

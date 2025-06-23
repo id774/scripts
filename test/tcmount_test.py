@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# test/tcmount_test.py: Tests for tcmount.py
+# tcmount_test.py: Tests for tcmount.py
 #
 #  Description:
 #  This test suite is designed to test the tcmount.py script, focusing on
