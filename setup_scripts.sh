@@ -6,9 +6,8 @@
 #  Description:
 #  This script sets permissions for a collection of scripts.
 #  - Grants read/write permissions to the owner, and read-only to group and others.
-#  - Grants execute permissions to all files with .sh, .py, or .rb extensions.
-#  - Grants execute permissions to all files under scripts/installer.
-#  - Grants execute permissions to all files under scripts/cron/bin.
+#  - Grants execute permissions to all files with .sh, .py, or .rb extensions under the entire collection.
+#  - Grants execute permissions to all files under scripts/cron/bin regardless of extension.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -59,8 +58,9 @@
 #  - This script should be run from the root directory of the script collection.
 #  - Make sure to back up your scripts before running this script as a precaution.
 #  - SCRIPTS environment variable must be set to the path of the script collection.
-#  - Execute permissions will be added to all files under scripts/cron/bin
-#    and to all scripts with .sh, .py, or .rb extensions.
+#  - Execute permissions will be added:
+#      - To all *.sh, *.py, *.rb files under the SCRIPTS path
+#      - To all files under scripts/cron/bin (no extension filter)
 #
 ########################################################################
 
@@ -107,15 +107,19 @@ set_permissions() {
     find "$SCRIPTS" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
     RC2=$?
 
-    echo "[INFO] Granting execute permissions to all files under scripts/installer."
-    find "$SCRIPTS/installer" -type f -exec chmod u+x,g+x,o+x {} \;
+    echo "[INFO] Granting execute permissions to installer scripts (*.sh, *.py, *.rb)."
+    find "$SCRIPTS/installer" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
     RC3=$?
+
+    echo "[INFO] Granting execute permissions to test scripts (*.sh, *.py, *.rb)."
+    find "$SCRIPTS/test" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+    RC4=$?
 
     echo "[INFO] Granting execute permissions to all files under scripts/cron/bin."
     find "$SCRIPTS/cron/bin" -type f -exec chmod u+x,g+x,o+x {} \;
-    RC4=$?
+    RC5=$?
 
-    if [ "$RC1" -eq 0 ] && [ "$RC2" -eq 0 ] && [ "$RC3" -eq 0 ] && [ "$RC4" -eq 0 ]; then
+    if [ "$RC1" -eq 0 ] && [ "$RC2" -eq 0 ] && [ "$RC3" -eq 0 ] && [ "$RC4" -eq 0 ] && [ "$RC5" -eq 0 ]; then
         echo "[INFO] All permission settings completed successfully."
     else
         echo "[ERROR] One or more permission operations failed." >&2
