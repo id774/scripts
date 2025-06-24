@@ -73,7 +73,7 @@ class TestDuScript(unittest.TestCase):
             sys.stderr = stderr
 
     def test_parse_du_output(self):
-        fake_output = f"4.0K\t{self.test_dir}\n8.0K\t{self.test_dir}/visible"
+        fake_output = "{}\t{}\n{}\t{}".format("4.0K", self.test_dir, "8.0K", os.path.join(self.test_dir, "visible"))
         size = parse_du_output(fake_output, self.test_dir)
         self.assertEqual(size, "4.0K")
 
