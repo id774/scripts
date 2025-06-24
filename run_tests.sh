@@ -17,7 +17,7 @@
 #  Version History:
 #  v3.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
-#       Fixed bug where Ruby test case count only reflected last script instead of total.
+#       Fix bug where Ruby test case count only reflected last script instead of total.
 #  v3.0 2025-04-29
 #       Fully POSIX-compliant rewrite. Removed Bash-specific syntax and structures.
 #  v2.1 2025-04-13
