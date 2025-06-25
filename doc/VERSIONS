@@ -1,8 +1,8 @@
 Repository Update History
 =========================
 
-v1.4.4 (Release Date: TBD)
---------------------------
+v1.4.4 (2025-06-26)
+-------------------
 - Update Shell scripts and Python/Ruby scripts to display full header block as help message.
 - Improve script reliability by explicitly returning exit codes in all main functions.
 - Add several new Python and Ruby test scripts.
