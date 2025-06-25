@@ -17,6 +17,7 @@
 #  Version History:
 #  v2.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
+#       Add execute permission handling for test directory scripts with .sh, .py, or .rb extensions.
 #  v2.0 2025-06-16
 #       Add execute permission handling for all files under scripts/installer.
 #  v1.9 2025-05-12
