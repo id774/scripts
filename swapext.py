@@ -14,9 +14,11 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.2 2025-06-30
+#       Added checks: equal extensions, dir write access, conflict overwrite, zero-match warning.
+#       Clarified extension format in usage and error message.
 #  v2.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
-#       Clarified extension format in usage and error message.
 #  v2.0 2025-04-15
 #       Replaced sys.argv parsing with OptionParser.
 #       Added -x option to enable execution (default is dry-run).
@@ -74,8 +76,20 @@ def validate_args(args):
         print("[ERROR] Specified directory does not exist: {}".format(target_dir), file=sys.stderr)
         sys.exit(1)
 
+    if not os.access(target_dir, os.R_OK):
+        print("[ERROR] Cannot read from directory: {}".format(target_dir), file=sys.stderr)
+        sys.exit(1)
+
+    if not os.access(target_dir, os.W_OK):
+        print("[ERROR] Cannot write to directory: {}".format(target_dir), file=sys.stderr)
+        sys.exit(1)
+
     if not before_ext.startswith('.') or not after_ext.startswith('.'):
         print("[ERROR] Extensions must start with a '.' (e.g., '.txt', '.md')", file=sys.stderr)
+        sys.exit(1)
+
+    if before_ext == after_ext:
+        print("[ERROR] Before and after extensions are the same. Nothing to do.", file=sys.stderr)
         sys.exit(1)
 
     return target_dir, before_ext, after_ext
@@ -88,6 +102,10 @@ def confirm_execution(target_dir):
         sys.exit(1)
 
 def rename_file(old_path, new_path, dry_run, quiet_mode):
+    if os.path.exists(new_path):
+        print("[ERROR] Target file already exists: {}".format(new_path), file=sys.stderr)
+        sys.exit(1)
+
     if not quiet_mode:
         msg = "Renamed: {} -> {}".format(old_path, new_path)
         if dry_run:
@@ -103,6 +121,7 @@ def rename_file(old_path, new_path, dry_run, quiet_mode):
             sys.exit(1)
 
 def swap_extensions(target_dir, before_ext, after_ext, dry_run, quiet_mode):
+    count = 0
     for path, _, files in os.walk(target_dir):
         for oldfile in files:
             if oldfile.endswith(before_ext):
@@ -111,10 +130,15 @@ def swap_extensions(target_dir, before_ext, after_ext, dry_run, quiet_mode):
                 old_path = os.path.join(path, oldfile)
                 new_path = os.path.join(path, newfile)
                 rename_file(old_path, new_path, dry_run, quiet_mode)
+                count += 1
+
+    if count == 0:
+        print("[WARN] No files with extension {} found.".format(before_ext), file=sys.stderr)
 
 def main():
-    usage = "usage: %prog <dir> <before_ext> <after_ext> [-x] [-q]"
-    parser = OptionParser(usage=usage)
+    usage_msg = "usage: %prog <dir> <before_ext> <after_ext> [-x] [-q]"
+    global parser
+    parser = OptionParser(usage=usage_msg)
     parser.add_option("-x", action="store_true", dest="execute_mode", default=False,
                       help="execute rename operations (default is dry-run)")
     parser.add_option("-q", action="store_true", dest="quiet_mode", default=False,
