@@ -16,6 +16,7 @@
 #  Version History:
 #  v2.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
+#       Clarified extension format in usage and error message.
 #  v2.0 2025-04-15
 #       Replaced sys.argv parsing with OptionParser.
 #       Added -x option to enable execution (default is dry-run).
@@ -31,6 +32,7 @@
 #
 #  Usage:
 #  swapext.py <dir> <before_ext> <after_ext> [-x] [-q]
+#     (Note: Extensions must start with a dot, e.g., '.txt' '.md')
 #
 #  Options:
 #    -x    Execute mode (default is dry-run)
@@ -73,7 +75,7 @@ def validate_args(args):
         sys.exit(1)
 
     if not before_ext.startswith('.') or not after_ext.startswith('.'):
-        print("[ERROR] Extensions must start with a '.'", file=sys.stderr)
+        print("[ERROR] Extensions must start with a '.' (e.g., '.txt', '.md')", file=sys.stderr)
         sys.exit(1)
 
     return target_dir, before_ext, after_ext

@@ -1,6 +1,10 @@
 Repository Update History
 =========================
 
+v1.4.5 (Release Date: TBD)
+--------------------------
+- Clarify required dot prefix for extensions in swapext.py usage and error message.
+
 v1.4.4 (2025-06-26)
 -------------------
 - Update Shell scripts and Python/Ruby scripts to display full header block as help message.
