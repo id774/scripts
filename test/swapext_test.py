@@ -14,6 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.1 2025-06-30
+#       Added unit tests for argument validation in swapext.validate_args.
+#       Covers same extension, missing dot, unreadable/unwritable or missing directory.
 #  v2.0 2025-04-15
 #       Replaced sys.argv parsing with OptionParser.
 #       Added -x option to enable execution (default is dry-run).
@@ -98,6 +101,45 @@ class TestSwapExt(unittest.TestCase):
             call('/dir/sub/b.txt', '/dir/sub/b.md')
         ]
         mock_rename.assert_has_calls(expected, any_order=True)
+
+    @patch('sys.stderr')
+    def test_same_extension_exits(self, mock_stderr):
+        args = ['/tmp', '.txt', '.txt']
+        with patch('os.path.isdir', return_value=True), \
+                patch('os.access', return_value=True), \
+                self.assertRaises(SystemExit):
+            swapext.validate_args(args)
+
+    @patch('sys.stderr')
+    def test_missing_dot_prefix_exits(self, mock_stderr):
+        args = ['/tmp', 'txt', 'md']
+        with patch('os.path.isdir', return_value=True), \
+                patch('os.access', return_value=True), \
+                self.assertRaises(SystemExit):
+            swapext.validate_args(args)
+
+    @patch('sys.stderr')
+    def test_nonexistent_directory_exits(self, mock_stderr):
+        args = ['/nonexistent', '.txt', '.md']
+        with patch('os.path.isdir', return_value=False), \
+                self.assertRaises(SystemExit):
+            swapext.validate_args(args)
+
+    @patch('sys.stderr')
+    def test_unreadable_directory_exits(self, mock_stderr):
+        args = ['/tmp', '.txt', '.md']
+        with patch('os.path.isdir', return_value=True), \
+                patch('os.access', side_effect=lambda path, mode: mode != os.R_OK), \
+                self.assertRaises(SystemExit):
+            swapext.validate_args(args)
+
+    @patch('sys.stderr')
+    def test_unwritable_directory_exits(self, mock_stderr):
+        args = ['/tmp', '.txt', '.md']
+        with patch('os.path.isdir', return_value=True), \
+                patch('os.access', side_effect=lambda path, mode: mode != os.W_OK), \
+                self.assertRaises(SystemExit):
+            swapext.validate_args(args)
 
 
 if __name__ == '__main__':
