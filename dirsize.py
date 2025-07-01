@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2025-04-14
@@ -104,9 +106,11 @@ def main():
                 total_size += entry.stat().st_size
 
         print("[INFO] Total size:", convert_size(total_size))
+        return 0
     except Exception as e:
         print("[ERROR]", e, file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.7 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v2.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.5 2024-01-18
@@ -208,9 +210,10 @@ def main():
 
     m.show_not_found()
 
+    return 0
+
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
-
-    main()
+    sys.exit(main())

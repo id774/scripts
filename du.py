@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-05-15
@@ -166,9 +168,11 @@ def main():
     # Execute the custom disk usage reporting function with provided arguments
     run_custom_du(str(args.maxdepth), args.directory, args.all)
 
+    return 0
+
 
 # Main execution
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
-    main()
+    sys.exit(main())

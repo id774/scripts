@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v4.7 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v4.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v4.5 2025-05-14
@@ -257,7 +259,7 @@ def main():
     """
     Main function to handle the mounting process based on user inputs.
     """
-    tcmount_version = "4.6"
+    tcmount_version = "4.7"
 
     versions = []
     if is_truecrypt_installed():
@@ -305,8 +307,10 @@ def main():
 
     process_mounting(options, args)
 
+    return 0
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help'):
         usage()
-    main()
+    sys.exit(main())

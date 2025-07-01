@@ -18,6 +18,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.3 2025-04-14
@@ -116,13 +118,13 @@ def main():
 
         yaml_data = html_to_yaml(html)
         print(yaml.dump(yaml_data))
+        return 0
     except Exception as e:
         print("[ERROR] Error processing HTML: {}".format(e), file=sys.stderr)
-        sys.exit(2)
+        return 2
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
-
-    main()
+    sys.exit(main())

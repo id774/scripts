@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2025-04-14
@@ -140,6 +142,7 @@ def main():
     parser.add_option("-s", "--string", help="print a checksum of the given string",
                       action="store", type="string", dest="input_string")
     (options, args) = parser.parse_args()
+
     if options.input_string:
         checksum = Md5Checksum.calculate_checksum_for_string(
             options.input_string)
@@ -154,8 +157,10 @@ def main():
         print_checksum(options.include_subdir,
                        options.reversed_format, options.quiet_mode, args)
 
+    return 0
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
-    main()
+    sys.exit(main())

@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.3 2023-12-08
@@ -87,8 +89,10 @@ def main():
         if all(x not in shell for x in ['false', 'nologin', 'sync', 'shutdown', 'halt']):
             print("{0:11} => {1}".format(account, shell))
 
+    return 0
+
 
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
-    main()
+    sys.exit(main())

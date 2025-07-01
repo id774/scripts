@@ -19,6 +19,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.0 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.8 2025-04-14
@@ -222,7 +224,7 @@ def main():
     # Ensure the script is run with Python 3.3 or later
     if sys.version_info < (3, 3):
         print("[ERROR] This script requires Python 3.3 or later.", file=sys.stderr)
-        sys.exit(3)
+        return 3
 
     args = parse_arguments()
     start_datetime = parse_datetime(args.start or args.datetime, use_localtime=args.localtime)
@@ -231,9 +233,10 @@ def main():
     check_directory_exists(args.path)
     list_recent_files(args.path, start_datetime, end_datetime, args.all, args.filenames, args.fullpath, use_localtime=args.localtime)
 
+    return 0
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
-
-    main()
+    sys.exit(main())

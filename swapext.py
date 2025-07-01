@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.3 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v2.2 2025-06-30
 #       Added checks: equal extensions, dir write access, conflict overwrite, zero-match warning.
 #       Clarified extension format in usage and error message.
@@ -155,8 +157,10 @@ def main():
 
     swap_extensions(target_dir, before_ext, after_ext, not options.execute_mode, options.quiet_mode)
 
+    return 0
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 4 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
-    main()
+    sys.exit(main())

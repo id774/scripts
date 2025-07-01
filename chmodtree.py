@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.8 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v2.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.6 2025-04-14
@@ -186,10 +188,10 @@ def main():
         if options.sudo:
             check_sudo()
         chmodtree(options, args[0])
+        return 0
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
-
-    main()
+    sys.exit(main())

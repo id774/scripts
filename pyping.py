@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2025-01-06
@@ -123,6 +125,8 @@ def main(subnet, start_ip, end_ip, ordered):
         for ip, status in results.items():
             print("{} --> {}".format(ip, status))
 
+    return 0
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 3 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
@@ -144,4 +148,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Call the main function with parsed arguments
-    main(args.subnet, args.start_ip, args.end_ip, args.ordered)
+    sys.exit(main(args.subnet, args.start_ip, args.end_ip, args.ordered))

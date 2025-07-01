@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2025-04-13
@@ -65,10 +67,7 @@ def generate_passwd(length, use_symbols=True):
     print("".join([choice(chars) for i in range(length)]))
 
 
-if __name__ == '__main__':
-    if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
-        usage()
-
+def main():
     parser = OptionParser(usage="usage: %prog [options] length")
     parser.add_option("-s", "--no-symbols", action="store_false", dest="use_symbols", default=True,
                       help="Do not include symbols in the password")
@@ -81,3 +80,11 @@ if __name__ == '__main__':
 
     length = int(args[0])
     generate_passwd(length, options.use_symbols)
+
+    return 0
+
+
+if __name__ == '__main__':
+    if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
+        usage()
+    sys.exit(main())

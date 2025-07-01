@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.3 2025-04-14
@@ -68,15 +70,15 @@ def main(args):
     if len(args) > 1:
         try:
             print(unixtime2date(int(args[1])))
+            return 0
         except ValueError:
             print("[ERROR] Invalid timestamp. Please enter a valid Unix timestamp.", file=sys.stderr)
-            sys.exit(1)
+            return 1
     else:
-        print("[INFO] Usage: unixtime2date.py <unix_timestamp>")
-        print("[INFO] Example: unixtime2date.py 1609459200")
+        usage()
 
 
 if __name__ == '__main__':
     if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
-    main(sys.argv)
+    sys.exit(main(sys.argv))

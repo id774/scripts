@@ -16,6 +16,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.3 2025-05-15
@@ -130,11 +132,7 @@ def is_unix_like():
     """
     return platform.system() != "Windows"
 
-
-# Main execution
-if __name__ == '__main__':
-    if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help', '-v', '--version'):
-        usage()
+def main():
     if is_unix_like() and command_exists('cal') and len(sys.argv) > 1:
         # Pass arguments to the system's 'cal' command
         run_system_cal(sys.argv[1:])
@@ -163,3 +161,12 @@ if __name__ == '__main__':
             print_month_calendar(last_year, last_month)
             print_month_calendar(year, month, day)  # Highlight today
             print_month_calendar(next_year, next_month)
+
+    return 0
+
+
+# Main execution
+if __name__ == '__main__':
+    if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help', '-v', '--version'):
+        usage()
+    sys.exit(main())

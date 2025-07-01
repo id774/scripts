@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2023-12-08
@@ -51,16 +53,17 @@ def usage():
                     print(line[1:], end='')
     sys.exit(0)
 
-def download_file(url):
+def main(url):
     response = requests.get(url)
     filename = url.split('/')[-1]
 
     with open(filename, 'wb') as file:
         file.write(response.content)
 
+    return 0
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
-
-    download_file(sys.argv[1])
+    sys.exit(main(sys.argv[1]))

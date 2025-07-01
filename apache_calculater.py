@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-04-14
@@ -194,9 +196,10 @@ def main():
     print("[INFO] IP Hits:", ApacheCalculater.calculateApacheIpHits(log_file))
     print("[INFO] Client Cache Percentage:",
           ApacheCalculater.clientCachePercentage(log_file))
+    return 0
 
 
 if __name__ == '__main__':
     if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
-    main()
+    sys.exit(main())

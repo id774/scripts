@@ -23,6 +23,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.7 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2024-03-27
@@ -146,13 +148,13 @@ def main():
 
     if not os.path.isdir(args.dir_path):
         logging.error("%s is not a valid directory.", args.dir_path)
-        exit(1)
+        return 1
 
     rename_files(args.dir_path, args.num_digits, args.quiet)
+    return 0
 
 
 if __name__ == '__main__':
     if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
-
-    main()
+    sys.exit(main())

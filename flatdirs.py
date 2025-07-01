@@ -20,6 +20,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v2.2 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v2.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.0 2025-04-14
@@ -191,6 +193,8 @@ def main(options):
     for subdir in subdirectories:
         handle_directory(subdir, options)
 
+    return 0
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
@@ -198,4 +202,4 @@ if __name__ == '__main__':
 
     parser = setup_option_parser()
     (options, args) = parser.parse_args()
-    main(options)
+    sys.exit(main(options))

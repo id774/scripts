@@ -22,6 +22,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.6 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v3.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v3.4 2025-04-14
@@ -168,15 +170,16 @@ def main():
     # Check if the set of unique issues contains only 'dummy.py'
     if not detected_issues:
         print("[INFO] No Python 3.x compatibility issues found.")
+        return 0
     elif unique_issues == {'dummy.py'}:
         print("[INFO] Only dummy.py was detected with Python 3.x features, which is expected. No compatibility issues found in other scripts.")
+        return 0
     else:
         print("[WARN] Compatibility issues detected in scripts other than dummy.py. Please review the findings.", file=sys.stderr)
-        sys.exit(1)  # Exit with a status code of 1 to indicate an error.
+        return 1  # Exit with a status code of 1 to indicate an error.
 
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
-
-    main()
+    sys.exit(main())
