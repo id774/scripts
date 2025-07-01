@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-07-01
+#      Updated for function-based execution and explicit exit codes.
 #  v1.0 2025-06-24
 #      Initial release. Focused tests on input handling and password generation.
 #
@@ -33,53 +35,32 @@
 ########################################################################
 
 require 'rspec'
-require 'stringio'
 
 describe 'simple_passwd.rb' do
   let(:script_path) { File.expand_path('../../simple_passwd.rb', __FILE__) }
 
-  before(:each) do
-    @original_argv = ARGV.dup
-    @original_stdout = $stdout
-    $stdout = StringIO.new
-  end
-
-  after(:each) do
-    ARGV.replace(@original_argv)
-    $stdout = @original_stdout
-  end
-
   it 'shows usage when no arguments are given' do
-    ARGV.clear
-    expect { load script_path }.to raise_error(SystemExit)
-    output = $stdout.string
+    output = `ruby #{script_path}`
+    expect($?.exitstatus).to eq(0)
     expect(output).to include('Simple Password Generator in Ruby')
   end
 
-  it 'prints error when length is not a number' do
-    ARGV.replace(['abc'])
-    expect { load script_path }.to raise_error(SystemExit)
-    output = $stdout.string
+  it 'prints error and exits with 1 when length is not a number' do
+    output = `ruby #{script_path} abc 2>&1`
+    expect($?.exitstatus).to eq(1)
     expect(output).to include('[ERROR] Length must be a number.')
   end
 
   it 'generates password with symbols' do
-    ARGV.replace(['16'])
-    loop do
-      $stdout = StringIO.new
-      load script_path
-      output = $stdout.string.strip
-      next unless output.length == 16
-      expect(output).to match(/\A[0-9a-zA-Z_\-!#&]{16}\z/)
-      break
-    end
+    output = `ruby #{script_path} 16`.strip
+    expect($?.exitstatus).to eq(0)
+    expect(output.length).to eq(16)
+    expect(output).to match(/\A[0-9a-zA-Z_\-!#&]{16}\z/)
   end
 
   it 'generates password without symbols' do
-    ARGV.replace(['-s', '20'])
-    $stdout = StringIO.new
-    load script_path
-    output = $stdout.string.strip
+    output = `ruby #{script_path} -s 20`.strip
+    expect($?.exitstatus).to eq(0)
     expect(output.length).to eq(20)
     expect(output).to match(/\A[a-zA-Z0-9]{20}\z/)
   end

@@ -46,32 +46,36 @@ def usage
   exit 0
 end
 
-if ARGV.empty? || ['-h', '--help', '-v', '--version'].include?(ARGV[0])
-  usage
-end
-
-def generate_passwd(length, use_symbols=true)
+def generate_passwd(length, use_symbols = true)
   chars = [*'0'..'9', *'a'..'z', *'A'..'Z']
   chars += ['_', '-', '!', '#', '&'] if use_symbols
   puts chars.sample(length).join
 end
 
-options = { use_symbols: true }
-option_parser = OptionParser.new do |opts|
-  opts.banner = "Usage: simple_password.rb [options] length"
-  opts.on("-s", "--no-symbols", "Do not include symbols in the password") do
-    options[:use_symbols] = false
+def main
+  if ARGV.empty? || ['-h', '--help', '-v', '--version'].include?(ARGV[0])
+    usage
   end
+
+  options = { use_symbols: true }
+  option_parser = OptionParser.new do |opts|
+    opts.banner = "Usage: simple_password.rb [options] length"
+    opts.on("-s", "--no-symbols", "Do not include symbols in the password") do
+      options[:use_symbols] = false
+    end
+  end
+
+  option_parser.parse!
+
+  if ARGV.length != 1 || !/\A\d+\z/.match?(ARGV[0])
+    puts "[ERROR] Length must be a number."
+    puts option_parser
+    return 1
+  end
+
+  length = ARGV.shift.to_i
+  generate_passwd(length, options[:use_symbols])
+  return 0
 end
 
-option_parser.parse!
-
-if ARGV.length != 1 || !/\A\d+\z/.match?(ARGV[0])
-  puts "[ERROR] Length must be a number."
-  puts option_parser
-  exit 1
-end
-
-length = ARGV.shift.to_i
-generate_passwd(length, options[:use_symbols])
-exit 0
+exit(main) if __FILE__ == $0
