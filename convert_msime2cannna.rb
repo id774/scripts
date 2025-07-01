@@ -16,6 +16,7 @@
 #  Version History:
 #  v1.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.
+#       Refactored into main function for consistency and maintainability.
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2023-12-06
@@ -41,20 +42,24 @@ def usage
   exit 0
 end
 
-if ARGV[0] && ['-h', '--help', '-v', '--version'].include?(ARGV[0])
-  usage
+def main
+  if ARGV[0] && ['-h', '--help', '-v', '--version'].include?(ARGV[0])
+    usage
+  end
+
+  require 'kconv'
+
+  while line = gets
+    str = line.split(/\t/)
+    next unless str[2]
+    next unless str[2].toutf8.chop == "顔文字"
+
+    print str[0].toutf8
+    print " #KJ "
+    puts str[1].toutf8.gsub(/ /, "\\ ")
+  end
+
+  return 0
 end
 
-require 'kconv'
-
-while line = gets
-  str = line.split(/\t/)
-  next unless str[2]
-  next unless str[2].toutf8.chop == "顔文字"
-
-  print str[0].toutf8
-  print " #KJ "
-  puts str[1].toutf8.gsub(/ /, "\\ ")
-end
-
-exit 0
+exit(main) if __FILE__ == $0
