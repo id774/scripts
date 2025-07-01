@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2025-04-13
@@ -67,8 +69,9 @@ option_parser.parse!
 if ARGV.length != 1 || !/\A\d+\z/.match?(ARGV[0])
   puts "[ERROR] Length must be a number."
   puts option_parser
-  exit
+  exit 1
 end
 
 length = ARGV.shift.to_i
 generate_passwd(length, options[:use_symbols])
+exit 0

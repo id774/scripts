@@ -174,8 +174,7 @@ class ApacheCalculater(object):
 
 def main():
     if len(sys.argv) != 2:
-        print("[INFO] Usage: apache_calculater.py log_file_name")
-        sys.exit(0)
+        usage()
 
     log_file = sys.argv[1]
 

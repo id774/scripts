@@ -54,6 +54,7 @@ def main
       o.print source.read
     end
   end
+  return 0
 end
 
-main if __FILE__ == $PROGRAM_NAME
+exit(main) if __FILE__ == $PROGRAM_NAME

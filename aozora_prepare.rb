@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2023-12-06
@@ -54,12 +56,14 @@ class Aozora
         data.print content.gsub(/(\r\n)/, "\n")
       end
     end
+
+    return 0
   end
 end
 
 if __FILE__ == $0
   if ARGV.length == 2
-    Aozora.new(ARGV).run
+    exit(Aozora.new(ARGV).run)
   else
     usage
   end

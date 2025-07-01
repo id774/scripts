@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.3 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2023-12-06
@@ -54,3 +56,5 @@ while line = gets
   print " #KJ "
   puts str[1].toutf8.gsub(/ /, "\\ ")
 end
+
+exit 0

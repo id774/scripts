@@ -34,6 +34,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-07-01
+#       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2023-11-29
@@ -84,6 +86,7 @@ def main
 
   wait_for_lock_release(lockfile, interval)
   puts "Lock file released, proceeding..."
+  return 0
 end
 
-main if __FILE__ == $PROGRAM_NAME
+exit(main) if __FILE__ == $PROGRAM_NAME

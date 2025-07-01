@@ -3,7 +3,7 @@ Repository Update History
 
 v1.4.5 (Release Date: TBD)
 --------------------------
-- Standardize termination behavior for consistent script execution across all Python scripts.
+- Standardize termination behavior for consistent script execution across all Python and Ruby scripts.
 - Add safety checks and clarify required dot prefix in swapext.py.
 
 v1.4.4 (2025-06-26)
