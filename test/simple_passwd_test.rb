@@ -75,8 +75,8 @@ describe 'simple_passwd.rb' do
       output = `ruby #{script_path} 16`.strip
       expect($?.exitstatus).to eq(0)
       next unless output.length == 16
-      expect(output).to match(/\A[0-9a-zA-Z_\-!#&]{16}\z/)
-      expect(output).to match(/[!#&_\\-]/)
+      expect(output).to match(/\A[0-9a-zA-Z_!#&-]{16}\z/)
+      expect(output).to match(/[!#&_~-]/)
       break
     end
   end
