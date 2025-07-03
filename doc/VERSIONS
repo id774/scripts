@@ -4,8 +4,9 @@ Repository Update History
 v1.4.5 (Release Date: TBD)
 --------------------------
 - Standardize termination behavior for consistent script execution across all Python and Ruby scripts.
-- Ensure at least one symbol is included in generated passwords when symbols are enabled.
+- Add usage test case with -h option to all Python and Ruby test scripts.
 - Add safety checks and clarify required dot prefix in swapext.py.
+- Ensure at least one symbol is included in generated passwords when symbols are enabled.
 
 v1.4.4 (2025-06-26)
 -------------------
