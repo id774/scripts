@@ -5,7 +5,8 @@
 #
 #  Description:
 #  This script generates a random password. It can optionally exclude
-#  special symbols from the password.
+#  special symbols from the password. If symbols are enabled, at least
+#  one symbol is guaranteed to be included in the password.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -13,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-07-03
+#       Ensure at least one symbol is included when use_symbols is enabled.
 #  v1.4 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23
@@ -61,11 +64,27 @@ def usage():
 
 def generate_passwd(length, use_symbols=True):
     """Generate a random password of specified length."""
-    chars = string.ascii_letters + string.digits
-    if use_symbols:
-        chars += '_-!#&'
-    print("".join([choice(chars) for i in range(length)]))
+    if length <= 0:
+        print("[ERROR] Length must be greater than zero.", file=sys.stderr)
+        sys.exit(1)
 
+    base_chars = string.ascii_letters + string.digits
+    symbol_chars = '_-!#&'
+
+    if use_symbols:
+        if length == 1:
+            print(choice(symbol_chars))
+            return
+
+        password = [choice(symbol_chars)]
+        chars = base_chars + symbol_chars
+        password += [choice(chars) for _ in range(length - 1)]
+
+        from random import shuffle
+        shuffle(password)
+        print("".join(password))
+    else:
+        print("".join([choice(base_chars) for _ in range(length)]))
 
 def main():
     parser = OptionParser(usage="usage: %prog [options] length")
