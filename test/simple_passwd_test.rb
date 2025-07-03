@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.2 2025-07-03
+#      Updated tests to reflect new rule: symbols are always included if enabled.
 #  v1.1 2025-07-01
 #      Updated for function-based execution and explicit exit codes.
 #  v1.0 2025-06-24
@@ -29,8 +31,10 @@
 #  Test Cases:
 #  - Exit when no arguments are given
 #  - Error on non-numeric length argument
-#  - Correct password length and character set with symbols
-#  - Correct password length and character set without symbols
+#  - Error on zero length argument
+#  - Password with symbols includes at least one symbol
+#  - Password without symbols excludes all symbols
+#  - Single-character password with symbols is symbol-only
 #
 ########################################################################
 
@@ -51,41 +55,32 @@ describe 'simple_passwd.rb' do
     expect(output).to include('[ERROR] Length must be a number.')
   end
 
-  it 'generates password with symbols' do
-
-    # This test verifies that the script generates a password of the correct length
-    # and that it includes at least one symbol character when symbols are allowed.
-    #
-    # Due to the randomness of password generation, it's possible that a generated
-    # password of length 16 may consist entirely of alphanumeric characters, even
-    # when symbols are included in the character set. To account for this, we use
-    # a loop that retries password generation until a password of the correct length
-    # is produced that also includes at least one of the expected symbol characters.
-    #
-    # The following expectations are enforced:
-    # - The script exits successfully with status code 0.
-    # - The output string has exactly 16 characters.
-    # - All characters are from the allowed set: [0-9a-zA-Z_!#&-]
-    # - At least one character is a symbol: one of [!#&_\\-]
-    #
-    # This loop prevents false test failures caused by statistically rare but
-    # valid outputs (e.g., a 16-character password that contains no symbols).
-
-    loop do
-      output = `ruby #{script_path} 16`.strip
-      expect($?.exitstatus).to eq(0)
-      next unless output.length == 16
-      expect(output).to match(/\A[0-9a-zA-Z_!#&-]{16}\z/)
-      expect(output).to match(/[!#&_~-]/)
-      break
-    end
+  it 'prints error and exits with 1 when length is zero' do
+    output = `ruby #{script_path} 0 2>&1`
+    expect($?.exitstatus).to eq(1)
+    expect(output).to include('[ERROR] Length must be greater than zero.')
   end
 
-  it 'generates password without symbols' do
+  it 'generates password with symbols (at least one symbol)' do
+    output = `ruby #{script_path} 16`.strip
+    expect($?.exitstatus).to eq(0)
+    expect(output.length).to eq(16)
+    expect(output).to match(/\A[0-9a-zA-Z_!#&-]{16}\z/)
+    expect(output).to match(/[!#&_~-]/)
+  end
+
+  it 'generates password without symbols (all alphanumeric)' do
     output = `ruby #{script_path} -s 20`.strip
     expect($?.exitstatus).to eq(0)
     expect(output.length).to eq(20)
     expect(output).to match(/\A[a-zA-Z0-9]{20}\z/)
+  end
+
+  it 'generates one-character password with symbol when length is 1 and symbols enabled' do
+    output = `ruby #{script_path} 1`.strip
+    expect($?.exitstatus).to eq(0)
+    expect(output.length).to eq(1)
+    expect(output).to match(/\A[!#&_~-]\z/)
   end
 end
 

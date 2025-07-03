@@ -5,7 +5,8 @@
 #
 #  Description:
 #  This script generates a random password. It can optionally exclude
-#  special symbols from the password.
+#  special symbols from the password. If symbols are enabled, at least
+#  one symbol is guaranteed to be included in the password.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -13,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-07-03
+#       Ensure at least one symbol is included when use_symbols is enabled.
 #  v1.4 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #       Refactored into main function for consistency and maintainability.
@@ -27,8 +30,9 @@
 #
 #  Usage:
 #  ruby simple_password.rb [options] length
+#
 #  Options:
-#    -s, --no-symbols: Do not include symbols in the password
+#    -s, --no-symbols  Do not include symbols in the password
 #
 ########################################################################
 
@@ -48,9 +52,26 @@ def usage
 end
 
 def generate_passwd(length, use_symbols = true)
-  chars = [*'0'..'9', *'a'..'z', *'A'..'Z']
-  chars += ['_', '-', '!', '#', '&'] if use_symbols
-  puts chars.sample(length).join
+  if length <= 0
+    warn "[ERROR] Length must be greater than zero."
+    exit 1
+  end
+
+  base_chars = [*'0'..'9', *'a'..'z', *'A'..'Z']
+  symbol_chars = ['_', '-', '!', '#', '&']
+
+  if use_symbols
+    if length == 1
+      puts symbol_chars.sample
+      return
+    end
+
+    chars = base_chars + symbol_chars
+    password = [symbol_chars.sample] + Array.new(length - 1) { chars.sample }
+    puts password.shuffle.join
+  else
+    puts Array.new(length) { base_chars.sample }.join
+  end
 end
 
 def main
