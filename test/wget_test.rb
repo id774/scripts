@@ -25,6 +25,7 @@
 #  `rspec test/wget_test.rb`
 #
 #  Test Cases:
+#  - Shows usage and exits with code 0 when invoked with -h option
 #  - Exit when no arguments are given
 #  - Simulated file download without touching network or disk
 #
@@ -45,6 +46,12 @@ describe 'wget.rb' do
   after(:each) do
     ARGV.replace(@original_argv)
     $stdout = @original_stdout
+  end
+
+  it 'shows usage when -h option is given' do
+    output = `ruby #{script_path} -h`
+    expect($?.exitstatus).to eq(0)
+    expect(output).to include('Usage')
   end
 
   it 'exits with usage when no arguments are given' do

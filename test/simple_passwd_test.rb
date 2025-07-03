@@ -29,6 +29,7 @@
 #  `rspec test/simple_passwd_test.rb`
 #
 #  Test Cases:
+#  - Shows usage and exits with code 0 when invoked with -h option
 #  - Exit when no arguments are given
 #  - Error on non-numeric length argument
 #  - Error on zero length argument
@@ -42,6 +43,12 @@ require 'rspec'
 
 describe 'simple_passwd.rb' do
   let(:script_path) { File.expand_path('../../simple_passwd.rb', __FILE__) }
+
+  it 'shows usage when -h option is given' do
+    output = `ruby #{script_path} -h`
+    expect($?.exitstatus).to eq(0)
+    expect(output).to include('Usage')
+  end
 
   it 'shows usage when no arguments are given' do
     output = `ruby #{script_path}`

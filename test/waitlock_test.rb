@@ -25,6 +25,7 @@
 #  `rspec test/waitlock_test.rb`
 #
 #  Test Cases:
+#  - Shows usage and exits with code 0 when invoked with -h option
 #  - Exit with usage on no arguments
 #  - Error on invalid argument count
 #  - Correct waiting behavior for temporary lockfile
@@ -48,6 +49,12 @@ describe 'waitlock.rb' do
   after(:each) do
     ARGV.replace(@original_argv)
     $stdout = @original_stdout
+  end
+
+  it 'shows usage when -h option is given' do
+    output = `ruby #{script_path} -h`
+    expect($?.exitstatus).to eq(0)
+    expect(output).to include('Usage')
   end
 
   it 'shows usage with no arguments' do

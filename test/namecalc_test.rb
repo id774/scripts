@@ -26,6 +26,7 @@
 #  `rspec test/namecalc_test.rb`
 #
 #  Test Cases:
+#  - Shows usage and exits with code 0 when invoked with -h option
 #  - Verify correct numerological calculation and graphical representation.
 #
 ########################################################################
@@ -34,6 +35,8 @@ require 'rspec'
 require_relative '../namecalc.rb'
 
 describe NameCalc do
+  let(:script_path) { File.expand_path('../../namecalc.rb', __FILE__) }
+
   before(:each) do
     # Redirecting stdout to capture the script output
     @original_stdout = $stdout
@@ -50,6 +53,12 @@ describe NameCalc do
     main
     output = $stdout.string
     expect(output).to eq(expected_output)
+  end
+
+  it 'shows usage when -h option is given' do
+    output = `ruby #{script_path} -h`
+    expect($?.exitstatus).to eq(0)
+    expect(output).to include('Usage')
   end
 
   it "calculates and prints the correct numerology graph for '1234512345 5432154321'" do
