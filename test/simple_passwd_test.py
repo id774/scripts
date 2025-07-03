@@ -13,18 +13,20 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-07-03
+#       Update tests to reflect new rule: symbols are always included if enabled.
 #  v1.0 2025-06-24
 #       Initial test implementation for generate_passwd.
 #
 #  Test Cases:
-#    - test_generate_length_with_symbols:
-#        Checks that generated password is of correct length and includes symbols.
-#    - test_generate_length_without_symbols:
-#        Checks that generated password is of correct length and does not include symbols.
-#    - test_generate_zero_length:
-#        Ensures empty string is returned when length is zero.
-#    - test_generate_symbols_toggle:
-#        Verifies that symbol inclusion toggles as expected for large password.
+#    - test_generate_with_symbols:
+#        Confirms length is correct and at least one symbol is present.
+#    - test_generate_without_symbols:
+#        Confirms length is correct and no symbols are present.
+#    - test_generate_invalid_length_zero:
+#        Verifies that length zero raises SystemExit with error.
+#    - test_generate_single_length_with_symbol:
+#        Confirms that one-character password includes symbol if enabled.
 #
 ########################################################################
 
@@ -34,6 +36,8 @@ import sys
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import contextlib
+import io
 import string
 import unittest
 from unittest.mock import patch
@@ -42,40 +46,32 @@ from simple_passwd import generate_passwd
 
 
 class TestSimplePassword(unittest.TestCase):
-    def test_generate_length_with_symbols(self):
+    def test_generate_with_symbols(self):
         with patch('builtins.print') as mock_print:
-            while True:
-                generate_passwd(16, use_symbols=True)
-                output = mock_print.call_args[0][0]
-                if any(c in '_-!#&' for c in output):
-                    self.assertEqual(len(output), 16)
-                    break
+            generate_passwd(16, use_symbols=True)
+            output = mock_print.call_args[0][0]
+            self.assertEqual(len(output), 16)
+            self.assertTrue(any(c in '_-!#&' for c in output))
 
-    def test_generate_length_without_symbols(self):
+    def test_generate_without_symbols(self):
         with patch('builtins.print') as mock_print:
             generate_passwd(20, use_symbols=False)
             output = mock_print.call_args[0][0]
             self.assertEqual(len(output), 20)
             self.assertTrue(all(c in string.ascii_letters + string.digits for c in output))
 
-    def test_generate_zero_length(self):
-        with patch('builtins.print') as mock_print:
-            generate_passwd(0, use_symbols=True)
-            output = mock_print.call_args[0][0]
-            self.assertEqual(output, '')
+    def test_generate_invalid_length_zero(self):
+        with contextlib.redirect_stderr(io.StringIO()):
+            with self.assertRaises(SystemExit) as cm:
+                generate_passwd(0, use_symbols=True)
+        self.assertEqual(cm.exception.code, 1)
 
-    def test_generate_symbols_toggle(self):
+    def test_generate_single_length_with_symbol(self):
         with patch('builtins.print') as mock_print:
-            generate_passwd(100, use_symbols=True)
+            generate_passwd(1, use_symbols=True)
             output = mock_print.call_args[0][0]
-            has_symbol = any(c in '_-!#&' for c in output)
-            self.assertTrue(has_symbol)
-
-        with patch('builtins.print') as mock_print:
-            generate_passwd(100, use_symbols=False)
-            output = mock_print.call_args[0][0]
-            has_symbol = any(c in '_-!#&' for c in output)
-            self.assertFalse(has_symbol)
+            self.assertEqual(len(output), 1)
+            self.assertIn(output, '_-!#&')
 
 
 if __name__ == '__main__':
