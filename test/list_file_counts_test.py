@@ -21,6 +21,7 @@
 ########################################################################
 
 import os
+import subprocess
 import sys
 import unittest
 
@@ -63,6 +64,18 @@ class TestListFileCounts(unittest.TestCase):
             for dir in dirs:
                 os.rmdir(os.path.join(root, dir))
         os.rmdir(cls.test_dir)
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'list_file_counts.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     def test_get_subdirectories(self):
         """ Test retrieving subdirectories. """

@@ -12,6 +12,7 @@
 #       Initial test implementation.
 #
 #  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - Count IP hits correctly excluding ignored IPs.
 #    - Calculate 304 cache hit percentage.
 #    - Validate proper log line format.
@@ -22,6 +23,7 @@
 
 import gzip
 import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -39,6 +41,18 @@ class TestApacheCalculater(unittest.TestCase):
 
     def tearDown(self):
         self.tmp.cleanup()
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'apache_calculater.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     def write_log(self, lines, gzip_mode=False):
         if gzip_mode:

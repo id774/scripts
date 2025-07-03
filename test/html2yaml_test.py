@@ -34,6 +34,7 @@
 ########################################################################
 
 import os
+import subprocess
 import sys
 import unittest
 
@@ -52,6 +53,18 @@ from html2yaml import html_to_yaml
 
 class Html2YamlTest(unittest.TestCase):
     """ Unit tests for the html2yaml.py script. """
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'html2yaml.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     @classmethod
     def setUpClass(cls):

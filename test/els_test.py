@@ -24,6 +24,7 @@
 ########################################################################
 
 import os
+import subprocess
 import sys
 import time
 import unittest
@@ -36,6 +37,18 @@ import els
 
 class TestEls(unittest.TestCase):
     """ Test suite for els.py """
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'els.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     # Test Cases for format_time()
     def test_format_time(self):

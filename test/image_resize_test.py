@@ -21,6 +21,7 @@
 ########################################################################
 
 import os
+import subprocess
 import sys
 import unittest
 from unittest.mock import MagicMock, patch
@@ -45,6 +46,18 @@ class TestImageResize(unittest.TestCase):
         if not pil_installed:
             raise unittest.SkipTest(
                 "PIL library is not installed. Skipping tests.")
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'image_resize.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     @patch('image_resize.print')
     @patch('image_resize.Image.open')

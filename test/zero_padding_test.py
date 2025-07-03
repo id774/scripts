@@ -28,6 +28,7 @@
 ########################################################################
 
 import os
+import subprocess
 import sys
 import unittest
 from unittest.mock import call, patch
@@ -39,6 +40,18 @@ import zero_padding
 
 class TestZeroPadding(unittest.TestCase):
     """ Test cases for the rename_files function in zero_padding.py. """
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'zero_padding.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     @patch('os.rename')
     @patch('os.listdir')

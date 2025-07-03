@@ -23,6 +23,7 @@
 ########################################################################
 
 import os
+import subprocess
 import sys
 import unittest
 
@@ -33,6 +34,18 @@ import md5
 
 class TestMd5Checksum(unittest.TestCase):
     """ Test cases for Md5Checksum class in md5.py. """
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'md5.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     def test_calculate_checksum_for_string(self):
         """ Test MD5 checksum calculation for a given string. """

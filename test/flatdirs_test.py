@@ -33,6 +33,7 @@
 ########################################################################
 
 import os
+import subprocess
 import sys
 import unittest
 from unittest.mock import MagicMock, call, patch
@@ -76,6 +77,18 @@ class TestFlatDirs(unittest.TestCase):
     def tearDown(self):
         """ Tear down all mocks after each test. """
         patch.stopall()
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'flatdirs.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     def test_move_files(self):
         """ Test moving files. """

@@ -35,6 +35,18 @@ import dirsize
 class TestDirsize(unittest.TestCase):
     """ Test cases for dirsize.py script. """
 
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'dirsize.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
+
     def test_convert_kibi(self):
         """ Test kibi bytes of the convert_size function from dirsize.py. """
         self.assertEqual(dirsize.convert_size(1023), "1023.00 B")

@@ -24,6 +24,7 @@
 ########################################################################
 
 import os
+import subprocess
 import sys
 import unittest
 from unittest.mock import MagicMock, mock_open, patch
@@ -33,6 +34,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
     import requests
+
     from wget import download_file, usage
     HAS_REQUESTS = True
 except ImportError:
@@ -45,6 +47,18 @@ class TestWget(unittest.TestCase):
     def setUp(self):
         if not HAS_REQUESTS:
             self.skipTest("requests module is not installed")
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'wget.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     @patch('wget.requests.get')
     @patch('builtins.open', new_callable=mock_open)

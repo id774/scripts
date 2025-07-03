@@ -23,6 +23,7 @@
 ########################################################################
 
 import os
+import subprocess
 import sys
 import unittest
 
@@ -33,6 +34,18 @@ from unixtime2date import unixtime2date
 
 class TestUnixtime2date(unittest.TestCase):
     """ Test cases for unixtime2date function. """
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'unixtime2date.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     def test_unixtime2date_japan_timezone(self):
         """ Test conversion of Unix timestamps assuming Japan timezone (UTC+9). """

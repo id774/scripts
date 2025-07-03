@@ -12,6 +12,7 @@
 #      Initial release.
 #
 #  Test Cases:
+#  - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #  - Valid and invalid directory detection
 #  - parse_du_output behavior
 #  - run_custom_du includes/excludes hidden directories
@@ -45,6 +46,18 @@ class TestDuScript(unittest.TestCase):
 
     def tearDown(self):
         subprocess.call(['rm', '-rf', self.test_dir])
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'du.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     def test_check_directory_valid(self):
         check_directory(self.test_dir)  # Should not raise

@@ -22,6 +22,7 @@
 ########################################################################
 
 import os
+import subprocess
 import sys
 import unittest
 from unittest.mock import patch
@@ -34,6 +35,18 @@ from wakeonlan import (create_magic_packet, format_mac_address,
 
 class TestWakeOnLan(unittest.TestCase):
     """ Unit tests for the wakeonlan.py script. """
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'wakeonlan.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     def test_format_mac_address(self):
         """ Test formatting MAC addresses. """

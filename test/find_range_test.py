@@ -59,6 +59,7 @@
 
 import argparse
 import os
+import subprocess
 import sys
 import unittest
 from datetime import datetime, timedelta, timezone
@@ -70,6 +71,18 @@ import find_range
 
 
 class TestFindRecent(unittest.TestCase):
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'find_range.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     @patch('builtins.print')
     @patch('find_range.os.path.getmtime')
@@ -385,7 +398,7 @@ class TestFindRecent(unittest.TestCase):
         find_range.list_recent_files(test_path, test_start_date, None, include_hidden, filenames_only, False, use_localtime)
 
         tz_offset = test_start_date.strftime('%z')
-        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '賊hh:mm'
+        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '鬮ｮ逕ｻ魑･h:mm'
 
         expected_time_str = '{}{}'.format(test_start_date.strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted)
         mock_print.assert_called_once_with('{} - {}'.format(expected_time_str, os.path.join(test_path, "file1.txt")))
@@ -667,7 +680,7 @@ class TestFindRecent(unittest.TestCase):
         find_range.list_recent_files(test_path, test_start_datetime, test_end_datetime, include_hidden, False, False, use_localtime)
 
         tz_offset = test_start_datetime.strftime('%z')
-        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '賊hh:mm'
+        tz_formatted = "{}:{}".format(tz_offset[:-2], tz_offset[-2:])  # Format to '鬮ｮ逕ｻ魑･h:mm'
 
         expected_calls = [
             call('{}{} - {}'.format(test_start_datetime.strftime('%Y-%m-%dT%H:%M:%S'), tz_formatted, os.path.join(test_path, "file_at_start.txt"))),

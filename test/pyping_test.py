@@ -20,8 +20,8 @@
 #       Initial release. Test suite for pyping.py script.
 #
 #  Notes:
-#  - This test simulates the pinging process and does not send actual
-#    network requests.
+#  - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#  - This test simulates the pinging process and does not send actual network requests.
 #  - The script is designed to work with Python 3.
 #
 ########################################################################
@@ -39,6 +39,18 @@ import pyping
 
 class TestPyPing(unittest.TestCase):
     """ Test suite for pyping.py. """
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'pyping.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     @patch('subprocess.check_output')
     def test_ping_alive(self, mock_check_output):

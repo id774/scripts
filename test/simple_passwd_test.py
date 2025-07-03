@@ -19,6 +19,8 @@
 #       Initial test implementation for generate_passwd.
 #
 #  Test Cases:
+#    - test_usage_shows_help:
+#        Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - test_generate_with_symbols:
 #        Confirms length is correct and at least one symbol is present.
 #    - test_generate_without_symbols:
@@ -39,6 +41,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import contextlib
 import io
 import string
+import subprocess
 import unittest
 from unittest.mock import patch
 
@@ -46,6 +49,18 @@ from simple_passwd import generate_passwd
 
 
 class TestSimplePassword(unittest.TestCase):
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'simple_passwd.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
+
     def test_generate_with_symbols(self):
         with patch('builtins.print') as mock_print:
             generate_passwd(16, use_symbols=True)

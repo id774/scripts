@@ -22,6 +22,7 @@
 
 import os
 import struct
+import subprocess
 import sys
 import unittest
 from unittest.mock import mock_open, patch
@@ -33,6 +34,18 @@ from png_info import read_png_info
 
 class TestPngInfo(unittest.TestCase):
     """ Unit tests for the png_info.py script. """
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'png_info.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     @patch('builtins.open', new_callable=mock_open)
     def test_valid_png(self, mock_file):

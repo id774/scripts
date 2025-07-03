@@ -32,6 +32,7 @@
 
 import os
 import re
+import subprocess
 import sys
 import unittest
 from unittest.mock import MagicMock, call, patch
@@ -55,6 +56,18 @@ class TestFindPyCompat(unittest.TestCase):
     def tearDown(self):
         """ Tear down mocks after each test. """
         patch.stopall()
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'find_pycompat.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     def mock_file_read(self, *args, **kwargs):
         return MagicMock(read=lambda: self.file_content)

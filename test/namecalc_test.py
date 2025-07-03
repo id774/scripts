@@ -22,11 +22,13 @@
 #  `python test/namecalc_test.py`
 #
 #  Test Cases:
+#  - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #  - Verify correct numerological calculation and graphical representation.
 #
 ########################################################################
 
 import os
+import subprocess
 import sys
 import unittest
 from contextlib import contextmanager
@@ -48,6 +50,18 @@ def captured_output():
         sys.stdout = old_out
 
 class TestNameCalc(unittest.TestCase):
+
+    def test_usage_shows_help(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'namecalc.py')
+
+        proc = subprocess.Popen(['python3', script_path, '-h'],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        out, err = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertIn('Usage:', out.decode('utf-8'))
 
     def run_test(self, input_str, expected_output):
         with captured_output() as out:
