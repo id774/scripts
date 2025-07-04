@@ -15,6 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v3.2 2025-07-04
+#       Refactored Ruby test handling to check Ruby before RSpec and align with Python test logic.
+#       Improved messaging for cases where Ruby is present but RSpec is not installed.
 #  v3.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #       Fix bug where Ruby test case count only reflected last script instead of total.
@@ -158,43 +161,57 @@ run_python_tests() {
 
 # Function to run Ruby tests
 run_ruby_tests() {
+    # Check if Ruby is installed
+    if [ -z "$ruby_path" ]; then
+        ruby_path=$(command -v ruby)
+    fi
+
+    if [ -z "$ruby_path" ]; then
+        echo "[INFO] Ruby is not installed. Skipping Ruby tests." >&2
+        return
+    elif [ ! -x "$ruby_path" ]; then
+        echo "[ERROR] Specified Ruby path is invalid or not executable." >&2
+        exit 1
+    fi
+
     # Check if RSpec is installed
     if [ -z "$rspec_path" ]; then
-        rspec_path=`command -v rspec`
+        rspec_path=$(command -v rspec)
     fi
 
     if [ -z "$rspec_path" ]; then
-        echo "[INFO] RSpec is not installed. Skipping Ruby tests." >&2
-    else
-        if [ ! -x "$rspec_path" ]; then
-            echo "[ERROR] Specified RSpec path is invalid or not executable." >&2
-            exit 1
-        fi
-        echo "[INFO] RSpec path: $rspec_path"
-        ruby_dir=`dirname "$rspec_path"`
-        ruby_command="$ruby_dir/ruby"
-        ruby_version=`"$ruby_command" --version 2>&1`
-        echo "$ruby_version"
-
-        # Execute Ruby tests
-        for file in test/*_test.rb; do
-            if [ -f "$file" ]; then
-                echo "[INFO] Running Ruby test: $file"
-                output=`"$rspec_path" "$file" 2>&1`
-                echo "$output"
-                if ! echo "$output" | grep -q "0 failures"; then
-                    echo "[WARN] Failure in Ruby test: $file" >&2
-                    ruby_failures=`expr "$ruby_failures" + 1`
-                fi
-                extract_ruby_test_count "$output"
-                ruby_scripts=`expr "$ruby_scripts" + 1`
-                ruby_tests_total=`expr "$ruby_tests_total" + "$ruby_tests"`
-                total_tests=`expr "$total_tests" + "$ruby_tests"`
-            fi
-        done
-        total_scripts=`expr "$total_scripts" + "$ruby_scripts"`
-        display_ruby_report
+        echo "[INFO] Ruby is installed, but RSpec is not available. Skipping Ruby tests." >&2
+        return
+    elif [ ! -x "$rspec_path" ]; then
+        echo "[ERROR] Specified RSpec path is invalid or not executable." >&2
+        exit 1
     fi
+
+    echo "[INFO] Ruby path: $ruby_path"
+    ruby_version=$("$ruby_path" --version 2>&1)
+    echo "$ruby_version"
+
+    echo "[INFO] RSpec path: $rspec_path"
+
+    # Execute Ruby tests
+    for file in test/*_test.rb; do
+        if [ -f "$file" ]; then
+            echo "[INFO] Running Ruby test: $file"
+            output=$("$rspec_path" "$file" 2>&1)
+            echo "$output"
+            if ! echo "$output" | grep -q "0 failures"; then
+                echo "[WARN] Failure in Ruby test: $file" >&2
+                ruby_failures=$(expr "$ruby_failures" + 1)
+            fi
+            extract_ruby_test_count "$output"
+            ruby_scripts=$(expr "$ruby_scripts" + 1)
+            ruby_tests_total=$(expr "$ruby_tests_total" + "$ruby_tests")
+            total_tests=$(expr "$total_tests" + "$ruby_tests")
+        fi
+    done
+
+    total_scripts=$(expr "$total_scripts" + "$ruby_scripts")
+    display_ruby_report
 }
 
 # Display Python report
