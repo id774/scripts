@@ -63,7 +63,12 @@ class TestCal(unittest.TestCase):
         with redirect_stdout(f):
             cal.main()
         output = f.getvalue()
-        self.assertIn('January', output)  # Expect a month header
+
+        month_names = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ]
+        self.assertTrue(any(month in output for month in month_names))
 
     @patch('cal.is_unix_like', return_value=True)
     @patch('cal.command_exists', return_value=True)
