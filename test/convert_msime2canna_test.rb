@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 ########################################################################
-#  convert_msime2canna_test.rb: Test for convert_msime2canna.rb
+# convert_msime2canna_test.rb: Test for convert_msime2canna.rb
 #
 #  Description:
 #  This script tests convert_msime2canna.rb, which converts a Microsoft
