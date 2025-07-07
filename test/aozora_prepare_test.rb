@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
 ########################################################################
-#  aozora_prepare_test.rb: Test for aozora_prepare.rb
+# aozora_prepare_test.rb: Test for aozora_prepare.rb
 #
 #  Description:
 #  This script tests aozora_prepare.rb, which processes Aozora Bunko
