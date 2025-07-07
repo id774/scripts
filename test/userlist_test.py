@@ -35,6 +35,7 @@ from unittest.mock import mock_open, patch
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import userlist
 
+
 class TestUserlist(unittest.TestCase):
     script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../userlist.py'))
 
@@ -42,13 +43,18 @@ class TestUserlist(unittest.TestCase):
         command = ['python3', self.script_path]
         if args:
             command += args
-        result = subprocess.run(
-            command,
-            input=input_data,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            encoding='utf-8'
-        )
+            process = subprocess.Popen(
+                command,
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            stdout_data, stderr_data = process.communicate(input=input_data.encode('utf-8') if input_data else None)
+            result = type('Result', (object,), {
+                'returncode': process.returncode,
+                'stdout': stdout_data.decode('utf-8'),
+                'stderr': stderr_data.decode('utf-8')
+            })()
         return result
 
     def test_help_option(self):
