@@ -13,6 +13,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.4 2025-07-07
+#       Define download_file function to allow test import and avoid skipping tests.
 #  v1.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.2 2025-06-23
@@ -53,13 +55,18 @@ def usage():
                     print(line[1:], end='')
     sys.exit(0)
 
-def main(url):
+def download_file(url):
+    """Download the file from the given URL and save it."""
     response = requests.get(url)
     filename = url.split('/')[-1]
 
     with open(filename, 'wb') as file:
         file.write(response.content)
 
+    return filename
+
+def main(url):
+    download_file(url)
     return 0
 
 
