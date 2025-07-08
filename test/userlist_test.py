@@ -66,15 +66,18 @@ class TestUserlist(unittest.TestCase):
         self.assertEqual(result.returncode, 0)
         self.assertIn('Usage', result.stdout)
 
-    @patch('builtins.open', new_callable=mock_open, read_data="testuser:x:1000:1000::/home/testuser:/bin/bash\n")
     @patch('os.path.isfile', side_effect=lambda path: path == '/etc/debian_version')
     @patch('platform.system', return_value='Linux')
-    def test_debian_userlist(self, mock_system, mock_isfile, mock_openfile):
-        f = io.StringIO()
-        with redirect_stdout(f):
-            userlist.main()
-        output = f.getvalue()
-        self.assertIn("testuser", output)
+    def test_debian_userlist(self, mock_system, mock_isfile):
+        passwd_data = "testuser:x:1000:1000::/home/testuser:/bin/bash\n"
+        m = mock_open(read_data=passwd_data)
+        m.return_value.__iter__.return_value = passwd_data.splitlines()
+        with patch('builtins.open', m):
+            f = io.StringIO()
+            with redirect_stdout(f):
+                userlist.main()
+            output = f.getvalue()
+            self.assertIn("testuser", output)
 
     @patch('platform.system', return_value='Darwin')
     @patch('subprocess.check_output', return_value=b'name: testmac\nuid: 501\n')
