@@ -15,7 +15,7 @@
 #
 #  Version History:
 #  v1.5 2025-07-08
-#       Fixed compatibility issues with Python 3.6.
+#       Fixed compatibility issues with Python 3.4.
 #  v1.4 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23

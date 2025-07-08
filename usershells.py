@@ -15,6 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.6 2025-07-08
+#       Fixed compatibility issues with Python 3.4.
 #  v1.5 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.4 2025-06-23
@@ -47,39 +49,57 @@ def usage():
     """ Display the script header as usage information and exit. """
     script_path = os.path.abspath(__file__)
     in_header = False
-    with open(script_path, 'r', encoding='utf-8') as f:
-        for line in f:
-            if line.strip().startswith('#' * 10):
-                if not in_header:
-                    in_header = True
-                    continue
-                else:
-                    break
-            if in_header and line.startswith('#'):
-                if line.startswith('# '):
-                    print(line[2:], end='')
-                else:
-                    print(line[1:], end='')
+    try:
+        with open(script_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.strip().startswith('#' * 10):
+                    if not in_header:
+                        in_header = True
+                        continue
+                    else:
+                        break
+                if in_header and line.startswith('#'):
+                    if line.startswith('# '):
+                        print(line[2:], end='')
+                    else:
+                        print(line[1:], end='')
+    except Exception as e:
+        print("Error reading usage information: %s" % str(e), file=sys.stderr)
     sys.exit(0)
+
 
 def get_shells_from_passwd():
     shells = {}
-    with open("/etc/passwd", 'r') as fo:
-        for line in fo:
-            line = line.strip()
-            fields = line.split(":")
-            shells[fields[0]] = fields[-1]
+    try:
+        with open("/etc/passwd", 'r') as fo:
+            for line in fo:
+                line = line.strip()
+                fields = line.split(":")
+                if len(fields) >= 7:
+                    shells[fields[0]] = fields[-1]
+    except Exception as e:
+        print("Error reading /etc/passwd: %s" % str(e), file=sys.stderr)
     return shells
+
 
 def get_shells_from_dscl():
     shells = {}
-    users = subprocess.check_output(
-        ['dscl', '.', '-list', '/Users']).decode().splitlines()
-    for user in users:
-        shell = subprocess.check_output(
-            ['dscl', '.', '-read', '/Users/{}'.format(user), 'UserShell']).decode().split()[1]
-        shells[user] = shell
+    try:
+        users = subprocess.check_output(
+            ['dscl', '.', '-list', '/Users']).decode('utf-8').splitlines()
+        for user in users:
+            try:
+                shell_output = subprocess.check_output(
+                    ['dscl', '.', '-read', '/Users/' + user, 'UserShell']
+                ).decode('utf-8').strip().split()
+                if len(shell_output) >= 2:
+                    shells[user] = shell_output[1]
+            except Exception:
+                continue
+    except Exception as e:
+        print("Error retrieving user list from dscl: %s" % str(e), file=sys.stderr)
     return shells
+
 
 def main():
     os_type = platform.system()

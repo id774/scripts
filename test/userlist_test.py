@@ -15,7 +15,7 @@
 #
 #  Version History:
 #  v1.1 2025-07-08
-#       Fixed compatibility issues with Python 3.6.
+#       Fixed compatibility issues with Python 3.4.
 #  v1.0 2025-07-07
 #       Initial release.
 #
