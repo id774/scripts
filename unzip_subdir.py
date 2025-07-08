@@ -69,8 +69,8 @@ def usage():
                         print(line[1:], end='')
     except Exception as e:
         print("Error reading usage information: %s" % str(e), file=sys.stderr)
+        sys.exit(1)
     sys.exit(0)
-
 
 def unzip_files(args, dry_run=False):
     for root, dirs, files in os.walk(args[0]):

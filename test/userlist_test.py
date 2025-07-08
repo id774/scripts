@@ -21,8 +21,8 @@
 #
 #  Test Cases:
 #  - Shows usage and exits with code 0 when invoked with -h option
-#  - Displays user with UID ≥ 1000 on Debian-based system
-#  - Displays user from dscacheutil on macOS if UID ≥ 500
+#  - Displays user with UID 竕･ 1000 on Debian-based system
+#  - Displays user from dscacheutil on macOS if UID 竕･ 500
 #
 ########################################################################
 

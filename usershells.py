@@ -65,8 +65,8 @@ def usage():
                         print(line[1:], end='')
     except Exception as e:
         print("Error reading usage information: %s" % str(e), file=sys.stderr)
+        sys.exit(1)
     sys.exit(0)
-
 
 def get_shells_from_passwd():
     shells = {}
@@ -80,7 +80,6 @@ def get_shells_from_passwd():
     except Exception as e:
         print("Error reading /etc/passwd: %s" % str(e), file=sys.stderr)
     return shells
-
 
 def get_shells_from_dscl():
     shells = {}
@@ -99,7 +98,6 @@ def get_shells_from_dscl():
     except Exception as e:
         print("Error retrieving user list from dscl: %s" % str(e), file=sys.stderr)
     return shells
-
 
 def main():
     os_type = platform.system()

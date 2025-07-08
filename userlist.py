@@ -65,8 +65,8 @@ def usage():
                         print(line[1:], end='')
     except Exception as e:
         print("Error reading usage information: %s" % str(e), file=sys.stderr)
+        sys.exit(1)
     sys.exit(0)
-
 
 def parse_dscacheutil_output(output):
     users = []
@@ -83,7 +83,6 @@ def parse_dscacheutil_output(output):
     if current_user:
         users.append(current_user)
     return users
-
 
 def show_userlist(threshold):
     if platform.system() == 'Darwin':
@@ -111,7 +110,6 @@ def show_userlist(threshold):
                             print(parts[0])
         except Exception as e:
             print("Error reading /etc/passwd: %s" % str(e), file=sys.stderr)
-
 
 def main():
     threshold = 0
