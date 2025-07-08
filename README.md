@@ -20,7 +20,7 @@ This repository contains various utility scripts to address common tasks efficie
 Supported languages:
 - Shell Script
 - Python (requires version 3.6 or later)
-- Ruby
+- Ruby (requires version 3.0 or later)
 
 ---
 
