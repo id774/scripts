@@ -27,8 +27,12 @@ import io
 import os
 import sys
 import unittest
-from contextlib import redirect_stdout
+import warnings
+from contextlib import redirect_stderr, redirect_stdout
 from unittest.mock import MagicMock, patch
+
+warnings.filterwarnings("ignore")
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -39,7 +43,7 @@ class TestShowVersion(unittest.TestCase):
     def test_python_version_output(self):
         f = io.StringIO()
         with patch.object(sys, 'argv', ['show_version.py', '-p']):
-            with redirect_stdout(f):
+            with redirect_stdout(f), redirect_stderr(io.StringIO()):
                 show_version.main()
         output = f.getvalue()
         self.assertIn("Python", output)
@@ -50,7 +54,7 @@ class TestShowVersion(unittest.TestCase):
         options.python = False
         m = show_version.PythonModuleInfo(options)
         f = io.StringIO()
-        with redirect_stdout(f):
+        with redirect_stdout(f), redirect_stderr(io.StringIO()):
             m.get_module_version('math')  # standard module
         output = f.getvalue()
         self.assertIn("math", output)
@@ -63,7 +67,7 @@ class TestShowVersion(unittest.TestCase):
 
         with patch('importlib.import_module', side_effect=ImportError):
             f = io.StringIO()
-            with redirect_stdout(f):
+            with redirect_stdout(f), redirect_stderr(io.StringIO()):
                 m.get_module_version('nonexistent_package')
                 m.show_not_found()
             output = f.getvalue()
