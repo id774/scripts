@@ -17,6 +17,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v4.8 2025-07-08
+#       Automatically extract __version__ from script header to eliminate hardcoded version.
 #  v4.7 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v4.6 2025-06-23
