@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.5 2025-07-08
+#       Fixed compatibility issues with Python 3.6.
 #  v1.4 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23
@@ -47,43 +49,69 @@ def usage():
     """ Display the script header as usage information and exit. """
     script_path = os.path.abspath(__file__)
     in_header = False
-    with open(script_path, 'r', encoding='utf-8') as f:
-        for line in f:
-            if line.strip().startswith('#' * 10):
-                if not in_header:
-                    in_header = True
-                    continue
-                else:
-                    break
-            if in_header and line.startswith('#'):
-                if line.startswith('# '):
-                    print(line[2:], end='')
-                else:
-                    print(line[1:], end='')
+    try:
+        with open(script_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                if line.strip().startswith('#' * 10):
+                    if not in_header:
+                        in_header = True
+                        continue
+                    else:
+                        break
+                if in_header and line.startswith('#'):
+                    if line.startswith('# '):
+                        print(line[2:], end='')
+                    else:
+                        print(line[1:], end='')
+    except Exception as e:
+        print("Error reading usage information: %s" % str(e), file=sys.stderr)
     sys.exit(0)
+
+
+def parse_dscacheutil_output(output):
+    users = []
+    current_user = {}
+    for line in output.splitlines():
+        if not line.strip():
+            if current_user:
+                users.append(current_user)
+                current_user = {}
+            continue
+        if ': ' in line:
+            key, value = line.split(': ', 1)
+            current_user[key.strip()] = value.strip()
+    if current_user:
+        users.append(current_user)
+    return users
+
 
 def show_userlist(threshold):
     if platform.system() == 'Darwin':
-        # macOS
-        output = subprocess.check_output(
-            ['dscacheutil', '-q', 'user']).decode()
-        users = output.split('\n\n')
-        for user in users:
-            user_info = dict(line.split(': ')
-                             for line in user.split('\n') if line)
-            uid = int(user_info.get('uid', -1))
-            name = user_info.get('name', '')
-            if uid >= threshold:
-                print(name)
-    else:
-        # Linux/Unix
-        with open('/etc/passwd', 'r') as fo:
-            for line in fo:
-                parts = line.strip().split(':')
-                if len(parts) >= 3 and parts[2].isdigit():
-                    uid = int(parts[2])
+        try:
+            output = subprocess.check_output(['dscacheutil', '-q', 'user']).decode('utf-8')
+            users = parse_dscacheutil_output(output)
+            for user_info in users:
+                try:
+                    uid = int(user_info.get('uid', -1))
+                    name = user_info.get('name', '')
                     if uid >= threshold:
-                        print(parts[0])
+                        print(name)
+                except (ValueError, TypeError):
+                    continue
+        except Exception as e:
+            print("Error retrieving user list: %s" % str(e), file=sys.stderr)
+    else:
+        try:
+            with open('/etc/passwd', 'r') as fo:
+                for line in fo:
+                    parts = line.strip().split(':')
+                    if len(parts) >= 3 and parts[2].isdigit():
+                        uid = int(parts[2])
+                        if uid >= threshold:
+                            print(parts[0])
+        except Exception as e:
+            print("Error reading /etc/passwd: %s" % str(e), file=sys.stderr)
+
 
 def main():
     threshold = 0
