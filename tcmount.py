@@ -88,6 +88,7 @@ import subprocess
 import sys
 from optparse import OptionParser
 
+__version__ = "unknown"
 
 def usage():
     """ Display the script header as usage information and exit. """
@@ -111,6 +112,21 @@ def usage():
         print("Error reading usage information: %s" % str(e), file=sys.stderr)
         sys.exit(1)
     sys.exit(0)
+
+def get_script_version():
+    """ Extracts the script version from the header comment block. """
+    script_path = os.path.abspath(__file__)
+    found_history = False
+    try:
+        with open(script_path, 'r', encoding='utf-8') as f:
+            for line in f:
+                if "Version History" in line:
+                    found_history = True
+                elif found_history and line.strip().startswith("#  v"):
+                    return line.strip().split()[1]
+    except Exception:
+        return "unknown"
+    return "unknown"
 
 def check_sudo():
     """ Check if the user has sudo privileges (password may be required). """
@@ -263,7 +279,8 @@ def main():
     """
     Main function to handle the mounting process based on user inputs.
     """
-    tcmount_version = "4.7"
+    global __version__
+    __version__ = get_script_version()
 
     versions = []
     if is_truecrypt_installed():
@@ -276,7 +293,7 @@ def main():
         sys.exit(1)
 
     version_message = "tcmount.py {} - This script operates with {}.".format(
-        tcmount_version, " / ".join(versions))
+        __version__, " / ".join(versions))
 
     parser = OptionParser(version=version_message)
     parser.add_option("-v", "--veracrypt",
