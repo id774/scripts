@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-07-08
+#       Fixed compatibility issues with Python 3.4.
 #  v1.0 2025-07-07
 #       Initial release.
 #
@@ -44,7 +46,7 @@ class TestUnzipSubdir(unittest.TestCase):
         process = Popen(['python3', script_path, '-h'], stdout=PIPE, stderr=PIPE)
         stdout, _ = process.communicate()
         self.assertEqual(process.returncode, 0)
-        self.assertIn("Usage", stdout.decode())
+        self.assertIn("Usage", stdout.decode('utf-8'))
 
     def test_dry_run_lists_zip_files(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -86,9 +88,12 @@ class TestUnzipSubdir(unittest.TestCase):
             with redirect_stdout(f):
                 unzip_subdir.unzip_files([tmpdir], dry_run=False)
             output = f.getvalue()
-            self.assertTrue(os.path.exists(os.path.join(tmpdir, 'foo')))
-            mock_system.assert_called_once()
-            self.assertIn("foo", os.listdir(tmpdir))
+
+            # Ensure directory was created
+            self.assertTrue(os.path.isdir(os.path.join(tmpdir, 'foo')))
+            # Replace assert_called_once (Python 3.6+ only)
+            self.assertEqual(mock_system.call_count, 1)
+            self.assertIn('foo', os.listdir(tmpdir))
 
 
 if __name__ == '__main__':
