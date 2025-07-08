@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-07-08
+#       Fixed compatibility issues with Python 3.4.
 #  v1.0 2025-07-07
 #       Initial release.
 #
@@ -29,6 +31,7 @@ import os
 import subprocess
 import sys
 import unittest
+from collections import namedtuple
 from contextlib import redirect_stdout
 from unittest.mock import mock_open, patch
 
@@ -51,31 +54,36 @@ class TestUsershells(unittest.TestCase):
             stderr=subprocess.PIPE
         )
         stdout_data, stderr_data = process.communicate(input=input_data.encode('utf-8') if input_data else None)
-        result = type('Result', (object,), {
-            'returncode': process.returncode,
-            'stdout': stdout_data.decode('utf-8'),
-            'stderr': stderr_data.decode('utf-8')
-        })()
-        return result
+
+        Result = namedtuple('Result', ['returncode', 'stdout', 'stderr'])
+        return Result(
+            returncode=process.returncode,
+            stdout=stdout_data.decode('utf-8'),
+            stderr=stderr_data.decode('utf-8')
+        )
 
     def test_help_option(self):
         result = self.run_script(['-h'])
         self.assertEqual(result.returncode, 0)
         self.assertIn('Usage', result.stdout)
 
-    @patch('builtins.open', new_callable=mock_open, read_data="user1:x:1000:1000::/home/user1:/bin/bash\n"
-           "user2:x:1001:1001::/home/user2:/usr/sbin/nologin\n"
-           "user3:x:1002:1002::/home/user3:/bin/zsh\n"
-           )
     @patch('platform.system', return_value='Linux')
-    def test_get_shells_from_passwd(self, mock_platform, mock_file):
-        f = io.StringIO()
-        with redirect_stdout(f):
-            usershells.main()
-        output = f.getvalue()
-        self.assertIn("user1", output)
-        self.assertIn("user3", output)
-        self.assertNotIn("user2", output)
+    def test_get_shells_from_passwd(self, mock_platform):
+        passwd_data = (
+            "user1:x:1000:1000::/home/user1:/bin/bash\n"
+            "user2:x:1001:1001::/home/user2:/usr/sbin/nologin\n"
+            "user3:x:1002:1002::/home/user3:/bin/zsh\n"
+        )
+        m = mock_open(read_data=passwd_data)
+        m.return_value.__iter__.return_value = passwd_data.splitlines()
+        with patch('builtins.open', m):
+            f = io.StringIO()
+            with redirect_stdout(f):
+                usershells.main()
+            output = f.getvalue()
+            self.assertIn("user1", output)
+            self.assertIn("user3", output)
+            self.assertNotIn("user2", output)
 
     @patch('platform.system', return_value='Darwin')
     @patch('subprocess.check_output')
