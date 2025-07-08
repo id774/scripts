@@ -14,6 +14,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2025-07-08
+#       Fixed compatibility issues with Python 3.6.
 #  v1.0 2025-07-07
 #       Initial release.
 #
@@ -29,6 +31,7 @@ import os
 import subprocess
 import sys
 import unittest
+from collections import namedtuple
 from contextlib import redirect_stdout
 from unittest.mock import mock_open, patch
 
@@ -43,19 +46,20 @@ class TestUserlist(unittest.TestCase):
         command = ['python3', self.script_path]
         if args:
             command += args
-            process = subprocess.Popen(
-                command,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
-            )
-            stdout_data, stderr_data = process.communicate(input=input_data.encode('utf-8') if input_data else None)
-            result = type('Result', (object,), {
-                'returncode': process.returncode,
-                'stdout': stdout_data.decode('utf-8'),
-                'stderr': stderr_data.decode('utf-8')
-            })()
-        return result
+        process = subprocess.Popen(
+            command,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        stdout_data, stderr_data = process.communicate(input=input_data.encode('utf-8') if input_data else None)
+
+        Result = namedtuple('Result', ['returncode', 'stdout', 'stderr'])
+        return Result(
+            returncode=process.returncode,
+            stdout=stdout_data.decode('utf-8'),
+            stderr=stderr_data.decode('utf-8')
+        )
 
     def test_help_option(self):
         result = self.run_script(['-h'])
@@ -73,7 +77,7 @@ class TestUserlist(unittest.TestCase):
         self.assertIn("testuser", output)
 
     @patch('platform.system', return_value='Darwin')
-    @patch('subprocess.check_output', return_value=b'name: testmac\nuid: 501\n\n')
+    @patch('subprocess.check_output', return_value=b'name: testmac\nuid: 501\n')
     @patch('os.path.isfile', return_value=False)
     def test_macos_userlist(self, mock_isfile, mock_check_output, mock_platform):
         f = io.StringIO()
