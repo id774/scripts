@@ -15,9 +15,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v3.2 2025-07-04
+#  v3.2 2025-07-09
 #       Refactored Ruby test handling to check Ruby before RSpec and align with Python test logic.
 #       Improved messaging for cases where Ruby is present but RSpec is not installed.
+#       Infer ruby path from rspec path when not explicitly set to ensure correct Ruby under cron.
 #  v3.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #       Fix bug where Ruby test case count only reflected last script instead of total.
@@ -163,7 +164,17 @@ run_python_tests() {
 run_ruby_tests() {
     # Check if Ruby is installed
     if [ -z "$ruby_path" ]; then
-        ruby_path=$(command -v ruby)
+        # Infer from rspec path if available
+        if [ -n "$rspec_path" ]; then
+            ruby_candidate="$(dirname "$rspec_path")/ruby"
+            if [ -x "$ruby_candidate" ]; then
+                ruby_path="$ruby_candidate"
+            else
+                ruby_path=$(command -v ruby)
+            fi
+        else
+            ruby_path=$(command -v ruby)
+        fi
     fi
 
     if [ -z "$ruby_path" ]; then
