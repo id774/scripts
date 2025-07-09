@@ -18,7 +18,7 @@
 #  v3.2 2025-07-09
 #       Refactored Ruby test handling to check Ruby before RSpec and align with Python test logic.
 #       Improved messaging for cases where Ruby is present but RSpec is not installed.
-#       Infer ruby path from rspec path when not explicitly set to ensure correct Ruby under cron.
+#       Abort if ruby cannot be found next to specified rspec path to ensure consistent test environment.
 #  v3.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #       Fix bug where Ruby test case count only reflected last script instead of total.
@@ -170,7 +170,8 @@ run_ruby_tests() {
             if [ -x "$ruby_candidate" ]; then
                 ruby_path="$ruby_candidate"
             else
-                ruby_path=$(command -v ruby)
+                echo "[ERROR] ruby not found next to specified rspec: $rspec_path" >&2
+                exit 1
             fi
         else
             ruby_path=$(command -v ruby)
