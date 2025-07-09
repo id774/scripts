@@ -4,7 +4,7 @@ Repository Update History
 v1.4.5 (Release Date: TBD)
 --------------------------
 - Standardize termination behavior for consistent script execution across all Python and Ruby scripts.
-- Check Ruby before RSpec and align logic with Python tests in run_tests.sh.
+- Require valid python and rpsec paths, rejecting invalid explicit inputs and falling back only when unspecified.
 - Implement test coverage for all Python and Ruby scripts.
 - Add usage test case with -h option to all Python and Ruby test scripts.
 - Ensure backward compatibility of select Python scripts down to at least Python 3.4.

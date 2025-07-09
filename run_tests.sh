@@ -16,9 +16,8 @@
 #
 #  Version History:
 #  v3.2 2025-07-09
-#       Refactored Ruby test handling to check Ruby before RSpec and align with Python test logic.
-#       Improved messaging for cases where Ruby is present but RSpec is not installed.
-#       Abort if ruby cannot be found next to specified rspec path to ensure consistent test environment.
+#       Refactor Ruby test handling to check ruby before rspec and require matching pair to avoid fallback.
+#       Enforce validation of explicitly passed python path and fallback only when unspecified.
 #  v3.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #       Fix bug where Ruby test case count only reflected last script instead of total.
@@ -124,40 +123,51 @@ extract_ruby_test_count() {
 
 # Function to run Python tests
 run_python_tests() {
-    # Check if Python is installed
-    if [ -z "$python_path" ]; then
-        python_path=`command -v python`
+    # Flag whether python_path was explicitly passed
+    python_path_explicit=0
+    if [ -n "$python_path" ]; then
+        python_path_explicit=1
     fi
 
+    # Fallback to system python if not explicitly set
     if [ -z "$python_path" ]; then
-        echo "[INFO] Python is not installed. Skipping Python tests." >&2
-    else
-        if [ ! -x "$python_path" ]; then
-            echo "[ERROR] Specified Python path is invalid or not executable." >&2
+        python_path=$(command -v python)
+    fi
+
+    # Validate python_path executable
+    if [ ! -x "$python_path" ]; then
+        if [ "$python_path_explicit" -eq 1 ]; then
+            echo "[ERROR] Specified Python path is invalid or not executable: $python_path" >&2
+            exit 1
+        else
+            echo "[ERROR] Python not found or not executable: $python_path" >&2
+            echo "[INFO] Use './run_tests.sh /full/path/to/python' to specify Python explicitly." >&2
             exit 1
         fi
-        echo "[INFO] Python path: $python_path"
-        python_version=`"$python_path" --version 2>&1`
-        echo "$python_version"
-
-        # Execute Python tests
-        for file in test/*_test.py; do
-            if [ -f "$file" ]; then
-                echo "[INFO] Running Python test: $file"
-                output=`"$python_path" "$file" 2>&1`
-                echo "$output"
-                if ! echo "$output" | grep -qE "OK|SKIPPED|OK (skipped=[0-9]\+)"; then
-                    echo "[WARN] Failure in Python test: $file" >&2
-                    python_failures=`expr "$python_failures" + 1`
-                fi
-                extract_python_test_count "$output"
-                python_scripts=`expr "$python_scripts" + 1`
-                total_tests=`expr "$total_tests" + "$python_tests"`
-            fi
-        done
-        total_scripts=`expr "$total_scripts" + "$python_scripts"`
-        display_python_report
     fi
+
+    echo "[INFO] Python path: $python_path"
+    python_version=$("$python_path" --version 2>&1)
+    echo "$python_version"
+
+    # Execute Python test scripts
+    for file in test/*_test.py; do
+        if [ -f "$file" ]; then
+            echo "[INFO] Running Python test: $file"
+            output=$("$python_path" "$file" 2>&1)
+            echo "$output"
+            if ! echo "$output" | grep -qE "OK|SKIPPED|OK (skipped=[0-9]+)"; then
+                echo "[WARN] Failure in Python test: $file" >&2
+                python_failures=$((python_failures + 1))
+            fi
+            extract_python_test_count "$output"
+            python_scripts=$((python_scripts + 1))
+            total_tests=$((total_tests + python_tests))
+        fi
+    done
+
+    total_scripts=$((total_scripts + python_scripts))
+    display_python_report
 }
 
 # Function to run Ruby tests
