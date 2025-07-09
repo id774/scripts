@@ -25,8 +25,14 @@
 #       Initial release.
 #
 #  Usage:
-#  python wget.py <URL>
-#  Example: python wget.py http://example.com/file.txt
+#      wget.py <URL>
+#
+#  Example:
+#      wget.py http://example.com/file.txt
+#
+#  Requirements:
+#  - Python Version: 3.4 or later
+#  - Dependencies: requests
 #
 ########################################################################
 
