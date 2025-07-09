@@ -19,7 +19,7 @@ This repository contains various utility scripts to address common tasks efficie
 
 Supported languages:
 - Shell Script
-- Python (requires version 3.6 or later)
+- Python (scripts require Python 3.1 or later depending on the file, but the test suite requires 3.6 or later)
 - Ruby (requires version 3.0 or later)
 
 ---
