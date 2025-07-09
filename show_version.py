@@ -58,6 +58,9 @@
 #  To display the Python version:
 #      python show_version.py -p
 #
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 ########################################################################
 
 import importlib

@@ -72,6 +72,9 @@
 #  -a, --all          Mount all available devices.
 #  -e, --external     Mount the container file of an external drive to a specified device.
 #
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 #  Note on Custom Return Codes:
 #  This script uses custom return codes to indicate specific error conditions:
 #  - 0: Success. The operation completed without any errors.

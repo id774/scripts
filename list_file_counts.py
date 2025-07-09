@@ -23,8 +23,13 @@
 #       Initial release.
 #
 #  Usage:
-#  python list_file_counts.py [directory]
-#  Example: python list_file_counts.py /path/to/directory
+#      list_file_counts.py [directory]
+#
+#  Example:
+#      list_file_counts.py /path/to/directory
+#
+#  Requirements:
+#  - Python Version: 3.1 or later
 #
 ########################################################################
 

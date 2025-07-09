@@ -42,6 +42,9 @@
 #    -x    Execute mode (default is dry-run)
 #    -q    Quiet mode (suppress output)
 #
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 ########################################################################
 
 import os

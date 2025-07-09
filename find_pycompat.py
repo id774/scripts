@@ -75,6 +75,9 @@
 #  To check the current directory, use:
 #      find_pycompat.py .
 #
+#  Requirements:
+#  - Python Version: 3.2 or later
+#
 #  Notes:
 #  This script excludes certain lines from the search to avoid false positives. Specifically,
 #  lines that are comments (starting with '#') or contain email addresses are excluded.

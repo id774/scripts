@@ -39,6 +39,9 @@
 #  python apache_calculater.py <log_file>
 #  Example: python apache_calculater.py /var/log/apache2/access.log
 #
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 ########################################################################
 
 import gzip

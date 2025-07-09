@@ -45,10 +45,14 @@
 #  Run the script with the directory path and the number of digits for padding as arguments.
 #  Optionally, use the -q option to enable quiet mode, which suppresses logging output.
 #  Example:
-#      python zero_padding.py /path/to/directory 4
-#      python zero_padding.py /path/to/directory 4 -q
+#      zero_padding.py /path/to/directory 4
+#      zero_padding.py /path/to/directory 4 -q
+#
 #  The first command will rename files in '/path/to/directory', padding the numeric part to 4 digits,
 #  with logging output. The second command does the same but in quiet mode (no logging output).
+#
+#  Requirements:
+#  - Python Version: 3.2 or later
 #
 ########################################################################
 

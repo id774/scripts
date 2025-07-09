@@ -40,6 +40,9 @@
 #    -h, --help     show this help message and exit
 #    -o, --ordered  Display results in ascending order of IP addresses.
 #
+#  Requirements:
+#  - Python Version: 3.2 or later
+#
 #  Notes:
 #  - Ensure you have permissions to send pings to the target IPs.
 #  - This script may take time to complete based on the range specified.

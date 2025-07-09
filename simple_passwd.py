@@ -34,6 +34,9 @@
 #    -h, --help        show this help message and exit
 #    -s, --no-symbols  Do not include symbols in the password
 #
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 ########################################################################
 
 import os

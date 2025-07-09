@@ -32,6 +32,9 @@
 #      wakeonlan.py 00:11:22:33:44:55
 #  This will send a magic packet to the specified MAC address.
 #
+#  Requirements:
+#  - Python Version: 3.2 or later
+#
 ########################################################################
 
 import os

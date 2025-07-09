@@ -72,6 +72,9 @@
 #  -fp, --fullpath: List full path and filename only, without modification time.
 #  -l, --localtime: Use local timezone for input and output times instead of UTC.
 #
+#  Requirements:
+#  - Python Version: 3.3 or later
+#
 #  Notes:
 #  - This script is compatible with Python 3.3 and later versions.
 #  - If the time is not specified for '-d', '-s', or '-e',

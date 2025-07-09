@@ -27,8 +27,13 @@
 #      Initial release. Basic functionality for resizing images.
 #
 #  Usage:
-#  python image_resize.py <size> <source_directory> <output_directory>
-#  Example: python image_resize.py 300 ./images ./resized
+#      image_resize.py <size> <source_directory> <output_directory>
+#
+#  Example:
+#      image_resize.py 300 ./images ./resized
+#
+#  Requirements:
+#  - Python Version: 3.2 or later
 #
 ########################################################################
 

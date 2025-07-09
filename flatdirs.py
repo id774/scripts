@@ -60,6 +60,9 @@
 #                       directory. Review carefully before proceeding.
 #    -r, --rename-only  Only rename files, without moving or copying
 #
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 #  Notes:
 #  - Use with caution as it can significantly modify directory contents.
 #  - When using `-x`, review the displayed current directory and confirm before proceeding.

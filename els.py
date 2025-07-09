@@ -33,8 +33,7 @@
 #      els.py /path/to/directory
 #
 #  Requirements:
-#  - Python 3.x must be installed.
-#  - The script must have execution permissions (`chmod +x els.py`).
+#  - Python Version: 3.3 or later
 #
 #  Notes:
 #  - This script retrieves timestamps using `os.stat()`. The `birth` time is

@@ -51,16 +51,21 @@
 #
 #  Usage:
 #  Without -i (Dry-run mode):
-#    ./pyck.py [file(s) or directory(ies)]
-#    Example: ./pyck.py ./my_python_project *.py
-#    This mode shows which files would be formatted, cleaned, and have imports organized,
-#    without making changes.
+#      pyck.py [file(s) or directory(ies)]
+#  Example:
+#      pyck.py ./my_python_project *.py
+#  This mode shows which files would be formatted, cleaned, and have imports organized,
+#  without making changes.
 #
 #  With -i (Actual formatting mode):
-#    ./pyck.py -i [file(s) or directory(ies)]
-#    Example: ./pyck.py -i ./my_python_project *.py
-#    This mode actually formats, cleans, and organizes imports in the Python files
-#    in the specified files or directories.
+#      pyck.py -i [file(s) or directory(ies)]
+#  Example:
+#      pyck.py -i ./my_python_project *.py
+#  This mode actually formats, cleans, and organizes imports in the Python files
+#  in the specified files or directories.
+#
+#  Requirements:
+#  - Python Version: 3.2 or later
 #
 ########################################################################
 

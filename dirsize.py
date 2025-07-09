@@ -41,6 +41,9 @@
 #  To check the current directory, use:
 #    ./dirsize.py .
 #
+#  Requirements:
+#  - Python Version: 3.5 or later
+#
 ########################################################################
 
 import os

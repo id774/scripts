@@ -33,6 +33,9 @@
 #  unixtime2date.py 1609459200
 #  -> 2021-01-01T09:00:00+09:00 (if your local timezone is UTC+9)
 #
+#  Requirements:
+#  - Python Version: 3.3 or later
+#
 ########################################################################
 
 import datetime

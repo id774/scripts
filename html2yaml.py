@@ -53,6 +53,9 @@
 #  Example:
 #    html2yaml.py --exclude='//div[@class="footer"]' http://example.com
 #
+#  Requirements:
+#  - Python Version: 3.2 or later
+#
 ########################################################################
 
 import os

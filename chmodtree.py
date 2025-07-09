@@ -71,6 +71,9 @@
 #    Changing permissions in quiet mode, matching a specific pattern:
 #      python chmodtree.py -f 775 -d 750 -n '*.sh' your_dir5
 #
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 ########################################################################
 
 import os

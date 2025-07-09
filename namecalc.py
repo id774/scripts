@@ -35,6 +35,9 @@
 #  This will perform numerology calculations on the provided strings and
 #  display the results.
 #
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 ########################################################################
 
 import os

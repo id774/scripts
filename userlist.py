@@ -37,6 +37,9 @@
 #  The script automatically detects the system type and sets the UID threshold
 #  accordingly. It then displays a list of user accounts with UIDs above this threshold.
 #
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 ########################################################################
 
 import os

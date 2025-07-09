@@ -37,6 +37,9 @@
 #
 #  The script detects the operating system and outputs a list of user accounts with interactive shells.
 #
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 ########################################################################
 
 import os

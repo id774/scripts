@@ -48,6 +48,9 @@
 #  Calculate and print checksum for stdin input:
 #      echo "sample text" | python md5.py -p
 #
+#  Requirements:
+#  - Python Version: 3.3 or later
+#
 ########################################################################
 
 import hashlib

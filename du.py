@@ -42,6 +42,9 @@
 #  Run the script with a depth number and a directory:
 #      python du.py [maxdepth] [directory]
 #
+#  Requirements:
+#  - Python Version: 3.2 or later
+#
 #  Notes:
 #  The script focuses on reporting the total disk usage of the specified
 #  top-level directory, avoiding the complexities and limitations of the

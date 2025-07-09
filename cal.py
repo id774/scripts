@@ -39,6 +39,9 @@
 #  and next month. With arguments, it executes the system's 'cal' command
 #  with those arguments.
 #
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 ########################################################################
 
 import calendar

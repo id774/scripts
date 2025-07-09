@@ -36,6 +36,9 @@
 #  Options:
 #    -d, --dry-run: List files without extracting
 #
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 #  Notes:
 #  - Ensure that you have the necessary permissions to read and write
 #    files in the source directory.

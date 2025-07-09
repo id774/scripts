@@ -30,9 +30,14 @@
 #       information from PNG files.
 #
 #  Usage:
-#  python png_info.py <file_pattern>
-#  Example: python png_info.py *.png
+#      png_info.py <file_pattern>
+#
+#  Example:
+#      png_info.py *.png
 #  Reads width, height, bit depth, and color type information from PNG files.
+#
+#  Requirements:
+#  - Python Version: 3.1 or later
 #
 ########################################################################
 
