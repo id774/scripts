@@ -339,4 +339,5 @@ def main():
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help'):
         usage()
+
     sys.exit(main())

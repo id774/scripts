@@ -170,4 +170,9 @@ def main():
 if __name__ == '__main__':
     if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
+
+    if sys.version_info < (3, 3):
+        print("[ERROR] This script requires Python 3.3 or later.", file=sys.stderr)
+        sys.exit(9)
+
     sys.exit(main())

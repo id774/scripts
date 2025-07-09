@@ -90,7 +90,7 @@
 #  0: Success
 #  1: Specified path does not exist or no arguments provided
 #  2: Incorrect datetime format or mutually exclusive options '-f' and '-fp' were used together
-#  3: Python version not supported
+#  9: Python version not supported
 #
 ########################################################################
 
@@ -228,11 +228,6 @@ def main():
     Main function that orchestrates the flow of the script, including argument parsing,
     validation, and initiating the file listing process.
     """
-    # Ensure the script is run with Python 3.3 or later
-    if sys.version_info < (3, 3):
-        print("[ERROR] This script requires Python 3.3 or later.", file=sys.stderr)
-        return 3
-
     args = parse_arguments()
     start_datetime = parse_datetime(args.start or args.datetime, use_localtime=args.localtime)
     end_datetime = parse_datetime(args.end, use_localtime=args.localtime)
@@ -246,4 +241,9 @@ def main():
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
+
+    if sys.version_info < (3, 3):
+        print("[ERROR] This script requires Python 3.3 or later.", file=sys.stderr)
+        sys.exit(9)
+
     sys.exit(main())

@@ -34,6 +34,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
     import requests
+
     from wget import download_file, usage
     HAS_REQUESTS = True
 except ImportError:

@@ -120,4 +120,8 @@ def main():
 
 
 if __name__ == "__main__":
+    if sys.version_info < (3, 5):
+        print("[ERROR] This script requires Python 3.5 or later.", file=sys.stderr)
+        sys.exit(9)
+
     sys.exit(main())
