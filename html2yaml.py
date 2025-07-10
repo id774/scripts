@@ -55,6 +55,7 @@
 #
 #  Requirements:
 #  - Python Version: 3.2 or later
+#  - Dependencies: bs4, pyyaml, requests
 #
 ########################################################################
 
