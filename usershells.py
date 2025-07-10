@@ -14,6 +14,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script without any arguments:
+#      usershells.py
+#
+#  The script detects the operating system and outputs a list of user accounts with interactive shells.
+#
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 #  Version History:
 #  v1.6 2025-07-08
 #       Fixed compatibility issues with Python 3.4.
@@ -30,15 +39,6 @@
 #       'shutdown', and 'halt'.
 #  v1.0 2017-02-14
 #       Initial release. Lists user accounts and their shells, excluding 'false' and 'nologin'.
-#
-#  Usage:
-#  Run the script without any arguments:
-#      usershells.py
-#
-#  The script detects the operating system and outputs a list of user accounts with interactive shells.
-#
-#  Requirements:
-#  - Python Version: 3.1 or later
 #
 ########################################################################
 

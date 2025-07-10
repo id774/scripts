@@ -14,6 +14,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script with the GitHub user's name and the repository name:
+#      ./git-follow-origin.sh <user> <repo>
+#
+#  Example:
+#      ./git-follow-origin.sh exampleUser exampleRepo
+#
+#  This will merge changes from 'exampleUser/exampleRepo' into the local master branch.
+#
 #  Version History:
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -33,15 +42,6 @@
 #  v1.0 2013-02-05
 #       Initial release. Implements functionality to merge a specified
 #       GitHub repository's changes into the local master branch.
-#
-#  Usage:
-#  Run the script with the GitHub user's name and the repository name:
-#      ./git-follow-origin.sh <user> <repo>
-#
-#  Example:
-#      ./git-follow-origin.sh exampleUser exampleRepo
-#
-#  This will merge changes from 'exampleUser/exampleRepo' into the local master branch.
 #
 ########################################################################
 

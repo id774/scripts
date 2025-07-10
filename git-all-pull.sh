@@ -13,6 +13,14 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]
+#
+#  Default behavior is to show this help message. Use '--all' to pull from both github and git directories.
+#
+#  WARNING: The '--hard' option performs 'git reset --hard' which can
+#  overwrite local changes. Use with caution.
+#
 #  Version History:
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -29,14 +37,6 @@
 #       Added checks for Git installation and improved options handling.
 #  v1.0 2023-12-05
 #       Initial release.
-#
-#  Usage:
-#      ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]
-#
-#  Default behavior is to show this help message. Use '--all' to pull from both github and git directories.
-#
-#  WARNING: The '--hard' option performs 'git reset --hard' which can
-#  overwrite local changes. Use with caution.
 #
 ########################################################################
 

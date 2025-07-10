@@ -15,6 +15,21 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  To set a package state:
+#    ./dpkg-hold.sh package-name state
+#    (Where 'state' can be 'hold', 'install', etc.)
+#
+#  To view the current state of a package:
+#    ./dpkg-hold.sh package-name
+#
+#  To display usage information:
+#    ./dpkg-hold.sh
+#
+#  Example:
+#    ./dpkg-hold.sh nano install
+#    ./dpkg-hold.sh nano
+#
 #  Version History:
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -37,21 +52,6 @@
 #       Modified to operate without requiring sudo privileges.
 #  v1.0 2008-08-22
 #       Initial release. Provides basic dpkg package management functionality.
-#
-#  Usage:
-#  To set a package state:
-#    ./dpkg-hold.sh package-name state
-#    (Where 'state' can be 'hold', 'install', etc.)
-#
-#  To view the current state of a package:
-#    ./dpkg-hold.sh package-name
-#
-#  To display usage information:
-#    ./dpkg-hold.sh
-#
-#  Example:
-#    ./dpkg-hold.sh nano install
-#    ./dpkg-hold.sh nano
 #
 ########################################################################
 

@@ -13,6 +13,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script to retrieve feed titles and counts:
+#      ./get-feeds-from-fastladder.sh
+#
+#  Requirements:
+#  - Must be executed on Linux or macOS.
+#  - Requires `sqlite3` installed.
+#  - The Fastladder database (`fastladder.db`) must exist.
+#
 #  Version History:
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -24,15 +33,6 @@
 #       Added system validation, command checks, and database validation.
 #  v0.1 2016-03-23
 #       Initial version.
-#
-#  Usage:
-#  Run this script to retrieve feed titles and counts:
-#      ./get-feeds-from-fastladder.sh
-#
-#  Requirements:
-#  - Must be executed on Linux or macOS.
-#  - Requires `sqlite3` installed.
-#  - The Fastladder database (`fastladder.db`) must exist.
 #
 ########################################################################
 

@@ -16,38 +16,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v4.8 2025-07-08
-#       Automatically extract __version__ from script header to eliminate hardcoded version.
-#  v4.7 2025-07-01
-#       Standardized termination behavior for consistent script execution.
-#  v4.6 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v4.5 2025-05-14
-#       Replaced use of 'which' with POSIX-compliant 'command -v' in installation checks.
-#       Added reusable command_exists() function for path resolution.
-#  v4.4 2025-04-14
-#       Unify error and info message formatting with stderr and prefix tags.
-#  v4.3 2025-03-05
-#       Added sudo privilege check when --sudo option is specified.
-#  v4.2 2024-01-26
-#       Updated documentation to include notes on custom return codes.
-#  v4.1 2023-12-17
-#       Modified is_truecrypt_installed and is_veracrypt_installed functions for compatibility
-#       with Python versions below 3.3, replacing DEVNULL with os.devnull.
-#  v4.0 2023-12-15
-#       Added support for VeraCrypt with the -v (--veracrypt) and -t (--tc-compat) options.
-#       Improved error handling for systems where only TrueCrypt or VeraCrypt is installed.
-#       Reversed the behavior of the -u (--utf8) option. Now, by default,
-#       the filesystem is mounted with UTF-8 encoding, and the -u option
-#       is used to disable this setting.
-#       Refactored command construction to improve testability.
-#       Renamed the -e (--expansion) option to -e (--external) and updated the path to
-#       the container file to '~/mnt/external/container.tc' for generalizing external HDD support.
-#  [Further version history truncated for brevity]
-#  v1.0 2010-08-06
-#       First release.
-#
 #  Usage:
 #  To use this script, ensure you have TrueCrypt or VeraCrypt installed and
 #  run the script with appropriate privileges. You can specify the device
@@ -85,6 +53,38 @@
 #
 #  Refer to the TrueCrypt and VeraCrypt documentation for more detailed information
 #  on mount options and device specifications.
+#
+#  Version History:
+#  v4.8 2025-07-08
+#       Automatically extract __version__ from script header to eliminate hardcoded version.
+#  v4.7 2025-07-01
+#       Standardized termination behavior for consistent script execution.
+#  v4.6 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v4.5 2025-05-14
+#       Replaced use of 'which' with POSIX-compliant 'command -v' in installation checks.
+#       Added reusable command_exists() function for path resolution.
+#  v4.4 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
+#  v4.3 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
+#  v4.2 2024-01-26
+#       Updated documentation to include notes on custom return codes.
+#  v4.1 2023-12-17
+#       Modified is_truecrypt_installed and is_veracrypt_installed functions for compatibility
+#       with Python versions below 3.3, replacing DEVNULL with os.devnull.
+#  v4.0 2023-12-15
+#       Added support for VeraCrypt with the -v (--veracrypt) and -t (--tc-compat) options.
+#       Improved error handling for systems where only TrueCrypt or VeraCrypt is installed.
+#       Reversed the behavior of the -u (--utf8) option. Now, by default,
+#       the filesystem is mounted with UTF-8 encoding, and the -u option
+#       is used to disable this setting.
+#       Refactored command construction to improve testability.
+#       Renamed the -e (--expansion) option to -e (--external) and updated the path to
+#       the container file to '~/mnt/external/container.tc' for generalizing external HDD support.
+#  [Further version history truncated for brevity]
+#  v1.0 2010-08-06
+#       First release.
 #
 ########################################################################
 

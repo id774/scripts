@@ -12,6 +12,18 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./clear_chromium_cache.sh -c
+#
+#  Options:
+#  -h   Display this help message.
+#  -c   Clear Chromium "Web Data" directory.
+#
+#  Notes:
+#  - This script no longer forcefully terminates Chromium processes.
+#  - Ensure that Chromium is closed before running with the -c option
+#    to avoid potential data corruption.
+#
 #  Version History:
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -28,18 +40,6 @@
 #       Refactored for clarity, added notes, and renamed the script.
 #  v1.0 2016-01-08
 #       Initial release.
-#
-#  Usage:
-#      ./clear_chromium_cache.sh -c
-#
-#  Options:
-#  -h   Display this help message.
-#  -c   Clear Chromium "Web Data" directory.
-#
-#  Notes:
-#  - This script no longer forcefully terminates Chromium processes.
-#  - Ensure that Chromium is closed before running with the -c option
-#    to avoid potential data corruption.
 #
 ########################################################################
 

@@ -11,20 +11,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v2.3 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v2.2 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v2.1 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v2.0 2025-03-17
-#       Encapsulated all logic into functions and introduced main function.
-#       Redirected error messages to stderr for better logging and debugging.
-#  [Further version history truncated for brevity]
-#  v1.0 2022-09-13
-#       Initial release.
-#
 #  Usage:
 #      ./check_sshd_config.sh
 #
@@ -41,6 +27,20 @@
 #
 #  This script does not require any arguments. It automatically detects
 #  the operating system and checks the SSHD configuration accordingly.
+#
+#  Version History:
+#  v2.3 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v2.2 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v2.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v2.0 2025-03-17
+#       Encapsulated all logic into functions and introduced main function.
+#       Redirected error messages to stderr for better logging and debugging.
+#  [Further version history truncated for brevity]
+#  v1.0 2022-09-13
+#       Initial release.
 #
 ########################################################################
 

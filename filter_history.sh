@@ -22,6 +22,11 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      filter_history.sh <pattern>
+#
+#  <pattern>: The string to remove from the history file (partial match).
+#
 #  Version History:
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -37,11 +42,6 @@
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.0 2025-02-25
 #       Initial release with backup creation and error handling.
-#
-#  Usage:
-#      filter_history.sh <pattern>
-#
-#  <pattern>: The string to remove from the history file (partial match).
 #
 ########################################################################
 

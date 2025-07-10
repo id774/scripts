@@ -7,15 +7,15 @@
 #  This test suite validates the disk usage reporting functionality of du.py,
 #  including directory checks, output parsing, and hidden directory filtering.
 #
-#  Version History:
-#  v1.0 2025-06-24
-#      Initial release.
-#
 #  Test Cases:
 #  - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #  - Valid and invalid directory detection
 #  - parse_du_output behavior
 #  - run_custom_du includes/excludes hidden directories
+#
+#  Version History:
+#  v1.0 2025-06-24
+#      Initial release.
 #
 ########################################################################
 

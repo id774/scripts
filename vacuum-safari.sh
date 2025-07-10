@@ -13,6 +13,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./vacuum-safari.sh
+#
+#  Notes:
+#  - Ensure Safari is not running while executing this script.
+#  - It's recommended to back up the cache database before running.
+#
 #  Version History:
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -24,13 +31,6 @@
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.0 2010-11-29
 #       Initial release.
-#
-#  Usage:
-#      ./vacuum-safari.sh
-#
-#  Notes:
-#  - Ensure Safari is not running while executing this script.
-#  - It's recommended to back up the cache database before running.
 #
 ########################################################################
 

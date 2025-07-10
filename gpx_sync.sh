@@ -16,6 +16,36 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script with an optional argument to set the file permissions for the copied files.
+#  If no argument is provided, the default permission setting from the configuration file will be used.
+#      ./gpx_sync.sh [permissions]
+#
+#  Configuration file ('gpx_sync.conf') requirements:
+#  - TMP_DIR: Temporary directory for GPX files.
+#  - USER_GPX_DIR: User-specific GPX directory.
+#  - MOUNTED_DIR: Mounted directory for backups.
+#  - RSYNC_USER: Username for remote server access.
+#  - RSYNC_HOST: Hostname or IP address of the remote server.
+#  - DEFAULT_PERMISSIONS: Default file permissions if not overridden by command-line argument.
+#  Ensure all these variables are set in 'gpx_sync.conf'.
+#
+#  Notes:
+#  - Ensure that all specified directories exist and are writable.
+#  - The script updates file permissions as needed and performs clean-up operations.
+#  - Remote synchronization is attempted only if the remote server is reachable.
+#  - The permissions argument must be a 3-digit octal number. Any other format will result in an error.
+#
+#  Error Conditions:
+#  1. No GPX files found in the specified temporary directory.
+#  2. Destination directory for copying files does not exist.
+#  3. Configuration file not found.
+#  4. Necessary configuration variable(s) not set.
+#  5. DEFAULT_PERMISSIONS not set in configuration file when no permissions argument provided.
+#  6. Invalid permissions argument (not a 3-digit octal number).
+#  126. Required command(s) not executable.
+#  127. Required command(s) not installed.
+#
 #  Version History:
 #  v2.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -59,36 +89,6 @@
 #       and deletion functionality.
 #  v1.0 2023-11-24
 #       Initial release.
-#
-#  Usage:
-#  Run the script with an optional argument to set the file permissions for the copied files.
-#  If no argument is provided, the default permission setting from the configuration file will be used.
-#      ./gpx_sync.sh [permissions]
-#
-#  Configuration file ('gpx_sync.conf') requirements:
-#  - TMP_DIR: Temporary directory for GPX files.
-#  - USER_GPX_DIR: User-specific GPX directory.
-#  - MOUNTED_DIR: Mounted directory for backups.
-#  - RSYNC_USER: Username for remote server access.
-#  - RSYNC_HOST: Hostname or IP address of the remote server.
-#  - DEFAULT_PERMISSIONS: Default file permissions if not overridden by command-line argument.
-#  Ensure all these variables are set in 'gpx_sync.conf'.
-#
-#  Notes:
-#  - Ensure that all specified directories exist and are writable.
-#  - The script updates file permissions as needed and performs clean-up operations.
-#  - Remote synchronization is attempted only if the remote server is reachable.
-#  - The permissions argument must be a 3-digit octal number. Any other format will result in an error.
-#
-#  Error Conditions:
-#  1. No GPX files found in the specified temporary directory.
-#  2. Destination directory for copying files does not exist.
-#  3. Configuration file not found.
-#  4. Necessary configuration variable(s) not set.
-#  5. DEFAULT_PERMISSIONS not set in configuration file when no permissions argument provided.
-#  6. Invalid permissions argument (not a 3-digit octal number).
-#  126. Required command(s) not executable.
-#  127. Required command(s) not installed.
 #
 ########################################################################
 

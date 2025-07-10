@@ -17,6 +17,10 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script from the command line using:
+#      python test/find_range_test.py
+#
 #  Version History:
 #  v1.8 2024-11-16
 #       Updated test cases to include support for the new '-fp' option.
@@ -50,10 +54,6 @@
 #  v1.0 2024-02-25
 #       Initial release of test script. Focused on basic functionality tests including
 #       listing files after a specified date/time and handling hidden directories.
-#
-#  Usage:
-#  Run this script from the command line using:
-#      python test/find_range_test.py
 #
 ########################################################################
 

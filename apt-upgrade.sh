@@ -17,6 +17,14 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script directly without any arguments:
+#      ./apt-upgrade.sh
+#
+#  Requirements:
+#  - Must be executed with a user that has `sudo` privileges.
+#  - Works on Debian-based systems such as Ubuntu.
+#
 #  Version History:
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -30,14 +38,6 @@
 #       Added sudo privilege check when --sudo option is specified.
 #  v1.0 2024-12-09
 #       Initial release.
-#
-#  Usage:
-#  Run the script directly without any arguments:
-#      ./apt-upgrade.sh
-#
-#  Requirements:
-#  - Must be executed with a user that has `sudo` privileges.
-#  - Works on Debian-based systems such as Ubuntu.
 #
 ########################################################################
 

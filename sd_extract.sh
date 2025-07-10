@@ -18,6 +18,32 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script with an optional argument to set the file permissions for the copied files.
+#  If no argument is provided, the default permission setting from the configuration file will be used.
+#      ./sd_extract.sh [permissions]
+#
+#  Configuration file ('sd_extract.conf') requirements:
+#  - SOURCE_DIRS: Space-separated list of source directories.
+#  - FILE_PATTERNS: Space-separated list of file patterns to sync.
+#  - DEST_DIR: Destination directory for synced files.
+#  - DEFAULT_PERMISSIONS: Default file permissions if not overridden by command-line argument.
+#
+#  Notes:
+#  - Ensure 'rsync' and 'chmod' commands are available on the system.
+#  - Run this script with sufficient permissions to access source directories and write to the destination directory.
+#  - The permissions argument must be a 3-digit octal number. Any other format will result in an error.
+#
+#  Error Conditions:
+#  1. No matching files found to copy.
+#  2. Destination directory does not exist.
+#  5. Configuration file not found.
+#  6. Configuration variables not set.
+#  7. One or more files failed to copy.
+#  8. Invalid permissions argument (not a 3-digit octal number).
+#  126. Required command(s) not executable.
+#  127. Required command(s) not installed.
+#
 #  Version History:
 #  v2.0 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -53,32 +79,6 @@
 #  v1.0 2024-01-29
 #       Initial release. Supports synchronization of specified file types from
 #       multiple source directories to a local destination directory, only if they exist.
-#
-#  Usage:
-#  Run the script with an optional argument to set the file permissions for the copied files.
-#  If no argument is provided, the default permission setting from the configuration file will be used.
-#      ./sd_extract.sh [permissions]
-#
-#  Configuration file ('sd_extract.conf') requirements:
-#  - SOURCE_DIRS: Space-separated list of source directories.
-#  - FILE_PATTERNS: Space-separated list of file patterns to sync.
-#  - DEST_DIR: Destination directory for synced files.
-#  - DEFAULT_PERMISSIONS: Default file permissions if not overridden by command-line argument.
-#
-#  Notes:
-#  - Ensure 'rsync' and 'chmod' commands are available on the system.
-#  - Run this script with sufficient permissions to access source directories and write to the destination directory.
-#  - The permissions argument must be a 3-digit octal number. Any other format will result in an error.
-#
-#  Error Conditions:
-#  1. No matching files found to copy.
-#  2. Destination directory does not exist.
-#  5. Configuration file not found.
-#  6. Configuration variables not set.
-#  7. One or more files failed to copy.
-#  8. Invalid permissions argument (not a 3-digit octal number).
-#  126. Required command(s) not executable.
-#  127. Required command(s) not installed.
 #
 ########################################################################
 

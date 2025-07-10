@@ -13,6 +13,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      png_info.py <file_pattern>
+#
+#  Example:
+#      png_info.py *.png
+#  Reads width, height, bit depth, and color type information from PNG files.
+#
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 #  Version History:
 #  v1.5 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -28,16 +38,6 @@
 #  v1.0 2023-11-25
 #       Initial release. Reads width, height, bit depth, and color type
 #       information from PNG files.
-#
-#  Usage:
-#      png_info.py <file_pattern>
-#
-#  Example:
-#      png_info.py *.png
-#  Reads width, height, bit depth, and color type information from PNG files.
-#
-#  Requirements:
-#  - Python Version: 3.1 or later
 #
 ########################################################################
 

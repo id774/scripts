@@ -12,14 +12,14 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.0 2025-07-07
-#       Initial release.
-#
 #  Test Cases:
 #  - Prints Python version with -p
 #  - Shows version for known module
 #  - Reports module as not found when import fails
+#
+#  Version History:
+#  v1.0 2025-07-07
+#       Initial release.
 #
 ########################################################################
 

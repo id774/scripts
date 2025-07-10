@@ -17,6 +17,25 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Without -i (Dry-run mode):
+#      pyck.py [file(s) or directory(ies)]
+#  Example:
+#      pyck.py ./my_python_project *.py
+#  This mode shows which files would be formatted, cleaned, and have imports organized,
+#  without making changes.
+#
+#  With -i (Actual formatting mode):
+#      pyck.py -i [file(s) or directory(ies)]
+#  Example:
+#      pyck.py -i ./my_python_project *.py
+#  This mode actually formats, cleans, and organizes imports in the Python files
+#  in the specified files or directories.
+#
+#  Requirements:
+#  - Python Version: 3.2 or later
+#  - Dependencies: autopep8, flake8, autoflake, isort
+#
 #  Version History:
 #  v2.6 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -48,25 +67,6 @@
 #       Refactored for clarity, added detailed comments, and documentation.
 #  v1.0 2014-08-12
 #       Initial release.
-#
-#  Usage:
-#  Without -i (Dry-run mode):
-#      pyck.py [file(s) or directory(ies)]
-#  Example:
-#      pyck.py ./my_python_project *.py
-#  This mode shows which files would be formatted, cleaned, and have imports organized,
-#  without making changes.
-#
-#  With -i (Actual formatting mode):
-#      pyck.py -i [file(s) or directory(ies)]
-#  Example:
-#      pyck.py -i ./my_python_project *.py
-#  This mode actually formats, cleans, and organizes imports in the Python files
-#  in the specified files or directories.
-#
-#  Requirements:
-#  - Python Version: 3.2 or later
-#  - Dependencies: autopep8, flake8, autoflake, isort
 #
 ########################################################################
 

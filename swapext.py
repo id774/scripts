@@ -13,6 +13,17 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  swapext.py <dir> <before_ext> <after_ext> [-x] [-q]
+#     (Note: Extensions must start with a dot, e.g., '.txt' '.md')
+#
+#  Options:
+#    -x    Execute mode (default is dry-run)
+#    -q    Quiet mode (suppress output)
+#
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 #  Version History:
 #  v2.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -33,17 +44,6 @@
 #       Minor formatting revisions for readability and consistency.
 #  v1.0 2011-04-19
 #       Initial release.
-#
-#  Usage:
-#  swapext.py <dir> <before_ext> <after_ext> [-x] [-q]
-#     (Note: Extensions must start with a dot, e.g., '.txt' '.md')
-#
-#  Options:
-#    -x    Execute mode (default is dry-run)
-#    -q    Quiet mode (suppress output)
-#
-#  Requirements:
-#  - Python Version: 3.1 or later
 #
 ########################################################################
 

@@ -15,16 +15,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.3 2025-07-01
-#       Standardized termination behavior for consistent script execution.
-#  v1.2 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.1 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.0 2025-01-31
-#       Initial release.
-#
 #  Usage:
 #  Run the script without arguments to list the current directory:
 #      els.py
@@ -46,6 +36,16 @@
 #  - Symbolic links are listed as regular files without following the link.
 #  - Large directories may take longer to process due to multiple system calls.
 #  - If a directory is not readable due to permissions, the script will display an error.
+#
+#  Version History:
+#  v1.3 2025-07-01
+#       Standardized termination behavior for consistent script execution.
+#  v1.2 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.1 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.0 2025-01-31
+#       Initial release.
 #
 ########################################################################
 

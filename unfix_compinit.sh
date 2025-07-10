@@ -22,6 +22,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./unfix_compinit.sh
+#
+#  Notes:
+#  - This script requires root privileges to execute. Run it with `sudo`.
+#  - This script is specifically tailored for macOS and will not function
+#    on other operating systems.
+#  - After using Homebrew, execute `fix_compinit.sh` to restore secure settings.
+#
 #  Version History:
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -39,15 +48,6 @@
 #       Added sudo privilege check when --sudo option is specified.
 #  v1.0 2025-01-17
 #       Initial release. Sets Homebrew-recommended ownership and permissions.
-#
-#  Usage:
-#      ./unfix_compinit.sh
-#
-#  Notes:
-#  - This script requires root privileges to execute. Run it with `sudo`.
-#  - This script is specifically tailored for macOS and will not function
-#    on other operating systems.
-#  - After using Homebrew, execute `fix_compinit.sh` to restore secure settings.
 #
 ########################################################################
 

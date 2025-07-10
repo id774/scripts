@@ -13,6 +13,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script without any arguments:
+#      ./cltmp.sh
+#
+#  The script automatically detects the operating system and performs the appropriate
+#  cleanup actions. Ensure to have the necessary permissions before running.
+#
 #  Version History:
 #  20250623 - Unified usage output to display full script header and support common help/version options.
 #  20250413 - Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
@@ -26,13 +33,6 @@
 #  20241210 - Enhanced wget-log cleanup to include related files.
 #  20241204 - Refactored cleanup logic using clean_dir() function for better maintainability.
 #  20230827 - Latest update with specific cleanup operations for macOS and Linux.
-#
-#  Usage:
-#  Run the script without any arguments:
-#      ./cltmp.sh
-#
-#  The script automatically detects the operating system and performs the appropriate
-#  cleanup actions. Ensure to have the necessary permissions before running.
 #
 ########################################################################
 

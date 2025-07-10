@@ -12,6 +12,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  unixtime2date.py <unix_timestamp>
+#
+#  Example:
+#  unixtime2date.py 1609459200
+#  -> 2021-01-01T09:00:00+09:00 (if your local timezone is UTC+9)
+#
+#  Requirements:
+#  - Python Version: 3.3 or later
+#
 #  Version History:
 #  v1.5 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -25,16 +35,6 @@
 #       Removed Python version check and added comments for clarity.
 #  v1.0 2014-07-29
 #       Initial release.
-#
-#  Usage:
-#  unixtime2date.py <unix_timestamp>
-#
-#  Example:
-#  unixtime2date.py 1609459200
-#  -> 2021-01-01T09:00:00+09:00 (if your local timezone is UTC+9)
-#
-#  Requirements:
-#  - Python Version: 3.3 or later
 #
 ########################################################################
 

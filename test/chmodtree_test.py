@@ -13,6 +13,10 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Running the tests:
+#  Execute the test script from the command line:
+#  `python test/chmodtree_test.py`
+#
 #  Version History:
 #  v1.2 2025-04-14
 #       Unify error and info message formatting with stderr and prefix tags.
@@ -21,10 +25,6 @@
 #       behavior with existing, nonexistent, and non-executable commands.
 #  v1.0 2023-12-15
 #       First release of the test suite for chmodtree.py.
-#
-#  Running the tests:
-#  Execute the test script from the command line:
-#  `python test/chmodtree_test.py`
 #
 ########################################################################
 

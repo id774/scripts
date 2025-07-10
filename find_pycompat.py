@@ -21,6 +21,25 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      find_pycompat.py [options] [directory]
+#
+#  Options:
+#    -h                Display this help message and exit
+#
+#  If no directory is specified, it displays this help message.
+#  To check the current directory, use:
+#      find_pycompat.py .
+#
+#  Requirements:
+#  - Python Version: 3.2 or later
+#
+#  Notes:
+#  This script excludes certain lines from the search to avoid false positives. Specifically,
+#  lines that are comments (starting with '#') or contain email addresses are excluded.
+#  This is to prevent the inclusion of non-code elements like email addresses, which may
+#  contain patterns resembling Python 3.x features but are unrelated to code functionality.
+#
 #  Version History:
 #  v3.6 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -64,25 +83,6 @@
 #       Enhanced script to support POSIX compliance and cross-system compatibility.
 #  v1.0 2023-12-08
 #       Initial release. Search for f-strings in Python files.
-#
-#  Usage:
-#      find_pycompat.py [options] [directory]
-#
-#  Options:
-#    -h                Display this help message and exit
-#
-#  If no directory is specified, it displays this help message.
-#  To check the current directory, use:
-#      find_pycompat.py .
-#
-#  Requirements:
-#  - Python Version: 3.2 or later
-#
-#  Notes:
-#  This script excludes certain lines from the search to avoid false positives. Specifically,
-#  lines that are comments (starting with '#') or contain email addresses are excluded.
-#  This is to prevent the inclusion of non-code elements like email addresses, which may
-#  contain patterns resembling Python 3.x features but are unrelated to code functionality.
 #
 ########################################################################
 

@@ -14,18 +14,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.3 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.2 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.1 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v1.0 2025-03-16
-#       Added system validation, command checks, and backup handling.
-#  v0.1 2016-04-09
-#       Initial version.
-#
 #  Usage:
 #  Retrieve the Fastladder database with default user and host:
 #      ./get-fastladder-db.sh
@@ -37,6 +25,18 @@
 #  - Must be executed on Linux or macOS.
 #  - Requires `rsync` installed.
 #  - SSH access to the specified host is required.
+#
+#  Version History:
+#  v1.3 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.2 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v1.0 2025-03-16
+#       Added system validation, command checks, and backup handling.
+#  v0.1 2016-04-09
+#       Initial version.
 #
 ########################################################################
 

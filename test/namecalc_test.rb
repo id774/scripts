@@ -13,21 +13,21 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.0 2023-12-13
-#      Initial release. Test suite for namecalc.rb script.
-#
 #  Dependencies:
 #  This test script requires the RSpec library. To install RSpec, run:
-#  `gem install rspec`
+#      gem install rspec
 #
 #  Running the tests:
 #  Execute the test script from the command line:
-#  `rspec test/namecalc_test.rb`
+#      rspec test/namecalc_test.rb
 #
 #  Test Cases:
 #  - Shows usage and exits with code 0 when invoked with -h option
 #  - Verify correct numerological calculation and graphical representation.
+#
+#  Version History:
+#  v1.0 2023-12-13
+#      Initial release. Test suite for namecalc.rb script.
 #
 ########################################################################
 

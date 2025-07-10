@@ -18,10 +18,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.0 2024-01-11
-#       Initial test script for html2yaml.py
-#
 #  Dependencies:
 #  - BeautifulSoup
 #  - PyYAML
@@ -29,7 +25,11 @@
 #
 #  Usage:
 #  Run the test from the command line:
-#    python test/html2yaml_test.py
+#      python test/html2yaml_test.py
+#
+#  Version History:
+#  v1.0 2024-01-11
+#       Initial test script for html2yaml.py
 #
 ########################################################################
 

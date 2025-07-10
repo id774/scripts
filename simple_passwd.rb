@@ -13,6 +13,12 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  ruby simple_password.rb [options] length
+#
+#  Options:
+#    -s, --no-symbols  Do not include symbols in the password
+#
 #  Version History:
 #  v1.5 2025-07-03
 #       Ensure at least one symbol is included when use_symbols is enabled.
@@ -27,12 +33,6 @@
 #       Added option to exclude special symbols and improved argument handling.
 #  v1.0 2013-01-07
 #       Initial release.
-#
-#  Usage:
-#  ruby simple_password.rb [options] length
-#
-#  Options:
-#    -s, --no-symbols  Do not include symbols in the password
 #
 ########################################################################
 

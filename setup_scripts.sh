@@ -14,6 +14,21 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./setup_scripts.sh
+#
+#  Run this script to set up the permissions for a collection of scripts.
+#  Ensure that the SCRIPTS environment variable is set to the path of
+#  your script collection before running this script.
+#
+#  Notes:
+#  - This script should be run from the root directory of the script collection.
+#  - Make sure to back up your scripts before running this script as a precaution.
+#  - SCRIPTS environment variable must be set to the path of the script collection.
+#  - Execute permissions will be added:
+#      - To all *.sh, *.py, *.rb files under the SCRIPTS path
+#      - To all files under scripts/cron/bin (no extension filter)
+#
 #  Version History:
 #  v2.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -47,21 +62,6 @@
 #       Added documentation and environment variable check for SCRIPTS.
 #  v1.0 2008-08-22
 #       Initial release.
-#
-#  Usage:
-#      ./setup_scripts.sh
-#
-#  Run this script to set up the permissions for a collection of scripts.
-#  Ensure that the SCRIPTS environment variable is set to the path of
-#  your script collection before running this script.
-#
-#  Notes:
-#  - This script should be run from the root directory of the script collection.
-#  - Make sure to back up your scripts before running this script as a precaution.
-#  - SCRIPTS environment variable must be set to the path of the script collection.
-#  - Execute permissions will be added:
-#      - To all *.sh, *.py, *.rb files under the SCRIPTS path
-#      - To all files under scripts/cron/bin (no extension filter)
 #
 ########################################################################
 

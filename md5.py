@@ -13,17 +13,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.3 2025-07-01
-#       Standardized termination behavior for consistent script execution.
-#  v1.2 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.1 2025-04-14
-#       Unify error and info message formatting with stderr and prefix tags.
-#  v1.0 2023-06-24
-#       Initial release. Functionality for calculating MD5 checksums of files and
-#       strings, supporting subdirectories, reverse output format, and quiet mode.
-#
 #  Usage:
 #  Calculate checksum for files:
 #      python md5.py [options] file
@@ -50,6 +39,17 @@
 #
 #  Requirements:
 #  - Python Version: 3.3 or later
+#
+#  Version History:
+#  v1.3 2025-07-01
+#       Standardized termination behavior for consistent script execution.
+#  v1.2 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.1 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
+#  v1.0 2023-06-24
+#       Initial release. Functionality for calculating MD5 checksums of files and
+#       strings, supporting subdirectories, reverse output format, and quiet mode.
 #
 ########################################################################
 

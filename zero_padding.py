@@ -22,6 +22,19 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script with the directory path and the number of digits for padding as arguments.
+#  Optionally, use the -q option to enable quiet mode, which suppresses logging output.
+#  Example:
+#      zero_padding.py /path/to/directory 4
+#      zero_padding.py /path/to/directory 4 -q
+#
+#  The first command will rename files in '/path/to/directory', padding the numeric part to 4 digits,
+#  with logging output. The second command does the same but in quiet mode (no logging output).
+#
+#  Requirements:
+#  - Python Version: 3.2 or later
+#
 #  Version History:
 #  v1.7 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -40,19 +53,6 @@
 #       Adjusted to fit the numeric part of file names to the specified number of digits.
 #  v1.0 2023-02-28
 #       Initial release. Basic functionality for zero-padding numeric parts of file names.
-#
-#  Usage:
-#  Run the script with the directory path and the number of digits for padding as arguments.
-#  Optionally, use the -q option to enable quiet mode, which suppresses logging output.
-#  Example:
-#      zero_padding.py /path/to/directory 4
-#      zero_padding.py /path/to/directory 4 -q
-#
-#  The first command will rename files in '/path/to/directory', padding the numeric part to 4 digits,
-#  with logging output. The second command does the same but in quiet mode (no logging output).
-#
-#  Requirements:
-#  - Python Version: 3.2 or later
 #
 ########################################################################
 

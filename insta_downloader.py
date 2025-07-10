@@ -18,6 +18,18 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      insta_downloader.py [Instagram username] [--permissions PERM] [--sleep TIME]
+#
+#  Example:
+#      insta_downloader.py username --permissions 640 --sleep 10
+#  (If no username is given, the script uses the current directory name.
+#  Default permissions are 640 if not specified, and default sleep time is 10 seconds.)
+#
+#  Requirements:
+#  - Python Version: 3.2 or later
+#  - Dependencies: instaloader
+#
 #  Version History:
 #  v2.8 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -46,18 +58,6 @@
 #  [Further version history truncated for brevity]
 #  v1.0 2023-02-26
 #       Initial release.
-#
-#  Usage:
-#      insta_downloader.py [Instagram username] [--permissions PERM] [--sleep TIME]
-#
-#  Example:
-#      insta_downloader.py username --permissions 640 --sleep 10
-#  (If no username is given, the script uses the current directory name.
-#  Default permissions are 640 if not specified, and default sleep time is 10 seconds.)
-#
-#  Requirements:
-#  - Python Version: 3.2 or later
-#  - Dependencies: instaloader
 #
 ########################################################################
 

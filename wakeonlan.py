@@ -12,6 +12,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script with a MAC address as the argument.
+#  Example:
+#      wakeonlan.py 00:11:22:33:44:55
+#  This will send a magic packet to the specified MAC address.
+#
+#  Requirements:
+#  - Python Version: 3.2 or later
+#
 #  Version History:
 #  v1.5 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -25,15 +34,6 @@
 #       Removed Python version check
 #  v1.0 2022-08-03
 #       Initial release. Basic functionality for sending Wake-on-LAN magic packets.
-#
-#  Usage:
-#  Run the script with a MAC address as the argument.
-#  Example:
-#      wakeonlan.py 00:11:22:33:44:55
-#  This will send a magic packet to the specified MAC address.
-#
-#  Requirements:
-#  - Python Version: 3.2 or later
 #
 ########################################################################
 

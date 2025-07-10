@@ -13,6 +13,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script from the command line using:
+#      python test/swapext_test.py
+#
+#  The script tests the swap_extensions function from swapext.py with
+#  and without the quiet mode (-q) option. It uses mock objects to
+#  simulate file system operations and checks whether the file extensions
+#  are correctly changed as per the specified parameters.
+#
 #  Version History:
 #  v2.1 2025-06-30
 #       Added unit tests for argument validation in swapext.validate_args.
@@ -29,15 +38,6 @@
 #       Added '-q' option for quiet mode.
 #  v1.0 2024-01-10
 #       Initial release of test script.
-#
-#  Usage:
-#  Run this script from the command line using:
-#      python test/swapext_test.py
-#
-#  The script tests the swap_extensions function from swapext.py with
-#  and without the quiet mode (-q) option. It uses mock objects to
-#  simulate file system operations and checks whether the file extensions
-#  are correctly changed as per the specified parameters.
 #
 ########################################################################
 

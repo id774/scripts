@@ -13,6 +13,9 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  ruby convert_msime2canna.rb < MS-IME_dictionary_file
+#
 #  Version History:
 #  v1.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -23,9 +26,6 @@
 #       Refactored for improved readability and added detailed comments.
 #  v1.0 2009-11-16
 #       Initial release.
-#
-#  Usage:
-#  ruby convert_msime2canna.rb < MS-IME_dictionary_file
 #
 ########################################################################
 

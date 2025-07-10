@@ -12,6 +12,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./exif_drop.sh <directory_path>
+#
+#  Options:
+#      -h   Display this help message.
+#
+#  Notes:
+#  - Ensure that the exiftool and jhead utilities are installed before running this script.
+#
 #  Version History:
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -30,15 +39,6 @@
 #       Refactored for improved readability and added detailed comments.
 #  v1.0 2009-10-05
 #       Initial release.
-#
-#  Usage:
-#      ./exif_drop.sh <directory_path>
-#
-#  Options:
-#      -h   Display this help message.
-#
-#  Notes:
-#  - Ensure that the exiftool and jhead utilities are installed before running this script.
 #
 ########################################################################
 

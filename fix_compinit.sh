@@ -21,6 +21,17 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./fix_compinit.sh
+#
+#  Notes:
+#  - This script requires root privileges to execute. Run it with `sudo`.
+#  - This script is specifically tailored for macOS and will not function
+#    on other operating systems.
+#  - It is recommended to verify the ownership and permissions of the
+#    affected directories after execution to ensure they meet the desired
+#    security standards.
+#
 #  Version History:
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -39,17 +50,6 @@
 #  v1.0 2025-01-17
 #       Initial release. Ensures secure ownership and permissions for
 #       Zsh-related directories used by Homebrew.
-#
-#  Usage:
-#      ./fix_compinit.sh
-#
-#  Notes:
-#  - This script requires root privileges to execute. Run it with `sudo`.
-#  - This script is specifically tailored for macOS and will not function
-#    on other operating systems.
-#  - It is recommended to verify the ownership and permissions of the
-#    affected directories after execution to ensure they meet the desired
-#    security standards.
 #
 ########################################################################
 

@@ -17,6 +17,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      insta_video_downloader.py [Instagram username] [--permissions PERM] [--sleep TIME]
+#
+#  Example:
+#      insta_video_downloader.py username --permissions 640 --sleep 10
+#
+#  Requirements:
+#  - Python Version: 3.2 or later
+#  - Dependencies: instaloader
+#
 #  Version History:
 #  v1.4 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -29,16 +39,6 @@
 #       Enhanced code comments for better readability and maintainability.
 #  v1.0 2025-02-15
 #       Initial release: Separate script for video downloading.
-#
-#  Usage:
-#      insta_video_downloader.py [Instagram username] [--permissions PERM] [--sleep TIME]
-#
-#  Example:
-#      insta_video_downloader.py username --permissions 640 --sleep 10
-#
-#  Requirements:
-#  - Python Version: 3.2 or later
-#  - Dependencies: instaloader
 #
 ########################################################################
 

@@ -12,13 +12,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.0 2023-12-19
-#       Initial release.
-#
 #  Usage:
 #  Run this script from the command line using:
 #      python test/dirsize_test.py
+#
+#  Version History:
+#  v1.0 2023-12-19
+#       Initial release.
 #
 ########################################################################
 

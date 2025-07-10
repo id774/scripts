@@ -13,6 +13,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script without any arguments:
+#      userlist.py
+#
+#  The script automatically detects the system type and sets the UID threshold
+#  accordingly. It then displays a list of user accounts with UIDs above this threshold.
+#
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 #  Version History:
 #  v1.5 2025-07-08
 #       Fixed compatibility issues with Python 3.4.
@@ -29,16 +39,6 @@
 #  v1.0 2014-11-16
 #       Initial release. Detects system type and displays user accounts with
 #       UIDs above the system-specific threshold.
-#
-#  Usage:
-#  Run the script without any arguments:
-#      userlist.py
-#
-#  The script automatically detects the system type and sets the UID threshold
-#  accordingly. It then displays a list of user accounts with UIDs above this threshold.
-#
-#  Requirements:
-#  - Python Version: 3.1 or later
 #
 ########################################################################
 

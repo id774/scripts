@@ -12,12 +12,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.1 2025-07-03
-#       Update tests to reflect new rule: symbols are always included if enabled.
-#  v1.0 2025-06-24
-#       Initial test implementation for generate_passwd.
-#
 #  Test Cases:
 #    - test_usage_shows_help:
 #        Verifies that the script prints usage and exits with code 0 when invoked with -h option.
@@ -29,6 +23,12 @@
 #        Verifies that length zero raises SystemExit with error.
 #    - test_generate_single_length_with_symbol:
 #        Confirms that one-character password includes symbol if enabled.
+#
+#  Version History:
+#  v1.1 2025-07-03
+#       Update tests to reflect new rule: symbols are always included if enabled.
+#  v1.0 2025-06-24
+#       Initial test implementation for generate_passwd.
 #
 ########################################################################
 

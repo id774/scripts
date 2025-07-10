@@ -20,51 +20,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v2.6 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v2.5 2025-04-28
-#       Allow -h/--help usage without requiring configuration or command checks by adjusting main function flow.
-#  v2.4 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v2.3 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v2.2 2025-03-17
-#       Encapsulated all logic into functions and introduced main function.
-#  v2.1 2025-01-02
-#       Improved the "Running:" message to display the full absolute path
-#       of the target subdirectory for better clarity.
-#  v2.0 2024-10-23
-#       Improved removal of trailing slashes and backslashes for
-#       the --account option in insta_update.sh.
-#       Added 'sed' to the list of required commands in the check_commands function
-#       to ensure the script checks for its availability before execution.
-#  v1.9 2024-08-19
-#       Fixed issue where --account option was not working when include_accounts.txt was present.
-#       Added logic to prioritize --account option when specified.
-#  v1.8 2024-07-22
-#       Added feature to ignore lines starting with '#'
-#       in include_accounts.txt and exclude_accounts.txt as comments.
-#  v1.7 2024-07-17
-#       Updated processing order to follow include_accounts.txt as listed.
-#       Ensured consistent variable scoping throughout the script.
-#  v1.6 2024-06-15
-#       Added --help option to display help message.
-#  v1.5 2024-05-04
-#       Handle trailing slashes in --account option by removing them.
-#  v1.4 2024-04-25
-#       Added --account option to specify a single account for updating.
-#  v1.3 2024-03-21
-#       Introduced the --no-sync (-n) option to skip the synchronization step.
-#  v1.2 2024-02-23
-#       Added check_commands function to verify the presence and executability
-#       of required system commands before proceeding with the main script.
-#  v1.1 2024-02-21
-#       Updated the reset functionality to rename the target directory before
-#       clearing, ensuring data is not lost if the download fails.
-#  v1.0 2024-02-19
-#       Initial release.
-#
 #  Usage:
 #      ./insta_update.sh [--reset] [--no-sync] [--account ACCOUNT_NAME]
 #
@@ -111,6 +66,51 @@
 #  4. Specified scripts or target directory do not exist or are not executable.
 #  126. Required command(s) not executable.
 #  127. Required command(s) not installed.
+#
+#  Version History:
+#  v2.6 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v2.5 2025-04-28
+#       Allow -h/--help usage without requiring configuration or command checks by adjusting main function flow.
+#  v2.4 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v2.3 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v2.2 2025-03-17
+#       Encapsulated all logic into functions and introduced main function.
+#  v2.1 2025-01-02
+#       Improved the "Running:" message to display the full absolute path
+#       of the target subdirectory for better clarity.
+#  v2.0 2024-10-23
+#       Improved removal of trailing slashes and backslashes for
+#       the --account option in insta_update.sh.
+#       Added 'sed' to the list of required commands in the check_commands function
+#       to ensure the script checks for its availability before execution.
+#  v1.9 2024-08-19
+#       Fixed issue where --account option was not working when include_accounts.txt was present.
+#       Added logic to prioritize --account option when specified.
+#  v1.8 2024-07-22
+#       Added feature to ignore lines starting with '#'
+#       in include_accounts.txt and exclude_accounts.txt as comments.
+#  v1.7 2024-07-17
+#       Updated processing order to follow include_accounts.txt as listed.
+#       Ensured consistent variable scoping throughout the script.
+#  v1.6 2024-06-15
+#       Added --help option to display help message.
+#  v1.5 2024-05-04
+#       Handle trailing slashes in --account option by removing them.
+#  v1.4 2024-04-25
+#       Added --account option to specify a single account for updating.
+#  v1.3 2024-03-21
+#       Introduced the --no-sync (-n) option to skip the synchronization step.
+#  v1.2 2024-02-23
+#       Added check_commands function to verify the presence and executability
+#       of required system commands before proceeding with the main script.
+#  v1.1 2024-02-21
+#       Updated the reset functionality to rename the target directory before
+#       clearing, ensuring data is not lost if the download fails.
+#  v1.0 2024-02-19
+#       Initial release.
 #
 ########################################################################
 

@@ -14,6 +14,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      image_resize.py <size> <source_directory> <output_directory>
+#
+#  Example:
+#      image_resize.py 300 ./images ./resized
+#
+#  Requirements:
+#  - Python Version: 3.2 or later
+#  - Dependencies: Pillow
+#
 #  Version History:
 #  v1.4 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -25,16 +35,6 @@
 #      Added error handling for PIL library not installed.
 #  v1.0 2023-12-24
 #      Initial release. Basic functionality for resizing images.
-#
-#  Usage:
-#      image_resize.py <size> <source_directory> <output_directory>
-#
-#  Example:
-#      image_resize.py 300 ./images ./resized
-#
-#  Requirements:
-#  - Python Version: 3.2 or later
-#  - Dependencies: Pillow
 #
 ########################################################################
 

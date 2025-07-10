@@ -13,16 +13,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#  - Shows usage and exits with code 0 when invoked with -h option
+#  - Displays user with UID >= 1000 on Debian-based system
+#  - Displays user from dscacheutil on macOS if UID >= 500
+#
 #  Version History:
 #  v1.1 2025-07-08
 #       Fixed compatibility issues with Python 3.4.
 #  v1.0 2025-07-07
 #       Initial release.
-#
-#  Test Cases:
-#  - Shows usage and exits with code 0 when invoked with -h option
-#  - Displays user with UID 竕･ 1000 on Debian-based system
-#  - Displays user from dscacheutil on macOS if UID 竕･ 500
 #
 ########################################################################
 

@@ -18,19 +18,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.4 2025-07-01
-#       Standardized termination behavior for consistent script execution.
-#  v1.3 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.2 2025-04-14
-#       Unify error and info message formatting with stderr and prefix tags.
-#  v1.1 2024-08-07
-#       Added -h option to display help. Modified script to show help when no directory is specified.
-#  v1.0 2023-12-19
-#       Initial release. Displays directory contents and calculates total size
-#       using binary prefixes.
-#
 #  Usage:
 #      dirsize.py [options] [directory]
 #
@@ -43,6 +30,19 @@
 #
 #  Requirements:
 #  - Python Version: 3.5 or later
+#
+#  Version History:
+#  v1.4 2025-07-01
+#       Standardized termination behavior for consistent script execution.
+#  v1.3 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.2 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
+#  v1.1 2024-08-07
+#       Added -h option to display help. Modified script to show help when no directory is specified.
+#  v1.0 2023-12-19
+#       Initial release. Displays directory contents and calculates total size
+#       using binary prefixes.
 #
 ########################################################################
 

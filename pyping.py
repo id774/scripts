@@ -13,19 +13,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.4 2025-07-01
-#       Standardized termination behavior for consistent script execution.
-#  v1.3 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.2 2025-01-06
-#      Added `--ordered` option with shorthand `-o` for sorted output.
-#  v1.1 2024-01-15
-#      Suppressed standard error output from ping command.
-#      Improved command line argument interface using argparse.
-#  v1.0 2024-01-12
-#      Initial release. Python version of the rubyping.rb script.
-#
 #  Usage:
 #      pyping.py [-h] [-o] subnet start_ip end_ip
 #
@@ -46,6 +33,19 @@
 #  Notes:
 #  - Ensure you have permissions to send pings to the target IPs.
 #  - This script may take time to complete based on the range specified.
+#
+#  Version History:
+#  v1.4 2025-07-01
+#       Standardized termination behavior for consistent script execution.
+#  v1.3 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.2 2025-01-06
+#      Added `--ordered` option with shorthand `-o` for sorted output.
+#  v1.1 2024-01-15
+#      Suppressed standard error output from ping command.
+#      Improved command line argument interface using argparse.
+#  v1.0 2024-01-12
+#      Initial release. Python version of the rubyping.rb script.
 #
 ########################################################################
 

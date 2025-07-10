@@ -25,12 +25,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.1 2025-05-10
-#       Test all scripts in $SCRIPTS/cron/bin regardless of file extension.
-#  v1.0 2025-04-28
-#       Initial release. Implements sequential help-option testing with POSIX-compliant structure.
-#
 #  Usage:
 #      ./check_scripts.sh
 #
@@ -54,6 +48,12 @@
 #  - No dependencies on non-standard utilities (e.g., mktemp).
 #  - Graceful handling of failures with continued testing across all scripts.
 #  - Summarized reporting for easy identification of issues.
+#
+#  Version History:
+#  v1.1 2025-05-10
+#       Test all scripts in $SCRIPTS/cron/bin regardless of file extension.
+#  v1.0 2025-04-28
+#       Initial release. Implements sequential help-option testing with POSIX-compliant structure.
 #
 ########################################################################
 

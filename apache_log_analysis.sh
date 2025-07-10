@@ -14,6 +14,11 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./apache_log_analysis.sh [log_file_path]
+#  Example:
+#      ./apache_log_analysis.sh /var/log/apache2/ssl_access.log
+#
 #  Version History:
 #  v2.0 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -44,11 +49,6 @@
 #       Refactored for improved readability and added detailed comments.
 #  v1.0 2022-10-11
 #       Initial release.
-#
-#  Usage:
-#      ./apache_log_analysis.sh [log_file_path]
-#  Example:
-#      ./apache_log_analysis.sh /var/log/apache2/ssl_access.log
 #
 ########################################################################
 

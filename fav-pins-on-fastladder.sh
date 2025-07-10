@@ -14,6 +14,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script to manage favorite pins:
+#      ./fav-pins-on-fastladder.sh
+#
+#  Requirements:
+#  - Must be executed on Linux or macOS.
+#  - Requires `sqlite3` installed.
+#  - The Fastladder database (`fastladder.db`) must exist.
+#
 #  Version History:
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -25,15 +34,6 @@
 #       Added system and command checks, improved database handling.
 #  v0.1 2016-03-30
 #       Initial version.
-#
-#  Usage:
-#  Run this script to manage favorite pins:
-#      ./fav-pins-on-fastladder.sh
-#
-#  Requirements:
-#  - Must be executed on Linux or macOS.
-#  - Requires `sqlite3` installed.
-#  - The Fastladder database (`fastladder.db`) must exist.
 #
 ########################################################################
 

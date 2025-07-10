@@ -13,16 +13,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Notes:
+#  - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#  - This test simulates the pinging process and does not send actual network requests.
+#  - The script is designed to work with Python 3.
+#
 #  Version History:
 #  v1.1 2025-01-06
 #       Added test case for the --ordered option to verify sorted output.
 #  v1.0 2024-01-12
 #       Initial release. Test suite for pyping.py script.
-#
-#  Notes:
-#  - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
-#  - This test simulates the pinging process and does not send actual network requests.
-#  - The script is designed to work with Python 3.
 #
 ########################################################################
 

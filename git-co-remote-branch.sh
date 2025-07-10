@@ -15,6 +15,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script with the name of the remote branch:
+#      ./git-co-remote-branch.sh <branch>
+#
+#  Example:
+#      ./git-co-remote-branch.sh feature-branch
+#
+#  This will create and switch to a local branch called 'feature-branch'
+#  that tracks 'origin/feature-branch'.
+#
 #  Version History:
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -32,16 +42,6 @@
 #  v1.0 2016-01-26
 #       Initial release. Implements functionality to checkout a remote branch in Git,
 #       creating a corresponding local branch that tracks it.
-#
-#  Usage:
-#  Run the script with the name of the remote branch:
-#      ./git-co-remote-branch.sh <branch>
-#
-#  Example:
-#      ./git-co-remote-branch.sh feature-branch
-#
-#  This will create and switch to a local branch called 'feature-branch'
-#  that tracks 'origin/feature-branch'.
 #
 ########################################################################
 

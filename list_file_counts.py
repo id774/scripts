@@ -14,14 +14,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.2 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.1 2025-04-14
-#       Unify error and info message formatting with stderr and prefix tags.
-#  v1.0 2025-01-05
-#       Initial release.
-#
 #  Usage:
 #      list_file_counts.py [directory]
 #
@@ -30,6 +22,14 @@
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
+#
+#  Version History:
+#  v1.2 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.1 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
+#  v1.0 2025-01-05
+#       Initial release.
 #
 ########################################################################
 

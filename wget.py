@@ -12,6 +12,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      wget.py <URL>
+#
+#  Example:
+#      wget.py http://example.com/file.txt
+#
+#  Requirements:
+#  - Python Version: 3.4 or later
+#  - Dependencies: requests
+#
 #  Version History:
 #  v1.4 2025-07-07
 #       Define download_file function to allow test import and avoid skipping tests.
@@ -23,16 +33,6 @@
 #       Removed f-strings for compatibility with Python versions below 3.6.
 #  v1.0 2023-12-06
 #       Initial release.
-#
-#  Usage:
-#      wget.py <URL>
-#
-#  Example:
-#      wget.py http://example.com/file.txt
-#
-#  Requirements:
-#  - Python Version: 3.4 or later
-#  - Dependencies: requests
 #
 ########################################################################
 

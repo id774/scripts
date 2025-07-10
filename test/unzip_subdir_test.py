@@ -13,16 +13,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#  - Shows usage and exits with code 0 when invoked with -h option
+#  - Displays expected output in dry-run mode without creating directories
+#  - Skips extraction if target directory already exists
+#
 #  Version History:
 #  v1.1 2025-07-08
 #       Fixed compatibility issues with Python 3.4.
 #  v1.0 2025-07-07
 #       Initial release.
-#
-#  Test Cases:
-#  - Shows usage and exits with code 0 when invoked with -h option
-#  - Displays expected output in dry-run mode without creating directories
-#  - Skips extraction if target directory already exists
 #
 ########################################################################
 

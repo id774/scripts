@@ -13,14 +13,14 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.0 2025-07-07
-#       Initial release.
-#
 #  Test Cases:
 #  - Shows usage and exits with code 0 when invoked with -h option
 #  - Falls back to Python calendar module if 'cal' does not exist
 #  - Invokes system cal with arguments if available
+#
+#  Version History:
+#  v1.0 2025-07-07
+#       Initial release.
 #
 ########################################################################
 

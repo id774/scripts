@@ -13,17 +13,17 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.0 2023-12-13
-#       Initial release. Test suite for namecalc.rb script.
-#
 #  Running the tests:
 #  Execute the test script from the command line:
-#  `python test/namecalc_test.py`
+#      python test/namecalc_test.py
 #
 #  Test Cases:
 #  - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #  - Verify correct numerological calculation and graphical representation.
+#
+#  Version History:
+#  v1.0 2023-12-13
+#       Initial release. Test suite for namecalc.rb script.
 #
 ########################################################################
 

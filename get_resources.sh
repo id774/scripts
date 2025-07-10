@@ -13,6 +13,9 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./get_resources.sh
+#
 #  Version History:
 #  v1.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -34,9 +37,6 @@
 #       Refactored for macOS compatibility and command availability checks.
 #  v1.0 2008-08-22
 #       Initial release. Gathers system resources and log information.
-#
-#  Usage:
-#      ./get_resources.sh
 #
 ########################################################################
 

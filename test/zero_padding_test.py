@@ -13,6 +13,10 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script from the command line using:
+#      python test/zero_padding_test.py
+#
 #  Version History:
 #  v1.1 2024-03-27
 #       Expanded test cases to cover a wider range of scenarios, including files
@@ -20,10 +24,6 @@
 #       special characters and spaces in their names.
 #  v1.0 2024-01-11
 #       Initial release of test script.
-#
-#  Usage:
-#  Run this script from the command line using:
-#      python test/zero_padding_test.py
 #
 ########################################################################
 

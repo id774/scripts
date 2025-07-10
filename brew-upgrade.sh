@@ -18,6 +18,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script directly without any arguments:
+#      ./brew-upgrade.sh
+#
+#  Requirements:
+#  - Homebrew must be installed prior to executing this script.
+#
 #  Version History:
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -29,13 +36,6 @@
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.0 2025-01-26
 #       Initial release.
-#
-#  Usage:
-#  Run the script directly without any arguments:
-#      ./brew-upgrade.sh
-#
-#  Requirements:
-#  - Homebrew must be installed prior to executing this script.
 #
 ########################################################################
 

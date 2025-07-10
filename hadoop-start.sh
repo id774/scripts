@@ -13,6 +13,9 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./hadoop-start.sh [start|stop] [Hadoop version]
+#
 #  Version History:
 #  v0.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -31,9 +34,6 @@
 #       Added error handling for missing arguments.
 #  v0.1 2012-07-24
 #       First release.
-#
-#  Usage:
-#      ./hadoop-start.sh [start|stop] [Hadoop version]
 #
 ########################################################################
 

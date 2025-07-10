@@ -15,6 +15,26 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  show_version.py [options] file
+#
+#  Options:
+#    -h, --help    show this help message and exit
+#    -i, --info    show detail info
+#    -p, --python  show python version
+#
+#  To display the versions of predefined modules:
+#      python show_version.py
+#
+#  To display detailed information of predefined modules:
+#      python show_version.py -i
+#
+#  To display the Python version:
+#      python show_version.py -p
+#
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 #  Version History:
 #  v2.7 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -40,26 +60,6 @@
 #       Add some packages.
 #  v1.0 2008-08-15
 #       Stable.
-#
-#  Usage:
-#  show_version.py [options] file
-#
-#  Options:
-#    -h, --help    show this help message and exit
-#    -i, --info    show detail info
-#    -p, --python  show python version
-#
-#  To display the versions of predefined modules:
-#      python show_version.py
-#
-#  To display detailed information of predefined modules:
-#      python show_version.py -i
-#
-#  To display the Python version:
-#      python show_version.py -p
-#
-#  Requirements:
-#  - Python Version: 3.1 or later
 #
 ########################################################################
 

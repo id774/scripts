@@ -14,6 +14,10 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script from the command line to perform the tests.
+#      python test/pyck_test.py
+#
 #  Version History:
 #  v1.2 2025-04-14
 #       Unify error and info message formatting with stderr and prefix tags.
@@ -22,10 +26,6 @@
 #       behavior with existing, nonexistent, and non-executable commands.
 #  v1.0 2024-01-13
 #       Initial test script for pyck.py
-#
-#  Usage:
-#  Run this script from the command line to perform the tests.
-#  Example: python test/pyck_test.py
 #
 ########################################################################
 

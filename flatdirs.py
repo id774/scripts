@@ -19,6 +19,26 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  python flatdirs.py [options]
+#  Options:
+#    -m, --move         Move files instead of copying (default if no option is provided)
+#    -c, --copy         Copy files instead of moving
+#    -d, --delete       Delete empty directories
+#    -q, --quiet        Suppress operation info
+#    -x, --execute      Execute file operations (default is dry run)
+#                       Note: Displays a confirmation prompt showing the current
+#                       directory. Review carefully before proceeding.
+#    -r, --rename-only  Only rename files, without moving or copying
+#
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
+#  Notes:
+#  - Use with caution as it can significantly modify directory contents.
+#  - When using `-x`, review the displayed current directory and confirm before proceeding.
+#  - It's recommended to backup data before executing with the --execute option.
+#
 #  Version History:
 #  v2.2 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -47,26 +67,6 @@
 #       Added rename-only mode.
 #  v1.0 2023-06-27
 #       Initial release.
-#
-#  Usage:
-#  python flatdirs.py [options]
-#  Options:
-#    -m, --move         Move files instead of copying (default if no option is provided)
-#    -c, --copy         Copy files instead of moving
-#    -d, --delete       Delete empty directories
-#    -q, --quiet        Suppress operation info
-#    -x, --execute      Execute file operations (default is dry run)
-#                       Note: Displays a confirmation prompt showing the current
-#                       directory. Review carefully before proceeding.
-#    -r, --rename-only  Only rename files, without moving or copying
-#
-#  Requirements:
-#  - Python Version: 3.1 or later
-#
-#  Notes:
-#  - Use with caution as it can significantly modify directory contents.
-#  - When using `-x`, review the displayed current directory and confirm before proceeding.
-#  - It's recommended to backup data before executing with the --execute option.
 #
 ########################################################################
 

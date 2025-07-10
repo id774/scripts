@@ -16,10 +16,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.0 2024-02-26
-#       Initial release. Incorporates various Python 3.x features for compatibility testing.
-#
 #  Usage:
 #  The dummy.py script is not intended to be executed for practical purposes. Instead, it
 #  should be placed in a directory and used in conjunction with the find_pycompat.py script
@@ -30,6 +26,10 @@
 #  find_pycompat.py script in detecting Python 3.x specific features that may not be compatible
 #  with earlier Python versions. It aids in the validation and demonstration of the find_pycompat.py
 #  script's functionality in real-world scenarios.
+#
+#  Version History:
+#  v1.0 2024-02-26
+#       Initial release. Incorporates various Python 3.x features for compatibility testing.
 #
 ########################################################################
 

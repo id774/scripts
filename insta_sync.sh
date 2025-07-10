@@ -17,37 +17,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v2.0 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.9 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.8 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v1.7 2025-03-17
-#       Encapsulated all logic into functions and introduced main function.
-#  v1.6 2025-03-13
-#       Redirected error messages to stderr for better logging and debugging.
-#  v1.5 2024-10-23
-#       Fixed issue with removing trailing backslash from the Instagram account name argument.
-#       Added 'sed' to the list of required commands in the check_commands function
-#       to ensure the script checks for its availability before execution.
-#  v1.4 2024-06-18
-#       Added --help and -h options to display help message.
-#  v1.3 2024-05-05
-#       Modified to remove trailing backslash from the Instagram account name argument.
-#  v1.2 2024-03-07
-#       Added configuration options for customizable file and directory
-#       permissions in 'insta_sync.conf'. Updated script to apply these
-#       permissions to Instagram account data directories and files.
-#  v1.1 2024-02-23
-#       Added check_commands function to verify the presence and executability
-#       of required system commands before proceeding with the main script.
-#  v1.0 2024-02-08
-#       Initial release. Added support for per-account directory handling,
-#       local and conditional remote synchronization. Added checks for necessary
-#       configuration variables.
-#
 #  Usage:
 #  Run the script with the Instagram account name as an argument. Make sure
 #  the configuration file 'insta_sync.conf' is properly set up in the same
@@ -81,6 +50,37 @@
 #  5. One or more configuration variables not set.
 #  126. Required command(s) not executable.
 #  127. Required command(s) not installed.
+#
+#  Version History:
+#  v2.0 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.9 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.8 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v1.7 2025-03-17
+#       Encapsulated all logic into functions and introduced main function.
+#  v1.6 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
+#  v1.5 2024-10-23
+#       Fixed issue with removing trailing backslash from the Instagram account name argument.
+#       Added 'sed' to the list of required commands in the check_commands function
+#       to ensure the script checks for its availability before execution.
+#  v1.4 2024-06-18
+#       Added --help and -h options to display help message.
+#  v1.3 2024-05-05
+#       Modified to remove trailing backslash from the Instagram account name argument.
+#  v1.2 2024-03-07
+#       Added configuration options for customizable file and directory
+#       permissions in 'insta_sync.conf'. Updated script to apply these
+#       permissions to Instagram account data directories and files.
+#  v1.1 2024-02-23
+#       Added check_commands function to verify the presence and executability
+#       of required system commands before proceeding with the main script.
+#  v1.0 2024-02-08
+#       Initial release. Added support for per-account directory handling,
+#       local and conditional remote synchronization. Added checks for necessary
+#       configuration variables.
 #
 ########################################################################
 

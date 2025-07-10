@@ -14,6 +14,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./tree.sh [directory] [-a]
+#
+#  Run the script without arguments to display the tree of the current
+#  directory, with a directory path to display the tree of that directory,
+#  or with '-a' option to include hidden directories.
+#
 #  Version History:
 #  v1.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -39,13 +46,6 @@
 #       and compatibility across different UNIX-like systems.
 #  v1.0 2014-10-22
 #       Initial release.
-#
-#  Usage:
-#      ./tree.sh [directory] [-a]
-#
-#  Run the script without arguments to display the tree of the current
-#  directory, with a directory path to display the tree of that directory,
-#  or with '-a' option to include hidden directories.
 #
 ########################################################################
 

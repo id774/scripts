@@ -12,6 +12,9 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./find [directory...] -type f -name "*" -exec /path/to/remove_space_eol.sh {} \;
+#
 #  Version History:
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -28,9 +31,6 @@
 #       Refactored for better error handling and added comments.
 #  v1.0 2008-08-22
 #       Initial release. Removes trailing whitespace from files.
-#
-#  Usage:
-#      ./find [directory...] -type f -name "*" -exec /path/to/remove_space_eol.sh {} \;
 #
 ########################################################################
 

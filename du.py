@@ -16,6 +16,20 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script with a depth number and a directory:
+#      python du.py [maxdepth] [directory]
+#
+#  Requirements:
+#  - Python Version: 3.2 or later
+#
+#  Notes:
+#  The script focuses on reporting the total disk usage of the specified
+#  top-level directory, avoiding the complexities and limitations of the
+#  traditional 'du' command on macOS. It does not sum up the sizes of
+#  subdirectories; instead, it directly reports the size of the top-level
+#  directory as the total.
+#
 #  Version History:
 #  v1.7 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -37,20 +51,6 @@
 #      Added note regarding total usage variation based on depth.
 #  v1.0 2023-12-18
 #      Initial release. Simplifies 'du' command usage.
-#
-#  Usage:
-#  Run the script with a depth number and a directory:
-#      python du.py [maxdepth] [directory]
-#
-#  Requirements:
-#  - Python Version: 3.2 or later
-#
-#  Notes:
-#  The script focuses on reporting the total disk usage of the specified
-#  top-level directory, avoiding the complexities and limitations of the
-#  traditional 'du' command on macOS. It does not sum up the sizes of
-#  subdirectories; instead, it directly reports the size of the top-level
-#  directory as the total.
 #
 ########################################################################
 

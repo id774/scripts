@@ -14,6 +14,12 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script from the command line to execute all tests:
+#      ./run_tests.sh [Python path] [RSpec path]
+#
+#  If no paths are specified, it will use the default system paths.
+#
 #  Version History:
 #  v3.2 2025-07-09
 #       Refactor Ruby test handling to check ruby before rspec and require matching pair to avoid fallback.
@@ -56,12 +62,6 @@
 #       Replaced 'which' with 'command -v' for command existence check.
 #  v1.0 2023-12-15
 #       First release of the test script.
-#
-#  Usage:
-#  Run this script from the command line to execute all tests:
-#      ./run_tests.sh [Python path] [RSpec path]
-#
-#  If no paths are specified, it will use the default system paths.
 #
 ########################################################################
 

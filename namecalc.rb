@@ -14,6 +14,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script with one or more strings:
+#      namecalc.rb [string1 string2 ...]
+#
+#  Example:
+#      namecalc.rb 111 153 111 115
+#  This will perform numerology calculations on the provided strings and
+#  display the results.
+#
 #  Version History:
 #  v1.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -26,15 +35,6 @@
 #  v1.0 2013-04-12
 #       Initial release. Implemented basic numerology calculation and
 #       graphical representation.
-#
-#  Usage:
-#  Run the script with one or more strings:
-#      namecalc.rb [string1 string2 ...]
-#
-#  Example:
-#      namecalc.rb 111 153 111 115
-#  This will perform numerology calculations on the provided strings and
-#  display the results.
 #
 ########################################################################
 

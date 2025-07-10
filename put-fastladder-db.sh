@@ -12,6 +12,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script to vacuum and sync the Fastladder database:
+#      ./put-fastladder-db.sh [user] [host]
+#
+#  Requirements:
+#  - Must be executed on Linux or macOS.
+#  - Requires `sqlite3` and `rsync` installed.
+#  - The Fastladder database (`fastladder.db`) must exist.
+#
 #  Version History:
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -24,15 +33,6 @@
 #       Improved error handling and argument parsing.
 #  v0.1 2016-04-09
 #       Initial version.
-#
-#  Usage:
-#  Run this script to vacuum and sync the Fastladder database:
-#      ./put-fastladder-db.sh [user] [host]
-#
-#  Requirements:
-#  - Must be executed on Linux or macOS.
-#  - Requires `sqlite3` and `rsync` installed.
-#  - The Fastladder database (`fastladder.db`) must exist.
 #
 ########################################################################
 

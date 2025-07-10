@@ -18,37 +18,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v2.0 2025-07-01
-#       Standardized termination behavior for consistent script execution.
-#  v1.9 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.8 2025-04-14
-#       Unify error and info message formatting with stderr and prefix tags.
-#  v1.7 2024-11-15
-#       Added '-fp' option to list full path and filename only without modification time.
-#  v1.6 2024-06-07
-#       Fixed the issue where the local time range was not properly handled.
-#  v1.5 2024-03-28
-#       Enhanced the output format to include timezone offset in a format like '+09:00' or '-05:00'
-#       when using local timezone with '-l' option.
-#  v1.4 2024-03-16
-#       Fixed a bug where hidden files and directories were not properly excluded
-#       when the '-a' option was not used.
-#  v1.3 2024-03-14
-#       Modified the output format to ISO 8601, indicating UTC dates and times.
-#       Added '-l' option to use local timezone for input and output times.
-#  v1.2 2024-03-08
-#       Added '-s' and '-e' options for specifying start and end datetime in UTC.
-#       Maintained '-d' option for backward compatibility.
-#       Renamed script to find_range.py to better reflect its functionality
-#       of searching files within a specified datetime range in UTC.
-#  v1.1 2024-03-03
-#       Added '-f' option to list filenames only.
-#  v1.0 2024-02-25
-#       Initial release. Added functionality to list files based on modification date,
-#       displaying their modification time in UTC, and ignoring hidden directories by default.
-#
 #  Usage:
 #  Run this script with the appropriate options to list files modified within a specified datetime range.
 #      find_range.py [-h] [-d DATETIME [DATETIME ...]] [-s START [START ...]] [-e END [END ...]] [-p PATH] [-a] [-f] [-fp] [-l]
@@ -91,6 +60,37 @@
 #  1: Specified path does not exist or no arguments provided
 #  2: Incorrect datetime format or mutually exclusive options '-f' and '-fp' were used together
 #  9: Python version not supported
+#
+#  Version History:
+#  v2.0 2025-07-01
+#       Standardized termination behavior for consistent script execution.
+#  v1.9 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.8 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
+#  v1.7 2024-11-15
+#       Added '-fp' option to list full path and filename only without modification time.
+#  v1.6 2024-06-07
+#       Fixed the issue where the local time range was not properly handled.
+#  v1.5 2024-03-28
+#       Enhanced the output format to include timezone offset in a format like '+09:00' or '-05:00'
+#       when using local timezone with '-l' option.
+#  v1.4 2024-03-16
+#       Fixed a bug where hidden files and directories were not properly excluded
+#       when the '-a' option was not used.
+#  v1.3 2024-03-14
+#       Modified the output format to ISO 8601, indicating UTC dates and times.
+#       Added '-l' option to use local timezone for input and output times.
+#  v1.2 2024-03-08
+#       Added '-s' and '-e' options for specifying start and end datetime in UTC.
+#       Maintained '-d' option for backward compatibility.
+#       Renamed script to find_range.py to better reflect its functionality
+#       of searching files within a specified datetime range in UTC.
+#  v1.1 2024-03-03
+#       Added '-f' option to list filenames only.
+#  v1.0 2024-02-25
+#       Initial release. Added functionality to list files based on modification date,
+#       displaying their modification time in UTC, and ignoring hidden directories by default.
 #
 ########################################################################
 

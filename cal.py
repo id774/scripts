@@ -15,6 +15,17 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script with or without arguments:
+#      cal.py [arguments]
+#
+#  Without arguments, it prints the calendars for the current, previous,
+#  and next month. With arguments, it executes the system's 'cal' command
+#  with those arguments.
+#
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 #  Version History:
 #  v1.5 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -30,17 +41,6 @@
 #  v1.0 2023-11-25
 #       Initial release. Functionality to print calendars for the current,
 #       previous, and next month.
-#
-#  Usage:
-#  Run the script with or without arguments:
-#      cal.py [arguments]
-#
-#  Without arguments, it prints the calendars for the current, previous,
-#  and next month. With arguments, it executes the system's 'cal' command
-#  with those arguments.
-#
-#  Requirements:
-#  - Python Version: 3.1 or later
 #
 ########################################################################
 

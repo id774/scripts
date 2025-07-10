@@ -13,6 +13,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./cleanup-junk-files.sh <target_directory>
+#  Example:
+#      ./cleanup-junk-files.sh /path/to/directory
+#
+#  Notes:
+#  - This script will recursively delete the specified junk files in the target directory.
+#  - Use with caution and ensure that the target directory is correct.
+#  - It is advisable to perform a dry run or backup important files before execution.
+#
 #  Version History:
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -37,16 +47,6 @@
 #       Refactored for improved readability, added detailed comments and notes.
 #  v1.0 2016-08-05
 #       Initial release.
-#
-#  Usage:
-#      ./cleanup-junk-files.sh <target_directory>
-#  Example:
-#      ./cleanup-junk-files.sh /path/to/directory
-#
-#  Notes:
-#  - This script will recursively delete the specified junk files in the target directory.
-#  - Use with caution and ensure that the target directory is correct.
-#  - It is advisable to perform a dry run or backup important files before execution.
 #
 ########################################################################
 

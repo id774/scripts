@@ -17,20 +17,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.5 2025-07-01
-#       Standardized termination behavior for consistent script execution.
-#  v1.4 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.3 2025-04-14
-#       Unify error and info message formatting with stderr and prefix tags.
-#  v1.2 2024-01-11
-#       Added checks for BeautifulSoup and PyYAML libraries.
-#  v1.1 2023-12-08
-#       Removed f-strings for compatibility with Python versions below 3.6.
-#  v1.0 2023-12-07
-#       Initial release.
-#
 #  Dependencies:
 #  - BeautifulSoup
 #  - PyYAML
@@ -56,6 +42,20 @@
 #  Requirements:
 #  - Python Version: 3.2 or later
 #  - Dependencies: bs4, pyyaml, requests
+#
+#  Version History:
+#  v1.5 2025-07-01
+#       Standardized termination behavior for consistent script execution.
+#  v1.4 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.3 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
+#  v1.2 2024-01-11
+#       Added checks for BeautifulSoup and PyYAML libraries.
+#  v1.1 2023-12-08
+#       Removed f-strings for compatibility with Python versions below 3.6.
+#  v1.0 2023-12-07
+#       Initial release.
 #
 ########################################################################
 

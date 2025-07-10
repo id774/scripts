@@ -13,6 +13,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  simple_passwd.py [options] length
+#
+#  Options:
+#    -h, --help        show this help message and exit
+#    -s, --no-symbols  Do not include symbols in the password
+#
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 #  Version History:
 #  v1.5 2025-07-03
 #       Ensure at least one symbol is included when use_symbols is enabled.
@@ -26,16 +36,6 @@
 #       Added option to exclude special symbols and improved argument handling.
 #  v1.0 2013-01-07
 #       Initial release.
-#
-#  Usage:
-#  simple_passwd.py [options] length
-#
-#  Options:
-#    -h, --help        show this help message and exit
-#    -s, --no-symbols  Do not include symbols in the password
-#
-#  Requirements:
-#  - Python Version: 3.1 or later
 #
 ########################################################################
 

@@ -13,6 +13,9 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  ./aozora_prepare.rb [input file] [output file]
+#
 #  Version History:
 #  v1.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -22,9 +25,6 @@
 #       Refactored for improved readability and documentation.
 #  v1.0 2014-01-22
 #       Initial release.
-#
-#  Usage:
-#  ./aozora_prepare.rb [input file] [output file]
 #
 ########################################################################
 

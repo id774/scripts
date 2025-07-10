@@ -18,19 +18,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.4 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.3 2025-05-06
-#       Show timestamp and success/failure status for each file.
-#       Add final summary of result, and define configurable STALE_THRESHOLD.
-#  v1.2 2025-04-26
-#       Remove ALERT_PREFIX and refine log levels to use [ERROR] and [WARN] appropriately.
-#  v1.1 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.0 2025-04-07
-#       Initial release. Implements _is_alive file monitoring for server health checking.
-#
 #  Usage:
 #      ./server_alive_check.sh
 #      This script is intended to be executed automatically via cron.
@@ -55,6 +42,19 @@
 #  Error Conditions:
 #  2. No '_is_alive' files found.
 #  3. Source directory does not exist.
+#
+#  Version History:
+#  v1.4 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.3 2025-05-06
+#       Show timestamp and success/failure status for each file.
+#       Add final summary of result, and define configurable STALE_THRESHOLD.
+#  v1.2 2025-04-26
+#       Remove ALERT_PREFIX and refine log levels to use [ERROR] and [WARN] appropriately.
+#  v1.1 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.0 2025-04-07
+#       Initial release. Implements _is_alive file monitoring for server health checking.
 #
 ########################################################################
 

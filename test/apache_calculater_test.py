@@ -7,10 +7,6 @@
 #  This script tests the functionality of ApacheCalculater, including hit
 #  counting, cache percentage calculation, and log format validation.
 #
-#  Version History:
-#  v1.0 2025-06-24
-#       Initial test implementation.
-#
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - Count IP hits correctly excluding ignored IPs.
@@ -18,6 +14,10 @@
 #    - Validate proper log line format.
 #    - Handle .gz compressed log files.
 #    - Skip malformed or empty lines gracefully.
+#
+#  Version History:
+#  v1.0 2025-06-24
+#       Initial test implementation.
 #
 ########################################################################
 

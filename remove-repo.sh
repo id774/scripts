@@ -14,6 +14,11 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./remove-repo.sh [repository_name...]
+#
+#  Add -x to actually execute the removal.
+#
 #  Version History:
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -30,11 +35,6 @@
 #       Refactored script with additional comments and error checking.
 #  v1.0 2018-04-20
 #       Initial release. Removes Git repositories and their symbolic links.
-#
-#  Usage:
-#      ./remove-repo.sh [repository_name...]
-#
-#  Add -x to actually execute the removal.
 #
 ########################################################################
 

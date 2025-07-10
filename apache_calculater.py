@@ -14,6 +14,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      apache_calculater.py <log_file>
+#
+#  Example:
+#      apache_calculater.py /var/log/apache2/access.log
+#
+#  Requirements:
+#  - Python Version: 3.1 or later
+#
 #  Version History:
 #  v1.7 2025-07-01
 #       Standardized termination behavior for consistent script execution.
@@ -34,15 +43,6 @@
 #       Refactored for improved clarity and removed unnecessary path manipulation.
 #  v1.0 2011-04-20
 #       Initial release.
-#
-#  Usage:
-#      apache_calculater.py <log_file>
-#
-#  Example:
-#      apache_calculater.py /var/log/apache2/access.log
-#
-#  Requirements:
-#  - Python Version: 3.1 or later
 #
 ########################################################################
 

@@ -14,6 +14,27 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script without any arguments. Ensure that 'dashcam_sync.conf'
+#  is properly set up with SOURCE_DIR and DEST_DIR variables.
+#      ./dashcam_sync.sh
+#
+#  Configuration file ('dashcam_sync.conf') requirements:
+#  - SOURCE_DIR: Directory containing the dashcam files to be synchronized.
+#  - DEST_DIR: Destination directory on the external drive for synchronized files.
+#  Ensure both variables are set in 'dashcam_sync.conf'.
+#
+#  Notes:
+#  - Both source and destination directories must exist and be writable.
+#  - Files are first synced to a 'daily' subdirectory, then moved to a yearly directory.
+#
+#  Error Conditions:
+#  1. Source or destination directory does not exist.
+#  2. Rsync operation failed.
+#  3. Moving files failed.
+#  4. Configuration file not found.
+#  5. One or more configuration variables not set.
+#
 #  Version History:
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -37,27 +58,6 @@
 #  v1.0 2023-12-05
 #       Initial release. Adds directory checks, error handling, and
 #       improves script reusability.
-#
-#  Usage:
-#  Run the script without any arguments. Ensure that 'dashcam_sync.conf'
-#  is properly set up with SOURCE_DIR and DEST_DIR variables.
-#      ./dashcam_sync.sh
-#
-#  Configuration file ('dashcam_sync.conf') requirements:
-#  - SOURCE_DIR: Directory containing the dashcam files to be synchronized.
-#  - DEST_DIR: Destination directory on the external drive for synchronized files.
-#  Ensure both variables are set in 'dashcam_sync.conf'.
-#
-#  Notes:
-#  - Both source and destination directories must exist and be writable.
-#  - Files are first synced to a 'daily' subdirectory, then moved to a yearly directory.
-#
-#  Error Conditions:
-#  1. Source or destination directory does not exist.
-#  2. Rsync operation failed.
-#  3. Moving files failed.
-#  4. Configuration file not found.
-#  5. One or more configuration variables not set.
 #
 ########################################################################
 

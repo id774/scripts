@@ -12,6 +12,10 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  ruby wget.rb <URL>
+#  Example: ruby wget.rb http://example.com/file.txt
+#
 #  Version History:
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -19,10 +23,6 @@
 #       Refactored for improved readability and added detailed comments.
 #  v1.0 2012-02-29
 #       Initial release.
-#
-#  Usage:
-#  ruby wget.rb <URL>
-#  Example: ruby wget.rb http://example.com/file.txt
 #
 ########################################################################
 

@@ -13,35 +13,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v2.8 2025-07-01
-#       Standardized termination behavior for consistent script execution.
-#  v2.7 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v2.6 2025-04-14
-#       Unify error and info message formatting with stderr and prefix tags.
-#  v2.5 2025-03-05
-#       Added sudo privilege check when --sudo option is specified.
-#  v2.4 2024-01-28
-#       Replaced shutil.which with a custom which function to ensure compatibility
-#       with Python versions prior to 3.3.
-#  v2.3 2024-01-20
-#       Refactored to include a main function and separate option parser setup function.
-#  v2.2 2024-01-18
-#       Standardized command existence checks using a common function.
-#  v2.1 2023-12-17
-#       Updated for compatibility with Python versions below 3.3 by replacing
-#       DEVNULL with os.devnull in is_command_installed function.
-#  v2.0 2023-12-16
-#       Refactored to use command construction method. Added external command checks.
-#       Updated documentation and added comments to functions.
-#  v1.2 2014-08-14
-#       Minor formatting revisions for readability and consistency.
-#  v1.1 2009-01-27
-#       Enhanced compatibility to consider platforms of Python other than GNU/Linux.
-#  v1.0 2009-01-26
-#       Initial release.
-#
 #  Usage:
 #  Run the script with a directory and options:
 #      chmodtree.py [options] dir
@@ -73,6 +44,35 @@
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
+#
+#  Version History:
+#  v2.8 2025-07-01
+#       Standardized termination behavior for consistent script execution.
+#  v2.7 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v2.6 2025-04-14
+#       Unify error and info message formatting with stderr and prefix tags.
+#  v2.5 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
+#  v2.4 2024-01-28
+#       Replaced shutil.which with a custom which function to ensure compatibility
+#       with Python versions prior to 3.3.
+#  v2.3 2024-01-20
+#       Refactored to include a main function and separate option parser setup function.
+#  v2.2 2024-01-18
+#       Standardized command existence checks using a common function.
+#  v2.1 2023-12-17
+#       Updated for compatibility with Python versions below 3.3 by replacing
+#       DEVNULL with os.devnull in is_command_installed function.
+#  v2.0 2023-12-16
+#       Refactored to use command construction method. Added external command checks.
+#       Updated documentation and added comments to functions.
+#  v1.2 2014-08-14
+#       Minor formatting revisions for readability and consistency.
+#  v1.1 2009-01-27
+#       Enhanced compatibility to consider platforms of Python other than GNU/Linux.
+#  v1.0 2009-01-26
+#       Initial release.
 #
 ########################################################################
 

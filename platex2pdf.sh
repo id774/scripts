@@ -13,6 +13,9 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./platex2pdf.sh [tex-file]
+#
 #  Version History:
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -31,9 +34,6 @@
 #       Refactored for improved readability, added environment checks.
 #  v1.0 2014-05-21
 #       Initial release. Converts LaTeX files to PDF.
-#
-#  Usage:
-#      ./platex2pdf.sh [tex-file]
 #
 ########################################################################
 

@@ -13,6 +13,9 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./anthy_create_aa_dic.sh
+#
 #  Version History:
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -26,9 +29,6 @@
 #       Refactored for improved readability and added detailed comments.
 #  v1.0 2009-11-17
 #       Initial release.
-#
-#  Usage:
-#      ./anthy_create_aa_dic.sh
 #
 ########################################################################
 

@@ -12,6 +12,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script from the command line:
+#      ./vacuum-fastladder-db.sh
+#
+#  Notes:
+#  - Ensure that the Fastladder application is not actively using the database when this script is run.
+#  - This script should be run from the root directory of the Fastladder installation.
+#  - Backup the existing database before running this script as a safety precaution.
+#  - The script requires sqlite3 to be installed on the system.
+#
 #  Version History:
 #  v1.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -31,16 +41,6 @@
 #       Added check for sqlite3 program and updated documentation.
 #  v1.0 2019-03-18
 #       Initial release.
-#
-#  Usage:
-#  Run the script from the command line:
-#      ./vacuum-fastladder-db.sh
-#
-#  Notes:
-#  - Ensure that the Fastladder application is not actively using the database when this script is run.
-#  - This script should be run from the root directory of the Fastladder installation.
-#  - Backup the existing database before running this script as a safety precaution.
-#  - The script requires sqlite3 to be installed on the system.
 #
 ########################################################################
 

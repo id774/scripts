@@ -12,23 +12,23 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.0 2025-06-24
-#      Initial release. Covers argument validation and lock-waiting logic.
-#
 #  Dependencies:
 #  This test script requires the RSpec library. To install RSpec, run:
-#  `gem install rspec`
+#      gem install rspec
 #
 #  Running the tests:
 #  Execute the test script from the command line:
-#  `rspec test/waitlock_test.rb`
+#      rspec test/waitlock_test.rb
 #
 #  Test Cases:
 #  - Shows usage and exits with code 0 when invoked with -h option
 #  - Exit with usage on no arguments
 #  - Error on invalid argument count
 #  - Correct waiting behavior for temporary lockfile
+#
+#  Version History:
+#  v1.0 2025-06-24
+#      Initial release. Covers argument validation and lock-waiting logic.
 #
 ########################################################################
 

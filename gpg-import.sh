@@ -13,6 +13,9 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./gpg-import.sh KEYSERVER PUBKEY
+#
 #  Version History:
 #  v1.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -33,9 +36,6 @@
 #       Refactored for improved readability and added usage information.
 #  v1.0 2008-08-22
 #       Initial release. Imports GPG keys for APT from a keyserver.
-#
-#  Usage:
-#      ./gpg-import.sh KEYSERVER PUBKEY
 #
 ########################################################################
 

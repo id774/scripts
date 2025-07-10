@@ -15,32 +15,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.9 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.8 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.7 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v1.6 2025-03-13
-#       Redirected error messages to stderr for better logging and debugging.
-#  v1.5 2025-03-05
-#       Added sudo privilege check when --sudo option is specified.
-#  v1.4 2024-06-23
-#       Changed the exit code from 1 to 0 for help message display.
-#  v1.3 2024-06-19
-#       Added --sudo and --no-sudo options to explicitly control sudo usage.
-#       Fixed bug where --dry-run option did not work during repository deletion.
-#       Added options to specify user and group for chown.
-#  v1.2 2024-01-07
-#       Updated command existence and execution permission checks
-#       using a common function for enhanced reliability and maintainability.
-#  v1.1 2023-12-07
-#       Added check for Git installation.
-#  v1.0 2023-11-26
-#       Initial release. Features include creating and deleting Git repositories,
-#       dry run option for creation, and custom repository path setting.
-#
 #  Usage:
 #  This script automates the creation and deletion of Git repositories.
 #
@@ -83,6 +57,32 @@
 #  especially when dealing with system-wide paths like /var/lib/git. By default,
 #  sudo is used for system-wide paths and not used for paths within the user's
 #  home directory. This behavior can be overridden with the --sudo or --no-sudo options.
+#
+#  Version History:
+#  v1.9 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.8 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.7 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v1.6 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
+#  v1.5 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
+#  v1.4 2024-06-23
+#       Changed the exit code from 1 to 0 for help message display.
+#  v1.3 2024-06-19
+#       Added --sudo and --no-sudo options to explicitly control sudo usage.
+#       Fixed bug where --dry-run option did not work during repository deletion.
+#       Added options to specify user and group for chown.
+#  v1.2 2024-01-07
+#       Updated command existence and execution permission checks
+#       using a common function for enhanced reliability and maintainability.
+#  v1.1 2023-12-07
+#       Added check for Git installation.
+#  v1.0 2023-11-26
+#       Initial release. Features include creating and deleting Git repositories,
+#       dry run option for creation, and custom repository path setting.
 #
 ########################################################################
 

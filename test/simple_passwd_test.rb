@@ -12,21 +12,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.2 2025-07-03
-#      Updated tests to reflect new rule: symbols are always included if enabled.
-#  v1.1 2025-07-01
-#      Updated for function-based execution and explicit exit codes.
-#  v1.0 2025-06-24
-#      Initial release. Focused tests on input handling and password generation.
-#
 #  Dependencies:
 #  This test script requires the RSpec library. To install RSpec, run:
-#  `gem install rspec`
+#      gem install rspec
 #
 #  Running the tests:
 #  Execute the test script from the command line:
-#  `rspec test/simple_passwd_test.rb`
+#      rspec test/simple_passwd_test.rb
 #
 #  Test Cases:
 #  - Shows usage and exits with code 0 when invoked with -h option
@@ -36,6 +28,14 @@
 #  - Password with symbols includes at least one symbol
 #  - Password without symbols excludes all symbols
 #  - Single-character password with symbols is symbol-only
+#
+#  Version History:
+#  v1.2 2025-07-03
+#      Updated tests to reflect new rule: symbols are always included if enabled.
+#  v1.1 2025-07-01
+#      Updated for function-based execution and explicit exit codes.
+#  v1.0 2025-06-24
+#      Initial release. Focused tests on input handling and password generation.
 #
 ########################################################################
 

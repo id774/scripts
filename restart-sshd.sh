@@ -12,6 +12,9 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./restart-sshd.sh
+#
 #  Version History:
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -36,9 +39,6 @@
 #       Improved system environment check and added command/file existence verification.
 #  v1.0 2022-09-13
 #       Initial release.
-#
-#  Usage:
-#      ./restart-sshd.sh
 #
 ########################################################################
 

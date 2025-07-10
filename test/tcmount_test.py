@@ -14,16 +14,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Running the tests:
+#  Execute the test script from the command line:
+#      python test/tcmount_test.py
+#
 #  Version History:
 #  v1.1 2025-05-14
 #       Added unit tests for command_exists() to verify command detection logic.
 #  v1.0 2023-12-15
 #       First release of the test suite for tcmount.py, with expanded tests
 #       covering both TrueCrypt and VeraCrypt compatibility.
-#
-#  Running the tests:
-#  Execute the test script from the command line:
-#  `python test/tcmount_test.py`
 #
 ########################################################################
 

@@ -14,6 +14,9 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./fluent-start.sh [fluentd path] [fluentd conf path] [options]
+#
 #  Version History:
 #  v0.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -35,9 +38,6 @@
 #       Add options.
 #  v0.1 2013-04-04
 #       First release.
-#
-#  Usage:
-#      ./fluent-start.sh [fluentd path] [fluentd conf path] [options]
 #
 ########################################################################
 
