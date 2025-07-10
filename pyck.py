@@ -66,6 +66,7 @@
 #
 #  Requirements:
 #  - Python Version: 3.2 or later
+#  - Dependencies: autopep8, flake8, autoflake, isort
 #
 ########################################################################
 
