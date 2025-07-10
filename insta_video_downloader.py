@@ -31,8 +31,14 @@
 #       Initial release: Separate script for video downloading.
 #
 #  Usage:
-#  python insta_video_downloader.py [Instagram username] [--permissions PERM] [--sleep TIME]
-#  Example: python insta_video_downloader.py username --permissions 640 --sleep 10
+#      insta_video_downloader.py [Instagram username] [--permissions PERM] [--sleep TIME]
+#
+#  Example:
+#      insta_video_downloader.py username --permissions 640 --sleep 10
+#
+#  Requirements:
+#  - Python Version: 3.2 or later
+#  - Dependencies: instaloader
 #
 ########################################################################
 
@@ -170,5 +176,9 @@ def main():
 if __name__ == '__main__':
     if len(sys.argv) > 1 and sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
+
+    if sys.version_info < (3, 2):
+        print("[ERROR] This script requires Python 3.2 or later.", file=sys.stderr)
+        sys.exit(9)
 
     sys.exit(main())
