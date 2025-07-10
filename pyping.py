@@ -27,7 +27,7 @@
 #      Initial release. Python version of the rubyping.rb script.
 #
 #  Usage:
-#  pyping.py [-h] [-o] subnet start_ip end_ip
+#      pyping.py [-h] [-o] subnet start_ip end_ip
 #
 #  Ping a range of IP addresses in a subnet.
 #

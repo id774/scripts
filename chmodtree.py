@@ -60,16 +60,16 @@
 #  by filename pattern.
 #
 #  Example:
-#    Changing permissions of files only, matching a specific pattern:
-#      python chmodtree.py -f 644 -n '*.py' your_dir1
-#    Changing permissions of directories only, using sudo:
-#      python chmodtree.py -s -d 755 your_dir2
-#    Changing permissions of both files and directories, matching a specific pattern:
-#      python chmodtree.py -s -f 600 -d 700 -n '*.rb' your_dir3
-#    Changing permissions with verbose output:
-#      python chmodtree.py -s -q -f 640 -d 750 -n '*.txt' your_dir4
-#    Changing permissions in quiet mode, matching a specific pattern:
-#      python chmodtree.py -f 775 -d 750 -n '*.sh' your_dir5
+#      Changing permissions of files only, matching a specific pattern:
+#          chmodtree.py -f 644 -n '*.py' your_dir1
+#      Changing permissions of directories only, using sudo:
+#          chmodtree.py -s -d 755 your_dir2
+#      Changing permissions of both files and directories, matching a specific pattern:
+#          chmodtree.py -s -f 600 -d 700 -n '*.rb' your_dir3
+#      Changing permissions with verbose output:
+#          chmodtree.py -s -q -f 640 -d 750 -n '*.txt' your_dir4
+#      Changing permissions in quiet mode, matching a specific pattern:
+#          chmodtree.py -f 775 -d 750 -n '*.sh' your_dir5
 #
 #  Requirements:
 #  - Python Version: 3.1 or later

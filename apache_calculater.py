@@ -36,8 +36,10 @@
 #       Initial release.
 #
 #  Usage:
-#  python apache_calculater.py <log_file>
-#  Example: python apache_calculater.py /var/log/apache2/access.log
+#      apache_calculater.py <log_file>
+#
+#  Example:
+#      apache_calculater.py /var/log/apache2/access.log
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
