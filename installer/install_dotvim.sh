@@ -15,6 +15,17 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script directly without any arguments for default installation:
+#      ./install_dotvim.sh
+#  Specify a custom installation path:
+#      ./install_dotvim.sh /custom/path/to/.vim
+#
+#  Requirements:
+#  - The `SCRIPTS` environment variable must be set to the directory
+#    containing the `dot_vim` configuration files.
+#  - Must be executed in a shell environment where `cp` and `vim` are available.
+#
 #  Version History:
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -32,17 +43,6 @@
 #       Added command existence check and environment variable validation.
 #  v1.0 2010-03-07
 #       First version.
-#
-#  Usage:
-#  Run this script directly without any arguments for default installation:
-#      ./install_dotvim.sh
-#  Specify a custom installation path:
-#      ./install_dotvim.sh /custom/path/to/.vim
-#
-#  Requirements:
-#  - The `SCRIPTS` environment variable must be set to the directory
-#    containing the `dot_vim` configuration files.
-#  - Must be executed in a shell environment where `cp` and `vim` are available.
 #
 ########################################################################
 

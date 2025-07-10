@@ -18,6 +18,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Ensure the SCRIPTS environment variable is set before running:
+#      export SCRIPTS=/path/to/scripts
+#      ./install_clamscan.sh
+#
+#  Requirements:
+#  - The user must have `sudo` installed.
+#  - This script is intended for Linux systems only.
+#
 #  Version History:
 #  v2.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -40,15 +49,6 @@
 #  v1.6 2024-03-17
 #       Refactored script for improved readability and maintainability.
 #  [Further version history truncated for brevity]
-#
-#  Usage:
-#  Ensure the SCRIPTS environment variable is set before running:
-#      export SCRIPTS=/path/to/scripts
-#      ./install_clamscan.sh
-#
-#  Requirements:
-#  - The user must have `sudo` installed.
-#  - This script is intended for Linux systems only.
 #
 ########################################################################
 

@@ -15,6 +15,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./install_rsync_backup.sh
+#
+#  Notes:
+#  - Ensure the SCRIPTS environment variable is set to the directory containing
+#    the rsync backup scripts and configuration files before running this script.
+#
 #  Version History:
 #  v2.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -39,13 +46,6 @@
 #  v1.8 2023-12-17
 #       Refactor rsync_backup script for modular operation definitions.
 #  [Further version history truncated for brevity]
-#
-#  Usage:
-#      ./install_rsync_backup.sh
-#
-#  Notes:
-#  - Ensure the SCRIPTS environment variable is set to the directory containing
-#    the rsync backup scripts and configuration files before running this script.
 #
 ########################################################################
 

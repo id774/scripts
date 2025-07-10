@@ -13,6 +13,22 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script directly:
+#      ./install_munin.sh
+#
+#  This script installs Munin, configures it, and restarts necessary services.
+#
+#  Notes:
+#  - The script is designed for Debian-based systems.
+#  - Internet connectivity is required for package installation.
+#  - Ensure that $SCRIPTS is set correctly before execution.
+#
+#  Error Conditions:
+#  - If the system is not Linux, the script exits with an error.
+#  - If required commands are missing, the script exits with an error.
+#  - Errors from underlying commands should be resolved based on their output.
+#
 #  Version History:
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -32,22 +48,6 @@
 #  [Further version history truncated for brevity]
 #  v0.1 2011-07-07
 #       First.
-#
-#  Usage:
-#  Run the script directly:
-#      ./install_munin.sh
-#
-#  This script installs Munin, configures it, and restarts necessary services.
-#
-#  Notes:
-#  - The script is designed for Debian-based systems.
-#  - Internet connectivity is required for package installation.
-#  - Ensure that $SCRIPTS is set correctly before execution.
-#
-#  Error Conditions:
-#  - If the system is not Linux, the script exits with an error.
-#  - If required commands are missing, the script exits with an error.
-#  - Errors from underlying commands should be resolved based on their output.
 #
 ########################################################################
 

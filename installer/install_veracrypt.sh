@@ -14,6 +14,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./install_veracrypt.sh [OPTION]
+#
+#  Options:
+#  -h   Display this help message.
+#  -n   Do not save source files after installation.
+#
 #  Version History:
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -37,13 +44,6 @@
 #       Simplified script by removing version argument.
 #  v0.1 2023-01-18
 #       Forked from TrueCrypt Installer.
-#
-#  Usage:
-#      ./install_veracrypt.sh [OPTION]
-#
-#  Options:
-#  -h   Display this help message.
-#  -n   Do not save source files after installation.
 #
 ########################################################################
 

@@ -15,6 +15,17 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Execute this script with sufficient permissions to perform directory
+#  creation, file copying, and cron job scheduling tasks:
+#      ./install_run_tests.sh
+#
+#  Notes:
+#  - The SCRIPTS environment variable must be set to the directory containing
+#    the run_tests script and its configuration file before running this script.
+#  - After deployment, review and potentially edit /root/etc/run_tests.conf
+#    and /etc/cron.d/run_tests to finalize the configuration.
+#
 #  Version History:
 #  v2.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -42,17 +53,6 @@
 #       Added log file creation in /var/log/sysadmin and deployed log rotation configuration.
 #  v1.0 2024-03-13
 #       Initial deployment script for automated testing setup.
-#
-#  Usage:
-#  Execute this script with sufficient permissions to perform directory
-#  creation, file copying, and cron job scheduling tasks:
-#      ./install_run_tests.sh
-#
-#  Notes:
-#  - The SCRIPTS environment variable must be set to the directory containing
-#    the run_tests script and its configuration file before running this script.
-#  - After deployment, review and potentially edit /root/etc/run_tests.conf
-#    and /etc/cron.d/run_tests to finalize the configuration.
 #
 ########################################################################
 

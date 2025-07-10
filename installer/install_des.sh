@@ -14,6 +14,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./install_des.sh [OPTION]
+#
+#  Options:
+#  -h   Display this help message.
+#  -n   Do not save source files after installation.
+#
 #  Version History:
 #  v2.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -37,13 +44,6 @@
 #  [Intermediate versions omitted for brevity]
 #  v1.0 2009-05-21
 #       Derived from install_crypt.sh.
-#
-#  Usage:
-#      ./install_des.sh [OPTION]
-#
-#  Options:
-#  -h   Display this help message.
-#  -n   Do not save source files after installation.
 #
 ########################################################################
 

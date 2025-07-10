@@ -14,13 +14,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.1 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.0 2025-05-10
-#       Initial release. Implements override drop-in to redirect
-#       freshclam output away from syslog via systemd unit settings.
-#
 #  Usage:
 #      ./disable_freshclam_syslog.sh
 #      This script can be executed as a normal user. It uses sudo internally.
@@ -36,6 +29,13 @@
 #  4. Failed to restart systemd services.
 #  126. Required command is not executable.
 #  127. Required command is not installed.
+#
+#  Version History:
+#  v1.1 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.0 2025-05-10
+#       Initial release. Implements override drop-in to redirect
+#       freshclam output away from syslog via systemd unit settings.
 #
 ########################################################################
 

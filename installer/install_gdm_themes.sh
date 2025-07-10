@@ -14,6 +14,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script without arguments to install GDM themes:
+#      ./install_gdm_themes.sh
+#
+#  Requirements:
+#  - The user must have `wget`, `sudo`, and `tar` installed.
+#  - Network connectivity is required to download the theme archive.
+#  - This script is intended for Linux systems only.
+#
 #  Version History:
 #  v2.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -31,15 +40,6 @@
 #       Relocation tar file.
 #  v1.0 2008-08-15
 #       Stable.
-#
-#  Usage:
-#  Run this script without arguments to install GDM themes:
-#      ./install_gdm_themes.sh
-#
-#  Requirements:
-#  - The user must have `wget`, `sudo`, and `tar` installed.
-#  - Network connectivity is required to download the theme archive.
-#  - This script is intended for Linux systems only.
 #
 ########################################################################
 

@@ -14,6 +14,20 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script without arguments to install the default version (2.0.9):
+#      ./install_paco.sh
+#  Specify a version to install a different release:
+#      ./install_paco.sh 2.0.8
+#  Skip saving sources by adding a second argument:
+#      ./install_paco.sh 2.0.9 -n
+#
+#  Requirements:
+#  - Network connectivity is required to download the source files.
+#  - The user must have `wget`, `make`, `sudo`, and `tar` installed.
+#  - Must be executed in a shell environment with internet access.
+#  - This script is intended for Linux systems only.
+#
 #  Version History:
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -35,20 +49,6 @@
 #       Keep sources.
 #  v1.0 2008-12-04
 #       Stable.
-#
-#  Usage:
-#  Run this script without arguments to install the default version (2.0.9):
-#      ./install_paco.sh
-#  Specify a version to install a different release:
-#      ./install_paco.sh 2.0.8
-#  Skip saving sources by adding a second argument:
-#      ./install_paco.sh 2.0.9 -n
-#
-#  Requirements:
-#  - Network connectivity is required to download the source files.
-#  - The user must have `wget`, `make`, `sudo`, and `tar` installed.
-#  - Must be executed in a shell environment with internet access.
-#  - This script is intended for Linux systems only.
 #
 ########################################################################
 

@@ -14,6 +14,14 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script to set up Apache log analysis:
+#      ./install_apache_log_analysis.sh
+#
+#  Requirements:
+#  - Must be executed with sudo privileges.
+#  - The `$SCRIPTS` environment variable must be set.
+#
 #  Version History:
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -37,14 +45,6 @@
 #       Also install ignore list.
 #  v1.0 2022-10-11
 #       Stable.
-#
-#  Usage:
-#  Run this script to set up Apache log analysis:
-#      ./install_apache_log_analysis.sh
-#
-#  Requirements:
-#  - Must be executed with sudo privileges.
-#  - The `$SCRIPTS` environment variable must be set.
 #
 ########################################################################
 

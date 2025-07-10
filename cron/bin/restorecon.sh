@@ -14,6 +14,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./restorecon.sh
+#
+#  Requirements:
+#  - Must be executed on a Linux system with SELinux enabled.
+#  - Requires `restorecon` and `sestatus` commands to be available.
+#
 #  Version History:
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -28,13 +35,6 @@
 #       Improved safety with error handling and sudo enforcement.
 #  v0.1 2014-06-02
 #       Initial version.
-#
-#  Usage:
-#      ./restorecon.sh
-#
-#  Requirements:
-#  - Must be executed on a Linux system with SELinux enabled.
-#  - Requires `restorecon` and `sestatus` commands to be available.
 #
 ########################################################################
 

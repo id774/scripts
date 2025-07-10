@@ -14,14 +14,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.2 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.1 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.0 2025-03-23
-#       Initial release forked from debian_setup.sh for macOS-specific use.
-#
 #  Usage:
 #      ./macos_setup.sh
 #
@@ -39,6 +31,14 @@
 #  - Exits with error if not run on macOS.
 #  - Exits if required commands are missing or not executable.
 #  - Exits if sudo privileges are not granted.
+#
+#  Version History:
+#  v1.2 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.1 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.0 2025-03-23
+#       Initial release forked from debian_setup.sh for macOS-specific use.
 #
 ########################################################################
 

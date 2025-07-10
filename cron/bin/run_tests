@@ -16,31 +16,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v2.4 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v2.3 2025-06-10
-#       Fix initialization order to defer JOBLOG write check until after config load.
-#  v2.2 2025-05-16
-#       Add return 0 to main and exit $? at script end for consistent exit status.
-#  v2.1 2025-05-10
-#       Add cron execution check and usage support with unified structure.
-#  v2.0 2025-04-29
-#       Add execution of test/check_scripts.sh after Python and Ruby tests if available.
-#       Fully refactor run_tests into function-based structure.
-#       Modify test iteration logic to pair each Python version with the corresponding Ruby version.
-#       Use the first defined Python version for compatibility check instead of the last tested version.
-#  v1.3 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.2 2025-03-19
-#       Improved POSIX compliance, standardized logging, and enhanced
-#       readability through function encapsulation.
-#  v1.1 2024-04-08
-#       Made ADMIN_MAIL_ADDRESS optional for email notifications.
-#  v1.0 2024-03-13
-#       Initial release. Features include dynamic version testing for Python
-#       and Ruby, external configuration loading, and compatibility checking.
-#
 #  Usage:
 #  This script is designed to be run automatically through a cron job. Ensure
 #  that 'run_tests.conf' is properly configured with the SCRIPTS, JOBLOG,
@@ -71,6 +46,31 @@
 #  1. Some tests failed.
 #  3. Configuration file not found.
 #  4. Configuration variables not set.
+#
+#  Version History:
+#  v2.4 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v2.3 2025-06-10
+#       Fix initialization order to defer JOBLOG write check until after config load.
+#  v2.2 2025-05-16
+#       Add return 0 to main and exit $? at script end for consistent exit status.
+#  v2.1 2025-05-10
+#       Add cron execution check and usage support with unified structure.
+#  v2.0 2025-04-29
+#       Add execution of test/check_scripts.sh after Python and Ruby tests if available.
+#       Fully refactor run_tests into function-based structure.
+#       Modify test iteration logic to pair each Python version with the corresponding Ruby version.
+#       Use the first defined Python version for compatibility check instead of the last tested version.
+#  v1.3 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.2 2025-03-19
+#       Improved POSIX compliance, standardized logging, and enhanced
+#       readability through function encapsulation.
+#  v1.1 2024-04-08
+#       Made ADMIN_MAIL_ADDRESS optional for email notifications.
+#  v1.0 2024-03-13
+#       Initial release. Features include dynamic version testing for Python
+#       and Ruby, external configuration loading, and compatibility checking.
 #
 ########################################################################
 

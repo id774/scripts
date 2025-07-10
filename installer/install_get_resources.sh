@@ -14,6 +14,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./install_get_resources.sh
+#
+#  Notes:
+#  - Ensure the SCRIPTS environment variable is set to the directory containing
+#    the get_resources script and its related files before running this script.
+#
 #  Version History:
 #  v2.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -39,13 +46,6 @@
 #  [Further version history truncated for brevity]
 #  v1.0 2008-08-15
 #       Stable initial release.
-#
-#  Usage:
-#      ./install_get_resources.sh
-#
-#  Notes:
-#  - Ensure the SCRIPTS environment variable is set to the directory containing
-#    the get_resources script and its related files before running this script.
 #
 ########################################################################
 

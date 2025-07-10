@@ -14,16 +14,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.3 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.2 2025-04-27
-#       Add strict error checking for deployment steps.
-#  v1.1 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.0 2025-04-10
-#       First version.
-#
 #  Usage:
 #      ./install_munin-symlink.sh
 #
@@ -35,6 +25,16 @@
 #  - The deployed monitor script (/root/bin/munin-symlink.sh) runs every 5 minutes via a cron job.
 #    Ensure that Munin is properly configured to read its output, typically via symlink checks.
 #  - Permissions and ownership of deployed files are strictly set to restrict access to root only.
+#
+#  Version History:
+#  v1.3 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.2 2025-04-27
+#       Add strict error checking for deployment steps.
+#  v1.1 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.0 2025-04-10
+#       First version.
 #
 ########################################################################
 

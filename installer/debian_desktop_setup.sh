@@ -12,22 +12,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.3 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.2 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.1 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v1.0 2025-03-13
-#       Automated guest session disabling in LightDM.
-#       Improved script automation and removed manual editing step.
-#       Added system checks and improved error handling.
-#       Redirected error messages to stderr for better logging and debugging.
-#  [Further version history truncated for brevity]
-#  v0.1 2011-09-28
-#       First version.
-#
 #  Usage:
 #  Run the script directly:
 #      ./debian_desktop_setup.sh
@@ -43,6 +27,22 @@
 #  - If LightDM is not installed, the script exits with an error.
 #  - If required commands are missing, execution is halted.
 #  - Errors from underlying commands should be resolved based on their output.
+#
+#  Version History:
+#  v1.3 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.2 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v1.0 2025-03-13
+#       Automated guest session disabling in LightDM.
+#       Improved script automation and removed manual editing step.
+#       Added system checks and improved error handling.
+#       Redirected error messages to stderr for better logging and debugging.
+#  [Further version history truncated for brevity]
+#  v0.1 2011-09-28
+#       First version.
 #
 ########################################################################
 

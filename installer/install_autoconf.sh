@@ -14,6 +14,20 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script without arguments to install the default version (2.72):
+#      ./install_autoconf.sh
+#  Specify a version to install a different release:
+#      ./install_autoconf.sh 2.71
+#  Skip saving sources by adding a second argument:
+#      ./install_autoconf.sh 2.71 -n
+#
+#  Requirements:
+#  - Network connectivity is required to download the source files.
+#  - The user must have `wget`, `make`, and `sudo` installed.
+#  - Must be executed in a shell environment with internet access.
+#  - This script is intended for Linux systems only.
+#
 #  Version History:
 #  v0.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -31,20 +45,6 @@
 #       Added network connection check and improved argument handling.
 #  v0.1 2011-04-26
 #       First version.
-#
-#  Usage:
-#  Run this script without arguments to install the default version (2.72):
-#      ./install_autoconf.sh
-#  Specify a version to install a different release:
-#      ./install_autoconf.sh 2.71
-#  Skip saving sources by adding a second argument:
-#      ./install_autoconf.sh 2.71 -n
-#
-#  Requirements:
-#  - Network connectivity is required to download the source files.
-#  - The user must have `wget`, `make`, and `sudo` installed.
-#  - Must be executed in a shell environment with internet access.
-#  - This script is intended for Linux systems only.
 #
 ########################################################################
 

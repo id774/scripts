@@ -15,6 +15,10 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./clamscan.sh
+#  This script is intended to be executed periodically by cron.
+#
 #  Version History:
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -39,10 +43,6 @@
 #       Added clamscan, preserved source and object code.
 #  v0.1 2007-10-16
 #       Initial version.
-#
-#  Usage:
-#      ./clamscan.sh
-#      This script is intended to be executed periodically by cron.
 #
 ########################################################################
 

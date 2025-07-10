@@ -14,26 +14,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v3.5 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v3.4 2025-04-27
-#       Add failure checks to Ruby download, build, and installation steps.
-#  v3.3 2025-04-21
-#       Added detailed [INFO] log messages to each step for improved visibility during execution.
-#  v3.2 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v3.1 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v3.0 2025-03-19
-#       Added network connection check, system validation, command validation, and improved argument handling.
-#       Default Ruby version 3.4.4 installs in '/opt/ruby/3.4' directory.
-#       Improved directory navigation safety.
-#       Set default installation path to /opt/ruby/x.x.
-#  [Further version history truncated for brevity]
-#  v1.0 2008-06-23
-#       First stable release.
-#
 #  Usage:
 #  Run this script without arguments to install the default Ruby version (3.4.4):
 #      ./install_ruby.sh
@@ -53,6 +33,26 @@
 #  - Network connectivity is required to download the source files.
 #  - The user must have `curl`, `make`, and `tar` installed.
 #  - Must be executed in a shell environment with internet access.
+#
+#  Version History:
+#  v3.5 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v3.4 2025-04-27
+#       Add failure checks to Ruby download, build, and installation steps.
+#  v3.3 2025-04-21
+#       Added detailed [INFO] log messages to each step for improved visibility during execution.
+#  v3.2 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v3.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v3.0 2025-03-19
+#       Added network connection check, system validation, command validation, and improved argument handling.
+#       Default Ruby version 3.4.4 installs in '/opt/ruby/3.4' directory.
+#       Improved directory navigation safety.
+#       Set default installation path to /opt/ruby/x.x.
+#  [Further version history truncated for brevity]
+#  v1.0 2008-06-23
+#       First stable release.
 #
 ########################################################################
 

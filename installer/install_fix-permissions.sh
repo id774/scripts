@@ -15,6 +15,27 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script directly without any arguments:
+#      ./install_fix-permissions.sh
+#
+#  Requirements:
+#  - The `SCRIPTS` environment variable must be set to the directory
+#    containing the `fix-permissions` script and its configurations.
+#  - Must be executed with sufficient permissions to modify system
+#    directories (typically as root or with sudo).
+#  - Requires `logrotate` to be installed for log rotation setup.
+#  - The script will not overwrite an existing fix-permissions cron job
+#    if it already exists.
+#
+#  Notes:
+#  - The script ensures that `/var/log/sysadmin` is created if it does
+#    not exist and configures it securely.
+#  - If a log rotation configuration for `fix-permissions` already exists,
+#    it will not be overwritten.
+#  - The `fix-permissions` script is deployed to `/etc/cron.daily` with
+#    appropriate permissions.
+#
 #  Version History:
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -37,27 +58,6 @@
 #       Added sudo privilege check when --sudo option is specified.
 #  v1.0 2024-12-09
 #       Initial release with support for logging setup, log rotation, and cron job installation.
-#
-#  Usage:
-#  Run this script directly without any arguments:
-#      ./install_fix-permissions.sh
-#
-#  Requirements:
-#  - The `SCRIPTS` environment variable must be set to the directory
-#    containing the `fix-permissions` script and its configurations.
-#  - Must be executed with sufficient permissions to modify system
-#    directories (typically as root or with sudo).
-#  - Requires `logrotate` to be installed for log rotation setup.
-#  - The script will not overwrite an existing fix-permissions cron job
-#    if it already exists.
-#
-#  Notes:
-#  - The script ensures that `/var/log/sysadmin` is created if it does
-#    not exist and configures it securely.
-#  - If a log rotation configuration for `fix-permissions` already exists,
-#    it will not be overwritten.
-#  - The `fix-permissions` script is deployed to `/etc/cron.daily` with
-#    appropriate permissions.
 #
 ########################################################################
 

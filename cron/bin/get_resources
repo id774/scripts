@@ -14,6 +14,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./get_resources
+#      This script is intended to be executed periodically by cron.
+#
+#  Cron Usage:
+#      Place this script into /etc/cron.hourly to run it once a day.
+#      Or create a specific cron entry like the following:
+#      5 * * * * root /path/to/get_resources
+#
 #  Version History:
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -23,15 +32,6 @@
 #       Refactor into POSIX-compliant, function-based structure with unified logging.
 #  v0.1 2008-08-22
 #       Initial release. Simple wrapper for get_resources.sh with logging.
-#
-#  Usage:
-#      ./get_resources
-#      This script is intended to be executed periodically by cron.
-#
-#  Cron Usage:
-#      Place this script into /etc/cron.hourly to run it once a day.
-#      Or create a specific cron entry like the following:
-#      5 * * * * root /path/to/get_resources
 #
 ########################################################################
 

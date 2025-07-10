@@ -14,18 +14,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.4 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.3 2025-04-25
-#       Exit immediately on failure in load_rules or enable_restore.
-#  v1.2 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.1 2025-03-27
-#       Improving iptables restore instruction.
-#  v1.0 2025-03-26
-#       Initial release.
-#
 #  Usage:
 #  Run the script directly:
 #      ./setup_iptables.sh
@@ -40,6 +28,18 @@
 #  - Exits if SCRIPTS is not set.
 #  - Exits if required commands are missing.
 #  - Exits if not running on Linux.
+#
+#  Version History:
+#  v1.4 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.3 2025-04-25
+#       Exit immediately on failure in load_rules or enable_restore.
+#  v1.2 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.1 2025-03-27
+#       Improving iptables restore instruction.
+#  v1.0 2025-03-26
+#       Initial release.
 #
 ########################################################################
 

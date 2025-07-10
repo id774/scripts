@@ -14,6 +14,20 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script without arguments to install the default version (0.4.0):
+#      ./install_talib.sh
+#  Specify a version to install a different release:
+#      ./install_talib.sh 0.4.1
+#  Skip saving sources by adding a second argument:
+#      ./install_talib.sh 0.4.1 -n
+#
+#  Requirements:
+#  - Network connectivity is required to download the source files.
+#  - The user must have `curl`, `make`, `sudo`, and `tar` installed.
+#  - Must be executed in a shell environment with internet access.
+#  - This script is intended for Linux systems only.
+#
 #  Version History:
 #  v0.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -31,20 +45,6 @@
 #       Change URL.
 #  v0.1 2015-03-23
 #       First version.
-#
-#  Usage:
-#  Run this script without arguments to install the default version (0.4.0):
-#      ./install_talib.sh
-#  Specify a version to install a different release:
-#      ./install_talib.sh 0.4.1
-#  Skip saving sources by adding a second argument:
-#      ./install_talib.sh 0.4.1 -n
-#
-#  Requirements:
-#  - Network connectivity is required to download the source files.
-#  - The user must have `curl`, `make`, `sudo`, and `tar` installed.
-#  - Must be executed in a shell environment with internet access.
-#  - This script is intended for Linux systems only.
 #
 ########################################################################
 

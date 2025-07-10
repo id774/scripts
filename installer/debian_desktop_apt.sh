@@ -14,23 +14,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.5 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.4 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.3 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v1.2 2025-03-13
-#       Added system checks and improved error handling.
-#       Redirected error messages to stderr for better logging and debugging.
-#  v1.1 2025-03-05
-#       Added sudo privilege check when --sudo option is specified.
-#  v1.0 2024-03-23
-#       Refactored for improved structure and POSIX compliance.
-#  v0.1 2011-09-28
-#       Forked from Initial Setup Script.
-#
 #  Usage:
 #  Run the script directly without explicit 'sudo', as it uses 'sudo' internally for privilege elevation:
 #      ./debian_desktop_apt.sh
@@ -48,6 +31,23 @@
 #  The script checks if each package is already installed to prevent unnecessary reinstallation.
 #  However, it does not explicitly handle errors such as package unavailability or network issues.
 #  These should be resolved based on the output of the apt-get command.
+#
+#  Version History:
+#  v1.5 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.4 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.3 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v1.2 2025-03-13
+#       Added system checks and improved error handling.
+#       Redirected error messages to stderr for better logging and debugging.
+#  v1.1 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
+#  v1.0 2024-03-23
+#       Refactored for improved structure and POSIX compliance.
+#  v0.1 2011-09-28
+#       Forked from Initial Setup Script.
 #
 ########################################################################
 

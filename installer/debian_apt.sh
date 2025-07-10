@@ -13,6 +13,24 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script directly without explicit 'sudo', as it uses 'sudo' internally for privilege elevation:
+#      ./debian_apt.sh
+#
+#  You may be prompted to enter your password due to 'sudo' commands within the script. Ensure that you
+#  trust the script before executing it, as it performs system updates, upgrades, and installs a pre-defined
+#  set of packages, including basic tools, system utilities, development tools, editors, and more.
+#
+#  Notes:
+#  - The script is designed for Debian-based systems.
+#  - Ensure internet connectivity for package downloads.
+#  - Review and modify the package lists within each category function as needed for your setup.
+#
+#  Error Conditions:
+#  The script checks if each package is already installed to prevent unnecessary reinstallation.
+#  However, it does not explicitly handle errors such as package unavailability or network issues.
+#  These should be resolved based on the output of the apt-get command.
+#
 #  Version History:
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -32,24 +50,6 @@
 #       Cut off desktop suite.
 #  v0.1 2011-06-16
 #       Forked from Initial Setup Script.
-#
-#  Usage:
-#  Run the script directly without explicit 'sudo', as it uses 'sudo' internally for privilege elevation:
-#      ./debian_apt.sh
-#
-#  You may be prompted to enter your password due to 'sudo' commands within the script. Ensure that you
-#  trust the script before executing it, as it performs system updates, upgrades, and installs a pre-defined
-#  set of packages, including basic tools, system utilities, development tools, editors, and more.
-#
-#  Notes:
-#  - The script is designed for Debian-based systems.
-#  - Ensure internet connectivity for package downloads.
-#  - Review and modify the package lists within each category function as needed for your setup.
-#
-#  Error Conditions:
-#  The script checks if each package is already installed to prevent unnecessary reinstallation.
-#  However, it does not explicitly handle errors such as package unavailability or network issues.
-#  These should be resolved based on the output of the apt-get command.
 #
 ########################################################################
 

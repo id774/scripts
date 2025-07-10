@@ -14,6 +14,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./install_chkrootkit.sh
+#
+#  Notes:
+#  - Ensure the SCRIPTS environment variable is set to the directory containing
+#    the chkrootkit script and its related files before running this script.
+#
 #  Version History:
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -29,13 +36,6 @@
 #       Added command existence check, system check, and environment variable validation.
 #  v1.0 2012-05-15
 #       Initial release.
-#
-#  Usage:
-#      ./install_chkrootkit.sh
-#
-#  Notes:
-#  - Ensure the SCRIPTS environment variable is set to the directory containing
-#    the chkrootkit script and its related files before running this script.
 #
 ########################################################################
 

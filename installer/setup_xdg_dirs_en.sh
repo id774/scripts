@@ -14,6 +14,10 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script without any arguments:
+#      ./setup_xdg_dirs_en.sh
+#
 #  Version History:
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -31,10 +35,6 @@
 #       Changed package installation command from 'apt-get' to 'apt'.
 #  v1.0 2010-07-27
 #       Initial release. Basic functionality for managing user directories.
-#
-#  Usage:
-#  Run the script without any arguments:
-#      ./setup_xdg_dirs_en.sh
 #
 ########################################################################
 

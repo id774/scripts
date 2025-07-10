@@ -11,6 +11,14 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script to deploy and edit the APT configuration file:
+#      ./setup_aptconf.sh
+#
+#  Requirements:
+#  - Must be executed with sudo privileges.
+#  - The `$SCRIPTS` environment variable must be set.
+#
 #  Version History:
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -24,14 +32,6 @@
 #       Ensured idempotent execution.
 #  v0.1 2008-11-06
 #       Initial version.
-#
-#  Usage:
-#  Run this script to deploy and edit the APT configuration file:
-#      ./setup_aptconf.sh
-#
-#  Requirements:
-#  - Must be executed with sudo privileges.
-#  - The `$SCRIPTS` environment variable must be set.
 #
 ########################################################################
 

@@ -14,6 +14,14 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script without any arguments. Ensure all the necessary paths
+#  and variables are correctly set within the script or the config file:
+#      test -x /root/bin/rsync_backup.sh && /root/bin/rsync_backup.sh >> $JOBLOG 2>&1
+#
+#  The script will automatically execute operations based on the configured
+#  settings and available devices, as defined in cron/etc/rsync_backup.conf.
+#
 #  Version History:
 #  v3.0  2025-06-23 - Unified usage output to display full script header and support common help/version options.
 #  v2.9  2025-06-15 - Externalize archive and repository path variables to rsync_backup.conf.
@@ -49,14 +57,6 @@
 #  2009 - Addition of rsync function for portable media devices and SMART information.
 #  2008 - Initial stable release, with basic backup and sync functionalities.
 #  v1.0 2008-02-28 - Stable initial release.
-#
-#  Usage:
-#  Run the script without any arguments. Ensure all the necessary paths
-#  and variables are correctly set within the script or the config file:
-#      test -x /root/bin/rsync_backup.sh && /root/bin/rsync_backup.sh >> $JOBLOG 2>&1
-#
-#  The script will automatically execute operations based on the configured
-#  settings and available devices, as defined in cron/etc/rsync_backup.conf.
 #
 ########################################################################
 

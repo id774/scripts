@@ -17,6 +17,14 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script to reinstall Homebrew:
+#      ./reinstall_brew.sh
+#
+#  Requirements:
+#  - Must be executed on macOS.
+#  - Requires `sudo` privileges for modifying system directories.
+#
 #  Version History:
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -28,14 +36,6 @@
 #       Initial stable release with full reinstall process.
 #  v0.1 2022-09-22
 #       First version.
-#
-#  Usage:
-#  Run this script to reinstall Homebrew:
-#      ./reinstall_brew.sh
-#
-#  Requirements:
-#  - Must be executed on macOS.
-#  - Requires `sudo` privileges for modifying system directories.
 #
 ########################################################################
 

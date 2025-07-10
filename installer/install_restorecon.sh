@@ -14,6 +14,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./install_restorecon.sh
+#
+#  Notes:
+#  - Ensure the SCRIPTS environment variable is set to the directory containing
+#    the restorecon script and configuration files before running this script.
+#
 #  Version History:
 #  v0.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -31,13 +38,6 @@
 #       Refactored for improved readability and maintainability.
 #  v0.1 2014-06-02
 #       Initial setup of restorecon cron job.
-#
-#  Usage:
-#      ./install_restorecon.sh
-#
-#  Notes:
-#  - Ensure the SCRIPTS environment variable is set to the directory containing
-#    the restorecon script and configuration files before running this script.
 #
 ########################################################################
 

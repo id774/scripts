@@ -16,6 +16,14 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script to install and configure AWStats:
+#      ./install_awstats.sh
+#
+#  Requirements:
+#  - Must be executed with sudo privileges.
+#  - Apache2 must be installed on the system.
+#
 #  Version History:
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -31,14 +39,6 @@
 #       Ensured idempotent execution.
 #  v0.1 2011-09-07
 #       Initial version.
-#
-#  Usage:
-#  Run this script to install and configure AWStats:
-#      ./install_awstats.sh
-#
-#  Requirements:
-#  - Must be executed with sudo privileges.
-#  - Apache2 must be installed on the system.
 #
 ########################################################################
 

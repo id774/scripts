@@ -14,6 +14,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script to install and apply Jupyter themes:
+#      ./setup_jupyter_theme.sh [python_path] [-n]
+#
+#  Requirements:
+#  - Must be executed on macOS/Linux.
+#  - Requires `pip`, `jupyter`, and `jt` installed.
+#  - Requires sudo privileges unless a second argument is provided.
+#
 #  Version History:
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -28,15 +37,6 @@
 #       Replaced direct vim execution with an instructional message.
 #  v0.1 2021-08-06
 #       First version.
-#
-#  Usage:
-#  Run this script to install and apply Jupyter themes:
-#      ./setup_jupyter_theme.sh [python_path] [-n]
-#
-#  Requirements:
-#  - Must be executed on macOS/Linux.
-#  - Requires `pip`, `jupyter`, and `jt` installed.
-#  - Requires sudo privileges unless a second argument is provided.
 #
 ########################################################################
 

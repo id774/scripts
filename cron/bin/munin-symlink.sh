@@ -22,20 +22,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.5 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.4 2025-05-16
-#       Add return 0 to main and exit $? at script end for consistent exit status.
-#  v1.3 2025-05-10
-#       Add cron execution check and usage support with unified structure.
-#  v1.2 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.1 2025-04-10
-#       Externalized configuration to munin-symlink.conf and added dynamic server list.
-#  v1.0 2025-04-08
-#       Initial version implementing symlink control for multiple servers.
-#
 #  Usage:
 #      ./munin-symlink.sh
 #      This script is intended to be executed periodically by cron.
@@ -57,6 +43,20 @@
 #        /etc/munin/server-available.
 #      - This script only removes symbolic links, it does not delete
 #        configuration files from /etc/munin/server-available.
+#
+#  Version History:
+#  v1.5 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.4 2025-05-16
+#       Add return 0 to main and exit $? at script end for consistent exit status.
+#  v1.3 2025-05-10
+#       Add cron execution check and usage support with unified structure.
+#  v1.2 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.1 2025-04-10
+#       Externalized configuration to munin-symlink.conf and added dynamic server list.
+#  v1.0 2025-04-08
+#       Initial version implementing symlink control for multiple servers.
 #
 ########################################################################
 

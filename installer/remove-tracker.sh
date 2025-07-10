@@ -13,23 +13,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.6 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.5 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.4 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v1.3 2025-03-16
-#       Added Linux OS check, systemd check, and command validation.
-#       Improved error handling and robustness.
-#  v1.2 2025-03-13
-#       Redirected error messages to stderr for better logging and debugging.
-#  v1.1 2025-03-05
-#       Added sudo privilege check when --sudo option is specified.
-#  v1.0 2025-02-04
-#       Initial release.
-#
 #  Usage:
 #  Run the script directly without any arguments:
 #      ./remove_tracker.sh
@@ -55,6 +38,23 @@
 #  - The `-f` option forces execution even if Tracker is not detected.
 #    This can be useful if you want to remove residual packages or mask
 #    systemd services regardless of installation status.
+#
+#  Version History:
+#  v1.6 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.5 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.4 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v1.3 2025-03-16
+#       Added Linux OS check, systemd check, and command validation.
+#       Improved error handling and robustness.
+#  v1.2 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
+#  v1.1 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
+#  v1.0 2025-02-04
+#       Initial release.
 #
 ########################################################################
 

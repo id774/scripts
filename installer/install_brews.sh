@@ -14,23 +14,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.5 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.4 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.3 2025-03-27
-#       Added explicit 'brew cleanup' step to remove old versions and caches.
-#  v1.2 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v1.1 2025-03-16
-#       Added macOS system check and network connectivity validation.
-#  v1.0 2025-01-16
-#       Initial stable release. Added support for installing essential tools like
-#       OpenSSL, Coreutils, Vim, and MeCab via Homebrew.
-#  v0.1 2016-04-18
-#       First release.
-#
 #  Usage:
 #  Run this script in a terminal to set up your macOS environment.
 #  Examples:
@@ -49,6 +32,23 @@
 #  - Force-links OpenSSL to ensure compatibility with applications requiring
 #    the latest version.
 #  - `trash` is installed for safer file deletions, replacing `rm`.
+#
+#  Version History:
+#  v1.5 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.4 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.3 2025-03-27
+#       Added explicit 'brew cleanup' step to remove old versions and caches.
+#  v1.2 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v1.1 2025-03-16
+#       Added macOS system check and network connectivity validation.
+#  v1.0 2025-01-16
+#       Initial stable release. Added support for installing essential tools like
+#       OpenSSL, Coreutils, Vim, and MeCab via Homebrew.
+#  v0.1 2016-04-18
+#       First release.
 #
 ########################################################################
 

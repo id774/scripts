@@ -14,6 +14,21 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./install_dotfiles.sh
+#
+#  Features:
+#  - Deploys dotfiles such as .zshrc, .vimrc, .gitconfig, .emacs, etc.
+#  - Ensures required directories exist and have correct permissions.
+#  - Configures Emacs settings, including site-lisp and backup directories.
+#  - Supports multiple users on Linux/macOS.
+#  - Uses POSIX-compliant scripting practices for better compatibility.
+#
+#  Notes:
+#  - Deploys dotfiles and configures user environments.
+#  - Automatically detects and sets up configurations for multiple users.
+#  - Run with appropriate permissions if modifying system-wide settings.
+#
 #  Version History:
 #  v2.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -37,21 +52,6 @@
 #  [Further version history truncated for brevity]
 #  v1.0 2010-03-02
 #       Initial release.
-#
-#  Usage:
-#      ./install_dotfiles.sh
-#
-#  Features:
-#  - Deploys dotfiles such as .zshrc, .vimrc, .gitconfig, .emacs, etc.
-#  - Ensures required directories exist and have correct permissions.
-#  - Configures Emacs settings, including site-lisp and backup directories.
-#  - Supports multiple users on Linux/macOS.
-#  - Uses POSIX-compliant scripting practices for better compatibility.
-#
-#  Notes:
-#  - Deploys dotfiles and configures user environments.
-#  - Automatically detects and sets up configurations for multiple users.
-#  - Run with appropriate permissions if modifying system-wide settings.
 #
 ########################################################################
 

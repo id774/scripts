@@ -15,33 +15,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.9 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.8 2025-04-28
-#       Added error detection and exit handling to write_config_file()
-#       for safer configuration file creation.
-#  v1.7 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.6 2025-03-25
-#       Modified --apply to create config only if it doesn't exist.
-#       Added --force-apply to always overwrite config files.
-#  v1.5 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v1.4 2025-03-13
-#       Redirected error messages to stderr for better logging and debugging.
-#  v1.3 2025-03-05
-#       Added sudo privilege check when --sudo option is specified.
-#  v1.2 2025-02-26
-#       Enabled ICMP echo requests (ping) while enforcing rate limits.
-#       Adjusted ICMP rate limiting for improved security.
-#  v1.1 2025-02-20
-#       Added IPv4 security hardening and separated configuration into two files:
-#         - 98-disable-ipv6.conf for IPv6 settings.
-#         - 97-secure-ipv4.conf for IPv4 security settings.
-#  v1.0 2025-02-19
-#       Initial release with IPv6 disabling functionality.
-#
 #  Usage:
 #      ./configure_sysctl.sh --apply
 #      ./configure_sysctl.sh --force-apply
@@ -82,6 +55,33 @@
 #  - Verify that your firewall settings do not conflict with these configurations.
 #  - This script makes permanent changes to your system settings by modifying /etc/sysctl.d/
 #  - This will modify /etc/sysctl.d/ and apply security configurations immediately.
+#
+#  Version History:
+#  v1.9 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.8 2025-04-28
+#       Added error detection and exit handling to write_config_file()
+#       for safer configuration file creation.
+#  v1.7 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.6 2025-03-25
+#       Modified --apply to create config only if it doesn't exist.
+#       Added --force-apply to always overwrite config files.
+#  v1.5 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v1.4 2025-03-13
+#       Redirected error messages to stderr for better logging and debugging.
+#  v1.3 2025-03-05
+#       Added sudo privilege check when --sudo option is specified.
+#  v1.2 2025-02-26
+#       Enabled ICMP echo requests (ping) while enforcing rate limits.
+#       Adjusted ICMP rate limiting for improved security.
+#  v1.1 2025-02-20
+#       Added IPv4 security hardening and separated configuration into two files:
+#         - 98-disable-ipv6.conf for IPv6 settings.
+#         - 97-secure-ipv4.conf for IPv4 security settings.
+#  v1.0 2025-02-19
+#       Initial release with IPv6 disabling functionality.
 #
 ########################################################################
 

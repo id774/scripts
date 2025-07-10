@@ -13,6 +13,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./apache_log_analysis
+#  This script is intended to be executed periodically by cron.
+#
+#  Cron Usage:
+#      Place this script into /etc/cron.daily or similar.
+#      Or create a specific cron entry like the following:
+#      45 3 * * * root /path/to/apache_log_analysis
+#
 #  Version History:
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -22,15 +31,6 @@
 #       Refactor into POSIX-compliant, function-based structure with cron validation.
 #  v0.1 2022-10-11
 #       Initial release. Summary and IP hit analysis of Apache logs.
-#
-#  Usage:
-#      ./apache_log_analysis
-#      This script is intended to be executed periodically by cron.
-#
-#  Cron Usage:
-#      Place this script into /etc/cron.daily or similar.
-#      Or create a specific cron entry like the following:
-#      45 3 * * * root /path/to/apache_log_analysis
 #
 ########################################################################
 

@@ -14,14 +14,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.2 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.1 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.0 2025-03-27
-#       Initial release.
-#
 #  Usage:
 #      ./uninstall_mecab_local.sh          # Show help message only
 #      ./uninstall_mecab_local.sh --delete # Actually perform uninstallation
@@ -35,6 +27,14 @@
 #  - This script removes files and directories from /usr/local without confirmation.
 #  - Only use this if you understand the implications of removing manually installed packages.
 #  - It does not uninstall packages installed via package manager (e.g. apt/yum).
+#
+#  Version History:
+#  v1.2 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.1 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.0 2025-03-27
+#       Initial release.
 #
 ########################################################################
 

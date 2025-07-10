@@ -23,16 +23,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.3 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.2 2025-04-28
-#       Refine error handling: apply checks only where critical, improve readability.
-#  v1.1 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.0 2025-03-27
-#       Initial release. Installs MeCab, NEologd, CaboCha with source preservation options.
-#
 #  Usage:
 #      ./install_mecab-stack.sh [INSTALL_PREFIX] [-n]
 #
@@ -87,6 +77,16 @@
 #
 #  MeCab bindings are not bundled with the official 0.996 release.
 #  Please refer to third-party projects if Python or Ruby integration is needed.
+#
+#  Version History:
+#  v1.3 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.2 2025-04-28
+#       Refine error handling: apply checks only where critical, improve readability.
+#  v1.1 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.0 2025-03-27
+#       Initial release. Installs MeCab, NEologd, CaboCha with source preservation options.
 #
 ########################################################################
 

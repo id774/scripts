@@ -14,26 +14,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v2.5 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v2.4 2025-04-27
-#       Add failure checks to Python build and installation steps.
-#  v2.3 2025-04-21
-#       Added detailed [INFO] log messages to each step for improved visibility during execution.
-#  v2.2 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v2.1 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v2.0 2025-03-19
-#       Added network connection check, system validation, command validation, and improved argument handling.
-#       Default Python version 3.13.4 installs in '/opt/python/3.13' directory.
-#       Improved directory navigation safety.
-#       Set default installation path to /opt/python/x.x.
-#  [Further version history truncated for brevity]
-#  v1.0 2009-01-07
-#       First stable release.
-#
 #  Usage:
 #  Run this script without arguments to install the default Python version (3.13.4):
 #      ./install_python.sh
@@ -53,6 +33,26 @@
 #  - Network connectivity is required to download the source files.
 #  - The user must have `curl`, `make`, and `tar` installed.
 #  - Must be executed in a shell environment with internet access.
+#
+#  Version History:
+#  v2.5 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v2.4 2025-04-27
+#       Add failure checks to Python build and installation steps.
+#  v2.3 2025-04-21
+#       Added detailed [INFO] log messages to each step for improved visibility during execution.
+#  v2.2 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v2.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v2.0 2025-03-19
+#       Added network connection check, system validation, command validation, and improved argument handling.
+#       Default Python version 3.13.4 installs in '/opt/python/3.13' directory.
+#       Improved directory navigation safety.
+#       Set default installation path to /opt/python/x.x.
+#  [Further version history truncated for brevity]
+#  v1.0 2009-01-07
+#       First stable release.
 #
 ########################################################################
 

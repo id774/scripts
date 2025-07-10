@@ -14,6 +14,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./munin_plugins_links.sh [-h] [-c]
+#
+#  Options:
+#  -h   Display this help message.
+#  -c   Configure and link Munin plugins.
+#
 #  Version History:
 #  v1.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -35,13 +42,6 @@
 #       Added check for Munin installation.
 #  v1.0 2019-08-16
 #       Initial release.
-#
-#  Usage:
-#      ./munin_plugins_links.sh [-h] [-c]
-#
-#  Options:
-#  -h   Display this help message.
-#  -c   Configure and link Munin plugins.
 #
 ########################################################################
 

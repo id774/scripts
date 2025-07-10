@@ -13,6 +13,23 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script directly:
+#      ./setup_tune2fs.sh
+#
+#  This script applies tune2fs settings to detected storage devices.
+#
+#  Notes:
+#  - The script is designed for ext-based filesystems only.
+#  - Ensure that tune2fs is installed before execution.
+#  - Modifications apply to system partitions; review configurations beforehand.
+#
+#  Error Conditions:
+#  - If the system is not Linux, the script exits with an error.
+#  - If required commands are missing, the script exits with an error.
+#  - If no applicable devices are found, execution halts.
+#  - Errors from tune2fs should be resolved based on their output.
+#
 #  Version History:
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -30,23 +47,6 @@
 #  [Further version history truncated for brevity]
 #  v0.1 2011-09-26
 #       First version.
-#
-#  Usage:
-#  Run the script directly:
-#      ./setup_tune2fs.sh
-#
-#  This script applies tune2fs settings to detected storage devices.
-#
-#  Notes:
-#  - The script is designed for ext-based filesystems only.
-#  - Ensure that tune2fs is installed before execution.
-#  - Modifications apply to system partitions; review configurations beforehand.
-#
-#  Error Conditions:
-#  - If the system is not Linux, the script exits with an error.
-#  - If required commands are missing, the script exits with an error.
-#  - If no applicable devices are found, execution halts.
-#  - Errors from tune2fs should be resolved based on their output.
 #
 ########################################################################
 

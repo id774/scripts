@@ -15,6 +15,24 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script in a terminal to set up your Ruby environment.
+#
+#  Examples:
+#      ./install_gems.sh /path/to/ruby
+#      ./install_gems.sh
+#
+#  Requirements:
+#  - Ruby and gem must be installed prior to executing this script.
+#
+#  Exit Codes:
+#  0: Success - All gems were installed successfully.
+#  1: Error - A critical issue occurred (e.g., missing dependencies).
+#
+#  Notes:
+#  - If no path is provided, the script assumes default tools in PATH.
+#  - Proxy support can be configured using the HTTP_PROXY environment variable.
+#
 #  Version History:
 #  v3.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -37,24 +55,6 @@
 #       Added some gems.
 #  v1.0 2008-08-15
 #       Stable.
-#
-#  Usage:
-#  Run this script in a terminal to set up your Ruby environment.
-#
-#  Examples:
-#      ./install_gems.sh /path/to/ruby
-#      ./install_gems.sh
-#
-#  Requirements:
-#  - Ruby and gem must be installed prior to executing this script.
-#
-#  Exit Codes:
-#  0: Success - All gems were installed successfully.
-#  1: Error - A critical issue occurred (e.g., missing dependencies).
-#
-#  Notes:
-#  - If no path is provided, the script assumes default tools in PATH.
-#  - Proxy support can be configured using the HTTP_PROXY environment variable.
 #
 ########################################################################
 

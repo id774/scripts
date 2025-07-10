@@ -19,6 +19,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script directly without any arguments:
+#      ./purge_kernels.sh
+#
+#  Notes:
+#  - This script is intended for Ubuntu-based systems only.
+#  - The currently running kernel will always be preserved.
+#  - If no old kernels are found, the script exits without making changes.
+#  - Ensure to review the listed kernels before executing the script.
+#
 #  Version History:
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -37,16 +47,6 @@
 #       Refactored for improved readability, naming, and system checking.
 #  v1.0 2013-11-29
 #       Initial release.
-#
-#  Usage:
-#  Run the script directly without any arguments:
-#      ./purge_kernels.sh
-#
-#  Notes:
-#  - This script is intended for Ubuntu-based systems only.
-#  - The currently running kernel will always be preserved.
-#  - If no old kernels are found, the script exits without making changes.
-#  - Ensure to review the listed kernels before executing the script.
 #
 ########################################################################
 

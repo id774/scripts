@@ -17,16 +17,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.3 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.2 2025-04-27
-#       Add strict error checking for deployment steps.
-#  v1.1 2025-04-10
-#       Do not overwrite existing configuration file.
-#  v1.0 2025-04-07
-#       First version.
-#
 #  Usage:
 #      ./install_munin-sync.sh
 #
@@ -49,6 +39,16 @@
 #  - The munin-sync.sh script is installed under /var/lib/munin/bin and owned by the 'munin' user.
 #  - Cron jobs are configured under /etc/cron.d/ and run every 5 minutes as the 'munin' user.
 #  - Log and configuration directories are created with restricted permissions for security.
+#
+#  Version History:
+#  v1.3 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.2 2025-04-27
+#       Add strict error checking for deployment steps.
+#  v1.1 2025-04-10
+#       Do not overwrite existing configuration file.
+#  v1.0 2025-04-07
+#       First version.
 #
 ########################################################################
 

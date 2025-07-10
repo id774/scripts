@@ -14,17 +14,17 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.1 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.0 2025-06-16
-#       First version.
-#
 #  Usage:
 #  Execute the script as a normal user with administrator privileges.
 #  The script will prompt for both the current admin password and the
 #  password for the new emergency admin user.
 #      ./create_emergencyadmin.sh
+#
+#  Version History:
+#  v1.1 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.0 2025-06-16
+#       First version.
 #
 ########################################################################
 

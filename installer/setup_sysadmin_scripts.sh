@@ -13,6 +13,21 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script with the desired action (install or uninstall) and the installation
+#      $1 = install or uninstall
+#      $2 = install path (ex. /usr/local/sbin)
+#
+#  path as arguments. For example:
+#      ./install_sysadmin_scripts.sh install
+#      ./install_sysadmin_scripts.sh install /usr/local/sbin
+#      ./install_sysadmin_scripts.sh uninstall
+#
+#  Notes:
+#  - Ensure that the 'SCRIPTS' environment variable is set to the path containing
+#    the administration scripts.
+#  - Running the script with 'uninstall' will remove all installed administration scripts.
+#
 #  Version History:
 #  v1.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -51,21 +66,6 @@
 #       Fix copy option on OS X.
 #  v0.1 2010-11-16
 #       First version.
-#
-#  Usage:
-#  Run this script with the desired action (install or uninstall) and the installation
-#      $1 = install or uninstall
-#      $2 = install path (ex. /usr/local/sbin)
-#
-#  path as arguments. For example:
-#      ./install_sysadmin_scripts.sh install
-#      ./install_sysadmin_scripts.sh install /usr/local/sbin
-#      ./install_sysadmin_scripts.sh uninstall
-#
-#  Notes:
-#  - Ensure that the 'SCRIPTS' environment variable is set to the path containing
-#    the administration scripts.
-#  - Running the script with 'uninstall' will remove all installed administration scripts.
 #
 ########################################################################
 

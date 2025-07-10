@@ -13,6 +13,21 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./setup_dot_ipython.sh
+#
+#  Run this script to initialize and configure your IPython environment.
+#  This script sets up a default IPython profile and an additional 'nbserver' profile.
+#  It also copies necessary startup files from a predefined 'SCRIPTS' directory.
+#  Before running this script, ensure that the 'SCRIPTS' environment variable points
+#  to your directory containing the IPython startup files.
+#
+#  Notes:
+#  - This script is intended to be used with Zsh.
+#  - Make sure to back up any existing IPython configuration before running this script.
+#  - Ensure that the IPython is installed on your system.
+#  - 'SCRIPTS' environment variable must be correctly set.
+#
 #  Version History:
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -30,21 +45,6 @@
 #       Refactored script for readability and added documentation.
 #  v1.0 2014-08-16
 #       Initial release for automating IPython setup.
-#
-#  Usage:
-#      ./setup_dot_ipython.sh
-#
-#  Run this script to initialize and configure your IPython environment.
-#  This script sets up a default IPython profile and an additional 'nbserver' profile.
-#  It also copies necessary startup files from a predefined 'SCRIPTS' directory.
-#  Before running this script, ensure that the 'SCRIPTS' environment variable points
-#  to your directory containing the IPython startup files.
-#
-#  Notes:
-#  - This script is intended to be used with Zsh.
-#  - Make sure to back up any existing IPython configuration before running this script.
-#  - Ensure that the IPython is installed on your system.
-#  - 'SCRIPTS' environment variable must be correctly set.
 #
 ########################################################################
 

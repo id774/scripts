@@ -14,6 +14,19 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script without arguments to install the default version (5.0.3):
+#      ./install_cassandra.sh
+#  Specify a version to install a different release:
+#      ./install_cassandra.sh 4.1.8
+#  Skip creating lib and log directories by adding a second argument:
+#      ./install_cassandra.sh 4.1.8 -n
+#
+#  Requirements:
+#  - Network connectivity is required to download the source files.
+#  - The user must have `wget` and `sudo` installed.
+#  - This script is intended for Linux systems only.
+#
 #  Version History:
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -29,19 +42,6 @@
 #       Unified structure, added system checks, improved error handling.
 #  v0.1 2013-06-13
 #       First.
-#
-#  Usage:
-#  Run this script without arguments to install the default version (5.0.3):
-#      ./install_cassandra.sh
-#  Specify a version to install a different release:
-#      ./install_cassandra.sh 4.1.8
-#  Skip creating lib and log directories by adding a second argument:
-#      ./install_cassandra.sh 4.1.8 -n
-#
-#  Requirements:
-#  - Network connectivity is required to download the source files.
-#  - The user must have `wget` and `sudo` installed.
-#  - This script is intended for Linux systems only.
 #
 ########################################################################
 

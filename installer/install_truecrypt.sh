@@ -14,6 +14,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./install_truecrypt.sh [VERSION] [OPTION]
+#
+#  Options:
+#  -h   Display this help message.
+#  -n   Do not save source files after installation.
+#
 #  Version History:
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -36,13 +43,6 @@
 #  [Intermediate versions omitted for brevity]
 #  v0.1 2010-08-07
 #       Stable release.
-#
-#  Usage:
-#      ./install_truecrypt.sh [VERSION] [OPTION]
-#
-#  Options:
-#  -h   Display this help message.
-#  -n   Do not save source files after installation.
 #
 ########################################################################
 

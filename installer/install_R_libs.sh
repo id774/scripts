@@ -12,6 +12,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script to install all required R libraries:
+#      ./install_R_libs.sh
+#
+#  Requirements:
+#  - The user must have `R` installed.
+#  - The script must be run with `sudo` if installing system-wide.
+#  - This script is intended for Linux systems only.
+#
 #  Version History:
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -23,15 +32,6 @@
 #       Stable version, installs R libraries from config file.
 #  v0.1 2014-08-09
 #       Initial version.
-#
-#  Usage:
-#  Run this script to install all required R libraries:
-#      ./install_R_libs.sh
-#
-#  Requirements:
-#  - The user must have `R` installed.
-#  - The script must be run with `sudo` if installing system-wide.
-#  - This script is intended for Linux systems only.
 #
 ########################################################################
 

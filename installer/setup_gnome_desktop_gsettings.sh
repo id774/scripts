@@ -14,16 +14,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.3 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.2 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.1 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v1.0 2025-02-26
-#       - Initial release with command validation and setting updates.
-#
 #  Usage:
 #      ./setup_gnome_desktop_gsettings.sh
 #
@@ -32,6 +22,16 @@
 #  - Checks if 'gsettings' command is available before execution.
 #  - Modifies GNOME settings for security and usability improvements.
 #  - Displays confirmation of changes after each setting update.
+#
+#  Version History:
+#  v1.3 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.2 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v1.0 2025-02-26
+#       Initial release with command validation and setting updates.
 #
 ########################################################################
 

@@ -16,6 +16,14 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script on macOS to apply Finder and screenshot settings:
+#      ./macos_finder_settings.sh
+#
+#  Requirements:
+#  - Must be executed on macOS.
+#  - The script modifies Finder preferences and requires user permissions.
+#
 #  Version History:
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -29,14 +37,6 @@
 #       Stable version with key Finder and screenshot settings.
 #  v0.1 2025-02-04
 #       Initial version.
-#
-#  Usage:
-#  Run this script on macOS to apply Finder and screenshot settings:
-#      ./macos_finder_settings.sh
-#
-#  Requirements:
-#  - Must be executed on macOS.
-#  - The script modifies Finder preferences and requires user permissions.
 #
 ########################################################################
 

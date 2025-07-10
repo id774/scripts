@@ -14,6 +14,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script to configure Apache2 with SSL:
+#      ./setup_apache2_ssl.sh
+#
+#  Requirements:
+#  - Must be executed with sudo privileges.
+#  - The `$SCRIPTS` environment variable must be set.
+#  - Apache2 must be installed on the system.
+#
 #  Version History:
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -30,15 +39,6 @@
 #       Ensured idempotent execution.
 #  v0.1 2011-04-14
 #       Initial version.
-#
-#  Usage:
-#  Run this script to configure Apache2 with SSL:
-#      ./setup_apache2_ssl.sh
-#
-#  Requirements:
-#  - Must be executed with sudo privileges.
-#  - The `$SCRIPTS` environment variable must be set.
-#  - Apache2 must be installed on the system.
 #
 ########################################################################
 

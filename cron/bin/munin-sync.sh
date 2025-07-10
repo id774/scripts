@@ -17,26 +17,9 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.6 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.5 2025-05-21
-#       Modify sync_local_logs to include *.log.1 files while excluding *.log.2 and older logs.
-#  v1.4 2025-05-16
-#       Add return 0 to main and exit $? at script end for consistent exit status.
-#  v1.3 2025-05-10
-#       Added cron.log and Apache logs to local log synchronization.
-#       Add cron execution check and usage support with unified structure.
-#  v1.2 2025-04-14
-#       Skip sync_munin_data and sync_logs_to_remote if script is running on the target server.
-#  v1.1 2025-04-11
-#       Added usage() function and --help option. Added Munin directory existence check.
-#  v1.0 2025-04-07
-#       Initial release. Implements rsync-based data transfer and logging sync with heartbeat file generation.
-#
 #  Usage:
 #      ./munin-sync.sh
-#      This script is intended to be executed automatically via cron.
+#  This script is intended to be executed automatically via cron.
 #
 #  Cron Usage:
 #  Add the following line to /etc/cron.d/munin-sync to execute every 5 minutes:
@@ -56,6 +39,23 @@
 #  - This script updates files on a remote server under specified directories.
 #  - Ensure proper SSH access and permissions are configured for the target.
 #  - When run on the target server, sync operations are skipped to prevent redundant transfers.
+#
+#  Version History:
+#  v1.6 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.5 2025-05-21
+#       Modify sync_local_logs to include *.log.1 files while excluding *.log.2 and older logs.
+#  v1.4 2025-05-16
+#       Add return 0 to main and exit $? at script end for consistent exit status.
+#  v1.3 2025-05-10
+#       Added cron.log and Apache logs to local log synchronization.
+#       Add cron execution check and usage support with unified structure.
+#  v1.2 2025-04-14
+#       Skip sync_munin_data and sync_logs_to_remote if script is running on the target server.
+#  v1.1 2025-04-11
+#       Added usage() function and --help option. Added Munin directory existence check.
+#  v1.0 2025-04-07
+#       Initial release. Implements rsync-based data transfer and logging sync with heartbeat file generation.
 #
 ########################################################################
 

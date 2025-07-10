@@ -20,6 +20,12 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./set_ipv6_macos.sh --enable | --disable
+#
+#  --enable: Enables IPv6 on all detected network services.
+#  --disable: Disables IPv6 on all detected network services.
+#
 #  Version History:
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -29,12 +35,6 @@
 #       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-02-19
 #       Initial release with full macOS IPv6 disabling support.
-#
-#  Usage:
-#      ./set_ipv6_macos.sh --enable | --disable
-#
-#  --enable: Enables IPv6 on all detected network services.
-#  --disable: Disables IPv6 on all detected network services.
 #
 ########################################################################
 

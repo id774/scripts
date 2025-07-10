@@ -14,6 +14,24 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script directly:
+#      ./debian_setup.sh
+#
+#  Ensure that required setup scripts exist in the designated directory.
+#  This script verifies system compatibility and necessary privileges before execution.
+#
+#  Notes:
+#  - The script is designed for Debian-based systems (Debian, Ubuntu, etc.).
+#  - Internet connectivity is required for downloading dotfiles and system utilities.
+#  - Review and modify the installation scripts as needed before execution.
+#
+#  Error Conditions:
+#  - If the system is not Linux, the script exits with an error.
+#  - If required commands are missing, the script exits with an error.
+#  - If the user lacks sudo privileges, execution is halted.
+#  - Errors from underlying scripts should be resolved based on their output.
+#
 #  Version History:
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -32,24 +50,6 @@
 #  [Further version history truncated for brevity]
 #  v0.1 2011-09-28
 #       First version.
-#
-#  Usage:
-#  Run the script directly:
-#      ./debian_setup.sh
-#
-#  Ensure that required setup scripts exist in the designated directory.
-#  This script verifies system compatibility and necessary privileges before execution.
-#
-#  Notes:
-#  - The script is designed for Debian-based systems (Debian, Ubuntu, etc.).
-#  - Internet connectivity is required for downloading dotfiles and system utilities.
-#  - Review and modify the installation scripts as needed before execution.
-#
-#  Error Conditions:
-#  - If the system is not Linux, the script exits with an error.
-#  - If required commands are missing, the script exits with an error.
-#  - If the user lacks sudo privileges, execution is halted.
-#  - Errors from underlying scripts should be resolved based on their output.
 #
 ########################################################################
 

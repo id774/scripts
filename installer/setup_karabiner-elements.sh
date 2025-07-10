@@ -14,6 +14,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./setup_karabiner.sh
+#
+#  Requirements:
+#  - Must be executed on macOS.
+#  - Requires `karabiner.json` in `$SCRIPTS/dot_files/dot_karabiner.d/configuration/`
+#
 #  Version History:
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -27,13 +34,6 @@
 #       Added environment validation, file existence check, and backup handling.
 #  v0.1 2017-01-02
 #       Initial version.
-#
-#  Usage:
-#      ./setup_karabiner.sh
-#
-#  Requirements:
-#  - Must be executed on macOS.
-#  - Requires `karabiner.json` in `$SCRIPTS/dot_files/dot_karabiner.d/configuration/`
 #
 ########################################################################
 

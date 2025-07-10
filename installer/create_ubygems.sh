@@ -18,22 +18,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.5 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.4 2025-04-28
-#       Improve create_ubygems with direct error detection and enhanced messages.
-#  v1.3 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.2 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v1.1 2025-03-19
-#       Added support for custom Ruby installation paths.
-#       Improved error handling for missing Ruby directories.
-#       Enhanced script documentation and comments.
-#  v1.0 2025-01-27
-#       Initial release.
-#
 #  Usage:
 #  Run the script directly without any arguments (default Homebrew behavior):
 #      ./create_ubygems.sh
@@ -50,6 +34,22 @@
 #  - If `ubygems.rb` already exists, the script will terminate without overwriting it.
 #  - When a custom Ruby installation path is specified, the script searches
 #    for a `x.y.z` version directory under `lib/ruby/`.
+#
+#  Version History:
+#  v1.5 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.4 2025-04-28
+#       Improve create_ubygems with direct error detection and enhanced messages.
+#  v1.3 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.2 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v1.1 2025-03-19
+#       Added support for custom Ruby installation paths.
+#       Improved error handling for missing Ruby directories.
+#       Enhanced script documentation and comments.
+#  v1.0 2025-01-27
+#       Initial release.
 #
 ########################################################################
 

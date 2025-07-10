@@ -13,23 +13,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v5.3 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v5.2 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v5.1 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v5.0 2025-03-21
-#       Improved system detection for Debian and Ubuntu.
-#       Enhanced documentation and comments for better maintainability.
-#       Ensured strict POSIX compliance.
-#       Redirected error messages to stderr for better logging and debugging.
-#       Added confirmation prompt before execution.
-#  [Further version history truncated for brevity]
-#  v0.1 2007-08-27
-#       First version.
-#
 #  Usage:
 #  Run the script directly:
 #      ./debian_init.sh
@@ -46,6 +29,23 @@
 #  - If the system is not Debian-based, the script exits with an error.
 #  - If the required directory does not exist, an error message is displayed.
 #  - Errors from underlying scripts should be resolved based on their output.
+#
+#  Version History:
+#  v5.3 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v5.2 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v5.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v5.0 2025-03-21
+#       Improved system detection for Debian and Ubuntu.
+#       Enhanced documentation and comments for better maintainability.
+#       Ensured strict POSIX compliance.
+#       Redirected error messages to stderr for better logging and debugging.
+#       Added confirmation prompt before execution.
+#  [Further version history truncated for brevity]
+#  v0.1 2007-08-27
+#       First version.
 #
 ########################################################################
 

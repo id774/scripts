@@ -13,28 +13,10 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.6 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.5 2025-05-17
-#       Refactor to load settings and operations from external fix-permissions.conf.
-#       Separated configuration from script logic for host-specific customization.
-#  v1.4 2025-05-16
-#       Add return 0 to main and exit $? at script end for consistent exit status.
-#  v1.3 2025-05-11
-#       Restrict cron file permissions by removing all rights from others,
-#       allowing only read for group, and changing group ownership to adm.
-#  v1.2 2025-05-10
-#       Refactor into function-based, POSIX-compliant structure with cron check and usage display.
-#  v1.1 2025-03-19
-#       Improved POSIX compliance, standardized redirections, and enhanced readability.
-#  v1.0 2024-12-09
-#       Initial release with logging, permission adjustments, and email reporting.
-#
 #  Usage:
 #  Execute the script directly without any arguments:
 #      ./fix-permissions.sh
-#      This script is intended to be executed periodically by cron.
+#  This script is intended to be executed periodically by cron.
 #
 #  Features:
 #  - Recursively changes ownership of specific directories to root.
@@ -52,6 +34,24 @@
 #  - The `ADMIN_MAIL_ADDRESS` environment variable can be set to specify
 #    a recipient email address. Default is `root`.
 #  - Logs are written to `/var/log/sysadmin/fix-permissions.log`.
+#
+#  Version History:
+#  v1.6 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.5 2025-05-17
+#       Refactor to load settings and operations from external fix-permissions.conf.
+#       Separated configuration from script logic for host-specific customization.
+#  v1.4 2025-05-16
+#       Add return 0 to main and exit $? at script end for consistent exit status.
+#  v1.3 2025-05-11
+#       Restrict cron file permissions by removing all rights from others,
+#       allowing only read for group, and changing group ownership to adm.
+#  v1.2 2025-05-10
+#       Refactor into function-based, POSIX-compliant structure with cron check and usage display.
+#  v1.1 2025-03-19
+#       Improved POSIX compliance, standardized redirections, and enhanced readability.
+#  v1.0 2024-12-09
+#       Initial release with logging, permission adjustments, and email reporting.
 #
 ########################################################################
 

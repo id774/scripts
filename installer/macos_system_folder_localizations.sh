@@ -12,6 +12,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Enable localization:
+#      ./macos_system_folder_localizations.sh enable
+#  Disable localization:
+#      ./macos_system_folder_localizations.sh disable
+#
+#  Requirements:
+#  - Must be executed on macOS.
+#  - Requires `sudo` for modifying system-wide directories.
+#
 #  Version History:
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -28,16 +38,6 @@
 #       Improved error handling and environment checks.
 #  v0.1 2025-02-04
 #       Initial version.
-#
-#  Usage:
-#  Enable localization:
-#      ./macos_system_folder_localizations.sh enable
-#  Disable localization:
-#      ./macos_system_folder_localizations.sh disable
-#
-#  Requirements:
-#  - Must be executed on macOS.
-#  - Requires `sudo` for modifying system-wide directories.
 #
 ########################################################################
 

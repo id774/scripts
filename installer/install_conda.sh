@@ -14,23 +14,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Version History:
-#  v1.3 2025-06-23
-#       Unified usage output to display full script header and support common help/version options.
-#  v1.2 2025-04-13
-#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
-#  v1.1 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#  v1.0 2025-01-16
-#       Official release. Improved documentation, added command existence
-#       checks, refined error handling.
-#  v0.3 2018-05-10
-#       Removed conda-forge channel.
-#  v0.2 2018-05-02
-#       Added conda-forge channel.
-#  v0.1 2018-02-28
-#       Initial version.
-#
 #  Usage:
 #  Run this script in a terminal to set up your Python environment.
 #
@@ -50,6 +33,23 @@
 #    path for Anaconda (`$HOME/local/anaconda3`).
 #  - Includes a wide range of tools for data science, machine learning,
 #    and web development.
+#
+#  Version History:
+#  v1.3 2025-06-23
+#       Unified usage output to display full script header and support common help/version options.
+#  v1.2 2025-04-13
+#       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
+#  v1.1 2025-03-22
+#       Unify usage information by extracting help text from header comments.
+#  v1.0 2025-01-16
+#       Official release. Improved documentation, added command existence
+#       checks, refined error handling.
+#  v0.3 2018-05-10
+#       Removed conda-forge channel.
+#  v0.2 2018-05-02
+#       Added conda-forge channel.
+#  v0.1 2018-02-28
+#       Initial version.
 #
 ########################################################################
 

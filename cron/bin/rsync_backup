@@ -13,6 +13,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./rsync_backup
+#  This script is intended to be executed periodically by cron.
+#
+#  Cron Usage:
+#      Place this script into /etc/cron.hourly or similar.
+#      Or create a specific cron entry like the following:
+#      0 * * * * root /path/to/rsync_backup
+#
 #  Version History:
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -22,15 +31,6 @@
 #       Refactor into POSIX-compliant, function-based structure with trigger check and mail support.
 #  v0.1 2008-08-22
 #       Initial release. Trigger-based wrapper for rsync_backup.sh.
-#
-#  Usage:
-#      ./rsync_backup
-#      This script is intended to be executed periodically by cron.
-#
-#  Cron Usage:
-#      Place this script into /etc/cron.hourly or similar.
-#      Or create a specific cron entry like the following:
-#      0 * * * * root /path/to/rsync_backup
 #
 ########################################################################
 

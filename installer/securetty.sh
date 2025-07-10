@@ -13,6 +13,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script without any arguments:
+#      ./securetty.sh
+#
+#  Warning:
+#  Using this script can decrease system security by allowing root access from any
+#  terminal. It should only be used when absolutely necessary and in secure environments.
+#  This script does nothing if /etc/securetty is a directory, which might be the case
+#  in some systems like macOS.
+#
 #  Version History:
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -28,16 +38,6 @@
 #       Added check to ensure /etc/securetty is a file before clearing it.
 #  v1.0 2012-05-21
 #       Initial release. Script to clear /etc/securetty for unrestricted root access.
-#
-#  Usage:
-#  Run the script without any arguments:
-#      ./securetty.sh
-#
-#  Warning:
-#  Using this script can decrease system security by allowing root access from any
-#  terminal. It should only be used when absolutely necessary and in secure environments.
-#  This script does nothing if /etc/securetty is a directory, which might be the case
-#  in some systems like macOS.
 #
 ########################################################################
 

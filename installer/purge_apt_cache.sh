@@ -17,6 +17,10 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run the script directly without any arguments:
+#      ./purge_apt_cache.sh
+#
 #  Version History:
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -33,10 +37,6 @@
 #       Added system check, refactored for clarity, and added notes.
 #  v1.0 2019-08-29
 #       Initial release.
-#
-#  Usage:
-#  Run the script directly without any arguments:
-#      ./purge_apt_cache.sh
 #
 ########################################################################
 

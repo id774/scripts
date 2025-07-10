@@ -15,6 +15,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#      ./setup_crontab.sh
+#  Run this script as a general user; it will invoke sudo where necessary.
+#
+#  Notes:
+#  It ensures that the necessary cron directories exist before modifying /etc/crontab.
+#  The script verifies and maintains the following cron jobs:
+#    "01 03 * * 1-6 root cd / && run-parts --report /etc/cron.weekday"
+#    "01 03 * * 0   root cd / && run-parts --report /etc/cron.weekend"
+#
 #  Version History:
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -28,16 +38,6 @@
 #       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-21
 #       Initial release. Ensures cron.weekday and cron.weekend entries exist.
-#
-#  Usage:
-#      ./setup_crontab.sh
-#  Run this script as a general user; it will invoke sudo where necessary.
-#
-#  Notes:
-#  It ensures that the necessary cron directories exist before modifying /etc/crontab.
-#  The script verifies and maintains the following cron jobs:
-#    "01 03 * * 1-6 root cd / && run-parts --report /etc/cron.weekday"
-#    "01 03 * * 0   root cd / && run-parts --report /etc/cron.weekend"
 #
 ########################################################################
 
