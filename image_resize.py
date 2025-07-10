@@ -34,6 +34,7 @@
 #
 #  Requirements:
 #  - Python Version: 3.2 or later
+#  - Dependencies: Pillow
 #
 ########################################################################
 
