@@ -15,7 +15,7 @@
 #
 #  Running the tests:
 #  Execute the test script from the command line:
-#  `python test/chmodtree_test.py`
+#      python test/chmodtree_test.py
 #
 #  Version History:
 #  v1.2 2025-04-14
