@@ -17,18 +17,18 @@
 #
 #  Usage:
 #  To set a package state:
-#    ./dpkg-hold.sh package-name state
-#    (Where 'state' can be 'hold', 'install', etc.)
+#      ./dpkg-hold.sh package-name state
+#      (Where 'state' can be 'hold', 'install', etc.)
 #
 #  To view the current state of a package:
-#    ./dpkg-hold.sh package-name
+#      ./dpkg-hold.sh package-name
 #
 #  To display usage information:
-#    ./dpkg-hold.sh
+#      ./dpkg-hold.sh
 #
 #  Example:
-#    ./dpkg-hold.sh nano install
-#    ./dpkg-hold.sh nano
+#      ./dpkg-hold.sh nano install
+#      ./dpkg-hold.sh nano
 #
 #  Version History:
 #  v1.9 2025-06-23
