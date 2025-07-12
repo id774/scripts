@@ -30,6 +30,9 @@
 #  - Run with appropriate permissions if modifying system-wide settings.
 #
 #  Version History:
+#  v2.8 2025-07-12
+#       Add emergencyadmin and munin users to dotfiles deployment targets.
+#       Add ownership correction to deploy_dotfiles_to_mac.
 #  v2.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.6 2025-04-25
@@ -191,9 +194,14 @@ deploy_dotfiles_to_others() {
 deploy_dotfiles_to_mac() {
     while [ "$#" -gt 0 ]
     do
-        if [ -d "/Users/$1" ]; then
-            echo "[INFO] Deploying dotfiles to macOS user: $1"
-            deploy_dotfiles "/Users/$1"
+        user="$1"
+        user_home="/Users/$user"
+
+        if [ -d "$user_home" ] && id "$user" >/dev/null 2>&1; then
+            echo "[INFO] Deploying dotfiles to macOS user: $user"
+            deploy_dotfiles "$user_home"
+            sudo chown "$user:$(id -gn "$user")" "$user_home"
+            sudo find "$user_home" -maxdepth 1 -mindepth 1 -exec chown "$user:$(id -gn "$user")" {} +
         fi
         shift
     done
@@ -225,8 +233,8 @@ bulk_deploy() {
       admin \
       sysadmin \
       sysop \
-      ec2-user \
       git \
+      ec2-user \
       automatic \
       fluent \
       mongo \
@@ -235,14 +243,16 @@ bulk_deploy() {
       tiarra \
       testuser
     deploy_dotfiles_to_mac \
+      adm \
+      emergencyadmin \
       mac \
       apple \
-      adm \
       demo \
       work \
       testuser
     deploy_dotfiles_to_others /var/root root
     deploy_dotfiles_to_others /root root
+    deploy_dotfiles_to_others /var/lib/munin munin
     deploy_dotfiles_to_others /var/lib/postgresql postgres
     deploy_dotfiles_to_others /var/lib/pgsql postgres
     deploy_dotfiles_to_others /usr/lib/oracle/xe oracle
