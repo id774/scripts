@@ -8,7 +8,9 @@ v1.4.5 (Release Date: TBD)
 - Reorder script headers to place usage and requirements before version history for improved readability.
 - Specify minimum required Python version for all scripts and note that the test suite requires Python 3.6 or later to run successfully.
 - Ensure backward compatibility of select Python scripts down to at least Python 3.4.
-- Require valid python and rpsec paths, rejecting invalid explicit inputs and falling back only when unspecified.
+- Require valid python and rspec paths, rejecting invalid explicit inputs and falling back only when unspecified.
+- Specify minimum required Ruby version (2.0 or later) in all applicable script headers.
+- Replace deprecated `Kconv#toutf8` with `String#encode` in convert_msime2canna.rb for compatibility with Ruby 2.0–3.x.
 - Add usage test case with -h option to all Python and Ruby test scripts.
 - Extract __version__ from script header in tcmount.py to eliminate hardcoded version.
 - Ensure at least one symbol is included in generated passwords when symbols are enabled.
