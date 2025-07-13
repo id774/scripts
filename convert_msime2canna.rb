@@ -14,9 +14,14 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  ruby convert_msime2canna.rb < MS-IME_dictionary_file
+#      convert_msime2canna.rb < MS-IME_dictionary_file
+#
+#  Requirements:
+#  - Ruby Version: 2.0 or later
 #
 #  Version History:
+#  v1.4 2025-07-13
+#       Replaced deprecated Kconv#toutf8 with String#encode for modern Ruby compatibility.
 #  v1.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #       Refactored into main function for consistency and maintainability.
@@ -47,16 +52,14 @@ def main
     usage
   end
 
-  require 'kconv'
-
   while line = gets
     str = line.split(/\t/)
     next unless str[2]
-    next unless str[2].toutf8.chop == "顔文字"
+    next unless str[2].encode("UTF-8", invalid: :replace, undef: :replace, replace: '').chomp == "顔文字"
 
-    print str[0].toutf8
+    print str[0].encode("UTF-8", invalid: :replace, undef: :replace, replace: '')
     print " #KJ "
-    puts str[1].toutf8.gsub(/ /, "\\ ")
+    puts str[1].encode("UTF-8", invalid: :replace, undef: :replace, replace: '').gsub(/ /, "\\ ")
   end
 
   return 0
