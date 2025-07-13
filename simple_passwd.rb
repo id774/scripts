@@ -14,7 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  ruby simple_password.rb [options] length
+#      simple_password.rb [options] length
 #
 #  Options:
 #    -s, --no-symbols  Do not include symbols in the password

@@ -13,8 +13,11 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  ruby wget.rb <URL>
+#      wget.rb <URL>
 #  Example: ruby wget.rb http://example.com/file.txt
+#
+#  Requirements:
+#  - Ruby Version: 2.0 or later
 #
 #  Version History:
 #  v1.2 2025-06-23

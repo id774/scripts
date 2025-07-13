@@ -21,7 +21,7 @@
 #  To use the script, pass the lock file name and the check interval as arguments.
 #  For instance, to set the script to check for 'hoge.txt' every 1 second:
 #
-#      ./waitlock.rb hoge.txt 1
+#      waitlock.rb hoge.txt 1
 #
 #  This command will cause the script to check for a lock file named 'hoge.txt'
 #  every 1 second. The script will continue to run (and not perform further
