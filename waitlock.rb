@@ -33,6 +33,9 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Requirements:
+#  - Ruby Version: 2.0 or later
+#
 #  Version History:
 #  v1.4 2025-07-01
 #       Standardized termination behavior for consistent script execution.
