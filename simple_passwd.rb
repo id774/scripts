@@ -19,6 +19,9 @@
 #  Options:
 #    -s, --no-symbols  Do not include symbols in the password
 #
+#  Requirements:
+#  - Ruby Version: 2.0 or later
+#
 #  Version History:
 #  v1.5 2025-07-03
 #       Ensure at least one symbol is included when use_symbols is enabled.
@@ -89,7 +92,7 @@ def main
 
   option_parser.parse!
 
-  if ARGV.length != 1 || !/\A\d+\z/.match?(ARGV[0])
+  if ARGV.length != 1 || ARGV[0] !~ /\A\d+\z/
     puts "[ERROR] Length must be a number."
     puts option_parser
     return 1
