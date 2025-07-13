@@ -14,7 +14,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  ./aozora_prepare.rb [input file] [output file]
+#      aozora_prepare.rb [input file] [output file]
+#
+#  Requirements:
+#  - Ruby Version: 2.0 or later
 #
 #  Version History:
 #  v1.3 2025-07-01
