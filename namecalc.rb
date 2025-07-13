@@ -23,6 +23,9 @@
 #  This will perform numerology calculations on the provided strings and
 #  display the results.
 #
+#  Requirements:
+#  - Ruby Version: 2.0 or later
+#
 #  Version History:
 #  v1.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.
