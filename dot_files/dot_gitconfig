@@ -41,3 +41,5 @@
   frag = white bold
   old = red
   new = cyan
+[pull]
+  rebase = false
