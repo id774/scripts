@@ -9,6 +9,8 @@
 #  - Copying configuration files from the `dot_vim` repository.
 #  - Adjusting options based on the operating system type.
 #  - Allowing a custom installation path via command-line argument.
+#  - Additionally, if ~/.config/nvim exists, it will also receive the
+#    same files (for NeoVim compatibility).
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -27,6 +29,8 @@
 #  - Must be executed in a shell environment where `cp` and `vim` are available.
 #
 #  Version History:
+#  v1.8 2025-07-15
+#       Also copy files to ~/.config/nvim if it exists.
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.6 2025-06-10
@@ -115,6 +119,21 @@ install_dotvim() {
     fi
 }
 
+# Install dot_vim configuration for nvim if exist
+maybe_copy_to_nvim() {
+    local nvim_config="$HOME/.config/nvim"
+    if [ -d "$nvim_config" ]; then
+        echo "[INFO] Detected $nvim_config. Copying dot_vim contents..."
+        if ! cp $OPTIONS "$SCRIPTS/dot_files/dot_vim"/* "$nvim_config"/; then
+            echo "[WARN] Failed to copy dot_vim files to $nvim_config." >&2
+        else
+            echo "[INFO] dot_vim files also copied to $nvim_config."
+        fi
+    else
+        echo "[INFO] $nvim_config not found. Skipping NeoVim copy."
+    fi
+}
+
 # Main function to execute the script
 main() {
     case "$1" in
@@ -134,6 +153,7 @@ main() {
     echo "[INFO] Starting dot_vim installation..."
     setup_environment "$1"
     install_dotvim "$1"
+    maybe_copy_to_nvim
 
     echo "[INFO] dot_vim configuration installed successfully at $TARGET."
     return 0
