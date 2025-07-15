@@ -17,10 +17,12 @@
 #  Usage:
 #  Run this script without arguments to install the default version (2.72):
 #      ./install_autoconf.sh
+#
 #  Specify a version to install a different release:
 #      ./install_autoconf.sh 2.71
-#  Skip saving sources by adding a second argument:
-#      ./install_autoconf.sh 2.71 -n
+#
+#  Skip saving sources by specifying any second argument:
+#      ./install_autoconf.sh 2.71 skip
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.

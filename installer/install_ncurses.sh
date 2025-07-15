@@ -6,8 +6,8 @@
 #  Description:
 #  This script automates the installation of ncurses by:
 #  - Downloading the specified or default version from the GNU FTP server.
-#  - Compiling and installing the package.
-#  - Optionally saving the source files for future use.
+#  - Compiling and installing the package to a specified or default location.
+#  - Saving source files only when installing with sudo.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,14 +17,22 @@
 #  Usage:
 #  Run this script without arguments to install the default version (6.5):
 #      ./install_ncurses.sh
+#
 #  Specify a version to install a different release:
 #      ./install_ncurses.sh 5.9
+#
 #  Specify an installation prefix:
 #      ./install_ncurses.sh 6.5 /opt/ncurses/6.5
-#  Run without sudo (for local installation):
+#
+#  Install without sudo (for local user installation):
 #      ./install_ncurses.sh 5.9 ~/.local/ncurses --no-sudo
-#  Skip saving sources by adding a fourth argument:
-#      ./install_ncurses.sh 6.5 /usr/local/ncurses sudo -n
+#
+#  Notes:
+#  - By default, if no installation path is provided, ncurses will be installed under /opt/ncurses/x.x
+#    For example, version 6.5 will be installed to /opt/ncurses/6.5
+#
+#  - Source files are saved to /usr/local/src/ncurses only when using sudo.
+#    If installed without sudo (e.g. using `--no-sudo`), source files will not be saved.
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
@@ -32,6 +40,8 @@
 #  - Must be executed in a shell environment with internet access.
 #
 #  Version History:
+#  v2.6 2025-07-15
+#       Remove unused DOWNLOAD_SOURCE logic to simplify source saving behavior.
 #  v2.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.4 2025-04-27
@@ -101,7 +111,6 @@ setup_environment() {
         SUDO=""
     fi
     check_sudo
-    DOWNLOAD_SOURCE="${4:-auto}"
 
     case "$(uname -s)" in
         Darwin)
@@ -179,9 +188,7 @@ install_ncurses() {
     fi
 
     cd .. || exit 1
-    if [ "$DOWNLOAD_SOURCE" = "auto" ]; then
-        save_sources
-    fi
+    save_sources
 
     echo "[INFO] Cleaning up temporary files."
     cd .. || exit 1

@@ -17,10 +17,12 @@
 #  Usage:
 #  Run this script without arguments to install the default version (2.0.9):
 #      ./install_paco.sh
+#
 #  Specify a version to install a different release:
 #      ./install_paco.sh 2.0.8
-#  Skip saving sources by adding a second argument:
-#      ./install_paco.sh 2.0.9 -n
+#
+#  Skip saving sources by specifying any second argument:
+#      ./install_paco.sh 2.0.9 skip
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.

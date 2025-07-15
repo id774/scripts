@@ -6,8 +6,8 @@
 #  Description:
 #  This script automates the installation of Zsh by:
 #  - Downloading the specified or default version from SourceForge.
-#  - Compiling and installing the package.
-#  - Optionally saving the source files for future use.
+#  - Compiling and installing the package to a specified or default location.
+#  - Saving source files only when installing with sudo.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,20 +17,27 @@
 #  Usage:
 #  Run this script without arguments to install the default version (5.9):
 #      ./install_zsh.sh
+#
 #  Specify a version to install a different release:
 #      ./install_zsh.sh 5.8.1
+#
 #  Specify an installation prefix:
 #      ./install_zsh.sh 5.8.1 /usr/local
-#  Run without sudo (for local installation):
+#
+#  Install without sudo (for local user installation):
 #      ./install_zsh.sh 5.9 ~/.local/zsh --no-sudo
-#  Skip saving sources by adding a fourth argument:
-#      ./install_zsh.sh 5.9 /opt/zsh sudo -n
 #
 #  Notes:
-#  The current default version for installation is 5.9, but it is anticipated that this version
-#  will eventually be moved to the 'old' directory in the future. At that point, to install version
-#  5.9, it will need to be explicitly specified. To install the latest version then, the script's
-#  default version will need to be updated.
+#  - By default, if no installation path is provided, Zsh will be installed under /opt/zsh/x.x
+#    For example, Zsh 5.9 will be installed to /opt/zsh/5.9
+#
+#  - Source files are saved to /usr/local/src/zsh only when using sudo.
+#    If installed without sudo (e.g. using `--no-sudo`), source files will not be saved.
+#
+#  - The current default version for installation is 5.9, but it is anticipated that this version
+#    will eventually be moved to the 'old' directory in the future. At that point, to install version
+#    5.9, it will need to be explicitly specified. To install the latest version then, the script's
+#    default version will need to be updated.
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.

@@ -17,10 +17,12 @@
 #  Usage:
 #  Run this script without arguments to install the default version (0.4.0):
 #      ./install_talib.sh
+#
 #  Specify a version to install a different release:
 #      ./install_talib.sh 0.4.1
-#  Skip saving sources by adding a second argument:
-#      ./install_talib.sh 0.4.1 -n
+#
+#  Skip saving sources by specifying any second argument:
+#      ./install_talib.sh 0.4.1 skip
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.

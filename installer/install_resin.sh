@@ -17,10 +17,12 @@
 #  Usage:
 #  Run this script without arguments to install the default version (4.0.67):
 #      ./install_resin.sh
+#
 #  Specify a version to install a different release:
 #      ./install_resin.sh 4.0.66
-#  Skip saving sources by adding a second argument:
-#      ./install_resin.sh 4.0.66 -n
+#
+#  Skip saving sources by specifying any second argument:
+#      ./install_resin.sh 4.0.66 skip
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.

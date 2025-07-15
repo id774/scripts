@@ -6,8 +6,8 @@
 #  Description:
 #  This script downloads, compiles, and installs the DES encryption software.
 #  If the software is not found in the system, it is retrieved from a remote
-#  archive, extracted, compiled, and installed. Optionally, the source files
-#  can be saved for future reference.
+#  archive, extracted, compiled, and installed.
+#  Source files are saved to /usr/local/src/crypt/des unless the -n option is specified.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
