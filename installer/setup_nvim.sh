@@ -7,11 +7,11 @@
 #  This script configures NeoVim to behave as a Vim replacement by:
 #  - Creating the NeoVim configuration directory.
 #  - Linking ~/.vimrc to ~/.config/nvim/init.vim.
-#  - Creating a symlink to make 'vim' invoke 'nvim' via /opt/bin.
+#  - Creating a symlink to make 'vim' invoke 'nvim' via ~/.local/bin.
 #
 #  An uninstall option is also provided:
 #  - Removes the symlink ~/.config/nvim/init.vim if it is a link.
-#  - Removes the symlink /opt/bin/vim if it is a link.
+#  - Removes the symlink ~/.local/bin/vim if it is a link.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -27,7 +27,6 @@
 #
 #  Requirements:
 #  - NeoVim must be installed and available in PATH.
-#  - Requires sudo privileges to create or remove links in /opt/bin.
 #
 #  Version History:
 #  v1.0 2025-07-15
@@ -57,14 +56,6 @@ check_commands() {
             exit 126
         fi
     done
-}
-
-# Check if the user has sudo privileges (password may be required)
-check_sudo() {
-    if ! sudo -v 2>/dev/null; then
-        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
-        exit 1
-    fi
 }
 
 # Create the NeoVim config directory if it does not exist
@@ -100,25 +91,27 @@ find_nvim_path() {
     echo "$nvim_path"
 }
 
-# Create a system-wide symlink from vim to nvim in /opt/bin
+# Create a system-wide symlink from vim to nvim in ~/.local/bin
 create_vim_symlink() {
     nvim_path="$1"
-    if [ ! -d /opt/bin ]; then
-        if ! sudo mkdir -p /opt/bin; then
-            echo "[ERROR] Failed to create /opt/bin" >&2
+    target_dir="$HOME/.local/bin"
+
+    if [ ! -d "$target_dir" ]; then
+        mkdir -p "$target_dir" || {
+            echo "[ERROR] Failed to create $target_dir" >&2
             exit 1
-        fi
-        echo "[INFO] Created directory /opt/bin"
+        }
+        echo "[INFO] Created directory $target_dir"
     fi
 
-    if [ ! -e /opt/bin/vim ]; then
-        if ! sudo ln -s "$nvim_path" /opt/bin/vim; then
-            echo "[ERROR] Failed to create symlink /opt/bin/vim" >&2
+    if [ ! -e "$target_dir/vim" ]; then
+        ln -s "$nvim_path" "$target_dir/vim" || {
+            echo "[ERROR] Failed to create symlink $target_dir/vim" >&2
             exit 1
-        fi
-        echo "[INFO] Created symlink: /opt/bin/vim -> $nvim_path"
+        }
+        echo "[INFO] Created symlink: $target_dir/vim -> $nvim_path"
     else
-        echo "[INFO] /opt/bin/vim already exists. Skipping."
+        echo "[INFO] $target_dir/vim already exists. Skipping."
     fi
 }
 
@@ -133,15 +126,11 @@ uninstall_nvim_setup() {
         echo "[INFO] $target is not a symlink. Skipping."
     fi
 
-    if [ -L /opt/bin/vim ]; then
-        if sudo rm /opt/bin/vim; then
-            echo "[INFO] Removed symlink: /opt/bin/vim"
-        else
-            echo "[ERROR] Failed to remove /opt/bin/vim" >&2
-            exit 1
-        fi
+    target_bin="$HOME/.local/bin/vim"
+    if [ -L "$target_bin" ]; then
+        rm "$target_bin" && echo "[INFO] Removed symlink: $target_bin"
     else
-        echo "[INFO] /opt/bin/vim is not a symlink. Skipping."
+        echo "[INFO] $target_bin is not a symlink. Skipping."
     fi
 
     echo "[INFO] Uninstallation completed."
@@ -153,14 +142,12 @@ main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
         -u|--uninstall)
-            check_commands sudo rm
-            check_sudo
+            check_commands rm
             uninstall_nvim_setup
             ;;
     esac
 
-    check_commands sudo cp ln mkdir nvim
-    check_sudo
+    check_commands mkdir ln nvim
 
     nvim_path=$(find_nvim_path)
     create_config_dir
@@ -168,8 +155,8 @@ main() {
     create_vim_symlink "$nvim_path"
 
     echo "[INFO] NeoVim is now set up as a Vim replacement."
-    echo "[INFO] Add /opt/bin to the beginning of your PATH if not already present:"
-    echo "       export PATH=/opt/bin:\$PATH"
+    echo "[INFO] Add ~/.local/bin to the beginning of your PATH if not already present:"
+    echo "       export PATH=~/.local/bin:\$PATH"
 
     return 0
 }
