@@ -184,6 +184,7 @@ setup_chkrootkit() {
 
 setup_clamscan() {
     "$SCRIPTS/installer/install_clamscan.sh"
+    "$SCRIPTS/installer/disable_freshclam_syslog.sh"
 }
 
 setup_crontab() {
