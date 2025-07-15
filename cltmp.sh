@@ -21,6 +21,7 @@
 #  cleanup actions. Ensure to have the necessary permissions before running.
 #
 #  Version History:
+#  20250715 - Add abbrev_defs to Emacs cleanup targets.
 #  20250623 - Unified usage output to display full script header and support common help/version options.
 #  20250413 - Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  20250322 - Unify usage information by extracting help text from header comments.
@@ -140,6 +141,7 @@ perform_cleanup() {
     rm -vrf "$HOME/.local/share/Trash/*"
     rm -vf "$HOME"/.vim/.netrwhist
     rm -vf "$HOME"/.emacs.d/*~
+    rm -vf "$HOME"/.emacs.d/abbrev_defs
     rm -vf "$HOME"/*.swp "$HOME"/*.swo "$HOME"/*.bak "$HOME"/*.~ "$HOME"/*.old
     rm -vf "$HOME"/.*.swp "$HOME"/.*.swo "$HOME"/.*.bak "$HOME"/.*.~ "$HOME"/.*.old
 
