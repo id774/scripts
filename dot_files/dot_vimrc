@@ -50,7 +50,9 @@ if 1 && !filereadable($VIMRUNTIME . '/menu.vim') && has('gui_running')
 endif
 
 if 1 && (!exists('g:no_vimrc_example') || g:no_vimrc_example == 0)
-  source $VIMRUNTIME/vimrc_example.vim
+  if !has('nvim')
+    source $VIMRUNTIME/vimrc_example.vim
+  endif
 endif
 
 set ignorecase
@@ -205,8 +207,9 @@ nnoremap <C-X> <nop>
 nnoremap <C-A> <Home>
 nnoremap <C-S-J> <C-W>k<C-E><C-W><C-W>
 nnoremap Y y$
-
-:set browsedir=buffer
+if !has('nvim')
+  :set browsedir=buffer
+endif
 
 nmap <F2> ggVG
 map  <F3> :Explore<CR>
