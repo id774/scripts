@@ -7,11 +7,11 @@
 #  This script configures NeoVim to behave as a Vim replacement by:
 #  - Creating the NeoVim configuration directory.
 #  - Linking ~/.vimrc to ~/.config/nvim/init.vim.
-#  - Creating a symlink to make 'vim' invoke 'nvim' via /usr/local/bin.
+#  - Creating a symlink to make 'vim' invoke 'nvim' via /opt/bin.
 #
 #  An uninstall option is also provided:
 #  - Removes the symlink ~/.config/nvim/init.vim if it is a link.
-#  - Removes the symlink /usr/local/bin/vim if it is a link.
+#  - Removes the symlink /opt/bin/vim if it is a link.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -27,7 +27,7 @@
 #
 #  Requirements:
 #  - NeoVim must be installed and available in PATH.
-#  - Requires sudo privileges to create or remove links in /usr/local/bin.
+#  - Requires sudo privileges to create or remove links in /opt/bin.
 #
 #  Version History:
 #  v1.0 2025-07-15
@@ -67,7 +67,7 @@ check_sudo() {
     fi
 }
 
-# Function to create the NeoVim config directory if it does not exist
+# Create the NeoVim config directory if it does not exist
 create_config_dir() {
     if [ ! -d "$HOME/.config/nvim" ]; then
         mkdir -p "$HOME/.config/nvim" || {
@@ -80,7 +80,7 @@ create_config_dir() {
     fi
 }
 
-# Function to create a symlink from ~/.vimrc to init.vim
+# Create a symlink from ~/.vimrc to init.vim
 link_vimrc() {
     target="$HOME/.config/nvim/init.vim"
     if [ ! -e "$target" ]; then
@@ -94,27 +94,35 @@ link_vimrc() {
     fi
 }
 
-# Function to locate the nvim executable path
+# Locate the nvim executable path
 find_nvim_path() {
     nvim_path=$(command -v nvim)
     echo "$nvim_path"
 }
 
-# Function to create a system-wide symlink from vim to nvim
+# Create a system-wide symlink from vim to nvim in /opt/bin
 create_vim_symlink() {
     nvim_path="$1"
-    if [ ! -e /usr/local/bin/vim ]; then
-        if ! sudo ln -s "$nvim_path" /usr/local/bin/vim; then
-            echo "[ERROR] Failed to create symlink /usr/local/bin/vim" >&2
+    if [ ! -d /opt/bin ]; then
+        if ! sudo mkdir -p /opt/bin; then
+            echo "[ERROR] Failed to create /opt/bin" >&2
             exit 1
         fi
-        echo "[INFO] Created symlink: /usr/local/bin/vim -> $nvim_path"
+        echo "[INFO] Created directory /opt/bin"
+    fi
+
+    if [ ! -e /opt/bin/vim ]; then
+        if ! sudo ln -s "$nvim_path" /opt/bin/vim; then
+            echo "[ERROR] Failed to create symlink /opt/bin/vim" >&2
+            exit 1
+        fi
+        echo "[INFO] Created symlink: /opt/bin/vim -> $nvim_path"
     else
-        echo "[INFO] /usr/local/bin/vim already exists. Skipping."
+        echo "[INFO] /opt/bin/vim already exists. Skipping."
     fi
 }
 
-# Function to uninstall the symlinks created by this script
+# Uninstall the symlinks created by this script
 uninstall_nvim_setup() {
     echo "[INFO] Uninstalling NeoVim configuration and vim symlink..."
 
@@ -125,15 +133,15 @@ uninstall_nvim_setup() {
         echo "[INFO] $target is not a symlink. Skipping."
     fi
 
-    if [ -L /usr/local/bin/vim ]; then
-        if sudo rm /usr/local/bin/vim; then
-            echo "[INFO] Removed symlink: /usr/local/bin/vim"
+    if [ -L /opt/bin/vim ]; then
+        if sudo rm /opt/bin/vim; then
+            echo "[INFO] Removed symlink: /opt/bin/vim"
         else
-            echo "[ERROR] Failed to remove /usr/local/bin/vim" >&2
+            echo "[ERROR] Failed to remove /opt/bin/vim" >&2
             exit 1
         fi
     else
-        echo "[INFO] /usr/local/bin/vim is not a symlink. Skipping."
+        echo "[INFO] /opt/bin/vim is not a symlink. Skipping."
     fi
 
     echo "[INFO] Uninstallation completed."
@@ -158,7 +166,11 @@ main() {
     create_config_dir
     link_vimrc
     create_vim_symlink "$nvim_path"
+
     echo "[INFO] NeoVim is now set up as a Vim replacement."
+    echo "[INFO] Add /opt/bin to the beginning of your PATH if not already present:"
+    echo "       export PATH=/opt/bin:\$PATH"
+
     return 0
 }
 
