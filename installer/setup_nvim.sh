@@ -9,18 +9,25 @@
 #  - Linking ~/.vimrc to ~/.config/nvim/init.vim.
 #  - Creating a symlink to make 'vim' invoke 'nvim' via /usr/local/bin.
 #
+#  An uninstall option is also provided:
+#  - Removes the symlink ~/.config/nvim/init.vim if it is a link.
+#  - Removes the symlink /usr/local/bin/vim if it is a link.
+#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  Run this script to set up NeoVim as a drop-in Vim replacement:
+#  To install:
 #      ./setup_nvim.sh
+#
+#  To uninstall:
+#      ./setup_nvim.sh --uninstall
 #
 #  Requirements:
 #  - NeoVim must be installed and available in PATH.
-#  - Requires sudo privileges to create a link in /usr/local/bin.
+#  - Requires sudo privileges to create or remove links in /usr/local/bin.
 #
 #  Version History:
 #  v1.0 2025-07-15
@@ -107,8 +114,43 @@ create_vim_symlink() {
     fi
 }
 
-# Execute main function
+# Function to uninstall the symlinks created by this script
+uninstall_nvim_setup() {
+    echo "[INFO] Uninstalling NeoVim configuration and vim symlink..."
+
+    target="$HOME/.config/nvim/init.vim"
+    if [ -L "$target" ]; then
+        rm "$target" && echo "[INFO] Removed symlink: $target"
+    else
+        echo "[INFO] $target is not a symlink. Skipping."
+    fi
+
+    if [ -L /usr/local/bin/vim ]; then
+        if sudo rm /usr/local/bin/vim; then
+            echo "[INFO] Removed symlink: /usr/local/bin/vim"
+        else
+            echo "[ERROR] Failed to remove /usr/local/bin/vim" >&2
+            exit 1
+        fi
+    else
+        echo "[INFO] /usr/local/bin/vim is not a symlink. Skipping."
+    fi
+
+    echo "[SUCCESS] Uninstallation completed."
+    exit 0
+}
+
+# Main function to execute the script
 main() {
+    case "$1" in
+        -h|--help|-v|--version) usage ;;
+        -u|--uninstall)
+            check_commands sudo rm
+            check_sudo
+            uninstall_nvim_setup
+            ;;
+    esac
+
     check_commands sudo cp ln mkdir nvim
     check_sudo
 
@@ -120,5 +162,6 @@ main() {
     return 0
 }
 
+# Execute main function
 main "$@"
 exit $?
