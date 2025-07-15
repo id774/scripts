@@ -124,7 +124,7 @@ debian_developer_tools() {
 editor_packages() {
     smart_apt texlive-lang-cjk texlive-latex-base dvipng texinfo emacs ess mew stunnel \
               ca-certificates w3m-el-snapshot w3m-img imagemagick libmagickcore-dev \
-              libmagickwand-dev vim vim-runtime colordiff ctags
+              libmagickwand-dev vim vim-runtime colordiff ctags nvim
 }
 
 # EXIF tools

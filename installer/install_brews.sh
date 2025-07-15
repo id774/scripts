@@ -111,6 +111,7 @@ main() {
     brew install wget
     brew install nkf
     brew install vim
+    brew install nvim
     brew install freetype
     brew install rsync
     brew install smartmontools
