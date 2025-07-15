@@ -136,7 +136,7 @@ uninstall_nvim_setup() {
         echo "[INFO] /usr/local/bin/vim is not a symlink. Skipping."
     fi
 
-    echo "[SUCCESS] Uninstallation completed."
+    echo "[INFO] Uninstallation completed."
     exit 0
 }
 
@@ -158,7 +158,7 @@ main() {
     create_config_dir
     link_vimrc
     create_vim_symlink "$nvim_path"
-    echo "[SUCCESS] NeoVim is now set up as a Vim replacement."
+    echo "[INFO] NeoVim is now set up as a Vim replacement."
     return 0
 }
 
