@@ -6,8 +6,8 @@
 #  Description:
 #  This script automates the installation of Python by:
 #  - Downloading the specified or default version from the official site.
-#  - Compiling and installing the package.
-#  - Optionally saving the source files for future use.
+#  - Compiling and installing the package to a specified or default location.
+#  - Saving source files only when installing with sudo.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,17 +17,22 @@
 #  Usage:
 #  Run this script without arguments to install the default Python version (3.13.4):
 #      ./install_python.sh
+#
 #  Specify a different Python version:
 #      ./install_python.sh 3.12.9
+#
 #  Specify an installation prefix:
 #      ./install_python.sh 3.12.9 /opt/python/3.12
-#  Run without sudo (for local installation):
-#      ./install_python.sh 3.13.4 ~/.local/python --no-sudo
-#  Skip saving sources by adding a fourth argument:
-#      ./install_python.sh 3.13.4 /opt/python sudo -n
 #
-#  By default, if no installation path is provided, the script will install Python under /opt/python/x.x.
-#  For example, Python 3.13.4 will be installed in /opt/python/3.13.
+#  Install without sudo (for local user installation):
+#      ./install_python.sh 3.13.4 ~/.local/python --no-sudo
+#
+#  Notes:
+#  - By default, if no installation path is provided, Python will be installed under /opt/python/x.x
+#    For example, Python 3.13.4 will be installed to /opt/python/3.13
+#
+#  - Source files are saved to /usr/local/src/python only when using sudo.
+#    If installed without sudo (e.g. using `--no-sudo`), source files will not be saved.
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.

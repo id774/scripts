@@ -6,8 +6,8 @@
 #  Description:
 #  This script automates the installation of Ruby by:
 #  - Downloading the specified or default version from the official site.
-#  - Compiling and installing the package.
-#  - Optionally saving the source files for future use.
+#  - Compiling and installing the package to a specified or default location.
+#  - Saving source files only when installing with sudo.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,17 +17,22 @@
 #  Usage:
 #  Run this script without arguments to install the default Ruby version (3.4.4):
 #      ./install_ruby.sh
+#
 #  Specify a different Ruby version:
 #      ./install_ruby.sh 3.3.7
+#
 #  Specify an installation prefix:
 #      ./install_ruby.sh 3.3.7 /opt/ruby/3.3
-#  Run without sudo (for local installation):
-#      ./install_ruby.sh 3.4.4 ~/.local/ruby --no-sudo
-#  Skip saving sources by adding a fourth argument:
-#      ./install_ruby.sh 3.4.4 /opt/ruby sudo -n
 #
-#  By default, if no installation path is provided, the script will install Ruby under /opt/ruby/x.x.
-#  For example, Ruby 3.4.4 will be installed in /opt/ruby/3.4.
+#  Install without sudo (for local user installation):
+#      ./install_ruby.sh 3.4.4 ~/.local/ruby --no-sudo
+#
+#  Notes:
+#  - By default, if no installation path is provided, Ruby will be installed under /opt/ruby/x.x
+#    For example, Ruby 3.4.4 will be installed to /opt/ruby/3.4
+#
+#  - Source files are saved to /usr/local/src/ruby only when using sudo.
+#    If installed without sudo (e.g. using `--no-sudo`), source files will not be saved.
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
