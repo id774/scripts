@@ -174,10 +174,6 @@ setup_sysadmin_scripts() {
     "$SCRIPTS/installer/setup_sysadmin_scripts.sh" install
 }
 
-setup_nvim() {
-    "$SCRIPTS/installer/setup_nvim.sh"
-}
-
 setup_get_resources() {
     "$SCRIPTS/installer/install_get_resources.sh"
 }
@@ -262,7 +258,6 @@ main() {
     install_dot_emacs
     install_crypt
     setup_sysadmin_scripts
-    setup_nvim
     setup_get_resources
     setup_chkrootkit
     setup_clamscan
