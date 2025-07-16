@@ -102,23 +102,26 @@ uninstall_python_symlink() {
     exit 0
 }
 
+# Check functions
+check_environment() {
+    check_system
+    check_sudo
+    check_commands "$@"
+}
+
 # Main function to execute the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
         -u|--uninstall)
-            check_system
-            check_sudo
-            check_commands apt-get dpkg
+            check_environment apt-get dpkg
             uninstall_python_symlink
-        ;;
+            ;;
+        *)
+            check_environment apt-get
+            install_python_symlink
+            ;;
     esac
-
-    check_system
-    check_sudo
-    check_commands apt-get
-    install_python_symlink
-
     return 0
 }
 
