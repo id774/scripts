@@ -137,6 +137,13 @@ uninstall_nvim_setup() {
     exit 0
 }
 
+# Display final report
+final_report() {
+    echo "[INFO] NeoVim is now set up as a Vim replacement."
+    echo "[INFO] Add ~/.local/bin to the beginning of your PATH if not already present:"
+    echo "       export PATH=~/.local/bin:\$PATH"
+}
+
 # Main function to execute the script
 main() {
     case "$1" in
@@ -154,10 +161,7 @@ main() {
     link_vimrc
     create_vim_symlink "$nvim_path"
 
-    echo "[INFO] NeoVim is now set up as a Vim replacement."
-    echo "[INFO] Add ~/.local/bin to the beginning of your PATH if not already present:"
-    echo "       export PATH=~/.local/bin:\$PATH"
-
+    final_report
     return 0
 }
 
