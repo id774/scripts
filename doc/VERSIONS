@@ -8,7 +8,7 @@ v1.4.5 (Release Date: TBD)
 - Standardize termination behavior for consistent script execution across all Python and Ruby scripts.
 - Specify minimum required Python version for all scripts and note that the test suite requires Python 3.6 or later to run successfully.
 - Ensure backward compatibility of select Python scripts down to at least Python 3.4.
-- Specify minimum required Ruby version (2.0 or later) in all applicable script headers.
+- Specify minimum required Ruby version (2.4 or later) in all applicable script headers.
 - Replace deprecated `Kconv#toutf8` with `String#encode` in convert_msime2canna.rb for compatibility with Ruby 2.0–3.x
 - Require valid Python and RSpec paths, rejecting invalid explicit inputs and falling back only when unspecified.
 - Add usage test case with -h option to all Python and Ruby test scripts.

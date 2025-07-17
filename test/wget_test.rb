@@ -71,7 +71,11 @@ describe 'wget.rb' do
     # Mocking URI.open to yield a StringIO with dummy content
     mock_source = double('source')
     allow(mock_source).to receive(:read).and_return(dummy_content)
-    allow(URI).to receive(:open).with(url).and_yield(mock_source)
+    if URI.respond_to?(:open)
+      allow(URI).to receive(:open).with(url).and_yield(mock_source)
+    else
+      allow(Kernel).to receive(:open).with(url).and_yield(mock_source)
+    end
 
     # Mocking File.open to yield a file-like object
     mock_output = double('output')

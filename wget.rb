@@ -17,7 +17,7 @@
 #  Example: ruby wget.rb http://example.com/file.txt
 #
 #  Requirements:
-#  - Ruby Version: 2.0 or later
+#  - Ruby Version: 2.4 or later
 #
 #  Version History:
 #  v1.2 2025-06-23
@@ -44,6 +44,15 @@ def usage
   exit 0
 end
 
+# Compatibility wrapper for URI.open (Ruby 2.5+) vs Kernel.open (older versions)
+def open_uri_compat(url, &block)
+  if URI.respond_to?(:open)
+    URI.open(url, &block)
+  else
+    Kernel.open(url, &block)
+  end
+end
+
 def main
   if ARGV.empty? || ['-h', '--help', '-v', '--version'].include?(ARGV[0])
     usage
@@ -52,7 +61,7 @@ def main
   url = ARGV.shift
   filename = url.split(/\//).last
 
-  URI.open(url) do |source|
+  open_uri_compat(url) do |source|
     File.open(filename, "w+b") do |o|
       o.print source.read
     end
