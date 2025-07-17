@@ -56,7 +56,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -70,7 +70,7 @@ check_commands() {
     done
 }
 
-# Function to validate directory
+# Validate directory
 check_directory() {
     if [ ! -d "$1" ]; then
         echo "[ERROR] '$1' is not a valid directory." >&2
@@ -78,7 +78,7 @@ check_directory() {
     fi
 }
 
-# Function to process images and remove EXIF GPS data
+# Process images and remove EXIF GPS data
 process_images() {
     dir="$1"
     $FIND "$dir" -type f | while read file
@@ -90,7 +90,7 @@ process_images() {
     done
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

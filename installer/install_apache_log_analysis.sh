@@ -58,7 +58,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system is Linux
+# Check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
@@ -66,7 +66,7 @@ check_system() {
     fi
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -80,7 +80,7 @@ check_commands() {
     done
 }
 
-# Function to check if SCRIPTS variable is set
+# Check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
@@ -97,7 +97,7 @@ check_sudo() {
     fi
 }
 
-# Function to create required directories with proper permissions
+# Create required directories with proper permissions
 setup_directories() {
     echo "[INFO] Setting up directories."
     if [ ! -d /var/log/sysadmin ]; then
@@ -107,7 +107,7 @@ setup_directories() {
     fi
 }
 
-# Function to deploy Apache log analysis scripts
+# Deploy Apache log analysis scripts
 deploy_scripts() {
     echo "[INFO] Deploying log analysis scripts."
     for script in apache_log_analysis.sh apache_calculater.py; do
@@ -120,7 +120,7 @@ deploy_scripts() {
     done
 }
 
-# Function to deploy configuration files
+# Deploy configuration files
 deploy_configurations() {
    echo "[INFO] Deploying configuration files."
 
@@ -136,7 +136,7 @@ deploy_configurations() {
     sudo chown root:root "$CONFIG_FILE"
 }
 
-# Function to deploy cron jobs
+# Deploy cron jobs
 setup_cron_jobs() {
     echo "[INFO] Setting up cron jobs."
     if ! sudo cp "$SCRIPTS/cron/bin/apache_log_analysis" /etc/cron.daily/apache_log_analysis; then
@@ -147,7 +147,7 @@ setup_cron_jobs() {
     sudo chown root:adm /etc/cron.daily/apache_log_analysis
 }
 
-# Function to set up log files
+# Set up log files
 setup_log_files() {
     echo "[INFO] Setting up log files."
     if [ ! -f /var/log/sysadmin/apache_summary.log ]; then
@@ -157,7 +157,7 @@ setup_log_files() {
     fi
 }
 
-# Function to deploy log rotation configuration
+# Deploy log rotation configuration
 setup_log_rotation() {
     echo "[INFO] Deploying log rotation configuration."
     if ! sudo cp "$SCRIPTS/cron/etc/logrotate.d/apache_summary" /etc/logrotate.d/apache_summary; then
@@ -168,7 +168,7 @@ setup_log_rotation() {
     sudo chown root:root /etc/logrotate.d/apache_summary
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

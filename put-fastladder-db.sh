@@ -50,7 +50,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -64,7 +64,7 @@ check_commands() {
     done
 }
 
-# Function to check if the database exists
+# Check if the database exists
 check_database() {
     if [ ! -f "$DB_PATH" ]; then
         echo "[ERROR] Database file '$DB_PATH' not found. Please ensure Fastladder is properly installed." >&2
@@ -72,7 +72,7 @@ check_database() {
     fi
 }
 
-# Function to vacuum SQLite database
+# Vacuum SQLite database
 vacuum_database() {
     echo "Vacuuming database..."
     sqlite3 "$DB_PATH" vacuum || {
@@ -81,7 +81,7 @@ vacuum_database() {
     }
 }
 
-# Function to sync database to remote server
+# Sync database to remote server
 sync_database() {
     echo "Syncing database to $USER@$HOST..."
     rsync -auvz "$DB_PATH" "$USER@$HOST:$DB_PATH" || {
@@ -90,7 +90,7 @@ sync_database() {
     }
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

@@ -51,7 +51,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -65,7 +65,7 @@ check_commands() {
     done
 }
 
-# Function to determine Fluentd and Fluent-Cat paths
+# Determine Fluentd and Fluent-Cat paths
 determine_fluentd_paths() {
     if [ -n "$1" ]; then
         FLUENTD=$1/bin/fluentd
@@ -76,7 +76,7 @@ determine_fluentd_paths() {
     fi
 }
 
-# Function to check if Fluentd and Fluent-Cat exist
+# Check if Fluentd and Fluent-Cat exist
 check_fluentd_commands() {
     if [ -z "$FLUENTD" ]; then
         echo "[ERROR] Fluentd not found. Please specify the path." >&2
@@ -90,7 +90,7 @@ check_fluentd_commands() {
     check_commands "$FLUENTD" "$FLUENT_CAT"
 }
 
-# Function to determine Fluentd configuration path
+# Determine Fluentd configuration path
 determine_fluentd_config() {
     if [ -n "$1" ]; then
         FLUENT_CONF=$1
@@ -111,18 +111,18 @@ determine_fluentd_config() {
     fi
 }
 
-# Function to start Fluentd
+# Start Fluentd
 start_fluentd() {
     $FLUENTD --setup "$FLUENT_CONF"
     $FLUENTD -c "$FLUENT_CONF/fluent.conf" "$3" &
 }
 
-# Function to send test message
+# Send test message
 send_test_message() {
     echo '{"json":"message"}' | "$FLUENT_CAT" debug.test
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

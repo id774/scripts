@@ -55,13 +55,13 @@ check_sudo() {
     fi
 }
 
-# Function to define environment variables
+# Define environment variables
 set_environment() {
     HADOOP_VER=${2:-0.20}
     export JAVA_HOME=/opt/java/jdk
 }
 
-# Function to verify if Hadoop service scripts exist
+# Verify if Hadoop service scripts exist
 verify_hadoop_scripts() {
     for service in namenode jobtracker datanode tasktracker; do
         if [ ! -x "/etc/init.d/hadoop-${HADOOP_VER}-$service" ]; then
@@ -71,14 +71,14 @@ verify_hadoop_scripts() {
     done
 }
 
-# Function to control Hadoop services
+# Control Hadoop services
 control_hadoop_services() {
     for service in namenode jobtracker datanode tasktracker; do
         sudo /etc/init.d/hadoop-${HADOOP_VER}-$service "$1"
     done
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     if [ ! "$1" = "start" ] && [ ! "$1" = "stop" ]; then
         usage

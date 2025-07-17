@@ -49,7 +49,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system is macOS
+# Check if the system is macOS
 check_system() {
     if [ "$(uname)" != "Darwin" ]; then
         echo "[ERROR] This script is intended for macOS only." >&2
@@ -57,7 +57,7 @@ check_system() {
     fi
 }
 
-# Function to check if required commands exist
+# Check if required commands exist
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -71,7 +71,7 @@ check_commands() {
     done
 }
 
-# Function to check if SCRIPTS variable is set
+# Check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
@@ -80,7 +80,7 @@ check_scripts() {
     fi
 }
 
-# Function to check network connectivity
+# Check network connectivity
 check_network() {
     if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
         echo "[ERROR] No network connection detected. Please check your internet access." >&2
@@ -88,7 +88,7 @@ check_network() {
     fi
 }
 
-# Function to check if the user has sudo privileges
+# Check if the user has sudo privileges
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
         echo "[ERROR] This script requires sudo privileges." >&2
@@ -96,7 +96,7 @@ check_sudo() {
     fi
 }
 
-# Function to check if required scripts exist
+# Check if required scripts exist
 check_required_scripts() {
     for script in "$SCRIPTS/installer/install_brews.sh" "$SCRIPTS/fix_compinit.sh"; do
         if [ ! -f "$script" ]; then
@@ -128,7 +128,7 @@ reinstall_homebrew() {
     echo "[INFO] Homebrew reinstallation completed."
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

@@ -51,7 +51,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system is Linux
+# Check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
@@ -59,7 +59,7 @@ check_system() {
     fi
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -73,7 +73,7 @@ check_commands() {
     done
 }
 
-# Function to check if SCRIPTS variable is set
+# Check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
@@ -90,7 +90,7 @@ check_sudo() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

@@ -62,7 +62,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system is macOS
+# Check if the system is macOS
 check_system() {
     if [ "$(uname)" != "Darwin" ]; then
         echo "[ERROR] This script is intended for macOS only." >&2
@@ -70,7 +70,7 @@ check_system() {
     fi
 }
 
-# Function to check network connectivity
+# Check network connectivity
 check_network() {
     if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
         echo "[ERROR] No network connection detected. Please check your internet access." >&2
@@ -78,7 +78,7 @@ check_network() {
     fi
 }
 
-# Function to check if Homebrew is installed
+# Check if Homebrew is installed
 check_homebrew() {
     if ! command -v brew >/dev/null 2>&1; then
         echo "[ERROR] Homebrew is not installed. Please install Homebrew first." >&2
@@ -86,7 +86,7 @@ check_homebrew() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

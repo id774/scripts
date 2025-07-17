@@ -48,7 +48,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -62,7 +62,7 @@ check_commands() {
     done
 }
 
-# Function to check if the database exists
+# Check if the database exists
 check_database() {
     if [ ! -f "$DBFILE" ]; then
         echo "[ERROR] Database file '$DBFILE' not found. Please ensure Fastladder is properly installed." >&2
@@ -70,7 +70,7 @@ check_database() {
     fi
 }
 
-# Function to execute SQL query
+# Execute SQL query
 exec_sql() {
     SQL_COMMAND="sqlite3 -csv -nullvalue 'NULL' $DBFILE"
     echo "$1" | $SQL_COMMAND || {
@@ -79,7 +79,7 @@ exec_sql() {
     }
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

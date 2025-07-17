@@ -47,7 +47,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -61,7 +61,7 @@ check_commands() {
     done
 }
 
-# Function to detect encoding using nkf
+# Detect encoding using nkf
 detect_encoding() {
     encoding=$(nkf -g "$1")
 
@@ -74,7 +74,7 @@ detect_encoding() {
     esac
 }
 
-# Function to detect which LaTeX engine to use (platex or uplatex)
+# Detect which LaTeX engine to use (platex or uplatex)
 detect_latex_engine() {
     class=$(sed -n '/documentclass/p' "$1" | sed '/%.*documentclass/d' | sed -n '1p')
 
@@ -84,7 +84,7 @@ detect_latex_engine() {
     esac
 }
 
-# Function to convert LaTeX to PDF
+# Convert LaTeX to PDF
 convert_to_pdf() {
     if [ ! -f "$1" ]; then
         echo "[ERROR] File '$1' does not exist." >&2
@@ -100,7 +100,7 @@ convert_to_pdf() {
     dvipdfmx "$dvi_file"
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

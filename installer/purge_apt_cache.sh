@@ -50,7 +50,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system is Linux
+# Check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
@@ -66,7 +66,7 @@ check_debian() {
     fi
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -88,12 +88,12 @@ check_sudo() {
     fi
 }
 
-# Function to set temporary file location
+# Set temporary file location
 set_temp_file() {
     SCRIPT_NAME="${TMP:-/tmp}/purge_apt_cache.sh"
 }
 
-# Function to generate and execute the cleanup script
+# Generate and execute the cleanup script
 perform_cleanup() {
     echo "#!/bin/sh" > "$SCRIPT_NAME"
     CONFIGS_TO_PURGE=$(aptitude search . | grep '^c' | awk '{print $2}')
@@ -113,7 +113,7 @@ perform_cleanup() {
     rm "$SCRIPT_NAME"
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

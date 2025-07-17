@@ -338,7 +338,7 @@ verify_sysctl_status() {
     echo "[INFO] IPv6 and IPv4 security settings have been successfully applied."
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     # Parse script argument (--apply or --force-apply) and validate input.
     ACTION="$1"

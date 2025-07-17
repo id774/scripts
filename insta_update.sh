@@ -283,7 +283,7 @@ change_to_target_dir() {
     cd "$TARGET_DIR" || exit
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     # First, parse options to handle --help/-h immediately
     parse_options "$@"

@@ -75,7 +75,7 @@ usage() {
     exit 0
 }
 
-# Function to check if required commands exist
+# Check if required commands exist
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -89,7 +89,7 @@ check_commands() {
     done
 }
 
-# Function to validate the SCRIPTS environment variable
+# Validate the SCRIPTS environment variable
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
@@ -98,7 +98,7 @@ check_scripts() {
     fi
 }
 
-# Function to set file permissions
+# Set file permissions
 set_permissions() {
     echo "[INFO] Setting read/write permissions for all script files."
     find "$SCRIPTS" -type f -exec chmod u+rw,g+r,g-w,o+r,o-w {} \;
@@ -128,7 +128,7 @@ set_permissions() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

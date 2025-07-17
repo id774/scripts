@@ -67,7 +67,7 @@ usage() {
     exit 0
 }
 
-# Function to check if required commands exist
+# Check if required commands exist
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -81,7 +81,7 @@ check_commands() {
     done
 }
 
-# Function to validate the SCRIPTS environment variable
+# Validate the SCRIPTS environment variable
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
@@ -90,7 +90,7 @@ check_scripts() {
     fi
 }
 
-# Function to test a single script
+# Test a single script
 test_script() {
     script="$1"
     echo "[INFO] Testing: $script -h"
@@ -157,7 +157,7 @@ final_report() {
     echo "======================================="
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

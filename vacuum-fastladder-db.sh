@@ -58,7 +58,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -72,7 +72,7 @@ check_commands() {
     done
 }
 
-# Function to check if the database directory and file exist
+# Check if the database directory and file exist
 check_database() {
     if [ ! -d "$DB_DIR" ]; then
         echo "[ERROR] Fastladder database directory does not exist. Please check the path and try again." >&2
@@ -85,12 +85,12 @@ check_database() {
     fi
 }
 
-# Function to change to the Fastladder database directory
+# Change to the Fastladder database directory
 change_to_db_dir() {
     cd "$DB_DIR" || exit 1
 }
 
-# Function to vacuum and optimize the database
+# Vacuum and optimize the database
 vacuum_and_optimize_db() {
     # Remove existing temporary database file if it exists
     test -f new.db && rm -vf new.db
@@ -102,7 +102,7 @@ vacuum_and_optimize_db() {
     sqlite3 fastladder.db .dump | sqlite3 new.db
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

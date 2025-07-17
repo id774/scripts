@@ -125,7 +125,7 @@ final_message() {
     ' "$0"
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -139,7 +139,7 @@ check_commands() {
     done
 }
 
-# Function to check network connectivity
+# Check network connectivity
 check_network() {
     if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
         echo "[ERROR] No network connection detected. Please check your internet access." >&2
@@ -435,7 +435,7 @@ cleanup() {
     rm -rf "$BUILD_DIR"
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     parse_args "$@"
     check_commands curl git make gcc g++ gzip tar wget awk

@@ -50,12 +50,12 @@ usage() {
     exit 0
 }
 
-# Function to check if a command exists
+# Check if a command exists
 command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
-# Function to display a command's output if the command exists
+# Display a command's output if the command exists
 execute_command() {
     if command_exists "$1"; then
         echo "[$@]"
@@ -64,7 +64,7 @@ execute_command() {
     fi
 }
 
-# Function to display specific log file contents if the file exists
+# Display specific log file contents if the file exists
 display_log() {
     if [ -f "$1" ]; then
         echo "[Contents of $1 with pattern '$2']"
@@ -77,7 +77,7 @@ display_log() {
     fi
 }
 
-# Function to gather system information
+# Gather system information
 gather_system_info() {
     if [ "$(uname)" != "Darwin" ]; then
         if [ "$(id -u)" -eq 0 ]; then
@@ -90,7 +90,7 @@ gather_system_info() {
     execute_command uptime
 }
 
-# Function to gather OS-specific information
+# Gather OS-specific information
 gather_os_specific_info() {
     if [ "$(uname)" = "Darwin" ]; then
         execute_command sysctl -n machdep.cpu.brand_string
@@ -111,7 +111,7 @@ gather_os_specific_info() {
     fi
 }
 
-# Function to gather network and process information
+# Gather network and process information
 gather_network_info() {
     execute_command ip addr show
     execute_command lsof -i
@@ -125,7 +125,7 @@ gather_network_info() {
     execute_command ntpq -pn
 }
 
-# Function to check fail2ban status
+# Check fail2ban status
 check_fail2ban_status() {
     if [ "$(uname)" != "Darwin" ]; then
         execute_command fail2ban-client status
@@ -133,7 +133,7 @@ check_fail2ban_status() {
     fi
 }
 
-# Function to gather logs
+# Gather logs
 gather_logs() {
     display_log "/var/log/auth.log" "Accepted" "Accepted publickey for (munin|git)"
     display_log "/var/log/messages" "attack"
@@ -141,7 +141,7 @@ gather_logs() {
     display_log "/var/log/fail2ban.log" "WARNING"
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

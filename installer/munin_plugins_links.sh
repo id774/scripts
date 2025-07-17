@@ -55,7 +55,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system is Linux
+# Check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
@@ -63,7 +63,7 @@ check_system() {
     fi
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -85,7 +85,7 @@ check_sudo() {
     fi
 }
 
-# Function to check if necessary directories exist and are writable
+# Check if necessary directories exist and are writable
 check_directories() {
     TMP_SCRIPT_DIR=${TMP:-/tmp}
     PLUGINS_DIR=/etc/munin/plugins
@@ -101,7 +101,7 @@ check_directories() {
     fi
 }
 
-# Function to configure Munin plugins
+# Configure Munin plugins
 configure_munin_plugins() {
     check_system
     check_sudo
@@ -131,7 +131,7 @@ configure_munin_plugins() {
     echo "[INFO] All munin plugins setup completed."
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     if [ "$#" -eq 0 ]; then
         usage

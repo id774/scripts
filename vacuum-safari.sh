@@ -44,7 +44,7 @@ usage() {
     exit 0
 }
 
-# Function to check if sqlite3 command is available
+# Check if sqlite3 command is available
 check_sqlite3() {
     if ! command -v sqlite3 >/dev/null 2>&1; then
         echo "[ERROR] sqlite3 command not found. Please install sqlite3." >&2
@@ -52,7 +52,7 @@ check_sqlite3() {
     fi
 }
 
-# Function to vacuum Safari's cache database
+# Vacuum Safari's cache database
 vacuum_safari_cache() {
     SAFARI_CACHE_DIR="$HOME/Library/Caches/com.apple.Safari"
 
@@ -71,7 +71,7 @@ vacuum_safari_cache() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

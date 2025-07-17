@@ -53,7 +53,7 @@ usage() {
     exit 0
 }
 
-# Function to clear Chromium "Web Data" directory
+# Clear Chromium "Web Data" directory
 clear_cache() {
     cache_dir="$HOME/.config/chromium/Default/Web Data"
 
@@ -67,7 +67,7 @@ clear_cache() {
     fi
 }
 
-# Function to parse command-line arguments
+# Parse command-line arguments
 parse_arguments() {
     while getopts "hc" opt; do
         case $opt in
@@ -87,7 +87,7 @@ parse_arguments() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     parse_arguments "$@"
     return 0

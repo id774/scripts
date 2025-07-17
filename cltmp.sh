@@ -47,7 +47,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -61,7 +61,7 @@ check_commands() {
     done
 }
 
-# Function to clean a directory with specified conditions
+# Clean a directory with specified conditions
 clean_dir() {
     dir=$1
     days=$2
@@ -148,7 +148,7 @@ perform_cleanup() {
     echo "[INFO] Temporary and cached files cleanup completed."
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

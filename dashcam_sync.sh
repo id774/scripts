@@ -74,7 +74,7 @@ usage() {
 # Determine the script's directory
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-# Function to load configuration
+# Load configuration
 load_configuration() {
     CONF_FILE="$SCRIPT_DIR/etc/dashcam_sync.conf"
     if [ ! -f "$CONF_FILE" ]; then
@@ -93,7 +93,7 @@ load_configuration() {
     fi
 }
 
-# Function to check if source and destination directories exist
+# Check if source and destination directories exist
 check_directories() {
     if [ ! -d "$SOURCE_DIR" ] || [ ! -d "$DEST_DIR" ]; then
         echo "[ERROR] Source or destination directory does not exist." >&2
@@ -101,7 +101,7 @@ check_directories() {
     fi
 }
 
-# Function to synchronize files using rsync
+# Synchronize files using rsync
 sync_files() {
     echo "[INFO] Synchronizing files to $DEST_DIR..."
     rsync -avz --delete "$SOURCE_DIR/" "$DEST_DIR/daily/"
@@ -111,7 +111,7 @@ sync_files() {
     fi
 }
 
-# Function to move files to a yearly directory
+# Move files to a yearly directory
 move_files() {
     src="$1"
     dest="$2"
@@ -130,7 +130,7 @@ move_files() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

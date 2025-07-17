@@ -94,7 +94,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -108,7 +108,7 @@ check_commands() {
     done
 }
 
-# Function to load configuration
+# Load configuration
 load_config() {
     # Determine the script's directory
     SCRIPT_DIR=$(dirname "$0")
@@ -123,7 +123,7 @@ load_config() {
     . "$CONF_FILE"
 }
 
-# Function to validate configuration
+# Validate configuration
 validate_config() {
     # Check if necessary variables are set
     if [ -z "$INSTA_DIR" ] || [ -z "$BACKUP_DIR" ] || \
@@ -133,7 +133,7 @@ validate_config() {
     fi
 }
 
-# Function to check if a directory exists
+# Check if a directory exists
 check_dir() {
     # Checks if the specified directory exists
     if [ ! -d "$1" ]; then
@@ -142,14 +142,14 @@ check_dir() {
     fi
 }
 
-# Function to synchronize files
+# Synchronize files
 sync_files() {
     # Syncs files from source to destination directory
     echo "[INFO] Syncing files from $1 to $2..."
     rsync -avz --delete "$1" "$2" || exit 3
 }
 
-# Function to check and perform remote synchronization
+# Check and perform remote synchronization
 check_remote_sync() {
     # Checks remote server reachability and performs sync if possible
     if ping -c 1 "$REMOTE_HOST" >/dev/null 2>&1; then
@@ -160,7 +160,7 @@ check_remote_sync() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

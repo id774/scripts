@@ -57,7 +57,7 @@ check_sudo() {
     fi
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -83,7 +83,7 @@ import_gpg_key() {
     sudo gpg --armor --export "$pubkey" | sudo apt-key add -
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

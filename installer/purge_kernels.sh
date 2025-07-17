@@ -60,7 +60,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system is Linux
+# Check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
@@ -68,7 +68,7 @@ check_system() {
     fi
 }
 
-# Function to check if the system is Ubuntu-based
+# Check if the system is Ubuntu-based
 check_ubuntu() {
     if [ ! -f /etc/lsb-release ] || [ ! -f /etc/debian_version ]; then
         echo "[ERROR] This script only runs on Ubuntu or Ubuntu-based systems." >&2
@@ -76,7 +76,7 @@ check_ubuntu() {
     fi
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -98,12 +98,12 @@ check_sudo() {
     fi
 }
 
-# Function to get the currently running kernel version
+# Get the currently running kernel version
 get_current_kernel() {
     CURKERNEL=$(uname -r | sed 's/-*[a-z]//g' | sed 's/-386//g')
 }
 
-# Function to find and list old kernels
+# Find and list old kernels
 list_old_kernels() {
     OLDKERNELS=$(dpkg --list | awk '/^ii/ && /linux-image-[0-9]/ {print $2}' | grep -v "$CURKERNEL")
     if [ -z "$OLDKERNELS" ]; then
@@ -112,14 +112,14 @@ list_old_kernels() {
     fi
 }
 
-# Function to remove old kernels safely
+# Remove old kernels safely
 remove_old_kernels() {
     echo "[INFO] Purging old kernels: $OLDKERNELS"
     sudo apt purge -y $OLDKERNELS
     echo "[INFO] Kernel cleanup completed."
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

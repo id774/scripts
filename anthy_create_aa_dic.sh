@@ -50,7 +50,7 @@ check_system() {
     fi
 }
 
-# Function to check if SCRIPTS variable is set
+# Check if the SCRIPTS variable is unset or empty
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
@@ -59,7 +59,7 @@ check_scripts() {
     fi
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -73,20 +73,20 @@ check_commands() {
     done
 }
 
-# Function to check for required files and directories
+# Check for required files and directories
 check_files() {
     test -f "$SCRIPTS/convert_msime2cannna.rb" || { echo "[ERROR] Missing convert_msime2cannna.rb" >&2; exit 1; }
     test -f "$SCRIPTS/etc/aa.txt" || { echo "[ERROR] Missing aa.txt" >&2; exit 1; }
     test -d "$HOME/.anthy" || mkdir -p "$HOME/.anthy"
 }
 
-# Function to create Anthy dictionary for ASCII Art
+# Create Anthy dictionary for ASCII Art
 create_dictionary() {
     ruby -Ku "$SCRIPTS/convert_msime2cannna.rb" < "$SCRIPTS/etc/aa.txt" > "$HOME/.anthy/private_words_default"
     echo "[INFO] Dictionary created."
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

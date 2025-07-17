@@ -56,7 +56,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system is Linux
+# Check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
@@ -72,7 +72,7 @@ check_sudo() {
     fi
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -96,7 +96,7 @@ check_desktop_installed() {
     fi
 }
 
-# Function to check if LightDM is installed
+# Check if LightDM is installed
 check_lightdm() {
     if ! dpkg-query -W -f='${Status}' lightdm 2>/dev/null | grep -q "ok installed"; then
         echo "[ERROR] LightDM is not installed. This script requires LightDM." >&2
@@ -122,7 +122,7 @@ restart_lightdm() {
     sudo systemctl restart lightdm || echo "[WARN] Failed to restart LightDM." >&2
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

@@ -64,7 +64,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system is Linux
+# Check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
@@ -72,7 +72,7 @@ check_system() {
     fi
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -86,7 +86,7 @@ check_commands() {
     done
 }
 
-# Function to check network connectivity
+# Check network connectivity
 check_network() {
     if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
         echo "[ERROR] No network connection detected. Please check your internet access." >&2
@@ -169,7 +169,7 @@ install_paco() {
     rm -rf install_paco
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

@@ -47,7 +47,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system is macOS
+# Check if the system is macOS
 check_system() {
     if [ "$(uname)" != "Darwin" ]; then
         echo "[ERROR] This script is intended for macOS only." >&2
@@ -55,7 +55,7 @@ check_system() {
     fi
 }
 
-# Function to check if SCRIPTS variable is set
+# Check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
@@ -64,7 +64,7 @@ check_scripts() {
     fi
 }
 
-# Function to copy Karabiner configuration
+# Copy Karabiner configuration
 setup_karabiner() {
     CONFIG_DIR="$HOME/.karabiner.d/configuration"
     SRC_CONFIG="$SCRIPTS/dot_files/dot_karabiner.d/configuration/karabiner.json"
@@ -99,7 +99,7 @@ setup_karabiner() {
     echo "[INFO] Karabiner configuration successfully updated."
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

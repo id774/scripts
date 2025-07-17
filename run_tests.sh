@@ -78,7 +78,7 @@ usage() {
     exit 0
 }
 
-# Function to check if SCRIPTS variable is set
+# Check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
@@ -87,7 +87,7 @@ check_scripts() {
     fi
 }
 
-# Function to extract test count from Python test result
+# Extract test count from Python test result
 extract_python_test_count() {
     result="$1"
 
@@ -103,7 +103,7 @@ extract_python_test_count() {
     python_skipped_tests=`expr "$python_skipped_tests" + "$python_skipped_tests_in_test"`
 }
 
-# Function to extract test count from Ruby test result
+# Extract test count from Ruby test result
 extract_ruby_test_count() {
     result="$1"
 
@@ -121,7 +121,7 @@ extract_ruby_test_count() {
     ruby_skipped_tests=`expr "$ruby_skipped_tests" + "$ruby_skipped_tests_in_test"`
 }
 
-# Function to run Python tests
+# Run Python tests
 run_python_tests() {
     # Flag whether python_path was explicitly passed
     python_path_explicit=0
@@ -170,7 +170,7 @@ run_python_tests() {
     display_python_report
 }
 
-# Function to run Ruby tests
+# Run Ruby tests
 run_ruby_tests() {
     # Check if Ruby is installed
     if [ -z "$ruby_path" ]; then
@@ -306,7 +306,7 @@ run_tests() {
     display_final_report
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     check_scripts
     run_tests "$@"

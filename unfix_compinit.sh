@@ -61,7 +61,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system is macOS
+# Check if the system is macOS
 check_system() {
     if [ "$(uname)" != "Darwin" ]; then
         echo "[ERROR] This script is intended for macOS only." >&2
@@ -133,7 +133,7 @@ adjust_homebrew_permissions() {
     ls -Tld /usr/local/share/zsh/site-functions
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

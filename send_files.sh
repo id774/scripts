@@ -93,7 +93,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -261,7 +261,7 @@ confirm_send_7z() {
     esac
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     SEND_MODE="no"
     USE_7Z="no"

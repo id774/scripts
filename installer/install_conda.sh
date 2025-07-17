@@ -63,7 +63,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -77,7 +77,7 @@ check_commands() {
     done
 }
 
-# Function to set up the environment variables for Conda and Easy Install
+# Set up the environment variables for Conda and Easy Install
 setup_environment() {
     if [ -n "$1" ]; then
         export EASY_INSTALL=$1/bin/easy_install
@@ -97,13 +97,13 @@ setup_environment() {
     fi
 }
 
-# Function to install a single Python library using Conda
+# Install a single Python library using Conda
 install_lib() {
     echo "[INFO] Installing $1..."
     $CONDA install -y "$1"
 }
 
-# Function to install the necessary libraries using Conda
+# Install the necessary libraries using Conda
 install_libs() {
     echo "[INFO] Updating Conda base environment..."
     $CONDA update -n base -y conda
@@ -213,7 +213,7 @@ install_libs() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

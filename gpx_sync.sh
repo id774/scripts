@@ -105,7 +105,7 @@ usage() {
 # Determine the script's directory
 SCRIPT_DIR=$(dirname "$0")
 
-# Function to load configuration
+# Load configuration
 load_configuration() {
     CONF_FILE="$SCRIPT_DIR/etc/gpx_sync.conf"
     if [ ! -f "$CONF_FILE" ]; then
@@ -124,7 +124,7 @@ load_configuration() {
     fi
 }
 
-# Function to check for required commands
+# Check for required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -138,7 +138,7 @@ check_commands() {
     done
 }
 
-# Function to parse arguments
+# Parse arguments
 parse_arguments() {
     # Set default permissions from config or use the argument
     permissions=${1:-$DEFAULT_PERMISSIONS}
@@ -158,7 +158,7 @@ parse_arguments() {
     fi
 }
 
-# Function to check if GPX files exist in a directory
+# Check if GPX files exist in a directory
 check_gpx_files() {
     dir="$1"
     if ! find "$dir" -maxdepth 1 -name '*.gpx' -type f | grep -q .; then
@@ -168,7 +168,7 @@ check_gpx_files() {
     return 0
 }
 
-# Function to set permissions and copy files to a directory
+# Set permissions and copy files to a directory
 copy_files() {
     source_dir="$1"
     destination="$2"
@@ -181,7 +181,7 @@ copy_files() {
     find "$source_dir" -maxdepth 1 -name '*.gpx' -type f -exec chmod "$permissions" {} \; -exec cp {} "$destination" \;
 }
 
-# Function to perform rsync
+# Perform rsync
 sync_files() {
     source="$1"
     destination_user="$2"
@@ -190,7 +190,7 @@ sync_files() {
     rsync -avz --delete "$source" "$destination_user@$destination_host:~/gpx/" || return $?
 }
 
-# Function to remove files
+# Remove files
 remove_files() {
     for file in "$@"; do
         echo "[INFO] Removing file: $file"
@@ -198,7 +198,7 @@ remove_files() {
     done
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

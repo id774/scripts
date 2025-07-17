@@ -59,7 +59,7 @@ usage() {
     exit 0
 }
 
-# Function to check if required commands exist
+# Check if required commands exist
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -73,7 +73,7 @@ check_commands() {
     done
 }
 
-# Function to determine the directory and option for hidden files
+# Determine the directory and option for hidden files
 parse_arguments() {
     show_hidden=false
 
@@ -93,7 +93,7 @@ parse_arguments() {
     fi
 }
 
-# Function to display the directory tree
+# Display the directory tree
 display_tree() {
     echo "$directory"
     cd "$directory" || exit 1
@@ -105,7 +105,7 @@ display_tree() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

@@ -63,7 +63,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands before execution
+# Check required commands before execution
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -77,7 +77,7 @@ check_commands() {
     done
 }
 
-# Function to determine the Ruby library path for a custom installation
+# Determine the Ruby library path for a custom installation
 get_custom_ruby_path() {
     BASE_DIR="$1"
 
@@ -101,7 +101,7 @@ get_custom_ruby_path() {
     TARGET_DIR="$BASE_DIR/lib/ruby/$RUBY_VERSION"
 }
 
-# Function to determine the Ruby library path for Homebrew-installed Ruby
+# Determine the Ruby library path for Homebrew-installed Ruby
 get_homebrew_ruby_path() {
     if [ -x "/opt/homebrew/opt/ruby/bin/ruby" ]; then
         RUBY_BIN="/opt/homebrew/opt/ruby/bin/ruby"
@@ -122,7 +122,7 @@ get_homebrew_ruby_path() {
     fi
 }
 
-# Function to create ubygems.rb if it does not already exist
+# Create ubygems.rb if it does not already exist
 create_ubygems() {
     if [ -f "$TARGET_DIR/ubygems.rb" ]; then
         echo "[INFO] Notice: ubygems.rb already exists in $TARGET_DIR. No changes were made."
@@ -146,7 +146,7 @@ create_ubygems() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

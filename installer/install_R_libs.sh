@@ -45,7 +45,7 @@ usage() {
     exit 0
 }
 
-# Function to check if R is installed
+# Check if R is installed
 check_R() {
     if ! command -v R >/dev/null 2>&1; then
         echo "[ERROR] R is not installed. Please install R and try again." >&2
@@ -53,7 +53,7 @@ check_R() {
     fi
 }
 
-# Function to check if SCRIPTS variable is set
+# Check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
@@ -62,7 +62,7 @@ check_scripts() {
     fi
 }
 
-# Function to check if the config file exists
+# Check if the config file exists
 check_config() {
     if [ ! -f "$SCRIPTS/etc/install_mylibs.R" ]; then
         echo "[ERROR] Configuration file install_mylibs.R not found in $SCRIPTS/etc/." >&2
@@ -70,7 +70,7 @@ check_config() {
     fi
 }
 
-# Function to check if the user has sudo privileges
+# Check if the user has sudo privileges
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
         echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
@@ -78,14 +78,14 @@ check_sudo() {
     fi
 }
 
-# Function to install R libraries
+# Install R libraries
 install_R_libs() {
     echo "[INFO] Installing R libraries..."
     sudo R --no-save --no-restore -e "source('$SCRIPTS/etc/install_mylibs.R'); install.packages(required_packages, dependencies=TRUE)"
     echo "[INFO] R library installation completed."
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

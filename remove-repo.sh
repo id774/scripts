@@ -109,7 +109,7 @@ remove_repos() {
     done
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

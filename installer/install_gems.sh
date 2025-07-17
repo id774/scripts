@@ -68,7 +68,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -82,7 +82,7 @@ check_commands() {
     done
 }
 
-# Function to set up the environment variables for gem
+# Set up the environment variables for gem
 setup_environment() {
     if [ -n "$1" ]; then
         export GEM=$1/bin/gem
@@ -101,13 +101,13 @@ setup_environment() {
     fi
 }
 
-# Function to install a single Ruby gem
+# Install a single Ruby gem
 install_gem() {
     echo "[INFO] Installing $1..."
     $GEM install $PROXY "$1"
 }
 
-# Function to install the necessary Ruby gems
+# Install the necessary Ruby gems
 install_gems() {
     echo "[INFO] Updating gem system to the latest version..."
     $GEM update --system $PROXY
@@ -237,7 +237,7 @@ install_gems() {
     $GEM list --local
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

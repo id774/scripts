@@ -59,7 +59,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system is Linux
+# Check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
@@ -67,7 +67,7 @@ check_system() {
     fi
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -81,7 +81,7 @@ check_commands() {
     done
 }
 
-# Function to verify if the system is Debian-based
+# Verify if the system is Debian-based
 check_debian_based() {
     if [ ! -f /etc/os-release ]; then
         echo "[ERROR] Unable to determine the operating system." >&2
@@ -107,7 +107,7 @@ check_debian_based() {
     esac
 }
 
-# Function to verify script environment
+# Verify script environment
 setup_environment() {
     SCRIPTS="$HOME/scripts"
     if [ ! -d "$SCRIPTS" ]; then
@@ -116,7 +116,7 @@ setup_environment() {
     fi
 }
 
-# Function to ask for confirmation before execution
+# Ask for confirmation before execution
 confirm_execution() {
     echo "[INFO] This script will configure your Debian-based system."
     printf "[INFO] Do you want to proceed? [y/N]: "
@@ -128,7 +128,7 @@ confirm_execution() {
     esac
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

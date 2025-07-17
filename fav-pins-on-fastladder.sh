@@ -47,7 +47,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -61,7 +61,7 @@ check_commands() {
     done
 }
 
-# Function to check if the database file exists
+# Check if the database file exists
 check_db_file() {
     DBFILE="$HOME/fastladder/db/fastladder.db"
     if [ ! -f "$DBFILE" ]; then
@@ -70,12 +70,12 @@ check_db_file() {
     fi
 }
 
-# Function to execute SQL commands safely
+# Execute SQL commands safely
 exec_sql() {
     echo "$@" | sqlite3 -separator , "$DBFILE"
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

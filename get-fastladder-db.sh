@@ -50,7 +50,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -64,13 +64,13 @@ check_commands() {
     done
 }
 
-# Function to process arguments
+# Process arguments
 check_arguments() {
     USER="${1:-debian}"
     HOST="${2:-harpuia}"
 }
 
-# Function to sync Fastladder database
+# Sync Fastladder database
 sync_database() {
     SOURCE_DB_PATH="fastladder/db/new.db"
     TARGET_DB_PATH="$HOME/fastladder/db/fastladder.db"
@@ -96,7 +96,7 @@ sync_database() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

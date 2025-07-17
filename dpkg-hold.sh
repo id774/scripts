@@ -65,7 +65,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -79,18 +79,18 @@ check_commands() {
     done
 }
 
-# Function to display the current state of a package
+# Display the current state of a package
 show_package_status() {
     dpkg -l "$1"
 }
 
-# Function to set the state of a package
+# Set the state of a package
 set_package_state() {
     echo "$1" "$2" | dpkg --set-selections
     show_package_status "$1"
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

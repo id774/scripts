@@ -48,7 +48,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the script is running from cron
+# Check if the script is running from cron
 is_running_from_cron() {
     if tty -s; then
         return 1  # Terminal attached (interactive session)
@@ -57,7 +57,7 @@ is_running_from_cron() {
     fi
 }
 
-# Function to check if SELinux is enabled
+# Check if SELinux is enabled
 check_selinux() {
     if ! sestatus 2>/dev/null | grep -q "enabled"; then
         echo "[ERROR] SELinux is not enabled. This script will not proceed." >&2
@@ -65,7 +65,7 @@ check_selinux() {
     fi
 }
 
-# Function to restore SELinux contexts
+# Restore SELinux contexts
 restore_selinux_context() {
     echo "Restoring SELinux security contexts..."
     for dir in /usr /opt /etc /var /root /home; do
@@ -75,7 +75,7 @@ restore_selinux_context() {
     echo "SELinux context restoration completed."
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

@@ -56,7 +56,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system supports apt-get
+# Check if the system supports apt-get
 check_environment() {
     if ! command -v apt-get >/dev/null 2>&1; then
         echo "[ERROR] apt-get is not available on this system. This script requires a Debian-based environment." >&2
@@ -64,7 +64,7 @@ check_environment() {
     fi
 }
 
-# Function to verify script environment
+# Verify script environment
 setup_environment() {
     SCRIPTS="$HOME/scripts"
     if [ ! -d "$SCRIPTS" ]; then
@@ -73,7 +73,7 @@ setup_environment() {
     fi
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -139,7 +139,7 @@ setup_tune2fs() {
     "$SCRIPTS/installer/setup_tune2fs.sh"
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

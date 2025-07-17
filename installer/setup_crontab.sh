@@ -61,7 +61,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system is Linux
+# Check if the system is Linux
 check_system() {
     if [ "$(uname -s)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
@@ -69,7 +69,7 @@ check_system() {
     fi
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -97,7 +97,7 @@ extract_and_check_command() {
     grep -q "$command_part" "$CRONTAB_FILE"
 }
 
-# Function to add an entry to crontab if it does not exist
+# Add an entry to crontab if it does not exist
 add_entry() {
     entry="$1"
     echo "[INFO] Verifying crontab entry for: $entry"
@@ -110,7 +110,7 @@ add_entry() {
     fi
 }
 
-# Function to ensure required directories exist
+# Ensure required directories exist
 create_directories() {
     echo "[INFO] Ensuring cron directories exist..."
     for dir in /etc/cron.weekday /etc/cron.weekend; do
@@ -121,7 +121,7 @@ create_directories() {
     done
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

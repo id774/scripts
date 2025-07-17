@@ -228,7 +228,7 @@ parse_arguments() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     parse_arguments "$@"
 

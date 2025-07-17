@@ -84,7 +84,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the script is running from cron
+# Check if the script is running from cron
 is_running_from_cron() {
     if tty -s; then
         return 1  # Terminal attached (interactive session)
@@ -101,7 +101,7 @@ is_joblog_writable() {
     fi
 }
 
-# Function to determine the script's directory and load configuration
+# Determine the script's directory and load configuration
 initialize() {
     if ! is_running_from_cron; then
         echo "[ERROR] This script is intended to be run by cron only." >&2
@@ -131,7 +131,7 @@ initialize() {
     date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
 }
 
-# Function to execute tests for a given Python and Ruby version
+# Execute tests for a given Python and Ruby version
 run_tests() {
     python_version="$1"
     ruby_version="$2"
@@ -145,7 +145,7 @@ run_tests() {
     fi
 }
 
-# Function to run shell script validation if available
+# Run shell script validation if available
 run_check_scripts() {
     if [ -x "$SCRIPTS/test/check_scripts.sh" ]; then
         echo >> "$JOBLOG" 2>&1
@@ -161,7 +161,7 @@ run_check_scripts() {
     fi
 }
 
-# Function to perform Python compatibility check
+# Perform Python compatibility check
 run_compatibility_check() {
     echo "=== Checking Python compatibility with Python $first_python_version. ===" >> "$JOBLOG" 2>&1
     "/opt/python/$first_python_version/bin/python" "$SCRIPTS/find_pycompat.py" "$SCRIPTS" >> "$JOBLOG" 2>&1
@@ -184,14 +184,14 @@ finalize() {
     echo >> "$JOBLOG" 2>&1
 }
 
-# Function to send a summary email to the administrator
+# Send a summary email to the administrator
 send_mail_to_admin() {
     cat -v "$JOBLOG" | nkf -w | \
       mail -s "[cron][$(hostname)] CI Results Overview" \
       "$ADMIN_MAIL_ADDRESS"
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

@@ -67,7 +67,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -81,7 +81,7 @@ check_commands() {
     done
 }
 
-# Function to set up the environment variables for pip and Easy Install
+# Set up the environment variables for pip and Easy Install
 setup_environment() {
     if [ -n "$1" ]; then
         export EASY_INSTALL=$1/bin/easy_install
@@ -108,13 +108,13 @@ setup_environment() {
     fi
 }
 
-# Function to install a single Python library
+# Install a single Python library
 install_lib() {
     echo "[INFO] Installing $1..."
     $PIP install $PROXY -U "$1"
 }
 
-# Function to install the necessary Python libraries using pip
+# Install the necessary Python libraries using pip
 install_libs() {
     echo "[INFO] Updating pip to the latest version..."
     $PIP install $PROXY -U pip
@@ -215,7 +215,7 @@ install_libs() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

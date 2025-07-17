@@ -69,7 +69,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the script is running from cron
+# Check if the script is running from cron
 is_running_from_cron() {
     if tty -s; then
         return 1  # Terminal attached (interactive session)
@@ -166,7 +166,7 @@ sync_logs_to_remote() {
     rsync $RSYNC_OPTS "$LOG_DIR" "$REMOTE_DIR"
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

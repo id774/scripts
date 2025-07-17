@@ -70,7 +70,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the script is running from cron
+# Check if the script is running from cron
 is_running_from_cron() {
     if tty -s; then
         return 1  # Terminal attached (interactive session)
@@ -79,7 +79,7 @@ is_running_from_cron() {
     fi
 }
 
-# Function to display the serial number of a given device
+# Display the serial number of a given device
 print_serial_number() {
     if [ -n "$T_DEVICE" ] && [ -b "/dev/$T_DEVICE" ]; then
         SERIAL=$(udevadm info --query=all --name="/dev/$T_DEVICE" 2>/dev/null | sed -n 's/^E: ID_SERIAL_SHORT=//p')
@@ -93,7 +93,7 @@ print_serial_number() {
     fi
 }
 
-# Function to display the timestamp of the last backup and update it
+# Display the timestamp of the last backup and update it
 display_and_update_timestamp() {
     if [ -f "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp" ]; then
         echo "[INFO] ls -l $T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
@@ -103,7 +103,7 @@ display_and_update_timestamp() {
     touch "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
 }
 
-# Function to display the installed versions of TrueCrypt and VeraCrypt
+# Display the installed versions of TrueCrypt and VeraCrypt
 version_info() {
     if [ -x /usr/bin/truecrypt ]; then
         echo "[INFO] Checking installed version of TrueCrypt."
@@ -115,7 +115,7 @@ version_info() {
     fi
 }
 
-# Function to retrieve SMART information of the backup and target devices
+# Retrieve SMART information of the backup and target devices
 smart_info() {
     for DEV in "$B_DEVICE" "$T_DEVICE"; do
         if [ -b "/dev/$DEV" ]; then
@@ -128,7 +128,7 @@ smart_info() {
     done
 }
 
-# Function to perform a SMART diagnostic check on the target device
+# Perform a SMART diagnostic check on the target device
 smart_check() {
     if [ -b "/dev/$T_DEVICE" ]; then
         if [ -f "$T_HOME/$T_MOUNT/$T_DEVICE/smart_longtest" ]; then
@@ -151,7 +151,7 @@ smart_check() {
     fi
 }
 
-# Function to show disk space usage of backup directories
+# Show disk space usage of backup directories
 show_capacity_of_directories() {
     if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ]; then
         echo "[INFO] Disk usage of $B_HOME/$B_MOUNT/$B_DEVICE."
@@ -159,7 +159,7 @@ show_capacity_of_directories() {
     fi
 }
 
-# Function to remove unnecessary files such as macOS metadata and temp files
+# Remove unnecessary files such as macOS metadata and temp files
 cleanup() {
     echo "[INFO] Removing junk files in $B_HOME/$B_MOUNT/$B_DEVICE..."
     echo "[INFO] Removing ._* AppleDouble files..."
@@ -173,7 +173,7 @@ cleanup() {
     echo "[INFO] Cleanup completed."
 }
 
-# Function to create a local backup of Git repositories
+# Create a local backup of Git repositories
 git_backup() {
     rm -f "$ARCHIVE_DIR/$ARCHIVE_NAME_GIT"
 
@@ -209,7 +209,7 @@ git_backup() {
     cd "$HOME"
 }
 
-# Function to back up GitHub repositories locally
+# Back up GitHub repositories locally
 github_backup() {
     rm -f "$ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB"
 
@@ -228,7 +228,7 @@ github_backup() {
     fi
 }
 
-# Function to sync user directories from disk to remote server via SSH
+# Sync user directories from disk to remote server via SSH
 rsync_disk2ssh_1() {
     echo -n "[INFO] Executing: rsync_disk2ssh_1 $B_DEVICE -> $T_DEVICE of $T_HOST at "
     date "+%Y/%m/%d %T"
@@ -250,7 +250,7 @@ rsync_disk2ssh_1() {
     done
 }
 
-# Function to sync large files from disk to remote server via SSH
+# Sync large files from disk to remote server via SSH
 rsync_disk2ssh_2() {
     echo -n "[INFO] Executing: rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST at "
     date "+%Y/%m/%d %T"
@@ -271,7 +271,7 @@ rsync_disk2ssh_2() {
     echo "[INFO] Return code is $RC"
 }
 
-# Function to sync user directories between two local disks
+# Sync user directories between two local disks
 rsync_disk2disk_1() {
     echo -n "[INFO] Executing: rsync_disk2disk_1 $B_DEVICE -> $T_DEVICE at "
     date "+%Y/%m/%d %T"
@@ -292,7 +292,7 @@ rsync_disk2disk_1() {
     done
 }
 
-# Function to sync large files between two local disks
+# Sync large files between two local disks
 rsync_disk2disk_2() {
     echo -n "[INFO] Executing: rsync_disk2disk_2 $B_DEVICE -> $T_DEVICE at "
     date "+%Y/%m/%d %T"
@@ -312,7 +312,7 @@ rsync_disk2disk_2() {
     echo "[INFO] Return code is $RC"
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

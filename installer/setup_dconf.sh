@@ -52,7 +52,7 @@ usage() {
     exit 0
 }
 
-# Function to check if the system is Linux
+# Check if the system is Linux
 check_system() {
     if [ "$(uname)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux only." >&2
@@ -60,7 +60,7 @@ check_system() {
     fi
 }
 
-# Function to check if required commands exist
+# Check if required commands exist
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -74,7 +74,7 @@ check_commands() {
     done
 }
 
-# Function to check if a desktop environment is installed
+# Check if a desktop environment is installed
 check_desktop_installed() {
     if tasksel --list-tasks | grep -q '^i.*desktop'; then
         echo "[INFO] Desktop environment detected."
@@ -84,7 +84,7 @@ check_desktop_installed() {
     fi
 }
 
-# Function to configure dconf keybindings
+# Configure dconf keybindings
 setup_dconf_keys() {
     action=$1
     key_prefix=$2
@@ -99,7 +99,7 @@ setup_dconf_keys() {
     done
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

@@ -44,7 +44,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -58,7 +58,7 @@ check_commands() {
     done
 }
 
-# Function to remove trailing whitespace from a file
+# Remove trailing whitespace from a file
 process_file() {
     file="$1"
 
@@ -74,7 +74,7 @@ process_file() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

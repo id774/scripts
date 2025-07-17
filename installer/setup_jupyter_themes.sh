@@ -50,7 +50,7 @@ usage() {
     exit 0
 }
 
-# Function to check if required commands exist
+# Check if required commands exist
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -64,7 +64,7 @@ check_commands() {
     done
 }
 
-# Function to check if the user has sudo privileges
+# Check if the user has sudo privileges
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
         echo "[ERROR] This script requires sudo privileges." >&2
@@ -108,7 +108,7 @@ install_jupyter_theme() {
     echo "[INFO] If further customization is needed, edit: $HOME/.jupyter/custom/custom.css"
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;

@@ -54,7 +54,7 @@ usage() {
     exit 0
 }
 
-# Function to check required commands
+# Check required commands
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -77,13 +77,13 @@ check_sshd_config() {
     fi
 }
 
-# Function to handle main SSHD configuration checks
+# Handle main SSHD configuration checks
 check_main_sshd() {
     sshd_config_file="/etc/ssh/sshd_config"
     check_sshd_config "$sshd_config_file"
 }
 
-# Function to handle additional SSHD configuration checks
+# Handle additional SSHD configuration checks
 check_additional_sshd() {
     sshd_config_file="/etc/ssh/sshd_config.d/000-sshdconfig.conf"
     if [ -f "$sshd_config_file" ]; then
@@ -91,7 +91,7 @@ check_additional_sshd() {
     fi
 }
 
-# Main function to execute the script
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
