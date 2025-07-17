@@ -78,7 +78,7 @@ usage() {
     exit 0
 }
 
-# Check if SCRIPTS variable is set
+# Check if the SCRIPTS variable is unset or empty
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2

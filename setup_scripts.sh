@@ -89,7 +89,7 @@ check_commands() {
     done
 }
 
-# Validate the SCRIPTS environment variable
+# Check if the SCRIPTS variable is unset or empty
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
