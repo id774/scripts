@@ -19,8 +19,11 @@ This repository contains various utility scripts to address common tasks efficie
 
 Supported languages:
 - Shell Script
-- Python (scripts require Python 3.1 or later depending on the file, but the test suite requires 3.6 or later)
-- Ruby (requires version 2.4 or later)
+- Python (fully supported from version 3.6; most scripts work with 3.1 or later, but the test suite requires 3.6)
+- Ruby   (fully supported from version 2.4; some scripts may work with 2.0 or later)
+
+Full support is provided for language versions released since late December 2016, including Python 3.6 and Ruby 2.4.
+The repository is also fully compatible with current stable versions of Python and Ruby.
 
 ---
 
