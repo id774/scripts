@@ -224,6 +224,7 @@ deploy_dotfiles_to_linux() {
 # Deploy dotfiles to multiple users across different OS environments
 bulk_deploy() {
     test -d "/home" && test -d "/home/$USER" && sudo chmod 750 /home/*
+    test -d /home/opt && sudo chmod 755 /home/opt
     deploy_dotfiles_to_linux \
       debian \
       ubuntu \
