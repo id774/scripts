@@ -222,7 +222,7 @@ setup_securetty() {
 }
 
 setup_dot_ipython() {
-    if [ ! -d "$HOME/.ipython" ] && [ -x /opt/python/current/bin/python ]; then
+    if [ -x /opt/python/current/bin/python ]; then
         "$SCRIPTS/installer/setup_dot_ipython.sh"
     fi
 }
