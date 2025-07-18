@@ -18,12 +18,12 @@ Welcome to the `scripts` repository! This is a curated collection of scripts in 
 This repository contains various utility scripts to address common tasks efficiently. Whether you are an experienced developer or just getting started, you'll find tools to optimize your workflow.
 
 Supported languages:
-- Shell Script
-- Python (fully supported from version 3.6; most scripts work with 3.1 or later, but the test suite requires 3.6)
-- Ruby   (fully supported from version 2.4; some scripts may work with 2.0 or later)
 
-Full support is provided for language versions released since late December 2016, including Python 3.6 and Ruby 2.4.
-The repository is also fully compatible with current stable versions of Python and Ruby.
+- Shell Script
+- Python
+- Ruby
+
+The scripts are fully supported on Python 3.6+ and Ruby 2.4+, with partial compatibility extending back to Python 3.1 and Ruby 2.0. The repository is also tested against current stable versions of both languages.
 
 ---
 
