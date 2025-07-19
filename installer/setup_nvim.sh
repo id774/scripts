@@ -1,20 +1,19 @@
 #!/bin/sh
 
 ########################################################################
-# setup_nvim.sh: Link NeoVim as Vim and migrate configuration
+# setup_nvim.sh: Configure NeoVim as Vim replacement and manage config
 #
 #  Description:
 #  This script configures NeoVim to behave as a Vim replacement by:
 #  - Creating the NeoVim configuration directory.
-#  - Linking ~/.vimrc to ~/.config/nvim/init.vim.
+#  - Copying ~/.vimrc to ~/.config/nvim/init.vim.
 #  - Creating a symlink to make 'vim' invoke 'nvim' via ~/.local/bin.
 #
 #  An uninstall option is also provided:
-#  - Removes the symlink ~/.config/nvim/init.vim if it is a link.
+#  - Removes the entire ~/.config/nvim directory.
 #  - Removes the symlink ~/.local/bin/vim if it is a link.
 #
 #  Author: id774 (More info: http://id774.net)
-#  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
@@ -29,6 +28,8 @@
 #  - NeoVim must be installed and available in PATH.
 #
 #  Version History:
+#  v1.1 2025-07-19
+#       Replace symbolic link with copy of .vimrc and delete full config on uninstall.
 #  v1.0 2025-07-15
 #       Initial version.
 #
@@ -44,7 +45,7 @@ usage() {
     exit 0
 }
 
-# Check required commands
+# Check if required commands are available and executable
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -58,7 +59,7 @@ check_commands() {
     done
 }
 
-# Create the NeoVim config directory if it does not exist
+# Create the NeoVim configuration directory if it does not exist
 create_config_dir() {
     if [ ! -d "$HOME/.config/nvim" ]; then
         mkdir -p "$HOME/.config/nvim" || {
@@ -71,24 +72,26 @@ create_config_dir() {
     fi
 }
 
-# Create a symlink from ~/.vimrc to init.vim
-link_vimrc() {
-    target="$HOME/.config/nvim/init.vim"
-    if [ ! -e "$target" ]; then
-        ln -s "$HOME/.vimrc" "$target" || {
-            echo "[ERROR] Failed to link ~/.vimrc to $target" >&2
-            exit 1
-        }
-        echo "[INFO] Linked ~/.vimrc to $target"
-    else
-        echo "[INFO] $target already exists. Skipping."
+# Copy .vimrc to init.vim as the NeoVim configuration
+copy_vimrc() {
+    src="$HOME/.vimrc"
+    dest="$HOME/.config/nvim/init.vim"
+
+    if [ ! -f "$src" ]; then
+        echo "[ERROR] Source file $src does not exist." >&2
+        exit 1
     fi
+
+    cp "$src" "$dest" || {
+        echo "[ERROR] Failed to copy $src to $dest" >&2
+        exit 1
+    }
+    echo "[INFO] Copied $src to $dest"
 }
 
 # Locate the nvim executable path
 find_nvim_path() {
-    nvim_path=$(command -v nvim)
-    echo "$nvim_path"
+    command -v nvim
 }
 
 # Create a system-wide symlink from vim to nvim in ~/.local/bin
@@ -105,7 +108,7 @@ create_vim_symlink() {
     fi
 
     if [ ! -e "$target_dir/vim" ]; then
-        ln -s "$nvim_path" "$target_dir/vim" || {
+        ln -sf "$nvim_path" "$target_dir/vim" || {
             echo "[ERROR] Failed to create symlink $target_dir/vim" >&2
             exit 1
         }
@@ -115,15 +118,15 @@ create_vim_symlink() {
     fi
 }
 
-# Uninstall the symlinks created by this script
+# Uninstall the NeoVim configuration and symlink created by this script
 uninstall_nvim_setup() {
     echo "[INFO] Uninstalling NeoVim configuration and vim symlink..."
 
-    target="$HOME/.config/nvim/init.vim"
-    if [ -L "$target" ]; then
-        rm "$target" && echo "[INFO] Removed symlink: $target"
+    config_dir="$HOME/.config/nvim"
+    if [ -d "$config_dir" ]; then
+        rm -rf "$config_dir" && echo "[INFO] Removed directory: $config_dir"
     else
-        echo "[INFO] $target is not a symlink. Skipping."
+        echo "[INFO] $config_dir does not exist. Skipping."
     fi
 
     target_bin="$HOME/.local/bin/vim"
@@ -137,7 +140,7 @@ uninstall_nvim_setup() {
     exit 0
 }
 
-# Display final report
+# Display final setup instructions and confirmation
 final_report() {
     echo "[INFO] NeoVim is now set up as a Vim replacement."
     echo "[INFO] Add ~/.local/bin to the beginning of your PATH if not already present:"
@@ -154,11 +157,16 @@ main() {
             ;;
     esac
 
-    check_commands mkdir ln nvim
+    check_commands mkdir cp ln nvim
 
     nvim_path=$(find_nvim_path)
+    if [ -z "$nvim_path" ]; then
+        echo "[ERROR] nvim not found in PATH." >&2
+        exit 1
+    fi
+
     create_config_dir
-    link_vimrc
+    copy_vimrc
     create_vim_symlink "$nvim_path"
 
     final_report
