@@ -44,6 +44,8 @@
 #  3. Source directory does not exist.
 #
 #  Version History:
+#  v1.5 2025-07-20
+#       Sort the server list by filename in ascending order for consistent output.
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.3 2025-05-06
@@ -123,7 +125,7 @@ is_file_stale() {
 
 # Process all found files and check their status
 process_files() {
-    FILES=$(find_is_alive_files)
+    FILES=$(find_is_alive_files | sort)
 
     if [ -z "$FILES" ]; then
         echo "[ERROR] No '_is_alive' files found in: $BASE_DIR" >&2

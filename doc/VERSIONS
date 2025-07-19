@@ -17,6 +17,7 @@ v1.4.5 (Release Date: TBD)
 - Implement safety checks and clarify required dot prefix in swapext.py.
 - Add emergencyadmin and munin users to dotfiles deployment and fix ownership handling for macOS users.
 - Suppress git pull warning by explicitly setting rebase to false in dot_gitconfig.
+- Sort server list in server_alive_check output by ascending filename in server_alive_check.sh.
 - Unify usage semantics and simplify source-saving behavior across installer scripts.
 - Standardize shell script comments to start with verbs instead of using 'Function to' phrasing.
 - Reorder script headers to place usage and requirements before version history for improved readability.
