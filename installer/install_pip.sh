@@ -67,7 +67,7 @@ usage() {
     exit 0
 }
 
-# Check required commands
+# Check if required commands are available and executable
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)

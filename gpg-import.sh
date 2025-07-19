@@ -57,7 +57,7 @@ check_sudo() {
     fi
 }
 
-# Check required commands
+# Check if required commands are available and executable
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -91,7 +91,7 @@ main() {
 
     # Check if both arguments are provided
     if [ -n "$2" ]; then
-        # Check required commands
+        # Check if required commands are available and executable
         check_commands gpg apt-key sudo
         check_sudo
         import_gpg_key "$1" "$2"

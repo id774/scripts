@@ -85,7 +85,7 @@ check_scripts() {
     fi
 }
 
-# Check required commands
+# Check if required commands are available and executable
 check_commands() {
     for cmd in "$@"; do
         cmd_path=$(command -v "$cmd" 2>/dev/null)
@@ -267,7 +267,7 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
-    # Check required commands
+    # Check if required commands are available and executable
     check_commands sudo cp mkdir chmod chown id rm ln find zsh uname touch
     check_scripts
     setup_environment "$1"
