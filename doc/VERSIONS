@@ -16,6 +16,7 @@ v1.4.5 (Release Date: TBD)
 - Ensure at least one symbol is included in generated passwords when symbols are enabled.
 - Implement safety checks and clarify required dot prefix in swapext.py.
 - Add emergencyadmin and munin users to dotfiles deployment and fix ownership handling for macOS users.
+- Add support for deploying ~/.ssh/config to target users if it exists.
 - Suppress git pull warning by explicitly setting rebase to false in dot_gitconfig.
 - Sort server list in server_alive_check output by ascending filename in server_alive_check.sh.
 - Unify usage semantics and simplify source-saving behavior across installer scripts.

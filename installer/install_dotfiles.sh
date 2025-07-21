@@ -30,6 +30,8 @@
 #  - Run with appropriate permissions if modifying system-wide settings.
 #
 #  Version History:
+#  v2.9 2025-07-21
+#       Add logic to deploy user's ~/.ssh/config to target accounts if it exists.
 #  v2.8 2025-07-12
 #       Add emergencyadmin and munin users to dotfiles deployment targets.
 #       Add ownership correction to deploy_dotfiles_to_mac.
@@ -171,6 +173,29 @@ mkdir_skelton() {
     command -v emacs >/dev/null 2>&1 && setup_dotemacs "$1"
 }
 
+# Copy ~/.ssh/config to target user if exists
+copy_ssh_config_if_exists() {
+    src_config="$HOME/.ssh/config"
+    dest_home="$1"
+    dest_user="$2"
+    dest_ssh="$dest_home/.ssh"
+    dest_config="$dest_ssh/config"
+
+    if [ -f "$src_config" ]; then
+        # Skip copy if source and destination are the same file
+        if [ "$(realpath "$src_config" 2>/dev/null)" = "$(realpath "$dest_config" 2>/dev/null)" ]; then
+            echo "[INFO] Skipping copy: source and destination are identical for $dest_user"
+            return 0
+        fi
+        echo "[INFO] Copying .ssh/config to $dest_user"
+        sudo mkdir -p "$dest_ssh"
+        sudo cp "$OPTIONS" "$src_config" "$dest_config"
+        sudo chmod 700 "$dest_ssh"
+        sudo chmod 600 "$dest_config"
+        sudo chown -R "$dest_user:$(id -gn "$dest_user")" "$dest_ssh"
+    fi
+}
+
 # Deploy dotfiles and create necessary directories for a given user
 deploy_dotfiles() {
     echo "[INFO] Copying dotfiles to $1."
@@ -186,6 +211,7 @@ deploy_dotfiles() {
 deploy_dotfiles_to_others() {
     if [ -d "$1" ]; then
         deploy_dotfiles "$1"
+        copy_ssh_config_if_exists "$1" "$2"
         sudo chown -R "$2:$(id -gn "$2")" "$1"
     fi
 }
@@ -200,6 +226,7 @@ deploy_dotfiles_to_mac() {
         if [ -d "$user_home" ] && id "$user" >/dev/null 2>&1; then
             echo "[INFO] Deploying dotfiles to macOS user: $user"
             deploy_dotfiles "$user_home"
+            copy_ssh_config_if_exists "$user_home" "$user"
             sudo chown "$user:$(id -gn "$user")" "$user_home"
             sudo find "$user_home" -maxdepth 1 -mindepth 1 -exec chown "$user:$(id -gn "$user")" {} +
         fi
@@ -214,6 +241,7 @@ deploy_dotfiles_to_linux() {
         if [ -d "/home/$1" ]; then
             echo "[INFO] Deploying dotfiles to Linux user: $1"
             deploy_dotfiles "/home/$1"
+            copy_ssh_config_if_exists "/home/$1" "$1"
             sudo chown "$1:$(id -gn "$1")" "/home/$1"
             sudo find "/home/$1" -maxdepth 1 -mindepth 1 -exec chown "$1:$(id -gn "$1")" {} +
         fi
@@ -268,7 +296,7 @@ main() {
     esac
 
     # Check if required commands are available and executable
-    check_commands sudo cp mkdir chmod chown id rm ln find zsh uname touch
+    check_commands sudo cp mkdir chmod chown id rm ln find zsh uname touch realpath
     check_scripts
     setup_environment "$1"
     check_sudo
