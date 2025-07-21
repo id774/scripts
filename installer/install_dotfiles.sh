@@ -185,14 +185,14 @@ copy_ssh_config_if_exists() {
         # Skip copy if source and destination are the same file
         if [ "$(realpath "$src_config" 2>/dev/null)" = "$(realpath "$dest_config" 2>/dev/null)" ]; then
             echo "[INFO] Skipping copy: source and destination are identical for $dest_user"
-            return 0
+        else
+            echo "[INFO] Copying .ssh/config to $dest_user"
+            sudo mkdir -p "$dest_ssh"
+            sudo cp "$OPTIONS" "$src_config" "$dest_config"
+            sudo chmod 700 "$dest_ssh"
+            sudo chmod 600 "$dest_config"
+            sudo chown -R "$dest_user:$(id -gn "$dest_user")" "$dest_ssh"
         fi
-        echo "[INFO] Copying .ssh/config to $dest_user"
-        sudo mkdir -p "$dest_ssh"
-        sudo cp "$OPTIONS" "$src_config" "$dest_config"
-        sudo chmod 700 "$dest_ssh"
-        sudo chmod 600 "$dest_config"
-        sudo chown -R "$dest_user:$(id -gn "$dest_user")" "$dest_ssh"
     fi
 }
 
