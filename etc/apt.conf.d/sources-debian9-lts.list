@@ -1,0 +1,7 @@
+# Debian Archive
+deb     http://archive.debian.org/debian/ stretch main contrib non-free
+deb-src http://archive.debian.org/debian/ stretch main contrib non-free
+deb     http://archive.debian.org/debian-security/ stretch/updates main contrib non-free
+deb-src http://archive.debian.org/debian-security/ stretch/updates main contrib non-free
+# Freexian Extended LTS
+deb     http://deb.freexian.com/extended-lts stretch-lts main contrib non-free
