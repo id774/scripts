@@ -1,8 +1,8 @@
 Repository Update History
 =========================
 
-v1.4.5 (Release Date: TBD)
---------------------------
+v1.4.5 (2025-07-22)
+-------------------
 - Add support for NeoVim installation, enable Vim/NeoVim switching, and allow dot_vim configuration to be applied to NeoVim.
 - Implement test coverage for all Python and Ruby scripts.
 - Standardize termination behavior for consistent script execution across all Python and Ruby scripts.
