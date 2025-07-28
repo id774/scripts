@@ -10,8 +10,12 @@
 #  the servers.
 #
 #  It scans all files ending with '_is_alive' under the configured directory
-#  and triggers an alert if any file is older than one hour, indicating
-#  potential server downtime or connectivity issues.
+#  and triggers an alert if any file is older than the threshold time,
+#  indicating potential server downtime or connectivity issues.
+#
+#  Hosts whose filenames begin with 'VM' are treated as virtual hosts and
+#  excluded from alerts even if stale. A separate log message is displayed
+#  when only VM-prefixed hosts are stale.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -31,7 +35,8 @@
 #
 #  Features:
 #  - Scans a configurable directory for _is_alive files.
-#  - Alerts if files are older than 10 minutes.
+#  - Alerts if non-VM files are older than the threshold.
+#  - Ignores VM-prefixed files when stale, with a clear info message.
 #  - Outputs errors to standard error for logging and monitoring purposes.
 #  - Validates required commands and directory existence before execution.
 #
@@ -40,10 +45,13 @@
 #  - Use appropriate permissions and ownership for the monitored directory.
 #
 #  Error Conditions:
+#  1. One or more regular hosts are stale.
 #  2. No '_is_alive' files found.
 #  3. Source directory does not exist.
 #
 #  Version History:
+#  v1.6 2025-07-28
+#       Distinguish VM-prefixed hosts and exclude them from alerts with consistent log formatting.
 #  v1.5 2025-07-20
 #       Sort the server list by filename in ascending order for consistent output.
 #  v1.4 2025-06-23
@@ -133,7 +141,8 @@ process_files() {
     fi
 
     CURRENT_TIME=$(date +%s)
-    STALE_FOUND=0
+    REGULAR_STALE_FOUND=0
+    VM_STALE_FOUND=0
 
     for FILE in $FILES; do
         FILE_TIME=$(stat -c %Y "$FILE" 2>/dev/null || stat -f %m "$FILE" 2>/dev/null)
@@ -141,7 +150,7 @@ process_files() {
 
         if [ -z "$FILE_TIME" ] || [ -z "$FILE_DATE" ]; then
             echo "[WARN] Failed to retrieve modification time for: $FILE" >&2
-            STALE_FOUND=1
+            REGULAR_STALE_FOUND=1
             continue
         fi
 
@@ -150,19 +159,30 @@ process_files() {
         AGE_SEC=$((AGE % 60))
         ELAPSED="elapsed time: ${AGE_MIN}m ${AGE_SEC}s"
         BASENAME=$(basename "$FILE")
+
         if [ "$AGE" -gt "$STALE_THRESHOLD" ]; then
-            echo "[WARN] File is stale: $BASENAME (last updated: $FILE_DATE, $ELAPSED)" >&2
-            STALE_FOUND=1
+            if printf '%s\n' "$BASENAME" | grep -iq '^vm'; then
+                echo "[INFO] File is stale: $BASENAME (last updated: $FILE_DATE, $ELAPSED, VM-prefixed: ignored)"
+                VM_STALE_FOUND=1
+            else
+                echo "[WARN] File is stale: $BASENAME (last updated: $FILE_DATE, $ELAPSED)" >&2
+                REGULAR_STALE_FOUND=1
+            fi
         else
             echo "[INFO] File is fresh: $BASENAME (last updated: $FILE_DATE, $ELAPSED)"
         fi
+
     done
 
-    if [ "$STALE_FOUND" -eq 1 ]; then
-        echo "[WARN] One or more files are stale." >&2
+    if [ "$REGULAR_STALE_FOUND" -eq 1 ]; then
+        echo "[WARN] One or more non-VM hosts are stale." >&2
         exit 1
+    elif [ "$VM_STALE_FOUND" -eq 1 ]; then
+        echo "[INFO] Only VM-prefixed hosts are missing. No alert triggered."
+        exit 0
     else
         echo "[INFO] All files are fresh."
+        exit 0
     fi
 }
 
@@ -173,7 +193,7 @@ main() {
     esac
 
     check_environment
-    check_commands find stat date basename
+    check_commands find stat date basename grep sort
     process_files
     return 0
 }
