@@ -1,6 +1,10 @@
 Repository Update History
 =========================
 
+v1.4.6 (Release Date: TBD)
+--------------------------
+- Enhanced server_alive_check.sh by handling VM hosts separately and adding gstat support on macOS.
+
 v1.4.5 (2025-07-22)
 -------------------
 - Add support for NeoVim installation, enable Vim/NeoVim switching, and allow dot_vim configuration to be applied to NeoVim.

@@ -52,6 +52,7 @@
 #  Version History:
 #  v1.6 2025-07-28
 #       Distinguish VM-prefixed hosts and exclude them from alerts with consistent log formatting.
+#       Support gstat on macOS to ensure GNU-compatible stat behavior.
 #  v1.5 2025-07-20
 #       Sort the server list by filename in ascending order for consistent output.
 #  v1.4 2025-06-23
@@ -106,6 +107,19 @@ check_environment() {
     fi
 }
 
+# Detect macOS and prefer gstat if available
+choice_stat_command() {
+    if [ "$(uname)" = "Darwin" ]; then
+        if command -v gstat >/dev/null 2>&1; then
+            stat_cmd="gstat"
+        else
+            stat_cmd="stat"
+        fi
+    else
+        stat_cmd="stat"
+    fi
+}
+
 # Find all files ending with '_is_alive' under the base directory
 find_is_alive_files() {
     find "$BASE_DIR" -type f -name '*_is_alive'
@@ -115,7 +129,7 @@ find_is_alive_files() {
 is_file_stale() {
     FILE="$1"
     CURRENT_TIME=$(date +%s)
-    FILE_TIME=$(stat -c %Y "$FILE" 2>/dev/null || stat -f %m "$FILE" 2>/dev/null)
+    FILE_TIME=$($stat_cmd -c %Y "$FILE" 2>/dev/null || stat -f %m "$FILE" 2>/dev/null)
 
     # Check if the file modification time could be retrieved
     if [ -z "$FILE_TIME" ]; then
@@ -145,7 +159,7 @@ process_files() {
     VM_STALE_FOUND=0
 
     for FILE in $FILES; do
-        FILE_TIME=$(stat -c %Y "$FILE" 2>/dev/null || stat -f %m "$FILE" 2>/dev/null)
+        FILE_TIME=$($stat_cmd -c %Y "$FILE" 2>/dev/null || stat -f %m "$FILE" 2>/dev/null)
         FILE_DATE=$(date -d "@$FILE_TIME" "+%Y-%m-%d %H:%M:%S" 2>/dev/null || date -r "$FILE_TIME" "+%Y-%m-%d %H:%M:%S" 2>/dev/null)
 
         if [ -z "$FILE_TIME" ] || [ -z "$FILE_DATE" ]; then
@@ -194,6 +208,7 @@ main() {
 
     check_environment
     check_commands find stat date basename grep sort
+    choice_stat_command
     process_files
     return 0
 }
