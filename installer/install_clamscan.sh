@@ -28,6 +28,9 @@
 #  - This script is intended for Linux systems only.
 #
 #  Version History:
+#  v2.6 2025-07-30
+#       Deploy clamscan.sh to /etc/cron.exec, config to /etc/cron.config/clamscan.conf.
+#       Respect /etc/cron.d/clamscan; fallback to /etc/cron.weekend only if it is absent.
 #  v2.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.4 2025-05-11
@@ -100,6 +103,19 @@ check_sudo() {
     fi
 }
 
+# Create core directories with correct ownership and permissions
+create_cron_dirs() {
+    echo "[INFO] Ensuring core directories exist with proper ownership and permissions..."
+    # /etc/cron.exec
+    sudo mkdir -p /etc/cron.exec
+    sudo chown root:adm /etc/cron.exec
+    sudo chmod 750 /etc/cron.exec
+    # /etc/cron.config
+    sudo mkdir -p /etc/cron.config
+    sudo chown root:adm /etc/cron.config
+    sudo chmod 750 /etc/cron.config
+}
+
 # Deploy ClamAV setup files
 install_clamscan() {
     echo "[INFO] Setting up ClamAV AutoScan environment..."
@@ -109,33 +125,42 @@ install_clamscan() {
     sudo chmod 750 /var/log/sysadmin
     sudo chown root:adm /var/log/sysadmin
 
-    echo "[INFO] Deploying clamscan.sh to /root/bin."
-    if ! sudo cp "$SCRIPTS/cron/bin/clamscan.sh" /root/bin/; then
+    create_cron_dirs
+
+    echo "[INFO] Deploying clamscan.sh to /etc/cron.exec."
+    if ! sudo cp "$SCRIPTS/cron/bin/clamscan.sh" /etc/cron.exec/; then
         echo "[ERROR] Failed to copy clamscan.sh." >&2
         exit 1
     fi
-    sudo chmod 700 /root/bin/clamscan.sh
-    sudo chown root:root /root/bin/clamscan.sh
 
-    echo "[INFO] Deploying clamscan_exclude to /root/etc."
-    if ! sudo cp "$SCRIPTS/cron/etc/clamscan_exclude" /root/etc/; then
-        echo "[ERROR] Failed to copy clamscan_exclude." >&2
+    sudo chown root:adm /etc/cron.exec/clamscan.sh
+    sudo chmod 750 /etc/cron.exec/clamscan.sh
+
+    echo "[INFO] Deploying clamscan configuration to /etc/cron.config/clamscan.conf."
+    if ! sudo cp "$SCRIPTS/cron/etc/clamscan_exclude" /etc/cron.config/clamscan.conf; then
+        echo "[ERROR] Failed to copy clamscan.conf." >&2
         exit 1
     fi
-    sudo rm -vf /root/bin/clamscan_exclude
-    sudo chmod 600 /root/etc/clamscan_exclude
-    sudo chown root:root /root/etc/clamscan_exclude
 
-    echo "[INFO] Setting up /etc/cron.weekend directory."
-    sudo mkdir -p /etc/cron.weekend
+    sudo chown root:adm /etc/cron.config/clamscan.conf
+    sudo chmod 640 /etc/cron.config/clamscan.conf
 
-    echo "[INFO] Deploying clamscan cron job to /etc/cron.weekend."
-    if ! sudo cp "$SCRIPTS/cron/bin/clamscan" /etc/cron.weekend/; then
-        echo "[ERROR] Failed to copy clamscan cron job" >&2
-        exit 1
+    if [ -f /etc/cron.d/clamscan ]; then
+        echo "[INFO] Skipping /etc/cron.weekend installation since /etc/cron.d/clamscan exists."
+    else
+        echo "[INFO] Installing weekend fallback: /etc/cron.weekend/clamscan"
+        sudo mkdir -p /etc/cron.weekend
+        sudo chown root:adm /etc/cron.weekend
+        sudo chmod 750 /etc/cron.weekend
+
+        if ! sudo cp "$SCRIPTS/cron/bin/clamscan" /etc/cron.weekend/; then
+            echo "[ERROR] Failed to copy clamscan cron job to /etc/cron.weekend." >&2
+            exit 1
+        fi
+
+        sudo chown root:adm /etc/cron.weekend/clamscan
+        sudo chmod 740 /etc/cron.weekend/clamscan
     fi
-    sudo chmod 740 /etc/cron.weekend/clamscan
-    sudo chown root:adm /etc/cron.weekend/clamscan
 
     echo "[INFO] Setting up ClamAV log files."
     for log_file in /var/log/clamav/clamscan.log /var/log/clamav/clamav.log; do
@@ -143,6 +168,7 @@ install_clamscan() {
             echo "[INFO] Creating log file: $log_file"
             sudo touch "$log_file"
         fi
+
         sudo chmod 640 "$log_file"
         sudo chown clamav:adm "$log_file"
     done
@@ -155,6 +181,7 @@ install_clamscan() {
             echo "[ERROR] Failed to copy logrotate configuration." >&2
             exit 1
         fi
+
         sudo chmod 640 /etc/logrotate.d/clamscan
         sudo chown root:adm /etc/logrotate.d/clamscan
     fi

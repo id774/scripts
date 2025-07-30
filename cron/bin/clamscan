@@ -23,6 +23,8 @@
 #      30 4 * * 7 root /path/to/clamscan
 #
 #  Version History:
+#  v1.3 2025-07-30
+#       Update script path to /etc/cron.exec/clamscan.sh and honor new directory layout.
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2025-05-16
@@ -66,7 +68,7 @@ initialize() {
     LC_CTYPE=ja_JP.UTF-8
     JOBLOG="/var/log/clamav/clamscan.log"
     SCANLOG="/var/log/clamav/clamav.log"
-    SCRIPT="/root/bin/clamscan.sh"
+    SCRIPT="/etc/cron.exec/clamscan.sh"
     #ADMIN_MAIL_ADDRESS="root"
 
     if ! is_running_from_cron; then

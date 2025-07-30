@@ -1,0 +1,7 @@
+# Scheduled execution of clamscan.sh
+# Logs will be sent to the root user via cron MAILTO
+
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+MAILTO=root
+
+01 04 * * 0 root test -x /etc/cron.exec/clamscan.sh && /etc/cron.exec/clamscan.sh

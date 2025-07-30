@@ -20,6 +20,8 @@
 #  This script is intended to be executed periodically by cron.
 #
 #  Version History:
+#  v1.6 2025-07-30
+#       Update exclusion file path to /etc/cron.config/clamscan.conf to reflect new directory layout.
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.4 2025-05-16
@@ -74,8 +76,7 @@ initialize() {
 
     TARGETDIRS="/"
     LOGFILE="/var/log/clamav/clamav.log"
-    EXECDIR="$(cd "$(dirname "$0")" && pwd)"
-    EXCLUDEFILE="$EXECDIR/../etc/clamscan_exclude"
+    EXCLUDEFILE="/etc/cron.config/clamscan.conf"
     OPTS=""
 }
 
