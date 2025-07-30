@@ -18,9 +18,9 @@
 #  This script is intended to be executed periodically by cron.
 #
 #  Cron Usage:
-#      Place this script into /etc/cron.daily or similar.
+#      Place this script into /etc/cron.weekly or similar.
 #      Or create a specific cron entry like the following:
-#      0 4 * * * root /path/to/chkrootkit
+#      0 2 * * 0 root /path/to/chkrootkit
 #
 #  Version History:
 #  v1.2 2025-06-23
