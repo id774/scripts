@@ -1,0 +1,3 @@
+MAILTO=root
+
+01 12 * * 3 root test -f /etc/cron.config/always_power_on || /sbin/shutdown -r now
