@@ -18,8 +18,9 @@
 #  This script is intended to be executed periodically by cron.
 #
 #  Cron Usage:
-#      Place this script into /etc/cron.exec for daily execution.
-#      This will be invoked automatically by the system cron mechanism.
+#      Place this script into /etc/cron.daily or similar.
+#      Or create a specific cron entry like the following:
+#      45 3 * * * root /path/to/apache_log_analysis
 #
 #  Version History:
 #  v1.3 2025-07-30

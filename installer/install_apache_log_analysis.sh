@@ -117,11 +117,16 @@ deploy_scripts() {
         exit 1
     fi
 
+    sudo chmod 750 /etc/cron.exec
+    sudo chown root:adm /etc/cron.exec
+
+
     for script in apache_log_analysis.sh apache_calculater.py; do
         if ! sudo cp "$SCRIPTS/$script" "/etc/cron.exec/$script"; then
             echo "[ERROR] Failed to copy $script to /etc/cron.exec." >&2
             exit 1
         fi
+
         sudo chmod 740 "/etc/cron.exec/$script"
         sudo chown root:adm "/etc/cron.exec/$script"
     done
@@ -158,20 +163,18 @@ deploy_configurations() {
 # Deploy cron jobs
 setup_cron_jobs() {
     echo "[INFO] Setting up cron jobs."
-    if ! sudo mkdir -p /etc/cron.exec; then
-        echo "[ERROR] Failed to create /etc/cron.exec." >&2
-        exit 1
-    fi
-    sudo chmod 750 /etc/cron.exec
-    sudo chown root:adm /etc/cron.exec
-
-    if ! sudo cp "$SCRIPTS/cron/bin/apache_log_analysis" /etc/cron.exec/apache_log_analysis; then
+    if ! sudo cp "$SCRIPTS/cron/bin/apache_log_analysis" /etc/cron.daily/apache_log_analysis; then
         echo "[ERROR] Failed to deploy apache_log_analysis cron job." >&2
         exit 1
     fi
 
-    sudo chmod 740 /etc/cron.exec/apache_log_analysis
-    sudo chown root:adm /etc/cron.exec/apache_log_analysis
+    if ! sudo mkdir -p /etc/cron.exec; then
+        echo "[ERROR] Failed to create /etc/cron.exec." >&2
+        exit 1
+    fi
+
+    sudo chmod 740 /etc/cron.daily/apache_log_analysis
+    sudo chown root:adm /etc/cron.daily/apache_log_analysis
 }
 
 # Set up log files
