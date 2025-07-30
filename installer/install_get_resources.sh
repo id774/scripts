@@ -161,13 +161,9 @@ main() {
     sudo chmod 750 /etc/cron.exec
     sudo chown root:adm /etc/cron.exec
 
-    if [ -f /etc/cron.exec/get_resources.sh ]; then
-        echo "[INFO] /etc/cron.exec/get_resources.sh already exists. Skipping deployment."
-    else
-        if ! sudo cp "$SCRIPTS/get_resources.sh" /etc/cron.exec/; then
-            echo "[ERROR] Failed to copy get_resources.sh to /etc/cron.exec/." >&2
-            exit 1
-        fi
+    if ! sudo cp "$SCRIPTS/get_resources.sh" /etc/cron.exec/; then
+        echo "[ERROR] Failed to copy get_resources.sh to /etc/cron.exec/." >&2
+        exit 1
     fi
 
     sudo chmod 750 /etc/cron.exec/get_resources.sh
