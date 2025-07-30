@@ -7,10 +7,9 @@
 #  This script automates the setup for ClamAV scans by:
 #  - Deploying the clamscan.sh script.
 #  - Configuring clamscan exclusions.
-#  - Setting up cron jobs specifically for weekend scanning in /etc/cron.weekend.
+#  - Installing /etc/cron.d/clamscan unless it already exists.
 #  - Managing log rotation for ClamAV logs.
-#  - If the clamscan cron job already exists in /etc/cron.weekend, the deployment is skipped automatically.
-#  - Ensuring the necessary directories and log files exist, including creating /etc/cron.weekend if it doesn't exist.
+#  - Ensuring the necessary directories and log files exist.
 #  - Setting appropriate permissions.
 #
 #  Author: id774 (More info: http://id774.net)
@@ -30,7 +29,6 @@
 #  Version History:
 #  v2.6 2025-07-30
 #       Deploy clamscan.sh to /etc/cron.exec, config to /etc/cron.config/clamscan.conf.
-#       Respect /etc/cron.d/clamscan; fallback to /etc/cron.weekend only if it is absent.
 #  v2.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.4 2025-05-11
@@ -132,7 +130,6 @@ install_clamscan() {
         echo "[ERROR] Failed to copy clamscan.sh." >&2
         exit 1
     fi
-
     sudo chown root:adm /etc/cron.exec/clamscan.sh
     sudo chmod 740 /etc/cron.exec/clamscan.sh
 
@@ -141,25 +138,24 @@ install_clamscan() {
         echo "[ERROR] Failed to copy clamscan.conf." >&2
         exit 1
     fi
-
     sudo chown root:adm /etc/cron.config/clamscan.conf
     sudo chmod 640 /etc/cron.config/clamscan.conf
 
     if [ -f /etc/cron.d/clamscan ]; then
-        echo "[INFO] Skipping /etc/cron.weekend installation since /etc/cron.d/clamscan exists."
+        echo "[INFO] Skipping cron job installation: /etc/cron.d/clamscan already exists."
     else
-        echo "[INFO] Installing weekend fallback: /etc/cron.weekend/clamscan"
-        sudo mkdir -p /etc/cron.weekend
-        sudo chown root:adm /etc/cron.weekend
-        sudo chmod 750 /etc/cron.weekend
+        echo "[INFO] Installing cron job to /etc/cron.d/clamscan"
+        cat <<'EOF' | sudo tee /etc/cron.d/clamscan >/dev/null
+# Scheduled execution of clamscan.sh
+# Logs will be sent to the root user via cron MAILTO
 
-        if ! sudo cp "$SCRIPTS/cron/bin/clamscan" /etc/cron.weekend/; then
-            echo "[ERROR] Failed to copy clamscan cron job to /etc/cron.weekend." >&2
-            exit 1
-        fi
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+MAILTO=root
 
-        sudo chown root:adm /etc/cron.weekend/clamscan
-        sudo chmod 740 /etc/cron.weekend/clamscan
+01 01 * * 0 root test -x /etc/cron.exec/clamscan.sh && /etc/cron.exec/clamscan.sh
+EOF
+        sudo chmod 644 /etc/cron.d/clamscan
+        sudo chown root:root /etc/cron.d/clamscan
     fi
 
     echo "[INFO] Setting up ClamAV log files."
@@ -168,7 +164,6 @@ install_clamscan() {
             echo "[INFO] Creating log file: $log_file"
             sudo touch "$log_file"
         fi
-
         sudo chmod 640 "$log_file"
         sudo chown clamav:adm "$log_file"
     done
@@ -181,7 +176,6 @@ install_clamscan() {
             echo "[ERROR] Failed to copy logrotate configuration." >&2
             exit 1
         fi
-
         sudo chmod 640 /etc/logrotate.d/clamscan
         sudo chown root:adm /etc/logrotate.d/clamscan
     fi
