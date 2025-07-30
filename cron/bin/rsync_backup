@@ -20,9 +20,11 @@
 #  Cron Usage:
 #      Place this script into /etc/cron.hourly or similar.
 #      Or create a specific cron entry like the following:
-#      0 * * * * root /path/to/rsync_backup
+#      0 * * * * root /etc/cron.hourly/rsync_backup
 #
 #  Version History:
+#  v1.3 2025-07-30
+#       Update SCRIPT path to /etc/cron.exec/rsync_backup.sh to reflect deployment structure.
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2025-05-16
@@ -66,7 +68,7 @@ initialize() {
     LC_CTYPE=ja_JP.UTF-8
     JOBLOG="/var/log/sysadmin/rsync_backup.log"
     TRIGGER_FILE="/home/ubuntu/mnt/rsync_backup"
-    SCRIPT="/root/bin/rsync_backup.sh"
+    SCRIPT="/etc/cron.exec/rsync_backup.sh"
     #ADMIN_MAIL_ADDRESS="root"
 
     if ! is_running_from_cron; then

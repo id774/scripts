@@ -7,7 +7,8 @@
 #  This script facilitates the backup and syncing of data to removable
 #  disks. It includes functionalities like checking disk health, updating
 #  timestamps, performing cleanup tasks, and syncing data between disks and
-#  over SSH.
+#  over SSH. The script is configured via /etc/cron.config/rsync_backup.conf
+#  and intended to be run automatically from cron.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,12 +18,13 @@
 #  Usage:
 #  Run the script without any arguments. Ensure all the necessary paths
 #  and variables are correctly set within the script or the config file:
-#      test -x /root/bin/rsync_backup.sh && /root/bin/rsync_backup.sh >> $JOBLOG 2>&1
+#      test -x /etc/cron.exec/rsync_backup.sh && /etc/cron.exec/rsync_backup.sh >> $JOBLOG 2>&1
 #
 #  The script will automatically execute operations based on the configured
-#  settings and available devices, as defined in cron/etc/rsync_backup.conf.
+#  settings and available devices, as defined in /etc/cron.config/rsync_backup.conf.
 #
 #  Version History:
+#  v3.1  2025-07-30 - Update script and config paths to /etc/cron.exec and /etc/cron.config respectively.
 #  v3.0  2025-06-23 - Unified usage output to display full script header and support common help/version options.
 #  v2.9  2025-06-15 - Externalize archive and repository path variables to rsync_backup.conf.
 #                     Remove hardcoded paths from git_backup and github_backup functions.
@@ -324,7 +326,7 @@ main() {
     fi
 
     SCRIPT_DIR="$(cd "$(dirname "$0")" >/dev/null 2>&1 && pwd)"
-    CONFIG_FILE="$SCRIPT_DIR/../etc/rsync_backup.conf"
+    CONFIG_FILE="/etc/cron.config/rsync_backup.conf"
 
     if [ -f "$CONFIG_FILE" ]; then
         echo "[INFO] Loaded configuration from $CONFIG_FILE."
