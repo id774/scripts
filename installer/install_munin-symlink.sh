@@ -16,17 +16,20 @@
 #
 #  Usage:
 #      ./install_munin-symlink.sh
+#      This installs /etc/cron.exec/munin-symlink.sh and /etc/cron.config/munin-symlink.conf
 #
 #  Notes:
 #  - This script must be executed on a Linux system with root privileges (via sudo).
 #  - The environment variable SCRIPTS must be set to the root of the script repository.
-#  - The deployed configuration file (/root/etc/munin-symlink.conf) will not be overwritten if it already exists.
+#  - The deployed configuration file (/etc/cron.config/munin-symlink.conf) will not be overwritten if it already exists.
 #    Please edit it manually if configuration changes are needed after deployment.
-#  - The deployed monitor script (/root/bin/munin-symlink.sh) runs every 5 minutes via a cron job.
+#  - The deployed monitor script (/etc/cron.exec/munin-symlink.sh) runs every 5 minutes via a cron job.
 #    Ensure that Munin is properly configured to read its output, typically via symlink checks.
 #  - Permissions and ownership of deployed files are strictly set to restrict access to root only.
 #
 #  Version History:
+#  v1.4 2025-07-30
+#       Move script and config to /etc/cron.exec and /etc/cron.config.
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2025-04-27
@@ -89,15 +92,15 @@ check_sudo() {
 # Deploy the monitor script
 deploy_script() {
     echo "[INFO] Deploying script..."
-    if ! sudo cp "$SCRIPTS/cron/bin/munin-symlink.sh" /root/bin/munin-symlink.sh; then
+    if ! sudo cp "$SCRIPTS/cron/bin/munin-symlink.sh" /etc/cron.exec/munin-symlink.sh; then
         echo "[ERROR] Failed to copy munin-symlink.sh." >&2
         exit 1
     fi
-    if ! sudo chown root:root /root/bin/munin-symlink.sh; then
+    if ! sudo chown root:root /etc/cron.exec/munin-symlink.sh; then
         echo "[ERROR] Failed to change ownership of munin-symlink.sh." >&2
         exit 1
     fi
-    if ! sudo chmod 700 /root/bin/munin-symlink.sh; then
+    if ! sudo chmod 750 /etc/cron.exec/munin-symlink.sh; then
         echo "[ERROR] Failed to set permissions on munin-symlink.sh." >&2
         exit 1
     fi
@@ -106,7 +109,7 @@ deploy_script() {
 # Deploy the configuration file
 deploy_configuration() {
     echo "[INFO] Deploying configuration..."
-    CONFIG_FILE="/root/etc/munin-symlink.conf"
+    CONFIG_FILE="/etc/cron.config/munin-symlink.conf"
 
     if ! sudo test -f "$CONFIG_FILE"; then
         if ! sudo cp "$SCRIPTS/cron/etc/munin-symlink.conf" "$CONFIG_FILE"; then
@@ -135,7 +138,7 @@ setup_cron_job() {
 
     if ! sudo test -f "$CRON_FILE"; then
         if ! sudo tee "$CRON_FILE" > /dev/null <<EOF
-*/5 * * * * root test -x /root/bin/munin-symlink.sh && /root/bin/munin-symlink.sh
+*/5 * * * * root test -x /etc/cron.exec/munin-symlink.sh && /etc/cron.exec/munin-symlink.sh
 EOF
         then
             echo "[ERROR] Failed to create cron job file." >&2

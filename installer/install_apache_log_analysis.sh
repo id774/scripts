@@ -120,7 +120,6 @@ deploy_scripts() {
     sudo chmod 750 /etc/cron.exec
     sudo chown root:adm /etc/cron.exec
 
-
     for script in apache_log_analysis.sh apache_calculater.py; do
         if ! sudo cp "$SCRIPTS/$script" "/etc/cron.exec/$script"; then
             echo "[ERROR] Failed to copy $script to /etc/cron.exec." >&2

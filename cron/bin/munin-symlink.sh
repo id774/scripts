@@ -23,18 +23,20 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./munin-symlink.sh
 #      This script is intended to be executed periodically by cron.
+#      Deployed to /etc/cron.exec/munin-symlink.sh
 #
 #  Cron Usage:
 #      Add the following line to /etc/cron.d/munin-symlink to execute every 5 minutes:
-#      */5 * * * * root /path/to/munin-symlink.sh
+#      */5 * * * * root /etc/cron.exec/munin-symlink.sh
 #
 #  Requirements:
 #      - Linux system
 #      - Required commands: stat, ln, rm, date, find
 #
 #  Notes:
+#      - This script is deployed to /etc/cron.exec/munin-symlink.sh.
+#      - The configuration file is expected at /etc/cron.config/munin-symlink.conf.
 #      - Ensure that all directories and files are accessible by the user
 #        executing this script (typically root or munin user).
 #      - Make sure that Munin is configured to include configurations from
@@ -45,6 +47,8 @@
 #        configuration files from /etc/munin/server-available.
 #
 #  Version History:
+#  v1.6 2025-07-30
+#       Change configuration and script path to /etc/cron.config and /etc/cron.exec.
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.4 2025-05-16
