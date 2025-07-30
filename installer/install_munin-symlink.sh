@@ -94,6 +94,14 @@ check_sudo() {
 # Deploy the monitor script
 deploy_script() {
     echo "[INFO] Deploying script..."
+    if ! sudo mkdir -p /etc/cron.exec; then
+        echo "[ERROR] Failed to create /etc/cron.exec." >&2
+        exit 1
+    fi
+
+    sudo chmod 750 /etc/cron.exec
+    sudo chown root:adm /etc/cron.exec
+
     if ! sudo cp "$SCRIPTS/cron/bin/munin-symlink.sh" /etc/cron.exec/munin-symlink.sh; then
         echo "[ERROR] Failed to copy munin-symlink.sh." >&2
         exit 1
@@ -111,7 +119,15 @@ deploy_script() {
 # Deploy the configuration file
 deploy_configuration() {
     echo "[INFO] Deploying configuration..."
+    CONFIG_DIR="/etc/cron.config"
     CONFIG_FILE="/etc/cron.config/munin-symlink.conf"
+
+    if ! sudo mkdir -p "$CONFIG_DIR"; then
+        echo "[ERROR] Failed to create $CONFIG_DIR." >&2
+        exit 1
+    fi
+    sudo chmod 750 "$CONFIG_DIR"
+    sudo chown root:adm "$CONFIG_DIR"
 
     if ! sudo test -f "$CONFIG_FILE"; then
         if ! sudo cp "$SCRIPTS/cron/etc/munin-symlink.conf" "$CONFIG_FILE"; then

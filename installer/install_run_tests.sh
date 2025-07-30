@@ -165,7 +165,16 @@ deploy_scripts() {
         exit 1
     fi
 
+    CONFIG_DIR="/etc/cron.config"
     CONFIG_FILE="/etc/cron.config/run_tests.conf"
+
+    if ! sudo mkdir -p "$CONFIG_DIR"; then
+        echo "[ERROR] Failed to create $CONFIG_DIR." >&2
+        exit 1
+    fi
+    sudo chmod 750 "$CONFIG_DIR"
+    sudo chown root:adm "$CONFIG_DIR"
+
     if ! sudo test -f "$CONFIG_FILE"; then
         echo "[INFO] Copying run_tests.conf to /etc/cron.config."
         if ! sudo cp "$SCRIPTS/cron/etc/run_tests.conf" "$CONFIG_FILE"; then
