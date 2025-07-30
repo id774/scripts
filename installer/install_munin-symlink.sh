@@ -26,6 +26,8 @@
 #  - The deployed monitor script (/etc/cron.exec/munin-symlink.sh) runs every 5 minutes via a cron job.
 #    Ensure that Munin is properly configured to read its output, typically via symlink checks.
 #  - Permissions and ownership of deployed files are strictly set to restrict access to root only.
+#  - The monitor script is deployed with permission 740 (readable by adm group).
+#  - The configuration file is deployed with permission 640 (readable by adm group).
 #
 #  Version History:
 #  v1.4 2025-07-30
@@ -100,7 +102,7 @@ deploy_script() {
         echo "[ERROR] Failed to change ownership of munin-symlink.sh." >&2
         exit 1
     fi
-    if ! sudo chmod 750 /etc/cron.exec/munin-symlink.sh; then
+    if ! sudo chmod 740 /etc/cron.exec/munin-symlink.sh; then
         echo "[ERROR] Failed to set permissions on munin-symlink.sh." >&2
         exit 1
     fi
@@ -121,7 +123,7 @@ deploy_configuration() {
         echo "[INFO] Skipping copy to preserve existing configuration."
     fi
 
-    if ! sudo chmod 600 "$CONFIG_FILE"; then
+    if ! sudo chmod 640 "$CONFIG_FILE"; then
         echo "[ERROR] Failed to set permissions on configuration file." >&2
         exit 1
     fi
