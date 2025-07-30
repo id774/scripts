@@ -154,9 +154,9 @@ MAILTO=root
 
 01 01 * * 0 root test -x /etc/cron.exec/clamscan.sh && /etc/cron.exec/clamscan.sh
 EOF
-        sudo chmod 644 /etc/cron.d/clamscan
-        sudo chown root:root /etc/cron.d/clamscan
     fi
+    sudo chmod 640 /etc/cron.d/clamscan
+    sudo chown root:adm /etc/cron.d/clamscan
 
     echo "[INFO] Setting up ClamAV log files."
     for log_file in /var/log/clamav/clamscan.log /var/log/clamav/clamav.log; do
