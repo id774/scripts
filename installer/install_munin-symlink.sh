@@ -151,14 +151,8 @@ EOF
         echo "[INFO] Skipping creation to preserve existing configuration."
     fi
 
-    if ! sudo chmod 644 "$CRON_FILE"; then
-        echo "[ERROR] Failed to set permissions on cron file." >&2
-        exit 1
-    fi
-    if ! sudo chown root:root "$CRON_FILE"; then
-        echo "[ERROR] Failed to change ownership of cron file." >&2
-        exit 1
-    fi
+    sudo chmod 640 "$CRON_FILE"
+    sudo chown root:adm "$CRON_FILE"
 }
 
 # Main entry point of the script

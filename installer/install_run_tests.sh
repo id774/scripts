@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# install_run_tests.sh: Deploy run_tests.sh and Configure Cron Job
+# install_run_tests.sh: Deploy run_tests and Configure Cron Job
 #
 #  Description:
 #  This script automates the deployment of the run_tests.sh script and its
@@ -23,10 +23,12 @@
 #  Notes:
 #  - The SCRIPTS environment variable must be set to the directory containing
 #    the run_tests script and its configuration file before running this script.
-#  - After deployment, review and potentially edit /root/etc/run_tests.conf
+#  - After deployment, review and potentially edit /etc/cron.config/run_tests.conf
 #    and /etc/cron.d/run_tests to finalize the configuration.
 #
 #  Version History:
+#  v2.2 2025-07-30
+#       Move script to /etc/cron.exec and config to /etc/cron.config.
 #  v2.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.0 2025-04-29
@@ -149,15 +151,15 @@ deploy_log_rotation() {
 
 # Deploy run_tests script and configuration file
 deploy_scripts() {
-    echo "[INFO] Copying run_tests script to /root/bin."
-    if ! sudo cp "$SCRIPTS/cron/bin/run_tests" /root/bin/; then
-        echo "[ERROR] Failed to copy run_tests script" >&2
+    echo "[INFO] Copying run_tests to /etc/cron.exec."
+    if ! sudo cp "$SCRIPTS/cron/bin/run_tests" /etc/cron.exec/; then
+        echo "[ERROR] Failed to copy run_tests to /etc/cron.exec." >&2
         exit 1
     fi
 
-    CONFIG_FILE="/root/etc/run_tests.conf"
+    CONFIG_FILE="/etc/cron.config/run_tests.conf"
     if ! sudo test -f "$CONFIG_FILE"; then
-        echo "[INFO] Copying run_tests.conf to /root/etc."
+        echo "[INFO] Copying run_tests.conf to /etc/cron.config."
         if ! sudo cp "$SCRIPTS/cron/etc/run_tests.conf" "$CONFIG_FILE"; then
             echo "[ERROR] Failed to copy run_tests.conf" >&2
             exit 1
@@ -167,16 +169,16 @@ deploy_scripts() {
         echo "[INFO] Skipping copy to preserve existing configuration."
     fi
 
-    sudo chmod 700 /root/bin/run_tests
-    sudo chown root:root /root/bin/run_tests
-    sudo chmod 600 "$CONFIG_FILE"
-    sudo chown root:root "$CONFIG_FILE"
+    sudo chmod 740 /etc/cron.exec/run_tests
+    sudo chown root:adm /etc/cron.exec/run_tests
+    sudo chmod 640 "$CONFIG_FILE"
+    sudo chown root:adm "$CONFIG_FILE"
 }
 
 # Set up cron job for running tests
 setup_cron_job() {
     CRON_FILE="/etc/cron.d/run_tests"
-    CRON_JOB="30 04 * * * root test -x /root/bin/run_tests && /root/bin/run_tests"
+    CRON_JOB="30 04 * * * root test -x /etc/cron.exec/run_tests && /etc/cron.exec/run_tests"
 
     if sudo test -f "$CRON_FILE"; then
         echo "[INFO] Cron job already exists: $CRON_FILE"
@@ -189,15 +191,15 @@ setup_cron_job() {
         fi
     fi
 
-    sudo chmod 644 "$CRON_FILE"
-    sudo chown root:root "$CRON_FILE"
+    sudo chmod 640 "$CRON_FILE"
+    sudo chown root:adm "$CRON_FILE"
 }
 
 # Print post-installation instructions and next steps
 final_message() {
     echo "[INFO] Installation of run_tests setup completed successfully."
-    echo "# Notes: Manual editing of '/root/etc/run_tests.conf' and '/etc/cron.d/run_tests' may be required"
-    echo "# to finalize configurations. Please review and edit these files as necessary."
+    echo "# Notes: Please review '/etc/cron.config/run_tests.conf' and '/etc/cron.d/run_tests'"
+    echo "# to ensure all settings meet your operational requirements."
 }
 
 # Main function to execute all setup tasks

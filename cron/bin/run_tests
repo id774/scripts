@@ -5,11 +5,11 @@
 #
 #  Description:
 #  This script automates the process of running tests for projects developed
-#  in Python and Ruby. It loads configuration settings from an external '.conf'
-#  file, iterates through specified versions of Python and Ruby to run tests,
-#  and performs a compatibility check using the first Python version in the loop.
-#  It is intended to be executed automatically via cron jobs and sends a summary
-#  email to an administrator upon completion.
+#  in Python and Ruby. It loads configuration settings from an external
+#  configuration file, iterates through specified versions of Python and Ruby
+#  to run tests, and performs a compatibility check using the first Python
+#  version in the loop. It is intended to be executed automatically via cron
+#  jobs and sends a summary email to an administrator upon completion.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -18,28 +18,29 @@
 #
 #  Usage:
 #  This script is designed to be run automatically through a cron job. Ensure
-#  that 'run_tests.conf' is properly configured with the SCRIPTS, JOBLOG,
-#  python_versions, ruby_versions, and ADMIN_MAIL_ADDRESS variables. For manual
-#  execution, run the script:
-#      ./run_tests
+#  that '/etc/cron.config/run_tests.conf' is properly configured with the
+#  SCRIPTS, JOBLOG, python_versions, ruby_versions, and ADMIN_MAIL_ADDRESS
+#  variables. For manual execution, run the script:
+#      /etc/cron.exec/run_tests
 #
 #  The script iterates through the specified versions, runs tests for each
 #  combination of Python and Ruby versions, concludes with a compatibility
 #  check using the first Python version tested, and sends a summary email to
 #  the administrator.
 #
-#  Configuration file ('run_tests.conf') requirements:
+#  Configuration file ('/etc/cron.config/run_tests.conf') requirements:
 #  - SCRIPTS: Path to the scripts directory.
 #  - JOBLOG: Path to the job log file.
 #  - python_versions: Space-separated list of Python versions to test.
 #  - ruby_versions: Space-separated list of Ruby versions to test.
 #  - ADMIN_MAIL_ADDRESS: Email address of the administrator to notify.
-#  Ensure these variables are set in 'run_tests.conf'.
+#  Ensure these variables are set in '/etc/cron.config/run_tests.conf'.
 #
 #  Notes:
 #  - The script is designed to be run in environments where Python and Ruby
 #    are used for development and testing.
 #  - Ensure the specified Python and Ruby versions are installed and accessible.
+#  - This script is typically deployed to /etc/cron.exec/run_tests and run by cron.
 #
 #  Error Conditions:
 #  0. All tests completed successfully.
@@ -48,6 +49,8 @@
 #  4. Configuration variables not set.
 #
 #  Version History:
+#  v2.5 2025-07-30
+#       Update path references for system deployment under /etc/cron.exec and /etc/cron.config.
 #  v2.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.3 2025-06-10
@@ -110,14 +113,15 @@ initialize() {
 
     SCRIPT_DIR=$(dirname "$0")
 
-    CONF_FILE="$SCRIPT_DIR/etc/run_tests.conf"
-    if [ ! -f "$CONF_FILE" ]; then
-        CONF_FILE="$SCRIPT_DIR/../etc/run_tests.conf"
-        if [ ! -f "$CONF_FILE" ]; then
-            echo "[ERROR] Configuration file not found." >&2
-            exit 3
-        fi
+    if [ -f "$SCRIPT_DIR/etc/run_tests.conf" ]; then
+        CONF_FILE="$SCRIPT_DIR/etc/run_tests.conf"
+    elif [ -f /etc/cron.config/run_tests.conf ]; then
+        CONF_FILE="/etc/cron.config/run_tests.conf"
+    else
+        echo "[ERROR] Configuration file not found in any known location." >&2
+        exit 3
     fi
+
     . "$CONF_FILE"
 
     if [ -z "$SCRIPTS" ] || [ -z "$JOBLOG" ] || [ -z "$python_versions" ] || [ -z "$ruby_versions" ]; then
@@ -127,7 +131,7 @@ initialize() {
 
     is_joblog_writable
 
-    echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
+    echo -n "*** $(basename "$0"): Job started on $(hostname) at " >> "$JOBLOG" 2>&1
     date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
 }
 
