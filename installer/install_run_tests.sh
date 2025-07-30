@@ -152,6 +152,14 @@ deploy_log_rotation() {
 # Deploy run_tests script and configuration file
 deploy_scripts() {
     echo "[INFO] Copying run_tests to /etc/cron.exec."
+    if ! sudo mkdir -p /etc/cron.exec; then
+        echo "[ERROR] Failed to create /etc/cron.exec." >&2
+        exit 1
+    fi
+
+    sudo chmod 750 /etc/cron.exec
+    sudo chown root:adm /etc/cron.exec
+
     if ! sudo cp "$SCRIPTS/cron/bin/run_tests" /etc/cron.exec/; then
         echo "[ERROR] Failed to copy run_tests to /etc/cron.exec." >&2
         exit 1
