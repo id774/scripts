@@ -131,7 +131,7 @@ initialize() {
 
     is_joblog_writable
 
-    echo -n "*** $(basename "$0"): Job started on $(hostname) at " >> "$JOBLOG" 2>&1
+    echo -n "*** $0: Job started on $(hostname) at " >> "$JOBLOG" 2>&1
     date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
 }
 
