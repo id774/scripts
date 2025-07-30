@@ -134,7 +134,7 @@ install_clamscan() {
     fi
 
     sudo chown root:adm /etc/cron.exec/clamscan.sh
-    sudo chmod 750 /etc/cron.exec/clamscan.sh
+    sudo chmod 740 /etc/cron.exec/clamscan.sh
 
     echo "[INFO] Deploying clamscan configuration to /etc/cron.config/clamscan.conf."
     if ! sudo cp "$SCRIPTS/cron/etc/clamscan_exclude" /etc/cron.config/clamscan.conf; then
