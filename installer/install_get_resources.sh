@@ -22,6 +22,8 @@
 #    the get_resources script and its related files before running this script.
 #
 #  Version History:
+#  v2.6 2025-07-30
+#       Change get_resources.sh installation path from /root/bin to /etc/cron.exec.
 #  v2.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.4 2025-05-10
@@ -119,6 +121,7 @@ main() {
             exit 1
         fi
     fi
+
     sudo chmod 750 /var/log/sysadmin
     sudo chown root:adm /var/log/sysadmin
 
@@ -129,6 +132,7 @@ main() {
             exit 1
         fi
     fi
+
     sudo chmod 640 /var/log/sysadmin/resources.log
     sudo chown root:adm /var/log/sysadmin/resources.log
 
@@ -141,26 +145,40 @@ main() {
     else
         echo "[INFO] /etc/logrotate.d/resources already exists. Skipping deployment."
     fi
+
     sudo chmod 640 /etc/logrotate.d/resources
     sudo chown root:adm /etc/logrotate.d/resources
 
-    echo "[INFO] Deploying get_resources.sh to /root/bin."
-    if [ -f /root/bin/get_resources.sh ]; then
-        echo "[INFO] /root/bin/get_resources.sh already exists. Skipping deployment."
-    else
-        if ! sudo cp "$SCRIPTS/get_resources.sh" /root/bin/; then
-            echo "[ERROR] Failed to copy get_resources.sh to /root/bin/." >&2
+    echo "[INFO] Deploying get_resources.sh to /etc/cron.exec."
+    if [ ! -d /etc/cron.exec ]; then
+        echo "[INFO] Creating /etc/cron.exec directory."
+        if ! sudo mkdir -p /etc/cron.exec; then
+            echo "[ERROR] Failed to create /etc/cron.exec." >&2
             exit 1
         fi
     fi
-    sudo chmod 700 /root/bin/get_resources.sh
-    sudo chown root:root /root/bin/get_resources.sh
+
+    sudo chmod 750 /etc/cron.exec
+    sudo chown root:adm /etc/cron.exec
+
+    if [ -f /etc/cron.exec/get_resources.sh ]; then
+        echo "[INFO] /etc/cron.exec/get_resources.sh already exists. Skipping deployment."
+    else
+        if ! sudo cp "$SCRIPTS/get_resources.sh" /etc/cron.exec/; then
+            echo "[ERROR] Failed to copy get_resources.sh to /etc/cron.exec/." >&2
+            exit 1
+        fi
+    fi
+
+    sudo chmod 750 /etc/cron.exec/get_resources.sh
+    sudo chown root:adm /etc/cron.exec/get_resources.sh
 
     echo "[INFO] Installing cron job to /etc/cron.hourly."
     if ! sudo cp "$SCRIPTS/cron/bin/get_resources" /etc/cron.hourly/; then
         echo "[ERROR] Failed to copy cron job to /etc/cron.hourly/." >&2
         exit 1
     fi
+
     sudo chmod 740 /etc/cron.hourly/get_resources
     sudo chown root:adm /etc/cron.hourly/get_resources
 

@@ -24,6 +24,8 @@
 #      5 * * * * root /path/to/get_resources
 #
 #  Version History:
+#  v1.3 2025-07-30
+#       Update script path to /etc/cron.exec/get_resources.sh to align with new cron execution structure.
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2025-05-16
@@ -65,7 +67,7 @@ is_joblog_writable() {
 # Initialize environment and log job start
 initialize() {
     JOBLOG="/var/log/sysadmin/resources.log"
-    SCRIPT="/root/bin/get_resources.sh"
+    SCRIPT="/etc/cron.exec/get_resources.sh"
 
     if ! is_running_from_cron; then
         echo "[ERROR] This script is intended to be run by cron only." >&2
