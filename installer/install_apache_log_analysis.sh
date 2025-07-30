@@ -122,7 +122,7 @@ deploy_scripts() {
             echo "[ERROR] Failed to copy $script to /etc/cron.exec." >&2
             exit 1
         fi
-        sudo chmod 750 "/etc/cron.exec/$script"
+        sudo chmod 740 "/etc/cron.exec/$script"
         sudo chown root:adm "/etc/cron.exec/$script"
     done
 }

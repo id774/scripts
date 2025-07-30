@@ -166,7 +166,7 @@ main() {
         exit 1
     fi
 
-    sudo chmod 750 /etc/cron.exec/get_resources.sh
+    sudo chmod 740 /etc/cron.exec/get_resources.sh
     sudo chown root:adm /etc/cron.exec/get_resources.sh
 
     echo "[INFO] Installing cron job to /etc/cron.hourly."
