@@ -6,7 +6,7 @@
 #  Description:
 #  This script sets up Apache log analysis by:
 #  - Deploying analysis scripts and configurations.
-#  - Configuring scheduled cron jobs for log analysis.
+#  - Installing scheduled cron job into /etc/cron.exec for log analysis.
 #  - Ensuring proper file and directory permissions.
 #
 #  Author: id774 (More info: http://id774.net)
@@ -23,6 +23,8 @@
 #  - The `$SCRIPTS` environment variable must be set.
 #
 #  Version History:
+#  v2.0 2025-07-30
+#       Move apache_log_analysis cron job from /etc/cron.daily to /etc/cron.exec.
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.8 2025-04-26
@@ -110,41 +112,66 @@ setup_directories() {
 # Deploy Apache log analysis scripts
 deploy_scripts() {
     echo "[INFO] Deploying log analysis scripts."
+    if ! sudo mkdir -p /etc/cron.exec; then
+        echo "[ERROR] Failed to create /etc/cron.exec." >&2
+        exit 1
+    fi
+
     for script in apache_log_analysis.sh apache_calculater.py; do
-        if ! sudo cp "$SCRIPTS/$script" "/root/bin/$script"; then
-            echo "[ERROR] Failed to copy $script to /root/bin." >&2
+        if ! sudo cp "$SCRIPTS/$script" "/etc/cron.exec/$script"; then
+            echo "[ERROR] Failed to copy $script to /etc/cron.exec." >&2
             exit 1
         fi
-        sudo chmod 700 "/root/bin/$script"
-        sudo chown root:root "/root/bin/$script"
+        sudo chmod 750 "/etc/cron.exec/$script"
+        sudo chown root:adm "/etc/cron.exec/$script"
     done
 }
 
 # Deploy configuration files
 deploy_configurations() {
-   echo "[INFO] Deploying configuration files."
+    echo "[INFO] Deploying configuration files."
 
-    CONFIG_FILE="/root/etc/apache_ignore.list"
+    CONFIG_DIR="/etc/cron.config"
+    CONFIG_FILE="$CONFIG_DIR/apache_ignore.list"
+
+    if ! sudo mkdir -p "$CONFIG_DIR"; then
+        echo "[ERROR] Failed to create $CONFIG_DIR." >&2
+        exit 1
+    fi
+    sudo chmod 750 "$CONFIG_DIR"
+    sudo chown root:adm "$CONFIG_DIR"
+
     if ! sudo test -f "$CONFIG_FILE"; then
-        sudo cp "$SCRIPTS/etc/apache_ignore.list" "$CONFIG_FILE"
+        if ! sudo cp "$SCRIPTS/etc/apache_ignore.list" "$CONFIG_FILE"; then
+            echo "[ERROR] Failed to copy apache_ignore.list to $CONFIG_FILE." >&2
+            exit 1
+        fi
     else
         echo "[INFO] Configuration file already exists: $CONFIG_FILE"
         echo "[INFO] Skipping copy to preserve existing configuration."
     fi
 
-    sudo chmod 600 "$CONFIG_FILE"
-    sudo chown root:root "$CONFIG_FILE"
+    sudo chmod 640 "$CONFIG_FILE"
+    sudo chown root:adm "$CONFIG_FILE"
 }
 
 # Deploy cron jobs
 setup_cron_jobs() {
     echo "[INFO] Setting up cron jobs."
-    if ! sudo cp "$SCRIPTS/cron/bin/apache_log_analysis" /etc/cron.daily/apache_log_analysis; then
+    if ! sudo mkdir -p /etc/cron.exec; then
+        echo "[ERROR] Failed to create /etc/cron.exec." >&2
+        exit 1
+    fi
+    sudo chmod 750 /etc/cron.exec
+    sudo chown root:adm /etc/cron.exec
+
+    if ! sudo cp "$SCRIPTS/cron/bin/apache_log_analysis" /etc/cron.exec/apache_log_analysis; then
         echo "[ERROR] Failed to deploy apache_log_analysis cron job." >&2
         exit 1
     fi
-    sudo chmod 740 /etc/cron.daily/apache_log_analysis
-    sudo chown root:adm /etc/cron.daily/apache_log_analysis
+
+    sudo chmod 740 /etc/cron.exec/apache_log_analysis
+    sudo chown root:adm /etc/cron.exec/apache_log_analysis
 }
 
 # Set up log files

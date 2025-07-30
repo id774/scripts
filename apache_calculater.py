@@ -6,8 +6,9 @@
 #  Description:
 #  This script analyzes Apache log files to calculate the number of hits per IP
 #  address and the percentage of client cache hits. It supports .gz compressed
-#  log files and excludes IPs listed in apache_ignore.list. It is designed to
-#  provide insights into web server traffic and client behavior.
+#  log files and excludes IPs listed in apache_ignore.list, which is searched
+#  in ./etc/, ../etc/ and /etc/cron.config in that order.
+#  It is designed to provide insights into web server traffic and client behavior.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,6 +18,9 @@
 #  Usage:
 #      apache_calculater.py <log_file>
 #
+#  The script ignores IPs listed in /etc/cron.config/apache_ignore.list
+#  if the file exists. You can customize it as needed.
+#
 #  Example:
 #      apache_calculater.py /var/log/apache2/access.log
 #
@@ -24,6 +28,8 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v1.8 2025-07-30
+#       Support ignore list lookup in /etc/cron.config first, before falling back to local etc/ paths.
 #  v1.7 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.6 2025-06-23
@@ -87,22 +93,25 @@ class ApacheCalculater(object):
             set: A set of IPs to ignore.
         """
         ignore_ips = set({"127.0.0.1"})  # Default value
-        current_dir_ignore_file = "./etc/apache_ignore.list"
-        script_dir_ignore_file = os.path.join(
-            os.path.dirname(__file__), "../etc/apache_ignore.list")
 
-        ignore_file = current_dir_ignore_file if os.path.isfile(
-            current_dir_ignore_file) else script_dir_ignore_file if os.path.isfile(script_dir_ignore_file) else None
+        # Search in this order: /etc/cron.config, ./etc/, ../etc/
+        candidate_paths = [
+            os.path.join(os.getcwd(), "etc", "apache_ignore.list"),
+            os.path.join(os.path.dirname(__file__), "..", "etc", "apache_ignore.list"),
+            "/etc/cron.config/apache_ignore.list"
+        ]
 
-        if ignore_file:
-            try:
-                with open(ignore_file, "r") as file:
-                    for line in file:
-                        stripped_line = line.strip()
-                        if stripped_line and not stripped_line.startswith("#"):
-                            ignore_ips.add(stripped_line)
-            except FileNotFoundError:
-                pass  # Ignore file not found, default IP is used
+        for ignore_file in candidate_paths:
+            if os.path.isfile(ignore_file):
+                try:
+                    with open(ignore_file, "r") as file:
+                        for line in file:
+                            stripped_line = line.strip()
+                            if stripped_line and not stripped_line.startswith("#"):
+                                ignore_ips.add(stripped_line)
+                    break
+                except Exception:
+                    continue  # Skip unreadable files
 
         return ignore_ips
 

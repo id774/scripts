@@ -7,7 +7,8 @@
 #  This script analyzes Apache SSL access logs to provide insights into
 #  web server traffic. It reports on top accessed URLs, referrers, user
 #  agents, browser counts, daily accesses, access by time, and recent
-#  accesses and referrers.
+#  accesses and referrers. It excludes requests from IPs listed in
+#  apache_ignore.list, searched in ./etc/, ../etc/ and /etc/cron.config.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -20,6 +21,8 @@
 #      ./apache_log_analysis.sh /var/log/apache2/ssl_access.log
 #
 #  Version History:
+#  v2.1 2025-07-30
+#       Search apache_ignore.list in /etc/cron.config first, before fallback to local etc/ paths.
 #  v2.0 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.9 2025-04-13
@@ -78,13 +81,19 @@ check_commands() {
 
 # Load list of IP addresses to ignore from a configuration file.
 load_ignore_list() {
-    SCRIPT_DIR=$(dirname "$0")
-    IGNORE_FILE="$SCRIPT_DIR/etc/apache_ignore.list"
-    if [ ! -f "$IGNORE_FILE" ]; then
-        IGNORE_FILE="$SCRIPT_DIR/../etc/apache_ignore.list"
-    fi
+    IGNORE_FILE=""
+    for candidate in \
+        "$(dirname "$0")/etc/apache_ignore.list" \
+        "$(dirname "$0")/../etc/apache_ignore.list" \
+        "/etc/cron.config/apache_ignore.list"
+    do
+        if [ -f "$candidate" ]; then
+            IGNORE_FILE="$candidate"
+            break
+        fi
+    done
 
-    if [ -f "$IGNORE_FILE" ]; then
+    if [ -n "$IGNORE_FILE" ]; then
         IGNORE_IPS=$(awk '!/^#/ && NF' "$IGNORE_FILE" | paste -sd "|" -)
     else
         IGNORE_IPS="127.0.0.1"

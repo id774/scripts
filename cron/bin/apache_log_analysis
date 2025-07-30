@@ -18,11 +18,12 @@
 #  This script is intended to be executed periodically by cron.
 #
 #  Cron Usage:
-#      Place this script into /etc/cron.daily or similar.
-#      Or create a specific cron entry like the following:
-#      45 3 * * * root /path/to/apache_log_analysis
+#      Place this script into /etc/cron.exec for daily execution.
+#      This will be invoked automatically by the system cron mechanism.
 #
 #  Version History:
+#  v1.3 2025-07-30
+#       Update documentation to reflect move from /etc/cron.daily to /etc/cron.exec.
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2025-05-16
@@ -64,8 +65,8 @@ is_joblog_writable() {
 # Setup variables and log start time
 initialize() {
     JOBLOG="/var/log/sysadmin/apache_summary.log"
-    SCRIPT1="/root/bin/apache_log_analysis.sh"
-    SCRIPT2="/root/bin/apache_calculater.py"
+    SCRIPT1="/etc/cron.exec/apache_log_analysis.sh"
+    SCRIPT2="/etc/cron.exec/apache_calculater.py"
     ACCESS_LOG="/var/log/apache2/ssl_access.log"
     ACCESS_LOG_ROTATED="/var/log/apache2/ssl_access.log.1"
 
