@@ -199,7 +199,7 @@ EOF
 }
 
 # Uninstall munin-sync components
-uninstall_munin_sync() {
+uninstall() {
     check_commands rm
     check_sudo
 
@@ -222,16 +222,10 @@ uninstall_munin_sync() {
     done
 
     echo "[INFO] Uninstallation completed successfully."
-    exit 0
 }
 
-# Main entry point of the script
-main() {
-    case "$1" in
-        -h|--help|-v|--version) usage ;;
-        --uninstall) uninstall_munin_sync ;;
-    esac
-
+# Perform installation steps
+install() {
     check_system
     check_munin_dir
     check_commands sudo cp chmod chown mkdir touch tee rsync hostname grep
@@ -244,6 +238,21 @@ main() {
     setup_cron_jobs
 
     echo "[INFO] Installation completed successfully."
+}
+
+# Main entry point of the script
+main() {
+    case "$1" in
+        -h|--help|-v|--version)
+            usage
+            ;;
+        --uninstall)
+            uninstall
+            ;;
+        *)
+            install
+            ;;
+    esac
     return 0
 }
 

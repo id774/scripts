@@ -201,7 +201,20 @@ uninstall() {
     done
 
     echo "[INFO] Uninstallation completed."
-    exit 0
+}
+
+# Perform installation steps
+install() {
+    check_system
+    check_commands sudo chmod chown tee
+    check_scripts
+    check_sudo
+
+    deploy_script
+    deploy_configuration
+    setup_cron_job
+
+    echo "[INFO] Installation completed successfully."
 }
 
 # Main entry point of the script
@@ -213,18 +226,10 @@ main() {
         --uninstall)
             uninstall
             ;;
+        *)
+            install
+            ;;
     esac
-
-    check_system
-    check_commands sudo chmod chown tee
-    check_scripts
-    check_sudo
-
-    deploy_script
-    deploy_configuration
-    setup_cron_job
-
-    echo "[INFO] Installation completed successfully."
     return 0
 }
 
