@@ -47,7 +47,7 @@
 #        configuration files from /etc/munin/server-available.
 #
 #  Version History:
-#  v1.6 2025-07-30
+#  v1.6 2025-07-31
 #       Change configuration and script path to /etc/cron.config and /etc/cron.exec.
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -85,12 +85,7 @@ is_running_from_cron() {
 
 # Load configuration from external file
 load_config() {
-    SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
-    CONFIG_FILE="$SCRIPT_DIR/etc/munin-symlink.conf"
-
-    if [ ! -f "$CONFIG_FILE" ]; then
-        CONFIG_FILE="$SCRIPT_DIR/../etc/munin-symlink.conf"
-    fi
+    CONFIG_FILE="/etc/cron.config/munin-symlink.conf"
 
     if [ -f "$CONFIG_FILE" ]; then
         . "$CONFIG_FILE"
