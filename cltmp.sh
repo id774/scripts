@@ -21,6 +21,7 @@
 #  cleanup actions. Ensure to have the necessary permissions before running.
 #
 #  Version History:
+#  20250731 - Add kill-ring-saved.el to Emacs cleanup targets.
 #  20250715 - Add abbrev_defs to Emacs cleanup targets.
 #  20250623 - Unified usage output to display full script header and support common help/version options.
 #  20250413 - Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
@@ -142,6 +143,7 @@ perform_cleanup() {
     rm -vf "$HOME"/.vim/.netrwhist
     rm -vf "$HOME"/.emacs.d/*~
     rm -vf "$HOME"/.emacs.d/abbrev_defs
+    rm -vf "$HOME"/.emacs.d/kill-ring-saved.el
     rm -vf "$HOME"/*.swp "$HOME"/*.swo "$HOME"/*.bak "$HOME"/*.~ "$HOME"/*.old
     rm -vf "$HOME"/.*.swp "$HOME"/.*.swo "$HOME"/.*.bak "$HOME"/.*.~ "$HOME"/.*.old
 
