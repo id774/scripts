@@ -177,9 +177,32 @@ deploy_configurations() {
     sudo chown munin:munin "$CONFIG_FILE"
 }
 
+# Setup cron jobs for munin-sync
+setup_cron_jobs() {
+    echo "[INFO] Setting up cron jobs..."
+    CRON_FILE="/etc/cron.d/munin-sync"
+
+    if ! sudo test -f "$CRON_FILE"; then
+        if ! sudo tee "$CRON_FILE" > /dev/null <<EOF
+1-56/5 * * * * munin test -x /var/lib/munin/bin/munin-sync.sh && /var/lib/munin/bin/munin-sync.sh
+EOF
+        then
+            echo "[ERROR] Failed to create cron job file." >&2
+            exit 1
+        fi
+    else
+        echo "[INFO] Cron job already exists: $CRON_FILE"
+        echo "[INFO] Skipping creation to preserve existing configuration."
+    fi
+    sudo chmod 644 "$CRON_FILE"
+    sudo chown root:root "$CRON_FILE"
+}
+
 # Uninstall munin-sync components
 uninstall_munin_sync() {
     check_commands rm
+    check_sudo
+
     echo "[INFO] Uninstalling munin-sync..."
 
     for path in \
@@ -200,27 +223,6 @@ uninstall_munin_sync() {
 
     echo "[INFO] Uninstallation completed successfully."
     exit 0
-}
-
-# Setup cron jobs for munin-sync
-setup_cron_jobs() {
-    echo "[INFO] Setting up cron jobs..."
-    CRON_FILE="/etc/cron.d/munin-sync"
-
-    if ! sudo test -f "$CRON_FILE"; then
-        if ! sudo tee "$CRON_FILE" > /dev/null <<EOF
-1-56/5 * * * * munin test -x /var/lib/munin/bin/munin-sync.sh && /var/lib/munin/bin/munin-sync.sh
-EOF
-        then
-            echo "[ERROR] Failed to create cron job file." >&2
-            exit 1
-        fi
-    else
-        echo "[INFO] Cron job already exists: $CRON_FILE"
-        echo "[INFO] Skipping creation to preserve existing configuration."
-    fi
-    sudo chmod 644 "$CRON_FILE"
-    sudo chown root:root "$CRON_FILE"
 }
 
 # Main entry point of the script

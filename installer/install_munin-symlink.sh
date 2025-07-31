@@ -16,6 +16,7 @@
 #
 #  Usage:
 #      ./install_munin-symlink.sh
+#      ./install_munin-symlink.sh --uninstall
 #      This installs /etc/cron.exec/munin-symlink.sh and /etc/cron.config/munin-symlink.conf
 #
 #  Notes:
@@ -30,6 +31,8 @@
 #  - The configuration file is deployed with permission 640 (readable by adm group).
 #
 #  Version History:
+#  v1.5 2025-07-31
+#       Add --uninstall option to remove installed script, config, and cron job.
 #  v1.4 2025-07-30
 #       Move script and config to /etc/cron.exec and /etc/cron.config.
 #  v1.3 2025-06-23
@@ -171,10 +174,45 @@ EOF
     sudo chown root:adm "$CRON_FILE"
 }
 
+# Uninstall all installed components
+uninstall() {
+    check_commands sudo rm
+    check_sudo
+
+    echo "[INFO] Uninstalling munin-symlink..."
+
+    FILES_TO_REMOVE="
+        /etc/cron.exec/munin-symlink.sh
+        /etc/cron.config/munin-symlink.conf
+        /etc/cron.d/munin-symlink
+    "
+
+    for file in $FILES_TO_REMOVE; do
+        if sudo test -e "$file"; then
+            if sudo rm -f "$file"; then
+                echo "[INFO] Removed $file"
+            else
+                echo "[ERROR] Failed to remove $file" >&2
+                exit 1
+            fi
+        else
+            echo "[INFO] File not found, skipping: $file"
+        fi
+    done
+
+    echo "[INFO] Uninstallation completed."
+    exit 0
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
-        -h|--help|-v|--version) usage ;;
+        -h|--help|-v|--version)
+            usage
+            ;;
+        --uninstall)
+            uninstall
+            ;;
     esac
 
     check_system
