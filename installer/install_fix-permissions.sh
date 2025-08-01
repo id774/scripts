@@ -205,6 +205,7 @@ install() {
 # Remove fix-permissions components except logs
 uninstall() {
     check_commands sudo rm
+    check_sudo
 
     echo "[INFO] Starting fix-permissions uninstallation..."
 
