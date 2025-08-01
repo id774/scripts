@@ -174,13 +174,13 @@ main() {
             ;;
         -u|--uninstall|--uninstall)
             uninstall
-            return 0
             ;;
         ""|*)
             install
-            return 0
             ;;
     esac
+
+    return 0
 }
 
 # Execute main function
