@@ -16,12 +16,15 @@
 #
 #  Usage:
 #      ./install_chkrootkit.sh
+#      ./install_chkrootkit.sh --uninstall
 #
 #  Notes:
 #  - Ensure the SCRIPTS environment variable is set to the directory containing
 #    the chkrootkit script and its related files before running this script.
 #
 #  Version History:
+#  v1.7 2025-08-01
+#       Add --uninstall option and refactor install into separate function.
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-04-27
@@ -88,12 +91,7 @@ check_sudo() {
     fi
 }
 
-# Main entry point of the script
-main() {
-    case "$1" in
-        -h|--help|-v|--version) usage ;;
-    esac
-
+install() {
     # Perform initial checks
     check_system
     check_commands sudo cp chmod chown mkdir touch
@@ -138,6 +136,44 @@ main() {
     sudo chown root:root /etc/logrotate.d/chkrootkit
 
     echo "[INFO] chkrootkit setup completed successfully."
+}
+
+uninstall() {
+    # Perform initial checks
+    check_commands sudo rm
+    check_sudo
+
+    echo "[INFO] Removing chkrootkit cron job and logrotate configuration."
+
+    if [ -f /etc/cron.weekly/chkrootkit ]; then
+        sudo rm -v /etc/cron.weekly/chkrootkit
+    else
+        echo "[INFO] /etc/cron.weekly/chkrootkit not found. Skipping."
+    fi
+
+    if [ -f /etc/logrotate.d/chkrootkit ]; then
+        sudo rm -v /etc/logrotate.d/chkrootkit
+    else
+        echo "[INFO] /etc/logrotate.d/chkrootkit not found. Skipping."
+    fi
+
+    echo "[INFO] Uninstallation completed. Log files under /var/log/chkrootkit are preserved."
+}
+
+# Main entry point of the script
+main() {
+    case "$1" in
+        -h|--help|-v|--version)
+            usage
+            ;;
+        -u|--uninstall)
+            uninstall
+            ;;
+        ""|*)
+            install
+            ;;
+    esac
+
     return 0
 }
 
