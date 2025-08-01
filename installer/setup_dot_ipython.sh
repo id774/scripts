@@ -22,6 +22,9 @@
 #  Before running this script, ensure that the 'SCRIPTS' environment variable points
 #  to your directory containing the IPython startup files.
 #
+#  To remove all related files, use:
+#      ./setup_dot_ipython.sh --uninstall
+#
 #  Notes:
 #  - This script is intended to be used with Zsh.
 #  - Make sure to back up any existing IPython configuration before running this script.
@@ -29,6 +32,8 @@
 #  - 'SCRIPTS' environment variable must be correctly set.
 #
 #  Version History:
+#  v2.0 2025-08-01
+#       Add option to remove dot_ipython configuration files and profiles.
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.6 2025-04-27
@@ -161,24 +166,10 @@ copy_dotipython() {
             exit 1
         fi
     fi
-
-    if ! cp $OPTIONS "${SCRIPTS}/dot_files/dot_zshrc" "${HOME}/.zshrc"; then
-        echo "[ERROR] Failed to copy dot_zshrc to ${HOME}/.zshrc." >&2
-        exit 1
-    fi
-
-    if ! cp $OPTIONS "${SCRIPTS}/dot_files/dot_zshrc_local" "${HOME}/.zshrc_local"; then
-        echo "[ERROR] Failed to copy dot_zshrc_local to ${HOME}/.zshrc_local." >&2
-        exit 1
-    fi
 }
 
-# Main entry point of the script
-main() {
-    case "$1" in
-        -h|--help|-v|--version) usage ;;
-    esac
-
+# Perform installation steps
+install() {
     check_scripts
     check_ipython
     check_commands uname cp chmod rm mkdir
@@ -187,6 +178,41 @@ main() {
     init_nbserver "$@"
 
     echo "[INFO] dot_ipython setup successfully completed."
+}
+
+# Remove IPython configuration and related files
+uninstall() {
+    check_commands rm
+
+    echo "[INFO] Starting dot_ipython uninstallation..."
+
+    if [ -d "$HOME/.ipython" ]; then
+        echo "[INFO] Removing $HOME/.ipython"
+        if ! rm -rf "$HOME/.ipython"; then
+            echo "[ERROR] Failed to remove $HOME/.ipython" >&2
+            exit 1
+        fi
+    else
+        echo "[INFO] $HOME/.ipython does not exist. Skipping."
+    fi
+
+    echo "[INFO] dot_ipython uninstallation completed."
+}
+
+# Main entry point of the script
+main() {
+    case "$1" in
+        -h|--help|-v|--version)
+            usage
+            ;;
+        -u|--uninstall)
+            uninstall
+            ;;
+        ""|*)
+            install "$@"
+            ;;
+    esac
+
     return 0
 }
 
