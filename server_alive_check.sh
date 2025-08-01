@@ -5,9 +5,9 @@
 #
 #  Description:
 #  This script checks for the existence and freshness of _is_alive files
-#  sent from various servers to the specified directory. The presence and
-#  last modified timestamp of these files determine the availability of
-#  the servers.
+#  sent from various servers to a specified directory.
+#  You can optionally specify the base directory as the first argument.
+#  If omitted, the default directory is /home/share/received.
 #
 #  It scans all files ending with '_is_alive' under the configured directory
 #  and triggers an alert if any file is older than the threshold time,
@@ -23,8 +23,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./server_alive_check.sh
-#      This script is intended to be executed automatically via cron.
+#      ./server_alive_check.sh [base_directory]
+#      If [base_directory] is omitted, defaults to /home/share/received.
+#      Intended to be executed automatically via cron.
 #
 #  Cron Usage:
 #  Add the following line to /etc/cron.d/server_alive_check to execute every 5 minutes:
@@ -50,6 +51,8 @@
 #  3. Source directory does not exist.
 #
 #  Version History:
+#  v1.7 2025-08-01
+#       Support optional argument to specify BASE_DIR. Default remains /home/share/received.
 #  v1.6 2025-07-28
 #       Distinguish VM-prefixed hosts and exclude them from alerts with consistent log formatting.
 #       Support gstat on macOS to ensure GNU-compatible stat behavior.
@@ -68,9 +71,6 @@
 #       Initial release. Implements _is_alive file monitoring for server health checking.
 #
 ########################################################################
-
-# Base directory containing the files to be checked
-BASE_DIR="/home/share/received"
 
 # Threshold in seconds to consider a file stale (default: 600 seconds = 10 minutes)
 STALE_THRESHOLD=600
@@ -205,6 +205,13 @@ main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
     esac
+
+    # Set BASE_DIR from argument or use default
+    if [ -n "$1" ]; then
+        BASE_DIR="$1"
+    else
+        BASE_DIR="/home/share/received"
+    fi
 
     check_environment
     check_commands find stat date basename grep sort
