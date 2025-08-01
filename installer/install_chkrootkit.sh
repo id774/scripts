@@ -91,6 +91,30 @@ check_sudo() {
     fi
 }
 
+# Uninstall chkrootkit components
+uninstall() {
+    # Perform initial checks
+    check_commands sudo rm
+    check_sudo
+
+    echo "[INFO] Removing chkrootkit cron job and logrotate configuration."
+
+    if [ -f /etc/cron.weekly/chkrootkit ]; then
+        sudo rm -v /etc/cron.weekly/chkrootkit
+    else
+        echo "[INFO] /etc/cron.weekly/chkrootkit not found. Skipping."
+    fi
+
+    if [ -f /etc/logrotate.d/chkrootkit ]; then
+        sudo rm -v /etc/logrotate.d/chkrootkit
+    else
+        echo "[INFO] /etc/logrotate.d/chkrootkit not found. Skipping."
+    fi
+
+    echo "[INFO] Uninstallation completed. Log files under /var/log/chkrootkit are preserved."
+}
+
+# Perform installation steps
 install() {
     # Perform initial checks
     check_system
@@ -136,28 +160,6 @@ install() {
     sudo chown root:root /etc/logrotate.d/chkrootkit
 
     echo "[INFO] chkrootkit setup completed successfully."
-}
-
-uninstall() {
-    # Perform initial checks
-    check_commands sudo rm
-    check_sudo
-
-    echo "[INFO] Removing chkrootkit cron job and logrotate configuration."
-
-    if [ -f /etc/cron.weekly/chkrootkit ]; then
-        sudo rm -v /etc/cron.weekly/chkrootkit
-    else
-        echo "[INFO] /etc/cron.weekly/chkrootkit not found. Skipping."
-    fi
-
-    if [ -f /etc/logrotate.d/chkrootkit ]; then
-        sudo rm -v /etc/logrotate.d/chkrootkit
-    else
-        echo "[INFO] /etc/logrotate.d/chkrootkit not found. Skipping."
-    fi
-
-    echo "[INFO] Uninstallation completed. Log files under /var/log/chkrootkit are preserved."
 }
 
 # Main entry point of the script
