@@ -18,6 +18,7 @@
 #
 #  Usage:
 #      ./install_rsync_backup.sh
+#      ./install_rsync_backup.sh --uninstall
 #
 #  Notes:
 #  - Ensure the SCRIPTS environment variable is set to the directory
@@ -31,8 +32,11 @@
 #  - Sets appropriate ownership and permissions:
 #      - All files owned by root:adm unless otherwise required
 #      - Permissions: 740 for executables, 640 for configs and logs
+#  - Use --uninstall to remove installed components while preserving log files.
 #
 #  Version History:
+#  v3.0 2025-08-01
+#       Add --uninstall option to remove installed rsync backup components except logs.
 #  v2.8 2025-07-30
 #       Move rsync_backup.sh to /etc/cron.exec, config to /etc/cron.config,
 #       and cron trigger to /etc/cron.hourly. Adjust permissions and ownership.
@@ -112,7 +116,13 @@ check_sudo() {
 }
 
 # Install script and related files.
-install_rsync_backup() {
+install() {
+    # Perform initial checks
+    check_system
+    check_commands sudo rsync cp chmod chown mkdir touch
+    check_scripts
+    check_sudo
+
     echo "[INFO] Starting rsync backup installation."
 
     # Create /var/log/sysadmin if missing
@@ -178,23 +188,51 @@ install_rsync_backup() {
     fi
     sudo chmod 640 /etc/logrotate.d/rsync_backup
     sudo chown root:adm /etc/logrotate.d/rsync_backup
+
+    echo "[INFO] Rsync backup setup completed successfully."
+}
+
+# Remove installed rsync backup components except logs
+uninstall() {
+    # Perform initial checks
+    check_commands sudo rm
+    check_sudo
+
+    echo "[INFO] Starting rsync backup uninstallation."
+
+    for path in \
+        /etc/cron.exec/rsync_backup.sh \
+        /etc/cron.config/rsync_backup.conf \
+        /etc/cron.hourly/rsync_backup \
+        /etc/logrotate.d/rsync_backup
+    do
+        if sudo test -e "$path"; then
+            echo "[INFO] Removing $path"
+            if ! sudo rm -f "$path"; then
+                echo "[WARN] Failed to remove $path" >&2
+            fi
+        else
+            echo "[INFO] $path not found. Skipping."
+        fi
+    done
+
+    echo "[INFO] Uninstallation completed. Log file /var/log/sysadmin/rsync_backup.log is retained."
 }
 
 # Main entry point of the script
 main() {
     case "$1" in
-        -h|--help|-v|--version) usage ;;
+        -h|--help|-v|--version)
+            usage
+            ;;
+        -u|--uninstall)
+            uninstall
+            ;;
+        ""|*)
+            install
+            ;;
     esac
 
-    # Perform initial checks
-    check_system
-    check_commands sudo rsync cp chmod chown mkdir touch
-    check_scripts
-    check_sudo
-
-    install_rsync_backup
-
-    echo "[INFO] Rsync backup setup completed successfully."
     return 0
 }
 
