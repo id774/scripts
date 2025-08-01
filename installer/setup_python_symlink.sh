@@ -99,7 +99,6 @@ uninstall_python_symlink() {
     else
         echo "[INFO] python-is-python3 is not installed. Nothing to remove."
     fi
-    exit 0
 }
 
 # Check functions
