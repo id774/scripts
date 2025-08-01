@@ -31,7 +31,7 @@
 #  - The configuration file is deployed with permission 640 (readable by adm group).
 #
 #  Version History:
-#  v1.5 2025-07-31
+#  v2.0 2025-08-01
 #       Add --uninstall option to remove installed script, config, and cron job.
 #  v1.4 2025-07-30
 #       Move script and config to /etc/cron.exec and /etc/cron.config.

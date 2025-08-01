@@ -50,7 +50,7 @@
 #       /etc/cron.d/munin-sync
 #
 #  Version History:
-#  v1.4 2025-07-31
+#  v2.0 2025-08-01
 #       Add --uninstall option to remove all installed components.
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -194,8 +194,8 @@ EOF
         echo "[INFO] Cron job already exists: $CRON_FILE"
         echo "[INFO] Skipping creation to preserve existing configuration."
     fi
-    sudo chmod 644 "$CRON_FILE"
-    sudo chown root:root "$CRON_FILE"
+    sudo chmod 640 "$CRON_FILE"
+    sudo chown root:adm "$CRON_FILE"
 }
 
 # Uninstall munin-sync components
