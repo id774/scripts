@@ -20,7 +20,7 @@
 #  Cron Usage:
 #      Place this script into /etc/cron.hourly or similar.
 #      Or create a specific cron entry like the following:
-#      0 * * * * root /etc/cron.hourly/rsync_backup
+#      0 * * * * root /path/to/rsync_backup
 #
 #  Version History:
 #  v1.3 2025-07-30
