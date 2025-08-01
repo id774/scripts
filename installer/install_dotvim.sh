@@ -32,7 +32,7 @@
 #  - Must be executed in a shell environment where `cp` and `vim` are available.
 #
 #  Version History:
-#  v1.9 2025-08-01
+#  v2.0 2025-08-01
 #       Add --uninstall option to remove dot_vim and optionally nvim configuration.
 #  v1.8 2025-07-15
 #       Also copy files to ~/.config/nvim if it exists.
