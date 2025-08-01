@@ -11,6 +11,7 @@
 #  - Allowing a custom installation path via command-line argument.
 #  - Additionally, if ~/.config/nvim exists, it will also receive the
 #    same files (for NeoVim compatibility).
+#  - Use --uninstall to remove installed dot_vim configurations.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -22,6 +23,8 @@
 #      ./install_dotvim.sh
 #  Specify a custom installation path:
 #      ./install_dotvim.sh /custom/path/to/.vim
+#  Uninstall:
+#      ./install_dotvim.sh --uninstall
 #
 #  Requirements:
 #  - The `SCRIPTS` environment variable must be set to the directory
@@ -29,6 +32,8 @@
 #  - Must be executed in a shell environment where `cp` and `vim` are available.
 #
 #  Version History:
+#  v1.9 2025-08-01
+#       Add --uninstall option to remove dot_vim and optionally nvim configuration.
 #  v1.8 2025-07-15
 #       Also copy files to ~/.config/nvim if it exists.
 #  v1.7 2025-06-23
@@ -134,17 +139,11 @@ maybe_copy_to_nvim() {
     fi
 }
 
-# Main entry point of the script
-main() {
-    case "$1" in
-        -h|--help|-v|--version) usage ;;
-    esac
-
-    # Perform initial checks
+# Perform installation steps
+install() {
     check_commands vim cp mkdir uname
     check_scripts
 
-    # Ensure dot_vim source exists before proceeding
     if [ ! -d "$SCRIPTS/dot_files/dot_vim" ]; then
         echo "[ERROR] dot_vim source directory does not exist. Ensure that the SCRIPTS variable is correctly set." >&2
         exit 1
@@ -156,6 +155,50 @@ main() {
     maybe_copy_to_nvim
 
     echo "[INFO] dot_vim configuration installed successfully at $TARGET."
+}
+
+# Remove dot_vim and optionally nvim configuration
+uninstall() {
+    check_commands rm
+
+    echo "[INFO] Starting dot_vim uninstallation..."
+
+    if [ -d "$HOME/.vim" ]; then
+        echo "[INFO] Removing $HOME/.vim"
+        if ! rm -rf "$HOME/.vim"; then
+            echo "[ERROR] Failed to remove $HOME/.vim" >&2
+            exit 1
+        fi
+    else
+        echo "[INFO] $HOME/.vim does not exist. Skipping."
+    fi
+
+    if [ -d "$HOME/.config/nvim" ]; then
+        echo "[INFO] Removing dot_vim files from $HOME/.config/nvim"
+        if ! rm -f "$HOME/.config/nvim/"*; then
+            echo "[WARN] Failed to clean files in $HOME/.config/nvim" >&2
+        fi
+    else
+        echo "[INFO] $HOME/.config/nvim does not exist. Skipping."
+    fi
+
+    echo "[INFO] dot_vim uninstallation completed."
+}
+
+# Main entry point of the script
+main() {
+    case "$1" in
+        -h|--help|-v|--version)
+            usage
+            ;;
+        -u|--uninstall)
+            uninstall
+            ;;
+        ""|*)
+            install
+            ;;
+    esac
+
     return 0
 }
 
