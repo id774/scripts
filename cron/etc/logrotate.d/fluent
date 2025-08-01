@@ -1,9 +1,0 @@
-/var/log/fluent/*.log {
-  weekly
-  compress
-  delaycompress
-  notifempty
-  missingok
-  create 0640 fluent adm
-  rotate 52
-}
