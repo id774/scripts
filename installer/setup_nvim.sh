@@ -119,7 +119,9 @@ create_vim_symlink() {
 }
 
 # Uninstall the NeoVim configuration and symlink created by this script
-uninstall_nvim_setup() {
+uninstall() {
+    check_commands rm
+
     echo "[INFO] Uninstalling NeoVim configuration and vim symlink..."
 
     config_dir="$HOME/.config/nvim"
@@ -137,26 +139,10 @@ uninstall_nvim_setup() {
     fi
 
     echo "[INFO] Uninstallation completed."
-    exit 0
 }
 
-# Display final setup instructions and confirmation
-final_report() {
-    echo "[INFO] NeoVim is now set up as a Vim replacement."
-    echo "[INFO] Add ~/.local/bin to the beginning of your PATH if not already present:"
-    echo "       export PATH=~/.local/bin:\$PATH"
-}
-
-# Main entry point of the script
-main() {
-    case "$1" in
-        -h|--help|-v|--version) usage ;;
-        -u|--uninstall)
-            check_commands rm
-            uninstall_nvim_setup
-            ;;
-    esac
-
+# Install NeoVim configuration and set up vim symlink
+install() {
     check_commands mkdir cp ln nvim
 
     nvim_path=$(find_nvim_path)
@@ -170,7 +156,31 @@ main() {
     create_vim_symlink "$nvim_path"
 
     final_report
-    return 0
+}
+
+# Display final setup instructions and confirmation
+final_report() {
+    echo "[INFO] NeoVim is now set up as a Vim replacement."
+    echo "[INFO] Add ~/.local/bin to the beginning of your PATH if not already present:"
+    echo "       export PATH=~/.local/bin:\$PATH"
+}
+
+
+# Main entry point of the script
+main() {
+    case "$1" in
+        -h|--help|-v|--version)
+            usage
+            ;;
+        -u|--uninstall|--uninstall)
+            uninstall
+            return 0
+            ;;
+        ""|*)
+            install
+            return 0
+            ;;
+    esac
 }
 
 # Execute main function
