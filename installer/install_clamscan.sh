@@ -21,12 +21,15 @@
 #  Ensure the SCRIPTS environment variable is set before running:
 #      export SCRIPTS=/path/to/scripts
 #      ./install_clamscan.sh
+#      ./install_clamscan.sh --uninstall
 #
 #  Requirements:
 #  - The user must have `sudo` installed.
 #  - This script is intended for Linux systems only.
 #
 #  Version History:
+#  v2.7 2025-08-01
+#       Add --uninstall option to remove installed ClamAV AutoScan components.
 #  v2.6 2025-07-30
 #       Deploy clamscan.sh to /etc/cron.exec, config to /etc/cron.config/clamscan.conf.
 #  v2.5 2025-06-23
@@ -114,8 +117,47 @@ create_cron_dirs() {
     sudo chmod 750 /etc/cron.config
 }
 
+# Uninstall ClamAV AutoScan components
+uninstall_clamscan() {
+    check_commands sudo rm
+    check_sudo
+
+    echo "[INFO] Removing ClamAV AutoScan components..."
+
+    if [ -f /etc/cron.exec/clamscan.sh ]; then
+        sudo rm -v /etc/cron.exec/clamscan.sh
+    else
+        echo "[INFO] /etc/cron.exec/clamscan.sh not found. Skipping."
+    fi
+
+    if [ -f /etc/cron.config/clamscan.conf ]; then
+        sudo rm -v /etc/cron.config/clamscan.conf
+    else
+        echo "[INFO] /etc/cron.config/clamscan.conf not found. Skipping."
+    fi
+
+    if [ -f /etc/cron.d/clamscan ]; then
+        sudo rm -v /etc/cron.d/clamscan
+    else
+        echo "[INFO] /etc/cron.d/clamscan not found. Skipping."
+    fi
+
+    if [ -f /etc/logrotate.d/clamscan ]; then
+        sudo rm -v /etc/logrotate.d/clamscan
+    else
+        echo "[INFO] /etc/logrotate.d/clamscan not found. Skipping."
+    fi
+
+    echo "[INFO] Uninstallation completed. Log files under /var/log/clamav are preserved."
+}
+
 # Deploy ClamAV setup files
 install_clamscan() {
+    check_system
+    check_commands sudo cp rm chmod chown mkdir touch
+    check_scripts
+    check_sudo
+
     echo "[INFO] Setting up ClamAV AutoScan environment..."
 
     echo "[INFO] Creating /var/log/sysadmin directory."
@@ -179,21 +221,24 @@ EOF
         sudo chmod 640 /etc/logrotate.d/clamscan
         sudo chown root:adm /etc/logrotate.d/clamscan
     fi
+
+    echo "[INFO] ClamAV AutoScan setup completed successfully."
 }
 
 # Main entry point of the script
 main() {
     case "$1" in
-        -h|--help|-v|--version) usage ;;
+        -h|--help|-v|--version)
+            usage
+            ;;
+        -u|--uninstall)
+            uninstall_clamscan
+            ;;
+        ""|*)
+            install_clamscan
+            ;;
     esac
 
-    check_system
-    check_commands sudo cp rm chmod chown mkdir touch
-    check_scripts
-    check_sudo
-    install_clamscan
-
-    echo "[INFO] ClamAV AutoScan setup completed successfully."
     return 0
 }
 
