@@ -223,7 +223,7 @@ main() {
         -h|--help|-v|--version)
             usage
             ;;
-        --uninstall)
+        -u|--uninstall)
             uninstall
             ;;
         *)
