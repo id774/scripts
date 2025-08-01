@@ -16,12 +16,15 @@
 #
 #  Usage:
 #      ./install_get_resources.sh
+#      ./install_get_resources.sh --uninstall
 #
 #  Notes:
 #  - Ensure the SCRIPTS environment variable is set to the directory containing
 #    the get_resources script and its related files before running this script.
 #
 #  Version History:
+#  v3.0 2025-08-01
+#       Add uninstall option to remove get_resources deployment and configuration.
 #  v2.6 2025-07-30
 #       Change get_resources.sh installation path from /root/bin to /etc/cron.exec.
 #  v2.5 2025-06-23
@@ -100,13 +103,8 @@ check_sudo() {
     fi
 }
 
-# Main entry point of the script
-main() {
-    case "$1" in
-        -h|--help|-v|--version) usage ;;
-    esac
-
-    # Perform initial checks
+# Perform installation steps
+install() {
     check_system
     check_commands sudo cp chmod chown mkdir touch
     check_scripts
@@ -179,6 +177,48 @@ main() {
     sudo chown root:adm /etc/cron.hourly/get_resources
 
     echo "[INFO] Server resource report setup completed successfully."
+}
+
+# Remove all installed components for get_resources
+uninstall() {
+    check_commands sudo rm
+    check_sudo
+
+    echo "[INFO] Starting get_resources uninstallation..."
+
+    for path in \
+        /etc/logrotate.d/resources \
+        /etc/cron.hourly/get_resources \
+        /etc/cron.exec/get_resources.sh
+    do
+        if [ -e "$path" ]; then
+            echo "[INFO] Removing $path"
+            if ! sudo rm -f "$path"; then
+                echo "[WARN] Failed to remove $path" >&2
+            fi
+        else
+            echo "[INFO] $path not found. Skipping."
+        fi
+    done
+
+    echo "[INFO] get_resources uninstallation completed."
+    exit 0
+}
+
+# Main entry point of the script
+main() {
+    case "$1" in
+        -h|--help|-v|--version)
+            usage
+            ;;
+        -u|--uninstall)
+            uninstall
+            ;;
+        ""|*)
+            install "$@"
+            ;;
+    esac
+
     return 0
 }
 
