@@ -18,6 +18,7 @@
 #  Usage:
 #  Run this script directly without any arguments:
 #      ./install_fix-permissions.sh
+#      ./install_fix-permissions.sh --uninstall
 #
 #  Requirements:
 #  - The `SCRIPTS` environment variable must be set to the directory
@@ -37,6 +38,8 @@
 #    appropriate permissions.
 #
 #  Version History:
+#  v2.0 2025-08-01
+#       Add uninstall option to remove fix-permissions components except log file.
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.8 2025-05-17
@@ -110,12 +113,8 @@ check_sudo() {
     fi
 }
 
-# Main entry point of the script
-main() {
-    case "$1" in
-        -h|--help|-v|--version) usage ;;
-    esac
-
+# Perform installation steps
+install() {
     # Perform initial checks
     check_system
     check_commands sudo cp chmod chown mkdir touch logrotate
@@ -201,6 +200,46 @@ main() {
     sudo chown root:adm /etc/cron.config/fix-permissions.conf
 
     echo "[INFO] Fix-permissions script setup completed successfully."
+}
+
+# Remove fix-permissions components except logs
+uninstall() {
+    check_commands sudo rm
+
+    echo "[INFO] Starting fix-permissions uninstallation..."
+
+    for path in \
+        /etc/cron.daily/fix-permissions \
+        /etc/cron.config/fix-permissions.conf \
+        /etc/logrotate.d/fix-permissions
+    do
+        if [ -e "$path" ]; then
+            echo "[INFO] Removing $path"
+            if ! sudo rm -f "$path"; then
+                echo "[WARN] Failed to remove $path" >&2
+            fi
+        else
+            echo "[INFO] $path not found. Skipping."
+        fi
+    done
+
+    echo "[INFO] fix-permissions uninstallation completed."
+}
+
+# Main entry point of the script
+main() {
+    case "$1" in
+        -h|--help|-v|--version)
+            usage
+            ;;
+        -u|--uninstall)
+            uninstall
+            ;;
+        ""|*)
+            install "$@"
+            ;;
+    esac
+
     return 0
 }
 

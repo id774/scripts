@@ -17,14 +17,16 @@
 #  Usage:
 #  Run this script to set up Apache log analysis:
 #      ./install_apache_log_analysis.sh
+#      ./install_apache_log_analysis.sh --uninstall
 #
 #  Requirements:
 #  - Must be executed with sudo privileges.
 #  - The `$SCRIPTS` environment variable must be set.
 #
 #  Version History:
-#  v2.0 2025-07-30
+#  v2.0 2025-08-01
 #       Move apache_log_analysis cron job from /etc/cron.daily to /etc/cron.exec.
+#       Add uninstall option to remove configuration while retaining log file.
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.8 2025-04-26
@@ -197,12 +199,8 @@ setup_log_rotation() {
     sudo chown root:root /etc/logrotate.d/apache_summary
 }
 
-# Main entry point of the script
-main() {
-    case "$1" in
-        -h|--help|-v|--version) usage ;;
-    esac
-
+# Perform installation steps
+install() {
     check_system
     check_commands sudo cp chmod chown mkdir touch
     check_scripts
@@ -216,6 +214,49 @@ main() {
     setup_log_rotation
 
     echo "[INFO] Apache log analysis setup completed successfully."
+}
+
+# Remove apache log analysis components except log files
+uninstall() {
+    check_commands sudo rm
+    check_sudo
+
+    echo "[INFO] Starting Apache log analysis uninstallation..."
+
+    for path in \
+        /etc/cron.daily/apache_log_analysis \
+        /etc/cron.exec/apache_log_analysis.sh \
+        /etc/cron.exec/apache_calculater.py \
+        /etc/cron.config/apache_ignore.list \
+        /etc/logrotate.d/apache_summary
+    do
+        if [ -e "$path" ]; then
+            echo "[INFO] Removing $path"
+            if ! sudo rm -f "$path"; then
+                echo "[WARN] Failed to remove $path" >&2
+            fi
+        else
+            echo "[INFO] $path not found. Skipping."
+        fi
+    done
+
+    echo "[INFO] Apache log analysis uninstallation completed."
+}
+
+# Main entry point of the script
+main() {
+    case "$1" in
+        -h|--help|-v|--version)
+            usage
+            ;;
+        -u|--uninstall)
+            uninstall
+            ;;
+        ""|*)
+            install "$@"
+            ;;
+    esac
+
     return 0
 }
 
