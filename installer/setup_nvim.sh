@@ -119,29 +119,6 @@ create_vim_symlink() {
     fi
 }
 
-# Uninstall the NeoVim configuration and symlink created by this script
-uninstall() {
-    check_commands rm
-
-    echo "[INFO] Uninstalling NeoVim configuration and vim symlink..."
-
-    config_dir="$HOME/.config/nvim"
-    if [ -d "$config_dir" ]; then
-        rm -rf "$config_dir" && echo "[INFO] Removed directory: $config_dir"
-    else
-        echo "[INFO] $config_dir does not exist. Skipping."
-    fi
-
-    target_bin="$HOME/.local/bin/vim"
-    if [ -L "$target_bin" ]; then
-        rm "$target_bin" && echo "[INFO] Removed symlink: $target_bin"
-    else
-        echo "[INFO] $target_bin is not a symlink. Skipping."
-    fi
-
-    echo "[INFO] Uninstallation completed."
-}
-
 # Install NeoVim configuration and set up vim symlink
 install() {
     check_commands mkdir cp ln nvim
@@ -166,6 +143,28 @@ final_report() {
     echo "       export PATH=~/.local/bin:\$PATH"
 }
 
+# Uninstall the NeoVim configuration and symlink created by this script
+uninstall() {
+    check_commands rm
+
+    echo "[INFO] Uninstalling NeoVim configuration and vim symlink..."
+
+    config_dir="$HOME/.config/nvim"
+    if [ -d "$config_dir" ]; then
+        rm -rf "$config_dir" && echo "[INFO] Removed directory: $config_dir"
+    else
+        echo "[INFO] $config_dir does not exist. Skipping."
+    fi
+
+    target_bin="$HOME/.local/bin/vim"
+    if [ -L "$target_bin" ]; then
+        rm "$target_bin" && echo "[INFO] Removed symlink: $target_bin"
+    else
+        echo "[INFO] $target_bin is not a symlink. Skipping."
+    fi
+
+    echo "[INFO] Uninstallation completed."
+}
 
 # Main entry point of the script
 main() {
