@@ -174,6 +174,20 @@ EOF
     sudo chown root:adm "$CRON_FILE"
 }
 
+# Perform installation steps
+install() {
+    check_system
+    check_commands sudo chmod chown tee
+    check_scripts
+    check_sudo
+
+    deploy_script
+    deploy_configuration
+    setup_cron_job
+
+    echo "[INFO] Installation completed successfully."
+}
+
 # Uninstall all installed components
 uninstall() {
     check_commands sudo rm
@@ -201,20 +215,6 @@ uninstall() {
     done
 
     echo "[INFO] Uninstallation completed."
-}
-
-# Perform installation steps
-install() {
-    check_system
-    check_commands sudo chmod chown tee
-    check_scripts
-    check_sudo
-
-    deploy_script
-    deploy_configuration
-    setup_cron_job
-
-    echo "[INFO] Installation completed successfully."
 }
 
 # Main entry point of the script

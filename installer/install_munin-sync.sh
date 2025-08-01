@@ -198,6 +198,22 @@ EOF
     sudo chown root:adm "$CRON_FILE"
 }
 
+# Perform installation steps
+install() {
+    check_system
+    check_munin_dir
+    check_commands sudo cp chmod chown mkdir touch tee rsync hostname grep
+    check_scripts
+    check_sudo
+
+    setup_directories
+    deploy_scripts
+    deploy_configurations
+    setup_cron_jobs
+
+    echo "[INFO] Installation completed successfully."
+}
+
 # Uninstall munin-sync components
 uninstall() {
     check_commands rm
@@ -222,22 +238,6 @@ uninstall() {
     done
 
     echo "[INFO] Uninstallation completed successfully."
-}
-
-# Perform installation steps
-install() {
-    check_system
-    check_munin_dir
-    check_commands sudo cp chmod chown mkdir touch tee rsync hostname grep
-    check_scripts
-    check_sudo
-
-    setup_directories
-    deploy_scripts
-    deploy_configurations
-    setup_cron_jobs
-
-    echo "[INFO] Installation completed successfully."
 }
 
 # Main entry point of the script
