@@ -28,7 +28,7 @@
 #  - This script is intended for Linux systems only.
 #
 #  Version History:
-#  v2.7 2025-08-01
+#  v3.0 2025-08-01
 #       Add --uninstall option to remove installed ClamAV AutoScan components.
 #  v2.6 2025-07-30
 #       Deploy clamscan.sh to /etc/cron.exec, config to /etc/cron.config/clamscan.conf.
@@ -117,40 +117,6 @@ create_cron_dirs() {
     sudo chmod 750 /etc/cron.config
 }
 
-# Uninstall ClamAV AutoScan components
-uninstall_clamscan() {
-    check_commands sudo rm
-    check_sudo
-
-    echo "[INFO] Removing ClamAV AutoScan components..."
-
-    if [ -f /etc/cron.exec/clamscan.sh ]; then
-        sudo rm -v /etc/cron.exec/clamscan.sh
-    else
-        echo "[INFO] /etc/cron.exec/clamscan.sh not found. Skipping."
-    fi
-
-    if [ -f /etc/cron.config/clamscan.conf ]; then
-        sudo rm -v /etc/cron.config/clamscan.conf
-    else
-        echo "[INFO] /etc/cron.config/clamscan.conf not found. Skipping."
-    fi
-
-    if [ -f /etc/cron.d/clamscan ]; then
-        sudo rm -v /etc/cron.d/clamscan
-    else
-        echo "[INFO] /etc/cron.d/clamscan not found. Skipping."
-    fi
-
-    if [ -f /etc/logrotate.d/clamscan ]; then
-        sudo rm -v /etc/logrotate.d/clamscan
-    else
-        echo "[INFO] /etc/logrotate.d/clamscan not found. Skipping."
-    fi
-
-    echo "[INFO] Uninstallation completed. Log files under /var/log/clamav are preserved."
-}
-
 # Deploy ClamAV setup files
 install_clamscan() {
     check_system
@@ -223,6 +189,40 @@ EOF
     fi
 
     echo "[INFO] ClamAV AutoScan setup completed successfully."
+}
+
+# Uninstall ClamAV AutoScan components
+uninstall_clamscan() {
+    check_commands sudo rm
+    check_sudo
+
+    echo "[INFO] Removing ClamAV AutoScan components..."
+
+    if [ -f /etc/cron.exec/clamscan.sh ]; then
+        sudo rm -v /etc/cron.exec/clamscan.sh
+    else
+        echo "[INFO] /etc/cron.exec/clamscan.sh not found. Skipping."
+    fi
+
+    if [ -f /etc/cron.config/clamscan.conf ]; then
+        sudo rm -v /etc/cron.config/clamscan.conf
+    else
+        echo "[INFO] /etc/cron.config/clamscan.conf not found. Skipping."
+    fi
+
+    if [ -f /etc/cron.d/clamscan ]; then
+        sudo rm -v /etc/cron.d/clamscan
+    else
+        echo "[INFO] /etc/cron.d/clamscan not found. Skipping."
+    fi
+
+    if [ -f /etc/logrotate.d/clamscan ]; then
+        sudo rm -v /etc/logrotate.d/clamscan
+    else
+        echo "[INFO] /etc/logrotate.d/clamscan not found. Skipping."
+    fi
+
+    echo "[INFO] Uninstallation completed. Log files under /var/log/clamav are preserved."
 }
 
 # Main entry point of the script
