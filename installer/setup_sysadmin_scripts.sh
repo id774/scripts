@@ -184,6 +184,11 @@ uninstall_sysadmin_scripts() {
 
 # Install a script with the specified permissions and ownership
 install_scripts() {
+    if [ $# -lt 3 ]; then
+        echo "[ERROR] install_scripts requires 3 arguments: mode, source_file, target_name." >&2
+        exit 2
+    fi
+
     if [ ! -f "$SCRIPTS/$2" ]; then
         echo "[ERROR] Source script '$SCRIPTS/$2' not found." >&2
         exit 1
