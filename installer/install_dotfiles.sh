@@ -82,7 +82,7 @@ check_sudo() {
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
-        echo "Please set the SCRIPTS variable to the path of your IPython startup files." >&2
+        echo "Please set the SCRIPTS variable to the path of your script collection." >&2
         exit 1
     fi
 }

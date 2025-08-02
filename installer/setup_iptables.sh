@@ -65,7 +65,6 @@ check_system() {
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
-        echo "Please export SCRIPTS=/path/to/your/scripts before running this script." >&2
         exit 1
     fi
 }

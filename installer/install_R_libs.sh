@@ -57,7 +57,6 @@ check_R() {
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
-        echo "Please set the SCRIPTS variable to the directory containing the config file." >&2
         exit 1
     fi
 }

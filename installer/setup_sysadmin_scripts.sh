@@ -105,7 +105,7 @@ check_commands() {
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set."
-        echo "Please set the SCRIPTS variable to the path of your IPython startup files."
+        echo "Please set the SCRIPTS variable to the path of your system administration scripts."
         exit 1
     fi
 }
