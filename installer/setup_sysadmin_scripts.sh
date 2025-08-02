@@ -18,6 +18,10 @@
 #      $1 = install or uninstall
 #      $2 = install path (ex. /usr/local/sbin)
 #
+#  Arguments:
+#      $1 = install or uninstall
+#      $2 = optional install path (default: /usr/local/sbin)
+#
 #  path as arguments. For example:
 #      ./install_sysadmin_scripts.sh install
 #      ./install_sysadmin_scripts.sh install /usr/local/sbin
@@ -29,6 +33,9 @@
 #  - Running the script with 'uninstall' will remove all installed administration scripts.
 #
 #  Version History:
+#  v1.9 2025-08-02
+#       Add -v option to cp for verbose output during installation.
+#       Add existence check for source script in install_scripts function.
 #  v1.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.7 2025-04-27
@@ -117,11 +124,11 @@ setup_environment() {
 
     case "$(uname -s)" in
         Darwin)
-            OPTIONS="-pR"
+            OPTIONS="-vpR"
             OWNER="root:wheel"
             ;;
         *)
-            OPTIONS="-a"
+            OPTIONS="-av"
             OWNER="root:root"
             ;;
     esac
@@ -177,14 +184,21 @@ uninstall_sysadmin_scripts() {
 
 # Install a script with the specified permissions and ownership
 install_scripts() {
-    if ! sudo cp -v $OPTIONS "$SCRIPTS/$2" "$SBIN/$3"; then
+    if [ ! -f "$SCRIPTS/$2" ]; then
+        echo "[ERROR] Source script '$SCRIPTS/$2' not found." >&2
+        exit 1
+    fi
+
+    if ! sudo cp $OPTIONS "$SCRIPTS/$2" "$SBIN/$3"; then
         echo "[ERROR] Failed to copy $2 to $SBIN/$3." >&2
         exit 1
     fi
+
     if ! sudo chmod "$1" "$SBIN/$3"; then
         echo "[ERROR] Failed to set permissions on $SBIN/$3." >&2
         exit 1
     fi
+
     if ! sudo chown "$OWNER" "$SBIN/$3"; then
         echo "[ERROR] Failed to set ownership on $SBIN/$3." >&2
         exit 1
@@ -230,7 +244,7 @@ main() {
     setup_environment "$@"
     if [ "$1" = "uninstall" ]; then
         uninstall_sysadmin_scripts
-    elif [ "$1" = "install" ]; then
+    elif [ "$1" = "install" ] || [ -z "$1" ]; then
         install_sysadmin_scripts
     else
         usage
