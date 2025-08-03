@@ -7,6 +7,7 @@ v1.4.6 (Release Date: TBD)
 - Add --uninstall option to several installer scripts for clean removal.
 - Add kill-ring save file to Emacs cleanup targets in cltmp.sh.
 - Enhanced server_alive_check.sh by handling VM hosts separately and adding gstat support on macOS.
+- Improve robustness of several utility scripts by adding argument validation, file safety checks, and error suppression.
 
 v1.4.5 (2025-07-22)
 -------------------
