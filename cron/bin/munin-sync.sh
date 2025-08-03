@@ -41,6 +41,8 @@
 #  - When run on the target server, sync operations are skipped to prevent redundant transfers.
 #
 #  Version History:
+#  v1.7 2025-08-03
+#       Add clamav.log and its rotated file.
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-05-21
@@ -133,6 +135,9 @@ sync_local_logs() {
 
     test -f /var/log/cron.log && rsync $RSYNC_OPTS /var/log/cron.log "$LOG_DIR/"
     test -f /var/log/cron.log.1 && rsync $RSYNC_OPTS /var/log/cron.log.1 "$LOG_DIR/"
+
+    test -f /var/log/clamav/clamav.log && rsync $RSYNC_OPTS /var/log/clamav/clamav.log "$LOG_DIR/"
+    test -f /var/log/clamav/clamav.log.1 && rsync $RSYNC_OPTS /var/log/clamav/clamav.log.1 "$LOG_DIR/"
 
     test -f /var/log/clamav/clamscan.log && rsync $RSYNC_OPTS /var/log/clamav/clamscan.log "$LOG_DIR/"
     test -f /var/log/clamav/clamscan.log.1 && rsync $RSYNC_OPTS /var/log/clamav/clamscan.log.1 "$LOG_DIR/"
