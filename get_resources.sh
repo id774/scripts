@@ -17,6 +17,9 @@
 #      ./get_resources.sh
 #
 #  Version History:
+#  v1.9 2025-08-03
+#       Add pattern argument check in display_log to avoid unintended grep output.
+#       Avoid piping netstat outside execute_command to improve error handling.
 #  v1.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.7 2025-05-20
@@ -66,7 +69,10 @@ execute_command() {
 
 # Display specific log file contents if the file exists
 display_log() {
-    if [ -f "$1" ]; then
+        if [ -z "$2" ]; then
+            echo "[WARN] Skipping $1 because no pattern was provided." >&2
+            return
+        fi
         echo "[Contents of $1 with pattern '$2']"
         if [ -z "$3" ]; then
             grep "$2" "$1"
@@ -121,7 +127,11 @@ gather_network_info() {
     execute_command netstat -an
     execute_command w
     execute_command lsmod
-    execute_command netstat -tan | grep ':80 ' | awk '{print $6}' | sort | uniq -c
+    if command_exists netstat; then
+        echo "[netstat -tan port 80 connection states]"
+        netstat -tan | grep ':80 ' | awk '{print $6}' | sort | uniq -c || echo "[WARN] processing netstat output." >&2
+        echo
+    fi
     execute_command ntpq -pn
 }
 
