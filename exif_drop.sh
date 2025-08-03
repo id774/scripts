@@ -22,6 +22,10 @@
 #  - Ensure that the exiftool and jhead utilities are installed before running this script.
 #
 #  Version History:
+#  v1.8 2025-08-03
+#       Improve file safety with null-terminated find output.
+#       Suppress exiftool stderr output on missing tags.
+#       Add validation for single argument constraint.
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.6 2025-04-13
@@ -81,11 +85,19 @@ check_directory() {
 # Process images and remove EXIF GPS data
 process_images() {
     dir="$1"
-    $FIND "$dir" -type f | while read file
+
+    if [ "$#" -ne 1 ]; then
+        echo "[ERROR] Please specify exactly one directory." >&2
+        usage
+    fi
+
+    $FIND "$dir" -type f -print0 | while IFS= read -r -d '' file
     do
-        if [ -n "$($EXIFTOOL -gps:GPSLatitude "$file")" ]; then
+        if [ -n "$($EXIFTOOL -gps:GPSLatitude "$file" 2>/dev/null)" ]; then
             $JHEAD -purejpg "$file"
             echo "[INFO] Processed: $file"
+        else
+            echo "[INFO] Skipped: $file"
         fi
     done
 }
