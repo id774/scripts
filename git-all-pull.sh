@@ -22,6 +22,10 @@
 #  overwrite local changes. Use with caution.
 #
 #  Version History:
+#  v1.7 2025-08-03
+#       Add directory existence check before processing git directories.
+#       Improve symlink handling by checking for conflicting existing files.
+#       Remove redundant argument parsing from main().
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-04-13
@@ -75,10 +79,6 @@ check_commands() {
 
 # Parse command-line arguments
 parse_arguments() {
-    if [ $# -eq 0 ]; then
-        SHOW_HELP=true
-    fi
-
     for arg in "$@"; do
         case "$arg" in
             --hard) HARD_MODE=true ;;
@@ -90,10 +90,6 @@ parse_arguments() {
             *) SHOW_HELP=true ;;
         esac
     done
-
-    if [ "$SHOW_HELP" = true ]; then
-        usage
-    fi
 }
 
 # Pull updates from a Git repository
@@ -123,7 +119,7 @@ create_symlink() {
     repo="$1"
     link_path="$HOME/$(basename "$repo")"
 
-    if [ ! -L "$link_path" ]; then
+    if [ -e "$link_path" ] && [ ! -L "$link_path" ]; then
         if [ "$DRY_RUN" = false ]; then
             echo "[INFO] Creating symlink: $link_path -> $repo"
             ln -s "$repo" "$link_path"
@@ -137,6 +133,11 @@ create_symlink() {
 process_directory() {
     dir="$1"
 
+    if [ ! -d "$dir" ]; then
+        echo "[WARN] Directory not found: $dir" >&2
+        return
+    fi
+
     for repo in "$dir"/*; do
         if [ -d "$repo/.git" ]; then
             pull_repo "$repo"
@@ -145,7 +146,11 @@ process_directory() {
                 create_symlink "$repo"
             fi
         else
-            echo "[WARN] Skipping non-repository: $repo" >&2
+            if [ "$DRY_RUN" = true ]; then
+                echo "[INFO] DRY RUN: Would skip non-repository: $repo"
+            else
+                echo "[WARN] Skipping non-repository: $repo" >&2
+            fi
         fi
     done
 }
