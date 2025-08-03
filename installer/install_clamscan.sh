@@ -141,6 +141,13 @@ install() {
     sudo chown root:adm /etc/cron.exec/clamscan.sh
     sudo chmod 740 /etc/cron.exec/clamscan.sh
 
+    if ! sudo cp "$SCRIPTS/cron/bin/clamscan" /etc/cron.exec/; then
+        echo "[ERROR] Failed to copy clamscan." >&2
+        exit 1
+    fi
+    sudo chown root:adm /etc/cron.exec/clamscan
+    sudo chmod 740 /etc/cron.exec/clamscan
+
     echo "[INFO] Deploying clamscan configuration to /etc/cron.config/clamscan.conf."
     if ! sudo cp "$SCRIPTS/cron/etc/clamscan_exclude" /etc/cron.config/clamscan.conf; then
         echo "[ERROR] Failed to copy clamscan.conf." >&2
@@ -160,7 +167,7 @@ install() {
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 MAILTO=root
 
-01 01 * * 0 root test -x /etc/cron.exec/clamscan.sh && /etc/cron.exec/clamscan.sh
+01 01 * * 0 root test -x /etc/cron.exec/clamscan && /etc/cron.exec/clamscan
 EOF
     fi
     sudo chmod 640 /etc/cron.d/clamscan
