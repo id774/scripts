@@ -69,6 +69,7 @@ execute_command() {
 
 # Display specific log file contents if the file exists
 display_log() {
+    if [ -f "$1" ]; then
         if [ -z "$2" ]; then
             echo "[WARN] Skipping $1 because no pattern was provided." >&2
             return
