@@ -24,12 +24,13 @@
 #
 #  Usage:
 #      ./server_alive_check.sh [base_directory]
-#      If [base_directory] is omitted, defaults to /home/share/received.
-#      Intended to be executed automatically via cron.
+#      Optionally specify [base_directory] to override the default (/home/share/received).
+#      This script is designed for periodic execution via cron.
 #
 #  Cron Usage:
 #  Add the following line to /etc/cron.d/server_alive_check to execute every 5 minutes:
-#      */5 * * * * /path/to/server_alive_check.sh
+#      */5 * * * * /path/to/server_alive_check.sh [base_directory]
+#  Replace [base_directory] with a custom path if needed.
 #
 #  This ensures the script runs every 5 minutes to continuously monitor
 #  server availability based on the presence and freshness of _is_alive files.
