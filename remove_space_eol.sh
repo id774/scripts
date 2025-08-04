@@ -13,7 +13,13 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./find [directory...] -type f -name "*" -exec /path/to/remove_space_eol.sh {} \;
+#      ./remove_space_eol.sh <file1> [file2 ...]
+#
+#  Example:
+#      ./remove_space_eol.sh foo.txt bar.md
+#
+#  To apply recursively with find:
+#      find /path/to/dir -type f -name "*" -exec ./remove_space_eol.sh {} \;
 #
 #  Version History:
 #  v1.6 2025-06-23
