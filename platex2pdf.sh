@@ -17,6 +17,8 @@
 #      ./platex2pdf.sh [tex-file]
 #
 #  Version History:
+#  v1.8 2025-08-04
+#       Fix documentclass detection logic to correctly ignore end-of-line comments.
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.6 2025-04-13
@@ -76,8 +78,7 @@ detect_encoding() {
 
 # Detect which LaTeX engine to use (platex or uplatex)
 detect_latex_engine() {
-    class=$(sed -n '/documentclass/p' "$1" | sed '/%.*documentclass/d' | sed -n '1p')
-
+    class=$(sed 's/%.*//' "$1" | grep 'documentclass' | sed -n '1p')
     case $class in
         *{u*) echo "uplatex" ;;
         *) echo "platex" ;;
@@ -112,7 +113,7 @@ main() {
     fi
 
     # Ensure required commands are available
-    check_commands platex uplatex dvipdfmx nkf
+    check_commands platex uplatex dvipdfmx nkf sed
 
     convert_to_pdf "$1"
     return 0
