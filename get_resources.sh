@@ -127,12 +127,6 @@ gather_network_info() {
     execute_command netstat -s
     execute_command netstat -an
     execute_command w
-    execute_command lsmod
-    if command_exists netstat; then
-        echo "[netstat -tan port 80 connection states]"
-        netstat -tan | grep ':80 ' | awk '{print $6}' | sort | uniq -c || echo "[WARN] processing netstat output." >&2
-        echo
-    fi
     execute_command ntpq -pn
 }
 
