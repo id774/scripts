@@ -16,6 +16,8 @@
 #      ./restart-sshd.sh
 #
 #  Version History:
+#  v2.0 2025-08-04
+#       Fix OS detection by matching 'Darwin' explicitly instead of using wildcard.
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.8 2025-04-13
@@ -101,7 +103,7 @@ main() {
 
     UNAME=$(uname)
     case $UNAME in
-        Darwin*)
+        Darwin)
             restart_macos_sshd
             ;;
         *)
