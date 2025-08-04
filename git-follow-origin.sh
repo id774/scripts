@@ -24,6 +24,8 @@
 #  This will merge changes from 'exampleUser/exampleRepo' into the local master branch.
 #
 #  Version History:
+#  v1.8 2025-08-04
+#       Fix argument expansion from $* to "$@" to preserve parameter integrity.
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.6 2025-04-13
@@ -88,7 +90,7 @@ main() {
     if [ -n "$2" ]; then
         # Check if Git is installed
         check_commands git
-        git_merge $*
+        git_merge "$@"
     else
         usage
     fi
