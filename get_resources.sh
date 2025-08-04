@@ -17,9 +17,9 @@
 #      ./get_resources.sh
 #
 #  Version History:
-#  v1.9 2025-08-03
-#       Add pattern argument check in display_log to avoid unintended grep output.
-#       Avoid piping netstat outside execute_command to improve error handling.
+#  v1.9 2025-08-04
+#       Add pattern argument validation in display_log to prevent empty grep results.
+#       Remove ad-hoc netstat grep section and consolidate all netstat calls under execute_command.
 #  v1.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.7 2025-05-20
