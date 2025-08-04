@@ -15,9 +15,16 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./remove-repo.sh [repository_name...]
+#      ./remove-repo.sh [options] [repository_name...]
 #
-#  Add -x to actually execute the removal.
+#  Options:
+#      -x            Actually remove repositories (default: dry-run)
+#      -h, --help    Show this help message
+#
+#  Examples:
+#      ./remove-repo.sh my-repo            # dry run only
+#      ./remove-repo.sh -x my-repo         # actually remove the repository
+#      ./remove-repo.sh -x repo1 repo2     # remove multiple repositories
 #
 #  Version History:
 #  v1.6 2025-06-23
