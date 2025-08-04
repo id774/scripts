@@ -17,6 +17,8 @@
 #      ./gpg-import.sh KEYSERVER PUBKEY
 #
 #  Version History:
+#  v1.9 2025-08-04
+#       Replace deprecated 'apt-key add -' with trusted.gpg.d key file export.
 #  v1.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.7 2025-04-13
@@ -47,6 +49,14 @@ usage() {
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0
+}
+
+# Check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "[ERROR] This script is intended for Linux systems only." >&2
+        exit 1
+    fi
 }
 
 # Check if the user has sudo privileges (password may be required)
@@ -80,7 +90,7 @@ import_gpg_key() {
     gpg --keyserver "$keyserver" --recv-keys "$pubkey"
 
     echo "[INFO] Exporting and adding the GPG key to APT keyring..."
-    sudo gpg --armor --export "$pubkey" | sudo apt-key add -
+    sudo gpg --armor --export "$pubkey" | sudo tee /etc/apt/trusted.gpg.d/"$pubkey".asc > /dev/null
 }
 
 # Main entry point of the script
@@ -91,8 +101,8 @@ main() {
 
     # Check if both arguments are provided
     if [ -n "$2" ]; then
-        # Check if required commands are available and executable
-        check_commands gpg apt-key sudo
+        check_system
+        check_commands gpg sudo
         check_sudo
         import_gpg_key "$1" "$2"
     else
