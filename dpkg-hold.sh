@@ -31,6 +31,8 @@
 #      ./dpkg-hold.sh nano
 #
 #  Version History:
+#  v2.0 2025-08-04
+#       Replace dpkg --set-selections with apt-mark to reliably set package states.
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.8 2025-04-16
@@ -65,6 +67,14 @@ usage() {
     exit 0
 }
 
+# Check if the system is Linux
+check_system() {
+    if [ "$(uname -s)" != "Linux" ]; then
+        echo "[ERROR] This script is intended for Linux systems only." >&2
+        exit 1
+    fi
+}
+
 # Check if required commands are available and executable
 check_commands() {
     for cmd in "$@"; do
@@ -86,7 +96,7 @@ show_package_status() {
 
 # Set the state of a package
 set_package_state() {
-    echo "$1" "$2" | dpkg --set-selections
+    apt-mark "$2" "$1"
     show_package_status "$1"
 }
 
@@ -96,7 +106,8 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
-    check_commands dpkg
+    check_system
+    check_commands apt-mark
 
     if [ -n "$2" ]; then
         # If two arguments are provided, set the package state
