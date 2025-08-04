@@ -26,6 +26,8 @@
 #  that tracks 'origin/feature-branch'.
 #
 #  Version History:
+#  v1.7 2025-08-04
+#       Remove undefined function call check_git_installed from main logic.
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-04-13
@@ -79,7 +81,6 @@ main() {
     check_commands git
 
     if [ -n "$1" ]; then
-        check_git_installed
         git checkout -b $1 origin/$1
     else
         usage
