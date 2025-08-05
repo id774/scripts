@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# setup_alias.sh: Centralize system mail delivery and clean local spools
+# setup_aliases.sh: Centralize system mail delivery and clean local spools
 #
 #  Description:
 #  This script automates the setup of email aliases for all interactive
