@@ -217,6 +217,10 @@ setup_munin() {
     "$SCRIPTS/installer/install_munin.sh"
 }
 
+setup_aliases() {
+    "$SCRIPTS/installer/setup_aliases.sh"
+}
+
 setup_securetty() {
     "$SCRIPTS/installer/securetty.sh"
 }
@@ -269,6 +273,7 @@ main() {
     setup_crontab
     setup_iptables
     setup_munin
+    setup_aliases
     setup_securetty
     setup_dot_ipython
     set_permissions
