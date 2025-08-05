@@ -1,12 +1,21 @@
 #!/bin/sh
 
 ########################################################################
-# setup_aliases.sh: Ensure /etc/aliases has entries for all login users
+# setup_alias.sh: Centralize system mail delivery and clean local spools
 #
 #  Description:
-#  This script ensures that each user account with an interactive shell
-#  has a corresponding entry in /etc/aliases. If an alias is missing,
-#  it adds the entry in the form of "username: root".
+#  This script automates the setup of email aliases for all interactive
+#  user accounts on the system. For each login-capable user, it ensures
+#  that a corresponding alias entry in /etc/aliases exists in the form:
+#      username: root
+#
+#  After updating aliases, it removes the alias "username: root" for the
+#  currently executing user to avoid redundant or looped delivery.
+#  Then it applies the alias changes using 'newaliases' and clears any
+#  existing local mail spool files under /var/mail that are non-empty.
+#
+#  This helps centralize cron and system-generated mail notifications to
+#  root (or its alias target), while cleaning up unread or orphaned mail.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,11 +23,12 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./setup_aliases.sh
+#      ./setup_alias.sh
 #  Run this script as a general user; it will invoke sudo where necessary.
 #
 #  Requirements:
-#  - usershells.py must exist and be executable in the same directory or in PATH.
+#  - usershells.py must exist and be executable via $SCRIPTS environment variable.
+#  - The system must have a compatible MTA (e.g., Postfix or Sendmail).
 #
 #  Version History:
 #  v1.0 2025-08-05
