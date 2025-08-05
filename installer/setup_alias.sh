@@ -110,13 +110,24 @@ apply_changes() {
     echo "[INFO] Alias update completed."
 }
 
+# Truncate all mail spool files in /var/mail
+clear_all_mail_spools() {
+    echo "[INFO] Clearing all user mail spools in /var/mail..."
+    for mailfile in /var/mail/*; do
+        if [ -f "$mailfile" ] && [ -s "$mailfile" ]; then
+            sudo truncate -s 0 "$mailfile"
+            echo "[INFO] Emptied $mailfile"
+        fi
+    done
+}
+
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
     esac
 
     check_system
-    check_commands sudo grep awk tee newaliases
+    check_commands sudo grep awk tee newaliases sed id truncate
     check_scripts
 
     SCRIPT_PATH="$SCRIPTS/usershells.py"
@@ -126,6 +137,7 @@ main() {
     add_missing_aliases
     remove_self_alias
     apply_changes
+    clear_all_mail_spools
 
     return 0
 }
