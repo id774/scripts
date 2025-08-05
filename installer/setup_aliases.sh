@@ -120,6 +120,19 @@ apply_changes() {
     echo "[INFO] Alias update completed."
 }
 
+# Ensure /var/mail/username exists and is writable
+ensure_mail_spool() {
+    for user in $( "$SCRIPT_PATH" | awk '{print $1}' ); do
+        mailfile="/var/mail/$user"
+        if [ ! -f "$mailfile" ]; then
+            echo "[INFO] Creating missing mail spool: $mailfile"
+            sudo touch "$mailfile"
+            sudo chown "$user:mail" "$mailfile"
+            sudo chmod 600 "$mailfile"
+        fi
+    done
+}
+
 # Truncate all mail spool files in /var/mail
 clear_all_mail_spools() {
     echo "[INFO] Clearing all user mail spools in /var/mail..."
@@ -147,6 +160,7 @@ main() {
     add_missing_aliases
     remove_self_alias
     apply_changes
+    ensure_mail_spool
     clear_all_mail_spools
 
     return 0
