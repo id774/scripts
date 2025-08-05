@@ -21,7 +21,6 @@
 #  cleanup actions. Ensure to have the necessary permissions before running.
 #
 #  Version History:
-#  20250804 - Fix clean_dir to handle multi-word commands safely using per-line evaluation.
 #  20250731 - Add kill-ring-saved.el to Emacs cleanup targets.
 #  20250715 - Add abbrev_defs to Emacs cleanup targets.
 #  20250623 - Unified usage output to display full script header and support common help/version options.
@@ -69,9 +68,7 @@ clean_dir() {
     days=$2
     cmd=${3:-"rm -vf"}
     if [ -d "$dir" ]; then
-        find "$dir" -type f -mtime "+$days" -print | while IFS= read -r file; do
-            $cmd "$file"
-        done
+        find "$dir" -type f -mtime "+$days" -exec $cmd {} \;
     fi
 }
 
