@@ -82,7 +82,7 @@ is_running_from_cron() {
 
 # Determine if the script is running on the target server itself
 is_target_server() {
-    [ "$CURRENT_HOST" = "$TARGET_HOST" ] || echo "$SENDING" | grep -q "localhost"
+    [ "$CURRENT_HOST" = "$TARGET_HOST" ] || [ "$SENDING" = "localhost" ]
 }
 
 # Load configuration from external file
@@ -121,7 +121,9 @@ sync_munin_data() {
 
 # Ensure local log directory exists
 ensure_log_dir() {
-    [ -d "$LOG_DIR" ] || mkdir -p "$LOG_DIR"
+    if [ ! -d "$LOG_DIR" ]; then
+        mkdir -p "$LOG_DIR"
+    fi
 }
 
 # Sync log files to local directory
