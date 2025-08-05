@@ -27,7 +27,6 @@
 ########################################################################
 
 ALIASES_FILE="/etc/aliases"
-CHANGES_MADE=0
 
 # Display full script header information extracted from the top comment block
 usage() {
@@ -91,19 +90,14 @@ add_missing_aliases() {
         grep -q "^${user}:" "$ALIASES_FILE" && continue
         echo "[INFO] Adding alias: $user: root"
         echo "${user}: root" | sudo tee -a "$ALIASES_FILE" >/dev/null
-        CHANGES_MADE=1
     done
 }
 
-# Run newaliases if changes were made
+# Always run newaliases
 apply_changes() {
-    if [ "$CHANGES_MADE" -eq 1 ]; then
-        echo "[INFO] Running newaliases..."
-        sudo newaliases
-        echo "[INFO] Alias update completed."
-    else
-        echo "[INFO] No changes needed. All aliases already present."
-    fi
+    echo "[INFO] Running newaliases..."
+    sudo newaliases
+    echo "[INFO] Alias update completed."
 }
 
 main() {
