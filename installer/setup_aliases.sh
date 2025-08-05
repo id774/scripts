@@ -133,7 +133,6 @@ ensure_mail_spool() {
             echo "[INFO] Creating missing mail spool: $mailfile"
             sudo touch "$mailfile"
             sudo chown "$user:mail" "$mailfile"
-            sudo chmod 600 "$mailfile"
         fi
     done
 }
