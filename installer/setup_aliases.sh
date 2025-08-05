@@ -149,6 +149,7 @@ clear_all_mail_spools() {
     done
 }
 
+# Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
@@ -171,5 +172,6 @@ main() {
     return 0
 }
 
+# Execute main function
 main "$@"
 exit $?
