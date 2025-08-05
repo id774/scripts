@@ -43,7 +43,6 @@
 #  Version History:
 #  v1.7 2025-08-03
 #       Add clamav.log and its rotated file.
-#       Enhance file safety and clarify target host detection.
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-05-21
@@ -83,7 +82,7 @@ is_running_from_cron() {
 
 # Determine if the script is running on the target server itself
 is_target_server() {
-    [ "$CURRENT_HOST" = "$TARGET_HOST" ] || [ "$SENDING" = "localhost" ]
+    [ "$CURRENT_HOST" = "$TARGET_HOST" ] || echo "$SENDING" | grep -q "localhost"
 }
 
 # Load configuration from external file
@@ -122,9 +121,7 @@ sync_munin_data() {
 
 # Ensure local log directory exists
 ensure_log_dir() {
-    if [ ! -d "$LOG_DIR" ]; then
-        mkdir -p "$LOG_DIR"
-    fi
+    [ -d "$LOG_DIR" ] || mkdir -p "$LOG_DIR"
 }
 
 # Sync log files to local directory
@@ -148,7 +145,7 @@ sync_local_logs() {
     # Sync *.log and *.log.1 files from selected log directories safely
     for dir in /var/log/apache2 /var/log/sysadmin /var/log/deferred-sync /var/log/chkrootkit; do
         if [ -d "$dir" ]; then
-            find "$dir" -type f -print0 | while IFS= read -r -d '' file; do
+            find "$dir" -type f | while IFS= read -r file; do
                 case "$file" in
                     *.log|*.log.1)
                         rsync $RSYNC_OPTS "$file" "$LOG_DIR/"
