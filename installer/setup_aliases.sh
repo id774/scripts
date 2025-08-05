@@ -116,7 +116,12 @@ remove_self_alias() {
 # Always run newaliases
 apply_changes() {
     echo "[INFO] Running newaliases..."
-    sudo newaliases
+
+    if ! sudo newaliases; then
+        echo "[ERROR] Failed to run newaliases. Check /etc/aliases for syntax errors or MTA installation." >&2
+        exit 1
+    fi
+
     echo "[INFO] Alias update completed."
 }
 
