@@ -6,6 +6,7 @@ v1.4.6 (Release Date: TBD)
 - Standardize all cron scripts to use /etc/cron.exec and /etc/cron.config.
 - Add --uninstall option to several installer scripts for clean removal.
 - Add kill-ring save file to Emacs cleanup targets in cltmp.sh.
+- Add setup_aliases.sh to centralize local mail delivery and clean up user mail spools.
 - Enhanced server_alive_check.sh by handling VM hosts separately and adding gstat support on macOS.
 - Improve robustness of several utility scripts by adding argument validation, file safety checks, and error suppression.
 
