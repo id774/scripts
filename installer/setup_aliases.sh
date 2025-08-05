@@ -138,6 +138,15 @@ ensure_mail_spool() {
     done
 }
 
+# Set permissions on all /var/mail/* to 600
+set_mail_permissions() {
+    echo "[INFO] Enforcing permission 600 on all mail spools in /var/mail..."
+    for mailfile in /var/mail/*; do
+        [ -f "$mailfile" ] || continue
+        sudo chmod 600 "$mailfile"
+    done
+}
+
 # Truncate all mail spool files in /var/mail
 clear_all_mail_spools() {
     echo "[INFO] Clearing all user mail spools in /var/mail..."
@@ -167,6 +176,7 @@ main() {
     remove_self_alias
     apply_changes
     ensure_mail_spool
+    set_mail_permissions
     clear_all_mail_spools
 
     return 0
