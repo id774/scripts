@@ -93,6 +93,16 @@ add_missing_aliases() {
     done
 }
 
+# Remove self alias like "username: root" from /etc/aliases
+remove_self_alias() {
+    username=$(id -un)
+
+    if grep -q "^${username}: root$" "$ALIASES_FILE"; then
+        echo "[INFO] Removing self alias: $username: root"
+        sudo sed -i "/^${username}: root$/d" "$ALIASES_FILE"
+    fi
+}
+
 # Always run newaliases
 apply_changes() {
     echo "[INFO] Running newaliases..."
@@ -114,6 +124,7 @@ main() {
     check_sudo
 
     add_missing_aliases
+    remove_self_alias
     apply_changes
 
     return 0
