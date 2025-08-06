@@ -21,8 +21,8 @@
 #  The script detects the operating system and outputs a list of user accounts with interactive shells.
 #
 #  Options:
-#      --name-only   Output usernames only
-#      --colon       Output in "username:/shell" format
+#      -n, --name-only   Output usernames only
+#      -c, --colon       Output in "username:/shell" format
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
@@ -112,8 +112,9 @@ def get_shells_from_dscl():
 
 
 def main():
-    name_only = '--name-only' in sys.argv
-    colon_format = '--colon' in sys.argv
+    args = sys.argv[1:]
+    name_only = '--name-only' in args or '-n' in args
+    colon_format = '--colon' in args or '-c' in args
 
     os_type = platform.system()
     shells = get_shells_from_dscl() if os_type == 'Darwin' else get_shells_from_passwd()
