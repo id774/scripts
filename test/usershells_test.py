@@ -17,6 +17,8 @@
 #  - Shows usage and exits with code 0 when invoked with -h option
 #  - Lists users with interactive shells from /etc/passwd (Linux)
 #  - Lists users with interactive shells from dscl (macOS)
+#  - Outputs usernames only with --name-only
+#  - Outputs in username:/shell format with --colon
 #
 #  Version History:
 #  v1.1 2025-07-08
@@ -108,6 +110,47 @@ class TestUsershells(unittest.TestCase):
         self.assertIn("user1", output)
         self.assertIn("user3", output)
         self.assertNotIn("user2", output)
+
+    @patch('platform.system', return_value='Linux')
+    def test_name_only_option(self, mock_platform):
+        passwd_data = (
+            "user1:x:1000:1000::/home/user1:/bin/bash\n"
+            "user2:x:1001:1001::/home/user2:/usr/sbin/nologin\n"
+            "user3:x:1002:1002::/home/user3:/bin/zsh\n"
+        )
+        m = mock_open(read_data=passwd_data)
+        m.return_value.__iter__.return_value = passwd_data.splitlines()
+        with patch('builtins.open', m):
+            sys.argv = ['usershells.py', '--name-only']
+            f = io.StringIO()
+            with redirect_stdout(f):
+                usershells.main()
+            output = f.getvalue()
+            self.assertIn("user1", output)
+            self.assertIn("user3", output)
+            self.assertNotIn("user2", output)
+            self.assertNotIn(":", output)
+            self.assertNotIn("=>", output)
+
+    @patch('platform.system', return_value='Linux')
+    def test_colon_option(self, mock_platform):
+        passwd_data = (
+            "user1:x:1000:1000::/home/user1:/bin/bash\n"
+            "user2:x:1001:1001::/home/user2:/usr/sbin/nologin\n"
+            "user3:x:1002:1002::/home/user3:/bin/zsh\n"
+        )
+        m = mock_open(read_data=passwd_data)
+        m.return_value.__iter__.return_value = passwd_data.splitlines()
+        with patch('builtins.open', m):
+            sys.argv = ['usershells.py', '--colon']
+            f = io.StringIO()
+            with redirect_stdout(f):
+                usershells.main()
+            output = f.getvalue()
+            self.assertIn("user1:/bin/bash", output)
+            self.assertIn("user3:/bin/zsh", output)
+            self.assertNotIn("user2", output)
+            self.assertNotIn("=>", output)
 
 
 if __name__ == '__main__':
