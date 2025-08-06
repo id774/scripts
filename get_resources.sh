@@ -17,6 +17,8 @@
 #      ./get_resources.sh
 #
 #  Version History:
+#  v2.0 2025-08-07
+#       Slim down by removing redundant ps, ss, netstat, and memory output overlaps.
 #  v1.9 2025-08-04
 #       Add pattern argument validation in display_log to prevent empty grep results.
 #       Remove ad-hoc netstat grep section and consolidate all netstat calls under execute_command.
@@ -109,11 +111,10 @@ gather_os_specific_info() {
     else
         execute_command cat /proc/cpuinfo
         execute_command cat /proc/meminfo
-        execute_command free -t
         execute_command vmstat -n
         execute_command df -P -T
         execute_command top -b -n 1
-        execute_command ps -H auxZwww
+        execute_command ps aux
         execute_command ps axl --sort -vsize | head -20
     fi
 }
@@ -122,8 +123,6 @@ gather_os_specific_info() {
 gather_network_info() {
     execute_command ip addr show
     execute_command lsof -i
-    execute_command ss -t
-    execute_command netstat -t
     execute_command netstat -s
     execute_command netstat -an
     execute_command w
