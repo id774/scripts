@@ -96,7 +96,7 @@ check_sudo() {
 
 # Add missing alias entries to /etc/aliases
 add_missing_aliases() {
-    "$SCRIPT_PATH" | awk '{print $1}' | while read -r user; do
+    "$SCRIPT_PATH" --name-only | while read -r user; do
         grep -q "^${user}:" "$ALIASES_FILE" && continue
         echo "[INFO] Adding alias: $user: root"
         echo "${user}: root" | sudo tee -a "$ALIASES_FILE" >/dev/null
@@ -127,7 +127,7 @@ apply_changes() {
 
 # Ensure /var/mail/username exists and is writable
 ensure_mail_spool() {
-    for user in $( "$SCRIPT_PATH" | awk '{print $1}' ); do
+    for user in $( "$SCRIPT_PATH" --name-only ); do
         mailfile="/var/mail/$user"
         if [ ! -f "$mailfile" ]; then
             echo "[INFO] Creating missing mail spool: $mailfile"
@@ -164,7 +164,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo grep awk tee newaliases sed id truncate
+    check_commands sudo grep tee newaliases sed id truncate
     check_scripts
 
     SCRIPT_PATH="$SCRIPTS/usershells.py"
