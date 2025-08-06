@@ -21,6 +21,7 @@
 #  cleanup actions. Ensure to have the necessary permissions before running.
 #
 #  Version History:
+#  20250806 - Remove $HOME/mbox if exists.
 #  20250731 - Add kill-ring-saved.el to Emacs cleanup targets.
 #  20250715 - Add abbrev_defs to Emacs cleanup targets.
 #  20250623 - Unified usage output to display full script header and support common help/version options.
@@ -135,6 +136,7 @@ perform_cleanup() {
     fi
 
     # Additional cleanup
+    rm -vf "$HOME/mbox"
     rm -vf "$HOME/.bash_history"
     rm -vf "$HOME/.recentf~"
     rm -vf "$HOME/.xsession-errors"
