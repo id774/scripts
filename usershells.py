@@ -20,10 +20,16 @@
 #
 #  The script detects the operating system and outputs a list of user accounts with interactive shells.
 #
+#  Options:
+#      --name-only   Output usernames only
+#      --colon       Output in "username:/shell" format
+#
 #  Requirements:
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v1.7 2025-08-06
+#       Add --name-only and --colon output options.
 #  v1.6 2025-07-08
 #       Fixed compatibility issues with Python 3.4.
 #  v1.5 2025-07-01
@@ -71,6 +77,7 @@ def usage():
         sys.exit(1)
     sys.exit(0)
 
+
 def get_shells_from_passwd():
     shells = {}
     try:
@@ -83,6 +90,7 @@ def get_shells_from_passwd():
     except Exception as e:
         print("Error reading /etc/passwd: %s" % str(e), file=sys.stderr)
     return shells
+
 
 def get_shells_from_dscl():
     shells = {}
@@ -102,13 +110,22 @@ def get_shells_from_dscl():
         print("Error retrieving user list from dscl: %s" % str(e), file=sys.stderr)
     return shells
 
+
 def main():
+    name_only = '--name-only' in sys.argv
+    colon_format = '--colon' in sys.argv
+
     os_type = platform.system()
     shells = get_shells_from_dscl() if os_type == 'Darwin' else get_shells_from_passwd()
 
     for account, shell in shells.items():
         if all(x not in shell for x in ['false', 'nologin', 'sync', 'shutdown', 'halt']):
-            print("{0:11} => {1}".format(account, shell))
+            if name_only:
+                print(account)
+            elif colon_format:
+                print("%s:%s" % (account, shell))
+            else:
+                print("{0:11} => {1}".format(account, shell))
 
     return 0
 
