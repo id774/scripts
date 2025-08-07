@@ -19,7 +19,7 @@
 #  Version History:
 #  v2.0 2025-08-07
 #       Slim down by removing redundant ps, ss, netstat, and memory output overlaps.
-#       Refactor uname usage and harden grep and fail2ban logic.
+#       Refactor uname usage and harden grep, fail2ban and lsb_release logic.
 #  v1.9 2025-08-04
 #       Add pattern argument validation in display_log to prevent empty grep results.
 #       Remove ad-hoc netstat grep section and consolidate all netstat calls under execute_command.
@@ -95,9 +95,10 @@ gather_system_info() {
         if [ "$(id -u)" -eq 0 ]; then
             dmesg | grep "Linux version" || true
         fi
+        if command_exists lsb_release; then
+            execute_command lsb_release -a
+        fi
     fi
-
-    execute_command lsb_release -a
     execute_command uname -a
     execute_command uptime
 }
