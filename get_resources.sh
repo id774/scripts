@@ -125,8 +125,12 @@ gather_os_specific_info() {
 
 # Gather network and process information
 gather_network_info() {
-    execute_command ip addr show
-    execute_command lsof -i
+    if command_exists ip; then
+        execute_command ip addr show
+    fi
+    if command_exists lsof && [ "$(id -u)" -eq 0 ]; then
+        execute_command lsof -i
+    fi
     execute_command netstat -s
     execute_command netstat -an
     execute_command w
