@@ -135,10 +135,12 @@ gather_network_info() {
 
 # Check fail2ban status
 check_fail2ban_status() {
-    if [ "$OS_NAME" = "Darwin" ]; then
-        if fail2ban-client status | grep -q "sshd"; then
-            execute_command fail2ban-client status
-            execute_command fail2ban-client status sshd
+    if [ "$OS_NAME" != "Darwin" ]; then
+        if command_exists fail2ban-client; then
+            if fail2ban-client status | grep -q "sshd"; then
+                execute_command fail2ban-client status
+                execute_command fail2ban-client status sshd
+            fi
         fi
     fi
 }
