@@ -10,6 +10,7 @@ v1.4.6 (Release Date: TBD)
 - Add two display options to usershells.py for flexible output control.
 - Streamline log output in get_resources.sh by pruning redundant data collection.
 - Enhanced server_alive_check.sh by handling VM hosts separately and adding gstat support on macOS.
+- Fix pattern matching in filter_history.sh by switching to fixed-string grep for safety.
 - Improve robustness of several utility scripts by adding argument validation, file safety checks, and error suppression.
 
 v1.4.5 (2025-07-22)
