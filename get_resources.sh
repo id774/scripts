@@ -18,8 +18,7 @@
 #
 #  Version History:
 #  v2.0 2025-08-07
-#       Slim down by removing redundant ps, ss, netstat, and memory output overlaps.
-#       Refactor uname usage and harden grep, fail2ban and lsb_release logic.
+#       Slim down redundant outputs and harden uname, grep, fail2ban, lsb_release, ip, and lsof handling.
 #  v1.9 2025-08-04
 #       Add pattern argument validation in display_log to prevent empty grep results.
 #       Remove ad-hoc netstat grep section and consolidate all netstat calls under execute_command.
