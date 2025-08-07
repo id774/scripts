@@ -45,6 +45,8 @@
 #
 ########################################################################
 
+OS_NAME=$(uname)
+
 # Display full script header information extracted from the top comment block
 usage() {
     awk '
@@ -78,9 +80,9 @@ display_log() {
         fi
         echo "[Contents of $1 with pattern '$2']"
         if [ -z "$3" ]; then
-            grep "$2" "$1"
+            grep -E "$2" "$1"
         else
-            grep "$2" "$1" | grep -Ev "$3"
+            grep "$2" "$1" | grep -Ev "$3" || true
         fi
         echo
     fi
@@ -88,7 +90,7 @@ display_log() {
 
 # Gather system information
 gather_system_info() {
-    if [ "$(uname)" != "Darwin" ]; then
+    if [ "$OS_NAME" != "Darwin" ]; then
         if [ "$(id -u)" -eq 0 ]; then
             dmesg | grep "Linux version" || true
         fi
@@ -101,7 +103,7 @@ gather_system_info() {
 
 # Gather OS-specific information
 gather_os_specific_info() {
-    if [ "$(uname)" = "Darwin" ]; then
+    if [ "$OS_NAME" = "Darwin" ]; then
         execute_command sysctl -n machdep.cpu.brand_string
         execute_command sysctl vm.swapusage
         execute_command vm_stat
@@ -111,7 +113,7 @@ gather_os_specific_info() {
     else
         execute_command cat /proc/cpuinfo
         execute_command cat /proc/meminfo
-        execute_command vmstat -n
+        execute_command vmstat
         execute_command df -P -T
         execute_command top -b -n 1
         execute_command ps aux
@@ -131,9 +133,11 @@ gather_network_info() {
 
 # Check fail2ban status
 check_fail2ban_status() {
-    if [ "$(uname)" != "Darwin" ]; then
-        execute_command fail2ban-client status
-        execute_command fail2ban-client status sshd
+    if [ "$OS_NAME" = "Darwin" ]; then
+        if fail2ban-client status | grep -q "sshd"; then
+            execute_command fail2ban-client status
+            execute_command fail2ban-client status sshd
+        fi
     fi
 }
 
