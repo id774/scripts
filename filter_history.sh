@@ -28,6 +28,8 @@
 #  <pattern>: The string to remove from the history file (partial match).
 #
 #  Version History:
+#  v1.6 2025-08-07
+#       Use 'grep -F' for fixed-string pattern matching to avoid unintended regex behavior.
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.4 2025-04-13
@@ -95,8 +97,9 @@ create_backup() {
 
 # Count matching lines in the history file
 count_matches() {
-    # Count number of entries matching the pattern
-    MATCH_COUNT=$(grep -c "$PATTERN" "$HISTORY_FILE" 2>/dev/null)
+    # Count matching lines (fixed string)
+    MATCH_COUNT=$(grep -F -c "$PATTERN" "$HISTORY_FILE" 2>/dev/null)
+
     if [ $? -ne 0 ]; then
         echo "[ERROR] Failed to count matches in history file." >&2
         exit 1
@@ -105,8 +108,8 @@ count_matches() {
 
 # Filter out matching lines and overwrite the original file
 filter_history() {
-    # Remove matching lines and replace the original history file
-    if ! grep -v "$PATTERN" "$HISTORY_FILE" > "$HISTORY_FILE.tmp"; then
+    # Remove matching lines (fixed string) and replace the original history file
+    if ! grep -F -v "$PATTERN" "$HISTORY_FILE" > "$HISTORY_FILE.tmp"; then
         echo "[ERROR] Failed to create temporary file." >&2
         exit 1
     fi
