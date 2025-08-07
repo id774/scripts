@@ -82,7 +82,7 @@ display_log() {
         if [ -z "$3" ]; then
             grep -E "$2" "$1"
         else
-            grep "$2" "$1" | grep -Ev "$3" || true
+            grep -E "$2" "$1" | grep -Ev "$3" || true
         fi
         echo
     fi
