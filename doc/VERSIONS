@@ -12,6 +12,7 @@ v1.4.6 (Release Date: TBD)
 - Enhanced server_alive_check.sh by handling VM hosts separately and adding gstat support on macOS.
 - Fix pattern matching in filter_history.sh by switching to fixed-string grep for safety.
 - Improve robustness of several utility scripts by adding argument validation, file safety checks, and error suppression.
+- Review clamscan exclude list and standardize headers for config files under etc.
 
 v1.4.5 (2025-07-22)
 -------------------
