@@ -1,15 +1,22 @@
-# install_mylibs.R: R Library Installation Configuration
+########################################################################
+# install_mylibs.R
 #
-#  Description:
-#  This file lists the required R packages for installation.
-#  It is intended to be sourced by an installation script.
+#  This file defines the list of required R packages for installation.
+#  It is intended to be sourced by an R installation script.
+#
+#  Rules:
+#  - Lines starting with '#' are comments.
+#  - This file must be valid R code and sourceable.
+#  - No shebang should be added; this file is not meant to be executed directly.
+#
+#  Variables:
+#  - required_packages : Character vector of package names to install.
 #
 #  Usage:
-#  To install these packages, use an R installation script that sources this file.
+#    source("$SCRIPTS/etc/install_mylibs.R")
+#    install.packages(required_packages, dependencies = TRUE)
 #
-#  Example installation script:
-#      source("$SCRIPTS/etc/install_mylibs.R")
-#      install.packages(required_packages, dependencies=TRUE)
+########################################################################
 
 # Set CRAN repository
 options(repos = "https://cloud.r-project.org/")
