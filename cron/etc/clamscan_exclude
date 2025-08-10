@@ -1,40 +1,88 @@
-/usr/local/src/security/clamav
-/opt/local/src/security/clamav
-/sys
-/dev
-/mnt
-/media
-/OneDrive
-/home/debian/tmp
-/home/debian/mnt
-/home/ubuntu/tmp
-/home/ubuntu/mnt
-/home/redhat/tmp
-/home/redhat/mnt
-/home/centos/tmp
-/home/centos/mnt
-/home/sl/tmp
-/home/sl/mnt
-/home/admin/tmp
-/home/admin/mnt
-/home/ec2user/tmp
-/home/ec2user/mnt
-/home/git/tmp
-/home/git/mnt
-/home/automatic/tmp
-/home/automatic/mnt
-/home/fluent/tmp
-/home/fluent/mnt
-/home/plagger/tmp
-/home/plagger/mnt
-/home/plagger/.plagger
-/home/twitter/tmp
-/home/twitter/mnt
-/home/tiarra/tmp
-/home/tiarra/mnt
-/home/testuser/tmp
-/home/testuser/mnt
-/home/jenkins/tmp
-/home/jenkins/mnt
-/export/home/solaris/tmp
-/export/home/solaris/mnt
+########################################################################
+# ClamAV Exclude List Configuration
+#
+#  This file is read by clamscan.sh and passed to ClamAV as --exclude or
+#  --exclude-dir options. Use it to skip directories or files that are
+#  large, slow to scan, or unnecessary to scan.
+#
+#  Rules:
+#  - Blank lines are ignored.
+#  - Lines starting with '#' are treated as comments (leading spaces allowed).
+#  - Add a trailing '/' to a directory path to use --exclude-dir.
+#  - Omit the trailing '/' for file paths or patterns to use --exclude.
+#  - No regex is needed. Each entry will be converted to an anchored
+#    regular expression automatically.
+#    Example: /var/log/ → ^/var/log(/|$)
+#
+#  Examples:
+#  /proc/                  # Pseudo filesystem
+#  /var/cache/apt/archives/ # APT cache
+#  /home/user/tmp/          # Specific user's temporary directory
+#  /home/user/largefile.iso # Single file exclusion
+#
+########################################################################
+
+# Pseudo filesystems
+/proc/
+/sys/
+/dev/
+/run/
+
+# Package caches
+/var/cache/apt/archives/
+/var/cache/dnf/
+/var/cache/yum/
+/var/cache/pacman/pkg/
+/var/cache/apk/
+/var/cache/zypp/packages/
+
+# Containers and images
+/var/lib/docker/
+/var/lib/containers/
+/var/lib/snapd/
+/var/lib/flatpak/
+/var/lib/lxd/
+/var/lib/libvirt/images/
+/var/lib/VirtualBox/
+
+# Crash dumps and heavy logs
+/var/lib/systemd/coredump/
+/var/crash/
+/var/log/journal/
+
+# Backups and mounts
+/backup/
+/Backups/
+/srv/backup/
+/var/backups/
+/nfs/
+/srv/nfs/
+/srv/samba/
+/mnt/
+/media/
+
+# Homes
+/home/*/{tmp,mnt}/
+/home/*/.cache/
+/home/*/.cache/pip/
+/home/*/node_modules/
+/home/*/.npm/
+/home/*/.nvm/
+/home/*/.rbenv/
+/home/*/.gem/
+/home/*/.bundle/
+/home/*/.pyenv/
+/home/*/.m2/
+/home/*/.gradle/
+/home/*/.cargo/
+/home/*/.rustup/
+/home/*/.cpanm/
+/home/*/venv/
+/home/*/.venv/
+/home/*/go/pkg/mod/
+/home/*/Dropbox/
+/home/*/Google Drive/
+/home/*/OneDrive/
+
+# Standalone OneDrive path (if mounted at root)
+/OneDrive/

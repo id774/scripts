@@ -20,6 +20,9 @@
 #  This script is intended to be executed periodically by cron.
 #
 #  Version History:
+#  v1.7 2025-08-10
+#       Support comments and blank lines in exclude file and anchor regex paths
+#       to prevent over matching while keeping POSIX compliance.
 #  v1.6 2025-07-30
 #       Update exclusion file path to /etc/cron.config/clamscan.conf to reflect new directory layout.
 #  v1.5 2025-06-23
@@ -94,15 +97,40 @@ update_virus_definitions() {
     systemctl start clamav-freshclam.service
 }
 
+# Escape regex metacharacters for clamscan --exclude* options
+escape_regex() {
+    # Escape: ] [ . \ ^ $ + * ? ( ) { } |
+    printf '%s' "$1" | sed -e 's/[][\.^$+*?(){}|\\]/\\&/g'
+}
+
 # Read exclusions
 load_exclude_options() {
     if [ -s "$EXCLUDEFILE" ]; then
-        while IFS= read -r line; do
-            case "$line" in
-                */) OPTS="$OPTS --exclude-dir=${line%/}" ;;
-                *)  OPTS="$OPTS --exclude=$line" ;;
+        # Allow blank lines and lines starting with '#' (with optional leading spaces)
+        # Also trim surrounding spaces and detect trailing '/' to choose exclude-dir.
+        awk '
+            {
+                s=$0
+                sub(/^[[:space:]]+/, "", s)
+                sub(/[[:space:]]+$/, "", s)
+                if (s ~ /^[[:space:]]*#/ || s == "") next
+                if (s ~ /\/$/) { sub(/\/$/, "", s); printf("D %s\n", s) }
+                else { printf("F %s\n", s) }
+            }
+        ' "$EXCLUDEFILE" | while IFS=' ' read -r kind path; do
+            # Anchor to avoid over matching: ^/path($|/)
+            # Escape regex metacharacters to treat the line as a literal path.
+            case "$kind" in
+                D)
+                    esc=$(escape_regex "$path")
+                    OPTS="$OPTS --exclude-dir=^${esc}(/|\$)"
+                    ;;
+                F)
+                    esc=$(escape_regex "$path")
+                    OPTS="$OPTS --exclude=^${esc}\$"
+                    ;;
             esac
-        done < "$EXCLUDEFILE"
+        done
     fi
 }
 
