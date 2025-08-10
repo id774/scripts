@@ -1,0 +1,11 @@
+# Base repository
+deb     http://deb.debian.org/debian trixie main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian trixie main contrib non-free non-free-firmware
+
+# Security updates
+deb     http://deb.debian.org/debian-security trixie-security main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian-security trixie-security main contrib non-free non-free-firmware
+
+# Stable updates
+deb     http://deb.debian.org/debian trixie-updates main contrib non-free non-free-firmware
+deb-src http://deb.debian.org/debian trixie-updates main contrib non-free non-free-firmware
