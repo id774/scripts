@@ -149,7 +149,7 @@ install() {
     sudo chmod 740 /etc/cron.exec/clamscan
 
     echo "[INFO] Deploying clamscan configuration to /etc/cron.config/clamscan.conf."
-    if ! sudo cp "$SCRIPTS/cron/etc/clamscan_exclude" /etc/cron.config/clamscan.conf; then
+    if ! sudo cp "$SCRIPTS/cron/etc/clamscan.conf" /etc/cron.config/clamscan.conf; then
         echo "[ERROR] Failed to copy clamscan.conf." >&2
         exit 1
     fi
