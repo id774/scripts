@@ -61,18 +61,19 @@ usage() {
     exit 0
 }
 
-# Check if the user has sudo privileges (password may be required)
-check_sudo() {
-    if ! sudo -v 2>/dev/null; then
-        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
+# Check if the system is Linux
+check_system() {
+    os="$(uname -s 2>/dev/null)"
+    if [ "$os" != "Linux" ]; then
+        echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
     fi
 }
 
-# Check if the system supports apt-get
-check_environment() {
-    if ! command -v apt-get >/dev/null 2>&1; then
-        echo "[ERROR] apt-get is not available on this system. This script requires a Debian-based environment." >&2
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }
@@ -91,9 +92,17 @@ check_commands() {
     done
 }
 
-# Check if a desktop environment is installed (non-fatal, best effort)
+# Check if a desktop environment is installed (Debian/Ubuntu)
 check_desktop_installed() {
-    # 1) Session files
+    # Prefer tasksel if available
+    if command -v tasksel >/dev/null 2>&1; then
+        if LC_ALL=C tasksel --list-tasks | grep -q '^i.*desktop'; then
+            echo "[INFO] Desktop environment detected via tasksel."
+            return 0
+        fi
+    fi
+
+    # Fallback: check for session files
     if [ -d /usr/share/xsessions ] && ls /usr/share/xsessions/*.desktop >/dev/null 2>&1; then
         echo "[INFO] Desktop environment detected via /usr/share/xsessions."
         return 0
@@ -102,23 +111,9 @@ check_desktop_installed() {
         echo "[INFO] Desktop environment detected via /usr/share/wayland-sessions."
         return 0
     fi
-    # 2) Common packages on Debian/Ubuntu families
-    PKGS="ubuntu-desktop gnome-shell gnome-session-bin gnome-flashback xfce4-session xfce4 plasma-desktop kde-standard kde-plasma-desktop mate-session-manager cinnamon lxqt-session"
-    for p in $PKGS; do
-        if dpkg-query -W -f='${Status}' "$p" 2>/dev/null | grep -q "ok installed"; then
-            echo "[INFO] Desktop environment detected via package: $p"
-            return 0
-        fi
-    done
-    # 3) Optional: tasksel hint if available
-    if command -v tasksel >/dev/null 2>&1; then
-        if tasksel --list-tasks 2>/dev/null | grep -Eiq '(ubuntu|kubuntu|xubuntu|lubuntu).*-desktop|desktop'; then
-            echo "[INFO] Desktop environment hinted by tasksel."
-            return 0
-        fi
-    fi
-    echo "[WARN] No desktop environment detected. Continuing setup with LightDM and GNOME steps as applicable." >&2
-    return 1
+
+    echo "[ERROR] No desktop environment detected." >&2
+    exit 1
 }
 
 # System update and upgrade
@@ -188,8 +183,8 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
-    check_environment
-    check_commands sudo dpkg-query grep
+    check_system
+    check_commands sudo apt-get dpkg-query grep
     check_desktop_installed
     check_sudo
     apt_upgrade
