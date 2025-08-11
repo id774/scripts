@@ -112,7 +112,7 @@ main() {
     gsettings_settings org.gnome.desktop.background show-desktop-icons false
 
     mkdir -p "$HOME/.config/xfce4/terminal"
-    cp "$SCRIPTS/etc/terminalrc" "$HOME/.config/xfce4/terminal/"
+    cp "$SCRIPTS/etc/xfce/terminalrc" "$HOME/.config/xfce4/terminal/"
     dconf load /org/gnome/settings-daemon/plugins/media-keys/ < "$SCRIPTS/etc/gnome/gnome-shortcuts.conf"
     dconf load /org/gnome/desktop/wm/keybindings/ < "$SCRIPTS/etc/gnome/gnome-wm-keys.conf"
 
