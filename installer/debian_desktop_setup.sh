@@ -171,12 +171,11 @@ apply_ui_settings() {
     gsettings_settings org.gnome.desktop.wm.preferences num-workspaces 9
 }
 
-# Apply lock and idle settings (disable auto lock and blank)
+# Apply lock and idle settings (keep manual lock, disable only auto lock/blank)
 apply_lock_settings() {
-    # Disable lock screen
+    # Disable automatic lock, but keep manual lock available
     gsettings_settings org.gnome.desktop.screensaver lock-enabled false
-    # Some setups honor lockdown too
-    gsettings_settings org.gnome.desktop.lockdown disable-lock-screen true
+    gsettings_settings org.gnome.desktop.lockdown disable-lock-screen false
     # Disable idle blank (0 means never)
     gsettings_settings org.gnome.desktop.session idle-delay "uint32 0"
     # If delay key exists under screensaver, ensure minimal delay
