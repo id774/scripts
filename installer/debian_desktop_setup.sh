@@ -19,6 +19,7 @@
 #  Notes:
 #  - Designed for Debian-based desktops. LightDM is optional.
 #  - If LightDM is not installed, LightDM-related steps are skipped with a warning.
+#  - Desktop Environment detection is best effort and non-fatal on minimal installs.
 #  - Manual verification of /etc/lightdm/lightdm.conf may be required when LightDM exists.
 #  - Review and modify configurations as needed before execution.
 #
@@ -91,14 +92,34 @@ check_commands() {
     done
 }
 
-# Check if a desktop environment is installed
+# Check if a desktop environment is installed (non-fatal, best effort)
 check_desktop_installed() {
-    if tasksel --list-tasks | grep -q '^i.*desktop'; then
-        echo "[INFO] Desktop environment detected."
-    else
-        echo "[ERROR] No desktop environment found. Please install a desktop environment before running this script." >&2
-        exit 1
+    # 1) Session files
+    if [ -d /usr/share/xsessions ] && ls /usr/share/xsessions/*.desktop >/dev/null 2>&1; then
+        echo "[INFO] Desktop environment detected via /usr/share/xsessions."
+        return 0
     fi
+    if [ -d /usr/share/wayland-sessions ] && ls /usr/share/wayland-sessions/*.desktop >/dev/null 2>&1; then
+        echo "[INFO] Desktop environment detected via /usr/share/wayland-sessions."
+        return 0
+    fi
+    # 2) Common packages on Debian/Ubuntu families
+    PKGS="ubuntu-desktop gnome-shell gnome-session-bin gnome-flashback xfce4-session xfce4 plasma-desktop kde-standard kde-plasma-desktop mate-session-manager cinnamon lxqt-session"
+    for p in $PKGS; do
+        if dpkg-query -W -f='${Status}' "$p" 2>/dev/null | grep -q "ok installed"; then
+            echo "[INFO] Desktop environment detected via package: $p"
+            return 0
+        fi
+    done
+    # 3) Optional: tasksel hint if available
+    if command -v tasksel >/dev/null 2>&1; then
+        if tasksel --list-tasks 2>/dev/null | grep -Eiq '(ubuntu|kubuntu|xubuntu|lubuntu).*-desktop|desktop'; then
+            echo "[INFO] Desktop environment hinted by tasksel."
+            return 0
+        fi
+    fi
+    echo "[WARN] No desktop environment detected. Continuing setup with LightDM and GNOME steps as applicable." >&2
+    return 1
 }
 
 # Check if LightDM is installed (non-fatal)
@@ -171,7 +192,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo dpkg-query grep tee systemctl tasksel
+    check_commands sudo dpkg-query grep tee systemctl
     check_desktop_installed
     check_lightdm
 
