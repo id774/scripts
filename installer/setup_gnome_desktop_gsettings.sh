@@ -53,6 +53,15 @@ check_system() {
     fi
 }
 
+# Check if the SCRIPTS variable is unset or empty
+check_scripts() {
+    if [ -z "$SCRIPTS" ]; then
+        echo "[ERROR] SCRIPTS environment variable is not set." >&2
+        echo "Please set the SCRIPTS variable to the path of your script collection." >&2
+        exit 1
+    fi
+}
+
 # Check if required commands are available and executable
 check_commands() {
     for cmd in "$@"; do
@@ -93,12 +102,19 @@ main() {
     esac
 
     check_system
-    check_commands gsettings
+    check_scripts
+    check_commands gsettings dconf mkdir cp
 
     # Apply GNOME media handling settings
     gsettings_settings org.gnome.desktop.media-handling automount false
     gsettings_settings org.gnome.desktop.media-handling automount-open false
     gsettings_settings org.gnome.desktop.media-handling autorun-never true
+    gsettings_settings org.gnome.desktop.background show-desktop-icons false
+
+    mkdir -p "$HOME/.config/xfce4/terminal"
+    cp "$SCRIPTS/etc/terminalrc" "$HOME/.config/xfce4/terminal/"
+    dconf load /org/gnome/settings-daemon/plugins/media-keys/ < "$SCRIPTS/etc/gnome/gnome-shortcuts.conf"
+    dconf load /org/gnome/desktop/wm/keybindings/ < "$SCRIPTS/etc/gnome/gnome-wm-keys.conf"
 
     echo "[INFO] GNOME media handling settings updated successfully."
     return 0
