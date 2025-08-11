@@ -4,8 +4,9 @@
 # debian_desktop_setup.sh: Debian batch setup script for Desktop
 #
 #  Description:
-#  This script configures essential settings for Debian-based desktop environments.
-#  It disables guest sessions in LightDM and restarts the display manager to apply changes.
+#  Configure essential settings for Debian-based desktop environments.
+#  Optionally disable guest sessions in LightDM and restart it when present.
+#  Optionally run GNOME gsettings configuration for Flashback session.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -13,22 +14,23 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  Run the script directly:
 #      ./debian_desktop_setup.sh
 #
-#  Ensure that LightDM is installed before executing.
-#
 #  Notes:
-#  - The script is designed for Debian-based systems using LightDM.
-#  - Manual verification of /etc/lightdm/lightdm.conf may be required.
+#  - Designed for Debian-based desktops. LightDM is optional.
+#  - If LightDM is not installed, LightDM-related steps are skipped with a warning.
+#  - Manual verification of /etc/lightdm/lightdm.conf may be required when LightDM exists.
 #  - Review and modify configurations as needed before execution.
 #
 #  Error Conditions:
-#  - If LightDM is not installed, the script exits with an error.
 #  - If required commands are missing, execution is halted.
 #  - Errors from underlying commands should be resolved based on their output.
 #
 #  Version History:
+#  v1.4 2025-08-11
+#       Make LightDM optional and skip related steps when absent.
+#       Add GNOME settings hook with safe guards and logging.
+#       Keep POSIX compliance and unify log format.
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2025-04-13
@@ -55,6 +57,9 @@ usage() {
     ' "$0"
     exit 0
 }
+
+# Track LightDM availability: 0 unknown, 1 present, 2 absent
+LIGHTDM_STATE=0
 
 # Check if the system is Linux
 check_system() {
@@ -96,26 +101,52 @@ check_desktop_installed() {
     fi
 }
 
-# Check if LightDM is installed
+# Check if LightDM is installed (non-fatal)
 check_lightdm() {
-    if ! dpkg-query -W -f='${Status}' lightdm 2>/dev/null | grep -q "ok installed"; then
-        echo "[ERROR] LightDM is not installed. This script requires LightDM." >&2
-        exit 1
+    if dpkg-query -W -f='${Status}' lightdm 2>/dev/null | grep -q "ok installed"; then
+        LIGHTDM_STATE=1
+        echo "[INFO] LightDM detected."
+    else
+        LIGHTDM_STATE=2
+        echo "[WARN] LightDM is not installed. LightDM related steps will be skipped." >&2
     fi
 }
 
-# Configure GNOME media and UI settings
+# Configure GNOME media and UI settings (runs only if helper exists)
 setup_gsettings() {
-    "$SCRIPTS/installer/setup_gsettings.sh"
+    if [ -z "$SCRIPTS" ]; then
+        echo "[WARN] Skipping GNOME settings because SCRIPTS is not set." >&2
+        return 0
+    fi
+    GSCRIPT="$SCRIPTS/installer/setup_gsettings.sh"
+    if [ ! -x "$GSCRIPT" ]; then
+        echo "[WARN] Skipping GNOME settings because script not found or not executable: $GSCRIPT" >&2
+        return 0
+    fi
+    # Let the helper handle DBus session checks by itself
+    echo "[INFO] Running GNOME settings setup: $GSCRIPT"
+    "$GSCRIPT" || {
+        echo "[WARN] GNOME settings setup returned a non zero status." >&2
+        return 0
+    }
 }
 
 # Disable guest sessions in LightDM
 disable_guest_session() {
+    if [ "$LIGHTDM_STATE" -ne 1 ]; then
+        echo "[INFO] Skipping LightDM guest session disable because LightDM is absent."
+        return 0
+    fi
     LIGHTDM_CONF="/etc/lightdm/lightdm.conf"
-    sudo mkdir -p /etc/lightdm
+    if ! sudo mkdir -p /etc/lightdm; then
+        echo "[WARN] Failed to create /etc/lightdm directory." >&2
+        return 0
+    fi
     if ! grep -q "^allow-guest=false" "$LIGHTDM_CONF" 2>/dev/null; then
         echo "[INFO] Disabling guest sessions in LightDM..."
-        echo "allow-guest=false" | sudo tee -a "$LIGHTDM_CONF" >/dev/null
+        if ! echo "allow-guest=false" | sudo tee -a "$LIGHTDM_CONF" >/dev/null; then
+            echo "[WARN] Failed to write LightDM config: $LIGHTDM_CONF" >&2
+        fi
     else
         echo "[INFO] Guest sessions are already disabled in LightDM."
     fi
@@ -123,8 +154,14 @@ disable_guest_session() {
 
 # Restart LightDM to apply changes
 restart_lightdm() {
+    if [ "$LIGHTDM_STATE" -ne 1 ]; then
+        echo "[INFO] Skipping LightDM restart because LightDM is absent."
+        return 0
+    fi
     echo "[INFO] Restarting LightDM..."
-    sudo systemctl restart lightdm || echo "[WARN] Failed to restart LightDM." >&2
+    if ! sudo systemctl restart lightdm; then
+        echo "[WARN] Failed to restart LightDM." >&2
+    fi
 }
 
 # Main entry point of the script
@@ -137,10 +174,18 @@ main() {
     check_commands sudo dpkg-query grep tee systemctl tasksel
     check_desktop_installed
     check_lightdm
-    check_sudo
+
+    # GNOME settings can run regardless of LightDM presence
     setup_gsettings
-    disable_guest_session
-    restart_lightdm
+
+    # Only require sudo and run LightDM steps when LightDM is present
+    if [ "$LIGHTDM_STATE" -eq 1 ]; then
+        check_sudo
+        disable_guest_session
+        restart_lightdm
+    else
+        echo "[INFO] LightDM steps skipped."
+    fi
 
     echo "[INFO] All Debian desktop setup completed."
     return 0
