@@ -97,40 +97,36 @@ update_virus_definitions() {
     systemctl start clamav-freshclam.service
 }
 
-# Escape regex metacharacters for clamscan --exclude* options
-escape_regex() {
-    # Escape: ] [ . \ ^ $ + * ? ( ) { } |
-    printf '%s' "$1" | sed -e 's/[][\.^$+*?(){}|\\]/\\&/g'
+# Convert shell globs (*, ?) to anchored regex while escaping other meta
+glob_to_regex() {
+    printf '%s' "$1" \
+    | sed -e 's/[][\.^$+(){}|\\]/\\&/g' \
+          -e 's/\*/.*/g' \
+          -e 's/\?/./g'
 }
 
 # Read exclusions
 load_exclude_options() {
     if [ -s "$EXCLUDEFILE" ]; then
-        # Allow blank lines and lines starting with '#' (with optional leading spaces)
-        # Also trim surrounding spaces and detect trailing '/' to choose exclude-dir.
-        awk '
-            {
-                s=$0
-                sub(/^[[:space:]]+/, "", s)
-                sub(/[[:space:]]+$/, "", s)
-                if (s ~ /^[[:space:]]*#/ || s == "") next
-                if (s ~ /\/$/) { sub(/\/$/, "", s); printf("D %s\n", s) }
-                else { printf("F %s\n", s) }
-            }
-        ' "$EXCLUDEFILE" | while IFS=' ' read -r kind path; do
-            # Anchor to avoid over matching: ^/path($|/)
-            # Escape regex metacharacters to treat the line as a literal path.
-            case "$kind" in
-                D)
-                    esc=$(escape_regex "$path")
-                    OPTS="$OPTS --exclude-dir=^${esc}(/|\$)"
-                    ;;
-                F)
-                    esc=$(escape_regex "$path")
-                    OPTS="$OPTS --exclude=^${esc}\$"
-                    ;;
-            esac
-        done
+        while IFS= read -r raw || [ -n "$raw" ]; do
+            s=$raw
+            # Trim leading/trailing whitespace
+            s=${s#"${s%%[![:space:]]*}"}; s=${s%"${s##*[![:space:]]}"}
+            case "$s" in ''|'#'*) continue ;; esac
+            if [ "${s%/}" != "$s" ]; then
+                kind=D
+                path=${s%/}
+            else
+                kind=F
+                path=$s
+            fi
+            re=$(glob_to_regex "$path")
+            if [ "$kind" = D ]; then
+                OPTS="$OPTS --exclude-dir=^${re}(/|\$)"
+            else
+                OPTS="$OPTS --exclude=^${re}\$"
+            fi
+        done < "$EXCLUDEFILE"
     fi
 }
 
@@ -138,7 +134,7 @@ load_exclude_options() {
 run_clamscan() {
     for dir in $TARGETDIRS; do
         echo "[INFO] Scanning: $dir"
-        clamscan "$dir" $OPTS -r -i -l "$LOGFILE"
+        clamscan $OPTS -r -i -l "$LOGFILE" "$dir"
     done
     echo "[INFO] ClamAV scan completed. Logs available at: $LOGFILE"
 }
