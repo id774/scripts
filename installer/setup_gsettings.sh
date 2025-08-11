@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# setup_gnome_desktop_gsettings.sh: Configure GNOME media and UI settings
+# setup_gsettings.sh: Configure GNOME media and UI settings
 #
 #  Description:
 #  Configure GNOME Flashback friendly settings:
@@ -19,7 +19,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./setup_gnome_desktop_gsettings.sh
+#      ./setup_gsettings.sh
 #
 #  Features:
 #  - Validate Linux environment and required commands
@@ -83,6 +83,16 @@ check_commands() {
             exit 126
         fi
     done
+}
+
+# Check if a desktop environment is installed
+check_desktop_installed() {
+    if tasksel --list-tasks | grep -q '^i.*desktop'; then
+        echo "[INFO] Desktop environment detected."
+    else
+        echo "[ERROR] No desktop environment found. Please install a desktop environment before running this script." >&2
+        exit 1
+    fi
 }
 
 # Ensure we have a user session DBus (required for gsettings/dconf)
@@ -239,8 +249,9 @@ main() {
 
     check_system
     check_scripts
-    check_session_bus
     check_commands gsettings dconf mkdir cp awk
+    check_session_bus
+    check_desktop_installed
 
     apply_media_handling_settings
     apply_ui_settings

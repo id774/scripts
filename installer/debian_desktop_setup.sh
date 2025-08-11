@@ -104,6 +104,11 @@ check_lightdm() {
     fi
 }
 
+# Configure GNOME media and UI settings
+setup_gsettings() {
+    "$SCRIPTS/installer/setup_gsettings.sh"
+}
+
 # Disable guest sessions in LightDM
 disable_guest_session() {
     LIGHTDM_CONF="/etc/lightdm/lightdm.conf"
@@ -133,6 +138,7 @@ main() {
     check_desktop_installed
     check_lightdm
     check_sudo
+    setup_gsettings
     disable_guest_session
     restart_lightdm
 
