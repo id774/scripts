@@ -1,12 +1,17 @@
 #!/bin/sh
 
 ########################################################################
-# debian_desktop_setup.sh: Debian batch setup script for Desktop
+# debian_desktop_setup.sh: Apply GNOME settings for Flashback session
 #
 #  Description:
-#  Configure essential settings for Debian-based desktop environments.
-#  Optionally disable guest sessions in LightDM and restart it when present.
-#  Optionally run GNOME gsettings configuration for Flashback session.
+#  Configure GNOME Flashback friendly settings:
+#    - Disable automount and autorun for external media
+#    - Hide desktop icons
+#    - Set fixed number of workspaces
+#    - Disable screen auto lock and idle blank
+#    - Enable dark mode when supported
+#    - Import keyboard shortcuts and WM keybindings via dconf
+#    - Install xfce4-terminal profile used in Flashback session
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,21 +22,20 @@
 #      ./debian_desktop_setup.sh
 #
 #  Notes:
-#  - Designed for Debian-based desktops. LightDM is optional.
-#  - If LightDM is not installed, LightDM-related steps are skipped with a warning.
-#  - Desktop Environment detection is best effort and non-fatal on minimal installs.
-#  - Manual verification of /etc/lightdm/lightdm.conf may be required when LightDM exists.
-#  - Review and modify configurations as needed before execution.
+#  - Run inside a logged in desktop user session because gsettings and dconf
+#    require a DBus session bus.
+#  - SCRIPTS environment variable must point to the root of this repo to load
+#    keybinding files and terminal profile.
 #
 #  Error Conditions:
 #  - If required commands are missing, execution is halted.
-#  - Errors from underlying commands should be resolved based on their output.
+#  - If DBus session is not available, execution is halted.
 #
 #  Version History:
-#  v1.4 2025-08-11
-#       Make LightDM optional and skip related steps when absent.
+#  v2.0 2025-08-11
+#       Replace previous LightDM oriented setup with GNOME settings only.
+#       Keep POSIX compliance and robust logging and verification.
 #       Add GNOME settings hook with safe guards and logging.
-#       Keep POSIX compliance and unify log format.
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2025-04-13
@@ -39,13 +43,7 @@
 #  v1.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-13
-#       Automated guest session disabling in LightDM.
-#       Improved script automation and removed manual editing step.
-#       Added system checks and improved error handling.
-#       Redirected error messages to stderr for better logging and debugging.
-#  [Further version history truncated for brevity]
-#  v0.1 2011-09-28
-#       First version.
+#       Initial version.
 #
 ########################################################################
 
@@ -59,21 +57,20 @@ usage() {
     exit 0
 }
 
-# Track LightDM availability: 0 unknown, 1 present, 2 absent
-LIGHTDM_STATE=0
-
 # Check if the system is Linux
 check_system() {
-    if [ "$(uname -s)" != "Linux" ]; then
+    os="$(uname -s 2>/dev/null)"
+    if [ "$os" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
     fi
 }
 
-# Check if the user has sudo privileges (password may be required)
-check_sudo() {
-    if ! sudo -v 2>/dev/null; then
-        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
+# Check if the SCRIPTS variable is unset or empty
+check_scripts() {
+    if [ -z "$SCRIPTS" ]; then
+        echo "[ERROR] SCRIPTS environment variable is not set." >&2
+        echo "Please set SCRIPTS to the root of your script collection." >&2
         exit 1
     fi
 }
@@ -81,108 +78,172 @@ check_sudo() {
 # Check if required commands are available and executable
 check_commands() {
     for cmd in "$@"; do
-        cmd_path=$(command -v "$cmd" 2>/dev/null)
-        if [ -z "$cmd_path" ]; then
-            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
+        path="$(command -v "$cmd" 2>/dev/null)"
+        if [ -z "$path" ]; then
+            echo "[ERROR] Command not found: $cmd" >&2
             exit 127
-        elif [ ! -x "$cmd_path" ]; then
-            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
+        fi
+        if [ ! -x "$path" ]; then
+            echo "[ERROR] Command not executable: $cmd" >&2
             exit 126
         fi
     done
 }
 
-# Check if a desktop environment is installed (non-fatal, best effort)
+# Check if a desktop environment is installed
 check_desktop_installed() {
-    # 1) Session files
-    if [ -d /usr/share/xsessions ] && ls /usr/share/xsessions/*.desktop >/dev/null 2>&1; then
-        echo "[INFO] Desktop environment detected via /usr/share/xsessions."
-        return 0
-    fi
-    if [ -d /usr/share/wayland-sessions ] && ls /usr/share/wayland-sessions/*.desktop >/dev/null 2>&1; then
-        echo "[INFO] Desktop environment detected via /usr/share/wayland-sessions."
-        return 0
-    fi
-    # 2) Common packages on Debian/Ubuntu families
-    PKGS="ubuntu-desktop gnome-shell gnome-session-bin gnome-flashback xfce4-session xfce4 plasma-desktop kde-standard kde-plasma-desktop mate-session-manager cinnamon lxqt-session"
-    for p in $PKGS; do
-        if dpkg-query -W -f='${Status}' "$p" 2>/dev/null | grep -q "ok installed"; then
-            echo "[INFO] Desktop environment detected via package: $p"
-            return 0
-        fi
-    done
-    # 3) Optional: tasksel hint if available
-    if command -v tasksel >/dev/null 2>&1; then
-        if tasksel --list-tasks 2>/dev/null | grep -Eiq '(ubuntu|kubuntu|xubuntu|lubuntu).*-desktop|desktop'; then
-            echo "[INFO] Desktop environment hinted by tasksel."
-            return 0
-        fi
-    fi
-    echo "[WARN] No desktop environment detected. Continuing setup with LightDM and GNOME steps as applicable." >&2
-    return 1
-}
-
-# Check if LightDM is installed (non-fatal)
-check_lightdm() {
-    if dpkg-query -W -f='${Status}' lightdm 2>/dev/null | grep -q "ok installed"; then
-        LIGHTDM_STATE=1
-        echo "[INFO] LightDM detected."
+    if tasksel --list-tasks | grep -q '^i.*desktop'; then
+        echo "[INFO] Desktop environment detected."
     else
-        LIGHTDM_STATE=2
-        echo "[WARN] LightDM is not installed. LightDM related steps will be skipped." >&2
+        echo "[ERROR] No desktop environment found. Please install a desktop environment before running this script." >&2
+        exit 1
     fi
 }
 
-# Configure GNOME media and UI settings (runs only if helper exists)
-setup_gsettings() {
-    if [ -z "$SCRIPTS" ]; then
-        echo "[WARN] Skipping GNOME settings because SCRIPTS is not set." >&2
-        return 0
-    fi
-    GSCRIPT="$SCRIPTS/installer/setup_gsettings.sh"
-    if [ ! -x "$GSCRIPT" ]; then
-        echo "[WARN] Skipping GNOME settings because script not found or not executable: $GSCRIPT" >&2
-        return 0
-    fi
-    # Let the helper handle DBus session checks by itself
-    echo "[INFO] Running GNOME settings setup: $GSCRIPT"
-    "$GSCRIPT" || {
-        echo "[WARN] GNOME settings setup returned a non zero status." >&2
-        return 0
-    }
-}
-
-# Disable guest sessions in LightDM
-disable_guest_session() {
-    if [ "$LIGHTDM_STATE" -ne 1 ]; then
-        echo "[INFO] Skipping LightDM guest session disable because LightDM is absent."
-        return 0
-    fi
-    LIGHTDM_CONF="/etc/lightdm/lightdm.conf"
-    if ! sudo mkdir -p /etc/lightdm; then
-        echo "[WARN] Failed to create /etc/lightdm directory." >&2
-        return 0
-    fi
-    if ! grep -q "^allow-guest=false" "$LIGHTDM_CONF" 2>/dev/null; then
-        echo "[INFO] Disabling guest sessions in LightDM..."
-        if ! echo "allow-guest=false" | sudo tee -a "$LIGHTDM_CONF" >/dev/null; then
-            echo "[WARN] Failed to write LightDM config: $LIGHTDM_CONF" >&2
-        fi
-    else
-        echo "[INFO] Guest sessions are already disabled in LightDM."
+# Ensure we have a user session DBus (required for gsettings/dconf)
+check_session_bus() {
+    if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+        echo "[ERROR] DBUS session bus is not available." >&2
+        echo "Run this script inside a logged-in desktop session." >&2
+        exit 1
     fi
 }
 
-# Restart LightDM to apply changes
-restart_lightdm() {
-    if [ "$LIGHTDM_STATE" -ne 1 ]; then
-        echo "[INFO] Skipping LightDM restart because LightDM is absent."
+# ----- gsettings helpers -------------------------------------------------
+
+# Check if a gsettings key is writable (exists)
+gsettings_can_set() {
+    # Args: SCHEMA KEY
+    schema="$1"
+    key="$2"
+    gsettings writable "$schema" "$key" >/dev/null 2>&1
+}
+
+# Set a gsettings key and confirm value
+gsettings_settings() {
+    # Args: SCHEMA KEY VALUE
+    schema="$1"
+    key="$2"
+    value="$3"
+
+    if ! gsettings_can_set "$schema" "$key"; then
+        echo "[WARN] Skipping unknown or read-only key: $schema $key" >&2
         return 0
     fi
-    echo "[INFO] Restarting LightDM..."
-    if ! sudo systemctl restart lightdm; then
-        echo "[WARN] Failed to restart LightDM." >&2
+
+    echo "[INFO] Setting: $schema $key -> $value"
+    if ! gsettings set "$schema" "$key" "$value"; then
+        echo "[ERROR] Failed to set $schema $key to $value" >&2
+        exit 1
     fi
+
+    printf "%s" "[INFO] Confirming: $schema $key = "
+    if ! gsettings get "$schema" "$key"; then
+        echo "[ERROR] Failed to read back $schema $key" >&2
+        exit 1
+    fi
+}
+
+# Apply media handling settings
+apply_media_handling_settings() {
+    gsettings_settings org.gnome.desktop.media-handling automount false
+    gsettings_settings org.gnome.desktop.media-handling automount-open false
+    gsettings_settings org.gnome.desktop.media-handling autorun-never true
+}
+
+# Apply UI settings (desktop icons, workspaces)
+apply_ui_settings() {
+    gsettings_settings org.gnome.desktop.background show-desktop-icons false
+    gsettings_settings org.gnome.desktop.wm.preferences num-workspaces 9
+}
+
+# Apply lock and idle settings (disable auto lock and blank)
+apply_lock_settings() {
+    # Disable lock screen
+    gsettings_settings org.gnome.desktop.screensaver lock-enabled false
+    # Some setups honor lockdown too
+    gsettings_settings org.gnome.desktop.lockdown disable-lock-screen true
+    # Disable idle blank (0 means never)
+    gsettings_settings org.gnome.desktop.session idle-delay "uint32 0"
+    # If delay key exists under screensaver, ensure minimal delay
+    gsettings_settings org.gnome.desktop.screensaver lock-delay "uint32 0"
+}
+
+# Apply dark mode
+apply_dark_mode_settings() {
+    # GNOME 42+ color-scheme
+    gsettings_settings org.gnome.desktop.interface color-scheme prefer-dark
+    # Fallback to Adwaita-dark if available
+    gsettings_settings org.gnome.desktop.interface gtk-theme Adwaita-dark
+    # Optional: dark icon theme if desired; skipped unless you want it
+    # gsettings_settings org.gnome.desktop.interface icon-theme Adwaita
+}
+
+# ----- dconf helpers -----------------------------------------------------
+
+# Load dconf subtree from file and verify
+dconf_load_settings() {
+    # Args: DC_PATH FILE
+    dc_path="$1"
+    dc_file="$2"
+
+    if [ ! -r "$dc_file" ]; then
+        echo "[ERROR] dconf source not found: $dc_file" >&2
+        exit 1
+    fi
+
+    echo "[INFO] Loading dconf path $dc_path from $dc_file"
+    if ! dconf load "$dc_path" < "$dc_file"; then
+        echo "[ERROR] dconf load failed for $dc_path" >&2
+        exit 1
+    fi
+
+    after_dump="$(dconf dump "$dc_path" 2>/dev/null)"
+    if [ -z "$after_dump" ]; then
+        echo "[ERROR] dconf dump is empty after load for $dc_path" >&2
+        exit 1
+    fi
+
+    expected="$(awk -F= '/^[a-zA-Z0-9_-]+=/{print $1"="$2}' "$dc_file" | wc -l | tr -d ' ')"
+    applied="$(awk -F= '/^[a-zA-Z0-9_-]+=/{print $1"="$2}' "$dc_file" | while IFS= read -r kv; do
+        printf "%s\n" "$after_dump" | awk -v kv="$kv" 'BEGIN{s=1} $0==kv{s=0} END{exit s}' && echo ok
+    done | wc -l | tr -d ' ')"
+
+    echo "[INFO] Confirming dconf $dc_path keys applied: expected=$expected applied=$applied"
+    if [ "$expected" != "$applied" ]; then
+        echo "[ERROR] dconf confirmation mismatch under $dc_path" >&2
+        exit 1
+    fi
+}
+
+# Import GNOME keybindings (media keys and WM bindings)
+import_gnome_keybindings() {
+    dconf_load_settings "/org/gnome/settings-daemon/plugins/media-keys/" "$SCRIPTS/etc/gnome/gnome-shortcuts.conf"
+    dconf_load_settings "/org/gnome/desktop/wm/keybindings/"         "$SCRIPTS/etc/gnome/gnome-wm-keys.conf"
+}
+
+# ----- other helpers -----------------------------------------------------
+
+# Install xfce4-terminal profile for Flashback session
+install_xfce4_terminal_profile() {
+    dst="$HOME/.config/xfce4/terminal"
+    src="$SCRIPTS/etc/xfce/terminalrc"
+
+    if [ ! -r "$src" ]; then
+        echo "[ERROR] terminalrc not found: $src" >&2
+        exit 1
+    fi
+
+    echo "[INFO] Installing xfce4-terminal profile to $dst"
+    if ! mkdir -p "$dst"; then
+        echo "[ERROR] Failed to create directory: $dst" >&2
+        exit 1
+    fi
+    if ! cp "$src" "$dst/"; then
+        echo "[ERROR] Failed to copy terminalrc to $dst" >&2
+        exit 1
+    fi
+    echo "[INFO] xfce4-terminal profile installed"
 }
 
 # Main entry point of the script
@@ -192,23 +253,19 @@ main() {
     esac
 
     check_system
-    check_commands sudo dpkg-query grep tee systemctl
+    check_scripts
+    check_commands gsettings dconf mkdir cp awk
+    check_session_bus
     check_desktop_installed
-    check_lightdm
 
-    # GNOME settings can run regardless of LightDM presence
-    setup_gsettings
+    apply_media_handling_settings
+    apply_ui_settings
+    apply_lock_settings
+    apply_dark_mode_settings
+    install_xfce4_terminal_profile
+    import_gnome_keybindings
 
-    # Only require sudo and run LightDM steps when LightDM is present
-    if [ "$LIGHTDM_STATE" -eq 1 ]; then
-        check_sudo
-        disable_guest_session
-        restart_lightdm
-    else
-        echo "[INFO] LightDM steps skipped."
-    fi
-
-    echo "[INFO] All Debian desktop setup completed."
+    echo "[INFO] GNOME settings have been updated successfully."
     return 0
 }
 
