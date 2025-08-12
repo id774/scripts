@@ -47,7 +47,7 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
-    if [ "$(uname -s)" != "Linux" ]; then
+    if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
     fi

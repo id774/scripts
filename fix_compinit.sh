@@ -65,7 +65,7 @@ usage() {
 
 # Check if the system is macOS
 check_system() {
-    if [ "$(uname)" != "Darwin" ]; then
+    if [ "$(uname -s 2>/dev/null)" != "Darwin" ]; then
         echo "[ERROR] This script is intended for macOS only." >&2
         exit 1
     fi
