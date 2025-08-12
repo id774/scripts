@@ -20,7 +20,7 @@
 #  This script is intended to be executed periodically by cron.
 #
 #  Version History:
-#  v1.7 2025-08-10
+#  v2.0 2025-08-12
 #       Support comments and blank lines in exclude file and anchor regex paths
 #       to prevent over matching while keeping POSIX compliance.
 #  v1.6 2025-07-30
@@ -85,15 +85,15 @@ initialize() {
 
 # Update virus definitions
 update_virus_definitions() {
-    echo "[INFO] Stopping freshclam..." >&2
+    echo "[INFO] Stopping freshclam..."
     systemctl stop clamav-freshclam.service
 
-    echo "[INFO] Updating virus definitions..." >&2
+    echo "[INFO] Updating virus definitions..."
     if ! freshclam; then
         echo "[WARN] Failed to update ClamAV virus definitions." >&2
     fi
 
-    echo "[INFO] Restarting freshclam..." >&2
+    echo "[INFO] Restarting freshclam..."
     systemctl start clamav-freshclam.service
 }
 
