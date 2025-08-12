@@ -32,7 +32,7 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
-#  v2.0 2025-08-11
+#  v2.0 2025-08-12
 #       Replace previous LightDM oriented setup with GNOME settings only.
 #       Keep POSIX compliance and robust logging and verification.
 #       Add GNOME settings hook with safe guards and logging.
@@ -232,7 +232,7 @@ dconf_load_settings() {
 # Import GNOME keybindings (media keys and WM bindings)
 import_gnome_keybindings() {
     dconf_load_settings "/org/gnome/settings-daemon/plugins/media-keys/" "$SCRIPTS/etc/gnome/gnome-shortcuts.conf"
-    dconf_load_settings "/org/gnome/desktop/wm/keybindings/"         "$SCRIPTS/etc/gnome/gnome-wm-keys.conf"
+    dconf_load_settings "/org/gnome/desktop/wm/keybindings/" "$SCRIPTS/etc/gnome/gnome-wm-keys.conf"
 }
 
 # ----- other helpers -----------------------------------------------------
