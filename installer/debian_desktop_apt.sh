@@ -140,6 +140,11 @@ desktop_environment() {
     smart_apt xfwm4 xfwm4-themes xfce4-goodies xfce4-terminal gnome-themes gnome-themes-extras
 }
 
+# Ja inputs packages
+inputs_packages() {
+    smart_apt fcitx5 fcitx5-mozc fcitx5-config-qt fcitx5-configtool
+}
+
 # Font packages
 fonts_packages() {
     smart_apt xfonts-mplus xfonts-shinonome ttf-bitstream-vera fonts-vlgothic fonts-ipafont
@@ -191,6 +196,7 @@ main() {
     check_sudo
     apt_upgrade
     desktop_environment
+    inputs_packages
     fonts_packages
     package_manager
     codec_packages
