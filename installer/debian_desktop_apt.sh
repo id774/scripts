@@ -33,6 +33,8 @@
 #  These should be resolved based on the output of the apt-get command.
 #
 #  Version History:
+#  v2.0 2025-08-12
+#       Improved desktop environment detection logic and reviewed several package selections.
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.4 2025-04-13
@@ -184,7 +186,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo apt-get dpkg-query grep
+    check_commands sudo apt-get dpkg-query grep tasksel
     check_desktop_installed
     check_sudo
     apt_upgrade
