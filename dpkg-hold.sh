@@ -27,12 +27,22 @@
 #      ./dpkg-hold.sh
 #
 #  Example:
-#      ./dpkg-hold.sh nano install
-#      ./dpkg-hold.sh nano
+#      ./dpkg-hold.sh nano hold
+#      ./dpkg-hold.sh nano unhold
+#
+#  Requirements:
+#  - Debian-based Linux system with dpkg and apt-mark available.
+#  - A user with sudo privileges (the script uses sudo only for state changes).
+#
+#  Notes:
+#  - Run this script as a user with sudo privileges; it invokes sudo internally
+#    only when changing package states (via apt-mark). Read-only operations
+#    like displaying package status do not require sudo.
 #
 #  Version History:
-#  v2.0 2025-08-04
+#  v2.0 2025-08-12
 #       Replace dpkg --set-selections with apt-mark to reliably set package states.
+#       Align privilege model with apt-upgrade.sh: require sudo only for apt-mark operations.
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.8 2025-04-16
@@ -69,7 +79,7 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
-    if [ "$(uname -s)" != "Linux" ]; then
+    if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
     fi
@@ -89,6 +99,14 @@ check_commands() {
     done
 }
 
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
 # Display the current state of a package
 show_package_status() {
     dpkg -l "$1"
@@ -96,7 +114,9 @@ show_package_status() {
 
 # Set the state of a package
 set_package_state() {
-    apt-mark "$2" "$1"
+    check_commands apt-mark
+    check_sudo
+    sudo apt-mark "$2" "$1"
     show_package_status "$1"
 }
 
@@ -107,7 +127,7 @@ main() {
     esac
 
     check_system
-    check_commands apt-mark
+    check_commands dpkg
 
     if [ -n "$2" ]; then
         # If two arguments are provided, set the package state
