@@ -42,7 +42,7 @@
 #  Version History:
 #  v2.0 2025-08-12
 #       Replace dpkg --set-selections with apt-mark to reliably set package states.
-#       Align privilege model with apt-upgrade.sh: require sudo only for apt-mark operations.
+#       Require sudo only for apt-mark operations.
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.8 2025-04-16
