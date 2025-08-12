@@ -106,9 +106,9 @@ basic_packages() {
 
 # System packages
 system_packages() {
-    smart_apt rsyslog ntp keychain fail2ban locales nkf mailutils mutt tree sharutils \
+    smart_apt rsyslog ntp ntpsec keychain fail2ban locales nkf mailutils mutt tree sharutils \
               digitools dnsutils ethtool wakeonlan openmpi-bin xdelta autossh sshfs \
-              cifs-utils exfat-fuse exfat-utils postfix sysstat dstat anacron clamav \
+              cifs-utils exfat-fuse  exfat-utils postfix sysstat dstat anacron clamav \
               chkrootkit lshw jq arp-scan nmap tcpdump iperf wvdial pwgen vrms manpages-ja \
               manpages-ja-dev lm-sensors needrestart acpi hddtemp smartmontools aptitude
 }
