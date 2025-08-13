@@ -122,6 +122,19 @@ uncomment_pam_wheel() {
     echo "[INFO] Uncommented pam_wheel.so"
 }
 
+# Comment out 'auth sufficient pam_wheel.so trust' if active
+comment_pam_wheel_trust() {
+    tmp="/tmp/setup_pamd.trust.$$"
+    sudo awk '
+/^[[:space:]]*auth[[:space:]]+sufficient[[:space:]]+pam_wheel\.so[[:space:]]+trust/ {
+    print "#" $0
+    next
+}
+{ print }
+' "$PAM_FILE" > "$tmp" && sudo mv "$tmp" "$PAM_FILE"
+    echo "[INFO] Commented out auth sufficient pam_wheel.so trust"
+}
+
 # Truncate /etc/motd to an empty file if it exists
 clear_motd() {
     if sudo test -f /etc/motd; then
@@ -147,6 +160,12 @@ main() {
         uncomment_pam_wheel
     else
         echo "[INFO] pam_wheel.so already active or not present."
+    fi
+
+    if sudo grep -Eq '^[[:space:]]*auth[[:space:]]+sufficient[[:space:]]+pam_wheel\.so[[:space:]]+trust' "$PAM_FILE"; then
+        comment_pam_wheel_trust
+    else
+        echo "[INFO] pam_wheel.so trust already commented or not present."
     fi
 
     clear_motd
