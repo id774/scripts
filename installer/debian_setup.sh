@@ -221,6 +221,10 @@ setup_aliases() {
     "$SCRIPTS/installer/setup_aliases.sh"
 }
 
+setup_pamd() {
+    "$SCRIPTS/installer/setup_pamd.sh"
+}
+
 setup_securetty() {
     "$SCRIPTS/installer/securetty.sh"
 }
@@ -274,6 +278,7 @@ main() {
     setup_iptables
     setup_munin
     setup_aliases
+    setup_pamd
     setup_securetty
     setup_dot_ipython
     set_permissions
