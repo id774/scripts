@@ -182,7 +182,7 @@ parse_options() {
 
     # Parse options
     while [ $# -gt 0 ]; do
-        case $1 in
+        case "$1" in
             --reset)
                 RESET=true
                 shift

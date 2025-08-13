@@ -138,7 +138,7 @@ main() {
     fi
 
     while getopts "hc" opt; do
-        case $opt in
+        case "$opt" in
             c)
                 configure_munin_plugins
                 ;;

@@ -97,7 +97,7 @@ check_sudo() {
 
 # Determine system architecture
 get_architecture() {
-    case $(uname -m) in
+    case "$(uname -m)" in
         i386|i686)
             ARCH="x86"
             ;;

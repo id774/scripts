@@ -67,7 +67,7 @@ check_commands() {
 detect_encoding() {
     encoding=$(nkf -g "$1")
 
-    case $encoding in
+    case "$encoding" in
         UTF-8) echo "-kanji=utf8" ;;
         EUC-JP) echo "-kanji=euc" ;;
         Shift-JIS) echo "-kanji=sjis" ;;
@@ -79,7 +79,7 @@ detect_encoding() {
 # Detect which LaTeX engine to use (platex or uplatex)
 detect_latex_engine() {
     class=$(sed 's/%.*//' "$1" | grep 'documentclass' | sed -n '1p')
-    case $class in
+    case "$class" in
         *{u*) echo "uplatex" ;;
         *) echo "platex" ;;
     esac

@@ -70,7 +70,7 @@ clear_cache() {
 # Parse command-line arguments
 parse_arguments() {
     while getopts "hc" opt; do
-        case $opt in
+        case "$opt" in
             c)
                 clear_cache
                 ;;

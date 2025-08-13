@@ -102,7 +102,7 @@ main() {
     check_sudo
 
     UNAME=$(uname)
-    case $UNAME in
+    case "$UNAME" in
         Darwin)
             restart_macos_sshd
             ;;
