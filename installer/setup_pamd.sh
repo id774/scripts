@@ -4,16 +4,14 @@
 # setup_pamd.sh: Manage pam_wheel.so settings in /etc/pam.d/su and clear /etc/motd
 #
 #  Description:
-#  This script adjusts the su PAM policy by ensuring that any commented
-#  pam_wheel.so line in /etc/pam.d/su is uncommented, while any active
-#  'auth sufficient pam_wheel.so trust' line is commented out to prevent
-#  passwordless root access for wheel group members. All changes preserve
-#  existing indentation and only affect the targeted lines. If pam_wheel.so
-#  is already in the desired state or absent, no edits are made. Regardless
-#  of /etc/pam.d/su changes, the script truncates /etc/motd to empty if it
-#  exists. It is idempotent, meaning repeated runs will not cause redundant
-#  edits, and is implemented using only POSIX-compliant utilities without
-#  creating backups.
+#  This script adjusts the su PAM policy by enabling an intended
+#  'auth required pam_wheel.so' line if it is commented, and disabling an
+#  active 'auth sufficient pam_wheel.so trust' line to prevent passwordless
+#  root access for wheel group members. All changes preserve existing
+#  indentation and affect only those targeted lines. If both lines are already
+#  in the desired state or absent, no edits are made. Regardless of changes to
+#  /etc/pam.d/su, the script truncates /etc/motd to empty if it exists. It is
+#  idempotent and uses only POSIX-compliant utilities without creating backups.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -101,57 +99,46 @@ needs_edit() {
     sudo grep -Eq '^[[:space:]]*#.*pam_wheel\.so' "$PAM_FILE"
 }
 
-# Uncomment commented pam_wheel.so lines while preserving indentation
-uncomment_pam_wheel() {
-    tmp="/tmp/setup_pamd.su.$$"
-    # Read with sudo, write temp under /tmp as the current user, then sudo mv into place
-    sudo awk '
-/pam_wheel\.so/ {
-  if ($0 ~ /^[[:space:]]*#/) {
-    # Extract leading spaces and drop one leading "#" and a single optional space
-    m = match($0, /^[[:space:]]*/)
-    indent = substr($0, 1, RLENGTH)
+# Enable 'auth required pam_wheel.so' if commented
+enable_pam_wheel_required() {
+    if sudo grep -Eq '^[[:space:]]*#[[:space:]]*auth[[:space:]]+required[[:space:]]+pam_wheel\.so[[:space:]]*$' "$PAM_FILE"; then
+        tmp="/tmp/setup_pamd.required.$$"
+        sudo awk '
+/^[[:space:]]*#[[:space:]]*auth[[:space:]]+required[[:space:]]+pam_wheel\.so[[:space:]]*$/ {
+    m = match($0, /^[[:space:]]*/); indent = substr($0, 1, RLENGTH)
     rest = substr($0, RLENGTH + 1)
     if (substr(rest,1,1) == "#") {
-      rest = substr(rest, 2)
-      if (substr(rest,1,1) == " ") rest = substr(rest, 2)
+        rest = substr(rest, 2)
+        if (substr(rest,1,1) == " ") rest = substr(rest, 2)
     }
     print indent rest
     next
-  }
-  print
-  next
 }
 { print }
 ' "$PAM_FILE" > "$tmp" && sudo mv "$tmp" "$PAM_FILE"
-    echo "[INFO] Uncommented pam_wheel.so"
+        echo "[INFO] Enabled auth required pam_wheel.so"
+    else
+        echo "[INFO] auth required pam_wheel.so already enabled."
+    fi
 }
 
-# Comment out 'auth sufficient pam_wheel.so trust' if active
-comment_pam_wheel_trust() {
-    tmp="/tmp/setup_pamd.trust.$$"
-    sudo awk '
-/^[[:space:]]*auth[[:space:]]+sufficient[[:space:]]+pam_wheel\.so[[:space:]]+trust/ {
-    print "#" $0
+# Disable 'auth sufficient pam_wheel.so trust' if active
+disable_pam_wheel_trust() {
+    if sudo grep -Eq '^[[:space:]]*auth[[:space:]]+sufficient[[:space:]]+pam_wheel\.so[[:space:]]+trust([[:space:]]|$)' "$PAM_FILE"; then
+        tmp="/tmp/setup_pamd.trust.$$"
+        sudo awk '
+/^[[:space:]]*auth[[:space:]]+sufficient[[:space:]]+pam_wheel\.so[[:space:]]+trust([[:space:]]|$)/ {
+    m = match($0, /^[[:space:]]*/); indent = substr($0, 1, RLENGTH)
+    authpos = match($0, /auth[[:space:]]+sufficient[[:space:]]+pam_wheel\.so[[:space:]]+trust/)
+    rest = substr($0, authpos)
+    print indent "# " rest
     next
 }
 { print }
 ' "$PAM_FILE" > "$tmp" && sudo mv "$tmp" "$PAM_FILE"
-    echo "[INFO] Commented out auth sufficient pam_wheel.so trust"
-}
-
-# Setup /etc/pam.d/su
-setup_pamd() {
-    if needs_edit; then
-        uncomment_pam_wheel
+        echo "[INFO] Disabled auth sufficient pam_wheel.so trust"
     else
-        echo "[INFO] pam_wheel.so already active or not present."
-    fi
-
-    if sudo grep -Eq '^[[:space:]]*[^#][[:space:]]*auth[[:space:]]+sufficient[[:space:]]+pam_wheel\.so[[:space:]]+trust' "$PAM_FILE"; then
-        comment_pam_wheel_trust
-    else
-        echo "[INFO] pam_wheel.so trust already commented or not present."
+        echo "[INFO] pam_wheel.so trust already disabled."
     fi
 }
 
@@ -176,7 +163,8 @@ main() {
     check_pam_file
     check_sudo
 
-    setup_pamd
+    enable_pam_wheel_required
+    disable_pam_wheel_trust
     clear_motd
     return 0
 }
