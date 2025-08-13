@@ -35,7 +35,7 @@ v1.4.5 (2025-07-22)
 - Suppress git pull warning by explicitly setting rebase to false in dot_gitconfig.
 - Sort server list in server_alive_check output by ascending filename in server_alive_check.sh.
 - Unify usage semantics and simplify source-saving behavior across installer scripts.
-- Standardize Shell scripts comments to start with verbs instead of using 'Function to' phrasing.
+- Standardize comments in Shell scripts to start with verbs instead of using 'Function to' phrasing.
 - Reorder script headers to place usage and requirements before version history for improved readability.
 
 v1.4.4 (2025-06-26)
