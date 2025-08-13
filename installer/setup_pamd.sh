@@ -91,23 +91,35 @@ check_pam_file() {
     fi
 }
 
-# Decide if /etc/pam.d/su contains an active pam_wheel.so line
+# Decide if /etc/pam.d/su contains a commented pam_wheel.so line (needs uncomment)
 needs_edit() {
-    sudo grep -Eq '^[[:space:]]*[^#].*pam_wheel\.so' "$PAM_FILE"
+    sudo grep -Eq '^[[:space:]]*#.*pam_wheel\.so' "$PAM_FILE"
 }
 
-# Comment active pam_wheel.so lines while preserving indentation
-comment_pam_wheel() {
-    tmp="${PAM_FILE}.tmp.$$"
+# Uncomment commented pam_wheel.so lines while preserving indentation
+uncomment_pam_wheel() {
+    tmp="/tmp/setup_pamd.su.$$"
+    # Read with sudo, write temp under /tmp as the current user, then sudo mv into place
     sudo awk '
 /pam_wheel\.so/ {
-  if ($0 ~ /^[[:space:]]*#/) { print; next }
-  sub(/^[[:space:]]*/, "&# ")
-  print; next
+  if ($0 ~ /^[[:space:]]*#/) {
+    # Extract leading spaces and drop one leading "#" and a single optional space
+    m = match($0, /^[[:space:]]*/)
+    indent = substr($0, 1, RLENGTH)
+    rest = substr($0, RLENGTH + 1)
+    if (substr(rest,1,1) == "#") {
+      rest = substr(rest, 2)
+      if (substr(rest,1,1) == " ") rest = substr(rest, 2)
+    }
+    print indent rest
+    next
+  }
+  print
+  next
 }
 { print }
 ' "$PAM_FILE" > "$tmp" && sudo mv "$tmp" "$PAM_FILE"
-    echo "[INFO] Commented pam_wheel.so"
+    echo "[INFO] Uncommented pam_wheel.so"
 }
 
 # Truncate /etc/motd to an empty file if it exists
@@ -132,9 +144,9 @@ main() {
     check_sudo
 
     if needs_edit; then
-        comment_pam_wheel
+        uncomment_pam_wheel
     else
-        echo "[INFO] pam_wheel.so already commented or not present."
+        echo "[INFO] pam_wheel.so already active or not present."
     fi
 
     clear_motd
