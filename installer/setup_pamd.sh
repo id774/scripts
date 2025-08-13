@@ -1,16 +1,19 @@
 #!/bin/sh
 
 ########################################################################
-# setup_pamd.sh: Comment out pam_wheel.so in /etc/pam.d/su and clear /etc/motd
+# setup_pamd.sh: Manage pam_wheel.so settings in /etc/pam.d/su and clear /etc/motd
 #
 #  Description:
-#  This script enforces a safer su policy by checking /etc/pam.d/su for any
-#  active (uncommented) pam_wheel.so line and commenting it out when found,
-#  while preserving existing indentation. If pam_wheel.so is already commented
-#  or absent, the file is left untouched. Regardless of changes to /etc/pam.d/su,
-#  the script always truncates /etc/motd to empty. It is idempotent, meaning
-#  repeated runs will not cause redundant edits, and is implemented using only
-#  POSIX-compliant utilities without creating backups.
+#  This script adjusts the su PAM policy by ensuring that any commented
+#  pam_wheel.so line in /etc/pam.d/su is uncommented, while any active
+#  'auth sufficient pam_wheel.so trust' line is commented out to prevent
+#  passwordless root access for wheel group members. All changes preserve
+#  existing indentation and only affect the targeted lines. If pam_wheel.so
+#  is already in the desired state or absent, no edits are made. Regardless
+#  of /etc/pam.d/su changes, the script truncates /etc/motd to empty if it
+#  exists. It is idempotent, meaning repeated runs will not cause redundant
+#  edits, and is implemented using only POSIX-compliant utilities without
+#  creating backups.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -24,9 +27,11 @@
 #
 #  Notes:
 #  - No backups are created; edits are applied directly when needed.
-#  - Leading spaces in target lines are preserved; a "# " prefix is added only
-#    when the line is active.
-#  - /etc/motd is always emptied regardless of whether /etc/pam.d/su was modified.
+#  - Leading spaces in target lines are preserved; "# " is prefixed or removed
+#    only as required.
+#  - 'pam_wheel.so trust' is always commented out if active to avoid unintended
+#    passwordless root access for wheel group members.
+#  - /etc/motd is always emptied if it exists, regardless of /etc/pam.d/su edits.
 #  - Designed for Debian-family Linux systems where pam_wheel.so may appear
 #    in /etc/pam.d/su.
 #
