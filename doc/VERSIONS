@@ -6,6 +6,7 @@ v1.4.6 (Release Date: TBD)
 - Standardize all cron scripts to use /etc/cron.exec and /etc/cron.config.
 - Add --uninstall option to several installer scripts for clean removal.
 - Add kill-ring save file to Emacs cleanup targets in cltmp.sh.
+- Restrict su access to wheel group on Linux.
 - Add setup_aliases.sh to centralize local mail delivery and clean up user mail spools.
 - Add two display options to usershells.py for flexible output control.
 - Streamline log output in get_resources.sh by pruning redundant data collection.
