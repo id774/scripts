@@ -12,6 +12,7 @@ v1.4.6 (Release Date: TBD)
 - Enhanced server_alive_check.sh by handling VM hosts separately and adding gstat support on macOS.
 - Fix pattern matching in filter_history.sh by switching to fixed-string grep for safety.
 - Improve robustness of several utility scripts by adding argument validation, file safety checks, and error suppression.
+- Standardize case word quoting across all Shell scripts.
 - Review clamscan exclude list and standardize headers for config files under etc.
 - Refine Debian desktop setup in line with Debian 13 Trixie to standardize desktop environment configuration across systems.
 
@@ -34,7 +35,7 @@ v1.4.5 (2025-07-22)
 - Suppress git pull warning by explicitly setting rebase to false in dot_gitconfig.
 - Sort server list in server_alive_check output by ascending filename in server_alive_check.sh.
 - Unify usage semantics and simplify source-saving behavior across installer scripts.
-- Standardize shell script comments to start with verbs instead of using 'Function to' phrasing.
+- Standardize Shell scripts comments to start with verbs instead of using 'Function to' phrasing.
 - Reorder script headers to place usage and requirements before version history for improved readability.
 
 v1.4.4 (2025-06-26)
