@@ -155,10 +155,6 @@ install_dot_emacs() {
 
 # Install cryptographic tools
 install_crypt() {
-    #if ! command -v des >/dev/null 2>&1; then
-    #    "$SCRIPTS/installer/install_des.sh"
-    #fi
-
     if ! command -v truecrypt >/dev/null 2>&1; then
         "$SCRIPTS/installer/install_truecrypt.sh"
     fi
