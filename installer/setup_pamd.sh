@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# setup_pamd.sh: Manage pam_wheel.so settings in /etc/pam.d/su and clear /etc/motd
+# setup_pamd.sh: Manage pam_wheel.so settings in /etc/pam.d/su
 #
 #  Description:
 #  This script adjusts the su PAM policy by enabling an intended
@@ -9,8 +9,7 @@
 #  active 'auth sufficient pam_wheel.so trust' line to prevent passwordless
 #  root access for wheel group members. All changes preserve existing
 #  indentation and affect only those targeted lines. If both lines are already
-#  in the desired state or absent, no edits are made. Regardless of changes to
-#  /etc/pam.d/su, the script truncates /etc/motd to empty if it exists. It is
+#  in the desired state or absent, no edits are made. The script is
 #  idempotent and uses only POSIX-compliant utilities without creating backups.
 #
 #  Author: id774 (More info: http://id774.net)
@@ -29,13 +28,12 @@
 #    only as required.
 #  - 'pam_wheel.so trust' is always commented out if active to avoid unintended
 #    passwordless root access for wheel group members.
-#  - /etc/motd is always emptied if it exists, regardless of /etc/pam.d/su edits.
 #  - Designed for Debian-family Linux systems where pam_wheel.so may appear
 #    in /etc/pam.d/su.
 #
 #  Requirements:
 #  - Linux operating system (Debian/Ubuntu family recommended)
-#  - sudo privileges for modifying /etc/pam.d/su and /etc/motd
+#  - sudo privileges for modifying /etc/pam.d/su
 #  - Commands: sudo, awk, grep, mv, sh
 #
 #  Version History:
@@ -150,16 +148,6 @@ disable_pam_wheel_trust() {
     fi
 }
 
-# Truncate /etc/motd to an empty file if it exists
-clear_motd() {
-    if sudo test -f /etc/motd; then
-        sudo sh -c ': > /etc/motd'
-        echo "[INFO] Cleared /etc/motd"
-    else
-        echo "[INFO] /etc/motd not found. Skipping clear."
-    fi
-}
-
 # Main entry point of the script
 main() {
     case "$1" in
@@ -173,7 +161,6 @@ main() {
 
     enable_pam_wheel_required
     disable_pam_wheel_trust
-    clear_motd
     return 0
 }
 
