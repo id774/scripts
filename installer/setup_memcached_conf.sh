@@ -89,9 +89,13 @@ check_conf_file() {
     fi
 }
 
-# Detect if a non-commented "-l ::1" line exists
+# Detect if a non commented line starts with "-l ::1" even with trailing text
 has_ipv6_bind() {
-    sudo grep -Eq '^[[:space:]]*-l[[:space:]]+::1[[:space:]]*$' "$CONF_FILE"
+    sudo awk '
+        /^[[:space:]]*#/ { next }                    # skip commented lines
+        /^[[:space:]]*-l[[:space:]]+::1([[:space:]].*|$)/ { found=1; exit }
+        END { exit (found?0:1) }
+    ' "$CONF_FILE"
 }
 
 # Comment out the "-l ::1" line
@@ -99,10 +103,13 @@ comment_ipv6_bind() {
     if has_ipv6_bind; then
         tmp="/tmp/setup_memcached_conf.$$"
         sudo awk '
-            /^[[:space:]]*-l[[:space:]]+::1[[:space:]]*$/ {
-                m = match($0, /^[[:space:]]*/)
-                indent = substr($0, 1, RLENGTH)
-                print indent "# -l ::1"
+            # Leave already commented lines as is
+            /^[[:space:]]*#/ { print; next }
+            # Comment any line that starts with "-l ::1" while keeping indentation and the rest of the line
+            /^[[:space:]]*-l[[:space:]]+::1([[:space:]].*|$)/ {
+                m = match($0, /^[[:space:]]*/); indent = substr($0, 1, RLENGTH)
+                body = substr($0, RLENGTH + 1)
+                print indent "# " body
                 next
             }
             { print }
