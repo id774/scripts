@@ -77,17 +77,20 @@ check_sudo() {
     fi
 }
 
-# Clear /etc/motd if it exists
+# Clear /etc/motd with file type validation
 clear_motd() {
-    if sudo test -f "$MOTD_FILE"; then
-        if sudo sh -c ": > \"$MOTD_FILE\""; then
-            echo "[INFO] Cleared $MOTD_FILE"
-        else
-            echo "[ERROR] Failed to clear $MOTD_FILE" >&2
+    if [ -f "$MOTD_FILE" ]; then
+        if ! sudo sh -c ": > \"$MOTD_FILE\""; then
+            echo "[ERROR] Failed to clear $MOTD_FILE." >&2
             exit 1
         fi
+        echo "[INFO] Setup completed."
+    elif [ -d "$MOTD_FILE" ]; then
+        echo "[ERROR] $MOTD_FILE is a directory, no changes were made." >&2
+        exit 1
     else
-        echo "[INFO] $MOTD_FILE not found. No action taken."
+        echo "[ERROR] $MOTD_FILE does not exist as a file or directory." >&2
+        exit 1
     fi
 }
 
