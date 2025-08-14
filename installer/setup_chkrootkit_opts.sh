@@ -4,13 +4,15 @@
 # setup_chkrootkit_opts.sh: Ensure quiet mode for daily chkrootkit runs
 #
 #  Description:
-#  This script inspects the /etc/cron.daily/chkrootkit file for an empty
-#  RUN_DAILY_OPTS setting (RUN_DAILY_OPTS="") and replaces it with
-#  RUN_DAILY_OPTS="-q" to enable quiet mode. This prevents chkrootkit from
-#  sending daily emails when no infections are found. The change preserves
-#  file permissions, affects only the targeted line, and is idempotent.
-#  If the setting is already configured with "-q" or another non-empty value,
-#  no edits are made.
+#  This script inspects the /etc/chkrootkit/chkrootkit.conf file first,
+#  and if not present or not containing an empty RUN_DAILY_OPTS setting,
+#  falls back to checking /etc/cron.daily/chkrootkit. If an empty
+#  RUN_DAILY_OPTS assignment (RUN_DAILY_OPTS="") is found, it is replaced
+#  with RUN_DAILY_OPTS="-q" to enable quiet mode. This prevents chkrootkit
+#  from sending daily emails when no infections are found. The change
+#  preserves file permissions, affects only the targeted line, and is
+#  idempotent. If the setting is already configured with "-q" or another
+#  non-empty value, no edits are made.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -24,21 +26,25 @@
 #
 #  Notes:
 #  - No backups are created; edits are applied directly when needed.
-#  - Only the exact empty assignment RUN_DAILY_OPTS="" is replaced.
+#  - Both config and cron.daily scripts are supported; config is preferred.
 #  - The script preserves the rest of the file unmodified.
 #  - Designed for Debian-family Linux systems with chkrootkit installed.
 #
 #  Requirements:
 #  - Linux operating system (Debian/Ubuntu family recommended)
-#  - sudo privileges for modifying /etc/cron.daily/chkrootkit
+#  - sudo privileges for modifying chkrootkit config or cron.daily
 #  - Commands: sudo, awk, grep, mv, sh
 #
 #  Version History:
 #  v1.0 2025-08-14
 #       Initial release.
+#  v1.1 2025-08-14
+#       Support editing /etc/chkrootkit/chkrootkit.conf before cron.daily
 #
 ########################################################################
 
+# Primary and fallback targets
+CONFIG_FILE="/etc/chkrootkit/chkrootkit.conf"
 CRON_FILE="/etc/cron.daily/chkrootkit"
 
 # Display full script header information extracted from the top comment block
@@ -81,34 +87,56 @@ check_sudo() {
     fi
 }
 
-# Confirm /etc/cron.daily/chkrootkit exists
-check_cron_file() {
-    if ! sudo test -f "$CRON_FILE"; then
-        echo "[ERROR] $CRON_FILE not found." >&2
-        exit 1
+# Ensure at least one target file exists
+check_targets() {
+    if sudo test -f "$CONFIG_FILE"; then
+        return 0
     fi
+    if sudo test -f "$CRON_FILE"; then
+        return 0
+    fi
+    echo "[ERROR] Neither $CONFIG_FILE nor $CRON_FILE found." >&2
+    exit 1
 }
 
-# Detect if RUN_DAILY_OPTS is set to empty (allow spaces and trailing comments)
-has_empty_run_opts() {
-    sudo grep -Eq '^[[:space:]]*RUN_DAILY_OPTS[[:space:]]*=[[:space:]]*""([[:space:]]*(#.*)?)?$' "$CRON_FILE"
+# Select target file that needs change; echo its path or nothing
+select_target_file() {
+    # pattern: allow spaces and trailing comments; no value inside quotes
+    pat='^[[:space:]]*RUN_DAILY_OPTS[[:space:]]*=[[:space:]]*""([[:space:]]*(#.*)?)?$'
+    if sudo test -f "$CONFIG_FILE"; then
+        if sudo grep -Eq "$pat" "$CONFIG_FILE"; then
+            echo "$CONFIG_FILE"
+            return 0
+        fi
+    fi
+    if sudo test -f "$CRON_FILE"; then
+        if sudo grep -Eq "$pat" "$CRON_FILE"; then
+            echo "$CRON_FILE"
+            return 0
+        fi
+    fi
+    echo ""
+    return 1
 }
 
-# Replace empty RUN_DAILY_OPTS with "-q" (normalize spaces, keep trailing comments)
+# Replace empty RUN_DAILY_OPTS with "-q" in the selected file
 replace_run_opts() {
-    if has_empty_run_opts; then
+    target="$(select_target_file)"
+    if [ -n "$target" ]; then
         tmp="/tmp/setup_chkrootkit_opts.$$"
         sudo awk '
+            # Strip trailing CR if present (CRLF files)
+            { sub(/\r$/, "") }
+            # Replace only the empty assignment; keep any trailing comment
             /^[[:space:]]*RUN_DAILY_OPTS([[:space:]]*)=([[:space:]]*)""([[:space:]]*(#.*)?)?$/ {
-                # Replace only the empty assignment; keep any trailing comment.
-                sub(/RUN_DAILY_OPTS[[:space:]]*=[[:space:]]*""/, "RUN_DAILY_OPTS=\"-q\"")
+                sub(/=[[:space:]]*""/, "=\"-q\"")
             }
             { print }
-        ' "$CRON_FILE" > "$tmp" && sudo mv "$tmp" "$CRON_FILE"
-        echo "[INFO] Updated RUN_DAILY_OPTS to \"-q\" in $CRON_FILE"
-    else
-        echo "[INFO] RUN_DAILY_OPTS is already set. No changes made."
+        ' "$target" > "$tmp" && sudo mv "$tmp" "$target"
+        echo "[INFO] Updated RUN_DAILY_OPTS to \"-q\" in $target"
+        return 0
     fi
+    echo "[INFO] RUN_DAILY_OPTS is already set. No changes made."
 }
 
 # Main entry point of the script
@@ -120,7 +148,7 @@ main() {
     check_system
     check_commands grep mv awk
     check_sudo
-    check_cron_file
+    check_targets
 
     replace_run_opts
     return 0
