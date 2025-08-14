@@ -191,14 +191,6 @@ setup_clamscan() {
     "$SCRIPTS/installer/disable_freshclam_syslog.sh"
 }
 
-setup_crontab() {
-    "$SCRIPTS/installer/setup_crontab.sh"
-}
-
-setup_iptables() {
-    "$SCRIPTS/installer/setup_iptables.sh"
-}
-
 setup_munin() {
     test -d "$HOME/local/github" || mkdir -p "$HOME/local/github"
     cd "$HOME/local/github" || exit 1
@@ -217,16 +209,14 @@ setup_munin() {
     "$SCRIPTS/installer/install_munin.sh"
 }
 
-setup_aliases() {
+setup_config_files() {
+    "$SCRIPTS/installer/setup_iptables.sh"
+    "$SCRIPTS/installer/setup_crontab.sh"
     "$SCRIPTS/installer/setup_aliases.sh"
-}
-
-setup_pamd() {
     "$SCRIPTS/installer/setup_pamd.sh"
-}
-
-setup_securetty() {
+    "$SCRIPTS/installer/setup_chkrootkit_opts.sh"
     "$SCRIPTS/installer/securetty.sh"
+    "$SCRIPTS/installer/setup_motd.sh"
 }
 
 setup_dot_ipython() {
@@ -274,12 +264,8 @@ main() {
     setup_get_resources
     setup_chkrootkit
     setup_clamscan
-    setup_crontab
-    setup_iptables
     setup_munin
-    setup_aliases
-    setup_pamd
-    setup_securetty
+    setup_config_files
     setup_dot_ipython
     set_permissions
     configure_sysctl
