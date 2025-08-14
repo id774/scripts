@@ -80,7 +80,7 @@ check_sudo() {
 # Clear /etc/motd if it exists
 clear_motd() {
     if sudo test -f "$MOTD_FILE"; then
-        if sudo sh -c ': > "$MOTD_FILE"'; then
+        if sudo sh -c ": > \"$MOTD_FILE\""; then
             echo "[INFO] Cleared $MOTD_FILE"
         else
             echo "[ERROR] Failed to clear $MOTD_FILE" >&2
