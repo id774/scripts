@@ -94,14 +94,22 @@ check_pam_file() {
     fi
 }
 
-# Decide if /etc/pam.d/su contains a commented pam_wheel.so line (needs uncomment)
-needs_edit() {
-    sudo grep -Eq '^[[:space:]]*#.*pam_wheel\.so' "$PAM_FILE"
+# Predicates to keep if conditions short and readable
+has_commented_required() {
+    sudo grep -Eq \
+        '^[[:space:]]*#[[:space:]]*auth[[:space:]]+required[[:space:]]+pam_wheel\.so[[:space:]]*$' \
+        "$PAM_FILE"
+}
+
+has_active_trust() {
+    sudo grep -Eq \
+        '^[[:space:]]*auth[[:space:]]+sufficient[[:space:]]+pam_wheel\.so[[:space:]]+trust([[:space:]]|$)' \
+        "$PAM_FILE"
 }
 
 # Enable 'auth required pam_wheel.so' if commented
 enable_pam_wheel_required() {
-    if sudo grep -Eq '^[[:space:]]*#[[:space:]]*auth[[:space:]]+required[[:space:]]+pam_wheel\.so[[:space:]]*$' "$PAM_FILE"; then
+    if has_commented_required; then
         tmp="/tmp/setup_pamd.required.$$"
         sudo awk '
 /^[[:space:]]*#[[:space:]]*auth[[:space:]]+required[[:space:]]+pam_wheel\.so[[:space:]]*$/ {
@@ -124,7 +132,7 @@ enable_pam_wheel_required() {
 
 # Disable 'auth sufficient pam_wheel.so trust' if active
 disable_pam_wheel_trust() {
-    if sudo grep -Eq '^[[:space:]]*auth[[:space:]]+sufficient[[:space:]]+pam_wheel\.so[[:space:]]+trust([[:space:]]|$)' "$PAM_FILE"; then
+    if has_active_trust; then
         tmp="/tmp/setup_pamd.trust.$$"
         sudo awk '
 /^[[:space:]]*auth[[:space:]]+sufficient[[:space:]]+pam_wheel\.so[[:space:]]+trust([[:space:]]|$)/ {
@@ -160,8 +168,8 @@ main() {
 
     check_system
     check_commands grep mv awk
-    check_pam_file
     check_sudo
+    check_pam_file
 
     enable_pam_wheel_required
     disable_pam_wheel_trust
