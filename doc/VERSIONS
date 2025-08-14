@@ -7,7 +7,7 @@ v1.4.6 (Release Date: TBD)
 - Add --uninstall option to several installer scripts for clean removal.
 - Add kill-ring save file to Emacs cleanup targets in cltmp.sh.
 - Enforce existing su access restriction to the wheel group on Linux for idempotence.
-- Add setup_aliases.sh to centralize local mail delivery and clean up user mail spools.
+- Add new config setup scripts and unify their calls in debian_setup.sh.
 - Add two display options to usershells.py for flexible output control.
 - Streamline log output in get_resources.sh by pruning redundant data collection.
 - Enhanced server_alive_check.sh by handling VM hosts separately and adding gstat support on macOS.
