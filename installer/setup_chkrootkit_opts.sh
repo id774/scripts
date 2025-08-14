@@ -89,21 +89,22 @@ check_cron_file() {
     fi
 }
 
-# Detect if RUN_DAILY_OPTS is set to empty
+# Detect if RUN_DAILY_OPTS is set to empty (allow spaces and trailing comments)
 has_empty_run_opts() {
-    sudo grep -Eq '^[[:space:]]*RUN_DAILY_OPTS=""[[:space:]]*$' "$CRON_FILE"
+    sudo grep -Eq '^[[:space:]]*RUN_DAILY_OPTS[[:space:]]*=[[:space:]]*""([[:space:]]*(#.*)?)?$' "$CRON_FILE"
 }
 
-# Replace empty RUN_DAILY_OPTS with "-q"
+# Replace empty RUN_DAILY_OPTS with "-q" (normalize spaces, keep trailing comments)
 replace_run_opts() {
     if has_empty_run_opts; then
         tmp="/tmp/setup_chkrootkit_opts.$$"
         sudo awk '
-/^[[:space:]]*RUN_DAILY_OPTS=""/ {
-    sub(/RUN_DAILY_OPTS=""/, "RUN_DAILY_OPTS=\"-q\"")
-}
-{ print }
-' "$CRON_FILE" > "$tmp" && sudo mv "$tmp" "$CRON_FILE"
+            /^[[:space:]]*RUN_DAILY_OPTS([[:space:]]*)=([[:space:]]*)""([[:space:]]*(#.*)?)?$/ {
+                # Replace only the empty assignment; keep any trailing comment.
+                sub(/RUN_DAILY_OPTS[[:space:]]*=[[:space:]]*""/, "RUN_DAILY_OPTS=\"-q\"")
+            }
+            { print }
+        ' "$CRON_FILE" > "$tmp" && sudo mv "$tmp" "$CRON_FILE"
         echo "[INFO] Updated RUN_DAILY_OPTS to \"-q\" in $CRON_FILE"
     else
         echo "[INFO] RUN_DAILY_OPTS is already set. No changes made."
