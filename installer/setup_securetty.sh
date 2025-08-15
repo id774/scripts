@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# securetty.sh: Script to Clear /etc/securetty for Unrestricted Root Access
+# setup_securetty.sh: Script to Clear /etc/securetty for Unrestricted Root Access
 #
 #  Description:
 #  This script checks if /etc/securetty is a regular file and clears its content
@@ -15,7 +15,7 @@
 #
 #  Usage:
 #  Run the script without any arguments:
-#      ./securetty.sh
+#      ./setup_securetty.sh
 #
 #  Warning:
 #  Using this script can decrease system security by allowing root access from any

@@ -206,15 +206,20 @@ setup_munin() {
 }
 
 setup_config_files() {
+    # Security hardening
     "$SCRIPTS/installer/setup_iptables.sh"
-    "$SCRIPTS/installer/setup_crontab.sh"
-    "$SCRIPTS/installer/setup_aliases.sh"
     "$SCRIPTS/installer/setup_pamd.sh"
-    "$SCRIPTS/installer/securetty.sh"
-    "$SCRIPTS/installer/setup_motd.sh"
+    "$SCRIPTS/installer/setup_securetty.sh"
     "$SCRIPTS/installer/setup_rsyslog_cron.sh"
     "$SCRIPTS/installer/setup_chkrootkit_opts.sh"
+
+    # System services and daemons
     "$SCRIPTS/installer/setup_memcached_conf.sh"
+
+    # User environment and utilities
+    "$SCRIPTS/installer/setup_crontab.sh"
+    "$SCRIPTS/installer/setup_aliases.sh"
+    "$SCRIPTS/installer/setup_motd.sh"
 }
 
 setup_dot_ipython() {
