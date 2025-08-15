@@ -174,6 +174,17 @@ validate_and_restart() {
     echo "[INFO] rsyslog restarted"
 }
 
+# Decide whether to deploy and restart based on existing configs
+maybe_deploy_and_restart() {
+    if has_cron_none; then
+        echo "[INFO] Existing config already excludes cron from syslog (cron.none found)."
+        echo "[INFO] Skipping deployment of $TARGET_FILE."
+        return 0
+    fi
+    deploy_conf
+    validate_and_restart
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
@@ -187,14 +198,7 @@ main() {
     check_source_file
     check_target_dir
 
-    if has_cron_none; then
-        echo "[INFO] Existing config already excludes cron from syslog (cron.none found)."
-        echo "[INFO] Skipping deployment of $TARGET_FILE."
-    else
-        deploy_conf
-        validate_and_restart
-    fi
-
+    maybe_deploy_and_restart
     return 0
 }
 
