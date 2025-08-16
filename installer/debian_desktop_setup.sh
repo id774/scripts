@@ -259,6 +259,36 @@ install_xfce4_terminal_profile() {
     echo "[INFO] xfce4-terminal profile installed"
 }
 
+# Install autostart entry to load Xmodmap at login
+install_xmodmap_autostart() {
+    dst="$HOME/.config/autostart"
+    src="$SCRIPTS/dot_files/dot_config/autostart/xmodmap.desktop"
+
+    if [ ! -r "$src" ]; then
+        echo "[ERROR] xmodmap.desktop not found: $src" >&2
+        exit 1
+    fi
+
+    echo "[INFO] Installing xmodmap autostart entry to $dst"
+    if ! mkdir -p "$dst"; then
+        echo "[ERROR] Failed to create directory: $dst" >&2
+        exit 1
+    fi
+
+    if ! cp "$src" "$dst/"; then
+        echo "[ERROR] Failed to copy xmodmap.desktop to $dst" >&2
+        exit 1
+    fi
+
+    # Ensure readable permissions for .desktop entry
+    if ! chmod 0644 "$dst/xmodmap.desktop"; then
+        echo "[ERROR] Failed to set permissions on $dst/xmodmap.desktop" >&2
+        exit 1
+    fi
+
+    echo "[INFO] xmodmap autostart entry installed"
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
@@ -276,6 +306,7 @@ main() {
     apply_lock_settings
     apply_dark_mode_settings
     install_xfce4_terminal_profile
+    install_xmodmap_autostart
     import_gnome_keybindings
 
     echo "[INFO] GNOME settings have been updated successfully."
