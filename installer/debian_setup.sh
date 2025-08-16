@@ -33,6 +33,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v1.5 2025-08-16
+#       Add safe_link helper and replace non-POSIX `ln -snf` with safe symlink creation.
+#       Update check_commands to include chsh and mkdir.
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.3 2025-04-13
@@ -102,6 +105,18 @@ check_sudo() {
     fi
 }
 
+# Create safe symlink; $1: target, $2: linkpath
+safe_link() {
+    tgt="$1"; link="$2"
+    if [ -L "$link" ] || [ -f "$link" ]; then
+        rm -f "$link" || { echo "[ERROR] Failed to remove $link" >&2; exit 1; }
+    elif [ -d "$link" ]; then
+        echo "[ERROR] $link is a directory; aborting to avoid destructive removal" >&2
+        exit 1
+    fi
+    ln -s "$tgt" "$link" || { echo "[ERROR] Failed to create symlink $link -> $tgt" >&2; exit 1; }
+}
+
 # Set zsh as the default shell for the user and root
 set_zsh_to_default() {
     if [ "$(getent passwd "$USER" | cut -d: -f7)" != "/bin/zsh" ]; then
@@ -132,7 +147,7 @@ install_dot_zsh() {
     fi
 
     cd "$HOME/local/github/dot_zsh" || exit 1
-    ln -snf "$HOME/local/github/dot_zsh" "$HOME/dot_zsh"
+    safe_link "$HOME/local/github/dot_zsh" "$HOME/dot_zsh"
     "$HOME/local/github/dot_zsh/install_dotzsh.sh"
 }
 
@@ -148,7 +163,7 @@ install_dot_emacs() {
         cd "$HOME/local/github" || exit 1
         git clone https://github.com/id774/dot_emacs.git
         cd || exit 1
-        ln -snf "$HOME/local/github/dot_emacs" "$HOME/dot_emacs"
+        safe_link "$HOME/local/github/dot_emacs" "$HOME/dot_emacs"
         "$HOME/local/github/dot_emacs/install_dotemacs.sh"
     fi
 }
@@ -199,7 +214,7 @@ setup_munin() {
             git pull
         fi
     fi
-    ln -snf "$HOME/local/github/munin-plugins" "$HOME/munin-plugins"
+    safe_link "$HOME/local/github/munin-plugins" "$HOME/munin-plugins"
     "$HOME/local/github/munin-plugins/install_process_monitoring.sh"
 
     "$SCRIPTS/installer/install_munin.sh"
@@ -241,9 +256,7 @@ configure_sysctl() {
 
 # Erase history files
 erase_history() {
-    sudo rm -vf "$HOME/.bash_history"
-    sudo rm -vf "$HOME/.mysql_history"
-    sudo rm -vf "$HOME/.viminfo"
+    rm -vf "$HOME/.bash_history"
 }
 
 # Main entry point of the script
@@ -254,7 +267,7 @@ main() {
 
     check_system
     setup_environment
-    check_commands sudo zsh git cut getent ln rm chown
+    check_commands sudo zsh git cut getent ln rm chown chsh mkdir
     check_sudo
     set_zsh_to_default
     install_dot_files
