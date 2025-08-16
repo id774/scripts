@@ -297,7 +297,7 @@ main() {
 
     check_system
     check_scripts
-    check_commands gsettings dconf mkdir cp awk
+    check_commands gsettings dconf mkdir cp awk chmod uname grep ls wc tr
     check_session_bus
     check_desktop_installed
 
