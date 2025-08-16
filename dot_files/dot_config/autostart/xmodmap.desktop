@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Load Xmodmap
+Exec=/bin/sh -lc 'sleep 3; /usr/bin/xmodmap "$HOME/.Xmodmap"'
+X-GNOME-Autostart-Delay=3
+OnlyShowIn=GNOME-Flashback;
+X-GNOME-Autostart-enabled=true
