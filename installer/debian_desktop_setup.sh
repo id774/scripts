@@ -319,9 +319,9 @@ main() {
 
     check_system
     check_scripts
-    check_commands gsettings dconf mkdir cp awk chmod uname grep ls wc tr
     check_session_bus
     check_desktop_installed
+    check_commands gsettings dconf mkdir cp awk chmod uname grep ls wc tr
 
     apply_media_handling_settings
     apply_ui_settings
