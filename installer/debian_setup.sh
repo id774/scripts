@@ -105,16 +105,40 @@ check_sudo() {
     fi
 }
 
-# Create safe symlink; $1: target, $2: linkpath
+# Create safe symlink; $1: source, $2: linkpath
 safe_symlink() {
-    tgt="$1"; link="$2"
-    if [ -L "$link" ] || [ -f "$link" ]; then
-        rm -f "$link" || { echo "[ERROR] Failed to remove $link" >&2; exit 1; }
-    elif [ -d "$link" ]; then
-        echo "[ERROR] $link is a directory; aborting to avoid destructive removal" >&2
-        exit 1
+    src="$1"; link="$2"
+
+    # Require source
+    if [ ! -e "$src" ]; then
+        echo "[INFO] Source not found, skip: $src"
+        return 0
     fi
-    ln -s "$tgt" "$link" || { echo "[ERROR] Failed to create symlink $link -> $tgt" >&2; exit 1; }
+
+    # Fast path if readlink exists and already correct
+    if command -v readlink >/dev/null 2>&1 && [ -L "$link" ]; then
+        tgt="$(readlink "$link" 2>/dev/null || echo)"
+        if [ "$tgt" = "$src" ]; then
+            echo "[INFO] Unchanged: $link -> $src"
+            return 0
+        fi
+    fi
+
+    # Remove existing file or symlink; never remove directories
+    if [ -L "$link" ] || [ -f "$link" ]; then
+        ${SUDO:-} rm -f "$link" || { echo "[ERROR] Failed to remove $link" >&2; return 1; }
+    elif [ -d "$link" ]; then
+        echo "[WARN] $link is a directory; aborting to avoid destructive removal" >&2
+        return 1
+    fi
+
+    # Create symlink
+    if ${SUDO:-} ln -s "$src" "$link"; then
+        echo "[INFO] Linked $link -> $src"
+    else
+        echo "[WARN] Failed to create symlink $link -> $src" >&2
+        return 1
+    fi
 }
 
 # Set zsh as the default shell for the user and root
