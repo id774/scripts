@@ -34,7 +34,7 @@
 #
 #  Version History:
 #  v1.5 2025-08-16
-#       Add safe_link helper and replace non-POSIX `ln -snf` with safe symlink creation.
+#       Add safe_symlink helper and replace non-POSIX `ln -snf` with safe symlink creation.
 #       Update check_commands to include chsh and mkdir.
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
@@ -106,7 +106,7 @@ check_sudo() {
 }
 
 # Create safe symlink; $1: target, $2: linkpath
-safe_link() {
+safe_symlink() {
     tgt="$1"; link="$2"
     if [ -L "$link" ] || [ -f "$link" ]; then
         rm -f "$link" || { echo "[ERROR] Failed to remove $link" >&2; exit 1; }
@@ -147,7 +147,7 @@ install_dot_zsh() {
     fi
 
     cd "$HOME/local/github/dot_zsh" || exit 1
-    safe_link "$HOME/local/github/dot_zsh" "$HOME/dot_zsh"
+    safe_symlink "$HOME/local/github/dot_zsh" "$HOME/dot_zsh"
     "$HOME/local/github/dot_zsh/install_dotzsh.sh"
 }
 
@@ -163,7 +163,7 @@ install_dot_emacs() {
         cd "$HOME/local/github" || exit 1
         git clone https://github.com/id774/dot_emacs.git
         cd || exit 1
-        safe_link "$HOME/local/github/dot_emacs" "$HOME/dot_emacs"
+        safe_symlink "$HOME/local/github/dot_emacs" "$HOME/dot_emacs"
         "$HOME/local/github/dot_emacs/install_dotemacs.sh"
     fi
 }
@@ -214,7 +214,7 @@ setup_munin() {
             git pull
         fi
     fi
-    safe_link "$HOME/local/github/munin-plugins" "$HOME/munin-plugins"
+    safe_symlink "$HOME/local/github/munin-plugins" "$HOME/munin-plugins"
     "$HOME/local/github/munin-plugins/install_process_monitoring.sh"
 
     "$SCRIPTS/installer/install_munin.sh"
