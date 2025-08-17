@@ -9,6 +9,7 @@
 #    - Hide desktop icons
 #    - Set fixed number of workspaces
 #    - Disable screen auto lock and idle blank
+#    - Set keyboard repeat to high-sensitivity defaults
 #    - Enable dark mode when supported
 #    - Import keyboard shortcuts and WM keybindings via dconf
 #    - Install xfce4-terminal profile used in Flashback session
@@ -192,6 +193,27 @@ apply_dark_mode_settings() {
     # gsettings_settings org.gnome.desktop.interface icon-theme Adwaita
 }
 
+# Apply keyboard repeat settings (high sensitivity)
+apply_keyboard_repeat_settings() {
+    # Allow override via environment variables (milliseconds)
+    #   KEY_REPEAT_DELAY_MS: time before repeat starts (default 200)
+    #   KEY_REPEAT_INTERVAL_MS: interval between repeats (default 25)
+    delay="${KEY_REPEAT_DELAY_MS:-200}"
+    interval="${KEY_REPEAT_INTERVAL_MS:-25}"
+
+    case "$delay" in
+        *[!0-9]*|'') echo "[ERROR] Invalid delay ms: $delay" >&2; exit 1 ;;
+    esac
+    case "$interval" in
+        *[!0-9]*|'') echo "[ERROR] Invalid repeat interval ms: $interval" >&2; exit 1 ;;
+    esac
+
+    # Enable repeat and set timings
+    gsettings_settings org.gnome.desktop.peripherals.keyboard repeat true
+    gsettings_settings org.gnome.desktop.peripherals.keyboard delay "uint32 $delay"
+    gsettings_settings org.gnome.desktop.peripherals.keyboard repeat-interval "uint32 $interval"
+}
+
 # ----- dconf helpers -----------------------------------------------------
 
 # Load dconf subtree from file and verify
@@ -305,6 +327,7 @@ main() {
     apply_ui_settings
     apply_lock_settings
     apply_dark_mode_settings
+    apply_keyboard_repeat_settings
     install_xfce4_terminal_profile
     install_xmodmap_autostart
     import_gnome_keybindings
