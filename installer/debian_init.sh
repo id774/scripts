@@ -123,7 +123,7 @@ confirm_execution() {
     read -r response < /dev/tty
 
     case "$response" in
-        y|Y) return 0 ;;
+        y|Y|yes|YES) return 0 ;;
         *) echo "[ERROR] Aborted by user."; exit 1 ;;
     esac
 }
