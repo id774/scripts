@@ -311,6 +311,25 @@ install_xmodmap_autostart() {
     echo "[INFO] xmodmap autostart entry installed"
 }
 
+# Ask user whether to reset gnome-panel
+reset_gnome_panel() {
+    printf "[INFO] Do you want to reset gnome-panel? [y/N]: "
+    read -r response < /dev/tty
+
+    case "$response" in
+        y|Y|yes|YES)
+            echo "[INFO] Resetting gnome-panel..."
+            dconf reset -f /org/gnome/gnome-panel/ || {
+                echo "[ERROR] Failed to reset gnome-panel." >&2
+                exit 1
+            }
+            ;;
+        *)
+            echo "[INFO] Skip reset."
+            ;;
+    esac
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
@@ -331,6 +350,7 @@ main() {
     install_xfce4_terminal_profile
     install_xmodmap_autostart
     import_gnome_keybindings
+    reset_gnome_panel
 
     echo "[INFO] GNOME settings have been updated successfully."
     return 0
