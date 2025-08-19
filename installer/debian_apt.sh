@@ -4,9 +4,46 @@
 # debian_apt.sh: Bulk Apt Install Script for Debian
 #
 #  Description:
-#  This script automates the installation of various packages on Debian-based systems.
-#  It groups packages by category and only installs those that are not already present,
-#  making the setup process efficient and tailored to the system's needs.
+#  Install and update software on Debian-based systems, grouped by purpose.
+#  Package categories (representative examples):
+#    - Base tools and editors:
+#        * vim, zsh, screen, w3m/lynx, curl/wget, OpenSSH server, rsync
+#        * Archivers and utils: tar/zip/gzip/unzip/bzip2/unar/p7zip
+#    - Build and debugging toolchain:
+#        * build-essential, gcc/g++/make, gdb/cgdb, valgrind, strace/ltrace, scons
+#        * C/C++ testing/profiling: CUnit, GoogleTest, gperftools, doxygen
+#    - System and networking utilities:
+#        * rsyslog, ntpsec, keychain, fail2ban, locales/nkf, mailutils/mutt/postfix
+#        * tree/sharutils, dnsutils/ethtool/wakeonlan, autossh/sshfs/cifs-utils
+#        * exFAT support (exfat-fuse, exfat-utils), xdelta, openmpi-bin, jq
+#        * diagnostics and monitoring: sysstat/dstat/lm-sensors/smartmontools/needrestart/hddtemp
+#        * security/AV: clamav, chkrootkit
+#        * network tools: arp-scan, nmap, tcpdump, iperf, wvdial
+#        * docs and pkg tools: manpages-ja(-dev), aptitude, libfuse2t64, lshw, acpi, pwgen, vrms
+#    - Debian packaging toolchain:
+#        * dpkg-dev, lintian, debhelper, equivs, cvs-buildpackage, dupload, fakeroot
+#        * devscripts, debget, dh-make, apt-file, software-properties-common, libgtk2.0-dev, bittorrent
+#    - Editors and TeX stack:
+#        * Emacs/ESS/Mew、Neovim、Vim runtime、colordiff、ctags
+#        * TeX/LaTeX: texlive-lang-cjk, texlive-latex-base, dvipng, texinfo
+#        * Image tools and libs: ImageMagick, libmagickcore-dev, libmagickwand-dev, ca-certificates
+#        * w3m-el-snapshot, w3m-img
+#    - EXIF and image metadata:
+#        * exif, exiftool (libimage-exiftool-perl), jhead
+#    - Programming languages and libs:
+#        * nasm, Gauche(+dev), CLISP(+dev), Scheme48(+EL), GNU Smalltalk, Scala
+#        * R (r-base, r-base-dev), GHC/Haskell, cabal-install, global, markdown
+#        * Graphviz(+dev), GSL(+dev), libpng-dev（含む 12/16 系）、shunit2, pandoc, libyaml-dev
+#    - Source control:
+#        * Subversion, Mercurial, Git
+#    - Databases and storage:
+#        * memcached
+#        * SQLite: sqlite3, libsqlite3-(0|dev)
+#    - Optional extras and dev headers:
+#        * gnuserv, libxml2(+dev), libxslt(+dev), expat, OpenSSL dev, curl dev, APR(+util) dev, gpcl-dev
+#
+#  The script also performs apt-get update/upgrade, autoclean, and autoremove
+#  before grouped installs to keep the system current and lean.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -133,18 +170,6 @@ exif_tools() {
     smart_apt exif libimage-exiftool-perl jhead
 }
 
-# KVM virtualization
-kvm() {
-    if grep -qE '^flags.*(vmx|svm)' /proc/cpuinfo; then
-        smart_apt kvm libvirt-bin python-libvirt qemu
-    fi
-}
-
-# Xvfb and related packages
-xvfb_packages() {
-    smart_apt xvfb fluxbox x11vnc
-}
-
 # Programming languages and libraries
 lang_packages() {
     smart_apt nasm gauche gauche-dev clisp clisp-dev libboost-dev scheme48 cmuscheme48-el \
@@ -161,11 +186,6 @@ scm_packages() {
 # Database packages
 db_packages() {
     smart_apt memcached
-}
-
-# Samba networking
-samba_packages() {
-    smart_apt samba cifs-utils smbclient
 }
 
 # SQLite packages
@@ -195,12 +215,9 @@ main() {
     debian_developer_tools
     editor_packages
     exif_tools
-    # kvm  # Uncomment if KVM support is desired and compatible
-    # xvfb_packages  # Uncomment if Xvfb support is needed
     lang_packages
     scm_packages
     db_packages
-    # samba_packages
     sqlite_packages
     optional_packages
     # Further package groups can be added here as needed
