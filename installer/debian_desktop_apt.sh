@@ -4,10 +4,36 @@
 # debian_desktop_apt.sh: Bulk Apt Install Script for Debian Desktop
 #
 #  Description:
-#  This script automates the installation of various packages for a Debian
-#  desktop environment. It is designed to efficiently install a set of
-#  pre-defined packages, ensuring that only the necessary packages are
-#  installed and avoiding redundant installations.
+#  Install and update desktop software on Debian-based systems, grouped by purpose.
+#  Package categories (representative examples):
+#    - Desktop environment:
+#        * Xfce components and themes: xfwm4, xfwm4-themes, xfce4-goodies, xfce4-terminal
+#        * GNOME themes: gnome-themes, gnome-themes-extras
+#    - Japanese input method:
+#        * fcitx5, fcitx5-mozc, fcitx5-config-qt, fcitx5-configtool
+#    - Fonts:
+#        * xfonts-mplus, xfonts-shinonome, ttf-bitstream-vera, fonts-vlgothic, fonts-ipafont
+#    - GUI package managers:
+#        * synaptic, gdebi
+#    - Multimedia codecs:
+#        * gstreamer1.0-libav
+#        * (optional) proprietary codecs or extras as needed
+#    - Icon and artwork themes:
+#        * ubuntu-artwork, xubuntu-artwork, human-icon-theme
+#    - Desktop configuration tools:
+#        * dconf-cli, gnome-tweaks
+#    - Utilities:
+#        * ranger, atool, highlight, caca-utils, w3m, poppler-utils, mediainfo
+#    - Optional desktop applications:
+#        * Browsers: firefox, firefox-locale-ja, chromium, chromium-l10n
+#        * Mail: thunderbird, thunderbird-locale-ja
+#        * Office: libreoffice
+#        * Editors and IME helpers: vim-gnome, fcitx-mozc, emacs-mozc, mozc-server, mozc-utils-gui
+#        * File and image tools: thunar, gthumb
+#        * Media and comms: vlc, pidgin
+#        * Documents and readers: xpdf, evince, comix, fbreader
+#        * Networking and remote: wireshark, xtightvncviewer
+#        * Torrents: bittorrent-gui, ktorrent, qbittorrent
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
