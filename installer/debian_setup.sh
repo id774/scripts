@@ -4,10 +4,45 @@
 # debian_setup.sh: Debian batch setup script
 #
 #  Description:
-#  This script automates the installation and configuration of essential
-#  system utilities, dotfiles, cryptographic tools, and system security
-#  settings on Debian-based systems. It ensures a consistent setup
-#  for system administration and development environments.
+#  Apply and configure the following on Debian-based systems:
+#    - Shell & accounts:
+#        * Set /bin/zsh as the login shell for the current user and for root.
+#    - Dotfiles & editors:
+#        * Install base dotfiles via installer/install_dotfiles.sh.
+#        * dot_zsh: clone or update id774/dot_zsh, symlink to $HOME/dot_zsh, then run install_dotzsh.sh.
+#        * dot_vim: when Vim is available, run installer/install_dotvim.sh.
+#        * dot_emacs: when Emacs is available and local configs are absent, clone id774/dot_emacs,
+#          symlink to $HOME/dot_emacs, then run install_dotemacs.sh.
+#    - Cryptography tools:
+#        * Install TrueCrypt and VeraCrypt if not already installed (installer/install_truecrypt.sh, install_veracrypt.sh).
+#    - Sysadmin utilities & helpers:
+#        * Deploy sysadmin scripts by uninstalling then reinstalling to refresh (setup_sysadmin_scripts.sh).
+#        * Set up a consistent python command symlink (setup_python_symlink.sh).
+#        * Fetch helper resources and tools (install_get_resources.sh).
+#    - Security & AV:
+#        * Install chkrootkit (install_chkrootkit.sh).
+#        * Install clamscan and suppress noisy freshclam syslog entries (install_clamscan.sh, disable_freshclam_syslog.sh).
+#        * Apply security-related configs:
+#            - iptables rules (setup_iptables.sh)
+#            - PAM hardening for su (setup_pamd.sh)
+#            - secure TTY configuration (setup_securetty.sh)
+#            - rsyslog configuration for cron (setup_rsyslog_cron.sh)
+#            - chkrootkit runtime options (setup_chkrootkit_opts.sh)
+#    - Monitoring & services:
+#        * Clone or update id774/munin-plugins, symlink to $HOME/munin-plugins,
+#          install the process monitoring plugin, then install/configure Munin (install_process_monitoring.sh, install_munin.sh).
+#        * Configure memcached daemon settings (setup_memcached_conf.sh).
+#    - User environment & system messaging:
+#        * Install standard crontab entries (setup_crontab.sh).
+#        * Install common shell aliases (setup_aliases.sh).
+#        * Configure system MOTD (setup_motd.sh).
+#    - Python user environment:
+#        * When /opt/python/current/bin/python exists, configure IPython dotfiles (setup_dot_ipython.sh).
+#    - Permissions & kernel tuning:
+#        * Enforce ownership root:root for /usr/src and /usr/local/src.
+#        * Apply kernel parameters via configure_sysctl.sh --apply.
+#    - Cleanup:
+#        * Remove the user's ~/.bash_history.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
