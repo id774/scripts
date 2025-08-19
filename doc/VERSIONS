@@ -1,8 +1,8 @@
 scripts Repository Version History
 ==================================
 
-v1.4.6 (Release Date: TBD)
---------------------------
+v1.5 (2025-08-20)
+-----------------
 - Standardize all cron scripts to use /etc/cron.exec and /etc/cron.config.
 - Add --uninstall option to several installer scripts for clean removal.
 - Add kill-ring save file to Emacs cleanup targets in cltmp.sh.
