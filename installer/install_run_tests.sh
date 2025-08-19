@@ -19,6 +19,7 @@
 #  Execute this script with sufficient permissions to perform directory
 #  creation, file copying, and cron job scheduling tasks:
 #      ./install_run_tests.sh
+#      ./install_run_tests.sh --uninstall
 #
 #  Notes:
 #  - The SCRIPTS environment variable must be set to the directory containing
@@ -27,6 +28,9 @@
 #    and /etc/cron.d/run_tests to finalize the configuration.
 #
 #  Version History:
+#  v2.3 2025-08-19
+#       Add --uninstall option to remove deployed script, config, cron job,
+#       logrotate entry, and the run_tests log file.
 #  v2.2 2025-07-30
 #       Move script to /etc/cron.exec and config to /etc/cron.config.
 #  v2.1 2025-06-23
@@ -219,12 +223,8 @@ final_message() {
     echo "# to ensure all settings meet your operational requirements."
 }
 
-# Main function to execute all setup tasks
-main() {
-    case "$1" in
-        -h|--help|-v|--version) usage ;;
-    esac
-
+# Perform installation steps
+install() {
     check_system
     check_scripts
     check_commands sudo cp chmod chown touch mkdir tee
@@ -235,6 +235,51 @@ main() {
     deploy_scripts
     setup_cron_job
     final_message
+}
+
+# Uninstall all installed components
+uninstall() {
+    check_commands rm
+    check_sudo
+
+    echo "[INFO] Uninstalling run_tests setup..."
+
+    FILES_TO_REMOVE="
+        /etc/cron.exec/run_tests
+        /etc/cron.config/run_tests.conf
+        /etc/cron.d/run_tests
+        /etc/logrotate.d/run_tests
+    "
+
+    for file in $FILES_TO_REMOVE; do
+        if sudo test -e "$file"; then
+            if sudo rm -f "$file"; then
+                echo "[INFO] Removed $file"
+            else
+                echo "[ERROR] Failed to remove $file" >&2
+                exit 1
+            fi
+        else
+            echo "[INFO] File not found, skipping: $file"
+        fi
+    done
+
+    echo "[INFO] Uninstallation completed."
+}
+
+# Main function to execute tasks
+main() {
+    case "$1" in
+        -h|--help|-v|--version)
+            usage
+            ;;
+        -u|--uninstall)
+            uninstall
+            ;;
+        *)
+            install
+            ;;
+    esac
     return 0
 }
 
