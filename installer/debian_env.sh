@@ -4,9 +4,18 @@
 # debian_env.sh: Environment Setup for Debian
 #
 #  Description:
-#  This script configures the base environment for Debian-based systems.
-#  It ensures that apt-get is available, performs system updates,
-#  and configures essential administrative groups and filesystem tuning.
+#  Apply and configure the following on Debian-based systems:
+#    - Locale:
+#        * Ensure ja_JP.UTF-8 locale is present in /etc/locale.gen.
+#        * Install locales package if missing, append ja_JP.UTF-8 UTF-8 entry,
+#          run locale-gen, and update LANG to ja_JP.UTF-8.
+#    - System update:
+#        * Run apt-get update, upgrade, autoclean, and autoremove
+#          to bring the system up to date and remove unnecessary packages.
+#    - Administrative groups:
+#        * Ensure existence of admin and wheel groups (create if absent).
+#    - Filesystem tuning:
+#        * Execute setup_tune2fs.sh for ext filesystem parameter adjustments.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
