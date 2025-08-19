@@ -4,15 +4,23 @@
 # debian_desktop_setup.sh: Apply GNOME settings for Flashback session
 #
 #  Description:
-#  Configure GNOME Flashback friendly settings:
-#    - Disable automount and autorun for external media
-#    - Hide desktop icons
-#    - Set fixed number of workspaces
-#    - Disable screen auto lock and idle blank
-#    - Set keyboard repeat to high-sensitivity defaults
-#    - Enable dark mode when supported
-#    - Import keyboard shortcuts and WM keybindings via dconf
-#    - Install xfce4-terminal profile used in Flashback session
+#  Apply GNOME settings used with Flashback. This script:
+#    - Media handling: disable automount/automount-open and set autorun-never=true
+#    - Desktop & workspaces: hide desktop icons; set org.gnome.desktop.wm.preferences num-workspaces=9
+#    - WM keybindings (via dconf load, gnome-wm-keys.conf):
+#        * Switch to workspace 1..9 with <Primary>1..9
+#        * Move window to workspace 1..9 with <Primary><Alt>1..9
+#        * Switch/move by direction with <Control><Alt>Arrow and <Shift><Control><Alt>Arrow
+#        * Disable/adjust other window actions as defined (close/minimize/switch-windows etc.)
+#    - Media keys and custom app shortcuts (via dconf load, gnome-shortcuts.conf):
+#        * Screensaver <Primary><Alt>l, screenshot <Primary><Alt>s and area variants
+#        * Open WWW <Primary><Alt>f
+#        * Custom launchers: xfce4-terminal, emacs, thunar, vmplayer, gthumb
+#    - Lock & idle behavior: keep manual lock, disable auto lock; set idle-delay=0 and lock-delay=0
+#    - Appearance: prefer dark color scheme and set Adwaita-dark when available
+#    - Keyboard repeat: enable repeat; default delay=200ms and interval=25ms (overridable via env)
+#    - Profiles & autostart: install xfce4-terminal profile; install xmodmap autostart entry
+#    - Optional: reset gnome-panel to defaults on user confirmation
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
