@@ -39,6 +39,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v2.0 2025-08-20
+#       Expanded header documentation to enumerate all applied configuration
+#       steps and system tuning tasks for consistency and transparency.
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2025-04-13

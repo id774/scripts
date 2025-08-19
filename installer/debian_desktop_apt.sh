@@ -59,6 +59,9 @@
 #  These should be resolved based on the output of the apt-get command.
 #
 #  Version History:
+#  v2.1 2025-08-20
+#       Expanded header documentation to list package categories and representative
+#       software installed via apt for improved clarity.
 #  v2.0 2025-08-12
 #       Improved desktop environment detection logic and reviewed several package selections.
 #  v1.5 2025-06-23

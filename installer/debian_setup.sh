@@ -68,6 +68,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v2.0 2025-08-20
+#       Expanded header documentation to enumerate all applied configuration
+#       steps and system tuning tasks for consistency and transparency.
 #  v1.5 2025-08-16
 #       Add safe_symlink helper and replace non-POSIX `ln -snf` with safe symlink creation.
 #       Update check_commands to include chsh and mkdir.

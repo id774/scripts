@@ -69,6 +69,9 @@
 #  These should be resolved based on the output of the apt-get command.
 #
 #  Version History:
+#  v2.0 2025-08-20
+#       Expanded header documentation to list package categories and representative
+#       software installed via apt for improved clarity.
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.4 2025-04-13
