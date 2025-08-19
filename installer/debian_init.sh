@@ -4,9 +4,25 @@
 # debian_init.sh: Initial Setup Script for Ubuntu/Debian
 #
 #  Description:
-#  This script automates the initial setup of Debian-based systems, ensuring
-#  a consistent environment configuration. It verifies the system type,
-#  sets up necessary directories, and executes predefined installation scripts.
+#  Orchestrate the initial setup on Debian-based systems by running the
+#  following phases in order:
+#    - Environment bootstrap (debian_env.sh):
+#        * Locale setup (ja_JP.UTF-8), system update/upgrade/cleanup,
+#          admin/wheel groups, ext FS tuning via setup_tune2fs.sh
+#    - Bulk package install (debian_apt.sh):
+#        * Install categorized package groups (base tools, toolchains, system &
+#          networking utils, Debian packaging toolchain, editors/TeX, EXIF tools,
+#          languages & libs, SCM, DBs, SQLite, optional dev headers)
+#    - System customization (debian_setup.sh):
+#        * Set default shells (zsh), deploy dotfiles (zsh/vim/emacs),
+#          install crypto tools (TrueCrypt/VeraCrypt), sysadmin helpers,
+#          monitoring & services (munin, memcached), security configs
+#          (iptables, PAM, securetty, rsyslog cron, chkrootkit opts),
+#          user env (crontab, aliases, MOTD), IPython dotfiles,
+#          permissions fixes and sysctl apply, cleanup of shell history
+#    - (Optional) Desktop provisioning:
+#        * Desktop packages (debian_desktop_apt.sh) and GNOME/Flashback settings
+#          (debian_desktop_setup.sh) can be included when building a desktop host.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,16 +30,19 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  Run the script directly:
-#      ./debian_init.sh
+#      ./debian_init.sh [--with-desktop]
 #
-#  Ensure that the required setup scripts exist in the designated directory.
-#  This script verifies system compatibility before proceeding.
+#  Description:
+#  - Run the script directly; it will configure base system setup.
+#  - Use --with-desktop if you want to include desktop provisioning steps.
 #
 #  Notes:
 #  - The script is designed for Debian-based systems (Debian, Ubuntu, etc.).
 #  - Internet connectivity is required for package installations.
 #  - Review and modify the installation scripts as needed before execution.
+#  - By default, only minimal system setup is applied. Desktop provisioning
+#    requires explicit --with-desktop option to avoid accidental GUI stack
+#    installation on server hosts.
 #
 #  Error Conditions:
 #  - If the system is not Debian-based, the script exits with an error.
@@ -31,6 +50,10 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v6.0 2025-08-20
+#       Add --with-desktop option to trigger desktop setup steps.
+#       Expanded header documentation to enumerate orchestrated phases and clarify
+#       optional desktop provisioning entry points for consistency and transparency.
 #  v5.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v5.2 2025-04-13
@@ -48,6 +71,9 @@
 #       First version.
 #
 ########################################################################
+
+# Option flags (default off)
+WITH_DESKTOP=0
 
 # Display full script header information extracted from the top comment block
 usage() {
@@ -128,11 +154,27 @@ confirm_execution() {
     esac
 }
 
+# Parse command line arguments
+parse_args() {
+    for arg in "$@"; do
+        case "$arg" in
+            --with-desktop)
+                WITH_DESKTOP=1
+                ;;
+            -h|--help|-v|--version)
+                usage
+                ;;
+            *)
+                echo "[ERROR] Unknown option: $arg" >&2
+                usage
+                ;;
+        esac
+    done
+}
+
 # Main entry point of the script
 main() {
-    case "$1" in
-        -h|--help|-v|--version) usage ;;
-    esac
+    parse_args "$@"
 
     # Check if the system is Debian-based before proceeding
     check_system
@@ -142,6 +184,8 @@ main() {
 
     # Ask for confirmation before proceeding
     confirm_execution
+
+    echo "[INFO] Running base system setup"
 
     # Environment setup
     "$SCRIPTS/installer/debian_env.sh"
@@ -153,8 +197,11 @@ main() {
     "$SCRIPTS/installer/debian_setup.sh"
 
     # Optional: Install desktop-related packages and customization
-    #"$SCRIPTS/installer/debian_desktop_apt.sh"
-    #"$SCRIPTS/installer/debian_desktop_setup.sh"
+    if [ "$WITH_DESKTOP" -eq 1 ]; then
+        echo "[INFO] Running desktop setup as requested"
+        "$SCRIPTS/installer/debian_desktop_apt.sh"
+        "$SCRIPTS/installer/debian_desktop_setup.sh"
+    fi
 
     echo "[INFO] All Debian initial setup completed successfully."
     return 0
