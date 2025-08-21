@@ -39,6 +39,7 @@
 #  - Scans a configurable directory for _is_alive files.
 #  - Alerts if non-VM files are older than the threshold.
 #  - Ignores VM-prefixed files when stale, with a clear info message.
+#  - Skips hosts that have a corresponding _is_obsolete marker file.
 #  - Outputs errors to standard error for logging and monitoring purposes.
 #  - Validates required commands and directory existence before execution.
 #
@@ -52,6 +53,9 @@
 #  3. Source directory does not exist.
 #
 #  Version History:
+#  v1.8 2025-08-21
+#       Exclude hosts from monitoring when <host>_is_obsolete marker exists.
+#       Do not count them in freshness or alert decisions.
 #  v1.7 2025-08-01
 #       Support optional argument to specify BASE_DIR. Default remains /home/share/received.
 #  v1.6 2025-07-28
@@ -159,7 +163,30 @@ process_files() {
     REGULAR_STALE_FOUND=0
     VM_STALE_FOUND=0
 
+    # Helper to check obsolete marker for a given _is_alive file
+    # Returns 0 if obsolete marker exists, 1 otherwise
+    is_obsolete() {
+        _file="$1"
+        _dir=$(dirname "$_file")
+        _base=$(basename "$_file")
+        # Strip the trailing suffix "_is_alive"
+        _host=${_base%_is_alive}
+        _marker="$_dir/${_host}_is_obsolete"
+        [ -f "$_marker" ]
+    }
+
     for FILE in $FILES; do
+        BASENAME=$(basename "$FILE")
+        DIRNAME=$(dirname "$FILE")
+
+        # Skip hosts explicitly marked as obsolete (fast path before stat)
+        if is_obsolete "$FILE"; then
+            HOST=${BASENAME%_is_alive}
+            MARKER="${DIRNAME}/${HOST}_is_obsolete"
+            echo "[INFO] Host is obsolete: ${HOST} (marker: $(basename "$MARKER")) - skipped from monitoring"
+            continue
+        fi
+
         FILE_TIME=$($stat_cmd -c %Y "$FILE" 2>/dev/null || stat -f %m "$FILE" 2>/dev/null)
         FILE_DATE=$(date -d "@$FILE_TIME" "+%Y-%m-%d %H:%M:%S" 2>/dev/null || date -r "$FILE_TIME" "+%Y-%m-%d %H:%M:%S" 2>/dev/null)
 
@@ -173,7 +200,6 @@ process_files() {
         AGE_MIN=$((AGE / 60))
         AGE_SEC=$((AGE % 60))
         ELAPSED="elapsed time: ${AGE_MIN}m ${AGE_SEC}s"
-        BASENAME=$(basename "$FILE")
 
         if [ "$AGE" -gt "$STALE_THRESHOLD" ]; then
             if printf '%s\n' "$BASENAME" | grep -iq '^vm'; then
@@ -196,7 +222,7 @@ process_files() {
         echo "[INFO] Only VM-prefixed hosts are missing. No alert triggered."
         exit 0
     else
-        echo "[INFO] All files are fresh."
+        echo "[INFO] All files are fresh or explicitly skipped as obsolete."
         exit 0
     fi
 }
@@ -215,7 +241,7 @@ main() {
     fi
 
     check_environment
-    check_commands find stat date basename grep sort
+    check_commands find stat date basename grep sort dirname
     choice_stat_command
     process_files
     return 0
