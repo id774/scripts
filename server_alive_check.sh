@@ -175,18 +175,37 @@ process_files() {
         [ -f "$_marker" ]
     }
 
+    # First pass: separate obsolete from targets and build a grouped output
+    OBSOLETE_LIST=""
+    TARGET_FILES=""
+
+
     for FILE in $FILES; do
         BASENAME=$(basename "$FILE")
         DIRNAME=$(dirname "$FILE")
-
-        # Skip hosts explicitly marked as obsolete (fast path before stat)
         if is_obsolete "$FILE"; then
             HOST=${BASENAME%_is_alive}
             MARKER="${DIRNAME}/${HOST}_is_obsolete"
-            echo "[INFO] Host is obsolete: ${HOST} (marker: $(basename "$MARKER")) - skipped from monitoring"
-            continue
+            # Defer printing to keep obsolete messages grouped at the top
+            OBSOLETE_LIST="${OBSOLETE_LIST}
+[INFO] Host is obsolete: ${HOST} (marker: $(basename "$MARKER")) - skipped from monitoring"
+        else
+            TARGET_FILES="${TARGET_FILES}
+${FILE}"
         fi
+    done
 
+    # Print grouped obsolete hosts first (if any)
+    if [ -n "$OBSOLETE_LIST" ]; then
+        # Trim leading newline safely by printing via printf
+        printf "%s\n" "$OBSOLETE_LIST" | sed '1{/^$/d;}'
+    fi
+
+    # Second pass: freshness checks only for non-obsolete targets
+    # Avoid subshell so that flags update correctly; feed lines via here-doc
+    CLEAN_TARGETS=$(printf "%s\n" "$TARGET_FILES" | sed '/^[[:space:]]*$/d')
+    while IFS= read -r FILE; do
+        BASENAME=$(basename "$FILE")
         FILE_TIME=$($stat_cmd -c %Y "$FILE" 2>/dev/null || stat -f %m "$FILE" 2>/dev/null)
         FILE_DATE=$(date -d "@$FILE_TIME" "+%Y-%m-%d %H:%M:%S" 2>/dev/null || date -r "$FILE_TIME" "+%Y-%m-%d %H:%M:%S" 2>/dev/null)
 
@@ -213,7 +232,9 @@ process_files() {
             echo "[INFO] File is fresh: $BASENAME (last updated: $FILE_DATE, $ELAPSED)"
         fi
 
-    done
+    done <<EOF
+$CLEAN_TARGETS
+EOF
 
     if [ "$REGULAR_STALE_FOUND" -eq 1 ]; then
         echo "[WARN] One or more non-VM hosts are stale." >&2
@@ -241,7 +262,7 @@ main() {
     fi
 
     check_environment
-    check_commands find stat date basename grep sort dirname
+    check_commands find stat date basename grep sort sed dirname
     choice_stat_command
     process_files
     return 0
