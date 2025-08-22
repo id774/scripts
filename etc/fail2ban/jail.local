@@ -1,0 +1,48 @@
+[DEFAULT]
+# Default settings applied to all jails unless overridden
+ignoreip = 127.0.0.1/8 ::1
+
+# Ban time: duration for which an IP is blocked (e.g., 10m, 1h, 1d, 1w)
+bantime = 1d
+# 24 hours
+
+# Find time: the time window to count failed login attempts
+findtime = 10m
+# 10 minutes
+
+# Max retry: number of failed login attempts allowed before banning
+maxretry = 3
+# Block after 3 failed attempts
+
+# Action to perform when banning an IP (e.g., use iptables for blocking)
+banaction = iptables-multiport
+
+# Log level: determines the verbosity of logs (e.g., INFO, DEBUG)
+loglevel = INFO
+
+# Log target: specify where logs are written (e.g., file, syslog)
+logtarget = /var/log/fail2ban.log
+
+# Jail for SSH service
+[sshd]
+enabled = true
+port = 99999
+filter = sshd
+logpath = /var/log/auth.log
+bantime = 7d
+maxretry = 5
+findtime = 10m
+
+[apache-badbots]
+enabled = true
+
+[apache-noscript]
+enabled = true
+
+[apache-evasive]
+enabled  = true
+filter   = apache-evasive
+logpath  = /var/log/apache2/error.log
+maxretry = 10
+findtime = 120
+bantime  = 900
