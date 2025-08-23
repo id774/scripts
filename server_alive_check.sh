@@ -238,13 +238,18 @@ EOF
 
     if [ "$REGULAR_STALE_FOUND" -eq 1 ]; then
         echo "[WARN] One or more non-VM hosts are stale." >&2
-        exit 1
+        return 1
     elif [ "$VM_STALE_FOUND" -eq 1 ]; then
         echo "[INFO] Only VM-prefixed hosts are missing. No alert triggered."
-        exit 0
+        return 0
     else
-        echo "[INFO] All files are fresh or explicitly skipped as obsolete."
-        exit 0
+        if [ -n "$OBSOLETE_LIST" ]; then
+            echo "[INFO] All files are fresh or explicitly skipped as obsolete."
+            return 0
+        else
+            echo "[INFO] All files are fresh."
+            return 0
+        fi
     fi
 }
 
@@ -265,7 +270,7 @@ main() {
     check_commands find stat date basename grep sort sed dirname
     choice_stat_command
     process_files
-    return 0
+    return $?
 }
 
 # Execute main function
