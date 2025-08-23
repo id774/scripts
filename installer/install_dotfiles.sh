@@ -261,6 +261,14 @@ deploy_dotfiles_to_linux() {
 bulk_deploy() {
     test -d "/home" && test -d "/home/$USER" && sudo chmod 750 /home/*
     test -d /home/opt && sudo chmod 755 /home/opt
+
+    # Harden local SSH source permissions if present
+    if [ -d "$HOME/.ssh" ]; then
+        chmod 700 "$HOME/.ssh"
+        [ -f "$HOME/.ssh/config" ] && chmod 600 "$HOME/.ssh/config"
+        [ -f "$HOME/.ssh/known_hosts" ] && chmod 600 "$HOME/.ssh/known_hosts"
+    fi
+
     deploy_dotfiles_to_linux \
       debian \
       ubuntu \
@@ -279,6 +287,7 @@ bulk_deploy() {
       twitter \
       tiarra \
       testuser
+
     deploy_dotfiles_to_mac \
       adm \
       emergencyadmin \
