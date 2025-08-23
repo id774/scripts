@@ -30,6 +30,8 @@
 #  - Run with appropriate permissions if modifying system-wide settings.
 #
 #  Version History:
+#  v3.0 2025-08-23
+#       Add known_hosts deployment using a single shared ssh file copier.
 #  v2.9 2025-07-21
 #       Add logic to deploy user's ~/.ssh/config to target accounts if it exists.
 #  v2.8 2025-07-12
@@ -173,27 +175,30 @@ mkdir_skelton() {
     command -v emacs >/dev/null 2>&1 && setup_dotemacs "$1"
 }
 
-# Copy ~/.ssh/config to target user if exists
-copy_ssh_config_if_exists() {
-    src_config="$HOME/.ssh/config"
+# Copy ~/.ssh/<name> to target user if exists
+copy_ssh_file_if_exists() {
     dest_home="$1"
     dest_user="$2"
-    dest_ssh="$dest_home/.ssh"
-    dest_config="$dest_ssh/config"
+    name="$3"  # e.g., config or known_hosts
 
-    if [ -f "$src_config" ]; then
-        # Skip copy if source and destination are the same file
-        if [ "$(realpath "$src_config" 2>/dev/null)" = "$(realpath "$dest_config" 2>/dev/null)" ]; then
-            echo "[INFO] Skipping copy: source and destination are identical for $dest_user"
-        else
-            echo "[INFO] Copying .ssh/config to $dest_user"
-            sudo mkdir -p "$dest_ssh"
-            sudo cp "$OPTIONS" "$src_config" "$dest_config"
-            sudo chmod 700 "$dest_ssh"
-            sudo chmod 600 "$dest_config"
-            sudo chown -R "$dest_user:$(id -gn "$dest_user")" "$dest_ssh"
-        fi
+    src="$HOME/.ssh/$name"
+    dest_ssh="$dest_home/.ssh"
+    dest="$dest_ssh/$name"
+
+    [ -f "$src" ] || return 0
+
+    # Skip if source and destination are the same file
+    if [ -e "$dest" ] && [ "$src" -ef "$dest" ]; then
+        echo "[INFO] Skipping copy: source and destination are identical for $dest_user ($name)"
+        return 0
     fi
+
+    echo "[INFO] Copying .ssh/$name to $dest_user ($dest)"
+    sudo mkdir -p "$dest_ssh"
+    sudo cp "$OPTIONS" "$src" "$dest"
+    sudo chmod 700 "$dest_ssh"
+    sudo chmod 600 "$dest"
+    sudo chown -R "$dest_user:$(id -gn "$dest_user")" "$dest_ssh"
 }
 
 # Deploy dotfiles and create necessary directories for a given user
@@ -211,7 +216,8 @@ deploy_dotfiles() {
 deploy_dotfiles_to_others() {
     if [ -d "$1" ]; then
         deploy_dotfiles "$1"
-        copy_ssh_config_if_exists "$1" "$2"
+        copy_ssh_file_if_exists "$1" "$2" config
+        copy_ssh_file_if_exists "$1" "$2" known_hosts
         sudo chown -R "$2:$(id -gn "$2")" "$1"
     fi
 }
@@ -226,7 +232,8 @@ deploy_dotfiles_to_mac() {
         if [ -d "$user_home" ] && id "$user" >/dev/null 2>&1; then
             echo "[INFO] Deploying dotfiles to macOS user: $user"
             deploy_dotfiles "$user_home"
-            copy_ssh_config_if_exists "$user_home" "$user"
+            copy_ssh_file_if_exists "$user_home" "$user" config
+            copy_ssh_file_if_exists "$user_home" "$user" known_hosts
             sudo chown "$user:$(id -gn "$user")" "$user_home"
             sudo find "$user_home" -maxdepth 1 -mindepth 1 -exec chown "$user:$(id -gn "$user")" {} +
         fi
@@ -241,7 +248,8 @@ deploy_dotfiles_to_linux() {
         if [ -d "/home/$1" ]; then
             echo "[INFO] Deploying dotfiles to Linux user: $1"
             deploy_dotfiles "/home/$1"
-            copy_ssh_config_if_exists "/home/$1" "$1"
+            copy_ssh_file_if_exists "/home/$1" "$1" config
+            copy_ssh_file_if_exists "/home/$1" "$1" known_hosts
             sudo chown "$1:$(id -gn "$1")" "/home/$1"
             sudo find "/home/$1" -maxdepth 1 -mindepth 1 -exec chown "$1:$(id -gn "$1")" {} +
         fi
