@@ -4,10 +4,28 @@
 # macos_setup.sh: macOS Batch Setup Script
 #
 #  Description:
-#  This script automates the setup of a macOS environment by installing
-#  and configuring essential dotfiles (zsh, vim, emacs), Python/IPython
-#  settings, sysadmin utility scripts, and cleaning up history files.
-#  It also ensures proper ownership and permissions on key directories.
+#  Apply the following macOS setup steps in order:
+#    - Dotfiles & editors:
+#        * Install base dotfiles via installer/install_dotfiles.sh.
+#        * dot_zsh: clone/update id774/dot_zsh, create $HOME/dot_zsh symlink,
+#          then run install_dotzsh.sh.
+#        * dot_vim: when Vim is available, run installer/install_dotvim.sh.
+#        * dot_emacs: when Emacs is available and local configs are absent,
+#          clone id774/dot_emacs, create symlink, then run install_dotemacs.sh.
+#    - Sysadmin utilities:
+#        * Deploy sysadmin scripts (uninstall → install) via setup_sysadmin_scripts.sh.
+#        * Create emergency administrator account via create_emergencyadmin.sh.
+#    - Python/IPython:
+#        * When /opt/python/current/bin/python exists, configure IPython dotfiles
+#          via setup_dot_ipython.sh.
+#    - Finder & system tweaks:
+#        * Apply Finder preferences via macos_finder_settings.sh.
+#        * Enable system folder localizations via macos_system_folder_localizations.sh.
+#        * Fix zsh compinit cache issues via fix_compinit.sh.
+#    - Permissions:
+#        * Enforce root:wheel ownership on /opt/python, /opt/ruby, /usr/local/src.
+#    - Cleanup:
+#        * Remove the user's shell history (~/.bash_history only).
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -23,9 +41,10 @@
 #  - The $HOME/scripts directory must contain all referenced installer scripts.
 #
 #  Notes:
-#  - This script installs and configures dot_zsh, dot_vim, and dot_emacs if not present.
-#  - It installs sysadmin utility scripts and IPython profile.
-#  - It resets ownership of key source directories and removes shell/editor histories.
+#  - This script installs/configures dot_zsh, dot_vim, and dot_emacs when applicable.
+#  - It also deploys sysadmin utilities, IPython profile (when present),
+#    applies Finder/localization tweaks, fixes zsh compinit cache,
+#    normalizes ownership of key directories, and cleans shell history.
 #
 #  Exit Conditions:
 #  - Exits with error if not run on macOS.
@@ -33,6 +52,9 @@
 #  - Exits if sudo privileges are not granted.
 #
 #  Version History:
+#  v2.0 2025-08-23
+#       Expanded header documentation to enumerate all applied configuration
+#       steps and tweaks; refined cleanup to remove only ~/.bash_history.
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2025-04-13
@@ -169,8 +191,6 @@ set_permissions() {
 # Erase history files
 erase_history() {
     sudo rm -vf "$HOME/.bash_history"
-    sudo rm -vf "$HOME/.mysql_history"
-    sudo rm -vf "$HOME/.viminfo"
 }
 
 # Main entry point of the script

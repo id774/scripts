@@ -4,6 +4,7 @@ scripts Repository Version History
 v1.5.1 (Release Date: TBD)
 --------------------------
 - Add fail2ban and mod_evasive setup script with configuration files.
+- Update macos_setup.sh header and refine cleanup to remove only bash history.
 - Exclude hosts marked as obsolete from monitoring in server_alive_check.sh.
 
 v1.5 (2025-08-20)
