@@ -21,6 +21,7 @@
 #  cleanup actions. Ensure to have the necessary permissions before running.
 #
 #  Version History:
+#  20250823 - Remove .ssh/known_hosts.old to avoid stale backups.
 #  20250806 - Remove $HOME/mbox if exists.
 #  20250731 - Add kill-ring-saved.el to Emacs cleanup targets.
 #  20250715 - Add abbrev_defs to Emacs cleanup targets.
@@ -142,6 +143,7 @@ perform_cleanup() {
     rm -vf "$HOME/.xsession-errors"
     rm -vrf "$HOME/.cache/*"
     rm -vrf "$HOME/.local/share/Trash/*"
+    rm -vf "$HOME"/.ssh/known_hosts.old
     rm -vf "$HOME"/.vim/.netrwhist
     rm -vf "$HOME"/.emacs.d/*~
     rm -vf "$HOME"/.emacs.d/abbrev_defs
