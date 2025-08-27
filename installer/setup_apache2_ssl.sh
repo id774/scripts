@@ -24,6 +24,8 @@
 #  - Apache2 must be installed on the system.
 #
 #  Version History:
+#  v1.5 2025-08-27
+#       Rename Apache custom configs to use .conf suffix.
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.3 2025-04-26
@@ -106,7 +108,7 @@ deploy_ssl_cert() {
 # Deploy Apache site configuration files
 deploy_site_configs() {
     echo "[INFO] Deploying site configurations..."
-    for site in custom custom-ssl; do
+    for site in custom.conf custom-ssl.conf; do
         if ! sudo cp "$SCRIPTS/etc/apache/$site" /etc/apache2/sites-available/; then
             echo "[ERROR] Failed to copy $site configuration." >&2
             exit 1
