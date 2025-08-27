@@ -6,8 +6,10 @@ v1.5.1 (Release Date: TBD)
 - Add fail2ban and mod_evasive setup script with configuration files.
 - Add setup_rsyslog_postfix.sh to deploy postfix log split config.
 - Update macos_setup.sh header and refine cleanup to remove only bash history.
-- Extend dotfiles deployment to include SSH configuration files.
+- Review configuration files and add clarifying entries.
+- Broaden unnecessary files cleanup script and include additional removal targets.
 - Exclude hosts marked as obsolete from monitoring in server_alive_check.sh.
+- Extend dotfiles deployment to include SSH configuration files.
 
 v1.5 (2025-08-20)
 -----------------
