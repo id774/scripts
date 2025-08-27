@@ -32,7 +32,7 @@
 #               systemctl, fail2ban-client
 #
 #  Version History:
-#  v1.0 2025-01-27
+#  v1.0 2025-08-27
 #       Initial release.
 #
 ########################################################################
@@ -122,11 +122,11 @@ install_if_changed() {
 deploy_fail2ban() {
     # Installs jail.local and creates/installs apache-evasive filter if needed.
     echo "[INFO] Deploying fail2ban configs"
-    install_if_changed "$JAIL_LOCAL_SRC" "/etc/fail2ban/jail.local" 0644 "root:root"
+    install_if_changed "$JAIL_LOCAL_SRC" "/etc/fail2ban/jail.local" 644 "root:root"
 
     dest="/etc/fail2ban/filter.d/apache-evasive.conf"
     if [ -f "$FILTER_SRC" ]; then
-        install_if_changed "$FILTER_SRC" "$dest" 0644 "root:root"
+        install_if_changed "$FILTER_SRC" "$dest" 644 "root:root"
     elif [ ! -f "$dest" ]; then
         echo "[INFO] Creating default apache-evasive filter: $dest"
         tmp="/tmp/apache-evasive.$$"
@@ -136,7 +136,7 @@ deploy_fail2ban() {
 failregex = \[evasive20:error\] \[pid .*?\] \[client <HOST>.*\] client denied by server configuration
 ignoreregex =
 EOF
-        sudo cp "$tmp" "$dest" && sudo chown root:root "$dest" && sudo chmod 0644 "$dest" || {
+        sudo cp "$tmp" "$dest" && sudo chown root:root "$dest" && sudo chmod 644 "$dest" || {
             echo "[ERROR] Failed to create $dest" >&2; rm -f "$tmp"; exit 1;
         }
         rm -f "$tmp"
@@ -149,14 +149,14 @@ EOF
 deploy_evasive() {
     # Installs the evasive.conf and ensures log directory ownership/perms.
     echo "[INFO] Deploying Apache mod_evasive config"
-    install_if_changed "$EVASIVE_SRC" "/etc/apache2/mods-available/evasive.conf" 0644 "root:root"
+    install_if_changed "$EVASIVE_SRC" "/etc/apache2/mods-available/evasive.conf" 644 "root:root"
 
     echo "[INFO] Ensuring /var/log/apache2/evasive exists"
     if ! sudo test -d /var/log/apache2/evasive; then
         sudo mkdir -p /var/log/apache2/evasive || { echo "[ERROR] Failed to create log dir" >&2; exit 1; }
     fi
-    sudo chown www-data:www-data /var/log/apache2/evasive || { echo "[ERROR] Failed to chown log dir" >&2; exit 1; }
-    sudo chmod 0750 /var/log/apache2/evasive || { echo "[ERROR] Failed to chmod log dir" >&2; exit 1; }
+    sudo chown www-data:adm /var/log/apache2/evasive || { echo "[ERROR] Failed to chown log dir" >&2; exit 1; }
+    sudo chmod 750 /var/log/apache2/evasive || { echo "[ERROR] Failed to chmod log dir" >&2; exit 1; }
 }
 
 # Enable Apache module "evasive" and validate configuration, then reload
