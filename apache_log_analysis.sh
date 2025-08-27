@@ -21,6 +21,8 @@
 #      ./apache_log_analysis.sh /var/log/apache2/ssl_access.log
 #
 #  Version History:
+#  v2.2 2025-08-27
+#       Limit Daily Access aggregation to last year and add gdate fallback with command checks.
 #  v2.1 2025-07-30
 #       Search apache_ignore.list in /etc/cron.config first, before fallback to local etc/ paths.
 #  v2.0 2025-06-23
@@ -79,6 +81,20 @@ check_commands() {
     done
 }
 
+# Check if at least one of the given commands exists and is executable.
+check_commands_any() {
+    # Usage: check_commands_any cmd1 cmd2 ...
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -n "$cmd_path" ] && [ -x "$cmd_path" ]; then
+            echo "$cmd_path"
+            return 0
+        fi
+    done
+    echo "[ERROR] None of the required commands found: $*" >&2
+    return 1
+}
+
 # Load list of IP addresses to ignore from a configuration file.
 load_ignore_list() {
     IGNORE_FILE=""
@@ -101,6 +117,29 @@ load_ignore_list() {
     fi
 }
 
+# Resolve date command and set 1-year cutoff timestamp (prefers gdate on macOS)
+setup_time_window() {
+    # Prefer gdate if available (especially on macOS), otherwise fall back to date
+    DATE_CMD=$(check_commands_any gdate date) || {
+        echo "[ERROR] date command not found." >&2
+        exit 127
+    }
+
+    # Verify GNU date support for -d option
+    if ! "$DATE_CMD" -d '1970-01-01' +%s >/dev/null 2>&1; then
+        # Hint for macOS users
+        UNAME_S=$(uname 2>/dev/null || echo unknown)
+        if [ "$UNAME_S" = "Darwin" ]; then
+            echo "[ERROR] GNU date required. Install coreutils and ensure gdate is available (e.g., brew install coreutils)." >&2
+        else
+            echo "[ERROR] date command lacks GNU -d support." >&2
+        fi
+        exit 2
+    fi
+
+    ONE_YEAR_AGO=$("$DATE_CMD" -d '1 year ago' +%s)
+}
+
 # Analyze the log file and output various access statistics.
 analyze_logs() {
     echo "[Access Count]"
@@ -119,7 +158,31 @@ analyze_logs() {
     done
 
     echo "[Daily Access]"
-    zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk '{print $4}' | cut -b 2-12 | sort | uniq -c
+    # Filter to last 1 year based on log timestamp, then aggregate per day.
+    # Apache time fields: $4 = [dd/Mon/yyyy:HH:MM:SS   $5 = +ZZZZ]
+    zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | \
+    awk -v cutoff="${ONE_YEAR_AGO}" -v datecmd="${DATE_CMD}" '
+        BEGIN {
+            month["Jan"]="01"; month["Feb"]="02"; month["Mar"]="03"; month["Apr"]="04";
+            month["May"]="05"; month["Jun"]="06"; month["Jul"]="07"; month["Aug"]="08";
+            month["Sep"]="09"; month["Oct"]="10"; month["Nov"]="11"; month["Dec"]="12";
+        }
+        {
+            t1=$4; gsub(/^\[/,"",t1);            # dd/Mon/yyyy:HH:MM:SS
+            t2=$5; gsub(/\]$/,"",t2);            # +ZZZZ
+            if (t1 == "" || t2 == "") next;
+            # Build "dd Mon yyyy HH:MM:SS +ZZZZ" for GNU date
+            split(t1, a, /[:\/]/);               # a1=dd a2=Mon a3=yyyy a4=HH a5=MM a6=SS
+            ts = a[1] " " a[2] " " a[3] " " a[4] ":" a[5] ":" a[6] " " t2
+            cmd = datecmd " -d \"" ts "\" +%s"
+            cmd | getline epoch
+            close(cmd)
+            if (epoch >= cutoff) {
+                ymd = a[3] "-" month[a[2]] "-" a[1]   # ISO形式で安定ソート
+                print ymd
+            }
+        }
+    ' | LC_ALL=C sort | uniq -c
 
     echo "[Access By Time]"
     grep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk '{print $4}' | cut -b 2-15 | sort | uniq -c
@@ -141,7 +204,7 @@ main() {
         usage
     fi
 
-    check_commands grep zgrep awk cut sort uniq wc paste
+    check_commands grep zgrep awk cut sort uniq wc paste uname
 
     LOG_FILE=$1
 
@@ -151,6 +214,7 @@ main() {
     fi
 
     load_ignore_list
+    setup_time_window
     analyze_logs
     return 0
 }
