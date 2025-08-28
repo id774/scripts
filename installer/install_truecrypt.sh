@@ -208,7 +208,7 @@ install_truecrypt() {
     EXEC_NAME="truecrypt-$VERSION-setup-console-$ARCH"
 
     echo "[INFO] Downloading $TAR_NAME..."
-    if ! wget "http://id774.net/truecrypt/$TAR_NAME"; then
+    if ! wget "https://files.id774.net/truecrypt/$TAR_NAME"; then
         echo "[ERROR] Failed to download $TAR_NAME" >&2
         exit 1
     fi
