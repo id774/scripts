@@ -19,6 +19,8 @@
 #      python test/tcmount_test.py
 #
 #  Version History:
+#  v1.2 2025-08-29
+#       Add tests for explicit target argument (mount and unmount).
 #  v1.1 2025-05-14
 #       Added unit tests for command_exists() to verify command detection logic.
 #  v1.0 2023-12-15
@@ -98,6 +100,16 @@ class TestTcMount(unittest.TestCase):
         result = tcmount.build_mount_command('sdb', '')
         self.assertEqual(result, expected)
 
+    def test_build_mount_command_with_explicit_target(self):
+        expected = 'test -b /dev/sdb && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=utf8 /dev/sdb ~/mnt/disk1'
+        result = tcmount.build_mount_command('sdb', 'utf8', 'disk1')
+        self.assertEqual(result, expected)
+
+    def test_build_unmount_command_with_explicit_target(self):
+        expected = 'sudo truecrypt -d ~/mnt/disk1'
+        result = tcmount.build_unmount_command('disk1')
+        self.assertEqual(result, expected)
+
     @patch('tcmount.subprocess.call')
     def test_is_truecrypt_installed(self, mock_call):
         mock_call.return_value = 0
@@ -167,6 +179,35 @@ class TestTcMount(unittest.TestCase):
         self.check_veracrypt_installed()
         self.process_mounting_test_helper(veracrypt=False, tc_compat=True)
 
+    def test_process_mounting_with_explicit_target_calls(self):
+        # Verify that explicit target is passed to builders
+        with patch('tcmount.build_mount_command') as mock_build_mount, \
+                patch('tcmount.build_unmount_command') as mock_build_unmount, \
+                patch('tcmount.os_exec') as mock_os_exec, \
+                patch('tcmount.is_truecrypt_installed', return_value=True), \
+                patch('tcmount.is_veracrypt_installed', return_value=False):
+            mock_build_mount.return_value = 'mocked mount command'
+            mock_build_unmount.return_value = 'mocked unmount command'
+
+            def options(): return None
+            options.veracrypt = False
+            options.tc_compat = False
+            options.no_utf8 = False
+            options.readonly = False
+            options.all = False
+            options.external = None
+
+            # Mount with explicit target
+            tcmount.process_mounting(options, ['sdb', 'disk1'])
+            mock_build_mount.assert_called_with('sdb', 'utf8', 'disk1')
+            mock_os_exec.assert_called_with('mocked mount command')
+            mock_os_exec.reset_mock()
+
+            # Unmount with explicit target
+            tcmount.process_mounting(options, ['sdb', 'disk1', 'unmount'])
+            mock_build_unmount.assert_called_with('disk1')
+            mock_os_exec.assert_called_with('mocked unmount command')
+
     @patch('tcmount.os_exec')
     def test_process_mounting_readonly_no_utf8_with_truecrypt(self, mock_os_exec):
         self.check_truecrypt_installed()
@@ -210,6 +251,38 @@ class TestTcMount(unittest.TestCase):
         options.external = None
         tcmount.process_mounting(options, ['sdb'])
         expected_command = 'test -b /dev/sdb && sudo veracrypt -tc -t -k "" --protect-hidden=no --fs-options= /dev/sdb ~/mnt/sdb'
+        mock_os_exec.assert_called_with(expected_command)
+
+    @patch('tcmount.os_exec')
+    @patch('tcmount.is_truecrypt_installed', return_value=False)
+    @patch('tcmount.is_veracrypt_installed', return_value=True)
+    def test_process_mounting_with_explicit_target_veracrypt(self, mock_vc, mock_tc, mock_os_exec):
+        # Mount with explicit target using veracrypt
+        def options(): return None
+        options.veracrypt = True
+        options.tc_compat = False
+        options.no_utf8 = False
+        options.readonly = False
+        options.all = False
+        options.external = None
+        tcmount.process_mounting(options, ['sdb', 'disk1'])
+        expected_command = 'test -b /dev/sdb && sudo veracrypt -t -k "" --protect-hidden=no --fs-options=utf8 /dev/sdb ~/mnt/disk1'
+        mock_os_exec.assert_called_with(expected_command)
+
+    @patch('tcmount.os_exec')
+    @patch('tcmount.is_truecrypt_installed', return_value=False)
+    @patch('tcmount.is_veracrypt_installed', return_value=True)
+    def test_process_mounting_with_explicit_target_tc_compat(self, mock_vc, mock_tc, mock_os_exec):
+        # Mount with explicit target using veracrypt in TC-compat mode
+        def options(): return None
+        options.veracrypt = False
+        options.tc_compat = True
+        options.no_utf8 = False
+        options.readonly = False
+        options.all = False
+        options.external = None
+        tcmount.process_mounting(options, ['sdb', 'disk1'])
+        expected_command = 'test -b /dev/sdb && sudo veracrypt -tc -t -k "" --protect-hidden=no --fs-options=utf8 /dev/sdb ~/mnt/disk1'
         mock_os_exec.assert_called_with(expected_command)
 
     @patch('tcmount.build_mount_command')
