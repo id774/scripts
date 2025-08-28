@@ -21,16 +21,21 @@
 #  run the script with appropriate privileges. You can specify the device
 #  and other mount options as arguments. For example:
 #
-#      python tcmount.py [device] [options]
+#      python tcmount.py [device] [target] [options]
 #
 #  Specific device mounting:
 #      python tcmount.py sdb
 #      This will mount the device /dev/sdb using TrueCrypt or VeraCrypt based on the options.
+#      python tcmount.py sdb disk1
+#      This will mount the device /dev/sdb to ~/mnt/disk1 instead of ~/mnt/sdb.
+#      (Backwards compatible: omitting the 2nd arg still mounts to ~/mnt/<device>)
 #
 #  Specific device unmounting:
 #      python tcmount.py sdb unmount
 #      python tcmount.py sdb umount
 #      These commands will unmount the device /dev/sdb using TrueCrypt or VeraCrypt.
+#      python tcmount.py sdb disk1 unmount
+#      This will unmount ~/mnt/disk1 (explicit target form).
 #
 #  Options:
 #  -v, --veracrypt    Use VeraCrypt instead of TrueCrypt for mounting and unmounting.
@@ -55,6 +60,9 @@
 #  on mount options and device specifications.
 #
 #  Version History:
+#  v5.0 2025-08-29
+#       Added support for explicit target argument: tcmount.py sdb disk1 mounts /dev/sdb to ~/mnt/disk1.
+#       Also supports unmount with explicit target: tcmount.py sdb disk1 unmount.
 #  v4.8 2025-07-08
 #       Automatically extract __version__ from script header to eliminate hardcoded version.
 #  v4.7 2025-07-01
@@ -82,7 +90,6 @@
 #       Refactored command construction to improve testability.
 #       Renamed the -e (--expansion) option to -e (--external) and updated the path to
 #       the container file to '~/mnt/external/container.tc' for generalizing external HDD support.
-#  [Further version history truncated for brevity]
 #  v1.0 2010-08-06
 #       First release.
 #
@@ -192,40 +199,40 @@ def get_veracrypt_version():
     except subprocess.CalledProcessError:
         return "Unknown"
 
-def build_mount_command(device, mount_options):
+def build_mount_command(device, mount_options, target=None):
     """
-    Builds the command to mount a TrueCrypt volume on a specific drive.
+    Build command to mount /dev/<device> to ~/mnt/<target or device>
     """
-    return 'test -b /dev/{0} && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={1} /dev/{0} ~/mnt/{0}'.format(device, mount_options)
+    if not target:
+        target = device
+    return 'test -b /dev/{0} && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={1} /dev/{0} ~/mnt/{2}'.format(device, mount_options, target)
 
-def build_unmount_command(device):
+def build_unmount_command(target):
     """
-    Builds the command to unmount a specified device.
+    Build command to unmount ~/mnt/<target>
     """
-    return 'sudo truecrypt -d ~/mnt/{0}'.format(device)
+    return 'sudo truecrypt -d ~/mnt/{0}'.format(target)
 
 def build_mount_all_command(mount_options):
     """
-    Builds the commands to mount all devices from sdc to sdz.
+    Build commands to mount all devices from sdc to sdz
     """
     commands = []
     for device_suffix in range(ord('c'), ord('z') + 1):
-        commands.append(build_mount_command(
-            'sd' + chr(device_suffix), mount_options))
+        commands.append(build_mount_command('sd' + chr(device_suffix), mount_options))
     return commands
 
 def build_mount_external_command(device, mount_options):
     """
-    Builds the command to mount the container file of external to the specified device.
+    Build command to mount external container file to ~/mnt/<device>
     """
     external_file = '~/mnt/external/container.tc'
     mount_point = os.path.join('~/mnt', device)
-
     return 'test -f {0} && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={1} {0} {2}'.format(external_file, mount_options, mount_point)
 
 def process_mounting(options, args):
     """
-    Processes the mounting based on the provided options and arguments.
+    Process mounting and unmounting based on CLI options and arguments
     """
     mount_options = []
     if not options.no_utf8:
@@ -237,8 +244,7 @@ def process_mounting(options, args):
 
     commands = []
     if options.external:
-        cmd = build_mount_external_command(
-            options.external, mount_options_str)
+        cmd = build_mount_external_command(options.external, mount_options_str)
         if cmd:
             commands.append(cmd)
     else:
@@ -246,8 +252,14 @@ def process_mounting(options, args):
             device = args[0]
             if len(args) > 1 and args[1] in ['unmount', 'umount']:
                 commands.append(build_unmount_command(device))
+            elif len(args) > 2 and args[2] in ['unmount', 'umount']:
+                target = args[1]
+                commands.append(build_unmount_command(target))
             else:
-                commands.append(build_mount_command(device, mount_options_str))
+                target = None
+                if len(args) > 1:
+                    target = args[1]
+                commands.append(build_mount_command(device, mount_options_str, target))
         else:
             commands.append(build_mount_command('sdb', mount_options_str))
             if options.all:
@@ -267,14 +279,13 @@ def process_mounting(options, args):
         unmount_cmd = "veracrypt"
     else:
         if not is_truecrypt_installed():
-            print(
-                "[ERROR] TrueCrypt is not installed. Please use VeraCrypt or install TrueCrypt and try again.", file=sys.stderr)
+            print("[ERROR] TrueCrypt is not installed. Please use VeraCrypt or install TrueCrypt and try again.", file=sys.stderr)
             sys.exit(11)
         encryption_tool = "truecrypt"
         unmount_cmd = "truecrypt"
 
     for cmd in commands:
-        if 'unmount' in cmd or 'umount' in cmd:
+        if ' -d ' in cmd:
             cmd = cmd.replace('truecrypt', unmount_cmd)
         else:
             cmd = cmd.replace('truecrypt', encryption_tool)
