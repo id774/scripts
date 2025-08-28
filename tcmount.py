@@ -251,20 +251,27 @@ def process_mounting(options, args):
         if args:
             device = args[0]
             if len(args) > 1 and args[1] in ['unmount', 'umount']:
+                # Legacy unmount: second token is action, target defaults to device
                 commands.append(build_unmount_command(device))
             elif len(args) > 2 and args[2] in ['unmount', 'umount']:
+                # Explicit target unmount: third token is action, second token is target
                 target = args[1]
                 commands.append(build_unmount_command(target))
             else:
-                target = None
-                if len(args) > 1:
-                    target = args[1]
-                commands.append(build_mount_command(device, mount_options_str, target))
+                # Mount: optional explicit target as second token
+                target = args[1] if len(args) > 1 else None
+                if target is None:
+                    # Call with two args to keep backward-compat tests passing
+                    commands.append(build_mount_command(device, mount_options_str))
+                else:
+                    commands.append(build_mount_command(device, mount_options_str, target))
         else:
+            # Default device when none provided
             commands.append(build_mount_command('sdb', mount_options_str))
             if options.all:
                 commands.extend(build_mount_all_command(mount_options_str))
 
+    # Select encryption tool according to options
     if options.tc_compat:
         if not is_veracrypt_installed():
             print("[ERROR] VeraCrypt is not installed, but '-t' option was specified. Please use TrueCrypt or install VeraCrypt and try again.", file=sys.stderr)
@@ -284,6 +291,7 @@ def process_mounting(options, args):
         encryption_tool = "truecrypt"
         unmount_cmd = "truecrypt"
 
+    # Execute built commands after replacing the encryption tool
     for cmd in commands:
         if ' -d ' in cmd:
             cmd = cmd.replace('truecrypt', unmount_cmd)
