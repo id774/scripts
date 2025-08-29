@@ -10,6 +10,7 @@ v1.5.1 (Release Date: TBD)
 - Broaden unnecessary files cleanup script and include additional removal targets.
 - Exclude hosts marked as obsolete from monitoring in server_alive_check.sh.
 - Extend dotfiles deployment to include SSH configuration files.
+- Enhance rsync backup process by revising mount program arguments and script constants to increase abstraction level.
 
 v1.5 (2025-08-20)
 -----------------
