@@ -24,6 +24,7 @@
 #  settings and available devices, as defined in /etc/cron.config/rsync_backup.conf.
 #
 #  Version History:
+#  v3.2  2025-08-29 - Enable device argument in smart_info and smart_check.
 #  v3.1  2025-07-30 - Update script and config paths to /etc/cron.exec and /etc/cron.config respectively.
 #  v3.0  2025-06-23 - Unified usage output to display full script header and support common help/version options.
 #  v2.9  2025-06-15 - Externalize archive and repository path variables to rsync_backup.conf.
@@ -119,37 +120,77 @@ version_info() {
 
 # Retrieve SMART information of the backup and target devices
 smart_info() {
-    for DEV in "$B_DEVICE" "$T_DEVICE"; do
+    # Normalize optional first argument to a bare device name like "sde"
+    # Accepts "sde" or "/dev/sde"
+    if [ -n "$1" ]; then
+        case "$1" in
+            /dev/*) DEV_ARG=${1#/dev/} ;;
+            *)      DEV_ARG=$1 ;;
+        esac
+        DEV_LIST=$DEV_ARG
+    else
+        DEV_LIST="$B_DEVICE $T_DEVICE"
+    fi
+
+    for DEV in $DEV_LIST; do
         if [ -b "/dev/$DEV" ]; then
             echo "[INFO] Attempting smartctl -a -d sat /dev/$DEV"
             if ! smartctl -a -d sat "/dev/$DEV"; then
                 echo "[INFO] -d sat failed for /dev/$DEV, falling back to default"
                 smartctl -a "/dev/$DEV"
             fi
+        else
+            echo "[WARN] The device /dev/$DEV does not exist or is not a block device." >&2
         fi
     done
 }
 
-# Perform a SMART diagnostic check on the target device
+# Perform a SMART diagnostic check on a device
 smart_check() {
-    if [ -b "/dev/$T_DEVICE" ]; then
-        if [ -f "$T_HOME/$T_MOUNT/$T_DEVICE/smart_longtest" ]; then
-            touch "$T_HOME/$T_MOUNT/$T_DEVICE/smart_longtest"
-            echo "[INFO] Attempting smartctl -t long -d sat /dev/$T_DEVICE"
-            if ! smartctl -t long -d sat "/dev/$T_DEVICE"; then
-                echo "[INFO] -d sat failed, falling back to smartctl -t long"
-                smartctl -t long "/dev/$T_DEVICE"
-            fi
-        else
-            touch "$T_HOME/$T_MOUNT/$T_DEVICE/smart_shorttest"
-            echo "[INFO] Attempting smartctl -t short -d sat /dev/$T_DEVICE"
-            if ! smartctl -t short -d sat "/dev/$T_DEVICE"; then
-                echo "[INFO] -d sat failed, falling back to smartctl -t short"
-                smartctl -t short "/dev/$T_DEVICE"
-            fi
+    # Resolve target device
+    if [ -n "$1" ]; then
+        case "$1" in
+            /dev/*) DEV=${1#/dev/} ;;
+            *)      DEV=$1 ;;
+        esac
+    else
+        DEV=$T_DEVICE
+    fi
+
+    if [ ! -b "/dev/$DEV" ]; then
+        echo "[WARN] The device /dev/$DEV does not exist or is not a block device." >&2
+        return 1
+    fi
+
+    # Decide base path for flag files: prefer target path, then backup path, else fallback to target path
+    BASE_HOME=$T_HOME
+    BASE_MOUNT=$T_MOUNT
+    if [ -d "$T_HOME/$T_MOUNT/$DEV" ]; then
+        BASE_HOME=$T_HOME
+        BASE_MOUNT=$T_MOUNT
+    elif [ -d "$B_HOME/$B_MOUNT/$DEV" ]; then
+        BASE_HOME=$B_HOME
+        BASE_MOUNT=$B_MOUNT
+    fi
+
+    # Choose long or short test by presence of longtest flag file
+    LONG_FLAG="$BASE_HOME/$BASE_MOUNT/$DEV/smart_longtest"
+    SHORT_FLAG="$BASE_HOME/$BASE_MOUNT/$DEV/smart_shorttest"
+
+    if [ -f "$LONG_FLAG" ]; then
+        : > "$LONG_FLAG"
+        echo "[INFO] Attempting smartctl -t long -d sat /dev/$DEV"
+        if ! smartctl -t long -d sat "/dev/$DEV"; then
+            echo "[INFO] -d sat failed, falling back to smartctl -t long"
+            smartctl -t long "/dev/$DEV"
         fi
     else
-        echo "[WARN] The device /dev/$T_DEVICE does not exist or is not a block device." >&2
+        : > "$SHORT_FLAG"
+        echo "[INFO] Attempting smartctl -t short -d sat /dev/$DEV"
+        if ! smartctl -t short -d sat "/dev/$DEV"; then
+            echo "[INFO] -d sat failed, falling back to smartctl -t short"
+            smartctl -t short "/dev/$DEV"
+        fi
     fi
 }
 

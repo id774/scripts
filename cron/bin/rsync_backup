@@ -67,7 +67,7 @@ is_joblog_writable() {
 initialize() {
     LC_CTYPE=ja_JP.UTF-8
     JOBLOG="/var/log/sysadmin/rsync_backup.log"
-    TRIGGER_FILE="/home/ubuntu/mnt/rsync_backup"
+    TRIGGER_FILE="/etc/cron.config/rsync_trigger"
     SCRIPT="/etc/cron.exec/rsync_backup.sh"
     #ADMIN_MAIL_ADDRESS="root"
 

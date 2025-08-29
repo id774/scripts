@@ -90,6 +90,7 @@
 #       Refactored command construction to improve testability.
 #       Renamed the -e (--expansion) option to -e (--external) and updated the path to
 #       the container file to '~/mnt/external/container.tc' for generalizing external HDD support.
+#  [Further version history truncated for brevity]
 #  v1.0 2010-08-06
 #       First release.
 #
