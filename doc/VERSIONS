@@ -1,8 +1,8 @@
 scripts Repository Version History
 ==================================
 
-v1.5.1 (Release Date: TBD)
---------------------------
+v1.5.1 (2025-08-29)
+-------------------
 - Add fail2ban and mod_evasive setup script with configuration files.
 - Add setup_rsyslog_postfix.sh to deploy postfix log split config.
 - Update macos_setup.sh header and refine cleanup to remove only bash history.
