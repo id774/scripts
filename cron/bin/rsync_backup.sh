@@ -59,7 +59,7 @@
 #  2010 - Improvements in error handling and SSH usage.
 #  2009 - Addition of rsync function for portable media devices and SMART information.
 #  2008 - Initial stable release, with basic backup and sync functionalities.
-#  v1.0 2008-02-28 - Stable initial release.
+#  v1.0  2008-02-28 - Stable initial release.
 #
 ########################################################################
 
