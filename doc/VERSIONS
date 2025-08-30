@@ -1,6 +1,10 @@
 scripts Repository Version History
 ==================================
 
+v1.5.2 (Release Date: TBD)
+--------------------------
+- Add get device utility to resolve base block device from mountpoint.
+
 v1.5.1 (2025-08-29)
 -------------------
 - Add fail2ban and mod_evasive setup script with configuration files.

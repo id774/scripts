@@ -33,6 +33,8 @@
 #  - Running the script with 'uninstall' will remove all installed administration scripts.
 #
 #  Version History:
+#  v2.0 2025-08-30
+#       Add get-device command to resolve base block device from mountpoint.
 #  v1.9 2025-08-02
 #       Add -v option to cp for verbose output during installation.
 #       Add existence check for source script in install_scripts function.
@@ -168,6 +170,7 @@ uninstall_sysadmin_scripts() {
         autopyck \
         get_resources \
         apt-upgrade \
+        get-device \
         dpkg-hold \
         gpg-import \
         tcmount \
@@ -225,6 +228,7 @@ setup_scripts() {
 # Install Debian-specific system administration scripts
 setup_debian_scripts() {
     install_scripts 755 apt-upgrade.sh apt-upgrade
+    install_scripts 755 get-device.sh get-device
     install_scripts 755 dpkg-hold.sh dpkg-hold
     install_scripts 755 gpg-import.sh gpg-import
     install_scripts 755 tcmount.py tcmount
