@@ -4,11 +4,27 @@
 # get-device.sh: Resolve base block device from a mountpoint
 #
 #  Description:
-#  Given a mountpoint path, this script prints the corresponding base
-#  block device like /dev/sdc. It handles:
-#    - regular partitions like /dev/sdc1
-#    - device mapper paths like /dev/mapper/truecrypt1 or /dev/dm-0
-#  It walks the dependency chain down to the root disk using lsblk.
+#  This utility takes a mountpoint path as input and determines the
+#  underlying base block device (e.g. /dev/sdc). The output is a single
+#  device path string, making it suitable for both standalone use in
+#  the shell and for inclusion in larger automation scripts.
+#  It eliminates the need to manually inspect /proc/mounts or lsblk
+#  output when identifying which physical device a filesystem resides on.
+#
+#  Features:
+#    - Works directly from a given mountpoint, no extra arguments required.
+#    - Prints the canonical base device path (/dev/*) to stdout.
+#    - Supports regular partitions (e.g. /dev/sdc1).
+#    - Supports device-mapper paths (e.g. /dev/mapper/truecrypt1, /dev/dm-0).
+#    - Walks the dependency chain using lsblk to return the actual root device.
+#    - Provides deterministic exit codes to simplify error handling in scripts.
+#
+#  Notes:
+#    - Designed for Linux systems with lsblk(8) and findmnt(8) available.
+#    - Can be invoked interactively for quick checks or from scripts
+#      that require reliable device resolution.
+#    - Standardized error codes (see below) allow scripts to branch
+#      logic depending on the type of failure.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -22,10 +38,10 @@
 #      => /dev/sdc
 #
 #  Error Conditions:
-#  0. Success
+#  0. Success.
 #  1. General failure.
-#  2. Mountpoint or source not found
-#  3. Source is not a block device
+#  2. Mountpoint or source not found.
+#  3. Source is not a block device.
 #  126. Required command is not executable.
 #  127. Required command is not installed.
 #
