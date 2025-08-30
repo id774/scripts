@@ -9,6 +9,8 @@
 #  timestamps, performing cleanup tasks, and syncing data between disks and
 #  over SSH. The script is configured via /etc/cron.config/rsync_backup.conf
 #  and intended to be run automatically from cron.
+#  Before any device operation, the script resolves the base block device
+#  by running `get-device <mountpoint>` and uses its result.#
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -23,7 +25,11 @@
 #  The script will automatically execute operations based on the configured
 #  settings and available devices, as defined in /etc/cron.config/rsync_backup.conf.
 #
+#  Requirements:
+#  - The system must have `get-device` command installed and available in PATH.
+#
 #  Version History:
+#  v3.3  2025-08-30 - Resolve device via get-device before device operations.
 #  v3.2  2025-08-29 - Enable device argument in smart_info and smart_check.
 #  v3.1  2025-07-30 - Update script and config paths to /etc/cron.exec and /etc/cron.config respectively.
 #  v3.0  2025-06-23 - Unified usage output to display full script header and support common help/version options.
@@ -84,15 +90,21 @@ is_running_from_cron() {
 
 # Display the serial number of a given device
 print_serial_number() {
-    if [ -n "$T_DEVICE" ] && [ -b "/dev/$T_DEVICE" ]; then
-        SERIAL=$(udevadm info --query=all --name="/dev/$T_DEVICE" 2>/dev/null | sed -n 's/^E: ID_SERIAL_SHORT=//p')
+    # Resolve base device via external get-device
+    if command -v get-device >/dev/null 2>&1; then
+        DEVPATH=$(get-device "$T_HOME/$T_MOUNT/$T_DEVICE" 2>/dev/null)
+    else
+        DEVPATH="/dev/$T_DEVICE"
+    fi
+    if [ -n "$T_DEVICE" ] && [ -b "$DEVPATH" ]; then
+        SERIAL=$(udevadm info --query=all --name="$DEVPATH" 2>/dev/null | sed -n 's/^E: ID_SERIAL_SHORT=//p')
         if [ -n "$SERIAL" ]; then
-            echo "[INFO] Serial number of /dev/$T_DEVICE: $SERIAL"
+            echo "[INFO] Serial number of $DEVPATH: $SERIAL"
         else
-            echo "[WARN] Serial number of /dev/$T_DEVICE could not be determined." >&2
+            echo "[WARN] Serial number of $DEVPATH could not be determined." >&2
         fi
     else
-        echo "[WARN] Invalid or non-block device: /dev/$T_DEVICE" >&2
+        echo "[WARN] Invalid or non-block device: $DEVPATH" >&2
     fi
 }
 
@@ -133,14 +145,23 @@ smart_info() {
     fi
 
     for DEV in $DEV_LIST; do
-        if [ -b "/dev/$DEV" ]; then
-            echo "[INFO] Attempting smartctl -a -d sat /dev/$DEV"
-            if ! smartctl -a -d sat "/dev/$DEV"; then
-                echo "[INFO] -d sat failed for /dev/$DEV, falling back to default"
-                smartctl -a "/dev/$DEV"
+        # Resolve with get-device using the appropriate mountpoint
+        MP=""
+        [ "$DEV" = "$B_DEVICE" ] && MP="$B_HOME/$B_MOUNT/$B_DEVICE"
+        [ "$DEV" = "$T_DEVICE" ] && MP="$T_HOME/$T_MOUNT/$T_DEVICE"
+        if command -v get-device >/dev/null 2>&1 && [ -n "$MP" ]; then
+            DEVPATH=$(get-device "$MP" 2>/dev/null)
+        else
+            DEVPATH="/dev/$DEV"
+        fi
+        if [ -b "$DEVPATH" ]; then
+            echo "[INFO] Attempting smartctl -a -d sat $DEVPATH"
+            if ! smartctl -a -d sat "$DEVPATH"; then
+                echo "[INFO] -d sat failed for $DEVPATH, falling back to default"
+                smartctl -a "$DEVPATH"
             fi
         else
-            echo "[WARN] The device /dev/$DEV does not exist or is not a block device." >&2
+            echo "[WARN] The device $DEVPATH does not exist or is not a block device." >&2
         fi
     done
 }
@@ -157,8 +178,18 @@ smart_check() {
         DEV=$T_DEVICE
     fi
 
-    if [ ! -b "/dev/$DEV" ]; then
-        echo "[WARN] The device /dev/$DEV does not exist or is not a block device." >&2
+    # Prefer get-device resolution using mountpoint
+    MP=""
+    [ "$DEV" = "$T_DEVICE" ] && MP="$T_HOME/$T_MOUNT/$T_DEVICE"
+    [ "$DEV" = "$B_DEVICE" ] && MP="$B_HOME/$B_MOUNT/$B_DEVICE"
+    if command -v get-device >/dev/null 2>&1 && [ -n "$MP" ]; then
+        DEVPATH=$(get-device "$MP" 2>/dev/null)
+    else
+        DEVPATH="/dev/$DEV"
+    fi
+
+    if [ ! -b "$DEVPATH" ]; then
+        echo "[WARN] The device $DEVPATH does not exist or is not a block device." >&2
         return 1
     fi
 
@@ -179,17 +210,17 @@ smart_check() {
 
     if [ -f "$LONG_FLAG" ]; then
         : > "$LONG_FLAG"
-        echo "[INFO] Attempting smartctl -t long -d sat /dev/$DEV"
-        if ! smartctl -t long -d sat "/dev/$DEV"; then
+        echo "[INFO] Attempting smartctl -t long -d sat $DEVPATH"
+        if ! smartctl -t long -d sat "$DEVPATH"; then
             echo "[INFO] -d sat failed, falling back to smartctl -t long"
-            smartctl -t long "/dev/$DEV"
+            smartctl -t long "$DEVPATH"
         fi
     else
         : > "$SHORT_FLAG"
-        echo "[INFO] Attempting smartctl -t short -d sat /dev/$DEV"
-        if ! smartctl -t short -d sat "/dev/$DEV"; then
+        echo "[INFO] Attempting smartctl -t short -d sat $DEVPATH"
+        if ! smartctl -t short -d sat "$DEVPATH"; then
             echo "[INFO] -d sat failed, falling back to smartctl -t short"
-            smartctl -t short "/dev/$DEV"
+            smartctl -t short "$DEVPATH"
         fi
     fi
 }

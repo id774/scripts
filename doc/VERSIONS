@@ -3,7 +3,8 @@ scripts Repository Version History
 
 v1.5.2 (Release Date: TBD)
 --------------------------
-- Add get device utility to resolve base block device from mountpoint.
+- Add get-device utility to resolve base block device from mountpoint.
+- Use get-device for dynamic device resolution in rsync_backup.sh.
 
 v1.5.1 (2025-08-29)
 -------------------
