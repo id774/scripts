@@ -46,7 +46,7 @@
 #  127. Required command is not installed.
 #
 #  Version History:
-#  v1.0 2025-08-30
+#  v1.0 2025-08-31
 #       Initial release.
 #
 ########################################################################
@@ -59,6 +59,13 @@ usage() {
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0
+}
+
+# Print error and exit with code
+fail() {
+    code="$1"; shift
+    echo "[ERROR] $*" >&2
+    exit "$code"
 }
 
 # Check if the system is Linux
@@ -169,14 +176,6 @@ resolve_and_print() {
     fi
     printf '%s\n' "$BASE"
     return 0
-}
-
-# Print error and exit with code
-fail() {
-    # Usage: fail <exit_code> <message...>
-    code="$1"; shift
-    echo "[ERROR] $*" >&2
-    exit "$code"
 }
 
 # Main entry point of the script

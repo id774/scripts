@@ -29,7 +29,7 @@
 #  - The system must have `get-device` command installed and available in PATH.
 #
 #  Version History:
-#  v3.3  2025-08-30 - Resolve device via get-device before device operations.
+#  v3.3  2025-08-31 - Resolve device via get-device before device operations.
 #  v3.2  2025-08-29 - Enable device argument in smart_info and smart_check.
 #  v3.1  2025-07-30 - Update script and config paths to /etc/cron.exec and /etc/cron.config respectively.
 #  v3.0  2025-06-23 - Unified usage output to display full script header and support common help/version options.
