@@ -83,14 +83,33 @@ check_commands() {
     done
 }
 
+# Validate CLI arguments and mountpoint existence
+validate_args() {
+    if [ $# -eq 0 ]; then
+        MP="."
+    elif [ $# -eq 1 ]; then
+        MP="$1"
+    else
+        echo "[ERROR] Exactly one mountpoint argument is required." >&2
+        exit 2
+    fi
+
+    # Accept symlinked mountpoints as well
+    if [ ! -e "$MP" ]; then
+        echo "[ERROR] Mountpoint does not exist: $MP" >&2
+        exit 2
+    fi
+
+    MOUNTPOINT="$MP"
+    return 0
+}
+
 # Resolve source device from a mountpoint
 resolve_source() {
     MP="$1"
-    if command -v findmnt >/dev/null 2>&1; then
-        SRC=$(findmnt -no SOURCE -- "$MP" 2>/dev/null || true)
-    else
-        SRC=$(awk -v mp="$MP" '$2==mp{print $1}' /proc/mounts 2>/dev/null | tail -n1)
-    fi
+    # Fail fast if path itself is missing
+    [ -e "$MP" ] || return 1
+    SRC=$(findmnt -no SOURCE -- "$MP" 2>/dev/null || true)
     [ -n "$SRC" ] || return 1
     printf '%s\n' "$SRC"
     return 0
@@ -100,29 +119,23 @@ resolve_source() {
 to_base_disk() {
     DEVPATH="$1"
     [ -e "$DEVPATH" ] || return 1
-
-    if command -v lsblk >/dev/null 2>&1; then
-        case "$DEVPATH" in
-            /dev/mapper/*|/dev/dm-*)
-                # Walk full dependency chain to the root device (raw, no tree glyphs)
-                BASE=$(lsblk -rnp -o NAME -s -- "$DEVPATH" 2>/dev/null | tail -n1)
-                [ -n "$BASE" ] || return 1
-                printf '%s\n' "$BASE"
+    case "$DEVPATH" in
+        /dev/mapper/*|/dev/dm-*)
+            # Walk full dependency chain to the root device (raw, no tree glyphs)
+            BASE=$(lsblk -rnp -o NAME -s -- "$DEVPATH" 2>/dev/null | tail -n1)
+            [ -n "$BASE" ] || return 1
+            printf '%s\n' "$BASE"
+            return 0
+            ;;
+        *)
+            # Prefer PKNAME for regular partitions
+            PK=$(lsblk -no PKNAME -- "$DEVPATH" 2>/dev/null | head -n1)
+            if [ -n "$PK" ]; then
+                printf '/dev/%s\n' "$PK"
                 return 0
-                ;;
-            *)
-                # Prefer PKNAME for regular partitions
-                PK=$(lsblk -no PKNAME -- "$DEVPATH" 2>/dev/null | head -n1)
-                if [ -n "$PK" ]; then
-                    printf '/dev/%s\n' "$PK"
-                    return 0
-                fi
-                ;;
-        esac
-    else
-        echo "[ERROR] lsblk not found" >&2
-        return 4
-    fi
+            fi
+            ;;
+    esac
 
     # Fallback: strip partition suffix
     case "$DEVPATH" in
@@ -150,7 +163,12 @@ resolve_and_print() {
     [ -e "$SRC" ] || fail 2 "Source not found: $SRC"
 
     BASE=$(to_base_disk "$SRC") || fail 2 "Failed to resolve base device for $SRC"
+    # Double-check that the resolved base is actually a block device
+    if [ ! -b "$BASE" ]; then
+        fail 3 "Resolved path is not a block device: $BASE"
+    fi
     printf '%s\n' "$BASE"
+    return 0
 }
 
 # Print error and exit with code
@@ -168,9 +186,10 @@ main() {
     esac
 
     check_system
-    check_commands awk lsblk findmnt tail sed head
-    resolve_and_print "$@"
-    return 0
+    check_commands lsblk findmnt tail sed head
+    validate_args "$@"
+    resolve_and_print "$MOUNTPOINT"
+    return $?
 }
 
 # Execute main function
