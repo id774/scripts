@@ -533,12 +533,12 @@ class TestTcMount(unittest.TestCase):
             mock_os_exec.assert_called_with('mocked external mount command')
 
     def test_process_mounting_external_unmount_default(self):
-        # -e sde unmount -> unmount ~/mnt/sde
-        with patch('tcmount.build_unmount_command') as mock_build_unmount, \
+        # -e sde unmount -> detach by container path
+        with patch('tcmount.build_unmount_external_command') as mock_build_unmount_ext, \
                 patch('tcmount.os_exec') as mock_os_exec, \
                 patch('tcmount.is_truecrypt_installed', return_value=True), \
                 patch('tcmount.is_veracrypt_installed', return_value=False):
-            mock_build_unmount.return_value = 'mocked unmount command'
+            mock_build_unmount_ext.return_value = 'mocked external unmount command'
 
             def options(): return None
             options.veracrypt = False
@@ -550,16 +550,16 @@ class TestTcMount(unittest.TestCase):
 
             tcmount.process_mounting(options, ['unmount'])
 
-            mock_build_unmount.assert_called_with('sde')
-            mock_os_exec.assert_called_with('mocked unmount command')
+            mock_build_unmount_ext.assert_called_once()
+            mock_os_exec.assert_called_with('mocked external unmount command')
 
     def test_process_mounting_external_unmount_explicit_target(self):
-        # -e sde disk3 unmount -> unmount ~/mnt/disk3
-        with patch('tcmount.build_unmount_command') as mock_build_unmount, \
+        # -e sde disk3 unmount -> detach by container path (target ignored)
+        with patch('tcmount.build_unmount_external_command') as mock_build_unmount_ext, \
                 patch('tcmount.os_exec') as mock_os_exec, \
                 patch('tcmount.is_truecrypt_installed', return_value=True), \
                 patch('tcmount.is_veracrypt_installed', return_value=False):
-            mock_build_unmount.return_value = 'mocked unmount command'
+            mock_build_unmount_ext.return_value = 'mocked external unmount command'
 
             def options(): return None
             options.veracrypt = False
@@ -571,8 +571,8 @@ class TestTcMount(unittest.TestCase):
 
             tcmount.process_mounting(options, ['disk3', 'unmount'])
 
-            mock_build_unmount.assert_called_with('disk3')
-            mock_os_exec.assert_called_with('mocked unmount command')
+            mock_build_unmount_ext.assert_called_once()
+            mock_os_exec.assert_called_with('mocked external unmount command')
 
 
 if __name__ == '__main__':

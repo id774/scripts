@@ -119,8 +119,8 @@
 ########################################################################
 
 import os
-import subprocess
 import re
+import subprocess
 import sys
 from optparse import OptionParser
 
