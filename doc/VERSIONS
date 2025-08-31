@@ -4,6 +4,7 @@ scripts Repository Version History
 v1.5.2 (Release Date: TBD)
 --------------------------
 - Add get-serial utility to print disk serial number from a device path.
+- Add get-mountpoint utility to resolve mountpoint from a device path.
 - Add get-device utility to resolve base block device from mountpoint.
 - Use get-device for dynamic device resolution in rsync_backup.sh.
 - Fix bug where files in the current directory were not handled by execute permission logic in setup_scripts.sh.
