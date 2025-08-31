@@ -282,10 +282,11 @@ def process_mounting(options, args):
         cmd = None
         is_unmount = bool(args) and args[-1] in ['unmount', 'umount']
         if is_unmount:
-            # Explicit target form: -e sde disk3 unmount
-            # Legacy/default      : -e sde unmount  -> target = external_device
-            if len(args) >= 2 and args[1] not in ['unmount', 'umount']:
-                target = args[1]
+            # Explicit target form: -e sde disk3 unmount  -> args = ['disk3', 'unmount']
+            # Legacy/default     : -e sde unmount        -> args = ['unmount']
+            # Prefer the token before 'unmount' when present.
+            if len(args) >= 2 and args[0] not in ['unmount', 'umount']:
+                target = args[0]
             else:
                 target = options.external
             cmd = build_unmount_command(target)

@@ -529,6 +529,48 @@ class TestTcMount(unittest.TestCase):
             mock_build_ext.assert_called_with('sde', 'utf8', 'disk3')
             mock_os_exec.assert_called_with('mocked external mount command')
 
+    def test_process_mounting_external_unmount_default(self):
+        # -e sde unmount -> unmount ~/mnt/sde
+        with patch('tcmount.build_unmount_command') as mock_build_unmount, \
+                patch('tcmount.os_exec') as mock_os_exec, \
+                patch('tcmount.is_truecrypt_installed', return_value=True), \
+                patch('tcmount.is_veracrypt_installed', return_value=False):
+            mock_build_unmount.return_value = 'mocked unmount command'
+
+            def options(): return None
+            options.veracrypt = False
+            options.tc_compat = False
+            options.no_utf8 = False
+            options.readonly = False
+            options.all = False
+            options.external = 'sde'
+
+            tcmount.process_mounting(options, ['unmount'])
+
+            mock_build_unmount.assert_called_with('sde')
+            mock_os_exec.assert_called_with('mocked unmount command')
+
+    def test_process_mounting_external_unmount_explicit_target(self):
+        # -e sde disk3 unmount -> unmount ~/mnt/disk3
+        with patch('tcmount.build_unmount_command') as mock_build_unmount, \
+                patch('tcmount.os_exec') as mock_os_exec, \
+                patch('tcmount.is_truecrypt_installed', return_value=True), \
+                patch('tcmount.is_veracrypt_installed', return_value=False):
+            mock_build_unmount.return_value = 'mocked unmount command'
+
+            def options(): return None
+            options.veracrypt = False
+            options.tc_compat = False
+            options.no_utf8 = False
+            options.readonly = False
+            options.all = False
+            options.external = 'sde'
+
+            tcmount.process_mounting(options, ['disk3', 'unmount'])
+
+            mock_build_unmount.assert_called_with('disk3')
+            mock_os_exec.assert_called_with('mocked unmount command')
+
 
 if __name__ == '__main__':
     unittest.main()
