@@ -27,9 +27,12 @@
 #  - SCRIPTS environment variable must be set to the path of the script collection.
 #  - Execute permissions will be added:
 #      - To all *.sh, *.py, *.rb files under the SCRIPTS path
+#      - To all *.sh, *.py, *.rb files in the current directory
 #      - To all files under scripts/cron/bin (no extension filter)
 #
 #  Version History:
+#  v2.2 2025-08-31
+#       Fix include current directory in execute permission handling for *.sh, *.py, *.rb.
 #  v2.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #       Add execute permission handling for test directory scripts with .sh, .py, or .rb extensions.
@@ -104,8 +107,9 @@ set_permissions() {
     find "$SCRIPTS" -type f -exec chmod u+rw,g+r,g-w,o+r,o-w {} \;
     RC1=$?
 
-    echo "[INFO] Granting execute permissions to script files (*.sh, *.py, *.rb)."
+    echo "[INFO] Granting execute permissions to script files (*.sh, *.py, *.rb) including current directory."
     find "$SCRIPTS" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+    find . -maxdepth 1 -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
     RC2=$?
 
     echo "[INFO] Granting execute permissions to installer scripts (*.sh, *.py, *.rb)."
