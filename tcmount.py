@@ -137,7 +137,8 @@ import subprocess
 import sys
 from optparse import OptionParser
 
-__version__ = "unknown"
+__version__ = "unknown"   # default; will be overwritten in main()
+version_message = None
 
 def usage():
     """ Display the script header as usage information and exit. """
@@ -161,6 +162,24 @@ def usage():
         print("Error reading usage information: %s" % str(e), file=sys.stderr)
         sys.exit(1)
     sys.exit(0)
+
+def build_version_message():
+    """
+    Build a human-readable version message once, using detected tools.
+    Safe to call anytime.
+    """
+    versions = []
+    if is_truecrypt_installed():
+        versions.append(get_truecrypt_version())
+    if is_veracrypt_installed():
+        versions.append(get_veracrypt_version())
+    # __version__ may not be set yet if called very early; fall back to "unknown".
+    try:
+        ver = __version__
+    except NameError:
+        ver = "unknown"
+    return "tcmount.py {} - This script operates with {}.".format(
+        ver, " / ".join(versions) if versions else "no crypto tools detected")
 
 def get_script_version():
     """ Extracts the script version from the header comment block. """
@@ -343,10 +362,16 @@ def process_mounting(options, args):
                 else:
                     commands.append(build_mount_command(device, mount_options_str, target))
         else:
-            # Default device when none provided
-            commands.append(build_mount_command('sdb', mount_options_str))
+            # No positional args: keep --all behavior; otherwise show version and exit
             if options.all:
                 commands.extend(build_mount_all_command(mount_options_str))
+            else:
+                # Ensure version_message is available (e.g., when called with only flags like -v)
+                global version_message
+                if not version_message:
+                    version_message = build_version_message()
+                print(version_message)
+                sys.exit(0)
 
     # Select encryption tool according to options
     if options.tc_compat:
@@ -380,7 +405,7 @@ def main():
     """
     Main function to handle the mounting process based on user inputs.
     """
-    global __version__
+    global __version__, version_message
     __version__ = get_script_version()
 
     versions = []
@@ -393,8 +418,8 @@ def main():
         print("[ERROR] Neither TrueCrypt nor VeraCrypt is installed. Please install one of them and try again.", file=sys.stderr)
         sys.exit(1)
 
-    version_message = "tcmount.py {} - This script operates with {}.".format(
-        __version__, " / ".join(versions))
+    # Build and cache the version message so process_mounting() can print it safely.
+    version_message = build_version_message()
 
     parser = OptionParser(version=version_message)
     parser.add_option("-v", "--veracrypt",
