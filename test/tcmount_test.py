@@ -19,6 +19,9 @@
 #      python test/tcmount_test.py
 #
 #  Version History:
+#  v1.3 2025-08-31
+#       Add 5 tests for external container (-e): mount default/explicit target,
+#       process_mounting explicit target, and unmount default/explicit target.
 #  v1.2 2025-08-29
 #       Add tests for explicit target argument (mount and unmount).
 #  v1.1 2025-05-14
