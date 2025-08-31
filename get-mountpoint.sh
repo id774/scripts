@@ -289,7 +289,7 @@ main() {
     esac
 
     check_system
-    check_commands lsblk findmnt awk sed
+    check_commands lsblk findmnt awk
     validate_args "$@"
     resolve_and_print "$DEVICE"
     return $?
