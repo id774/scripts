@@ -80,7 +80,7 @@ class TestTcMount(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_build_unmount_command(self):
-        expected = 'sudo truecrypt -d ~/mnt/sdb'
+        expected = 'dev=$(get-device ~/mnt/sdb) && mp=$(get-mountpoint "$dev") && sudo truecrypt -d "$mp"'
         result = tcmount.build_unmount_command('sdb')
         self.assertEqual(result, expected)
 
@@ -109,7 +109,7 @@ class TestTcMount(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_build_unmount_command_with_explicit_target(self):
-        expected = 'sudo truecrypt -d ~/mnt/disk1'
+        expected = 'dev=$(get-device ~/mnt/disk1) && mp=$(get-mountpoint "$dev") && sudo truecrypt -d "$mp"'
         result = tcmount.build_unmount_command('disk1')
         self.assertEqual(result, expected)
 
@@ -206,10 +206,12 @@ class TestTcMount(unittest.TestCase):
             mock_os_exec.assert_called_with('mocked mount command')
             mock_os_exec.reset_mock()
 
-            # Unmount with explicit target
-            tcmount.process_mounting(options, ['sdb', 'disk1', 'unmount'])
-            mock_build_unmount.assert_called_with('disk1')
-            mock_os_exec.assert_called_with('mocked unmount command')
+            # Unmount with explicit target (uses build_unmount_command which resolves real mountpoint)
+            with patch('tcmount.build_unmount_command') as mock_build_unmount:
+                mock_build_unmount.return_value = 'mocked unmount command'
+                tcmount.process_mounting(options, ['sdb', 'disk1', 'unmount'])
+                mock_build_unmount.assert_called_with('disk1')
+                mock_os_exec.assert_called_with('mocked unmount command')
 
     @patch('tcmount.os_exec')
     def test_process_mounting_readonly_no_utf8_with_truecrypt(self, mock_os_exec):

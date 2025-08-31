@@ -68,6 +68,17 @@
 #  Requirements:
 #  - Python Version: 3.1 or later
 #
+#  Notes on Unmounting:
+#  From v5.1 onward, unmount operations always resolve the *real mountpoint*
+#  before calling `truecrypt -d`. This is done by invoking the external helper
+#  commands `get-device` and `get-mountpoint` under the hood.
+#  As a result:
+#    - `tcmount.py sdb unmount` and `tcmount.py sdb disk1 unmount` both work
+#      even if the logical ~/mnt/<target> differs from the actual mount path.
+#    - These helpers must be present in $PATH for unmount to succeed.
+#  This change replaces the legacy behavior (`sudo truecrypt -d ~/mnt/<target>`)
+#  which could fail when the logical path did not match the actual mountpoint.
+#
 #  Note on Custom Return Codes:
 #  This script uses custom return codes to indicate specific error conditions:
 #  - 0: Success. The operation completed without any errors.
@@ -80,8 +91,10 @@
 #  on mount options and device specifications.
 #
 #  Version History:
-#  v5.1 2025-08-31
+#  v5.1 2025-09-01
 #       Fix external mount to honor explicit target and preserve legacy container path.
+#       Change unmount logic to always resolve real mountpoint via get-device/get-mountpoint.
+#       Requires these helper commands to be available in $PATH.
 #  v5.0 2025-08-29
 #       Added support for explicit target argument: tcmount.py sdb disk1 mounts /dev/sdb to ~/mnt/disk1.
 #       Also supports unmount with explicit target: tcmount.py sdb disk1 unmount.
@@ -233,9 +246,15 @@ def build_mount_command(device, mount_options, target=None):
 
 def build_unmount_command(target):
     """
-    Build command to unmount ~/mnt/<target>
+    Build command to unmount by resolving the real mountpoint
+    using get-device and get-mountpoint.
+    This replaces the legacy behavior (sudo truecrypt -d ~/mnt/<target>).
     """
-    return 'sudo truecrypt -d ~/mnt/{0}'.format(target)
+    return (
+        'dev=$(get-device ~/mnt/{0}) && '
+        'mp=$(get-mountpoint "$dev") && '
+        'sudo truecrypt -d "$mp"'
+    ).format(target)
 
 def build_unmount_external_command():
     """
@@ -310,7 +329,7 @@ def process_mounting(options, args):
         if args:
             device = args[0]
             if len(args) > 1 and args[1] in ['unmount', 'umount']:
-                # Legacy unmount: second token is action, target defaults to device
+                # Unmount: second token is action, target defaults to device
                 commands.append(build_unmount_command(device))
             elif len(args) > 2 and args[2] in ['unmount', 'umount']:
                 # Explicit target unmount: third token is action, second token is target
