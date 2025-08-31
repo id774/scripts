@@ -275,16 +275,15 @@ def process_mounting(options, args):
 
     commands = []
     if options.external:
-        # Honor explicit target if provided with -e:
+        # Honor explicit target only when a 2nd positional arg exists:
         #   -e <external_device> [<target>]
-        target = None
+        # If not provided, default to the external device name.
         if len(args) >= 2:
-            # e.g., ['sdb', 'disk3'] -> explicit target is args[1]
             target = args[1]
-        elif len(args) == 1 and args[0] not in ['unmount', 'umount']:
-            # e.g., ['disk3'] -> explicit target is args[0]
-            target = args[0]
+        else:
+            target = None
         cmd = build_mount_external_command(options.external, mount_options_str, target)
+
         if cmd:
             commands.append(cmd)
     else:
