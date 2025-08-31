@@ -495,6 +495,40 @@ class TestTcMount(unittest.TestCase):
                 mock_os_exec.assert_called_with(expected_command)
                 mock_os_exec.reset_mock()
 
+    def test_build_mount_external_command_default_target(self):
+        # Use external_device when target is not specified
+        expected = 'test -f ~/mnt/external/container.tc && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=utf8 ~/mnt/external/container.tc ~/mnt/sde'
+        result = tcmount.build_mount_external_command('sde', 'utf8', None)
+        self.assertEqual(result, expected)
+
+    def test_build_mount_external_command_explicit_target(self):
+        # Honor explicit target over external_device name
+        expected = 'test -f ~/mnt/external/container.tc && sudo truecrypt -t -k "" --protect-hidden=no --fs-options=utf8 ~/mnt/external/container.tc ~/mnt/disk3'
+        result = tcmount.build_mount_external_command('sde', 'utf8', 'disk3')
+        self.assertEqual(result, expected)
+
+    def test_process_mounting_external_with_explicit_target(self):
+        # Verify process_mounting delegates to build_mount_external_command with explicit target
+        with patch('tcmount.build_mount_external_command') as mock_build_ext, \
+                patch('tcmount.os_exec') as mock_os_exec, \
+                patch('tcmount.is_truecrypt_installed', return_value=True), \
+                patch('tcmount.is_veracrypt_installed', return_value=False):
+            mock_build_ext.return_value = 'mocked external mount command'
+
+            def options(): return None
+            options.veracrypt = False
+            options.tc_compat = False
+            options.no_utf8 = False
+            options.readonly = False
+            options.all = False
+            options.external = 'sde'  # -e sde
+
+            # args includes an unrelated device ('sdb') and an explicit target ('disk3')
+            tcmount.process_mounting(options, ['sdb', 'disk3'])
+
+            mock_build_ext.assert_called_with('sde', 'utf8', 'disk3')
+            mock_os_exec.assert_called_with('mocked external mount command')
+
 
 if __name__ == '__main__':
     unittest.main()
