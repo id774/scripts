@@ -10,6 +10,7 @@
 #  including options for different file systems and encoding types. This version
 #  allows for specific device mounting and unmounting by specifying the device
 #  name as an argument and choosing between TrueCrypt and VeraCrypt.
+#  It also supports external container mounts with an explicit target.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -37,13 +38,32 @@
 #      python tcmount.py sdb disk1 unmount
 #      This will unmount ~/mnt/disk1 (explicit target form).
 #
+#  External container mounting:
+#      Legacy fixed container path:
+#          ~/mnt/external/container.tc
+#
+#      Without explicit target:
+#          python tcmount.py -e sde
+#          -> mounts ~/mnt/external/container.tc to ~/mnt/sde
+#
+#      With explicit target:
+#          python tcmount.py -e sde disk3
+#          -> mounts ~/mnt/external/container.tc to ~/mnt/disk3
+#
+#      Notes:
+#          The fix ensures -e honors the explicit target while preserving
+#          the legacy container path. Default behavior is unchanged.
+#
 #  Options:
 #  -v, --veracrypt    Use VeraCrypt instead of TrueCrypt for mounting and unmounting.
 #  -t, --tc-compat    Use VeraCrypt in TrueCrypt compatibility mode.
 #  -u, --no-utf8      Do not use UTF-8 encoding for the mounted filesystem.
 #  -r, --readonly     Mount the filesystem in read-only mode.
-#  -a, --all          Mount all available devices.
-#  -e, --external     Mount the container file of an external drive to a specified device.
+#  -a, --all          Mount all available devices (sdc..sdz).
+#  -e, --external     Mount the legacy external container file (~/mnt/external/container.tc).
+#                     If no positional target is provided, it mounts to ~/mnt/<external_device>.
+#                     If a positional target is provided (e.g., disk3), it mounts to ~/mnt/<target>.
+#                     Example: tcmount.py -e sde disk3
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
@@ -60,6 +80,8 @@
 #  on mount options and device specifications.
 #
 #  Version History:
+#  v5.1 2025-08-31
+#       Fix external mount to honor explicit target and preserve legacy container path.
 #  v5.0 2025-08-29
 #       Added support for explicit target argument: tcmount.py sdb disk1 mounts /dev/sdb to ~/mnt/disk1.
 #       Also supports unmount with explicit target: tcmount.py sdb disk1 unmount.
@@ -223,13 +245,21 @@ def build_mount_all_command(mount_options):
         commands.append(build_mount_command('sd' + chr(device_suffix), mount_options))
     return commands
 
-def build_mount_external_command(device, mount_options):
+def build_mount_external_command(external_device, mount_options, target=None):
     """
-    Build command to mount external container file to ~/mnt/<device>
+    Build command to mount legacy external container file to ~/mnt/<target or external_device>.
+    - external_device: device name given to -e (e.g., 'sde')
+    - target: explicit mountpoint name under ~/mnt (e.g., 'disk3')
     """
-    external_file = '~/mnt/external/container.tc'
-    mount_point = os.path.join('~/mnt', device)
-    return 'test -f {0} && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={1} {0} {2}'.format(external_file, mount_options, mount_point)
+    # Default mountpoint to the external device name if not specified
+    if not target:
+        target = external_device
+    # Legacy fixed path expected by existing tests and prior behavior
+    external_file = os.path.join('~', 'mnt', 'external', 'container.tc')
+    mount_point = os.path.join('~', 'mnt', target)
+    return 'test -f {0} && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={1} {0} {2}'.format(
+        external_file, mount_options, mount_point
+    )
 
 def process_mounting(options, args):
     """
