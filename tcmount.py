@@ -275,14 +275,28 @@ def process_mounting(options, args):
 
     commands = []
     if options.external:
-        # Honor explicit target only when a 2nd positional arg exists:
-        #   -e <external_device> [<target>]
-        # If not provided, default to the external device name.
-        if len(args) >= 2:
-            target = args[1]
+        # External container mount/unmount
+        # Syntax:
+        #   Mount   : -e <external_device> [<target>]
+        #   Unmount : -e <external_device> [<target>] unmount
+        cmd = None
+        is_unmount = bool(args) and args[-1] in ['unmount', 'umount']
+        if is_unmount:
+            # Explicit target form: -e sde disk3 unmount
+            # Legacy/default      : -e sde unmount  -> target = external_device
+            if len(args) >= 2 and args[1] not in ['unmount', 'umount']:
+                target = args[1]
+            else:
+                target = options.external
+            cmd = build_unmount_command(target)
         else:
-            target = None
-        cmd = build_mount_external_command(options.external, mount_options_str, target)
+            # Mount: honor explicit target only when a 2nd positional arg exists.
+            # If not provided, default to the external device name.
+            if len(args) >= 2:
+                target = args[1]
+            else:
+                target = None  # builder will fallback to external_device
+            cmd = build_mount_external_command(options.external, mount_options_str, target)
 
         if cmd:
             commands.append(cmd)
