@@ -12,16 +12,19 @@
 #
 #  Features:
 #    - Accepts base disks, partitions, and device-mapper paths.
-#    - If the exact device is not mounted, searches mounted children
-#      (e.g. partitions or mapped volumes) under the given device.
+#    - Searches both the device itself and its ancestors/descendants
+#      and returns the best matching mountpoint deterministically.
 #    - Uses findmnt(8) primarily; falls back to lsblk(8) scanning.
+#    - Handles MOUNTPOINTS column used by newer util-linux.
 #    - Deterministic exit codes for robust scripting.
 #
 #  Notes:
 #    - Designed for Linux systems with lsblk(8) and findmnt(8) available.
-#    - Returns the first matching mountpoint when multiple exist
-#      (e.g. bind mounts or multiple children). This keeps output
-#      deterministic for scripting.
+#    - Selection policy for multiple candidates:
+#        A) Prefer the candidate with the greatest dependency depth
+#           from the base device (deepest descendant).
+#        B) Tie breaker 1: prefer root mountpoint "/".
+#        C) Tie breaker 2: prefer non-removable-like FS over vfat/msdos/exfat/iso9660/squashfs.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -30,9 +33,11 @@
 #
 #  Usage:
 #      get-mountpoint.sh <device>
-#    Example:
+#    Examples:
 #      get-mountpoint.sh /dev/sdc1
 #      => /mnt/disk1
+#      get-mountpoint.sh /dev/sde
+#      => /            # when the deepest descendant mounts "/"
 #
 #  Error Conditions:
 #  0. Success.
@@ -114,8 +119,8 @@ validate_args() {
 
 # Try to obtain mountpoint directly from the device
 find_mountpoint_direct() {
-    DEVPATH="$1"
-    MP=$(findmnt -nr -S -- "$DEVPATH" -o TARGET 2>/dev/null || true)
+    SRC="$1"
+    MP=$(findmnt -nr -S "$SRC" -o TARGET 2>/dev/null || true)
     if [ -n "$MP" ]; then
         printf '%s\n' "$MP"
         return 0
@@ -123,24 +128,152 @@ find_mountpoint_direct() {
     return 1
 }
 
-# Scan children (partitions / mapped volumes) to find a mounted node
-find_mountpoint_children() {
+# List dependency chain ancestors for a device (upwards to base)
+# and descendants (children) for a base disk. Output: one NAME per line.
+list_related_devices() {
     DEVPATH="$1"
-    # Use -P to make parsing safe with spaces in mountpoints
-    lsblk -rpn -o NAME,MOUNTPOINT -P -- "$DEVPATH" 2>/dev/null \
-    | sed -n 's/.*MOUNTPOINT="\([^"]*\)".*/\1/p' \
-    | awk 'length($0) > 0 { print; exit }'
+    lsblk -rnp -o NAME -s -- "$DEVPATH" 2>/dev/null
+    lsblk -rnp -o NAME    -- "$DEVPATH" 2>/dev/null
+}
+
+# Parse NAME,FSTYPE,MOUNTPOINTS and return NAME<TAB>FSTYPE<TAB>FIRST_MOUNTPOINT
+get_name_fstype_first_mp() {
+    lsblk -rpn -o NAME,FSTYPE,MOUNTPOINTS -P -- "$1" 2>/dev/null | awk '
+        {
+            nm=""; mp=""; fs="";
+            for(i=1;i<=NF;i++){
+                if ($i ~ /^NAME="/)         nm=$i;
+                else if ($i ~ /^FSTYPE="/)  fs=$i;
+                else if ($i ~ /^MOUNTPOINTS="/) mp=$i;
+            }
+            if (nm != "" && mp != "") {
+                gsub(/^[^=]*="/,"",nm); gsub(/"$/,"",nm);
+                gsub(/^[^=]*="/,"",mp); gsub(/"$/,"",mp);
+                n=split(mp, arr, /[[:space:]]+/);
+                if (n>=1) {
+                    gsub(/^[^=]*="/,"",fs); gsub(/"$/,"",fs);
+                    print nm "\t" fs "\t" arr[1];
+                }
+            }
+        }'
+}
+
+# Compute depth from BASE to CAND in the block dependency chain
+# returns integer >=0 when CAND descends from BASE, otherwise -1
+depth_from_base() {
+    base="$1"; cand="$2"
+    d=$(lsblk -rpn -o NAME -s -- "$cand" 2>/dev/null | awk -v b="$base" '{
+        if ($0==b){ print NR-1; exit }
+    }')
+    if [ -n "$d" ]; then
+        printf '%s\n' "$d"
+    else
+        printf '%s\n' "-1"
+    fi
+}
+
+# Fallback: scan lsblk NAME and MOUNTPOINTS columns and return first non-empty mountpoint
+scan_mountpoint_via_lsblk() {
+    DEVPATH="$1"
+    lsblk -rpn -o NAME,TYPE,MOUNTPOINTS,MOUNTPOINT -P -- "$DEVPATH" 2>/dev/null | awk '
+        {
+            mp="";
+            for(i=1;i<=NF;i++){
+                if ($i ~ /^MOUNTPOINTS="/) mp=$i;
+                else if ($i ~ /^MOUNTPOINT="/ && mp=="") mp=$i;
+            }
+            if (mp != "") {
+                gsub(/^[^=]*="/,"",mp); gsub(/"$/,"",mp);
+                n=split(mp, arr, /[[:space:]]+/);
+                if (n>=1) { print arr[1]; exit }
+            }
+        }'
 }
 
 # Resolve and print mountpoint with error handling
 resolve_and_print() {
     DEV="$1"
 
-    # 1) Exact device mounted?
+    # 1) Try direct match for the given device
     MP=$(find_mountpoint_direct "$DEV") && { printf '%s\n' "$MP"; return 0; }
 
-    # 2) If base device given, check mounted children
-    MP=$(find_mountpoint_children "$DEV")
+    # 2) Build candidate list from ancestors and descendants (no subshell leaks)
+    tmpfile=""
+    if tmpfile=$(mktemp 2>/dev/null); then :; else fail 1 "Failed to create temporary file"; fi
+    list_related_devices "$DEV" | awk 'NF>0' > "$tmpfile"
+
+    candfile=""
+    if candfile=$(mktemp 2>/dev/null); then
+        :
+    else
+        rm -f "$tmpfile"
+        fail 1 "Failed to create temporary file"
+    fi
+
+    seen=""
+    while IFS= read -r CAND; do
+        case " $seen " in *" $CAND "*) continue ;; *) seen="$seen $CAND" ;; esac
+
+        MP=$(find_mountpoint_direct "$CAND")
+        if [ -n "$MP" ]; then
+            FS=$(findmnt -nr -S "$CAND" -o FSTYPE 2>/dev/null || true)
+            [ -n "$FS" ] || FS=""
+            printf '%s\t%s\t%s\n' "$CAND" "$FS" "$MP" >> "$candfile"
+            continue
+        fi
+
+        get_name_fstype_first_mp "$CAND" >> "$candfile"
+    done < "$tmpfile"
+    rm -f "$tmpfile"
+
+    # 3) Select best candidate by policy (depth > root > non-vfat)
+    best_mp=""
+    best_depth="-1"
+    best_fs=""
+
+    while IFS= read -r line; do
+        # Extract fields robustly regardless of IFS/tab handling
+        CNAME=$(printf '%s\n' "$line" | awk -F '\t' '{print $1}')
+        CFS=$(    printf '%s\n' "$line" | awk -F '\t' '{print $2}')
+        CMP=$(    printf '%s\n' "$line" | awk -F '\t' '{print $3}')
+        [ -n "$CMP" ] || continue
+
+        d=$(depth_from_base "$DEV" "$CNAME")
+        [ "$d" -ge 0 ] || continue
+
+        if [ "$best_depth" = "-1" ]; then
+            best_depth="$d"; best_mp="$CMP"; best_fs="$CFS"
+            continue
+        fi
+
+        if [ "$d" -gt "$best_depth" ]; then
+            best_depth="$d"; best_mp="$CMP"; best_fs="$CFS"
+            continue
+        fi
+
+        if [ "$d" -eq "$best_depth" ]; then
+            if [ "$CMP" = "/" ] && [ "$best_mp" != "/" ]; then
+                best_mp="$CMP"; best_fs="$CFS"
+                continue
+            fi
+            case "$best_fs" in vfat|msdos|exfat|iso9660|squashfs) best_is_vfat=1 ;; *) best_is_vfat=0 ;; esac
+            case "$CFS"         in vfat|msdos|exfat|iso9660|squashfs) cur_is_vfat=1  ;; *) cur_is_vfat=0  ;; esac
+            if [ "$best_is_vfat" -eq 1 ] && [ "$cur_is_vfat" -eq 0 ]; then
+                best_mp="$CMP"; best_fs="$CFS"
+                continue
+            fi
+        fi
+    done < "$candfile"
+
+    rm -f "$candfile"
+
+    if [ -n "$best_mp" ]; then
+        printf '%s\n' "$best_mp"
+        return 0
+    fi
+
+    # 4) Last fallback via lsblk scan
+    MP=$(scan_mountpoint_via_lsblk "$DEV")
     if [ -n "$MP" ]; then
         printf '%s\n' "$MP"
         return 0
