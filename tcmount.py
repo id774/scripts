@@ -120,6 +120,7 @@
 
 import os
 import subprocess
+import re
 import sys
 from optparse import OptionParser
 
@@ -236,6 +237,12 @@ def build_unmount_command(target):
     """
     return 'sudo truecrypt -d ~/mnt/{0}'.format(target)
 
+def build_unmount_external_command():
+    """
+    Build command to unmount the legacy external container by its file path.
+    """
+    return 'sudo truecrypt -d ~/mnt/external/container.tc'
+
 def build_mount_all_command(mount_options):
     """
     Build commands to mount all devices from sdc to sdz
@@ -252,7 +259,7 @@ def build_mount_external_command(external_device, mount_options, target=None):
     - target: explicit mountpoint name under ~/mnt (e.g., 'disk3')
     """
     # Default mountpoint to the external device name if not specified
-    if not target:
+    if target is None or str(target).strip() == "":
         target = external_device
     # Legacy fixed path expected by existing tests and prior behavior
     external_file = os.path.join('~', 'mnt', 'external', 'container.tc')
@@ -275,32 +282,30 @@ def process_mounting(options, args):
 
     commands = []
     if options.external:
-        # External container mount/unmount
         # Syntax:
         #   Mount   : -e <external_device> [<target>]
-        #   Unmount : -e <external_device> [<target>] unmount
-        cmd = None
-        is_unmount = bool(args) and args[-1] in ['unmount', 'umount']
+        #   Unmount : -e <external_device> [<target>] unmount|umount
+        #
+        # Rules:
+        # - For unmount: always detach by the container file path for compatibility.
+        # - For mount:
+        #     * If there are >=2 non-action tokens, use the last one as explicit target.
+        #     * If there is exactly 1 non-action token, use it as explicit target
+        #       unless it looks like a device name 'sd[a-z]'; otherwise default to <external_device>.
+        is_unmount = any(t in ['unmount', 'umount'] for t in args)
         if is_unmount:
-            # Explicit target form: -e sde disk3 unmount  -> args = ['disk3', 'unmount']
-            # Legacy/default     : -e sde unmount        -> args = ['unmount']
-            # Prefer the token before 'unmount' when present.
-            if len(args) >= 2 and args[0] not in ['unmount', 'umount']:
-                target = args[0]
-            else:
-                target = options.external
-            cmd = build_unmount_command(target)
+            commands.append(build_unmount_external_command())
         else:
-            # Mount: honor explicit target only when a 2nd positional arg exists.
-            # If not provided, default to the external device name.
-            if len(args) >= 2:
-                target = args[1]
+            tokens = [t for t in args if t not in ['unmount', 'umount']]
+            if len(tokens) >= 2:
+                explicit_target = tokens[-1]
+            elif len(tokens) == 1:
+                explicit_target = tokens[0] if not re.match(r'^sd[a-z]$', tokens[0]) else None
             else:
-                target = None  # builder will fallback to external_device
-            cmd = build_mount_external_command(options.external, mount_options_str, target)
-
-        if cmd:
-            commands.append(cmd)
+                explicit_target = None  # builder will fallback to external_device
+            commands.append(
+                build_mount_external_command(options.external, mount_options_str, explicit_target)
+            )
     else:
         if args:
             device = args[0]
@@ -315,7 +320,6 @@ def process_mounting(options, args):
                 # Mount: optional explicit target as second token
                 target = args[1] if len(args) > 1 else None
                 if target is None:
-                    # Call with two args to keep backward-compat tests passing
                     commands.append(build_mount_command(device, mount_options_str))
                 else:
                     commands.append(build_mount_command(device, mount_options_str, target))
