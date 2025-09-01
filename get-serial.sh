@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# get-serial: Print disk serial number from a given device path
+# get-serial.sh: Print disk serial number from a given device path
 #
 #  Description:
 #  Accepts a device path (e.g. /dev/sdc, /dev/sdc1, /dev/mapper/foo, /dev/dm-0)
@@ -22,10 +22,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      get-serial /dev/sdc
-#      get-serial /dev/mapper/disk1_crypt
-#    Compose with get-device:
-#      get-serial "$(get-device ~/mnt/disk1)"
+#      get-serial.sh /dev/sdc
+#      get-serial.sh /dev/mapper/disk1_crypt
+#    Compose with get-device.sh:
+#      get-serial.sh "$(get-device.sh ~/mnt/disk1)"
 #
 #  Exit Codes:
 #  0. Success.
