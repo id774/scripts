@@ -3,6 +3,7 @@ scripts Repository Version History
 
 v1.5.2 (Release Date: TBD)
 --------------------------
+- Add git-symlink.sh to manage symlinks in home directory for github and git bases.
 - Add get-serial utility to print disk serial number from a device path.
 - Add get-mountpoint utility to resolve mountpoint from a device path.
 - Add get-device utility to resolve base block device from mountpoint.
