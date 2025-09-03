@@ -17,11 +17,16 @@
 #      ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]
 #
 #  Default behavior is to show this help message. Use '--all' to pull from both github and git directories.
+#  Note: Specifying both '--github-only' and '--git-only' is treated as '--all'.
+#  '--reset' can be used as an alias of '--hard'.
 #
 #  WARNING: The '--hard' option performs 'git reset --hard' which can
 #  overwrite local changes. Use with caution.
 #
 #  Version History:
+#  v1.8 2025-09-04
+#       Treat combined --github-only and --git-only selectors as --all.
+#       Add --reset option as an alias of --hard.
 #  v1.7 2025-08-03
 #       Add directory existence check before processing git directories.
 #       Improve symlink handling by checking for conflicting existing files.
@@ -82,6 +87,7 @@ parse_arguments() {
     for arg in "$@"; do
         case "$arg" in
             --hard) HARD_MODE=true ;;
+            --reset) HARD_MODE=true ;;
             --no-symlink) NO_SYMLINK=true ;;
             --dry-run) DRY_RUN=true ;;
             --github-only) GITHUB_ONLY=true ;;
@@ -165,7 +171,8 @@ main() {
 
     parse_arguments "$@"
 
-    if [ "$ALL" = true ]; then
+    # Treat combined selectors as --all for consistency
+    if [ "$ALL" = true ] || { [ "$GITHUB_ONLY" = true ] && [ "$GIT_ONLY" = true ]; }; then
         process_directory "$HOME/local/github"
         process_directory "$HOME/local/git"
     elif [ "$GITHUB_ONLY" = true ]; then
