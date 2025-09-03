@@ -21,8 +21,9 @@
 #      ./git-symlink.sh [--dry-run] [--github-only] [--git-only] [--all]
 #      ./git-symlink.sh -u|--uninstall [--github-only] [--git-only] [--all]
 #
-#  Default behavior is to show this help message. Use '--all' to operate on both
-#  github and git bases. In default (sync) mode the script:
+#  Default behavior (no selector specified) is to show this help message.
+#  Use '--all' to operate on both github and git bases, or select one
+#  with '--github-only' or '--git-only'. In default (sync) mode the script:
 #    1) Force-creates symlinks in $HOME for each first-level directory
 #       under the selected base(s).
 #    2) Purges ALL broken symlinks that exist directly under $HOME.
@@ -101,13 +102,19 @@ select_bases() {
     github_base="${home_dir}/local/github"
     git_base="${home_dir}/local/git"
 
-    if [ "$ALL" = true ] || { [ "$GITHUB_ONLY" = false ] && [ "$GIT_ONLY" = false ] && [ "$ALL" = false ]; }; then
-        # Default to ALL when no specific selector was provided
+    # Selection rules:
+    # 1) --all               -> both bases
+    # 2) --github-only       -> github base
+    # 3) --git-only          -> git base
+    # 4) both selectors set  -> both bases
+    # 5) no selector         -> return empty to trigger usage()
+
+    if [ "$ALL" = true ]; then
         echo "${github_base} ${git_base}"
         return 0
     fi
 
-    if [ "$ALL" = true ]; then
+    if [ "$GITHUB_ONLY" = true ] && [ "$GIT_ONLY" = true ]; then
         echo "${github_base} ${git_base}"
         return 0
     fi
@@ -122,7 +129,7 @@ select_bases() {
         return 0
     fi
 
-    # No selection given -> return empty to let main() show usage
+    # No selection given -> empty
     return 0
 }
 
