@@ -46,19 +46,11 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./install_google_chrome.sh [OPTION]
-#
-#  Options:
-#  -h   Display this help message (prints the header block).
+#      ./install_google_chrome.sh
 #
 #  Version History:
-#  v1.1 2025-09-04
-#       Add keyring fingerprint comparison and automatic replacement if the
-#       existing key is missing, unreadable, or mismatched. Skip apt install
-#       when google-chrome-stable is already installed.
 #  v1.0 2025-09-04
-#       Initial release for Debian 13. Add Google repo (signed-by) and install
-#       google-chrome-stable via apt with idempotent behavior.
+#       Initial release for Debian 13.
 #
 ########################################################################
 
