@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# debian_desktop_setup.sh: Apply GNOME settings for Flashback session
+# debian_gnome_flashback_setup.sh: Apply GNOME settings for Flashback session
 #
 #  Description:
 #  Apply GNOME settings used with Flashback. This script:
@@ -28,7 +28,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./debian_desktop_setup.sh
+#      ./debian_gnome_flashback_setup.sh
 #
 #  Notes:
 #  - Run inside a logged in desktop user session because gsettings and dconf
