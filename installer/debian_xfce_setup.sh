@@ -126,7 +126,7 @@ check_session_bus() {
 }
 
 # ----- xfconf helpers ----------------------------------------------------
-g
+
 # Set an xfconf key (bool) and confirm value
 xfconf_settings_bool() {
     # Args: CHANNEL KEY VALUE(true|false)
@@ -228,6 +228,10 @@ apply_wallpaper_none() {
     # Disable image-show if keys exist
     for p in $(xfconf-query -c xfce4-desktop -l 2>/dev/null | grep '/backdrop/' | grep 'image-show$'); do
         xfconf_settings_bool xfce4-desktop "$p" false
+    done
+    # Set image-style to 0 (None) for all monitors
+    for p in $(xfconf-query -c xfce4-desktop -l 2>/dev/null | grep '/backdrop/' | grep 'image-style$'); do
+        xfconf_settings_int xfce4-desktop "$p" 0
     done
 }
 
