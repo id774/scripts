@@ -209,7 +209,7 @@ utils_packages() {
 # Optional packages
 optional_packages() {
     smart_apt thunderbird thunderbird-locale-ja firefox firefox-locale-ja \
-              fcitx-mozc emacs-mozc mozc-server mozc-utils-gui libreoffice vim-gnome gthumb thunar bittorrent-gui ktorrent qbittorrent \
+              emacs-mozc mozc-server mozc-utils-gui libreoffice vim-gnome gthumb thunar bittorrent-gui ktorrent qbittorrent \
               vlc pidgin xpdf evince comix fbreader wireshark xtightvncviewer chromium chromium-l10n
 }
 
