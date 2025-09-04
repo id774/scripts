@@ -22,6 +22,7 @@
 #    - Appearance: prefer dark color scheme; set GTK theme Adwaita-dark when available
 #    - Panels: remove panel-2 and keep panel-1 only
 #    - Wallpaper: set to none (no image)
+#    - Power management: disable display power management and sleep timeouts (AC/Battery)
 #    - Profiles & autostart: install xfce4-terminal profile; install xmodmap autostart entry
 #                            install xset-rate autostart entry
 #
@@ -259,6 +260,28 @@ apply_dark_mode_settings() {
     xfconf_settings_string xsettings /Net/IconThemeName "Adwaita"
 }
 
+# ----- power management settings ------------------------------------------
+
+# Disable display power management and sleep timeouts (AC/Battery)
+apply_power_settings() {
+    echo "[INFO] Disabling display power management and sleep timeouts (AC/Battery)"
+    # Display blanking / DPMS on AC
+    xfconf_settings_int xfce4-power-manager /xfce4-power-manager/blank-on-ac 0
+    xfconf_settings_int xfce4-power-manager /xfce4-power-manager/dpms-on-ac-off 0
+    xfconf_settings_int xfce4-power-manager /xfce4-power-manager/dpms-on-ac-sleep 0
+    xfconf_settings_int xfce4-power-manager /xfce4-power-manager/dpms-on-ac-standby 0
+    xfconf_settings_int xfce4-power-manager /xfce4-power-manager/sleep-display-ac 0
+    xfconf_settings_int xfce4-power-manager /xfce4-power-manager/sleep-computer-ac 0
+
+    # Display blanking / DPMS on Battery
+    xfconf_settings_int xfce4-power-manager /xfce4-power-manager/blank-on-battery 0
+    xfconf_settings_int xfce4-power-manager /xfce4-power-manager/dpms-on-battery-off 0
+    xfconf_settings_int xfce4-power-manager /xfce4-power-manager/dpms-on-battery-sleep 0
+    xfconf_settings_int xfce4-power-manager /xfce4-power-manager/dpms-on-battery-standby 0
+    xfconf_settings_int xfce4-power-manager /xfce4-power-manager/sleep-display-battery 0
+    xfconf_settings_int xfce4-power-manager /xfce4-power-manager/sleep-computer-battery 0
+}
+
 # ----- panel settings ----------------------------------------------------
 
 # Remove panel-2 and keep panel-1
@@ -410,6 +433,7 @@ main() {
     apply_media_handling_settings
     apply_ui_settings
     apply_lock_settings
+    apply_power_settings
     apply_dark_mode_settings
     install_xfce4_terminal_profile
     install_xmodmap_autostart
