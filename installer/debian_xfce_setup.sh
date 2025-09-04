@@ -10,14 +10,18 @@
 #    - WM keybindings (xfwm4):
 #        * Switch to workspace 1..9 with <Primary>1..9
 #        * Move window to workspace 1..9 with <Primary><Alt>1..9
-#        * Switch/move by direction with <Control><Alt>Arrow and <Shift><Control><Alt>Arrow
+#        * Switch/move by direction with <Primary><Alt>Arrow and <Shift><Primary><Alt>Arrow
+#        * Maximize window with <Primary><Alt>z
 #    - Media keys and custom app shortcuts (xfce4-keyboard-shortcuts):
 #        * Manual lock <Primary><Alt>l via xflock4
 #        * Screenshot <Primary><Alt>s (full), <Primary><Alt>a (region)
 #        * Open WWW <Primary><Alt>f
-#        * Custom launchers: xfce4-terminal, emacs, thunar, vmware, gthumb
+#        * Custom launchers: xfce4-terminal (C-x), emacs, thunar (C-t), vmware, gthumb
+#        * Settings Manager <Primary><Alt>w
 #    - Lock & idle behavior: keep manual lock, disable auto lock/blank
 #    - Appearance: prefer dark color scheme; set GTK theme Adwaita-dark when available
+#    - Panels: remove panel-2 and keep panel-1 only
+#    - Wallpaper: set to none (no image)
 #    - Profiles & autostart: install xfce4-terminal profile; install xmodmap autostart entry
 #                            install xset-rate autostart entry
 #
@@ -122,7 +126,7 @@ check_session_bus() {
 }
 
 # ----- xfconf helpers ----------------------------------------------------
-
+g
 # Set an xfconf key (bool) and confirm value
 xfconf_settings_bool() {
     # Args: CHANNEL KEY VALUE(true|false)
@@ -201,7 +205,7 @@ apply_media_handling_settings() {
     xfconf_settings_bool thunar-volman /automount-media  false
 }
 
-# ----- apply UI settings (desktop icons, workspaces) ---------------------
+# ----- apply UI settings (desktop icons, workspaces, wallpaper) ----------
 
 # Apply UI settings (desktop icons, workspaces)
 apply_ui_settings() {
@@ -214,6 +218,19 @@ apply_ui_settings() {
     xfconf_settings_int xfwm4 /general/workspace_count 9
 }
 
+# Set wallpaper to none (no image)
+apply_wallpaper_none() {
+    echo "[INFO] Setting wallpaper to none"
+    # Clear image-path/last-image across all monitors/workspaces if present
+    for p in $(xfconf-query -c xfce4-desktop -l 2>/dev/null | grep '/backdrop/' | grep -E '(image-path|last-image)$'); do
+        xfconf_settings_string xfce4-desktop "$p" ""
+    done
+    # Disable image-show if keys exist
+    for p in $(xfconf-query -c xfce4-desktop -l 2>/dev/null | grep '/backdrop/' | grep 'image-show$'); do
+        xfconf_settings_bool xfce4-desktop "$p" false
+    done
+}
+
 # ----- apply lock and idle settings -------------------------------------
 
 # Apply lock and idle settings (keep manual lock, disable only auto lock/blank)
@@ -223,7 +240,7 @@ apply_lock_settings() {
         xfconf_settings_bool xfce4-screensaver /lock/enabled  false
         xfconf_settings_bool xfce4-screensaver /saver/enabled false
     else
-        echo "[WARN] xfce4-screensaver not found; skipping screensaver keys."
+        echo "[INFO] xfce4-screensaver not found; skipping screensaver keys."
     fi
 
     # Idling/blanking is handled by xset-rate autostart (installed below)
@@ -236,6 +253,20 @@ apply_lock_settings() {
 apply_dark_mode_settings() {
     xfconf_settings_string xsettings /Net/ThemeName     "Adwaita-dark"
     xfconf_settings_string xsettings /Net/IconThemeName "Adwaita"
+}
+
+# ----- panel settings ----------------------------------------------------
+
+# Remove panel-2 and keep panel-1
+apply_panel_settings() {
+    if xfconf-query -c xfce4-panel -p /panels/panel-2 -v >/dev/null 2>&1; then
+        echo "[INFO] Removing xfce4-panel panel-2"
+        if ! xfconf-query -c xfce4-panel -p /panels/panel-2 -r -R; then
+            echo "[WARN] Failed to remove /panels/panel-2 subtree" >&2
+        fi
+    else
+        echo "[INFO] panel-2 not present; nothing to remove"
+    fi
 }
 
 # ----- import Xfce keybindings ------------------------------------------
@@ -251,20 +282,23 @@ import_xfce_keybindings() {
     done
 
     # WM: Switch/move by direction
-    xfconf_settings_string xfwm4 /general/cycle_workspaces_key       "<Control><Alt>Right"
-    xfconf_settings_string xfwm4 /general/cycle_workspaces_prev_key  "<Control><Alt>Left"
-    xfconf_settings_string xfwm4 /general/move_window_left_workspace_key  "<Shift><Control><Alt>Left"
-    xfconf_settings_string xfwm4 /general/move_window_right_workspace_key "<Shift><Control><Alt>Right"
+    xfconf_settings_string xfwm4 /general/cycle_workspaces_key       "<Primary><Alt>Right"
+    xfconf_settings_string xfwm4 /general/cycle_workspaces_prev_key  "<Primary><Alt>Left"
+    xfconf_settings_string xfwm4 /general/move_window_left_workspace_key  "<Shift><Primary><Alt>Left"
+    xfconf_settings_string xfwm4 /general/move_window_right_workspace_key "<Shift><Primary><Alt>Right"
 
-    # Custom app shortcuts
+    # WM: Maximize
+    xfconf_settings_string xfwm4 /general/maximize_window_key "<Primary><Alt>z"
+
+    # Custom app shortcuts (C-x terminal, C-t thunar = spec)
     ch="xfce4-keyboard-shortcuts"
-
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>x" "xfce4-terminal"
+    xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>t" "thunar"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>e" "emacs"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>f" "exo-open --launch WebBrowser"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>g" "gthumb"
-    xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>t" "thunar"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>v" "vmware"
+    xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>w" "xfce4-settings-manager"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>s" "xfce4-screenshooter -f"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>a" "xfce4-screenshooter -r"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>l" "xflock4"
