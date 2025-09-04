@@ -11,6 +11,7 @@ v1.5.2 (Release Date: TBD)
 - Fix external mount to honor explicit target and preserve legacy container path in tcmount.py.
 - Fix bug where files in the current directory were not handled by execute permission logic in setup_scripts.sh.
 - Update git-all-pull.sh to treat combined selectors as all and add reset alias for hard.
+- Initialize chkrootkit baseline during installation and remove chkrootkit opts setup.
 
 v1.5.1 (2025-08-29)
 -------------------

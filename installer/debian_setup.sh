@@ -288,7 +288,6 @@ setup_config_files() {
     "$SCRIPTS/installer/setup_pamd.sh"
     "$SCRIPTS/installer/setup_securetty.sh"
     "$SCRIPTS/installer/setup_rsyslog_cron.sh"
-    "$SCRIPTS/installer/setup_chkrootkit_opts.sh"
 
     # System services and daemons
     "$SCRIPTS/installer/setup_memcached_conf.sh"
