@@ -21,8 +21,8 @@
 #          user env (crontab, aliases, MOTD), IPython dotfiles,
 #          permissions fixes and sysctl apply, cleanup of shell history
 #    - (Optional) Desktop provisioning:
-#        * Desktop packages (debian_desktop_apt.sh) and GNOME/Flashback settings
-#          (debian_desktop_setup.sh) can be included when building a desktop host.
+#        * Desktop packages (debian_desktop_apt.sh) and DE specific settings
+#          (debian_desktop_setup.sh) can be included by passing a desktop option.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -30,19 +30,21 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./debian_init.sh [--with-desktop]
+#      ./debian_init.sh                    # base setup only
+#      ./debian_init.sh --xfce             # include XFCE desktop provisioning
+#      ./debian_init.sh --gnome-flashback  # include GNOME Flashback provisioning
 #
 #  Description:
 #  - Run the script directly; it will configure base system setup.
-#  - Use --with-desktop if you want to include desktop provisioning steps.
+#  - Use --xfce or --gnome-flashback to include desktop provisioning steps.
 #
 #  Notes:
 #  - The script is designed for Debian-based systems (Debian, Ubuntu, etc.).
 #  - Internet connectivity is required for package installations.
 #  - Review and modify the installation scripts as needed before execution.
 #  - By default, only minimal system setup is applied. Desktop provisioning
-#    requires explicit --with-desktop option to avoid accidental GUI stack
-#    installation on server hosts.
+#    runs only when --xfce or --gnome-flashback is specified to avoid
+#    accidental GUI stack installation on server hosts.
 #
 #  Error Conditions:
 #  - If the system is not Debian-based, the script exits with an error.
@@ -50,6 +52,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v6.1 2025-09-05
+#       Replace --with-desktop with --xfce or --gnome-flashback and pass through
+#       the selected option to debian_desktop_setup.sh.
 #  v6.0 2025-08-20
 #       Add --with-desktop option to trigger desktop setup steps.
 #       Expanded header documentation to enumerate orchestrated phases and clarify
@@ -71,9 +76,6 @@
 #       First version.
 #
 ########################################################################
-
-# Option flags (default off)
-WITH_DESKTOP=0
 
 # Display full script header information extracted from the top comment block
 usage() {
@@ -155,11 +157,17 @@ confirm_execution() {
 }
 
 # Parse command line arguments
+# Accepts: --xfce | --gnome-flashback | none | -h|--help|-v|--version
 parse_args() {
+    DESKTOP_OPTION=""
     for arg in "$@"; do
         case "$arg" in
-            --with-desktop)
-                WITH_DESKTOP=1
+            --xfce|--gnome-flashback)
+                if [ -n "$DESKTOP_OPTION" ]; then
+                    echo "[ERROR] Specify at most one desktop option." >&2
+                    exit 1
+                fi
+                DESKTOP_OPTION="$arg"
                 ;;
             -h|--help|-v|--version)
                 usage
@@ -170,11 +178,12 @@ parse_args() {
                 ;;
         esac
     done
+    echo "$DESKTOP_OPTION"
 }
 
 # Main entry point of the script
 main() {
-    parse_args "$@"
+    DESKTOP_OPTION="$(parse_args "$@")"
 
     # Check if the system is Debian-based before proceeding
     check_system
@@ -196,11 +205,11 @@ main() {
     # System customization
     "$SCRIPTS/installer/debian_setup.sh"
 
-    # Optional: Install desktop-related packages and customization
-    if [ "$WITH_DESKTOP" -eq 1 ]; then
-        echo "[INFO] Running desktop setup as requested"
+    # Optional desktop provisioning when a desktop option is provided
+    if [ -n "$DESKTOP_OPTION" ]; then
+        echo "[INFO] Running desktop setup as requested: $DESKTOP_OPTION"
         "$SCRIPTS/installer/debian_desktop_apt.sh"
-        "$SCRIPTS/installer/debian_desktop_setup.sh"
+        "$SCRIPTS/installer/debian_desktop_setup.sh" "$DESKTOP_OPTION"
     fi
 
     echo "[INFO] All Debian initial setup completed successfully."
