@@ -30,9 +30,13 @@
 #      recover from key rotations.
 #    - Minimal changes: no aggressive cleanup of existing repo lines; only the
 #      expected configuration is added or updated when absent.
+#    - Permissions: the Google Linux keyring file is always forced to mode 0644
+#      after repository configuration to guarantee readability by APT. This
+#      requires the availability of chmod and is safe to run repeatedly because
+#      the operation is idempotent.
 #
 #  Requirements:
-#    - Linux system with: sudo, awk, uname, cp, rm, mktemp, curl, gpg, tee, apt, grep, mkdir, dpkg
+#    - Linux system with: sudo, awk, uname, cp, rm, chmod, mktemp, curl, gpg, tee, apt, grep, mkdir, dpkg
 #    - Network connectivity to dl.google.com
 #    - Sudo privilege for system modifications
 #
@@ -120,7 +124,7 @@ setup_environment() {
 
     echo "[INFO] Checking required commands..."
     # Verify that all external tools required by the script are available.
-    check_commands awk uname cp rm mktemp curl gpg tee apt grep mkdir dpkg
+    check_commands awk uname cp rm chmod mktemp curl gpg tee apt grep mkdir dpkg
 
     echo "[INFO] Checking network connectivity..."
     # Ensure basic internet connectivity is present before continuing.
@@ -258,6 +262,7 @@ configure_repository() {
             echo "[INFO] Repo already configured: $LISTFILE"
         fi
     fi
+    sudo chmod 644 "$KEYRING"
 }
 
 # Ensure the package is installed while keeping re-runs quiet.
