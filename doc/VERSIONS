@@ -8,6 +8,7 @@ v1.5.2 (Release Date: TBD)
 - Update debian_init.sh to replace --with-desktop with --xfce or --gnome-flashback and pass the option through to desktop setup.
 - Update debian_desktop_setup.sh to dispatch to per desktop setup scripts based on --xfce or --gnome-flashback.
 - Add install_google_chrome.sh for Debian to add the Google repository and install google-chrome-stable with keyring verification and idempotent behavior.
+- Add www only option and make selector flags additive with all including www in git-all-pull.sh.
 - Add xmap command to run xmodmap internally and integrate into system scripts.
 - Add git-symlink.sh to manage symlinks in home directory for github and git bases.
 - Add get-serial utility to print disk serial number from a device path.
@@ -17,7 +18,6 @@ v1.5.2 (Release Date: TBD)
 - Fix external mount to honor explicit target and preserve legacy container path in tcmount.py.
 - Fix bug where files in the current directory were not handled by execute permission logic in setup_scripts.sh.
 - Update setup_xdg_dirs_en.sh to allow execution by non-sudo users with --no-sudo option.
-- Update git-all-pull.sh to treat combined selectors as all and add reset alias for hard.
 - Initialize chkrootkit baseline during installation and remove chkrootkit opts setup.
 
 v1.5.1 (2025-08-29)

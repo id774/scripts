@@ -14,18 +14,19 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--all]
+#      ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--www-only] [--all]
 #
-#  Default behavior is to show this help message. Use '--all' to pull from both github and git directories.
-#  Note: Specifying both '--github-only' and '--git-only' is treated as '--all'.
+#  Default behavior is to show this help message. Use '--all' to pull from github, git, and www targets.
+#  Note: Specifying both '--github-only' and '--git-only' selects both trees (github and git) and does not include www.
 #  '--reset' can be used as an alias of '--hard'.
 #
 #  WARNING: The '--hard' option performs 'git reset --hard' which can
 #  overwrite local changes. Use with caution.
 #
 #  Version History:
-#  v1.8 2025-09-04
-#       Treat combined --github-only and --git-only selectors as --all.
+#  v1.8 2025-09-05
+#       Add --www-only option to pull /var/www/wordpress and /var/www/html/current when present.
+#       Ensure --all also runs www-only processing. Existing options like --dry-run and --hard apply.
 #       Add --reset option as an alias of --hard.
 #  v1.7 2025-08-03
 #       Add directory existence check before processing git directories.
@@ -56,6 +57,7 @@ DRY_RUN=false
 GITHUB_ONLY=false
 GIT_ONLY=false
 ALL=false
+WWW_ONLY=false
 SHOW_HELP=false
 
 # Display full script header information extracted from the top comment block
@@ -92,6 +94,7 @@ parse_arguments() {
             --dry-run) DRY_RUN=true ;;
             --github-only) GITHUB_ONLY=true ;;
             --git-only) GIT_ONLY=true ;;
+            --www-only) WWW_ONLY=true ;;
             --all) ALL=true ;;
             *) SHOW_HELP=true ;;
         esac
@@ -161,6 +164,32 @@ process_directory() {
     done
 }
 
+# Process www targets
+process_www_only() {
+    # List of www paths to process
+    for repo in /var/www/wordpress /var/www/html/current; do
+        if [ -d "$repo" ]; then
+            # Require a git repository to avoid errors on deployed trees
+            if [ -d "$repo/.git" ]; then
+                pull_repo "$repo"
+            else
+                if [ "$DRY_RUN" = true ]; then
+                    echo "[INFO] DRY RUN: Would skip non-repository: $repo"
+                else
+                    echo "[WARN] Skipping non-repository: $repo" >&2
+                fi
+            fi
+        else
+            # Spec says: if directory does not exist, skip as normal processing (not an error)
+            if [ "$DRY_RUN" = true ]; then
+                echo "[INFO] DRY RUN: Directory not found (skip as normal): $repo"
+            else
+                echo "[INFO] Directory not found (skip as normal): $repo"
+            fi
+        fi
+    done
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
@@ -171,16 +200,29 @@ main() {
 
     parse_arguments "$@"
 
-    # Treat combined selectors as --all for consistency
-    if [ "$ALL" = true ] || { [ "$GITHUB_ONLY" = true ] && [ "$GIT_ONLY" = true ]; }; then
+    # Dispatch logic:
+    if [ "$ALL" = true ]; then
         process_directory "$HOME/local/github"
         process_directory "$HOME/local/git"
-    elif [ "$GITHUB_ONLY" = true ]; then
-        process_directory "$HOME/local/github"
-    elif [ "$GIT_ONLY" = true ]; then
-        process_directory "$HOME/local/git"
+        process_www_only
     else
-        usage
+        ran=false
+        if [ "$GITHUB_ONLY" = true ]; then
+            process_directory "$HOME/local/github"
+            ran=true
+        fi
+        if [ "$GIT_ONLY" = true ]; then
+            process_directory "$HOME/local/git"
+            ran=true
+        fi
+        if [ "$WWW_ONLY" = true ]; then
+            process_www_only
+            ran=true
+        fi
+        # If no selector was provided, show help
+        if [ "$ran" = false ]; then
+            usage
+        fi
     fi
     return 0
 }
