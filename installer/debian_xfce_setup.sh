@@ -320,6 +320,7 @@ import_xfce_keybindings() {
     # Custom app shortcuts (C-x terminal, C-t thunar = spec)
     ch="xfce4-keyboard-shortcuts"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>x" "xfce4-terminal"
+    xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>c" "xfce4-appfinder --collapsed"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>t" "thunar"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>e" "emacs"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>f" "exo-open --launch WebBrowser"
