@@ -182,7 +182,8 @@ uninstall_sysadmin_scripts() {
         usershells \
         port-upgrade \
         port-cleanup \
-        restart-sshd
+        restart-sshd \
+        xmap
 
     echo "[INFO] Uninstallation completed."
 }
@@ -236,6 +237,9 @@ setup_debian_scripts() {
     install_scripts 755 dpkg-hold.sh dpkg-hold
     install_scripts 755 gpg-import.sh gpg-import
     install_scripts 755 tcmount.py tcmount
+    if command -v xmodmap >/dev/null 2>&1; then
+        install_scripts 755 xmap.sh xmap
+    fi
 }
 
 # Install system administration scripts based on the system type
