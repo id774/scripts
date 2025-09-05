@@ -17,8 +17,19 @@
 #  Usage:
 #  Run the script without any arguments:
 #      ./setup_xdg_dirs_en.sh
+#  Run without sudo operations (update only):
+#      ./setup_xdg_dirs_en.sh --no-sudo
+#      ./setup_xdg_dirs_en.sh -n
+#
+#  Options:
+#    -h, --help       Show this help (prints the header block)
+#    -v, --version    Show the version (prints the header block)
+#    -n, --no-sudo    Skip any sudo/apt operations and only update user dirs
 #
 #  Version History:
+#  v1.7 2025-09-05
+#       Add --no-sudo/-n mode for non-sudo users: run update_xdg_dirs only
+#       without any sudo/apt operations.
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-04-13
@@ -78,7 +89,6 @@ check_sudo() {
     fi
 }
 
-
 # Install xdg-user-dirs-gtk if not already installed
 install_xdg_user_dirs_gtk() {
     if ! dpkg -l | grep -q xdg-user-dirs-gtk; then
@@ -107,17 +117,24 @@ update_xdg_dirs() {
 
 # Main entry point of the script
 main() {
+    SUDO_MODE=1
     case "$1" in
         -h|--help|-v|--version) usage ;;
+        -n|--no-sudo) SUDO_MODE=0 ;;
     esac
 
     # Perform system checks
     check_system
-    check_commands apt sudo dpkg grep
-    check_sudo
 
-    # Install xdg-user-dirs-gtk if necessary
-    install_xdg_user_dirs_gtk
+    if [ "$SUDO_MODE" = "1" ]; then
+        check_commands apt dpkg grep
+        check_sudo
+
+        # Install xdg-user-dirs-gtk if necessary
+        install_xdg_user_dirs_gtk
+    else
+        check_commands xdg-user-dirs-gtk-update
+    fi
 
     # Update user directories
     update_xdg_dirs
