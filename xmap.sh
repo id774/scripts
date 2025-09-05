@@ -54,19 +54,12 @@ apply_xmodmap() {
     file="$HOME/.Xmodmap"
     if [ ! -f "$file" ]; then
         echo "[INFO] ~/.Xmodmap not found; skipped."
-        return 0
+        return 2
     fi
 
     echo "[INFO] Applying $file..."
-    xmodmap "$file"
-    rc=$?
-    if [ $rc -ne 0 ]; then
-        echo "[ERROR] Failed to apply $file (exit $rc)." >&2
-        return $rc
-    fi
-
-    echo "[INFO] Successfully applied $file."
-    return 0
+    xmodmap -verbose "$file"
+    return $?
 }
 
 # Main entry point of the script
