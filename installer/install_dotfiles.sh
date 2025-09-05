@@ -30,6 +30,8 @@
 #  - Run with appropriate permissions if modifying system-wide settings.
 #
 #  Version History:
+#  v3.1 2025-09-05
+#       Add xinputrc to dotfiles deployment
 #  v3.0 2025-08-23
 #       Add known_hosts deployment using a single shared ssh file copier.
 #  v2.9 2025-07-21
@@ -126,7 +128,7 @@ mkdir_if_not_exist() {
 
 # Deploy user dotfiles such as .zshrc, .vimrc, etc.
 deploy_dotfile() {
-    for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore condarc gemrc Rprofile emacs; do
+    for DOT_FILES in zshrc screenrc vimrc gvimrc gitconfig gitignore condarc gemrc Rprofile emacs xinputrc; do
         if test -d "$1"; then
             if ! sudo cp "$OPTIONS" "$SCRIPTS/dot_files/dot_$DOT_FILES" "$1/.$DOT_FILES"; then
                 echo "[ERROR] Failed to copy dot_$DOT_FILES to $1." >&2
