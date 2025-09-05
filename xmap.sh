@@ -53,7 +53,7 @@ check_commands() {
 apply_xmodmap() {
     file="$HOME/.Xmodmap"
     if [ ! -f "$file" ]; then
-        echo "[INFO] No $file found; nothing to apply."
+        echo "[INFO] ~/.Xmodmap not found; skipped."
         return 0
     fi
 
