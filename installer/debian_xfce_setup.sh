@@ -171,11 +171,6 @@ EOF
     fi
 
     if ! chmod 0755 "$dst"; then echo "[ERROR] Failed to chmod 0755 $dst" >&2; exit 1; fi
-
-    # Warn if ~/bin is not in PATH
-    case ":$PATH:" in *":$HOME/bin:"*) : ;; *)
-        echo "[WARN] $HOME/bin is not in PATH. Add it to your shell profile to use 'locknow'." >&2 ;;
-    esac
 }
 
 # ----- xfconf helpers ----------------------------------------------------
@@ -380,7 +375,7 @@ import_xfce_keybindings() {
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>w" "xfce4-settings-manager"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>s" "xfce4-screenshooter -f"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>a" "xfce4-screenshooter -r"
-    xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>l" "locknow"
+    xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>l" "$HOME/bin/locknow"
 }
 
 # ----- other helpers -----------------------------------------------------
