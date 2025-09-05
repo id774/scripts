@@ -126,6 +126,58 @@ check_session_bus() {
     fi
 }
 
+# ----- locknow installer (user scope) ------------------------------------
+
+# Create ~/bin/locknow safely and idempotently (no sudo required)
+install_locknow_user() {
+    dst="$HOME/bin/locknow"
+    dstdir="$HOME/bin"
+
+    # Prepare directory
+    if [ ! -d "$dstdir" ]; then
+        echo "[INFO] Creating directory: $dstdir"
+        if ! mkdir -p "$dstdir"; then
+            echo "[ERROR] Failed to create directory: $dstdir" >&2
+            exit 1
+        fi
+    fi
+
+    # Build new content to a temp file
+    tmp="$(mktemp "${TMPDIR:-/tmp}/locknow.XXXXXX")" || {
+        echo "[ERROR] Failed to create temp file for $dst" >&2; exit 1; }
+
+    umask 022
+    cat >"$tmp" <<'EOF'
+#!/bin/sh
+# Lock screen then immediately power off the display
+xflock4
+sleep 1
+xset dpms force off
+EOF
+
+    # Idempotent replace: only move if content differs
+    if [ -f "$dst" ]; then
+        if command -v cmp >/dev/null 2>&1 && cmp -s "$tmp" "$dst"; then
+            rm -f "$tmp"
+        else
+            if ! mv "$tmp" "$dst"; then
+                echo "[ERROR] Failed to update $dst" >&2; rm -f "$tmp"; exit 1
+            fi
+        fi
+    else
+        if ! mv "$tmp" "$dst"; then
+            echo "[ERROR] Failed to place $dst" >&2; rm -f "$tmp"; exit 1
+        fi
+    fi
+
+    if ! chmod 0755 "$dst"; then echo "[ERROR] Failed to chmod 0755 $dst" >&2; exit 1; fi
+
+    # Warn if ~/bin is not in PATH
+    case ":$PATH:" in *":$HOME/bin:"*) : ;; *)
+        echo "[WARN] $HOME/bin is not in PATH. Add it to your shell profile to use 'locknow'." >&2 ;;
+    esac
+}
+
 # ----- xfconf helpers ----------------------------------------------------
 
 # Set an xfconf key (bool) and confirm value
@@ -328,7 +380,7 @@ import_xfce_keybindings() {
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>w" "xfce4-settings-manager"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>s" "xfce4-screenshooter -f"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>a" "xfce4-screenshooter -r"
-    xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>l" "xflock4"
+    xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>l" "locknow"
 }
 
 # ----- other helpers -----------------------------------------------------
@@ -428,13 +480,14 @@ main() {
     check_scripts
     check_session_bus
     check_desktop_installed
-    check_commands xfconf-query mkdir cp awk chmod uname grep ls wc tr
+    check_commands xfconf-query xflock4 xset mkdir cp awk chmod uname grep ls wc tr mktemp cmp
 
     apply_media_handling_settings
     apply_ui_settings
     apply_lock_settings
     apply_power_settings
     apply_dark_mode_settings
+    install_locknow_user
     install_xfce4_terminal_profile
     install_xmodmap_autostart
     install_xset_autostart
