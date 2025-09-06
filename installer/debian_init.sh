@@ -52,7 +52,7 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
-#  v6.1 2025-09-05
+#  v6.1 2025-09-06
 #       Replace --with-desktop with --xfce or --gnome-flashback and pass through
 #       the selected option to debian_desktop_setup.sh.
 #  v6.0 2025-08-20
@@ -156,34 +156,29 @@ confirm_execution() {
     esac
 }
 
-# Parse command line arguments
-# Accepts: --xfce | --gnome-flashback | none | -h|--help|-v|--version
-parse_args() {
-    DESKTOP_OPTION=""
-    for arg in "$@"; do
-        case "$arg" in
-            --xfce|--gnome-flashback)
-                if [ -n "$DESKTOP_OPTION" ]; then
-                    echo "[ERROR] Specify at most one desktop option." >&2
-                    exit 1
-                fi
-                DESKTOP_OPTION="$arg"
-                ;;
-            -h|--help|-v|--version)
-                usage
-                ;;
-            *)
-                echo "[ERROR] Unknown option: $arg" >&2
-                usage
-                ;;
-        esac
-    done
-    echo "$DESKTOP_OPTION"
-}
-
 # Main entry point of the script
 main() {
-    DESKTOP_OPTION="$(parse_args "$@")"
+    # Handle help and desktop options before any environment checks
+    DESKTOP_OPTION=""
+    case "$1" in
+        -h|--help|-v|--version)
+            usage
+            ;;
+        --xfce|--gnome-flashback)
+            DESKTOP_OPTION="$1"
+            if [ $# -gt 1 ]; then
+                echo "[ERROR] Too many arguments. Only one option is allowed." >&2
+                usage
+            fi
+            ;;
+        "" )
+            : # no option
+            ;;
+        * )
+            echo "[ERROR] Unknown option: $1" >&2
+            usage
+            ;;
+    esac
 
     # Check if the system is Debian-based before proceeding
     check_system
