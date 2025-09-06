@@ -31,6 +31,37 @@
 #  - sudo privileges for building/signing kernel modules
 #  - Commands: sudo, modinfo, depmod, vmware-modconfig, awk, grep, sh
 #
+#  Operational Procedure (after kernel update):
+#  1. Update kernel with apt and reboot into the new kernel.
+#  2. Run this script:
+#         sudo vmware-rebuild-and-sign.sh
+#     - vmware-modconfig rebuilds vmmon/vmnet for the running kernel.
+#     - Unsigned modules are signed with the enrolled MOK key.
+#     - depmod is updated and modprobe is attempted.
+#     - Signature and load state are automatically verified.
+#  3. Start VMware (vmplayer or vmware). If it launches without errors,
+#     the process is complete.
+#
+#  Required files:
+#  - /etc/vmware/module-signing/MOK.key
+#  - /etc/vmware/module-signing/MOK.crt
+#
+#  If missing, generate them as follows:
+#      sudo mkdir -p /etc/vmware/module-signing
+#      cd /etc/vmware/module-signing
+#      openssl req -new -x509 -newkey rsa:2048 -keyout MOK.key -out MOK.crt -nodes -days 3650 -subj "/CN=VMware Module Signing/"
+#      sudo mokutil --import MOK.crt
+#  Then reboot and complete enrollment in MOK Manager at boot.
+#
+#  Location of signed modules:
+#      /lib/modules/$(uname -r)/misc/vmmon.ko
+#      /lib/modules/$(uname -r)/misc/vmnet.ko
+#
+#  Verification commands (executed by script as well):
+#      modinfo -F signer /lib/modules/$(uname -r)/misc/vmmon.ko
+#      modinfo -F signer /lib/modules/$(uname -r)/misc/vmnet.ko
+#      lsmod | grep -E '^(vmmon|vmnet)'
+#
 #  Version History:
 #  v1.0 2025-09-07
 #       Initial release.
@@ -169,7 +200,7 @@ main() {
     esac
 
     check_system
-    check_commands modinfo depmod awk grep vmware-modconfig lsmod
+    check_commands vmware-modconfig modinfo modprobe depmod lsmod grep
     check_sudo
 
     # Ensure module directory exists (created by vmware-modconfig when it succeeds)
