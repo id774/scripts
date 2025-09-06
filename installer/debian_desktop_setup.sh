@@ -33,7 +33,7 @@
 #  - Target setup script not found or not runnable.
 #
 #  Version History:
-#  v1.0 2025-09-05
+#  v1.0 2025-09-06
 #       Rewritten from scratch as a new release.
 #
 ########################################################################
@@ -79,47 +79,38 @@ run_target() {
     exit 1
 }
 
-# Parse CLI arguments; enforce exactly one mode
-parse_args() {
-    MODE=""
-    while [ $# -gt 0 ]; do
-        case "$1" in
-            --xfce)
-                if [ -n "$MODE" ]; then
-                    echo "[ERROR] Specify exactly one option." >&2
-                    usage
-                fi
-                MODE="xfce"
-                ;;
-            --gnome-flashback)
-                if [ -n "$MODE" ]; then
-                    echo "[ERROR] Specify exactly one option." >&2
-                    usage
-                fi
-                MODE="gnome"
-                ;;
-            -h|--help|-v|--version)
-                usage
-                ;;
-            *)
-                usage
-                ;;
-        esac
-        shift
-    done
-
-    if [ -z "$MODE" ]; then
-        usage
-    fi
-
-    echo "$MODE"
-}
-
 # Main entry point of the script
 main() {
-    setup_environment
+    # Handle help and mode option before any environment checks
+    MODE=""
+    case "$1" in
+        -h|--help|-v|--version)
+            usage
+            ;;
+        --xfce)
+            MODE="xfce"
+            if [ $# -ne 1 ]; then
+                echo "[ERROR] Specify exactly one option." >&2
+                usage
+            fi
+            ;;
+        --gnome-flashback)
+            MODE="gnome"
+            if [ $# -ne 1 ]; then
+                echo "[ERROR] Specify exactly one option." >&2
+                usage
+            fi
+            ;;
+        "" )
+            usage
+            ;;
+        * )
+            echo "[ERROR] Unknown option: $1" >&2
+            usage
+            ;;
+    esac
 
-    MODE="$(parse_args "$@")"
+    setup_environment
 
     case "$MODE" in
         xfce)
