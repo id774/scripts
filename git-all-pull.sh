@@ -24,7 +24,7 @@
 #  overwrite local changes. Use with caution.
 #
 #  Version History:
-#  v1.8 2025-09-06
+#  v2.0 2025-09-06
 #       Add --www-only option to pull /var/www/wordpress and /var/www/html/current when present.
 #       Ensure --all also runs www-only processing. Existing options like --dry-run and --hard apply.
 #       Add --reset option as an alias of --hard.
