@@ -6,7 +6,7 @@ v1.5.2 (Release Date: TBD)
 - Add debian_xfce_setup.sh to configure Xfce desktop settings with keybindings and autostart entries.
 - Add debian_gnome_flashback_setup.sh to configure GNOME Flashback desktop settings with keybindings and session tweaks.
 - Update debian_init.sh to replace --with-desktop with --xfce or --gnome-flashback and pass the option through to desktop setup.
-- Update debian_desktop_setup.sh to dispatch to per desktop setup scripts based on --xfce or --gnome-flashback.
+- Refine debian_desktop_setup.sh to dispatch to per desktop setup scripts based on --xfce or --gnome-flashback.
 - Add install_google_chrome.sh for Debian to add the Google repository and install google-chrome-stable with keyring verification and idempotent behavior.
 - Add www only option and make selector flags additive with all including www in git-all-pull.sh.
 - Add xmap command to run xmodmap internally and integrate into system scripts.
