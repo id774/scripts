@@ -51,6 +51,10 @@
 #      cd /etc/vmware/module-signing
 #      openssl req -new -x509 -newkey rsa:2048 -keyout MOK.key -out MOK.crt -nodes -days 3650 -subj "/CN=VMware Module Signing/"
 #      sudo mokutil --import MOK.crt
+#      sudo chmod 600 /etc/vmware/module-signing/MOK.key
+#      sudo chmod 644 /etc/vmware/module-signing/MOK.crt
+#      sudo chown -R root:root /etc/vmware/module-signing/
+#
 #  Then reboot and complete enrollment in MOK Manager at boot.
 #
 #  Location of signed modules:
