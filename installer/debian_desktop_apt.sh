@@ -28,7 +28,7 @@
 #        * Browsers: firefox, firefox-locale-ja, chromium, chromium-l10n
 #        * Mail: thunderbird, thunderbird-locale-ja
 #        * Office: libreoffice
-#        * Editors and IME helpers: vim-gnome, fcitx-mozc, emacs-mozc, mozc-server, mozc-utils-gui
+#        * Editors and IME helpers: fcitx5-mozc, emacs-mozc, mozc-server, mozc-utils-gui
 #        * File and image tools: thunar, gthumb
 #        * Media and comms: vlc, pidgin
 #        * Documents and readers: xpdf, evince, comix, fbreader
@@ -209,7 +209,7 @@ utils_packages() {
 # Optional packages
 optional_packages() {
     smart_apt thunderbird thunderbird-locale-ja firefox firefox-locale-ja \
-              emacs-mozc mozc-server mozc-utils-gui libreoffice vim-gnome gthumb thunar bittorrent-gui ktorrent qbittorrent \
+              fcitx5-mozc emacs-mozc mozc-server mozc-utils-gui libreoffice gthumb thunar bittorrent-gui ktorrent qbittorrent \
               vlc pidgin xpdf evince comix fbreader wireshark xtightvncviewer chromium chromium-l10n
 }
 
