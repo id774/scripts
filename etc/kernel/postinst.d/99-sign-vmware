@@ -1,0 +1,27 @@
+#!/bin/sh
+# Re-sign VMware kernel modules after kernel install
+
+# Find sign-file (headers or linux-kbuild package)
+if [ -x "/usr/src/linux-headers-$(uname -r)/scripts/sign-file" ]; then
+  SF="/usr/src/linux-headers-$(uname -r)/scripts/sign-file"
+else
+  # Fallback: pick highest version of linux-kbuild available
+  for d in /usr/lib/linux-kbuild-*; do
+    [ -x "$d/scripts/sign-file" ] && SF="$d/scripts/sign-file"
+  done
+fi
+
+KEY="/etc/vmware/module-signing/MOK.key"
+CRT="/etc/vmware/module-signing/MOK.crt"
+
+# Bail out if requirements are missing
+[ -x "$SF" ] || exit 0
+[ -r "$KEY" ] || exit 0
+[ -r "$CRT" ] || exit 0
+
+for m in /lib/modules/$(uname -r)/misc/vmmon.ko /lib/modules/$(uname -r)/misc/vmnet.ko; do
+  [ -f "$m" ] && "$SF" sha256 "$KEY" "$CRT" "$m"
+done
+
+depmod -a
+exit 0
