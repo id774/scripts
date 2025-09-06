@@ -125,7 +125,8 @@ pull_repo() {
         if [ "$DRY_RUN" = true ]; then
             echo "[INFO] DRY RUN: Would skip repository due to no write permission: $repo"
         else
-            echo "[WARN] Write permission denied for repository: $repo" >&2
+            echo "[WARN] Skipping: $repo (write permission denied)" >&2
+
         fi
         return 2
     fi
@@ -168,7 +169,7 @@ process_directory() {
     dir="$1"
 
     if [ ! -d "$dir" ]; then
-        echo "[WARN] Directory not found: $dir" >&2
+        echo "[INFO] Directory not found (skip as normal): $dir"
         return
     fi
 
@@ -183,7 +184,7 @@ process_directory() {
             if [ "$DRY_RUN" = true ]; then
                 echo "[INFO] DRY RUN: Would skip non-repository: $repo"
             else
-                echo "[WARN] Skipping non-repository: $repo" >&2
+                echo "[WARN] Skipping: $repo (not a git repository)" >&2
             fi
         fi
     done
