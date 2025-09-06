@@ -169,7 +169,7 @@ main() {
     esac
 
     check_system
-    check_commands modinfo depmod awk grep vmware-modconfig
+    check_commands modinfo depmod awk grep vmware-modconfig lsmod
     check_sudo
 
     # Ensure module directory exists (created by vmware-modconfig when it succeeds)
@@ -192,6 +192,12 @@ main() {
     try_load_modules
 
     echo "[INFO] Completed: vmmon/vmnet modules processed for kernel $KVER. All signing and depmod steps finished successfully."
+
+    echo "[INFO] Verifying signatures and load state..."
+    modinfo -F signer "$MODDIR/vmmon.ko" 2>/dev/null || echo "vmmon.ko not found"
+    modinfo -F signer "$MODDIR/vmnet.ko" 2>/dev/null || echo "vmnet.ko not found"
+    lsmod | grep -E '^(vmmon|vmnet)' || echo "Modules not loaded: vmmon/vmnet"
+
     return 0
 }
 
