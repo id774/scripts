@@ -24,10 +24,11 @@
 #  overwrite local changes. Use with caution.
 #
 #  Version History:
-#  v1.8 2025-09-05
+#  v1.8 2025-09-06
 #       Add --www-only option to pull /var/www/wordpress and /var/www/html/current when present.
 #       Ensure --all also runs www-only processing. Existing options like --dry-run and --hard apply.
 #       Add --reset option as an alias of --hard.
+#       Add write permission check for repositories and skip.
 #  v1.7 2025-08-03
 #       Add directory existence check before processing git directories.
 #       Improve symlink handling by checking for conflicting existing files.
@@ -101,9 +102,33 @@ parse_arguments() {
     done
 }
 
+# Check whether repository is writable
+is_repo_writable() {
+    repo="$1"
+    # Require write access to both the work tree and .git directory
+    if [ ! -w "$repo" ] || [ ! -w "$repo/.git" ]; then
+        return 1
+    fi
+    # Best effort: if index.lock exists and is not writable, treat as not writable
+    if [ -e "$repo/.git/index.lock" ] && [ ! -w "$repo/.git/index.lock" ]; then
+        return 1
+    fi
+    return 0
+}
+
 # Pull updates from a Git repository
 pull_repo() {
     repo="$1"
+
+    # Guard: ensure repository is writable before any operation
+    if ! is_repo_writable "$repo"; then
+        if [ "$DRY_RUN" = true ]; then
+            echo "[INFO] DRY RUN: Would skip repository due to no write permission: $repo"
+        else
+            echo "[WARN] Write permission denied for repository: $repo" >&2
+        fi
+        return 2
+    fi
 
     if [ "$HARD_MODE" = true ]; then
         if [ "$DRY_RUN" = false ]; then
