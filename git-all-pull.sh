@@ -202,7 +202,7 @@ process_www_only() {
                 if [ "$DRY_RUN" = true ]; then
                     echo "[INFO] DRY RUN: Would skip non-repository: $repo"
                 else
-                    echo "[WARN] Skipping non-repository: $repo" >&2
+                    echo "[WARN] Skipping: $repo (not a git repository)" >&2
                 fi
             fi
         else
