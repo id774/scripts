@@ -29,7 +29,7 @@
 #  Requirements:
 #  - Linux operating system (Debian/Ubuntu family recommended)
 #  - sudo privileges for building/signing kernel modules
-#  - Commands: vmware-modconfig modinfo modprobe depmod lsmod grep
+#  - Commands: vmware-modconfig, modinfo, modprobe, depmod, lsmod, grep
 #
 #  Operational Procedure (after kernel update):
 #  1. Update kernel with apt and reboot into the new kernel.
