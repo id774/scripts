@@ -146,8 +146,18 @@ setup_environment() {
 
 # Ask for confirmation before execution
 confirm_execution() {
-    echo "[INFO] This script will configure your Debian-based system."
-    printf "[INFO] Do you want to proceed? [y/N]: "
+    echo "[INFO] This script will perform the following operations:"
+    echo "  - Configure locale, groups, filesystem tuning, and base environment"
+    echo "  - Install large sets of packages (tools, languages, databases, editors, etc.)"
+    echo "  - Apply system customizations (shells, dotfiles, security configs, monitoring)"
+    if [ -n "$DESKTOP_OPTION" ]; then
+        echo "  - Install and configure desktop environment: $DESKTOP_OPTION"
+    else
+        echo "  - Desktop provisioning is skipped (server-safe minimal setup)"
+    fi
+    echo
+    echo "[INFO] These actions will make significant system-wide changes."
+    printf "[INFO] Do you want to proceed with this setup? [y/N]: "
     read -r response < /dev/tty
 
     case "$response" in
