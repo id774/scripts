@@ -9,8 +9,9 @@ v1.5.2 (Release Date: TBD)
 - Update debian_init.sh to replace --with-desktop with --xfce or --gnome-flashback and pass the option through to desktop setup.
 - Refine debian_desktop_setup.sh to dispatch to per desktop setup scripts based on --xfce or --gnome-flashback.
 - Add install_google_chrome.sh for Debian to add the Google repository and install google-chrome-stable with keyring verification and idempotent behavior.
-- Add www only option and make selector flags additive with all including www in git-all-pull.sh.
+- Add confirmation prompt before deploying DoS guard configurations.
 - Add xmap command to run xmodmap internally and integrate into system scripts.
+- Add www only option and make selector flags additive with all including www in git-all-pull.sh.
 - Add git-symlink.sh to manage symlinks in home directory for github and git bases.
 - Add get-serial utility to print disk serial number from a device path.
 - Add get-mountpoint utility to resolve mountpoint from a device path.
