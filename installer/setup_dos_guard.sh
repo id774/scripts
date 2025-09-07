@@ -20,7 +20,10 @@
 #     (use -h / --help to print this header)
 #
 #  Notes:
-#  Expected files under $SCRIPTS
+#  - Before execution, the script now asks for confirmation because it will
+#    modify Apache and fail2ban configurations, create log directories, and
+#    reload services. This prevents accidental or unintended execution.
+#  - Expected files under $SCRIPTS:
 #     $SCRIPTS/etc/apache/mods-available/evasive.conf
 #     $SCRIPTS/etc/fail2ban/jail.local
 #     (optional) $SCRIPTS/etc/fail2ban/filter.d/apache-evasive.conf
@@ -32,6 +35,8 @@
 #               systemctl, fail2ban-client
 #
 #  Version History:
+#  v1.1 2025-09-07
+#       Add interactive confirmation prompt before applying configurations.
 #  v1.0 2025-08-27
 #       Initial release.
 #
@@ -205,6 +210,20 @@ show_summary() {
     sudo fail2ban-client status apache-evasive 2>/dev/null || true
 }
 
+# Ask for confirmation before execution
+confirm_execution() {
+    echo "[INFO] This script will deploy and enable DoS protection using Fail2ban and Apache mod_evasive."
+    echo "[INFO] It modifies Apache and fail2ban configurations, creates log directories, and reloads services."
+    echo "[INFO] Confirmation is required to prevent accidental or unintended execution."
+    printf "[INFO] Do you want to proceed? [y/N]: "
+    read -r response < /dev/tty
+
+    case "$response" in
+        y|Y|yes|YES) return 0 ;;
+        *) echo "[ERROR] Aborted by user."; exit 1 ;;
+    esac
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
@@ -216,6 +235,9 @@ main() {
     check_commands cmp cp chmod chown mkdir a2enmod apachectl systemctl fail2ban-client
     check_sudo
     resolve_sources
+
+    # Ask for confirmation before proceeding
+    confirm_execution
 
     echo "[INFO] Starting idempotent deployment"
     deploy_fail2ban
