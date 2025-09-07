@@ -29,7 +29,7 @@
 #  Requirements:
 #  - Linux operating system (Debian/Ubuntu family recommended)
 #  - sudo privileges for building/signing kernel modules
-#  - Commands: sudo, modinfo, depmod, vmware-modconfig, awk, grep, sh
+#  - Commands: vmware-modconfig modinfo modprobe depmod lsmod grep
 #
 #  Operational Procedure (after kernel update):
 #  1. Update kernel with apt and reboot into the new kernel.
@@ -197,6 +197,20 @@ try_load_modules() {
     fi
 }
 
+# Ask for confirmation before execution
+confirm_execution() {
+    echo "[INFO] This script will rebuild and sign VMware kernel modules."
+    echo "[INFO] It modifies kernel modules (vmmon/vmnet) and affects Secure Boot configuration."
+    echo "[INFO] Confirmation is required to prevent accidental or unintended execution."
+    printf "[INFO] Do you want to proceed? [y/N]: "
+    read -r response < /dev/tty
+
+    case "$response" in
+        y|Y|yes|YES) return 0 ;;
+        *) echo "[ERROR] Aborted by user."; exit 1 ;;
+    esac
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
@@ -206,6 +220,9 @@ main() {
     check_system
     check_commands vmware-modconfig modinfo modprobe depmod lsmod grep
     check_sudo
+
+    # Ask for confirmation before proceeding
+    confirm_execution
 
     # Ensure module directory exists (created by vmware-modconfig when it succeeds)
     rebuild_modules
