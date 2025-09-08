@@ -70,6 +70,10 @@
 -A INPUT -p tcp -m tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES --rsource -j LOG --log-prefix "[postgresql attack] : "
 -A INPUT -p tcp -m tcp --dport 5432 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name POSTGRES --rsource -j DROP
 
+-A INPUT -p tcp -m tcp --dport 3389 -m state --state NEW -m recent --set --name RDP3389 --rsource
+-A INPUT -p tcp -m tcp --dport 3389 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name RDP3389 --rsource -j LOG --log-prefix "[rdp attack] : "
+-A INPUT -p tcp -m tcp --dport 3389 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name RDP3389 --rsource -j DROP
+
 -A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --set --name SSH22 --rsource
 -A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH22 --rsource -j LOG --log-prefix "[ssh(default) attack] : "
 -A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH22 --rsource -j DROP
@@ -87,41 +91,19 @@
 -A INPUT -p tcp -m tcp --dport 443 -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 123 -j ACCEPT
 -A INPUT -p udp -m udp --dport 123 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 5001 -j ACCEPT
--A INPUT -p udp -m udp --dport 5001 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 3306 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 5432 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 9160 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 27017 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 9418 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 8787 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 5800 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 5900 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 1099 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 1100 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 1101 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 1102 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 1103 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 1104 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 1880 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 3000 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 3001 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 3002 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 3003 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 3004 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 3005 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 3006 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 3007 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 3008 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 3009 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 4567 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 4848 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 8181 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 9000 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 9090 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 9997 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 9998 -j ACCEPT
--A INPUT -p tcp -m tcp --dport 9999 -j ACCEPT
+-A INPUT -p tcp -m tcp -s 192.168.0.0/24 --dport 3306 -j ACCEPT
+-A INPUT -p tcp -m tcp -s 192.168.0.0/24 --dport 5432 -j ACCEPT
+-A INPUT -p tcp -m tcp -s 192.168.0.0/24 --dport 3000 -j ACCEPT
+-A INPUT -p tcp -m tcp -s 192.168.0.0/24 --dport 3001 -j ACCEPT
+-A INPUT -p tcp -m tcp -s 192.168.0.0/24 --dport 3002 -j ACCEPT
+-A INPUT -p tcp -m tcp -s 192.168.0.0/24 --dport 3003 -j ACCEPT
+-A INPUT -p tcp -m tcp -s 192.168.0.0/24 --dport 3004 -j ACCEPT
+-A INPUT -p tcp -m tcp -s 192.168.0.0/24 --dport 3005 -j ACCEPT
+-A INPUT -p tcp -m tcp -s 192.168.0.0/24 --dport 3006 -j ACCEPT
+-A INPUT -p tcp -m tcp -s 192.168.0.0/24 --dport 3007 -j ACCEPT
+-A INPUT -p tcp -m tcp -s 192.168.0.0/24 --dport 3008 -j ACCEPT
+-A INPUT -p tcp -m tcp -s 192.168.0.0/24 --dport 3009 -j ACCEPT
+-A INPUT -p tcp -m tcp -s 192.168.0.0/24 --dport 3389 -j ACCEPT
 
 # ----------------------------
 # Drop all other INPUT traffic
