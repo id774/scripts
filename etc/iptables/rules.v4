@@ -92,6 +92,7 @@
 -A INPUT -p udp -m udp --dport 123 -j ACCEPT
 -A INPUT -p tcp -m tcp -s 192.168.0.0/16 --dport 3306 -j ACCEPT
 -A INPUT -p tcp -m tcp -s 192.168.0.0/16 --dport 5432 -j ACCEPT
+-A INPUT -p tcp -m tcp -s 192.168.0.0/16 --dport 3389 -j ACCEPT
 -A INPUT -p tcp -m tcp -s 192.168.0.0/16 --dport 3000 -j ACCEPT
 -A INPUT -p tcp -m tcp -s 192.168.0.0/16 --dport 3001 -j ACCEPT
 -A INPUT -p tcp -m tcp -s 192.168.0.0/16 --dport 3002 -j ACCEPT
@@ -102,7 +103,6 @@
 -A INPUT -p tcp -m tcp -s 192.168.0.0/16 --dport 3007 -j ACCEPT
 -A INPUT -p tcp -m tcp -s 192.168.0.0/16 --dport 3008 -j ACCEPT
 -A INPUT -p tcp -m tcp -s 192.168.0.0/16 --dport 3009 -j ACCEPT
--A INPUT -p tcp -m tcp -s 192.168.0.0/16 --dport 3389 -j ACCEPT
 
 # ----------------------------
 # Drop all other INPUT traffic
