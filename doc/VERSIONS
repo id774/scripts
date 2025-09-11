@@ -1,8 +1,8 @@
 scripts Repository Version History
 ==================================
 
-v1.5.2 (Release Date: TBD)
---------------------------
+v1.5.2 (2025-09-11)
+-------------------
 - Add script to rebuild and sign VMware kernel modules for Secure Boot.
 - Add debian_xfce_setup.sh to configure Xfce desktop settings with keybindings and autostart entries.
 - Add debian_gnome_flashback_setup.sh to configure GNOME Flashback desktop settings with keybindings and session tweaks.
