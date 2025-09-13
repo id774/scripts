@@ -6,6 +6,7 @@
 #  Description:
 #  This script checks for the existence and freshness of _is_alive files
 #  sent from various servers to a specified directory.
+#  It also emits a human readable summary with counts and percentages.
 #  You can optionally specify the base directory as the first argument.
 #  If omitted, the default directory is /home/share/received.
 #
@@ -25,6 +26,10 @@
 #  Usage:
 #      ./server_alive_check.sh [base_directory]
 #      Optionally specify [base_directory] to override the default (/home/share/received).
+#      The script prints detailed per file logs during processing and
+#      appends summary lines at the end, showing counts and percentages
+#      for non VM hosts ("regular") and VM hosts ("vm").
+#      Hosts marked obsolete are excluded from monitored totals.
 #      This script is designed for periodic execution via cron.
 #
 #  Cron Usage:
@@ -41,7 +46,24 @@
 #  - Ignores VM-prefixed files when stale, with a clear info message.
 #  - Skips hosts that have a corresponding _is_obsolete marker file.
 #  - Outputs errors to standard error for logging and monitoring purposes.
+#  - Emits human readable summary lines with counts and percentages
+#    for regular and VM classes, excluding obsolete hosts from totals.
+#  - Keeps existing alert behavior and exit codes unchanged.
 #  - Validates required commands and directory existence before execution.
+#
+#  Summary Output:
+#  - regular: non-VM hosts (filenames not starting with 'VM' or 'vm')
+#  - vm     : VM hosts      (filenames starting with 'VM' or 'vm')
+#  - obsolete: hosts with a '<host>_is_obsolete' marker file; excluded from totals
+#  - fresh : file mtime <= STALE_THRESHOLD seconds
+#  - stale : file mtime >  STALE_THRESHOLD seconds
+#  - unknown: failed to get mtime; treated as non-fresh for alerting
+#
+#  Example:
+#      [INFO] Hosts: total=12, monitored=10, obsolete=2 (ignored)
+#      [INFO] Regular: fresh=7 (70.0%), stale=1 (10.0%), unknown=0
+#      [INFO] VM     : fresh=2 (20.0%), stale=0 (0.0%),  unknown=0
+#      [INFO] Threshold: 600 s
 #
 #  Warning:
 #  - Ensure the monitored servers regularly generate _is_alive files to avoid false alerts.
@@ -53,6 +75,9 @@
 #  3. Source directory does not exist.
 #
 #  Version History:
+#  v1.9 2025-09-13
+#       Add human readable summary output with counters and percentages.
+#       Keep alert behavior and exit codes unchanged.
 #  v1.8 2025-08-21
 #       Exclude hosts from monitoring when <host>_is_obsolete marker exists.
 #       Do not count them in freshness or alert decisions.
@@ -125,6 +150,72 @@ choice_stat_command() {
     fi
 }
 
+# Initialize summary counters
+init_summary_counters() {
+    TOTAL=0
+    OBSOLETE=0
+    MONITORED=0
+    REG_FRESH=0
+    REG_STALE=0
+    REG_UNKNOWN=0
+    VM_FRESH=0
+    VM_STALE=0
+    VM_UNKNOWN=0
+}
+
+# Classify host name as regular or vm based on prefix
+classify_host_name() {
+    _base="$1"
+    case "$_base" in
+        [Vv][Mm]* ) echo "vm" ;;
+        * )         echo "regular" ;;
+    esac
+}
+
+# Bump summary counter
+bump_summary_counter() {
+    _class="$1"
+    _state="$2"
+    case "$_class" in
+        regular)
+            case "$_state" in
+                fresh)   REG_FRESH=$((REG_FRESH + 1)) ;;
+                stale)   REG_STALE=$((REG_STALE + 1)) ;;
+                unknown) REG_UNKNOWN=$((REG_UNKNOWN + 1)) ;;
+            esac
+            ;;
+        vm)
+            case "$_state" in
+                fresh)   VM_FRESH=$((VM_FRESH + 1)) ;;
+                stale)   VM_STALE=$((VM_STALE + 1)) ;;
+                unknown) VM_UNKNOWN=$((VM_UNKNOWN + 1)) ;;
+            esac
+            ;;
+    esac
+}
+
+# Emit summary output with counts and percentages
+emit_summary() {
+    # Calculate totals per class
+    REG_TOTAL=$((REG_FRESH + REG_STALE + REG_UNKNOWN))
+    VM_TOTAL=$((VM_FRESH + VM_STALE + VM_UNKNOWN))
+
+    # Calculate monitored if not set
+    if [ -z "$MONITORED" ] || [ "$MONITORED" -lt 0 ]; then
+        MONITORED=$((TOTAL - OBSOLETE))
+    fi
+
+    pct() {
+        # args: numerator denominator
+        awk -v a="$1" -v b="$2" 'BEGIN { if (b==0) { printf("0.0%%"); } else { printf("%.1f%%", (a*100.0)/b); } }'
+    }
+
+    echo "[INFO] Hosts: total=$TOTAL, monitored=$MONITORED, obsolete=$OBSOLETE (ignored)"
+    echo "[INFO] Regular: fresh=$REG_FRESH ($(pct "$REG_FRESH" "$REG_TOTAL")), stale=$REG_STALE ($(pct "$REG_STALE" "$REG_TOTAL")), unknown=$REG_UNKNOWN"
+    echo "[INFO] VM     : fresh=$VM_FRESH ($(pct "$VM_FRESH" "$VM_TOTAL")), stale=$VM_STALE ($(pct "$VM_STALE" "$VM_TOTAL")), unknown=$VM_UNKNOWN"
+    echo "[INFO] Threshold: $STALE_THRESHOLD s"
+}
+
 # Find all files ending with '_is_alive' under the base directory
 find_is_alive_files() {
     find "$BASE_DIR" -type f -name '*_is_alive'
@@ -163,10 +254,14 @@ process_files() {
     REGULAR_STALE_FOUND=0
     VM_STALE_FOUND=0
 
+    # Initialize summary counters (no-op at this stage)
+    init_summary_counters
+
     # Helper to check obsolete marker for a given _is_alive file
     # Returns 0 if obsolete marker exists, 1 otherwise
     is_obsolete() {
         _file="$1"
+        TOTAL=$((TOTAL + 1))
         _dir=$(dirname "$_file")
         _base=$(basename "$_file")
         # Strip the trailing suffix "_is_alive"
@@ -179,13 +274,13 @@ process_files() {
     OBSOLETE_LIST=""
     TARGET_FILES=""
 
-
     for FILE in $FILES; do
         BASENAME=$(basename "$FILE")
         DIRNAME=$(dirname "$FILE")
         if is_obsolete "$FILE"; then
             HOST=${BASENAME%_is_alive}
             MARKER="${DIRNAME}/${HOST}_is_obsolete"
+            OBSOLETE=$((OBSOLETE + 1))
             # Defer printing to keep obsolete messages grouped at the top
             OBSOLETE_LIST="${OBSOLETE_LIST}
 [INFO] Host is obsolete: ${HOST} (marker: $(basename "$MARKER")) - skipped from monitoring"
@@ -206,12 +301,20 @@ ${FILE}"
     CLEAN_TARGETS=$(printf "%s\n" "$TARGET_FILES" | sed '/^[[:space:]]*$/d')
     while IFS= read -r FILE; do
         BASENAME=$(basename "$FILE")
+        # Update monitored after obsolete filtering
+        # Note: set inside the loop safely since it is constant per run
+        if [ -n "$CLEAN_TARGETS" ]; then
+            MONITORED=$((TOTAL - OBSOLETE))
+        fi
         FILE_TIME=$($stat_cmd -c %Y "$FILE" 2>/dev/null || stat -f %m "$FILE" 2>/dev/null)
         FILE_DATE=$(date -d "@$FILE_TIME" "+%Y-%m-%d %H:%M:%S" 2>/dev/null || date -r "$FILE_TIME" "+%Y-%m-%d %H:%M:%S" 2>/dev/null)
 
         if [ -z "$FILE_TIME" ] || [ -z "$FILE_DATE" ]; then
             echo "[WARN] Failed to retrieve modification time for: $FILE" >&2
             REGULAR_STALE_FOUND=1
+            CLASS=$(classify_host_name "$BASENAME")
+            # unknown is treated as non-fresh for counting hooks
+            bump_summary_counter "$CLASS" "unknown"
             continue
         fi
 
@@ -224,17 +327,25 @@ ${FILE}"
             if printf '%s\n' "$BASENAME" | grep -iq '^vm'; then
                 echo "[INFO] File is stale: $BASENAME (last updated: $FILE_DATE, $ELAPSED, VM-prefixed: ignored)"
                 VM_STALE_FOUND=1
+                CLASS=$(classify_host_name "$BASENAME")
+                bump_summary_counter "$CLASS" "stale"
             else
                 echo "[WARN] File is stale: $BASENAME (last updated: $FILE_DATE, $ELAPSED)" >&2
                 REGULAR_STALE_FOUND=1
+                CLASS=$(classify_host_name "$BASENAME")
+                bump_summary_counter "$CLASS" "stale"
             fi
         else
             echo "[INFO] File is fresh: $BASENAME (last updated: $FILE_DATE, $ELAPSED)"
+            CLASS=$(classify_host_name "$BASENAME")
+            bump_summary_counter "$CLASS" "fresh"
         fi
 
     done <<EOF
 $CLEAN_TARGETS
 EOF
+    # Emit human readable summary
+    emit_summary
 
     if [ "$REGULAR_STALE_FOUND" -eq 1 ]; then
         echo "[WARN] One or more non-VM hosts are stale." >&2

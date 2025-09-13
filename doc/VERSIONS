@@ -1,6 +1,10 @@
 scripts Repository Version History
 ==================================
 
+v1.5.3 (Release Date: TBD)
+--------------------------
+- Enhance server_alive_check.sh to output human readable summary lines with counts and percentages while keeping exit codes unchanged.
+
 v1.5.2 (2025-09-11)
 -------------------
 - Add script to rebuild and sign VMware kernel modules for Secure Boot.
