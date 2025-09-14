@@ -75,9 +75,9 @@
 #  3. Source directory does not exist.
 #
 #  Version History:
-#  v1.9 2025-09-13
+#  v2.0 2025-09-14
 #       Add human readable summary output with counters and percentages.
-#       Keep alert behavior and exit codes unchanged.
+#       Refactor process_files into smaller functions for readability and maintainability.
 #  v1.8 2025-08-21
 #       Exclude hosts from monitoring when <host>_is_obsolete marker exists.
 #       Do not count them in freshness or alert decisions.
@@ -221,56 +221,20 @@ find_is_alive_files() {
     find "$BASE_DIR" -type f -name '*_is_alive'
 }
 
-# Check if a file is older than 10 minites
-is_file_stale() {
-    FILE="$1"
-    CURRENT_TIME=$(date +%s)
-    FILE_TIME=$($stat_cmd -c %Y "$FILE" 2>/dev/null || stat -f %m "$FILE" 2>/dev/null)
-
-    # Check if the file modification time could be retrieved
-    if [ -z "$FILE_TIME" ]; then
-        echo "[WARN] Failed to retrieve modification time for: $FILE" >&2
-        return 1
-    fi
-
-    # Check if the file is older than 10 minites (600 seconds)
-    if [ "$((CURRENT_TIME - FILE_TIME))" -gt 600 ]; then
-        return 0
-    else
-        return 1
-    fi
+# Increment TOTAL and check if a _is_obsolete marker exists for the same host
+is_obsolete() {
+    _file="$1"
+    TOTAL=$((TOTAL + 1))
+    _dir=$(dirname "$_file")
+    _base=$(basename "$_file")
+    _host=${_base%_is_alive}
+    _marker="$_dir/${_host}_is_obsolete"
+    [ -f "$_marker" ]
 }
 
-# Process all found files and check their status
-process_files() {
-    FILES=$(find_is_alive_files | sort)
-
-    if [ -z "$FILES" ]; then
-        echo "[ERROR] No '_is_alive' files found in: $BASE_DIR" >&2
-        exit 2
-    fi
-
-    CURRENT_TIME=$(date +%s)
-    REGULAR_STALE_FOUND=0
-    VM_STALE_FOUND=0
-
-    # Initialize summary counters (no-op at this stage)
-    init_summary_counters
-
-    # Helper to check obsolete marker for a given _is_alive file
-    # Returns 0 if obsolete marker exists, 1 otherwise
-    is_obsolete() {
-        _file="$1"
-        TOTAL=$((TOTAL + 1))
-        _dir=$(dirname "$_file")
-        _base=$(basename "$_file")
-        # Strip the trailing suffix "_is_alive"
-        _host=${_base%_is_alive}
-        _marker="$_dir/${_host}_is_obsolete"
-        [ -f "$_marker" ]
-    }
-
-    # First pass: separate obsolete from targets and build a grouped output
+# Build two groups: obsolete list (for grouped print) and target files (non-obsolete)
+build_groups() {
+    FILES="$1"
     OBSOLETE_LIST=""
     TARGET_FILES=""
 
@@ -281,7 +245,7 @@ process_files() {
             HOST=${BASENAME%_is_alive}
             MARKER="${DIRNAME}/${HOST}_is_obsolete"
             OBSOLETE=$((OBSOLETE + 1))
-            # Defer printing to keep obsolete messages grouped at the top
+            # Defer print for obsolete to keep them grouped at top
             OBSOLETE_LIST="${OBSOLETE_LIST}
 [INFO] Host is obsolete: ${HOST} (marker: $(basename "$MARKER")) - skipped from monitoring"
         else
@@ -290,60 +254,81 @@ ${FILE}"
         fi
     done
 
-    # Print grouped obsolete hosts first (if any)
+    # Export group variables for next steps
+    CLEAN_TARGETS=$(printf "%s\n" "$TARGET_FILES" | sed '/^[[:space:]]*$/d')
+    export OBSOLETE_LIST CLEAN_TARGETS
+}
+
+# Print grouped obsolete hosts first (if any)
+print_grouped_obsolete() {
     if [ -n "$OBSOLETE_LIST" ]; then
-        # Trim leading newline safely by printing via printf
         printf "%s\n" "$OBSOLETE_LIST" | sed '1{/^$/d;}'
     fi
+}
 
-    # Second pass: freshness checks only for non-obsolete targets
-    # Avoid subshell so that flags update correctly; feed lines via here-doc
-    CLEAN_TARGETS=$(printf "%s\n" "$TARGET_FILES" | sed '/^[[:space:]]*$/d')
-    while IFS= read -r FILE; do
-        BASENAME=$(basename "$FILE")
-        # Update monitored after obsolete filtering
-        # Note: set inside the loop safely since it is constant per run
-        if [ -n "$CLEAN_TARGETS" ]; then
-            MONITORED=$((TOTAL - OBSOLETE))
-        fi
-        FILE_TIME=$($stat_cmd -c %Y "$FILE" 2>/dev/null || stat -f %m "$FILE" 2>/dev/null)
-        FILE_DATE=$(date -d "@$FILE_TIME" "+%Y-%m-%d %H:%M:%S" 2>/dev/null || date -r "$FILE_TIME" "+%Y-%m-%d %H:%M:%S" 2>/dev/null)
+# Get mtime and formatted date for a file; echo "TIME DATE" or empty on failure
+get_file_times() {
+    _file="$1"
+    _time=$($stat_cmd -c %Y "$_file" 2>/dev/null || stat -f %m "$_file" 2>/dev/null)
+    if [ -z "$_time" ]; then
+        echo ""
+        return 1
+    fi
+    _date=$(date -d "@$_time" "+%Y-%m-%d %H:%M:%S" 2>/dev/null || date -r "$_time" "+%Y-%m-%d %H:%M:%S" 2>/dev/null)
+    if [ -z "$_date" ]; then
+        echo ""
+        return 1
+    fi
+    echo "$_time $_date"
+    return 0
+}
 
-        if [ -z "$FILE_TIME" ] || [ -z "$FILE_DATE" ]; then
-            echo "[WARN] Failed to retrieve modification time for: $FILE" >&2
+# Evaluate freshness and print per-file log; update flags and counters
+evaluate_and_count() {
+    FILE="$1"
+    CURRENT_TIME="$2"
+    BASENAME=$(basename "$FILE")
+
+    TIMES=$(get_file_times "$FILE")
+    if [ -z "$TIMES" ]; then
+        echo "[WARN] Failed to retrieve modification time for: $FILE" >&2
+        REGULAR_STALE_FOUND=1
+        CLASS=$(classify_host_name "$BASENAME")
+        bump_summary_counter "$CLASS" "unknown"
+        return 0
+    fi
+
+    FILE_TIME=$(printf "%s" "$TIMES" | awk '{print $1}')
+    FILE_DATE=$(printf "%s" "$TIMES" | awk '{print $2" "$3}')
+
+    AGE=$((CURRENT_TIME - FILE_TIME))
+    AGE_MIN=$((AGE / 60))
+    AGE_SEC=$((AGE % 60))
+    ELAPSED="elapsed time: ${AGE_MIN}m ${AGE_SEC}s"
+
+    if [ "$AGE" -gt "$STALE_THRESHOLD" ]; then
+        if printf '%s\n' "$BASENAME" | grep -iq '^vm'; then
+            echo "[INFO] File is stale: $BASENAME (last updated: $FILE_DATE, $ELAPSED, VM-prefixed: ignored)"
+            VM_STALE_FOUND=1
+            CLASS=$(classify_host_name "$BASENAME")
+            bump_summary_counter "$CLASS" "stale"
+        else
+            echo "[WARN] File is stale: $BASENAME (last updated: $FILE_DATE, $ELAPSED)" >&2
             REGULAR_STALE_FOUND=1
             CLASS=$(classify_host_name "$BASENAME")
-            # unknown is treated as non-fresh for counting hooks
-            bump_summary_counter "$CLASS" "unknown"
-            continue
+            bump_summary_counter "$CLASS" "stale"
         fi
+    else
+        echo "[INFO] File is fresh: $BASENAME (last updated: $FILE_DATE, $ELAPSED)"
+        CLASS=$(classify_host_name "$BASENAME")
+        bump_summary_counter "$CLASS" "fresh"
+    fi
 
-        AGE=$((CURRENT_TIME - FILE_TIME))
-        AGE_MIN=$((AGE / 60))
-        AGE_SEC=$((AGE % 60))
-        ELAPSED="elapsed time: ${AGE_MIN}m ${AGE_SEC}s"
+    return 0
+}
 
-        if [ "$AGE" -gt "$STALE_THRESHOLD" ]; then
-            if printf '%s\n' "$BASENAME" | grep -iq '^vm'; then
-                echo "[INFO] File is stale: $BASENAME (last updated: $FILE_DATE, $ELAPSED, VM-prefixed: ignored)"
-                VM_STALE_FOUND=1
-                CLASS=$(classify_host_name "$BASENAME")
-                bump_summary_counter "$CLASS" "stale"
-            else
-                echo "[WARN] File is stale: $BASENAME (last updated: $FILE_DATE, $ELAPSED)" >&2
-                REGULAR_STALE_FOUND=1
-                CLASS=$(classify_host_name "$BASENAME")
-                bump_summary_counter "$CLASS" "stale"
-            fi
-        else
-            echo "[INFO] File is fresh: $BASENAME (last updated: $FILE_DATE, $ELAPSED)"
-            CLASS=$(classify_host_name "$BASENAME")
-            bump_summary_counter "$CLASS" "fresh"
-        fi
-
-    done <<EOF
-$CLEAN_TARGETS
-EOF
+# Print final summary and decide exit status message
+finalize_and_exitcode() {
     # Emit human readable summary
     emit_summary
 
@@ -364,6 +349,45 @@ EOF
     fi
 }
 
+# Orchestrate the whole check (former process_files)
+process_files() {
+    FILES=$(find_is_alive_files | sort)
+
+    if [ -z "$FILES" ]; then
+        echo "[ERROR] No '_is_alive' files found in: $BASE_DIR" >&2
+        exit 2
+    fi
+
+    CURRENT_TIME=$(date +%s)
+    REGULAR_STALE_FOUND=0
+    VM_STALE_FOUND=0
+
+    init_summary_counters
+
+    # First pass: split obsolete and targets (also increments TOTAL)
+    build_groups "$FILES"
+
+    # Print grouped obsolete hosts first
+    print_grouped_obsolete
+
+    # Update monitored count after obsolete filtering
+    if [ -n "$CLEAN_TARGETS" ]; then
+        MONITORED=$((TOTAL - OBSOLETE))
+    fi
+
+    # Second pass: evaluate freshness for non-obsolete files (no subshell)
+    while IFS= read -r FILE; do
+        [ -z "$FILE" ] && continue
+        evaluate_and_count "$FILE" "$CURRENT_TIME"
+    done <<EOF
+$CLEAN_TARGETS
+EOF
+
+    # Final summary and exit code decision
+    finalize_and_exitcode
+    return $?
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
@@ -378,7 +402,7 @@ main() {
     fi
 
     check_environment
-    check_commands find stat date basename grep sort sed dirname
+    check_commands find stat date basename grep sort sed dirname awk
     choice_stat_command
     process_files
     return $?
