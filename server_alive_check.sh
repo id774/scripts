@@ -63,7 +63,7 @@
 #      [INFO] Hosts: total=12, monitored=10, obsolete=2 (ignored)
 #      [INFO] Regular: fresh=7 (70.0%), stale=1 (10.0%), unknown=0
 #      [INFO] VM     : fresh=2 (20.0%), stale=0 (0.0%),  unknown=0
-#      [INFO] Threshold: 600 s
+#      [INFO] Threshold: 600 seconds
 #
 #  Warning:
 #  - Ensure the monitored servers regularly generate _is_alive files to avoid false alerts.
@@ -213,7 +213,7 @@ emit_summary() {
     echo "[INFO] Hosts: total=$TOTAL, monitored=$MONITORED, obsolete=$OBSOLETE (ignored)"
     echo "[INFO] Regular: fresh=$REG_FRESH ($(pct "$REG_FRESH" "$REG_TOTAL")), stale=$REG_STALE ($(pct "$REG_STALE" "$REG_TOTAL")), unknown=$REG_UNKNOWN"
     echo "[INFO] VM     : fresh=$VM_FRESH ($(pct "$VM_FRESH" "$VM_TOTAL")), stale=$VM_STALE ($(pct "$VM_STALE" "$VM_TOTAL")), unknown=$VM_UNKNOWN"
-    echo "[INFO] Threshold: $STALE_THRESHOLD s"
+    echo "[INFO] Threshold: $STALE_THRESHOLD seconds"
 }
 
 # Find all files ending with '_is_alive' under the base directory
@@ -333,7 +333,7 @@ finalize_and_exitcode() {
     emit_summary
 
     if [ "$REGULAR_STALE_FOUND" -eq 1 ]; then
-        echo "[WARN] One or more non-VM hosts are stale." >&2
+        echo "[WARN] One or more regula rhosts are stale." >&2
         return 1
     elif [ "$VM_STALE_FOUND" -eq 1 ]; then
         echo "[INFO] Only VM-prefixed hosts are missing. No alert triggered."
