@@ -333,7 +333,7 @@ finalize_and_exitcode() {
     emit_summary
 
     if [ "$REGULAR_STALE_FOUND" -eq 1 ]; then
-        echo "[WARN] One or more regula rhosts are stale." >&2
+        echo "[WARN] One or more regular hosts are stale." >&2
         return 1
     elif [ "$VM_STALE_FOUND" -eq 1 ]; then
         echo "[INFO] Only VM-prefixed hosts are missing. No alert triggered."
