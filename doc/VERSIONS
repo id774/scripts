@@ -3,6 +3,7 @@ scripts Repository Version History
 
 v1.5.3 (Release Date: TBD)
 --------------------------
+- Add output of saved password file path to archive creation in send_files.sh.
 - Enhance server_alive_check.sh to output human readable summary lines with counts and percentages while keeping exit codes unchanged.
 
 v1.5.2 (2025-09-11)

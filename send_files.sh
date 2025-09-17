@@ -34,6 +34,7 @@
 #  - Override archive source directory via -d <dir> option.
 #  - Generate a secure random password (configurable length).
 #  - Save password to a local text file (configurable name).
+#  - Display generated password and the location of the saved password file.
 #  - Email the archive as attachment to a configured Gmail address.
 #  - POSIX-compliant and portable across Unix-like systems.
 #
@@ -56,6 +57,8 @@
 #  127. Required command is not installed.
 #
 #  Version History:
+#  v1.6 2025-09-17
+#       Display full path of saved password file in addition to password itself.
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.4 2025-05-23
@@ -191,6 +194,7 @@ create_archive() {
     PASSWORD_FILE="${TMP}/${PASSWORD_FILE_NAME%.txt}_${TIMESTAMP}.txt"
     echo "$PASSWORD" > "$PASSWORD_FILE"
     echo "[INFO] Generated password: $PASSWORD"
+    echo "[INFO] Password file saved at: $PASSWORD_FILE"
 
     cd "$(dirname "$SOURCE_DIR")" || exit 1
     if [ "$USE_7Z" = "yes" ]; then
