@@ -41,6 +41,8 @@
 #  - When run on the target server, sync operations are skipped to prevent redundant transfers.
 #
 #  Version History:
+#  v1.8 2025-09-19
+#       Skip unreadable log files silently during local log collection to keep cron quiet.
 #  v1.7 2025-08-03
 #       Add clamav.log and its rotated file.
 #  v1.6 2025-06-23
@@ -126,23 +128,39 @@ ensure_log_dir() {
     fi
 }
 
+# Silently copy a file to $LOG_DIR if it is readable; otherwise skip without noise
+copy_if_readable() {
+    src="$1"
+    dst_dir="$LOG_DIR"
+    # Skip if src is missing or not readable
+    if [ ! -r "$src" ]; then
+        #echo "[WARN] Skip unreadable file: $src" >&2
+        return 0
+    fi
+    #echo "[INFO] Copy $src to $dst_dir"
+    # Delegate quietness to $RSYNC_OPTS (e.g. -q); ignore non-zero exit
+    rsync $RSYNC_OPTS "$src" "$dst_dir/" || :
+    return 0
+}
+
 # Sync log files to local directory
 sync_local_logs() {
-    # Sync individual log files if they exist
-    test -f /var/log/syslog && rsync $RSYNC_OPTS /var/log/syslog "$LOG_DIR/"
-    test -f /var/log/syslog.1 && rsync $RSYNC_OPTS /var/log/syslog.1 "$LOG_DIR/"
+    # Sync individual log files if they are readable (skip silently otherwise)
+    copy_if_readable /var/log/syslog
+    copy_if_readable /var/log/syslog.1
 
-    test -f /var/log/message && rsync $RSYNC_OPTS /var/log/message "$LOG_DIR/"
-    test -f /var/log/message.1 && rsync $RSYNC_OPTS /var/log/message.1 "$LOG_DIR/"
+    copy_if_readable /var/log/message
+    copy_if_readable /var/log/message.1
 
-    test -f /var/log/cron.log && rsync $RSYNC_OPTS /var/log/cron.log "$LOG_DIR/"
-    test -f /var/log/cron.log.1 && rsync $RSYNC_OPTS /var/log/cron.log.1 "$LOG_DIR/"
+    copy_if_readable /var/log/cron.log
+    copy_if_readable /var/log/cron.log.1
 
-    test -f /var/log/clamav/clamav.log && rsync $RSYNC_OPTS /var/log/clamav/clamav.log "$LOG_DIR/"
-    test -f /var/log/clamav/clamav.log.1 && rsync $RSYNC_OPTS /var/log/clamav/clamav.log.1 "$LOG_DIR/"
+    copy_if_readable /var/log/clamav/clamav.log
+    copy_if_readable /var/log/clamav/clamav.log.1
 
-    test -f /var/log/clamav/clamscan.log && rsync $RSYNC_OPTS /var/log/clamav/clamscan.log "$LOG_DIR/"
-    test -f /var/log/clamav/clamscan.log.1 && rsync $RSYNC_OPTS /var/log/clamav/clamscan.log.1 "$LOG_DIR/"
+    copy_if_readable /var/log/clamav/clamscan.log
+    copy_if_readable /var/log/clamav/clamscan.log.1
+
 
     # Sync *.log and *.log.1 files from selected log directories safely
     for dir in /var/log/apache2 /var/log/sysadmin /var/log/deferred-sync /var/log/chkrootkit; do
@@ -150,7 +168,14 @@ sync_local_logs() {
             find "$dir" -type f | while IFS= read -r file; do
                 case "$file" in
                     *.log|*.log.1)
-                        rsync $RSYNC_OPTS "$file" "$LOG_DIR/"
+                        # Only copy when readable; delegate quietness to $RSYNC_OPTS
+                        if [ -r "$file" ]; then
+                            #echo "[INFO] Copy $file to $LOG_DIR/"
+                            rsync $RSYNC_OPTS "$file" "$LOG_DIR/" || :
+                        else
+                            #echo "[WARN] Skip unreadable file: $file" >&2
+                            :
+                        fi
                         ;;
                 esac
             done
