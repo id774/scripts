@@ -152,6 +152,12 @@ sync_local_logs() {
     copy_if_readable /var/log/message
     copy_if_readable /var/log/message.1
 
+    copy_if_readable /var/log/kern.log
+    copy_if_readable /var/log/kern.log.1
+
+    copy_if_readable /var/log/auth.log
+    copy_if_readable /var/log/auth.log.1
+
     copy_if_readable /var/log/cron.log
     copy_if_readable /var/log/cron.log.1
 
@@ -160,7 +166,6 @@ sync_local_logs() {
 
     copy_if_readable /var/log/clamav/clamscan.log
     copy_if_readable /var/log/clamav/clamscan.log.1
-
 
     # Sync *.log and *.log.1 files from selected log directories safely
     for dir in /var/log/apache2 /var/log/sysadmin /var/log/deferred-sync /var/log/chkrootkit; do
