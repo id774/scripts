@@ -41,6 +41,8 @@
 #  - When run on the target server, sync operations are skipped to prevent redundant transfers.
 #
 #  Version History:
+#  v1.9 2025-09-20
+#       Support multiple targets via TARGET_HOSTS and send to all specified hosts with self host.
 #  v1.8 2025-09-19
 #       Skip unreadable log files silently during local log collection to keep cron quiet.
 #  v1.7 2025-08-03
@@ -82,9 +84,12 @@ is_running_from_cron() {
     fi
 }
 
-# Determine if the script is running on the target server itself
-is_target_server() {
-    [ "$CURRENT_HOST" = "$TARGET_HOST" ] || [ "$SENDING" = "localhost" ]
+# Determine if the given host represents this machine
+is_self_host() {
+    h="$1"
+    # Normalize to short hostname to match $(hostname -s)
+    h_short=${h%%.*}
+    [ "$CURRENT_HOST" = "$h_short" ] || [ "$SENDING" = "localhost" ]
 }
 
 # Load configuration from external file
@@ -104,21 +109,36 @@ load_config() {
         echo "[ERROR] Configuration file not found: $CONFIG_FILE" >&2
         exit 1
     fi
+
+    # Normalize TARGET_HOSTS for backward compatibility
+    case "x$TARGET_HOSTS" in
+        x|"x ")
+            #echo "[INFO] TARGET_HOSTS empty fallback to TARGET_HOST" >&2
+            TARGET_HOSTS="$TARGET_HOST"
+            ;;
+        *)
+            #echo "[INFO] Using multiple targets: $TARGET_HOSTS" >&2
+            :
+            ;;
+    esac
 }
 
 # Sync Munin data to remote server
 sync_munin_data() {
-    if is_target_server; then
-        #echo "[WARN] Running on target server. Skipping sync_munin_data." >&2
-        return
-    fi
-
     if [ ! -d "$MUNIN_DIR" ]; then
         echo "[ERROR] Munin directory not found: $MUNIN_DIR" >&2
         exit 1
     fi
 
-    rsync $RSYNC_OPTS "$MUNIN_DIR" "$REMOTE_MUNIN_DIR"
+    for th in $TARGET_HOSTS; do
+        if is_self_host "$th"; then
+            #echo "[WARN] Running on target host $th. Skipping munin data sync to itself." >&2
+            continue
+        fi
+        remote_munin_dir="$TARGET_USER@$th:$MUNIN_CACHE_DIR/www/$GROUP_NAME/"
+        #echo "[INFO] Sync munin data to $remote_munin_dir" >&2
+        rsync $RSYNC_OPTS "$MUNIN_DIR" "$remote_munin_dir"
+    done
 }
 
 # Ensure local log directory exists
@@ -195,12 +215,15 @@ create_heartbeat() {
 
 # Sync local logs to remote server
 sync_logs_to_remote() {
-    if is_target_server; then
-        #echo "[WARN] Running on target server. Skipping sync_logs_to_remote." >&2
-        return
-    fi
-
-    rsync $RSYNC_OPTS "$LOG_DIR" "$REMOTE_DIR"
+    for th in $TARGET_HOSTS; do
+        if is_self_host "$th"; then
+            #echo "[WARN] Running on target host $th. Skipping log sync to itself." >&2
+            continue
+        fi
+        remote_dir="$TARGET_USER@$th:$TARGET_DIR/"
+        #echo "[INFO] Sync logs to $remote_dir" >&2
+        rsync $RSYNC_OPTS "$LOG_DIR" "$remote_dir"
+    done
 }
 
 # Main entry point of the script

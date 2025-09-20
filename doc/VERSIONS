@@ -3,7 +3,7 @@ scripts Repository Version History
 
 v1.5.3 (Release Date: TBD)
 --------------------------
-- Add helper to skip unreadable logs silently and comment out info warn messages in munin-sync.sh.
+- Add multi target sync via TARGET_HOSTS with self host skip in munin-sync.sh.
 - Add output of saved password file path to archive creation in send_files.sh.
 - Enhance server_alive_check.sh to output human readable summary lines with counts and percentages while keeping exit codes unchanged.
 
