@@ -219,13 +219,15 @@ sync_logs_to_remote() {
         if is_self_host "$th"; then
             #echo "[INFO] Target is self host $th. Reflect logs locally." >&2
             # Place heartbeat and logs into local TARGET_DIR (no SSH)
-            # Use trailing slash to copy contents of $LOG_DIR under $TARGET_DIR
+            # Layout note: omit trailing slash on $LOG_DIR to create $TARGET_DIR/$SOURCE_HOST/
+            #              and keep logs and heartbeat grouped per host
             # shellcheck disable=SC2086
             rsync $RSYNC_OPTS "$LOG_DIR" "$TARGET_DIR/" || :
             continue
         fi
         remote_dir="$TARGET_USER@$th:$TARGET_DIR/"
         #echo "[INFO] Sync logs to $remote_dir" >&2
+        # Layout note: omit trailing slash on $LOG_DIR to create $TARGET_DIR/$SOURCE_HOST/ on remote as well
         rsync $RSYNC_OPTS "$LOG_DIR" "$remote_dir"
     done
 }
