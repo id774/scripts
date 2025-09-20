@@ -57,6 +57,9 @@
 #  127. Required command is not installed.
 #
 #  Version History:
+#  v1.7 2025-09-21
+#       Derive DOWNLOAD_BASE_URL from host FQDN by default (https://<host>/<path>).
+#       Add DOWNLOAD_PATH override (default: "archive"). Respect explicit DOWNLOAD_BASE_URL if set.
 #  v1.6 2025-09-17
 #       Display full path of saved password file in addition to password itself.
 #  v1.5 2025-06-23
@@ -135,7 +138,7 @@ check_environment() {
         fi
     else
         # File store mode.
-        check_commands head basename dirname date cp
+        check_commands head basename dirname date cp hostname
 
         if [ -z "$ARCHIVE_OUTPUT_DIR" ]; then
             echo "[ERROR] ARCHIVE_OUTPUT_DIR is not set in config." >&2
@@ -145,6 +148,22 @@ check_environment() {
             exit 6
         fi
     fi
+}
+
+# Derive base URL from host FQDN and optional DOWNLOAD_PATH
+derive_download_base_url() {
+    # Prefer FQDN; fall back to short hostname
+    h="$(hostname -f 2>/dev/null)"
+    [ -n "$h" ] || h="$(hostname 2>/dev/null)"
+    [ -n "$h" ] || h="localhost"
+    p="${DOWNLOAD_PATH:-archive}"
+
+    # Trim all leading slashes in path without external commands
+    while [ "${p#/}" != "$p" ]; do
+        p="${p#/}"
+    done
+
+    printf "https://%s/%s" "$h" "$p"
 }
 
 # Load configuration from external file
@@ -168,6 +187,7 @@ load_config() {
     : "${PASSWORD_LENGTH:=20}"
     : "${MAIL_SUBJECT:=[admin] Server Files}"
     : "${PASSWORD_FILE_NAME:=zip_password.txt}"
+    : "${DOWNLOAD_PATH:=archive}"
 }
 
 # Generate a random password with mixed characters
@@ -244,9 +264,12 @@ store_archive() {
     cp "$ZIP_PATH" "$ARCHIVE_OUTPUT_DIR"
     echo "[INFO] Archive copied to $ARCHIVE_OUTPUT_DIR"
 
-    if [ -n "$DOWNLOAD_BASE_URL" ]; then
-        echo "[INFO] Download URL: ${DOWNLOAD_BASE_URL}/$(basename "$ZIP_PATH")"
+    # Prefer explicit DOWNLOAD_BASE_URL from config; otherwise derive from host
+    base="$DOWNLOAD_BASE_URL"
+    if [ -z "$base" ]; then
+        base="$(derive_download_base_url)"
     fi
+    echo "[INFO] Download URL: ${base}/$(basename "$ZIP_PATH")"
 }
 
 confirm_send_7z() {
