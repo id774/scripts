@@ -217,7 +217,11 @@ create_heartbeat() {
 sync_logs_to_remote() {
     for th in $TARGET_HOSTS; do
         if is_self_host "$th"; then
-            #echo "[WARN] Running on target host $th. Skipping log sync to itself." >&2
+            #echo "[INFO] Target is self host $th. Reflect logs locally." >&2
+            # Place heartbeat and logs into local TARGET_DIR (no SSH)
+            # Use trailing slash to copy contents of $LOG_DIR under $TARGET_DIR
+            # shellcheck disable=SC2086
+            rsync $RSYNC_OPTS "$LOG_DIR/" "$TARGET_DIR/" || :
             continue
         fi
         remote_dir="$TARGET_USER@$th:$TARGET_DIR/"
