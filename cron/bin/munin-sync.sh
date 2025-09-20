@@ -41,10 +41,8 @@
 #  - When run on the target server, sync operations are skipped to prevent redundant transfers.
 #
 #  Version History:
-#  v1.9 2025-09-20
-#       Support multiple targets via TARGET_HOSTS and send to all specified hosts with self host.
-#  v1.8 2025-09-19
-#       Skip unreadable log files silently during local log collection to keep cron quiet.
+#  v2.0 2025-09-20
+#       Support multiple targets with local reflection and silent log skipping.
 #  v1.7 2025-08-03
 #       Add clamav.log and its rotated file.
 #  v1.6 2025-06-23
