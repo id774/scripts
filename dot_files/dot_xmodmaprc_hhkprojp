@@ -9,6 +9,7 @@ keycode 49 = Alt_L
 keycode 9 = Zenkaku_Hankaku
 keycode 118 = Zenkaku_Hankaku
 keycode 102 = Escape
+keycode 115 = Escape
 keycode 100 = Return
 keycode 101 = Return
 keycode 151 = Up
