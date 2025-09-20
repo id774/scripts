@@ -221,7 +221,7 @@ sync_logs_to_remote() {
             # Place heartbeat and logs into local TARGET_DIR (no SSH)
             # Use trailing slash to copy contents of $LOG_DIR under $TARGET_DIR
             # shellcheck disable=SC2086
-            rsync $RSYNC_OPTS "$LOG_DIR/" "$TARGET_DIR/" || :
+            rsync $RSYNC_OPTS "$LOG_DIR" "$TARGET_DIR/" || :
             continue
         fi
         remote_dir="$TARGET_USER@$th:$TARGET_DIR/"
