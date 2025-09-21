@@ -257,6 +257,8 @@ Password is stored locally in $TMP/$PASSWORD_FILE_NAME"
         echo "[ERROR] Failed to send mail to $GMAIL_TO (exit code: $RC)" >&2
         exit 9
     fi
+
+    return 0
 }
 
 # Output directory for archive (if not sending)
@@ -270,6 +272,8 @@ store_archive() {
         base="$(derive_download_base_url)"
     fi
     echo "[INFO] Download URL: ${base}/$(basename "$ZIP_PATH")"
+
+    return 0
 }
 
 confirm_send_7z() {
@@ -331,7 +335,7 @@ main() {
     else
         store_archive
     fi
-    return 0
+    return $?
 }
 
 # Execute main function
