@@ -125,6 +125,7 @@ main() {
             usage
             ;;
     esac
+    return $?
 }
 
 # Execute main function
