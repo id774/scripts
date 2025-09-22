@@ -55,7 +55,7 @@
 #
 #  Version History:
 #  v2.4 2025-09-22
-#  Add multi host rsync via RSYNC_HOSTS with fallback to RSYNC_HOST and update header docs accordingly.
+#       Add multi host rsync via RSYNC_HOSTS with fallback to RSYNC_HOST and update header docs accordingly.
 #  v2.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.2 2025-04-13
@@ -111,8 +111,49 @@ usage() {
     exit 0
 }
 
-# Determine the script's directory
-SCRIPT_DIR=$(dirname "$0")
+# Check for required commands
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
+# Check if GPX files exist in a directory
+check_gpx_files() {
+    dir="$1"
+    if ! find "$dir" -maxdepth 1 -name '*.gpx' -type f | grep -q .; then
+        echo "[ERROR] No GPX files found in $dir. Exiting." >&2
+        return 1
+    fi
+    return 0
+}
+
+# Parse arguments
+parse_arguments() {
+    # Set default permissions from config or use the argument
+    permissions=${1:-$DEFAULT_PERMISSIONS}
+
+    # Check if DEFAULT_PERMISSIONS is set in the configuration file if no permissions are provided
+    if [ -z "$permissions" ]; then
+        echo "[ERROR] DEFAULT_PERMISSIONS is not set in the configuration file and no permissions argument was provided." >&2
+        exit 5
+    fi
+
+    # Validate permissions format (3-digit octal number)
+    if echo "$permissions" | grep -E '^[0-7][0-7][0-7]$' >/dev/null 2>&1; then
+        :
+    else
+        echo "[ERROR] Permissions must be a 3-digit octal number." >&2
+        exit 6
+    fi
+}
 
 # Load configuration
 load_configuration() {
@@ -144,50 +185,6 @@ load_configuration() {
         exit 4
     fi
 
-}
-
-# Check for required commands
-check_commands() {
-    for cmd in "$@"; do
-        cmd_path=$(command -v "$cmd" 2>/dev/null)
-        if [ -z "$cmd_path" ]; then
-            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
-            exit 127
-        elif [ ! -x "$cmd_path" ]; then
-            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
-            exit 126
-        fi
-    done
-}
-
-# Parse arguments
-parse_arguments() {
-    # Set default permissions from config or use the argument
-    permissions=${1:-$DEFAULT_PERMISSIONS}
-
-    # Check if DEFAULT_PERMISSIONS is set in the configuration file if no permissions are provided
-    if [ -z "$permissions" ]; then
-        echo "[ERROR] DEFAULT_PERMISSIONS is not set in the configuration file and no permissions argument was provided." >&2
-        exit 5
-    fi
-
-    # Validate permissions format (3-digit octal number)
-    if echo "$permissions" | grep -E '^[0-7][0-7][0-7]$' >/dev/null 2>&1; then
-        :
-    else
-        echo "[ERROR] Permissions must be a 3-digit octal number." >&2
-        exit 6
-    fi
-}
-
-# Check if GPX files exist in a directory
-check_gpx_files() {
-    dir="$1"
-    if ! find "$dir" -maxdepth 1 -name '*.gpx' -type f | grep -q .; then
-        echo "[ERROR] No GPX files found in $dir. Exiting." >&2
-        return 1
-    fi
-    return 0
 }
 
 # Set permissions and copy files to a directory
@@ -237,6 +234,9 @@ main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
     esac
+
+    # Determine the script's directory
+    SCRIPT_DIR=$(dirname "$0")
 
     load_configuration
     check_commands chmod cp rsync rm find
