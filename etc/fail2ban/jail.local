@@ -37,6 +37,7 @@ bantime  = 7d
 enabled  = true
 port     = http,https
 logpath  = /var/log/apache2/access.log*
+           /var/log/apache2/ssl_access.log*
 findtime = 10m
 maxretry = 3
 bantime  = 1d
