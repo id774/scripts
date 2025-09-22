@@ -1,48 +1,68 @@
 [DEFAULT]
-# Default settings applied to all jails unless overridden
-ignoreip = 127.0.0.1/8 ::1
+# Allowlist
+ignoreip = 127.0.0.1/8 ::1 192.168.0.0/16
 
-# Ban time: duration for which an IP is blocked (e.g., 10m, 1h, 1d, 1w)
-bantime = 1d
-# 24 hours
-
-# Find time: the time window to count failed login attempts
+# Base policy
+bantime  = 1d
 findtime = 10m
-# 10 minutes
-
-# Max retry: number of failed login attempts allowed before banning
 maxretry = 3
-# Block after 3 failed attempts
 
-# Action to perform when banning an IP (e.g., use iptables for blocking)
+# Use iptables backend
 banaction = iptables-multiport
 
-# Log level: determines the verbosity of logs (e.g., INFO, DEBUG)
-loglevel = INFO
-
-# Log target: specify where logs are written (e.g., file, syslog)
+# Logging of Fail2ban itself
+loglevel  = INFO
 logtarget = /var/log/fail2ban.log
 
-# Jail for SSH service
+# Progressive bans (optional but recommended)
+bantime.increment = true
+bantime.factor    = 2
+bantime.maxtime   = 14d
+
+# Backend
+backend = auto
+
+# --- Jails ---
+
 [sshd]
-enabled = true
-port = 99999
-filter = sshd
-logpath = /var/log/auth.log
-bantime = 7d
-maxretry = 5
+enabled  = true
+port     = 99999
+filter   = sshd
+logpath  = /var/log/auth.log
 findtime = 10m
+maxretry = 5
+bantime  = 7d
 
 [apache-badbots]
-enabled = true
+enabled  = true
+port     = http,https
+logpath  = /var/log/apache2/access.log*
+findtime = 10m
+maxretry = 3
+bantime  = 1d
 
 [apache-noscript]
-enabled = true
+enabled  = true
+port     = http,https
+logpath  = /var/log/apache2/error.log*
+findtime = 10m
+maxretry = 3
+bantime  = 1d
 
 [apache-evasive]
 enabled  = true
+port     = http,https
 filter   = apache-evasive
-logpath  = /var/log/apache2/error.log
+logpath  = /var/log/apache2/error.log*
+findtime = 2m
 maxretry = 10
-findtime = 120
-bantime  = 900
+bantime  = 15m
+
+[recidive]
+enabled  = true
+filter   = recidive
+logpath  = /var/log/fail2ban.log
+banaction = iptables-allports
+findtime = 7d
+bantime  = 30d
+maxretry = 5
