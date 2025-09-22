@@ -4,6 +4,7 @@ scripts Repository Version History
 v1.5.3 (Release Date: TBD)
 --------------------------
 - Add dynamic download URL generation from host FQDN in send_files.sh.
+- Add multi host rsync support in gpx_sync.sh via RSYNC_HOSTS with fallback to RSYNC_HOST.
 - Add multi target sync with local reflection and silent log skipping in munin-sync.sh.
 - Enhance server_alive_check.sh to output human readable summary lines with counts and percentages while keeping exit codes unchanged.
 - Add miscellaneous configuration additions and minor adjustments across scripts.

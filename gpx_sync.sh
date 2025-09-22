@@ -11,6 +11,10 @@
 #  remote server information, and default file permissions. The script allows
 #  overriding the default file permissions via a command-line argument.
 #
+#  Multi-host sync:
+#  - Set RSYNC_HOSTS as a space-separated list (e.g., "harpuia wyvern") to rsync
+#    to multiple hosts. If RSYNC_HOSTS is unset, the legacy RSYNC_HOST is used.
+#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
@@ -26,12 +30,15 @@
 #  - USER_GPX_DIR: User-specific GPX directory.
 #  - MOUNTED_DIR: Mounted directory for backups.
 #  - RSYNC_USER: Username for remote server access.
-#  - RSYNC_HOST: Hostname or IP address of the remote server.
+#  - RSYNC_HOSTS: Space-separated hostnames or IPs for remote sync (preferred).
+#                 Example: RSYNC_HOSTS="server1 server2"
+#    (Fallback) RSYNC_HOST: Single hostname or IP if RSYNC_HOSTS is not set.
 #  - DEFAULT_PERMISSIONS: Default file permissions if not overridden by command-line argument.
 #  Ensure all these variables are set in 'gpx_sync.conf'.
 #
 #  Notes:
 #  - Ensure that all specified directories exist and are writable.
+#  - Remote synchronization runs for each host in RSYNC_HOSTS, or for RSYNC_HOST if provided.
 #  - The script updates file permissions as needed and performs clean-up operations.
 #  - Remote synchronization is attempted only if the remote server is reachable.
 #  - The permissions argument must be a 3-digit octal number. Any other format will result in an error.
@@ -47,6 +54,8 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v2.4 2025-09-22
+#  Add multi host rsync via RSYNC_HOSTS with fallback to RSYNC_HOST and update header docs accordingly.
 #  v2.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.2 2025-04-13
@@ -117,11 +126,24 @@ load_configuration() {
     fi
     . "$CONF_FILE"
 
-    # Check if necessary variables are set
-    if [ -z "$TMP_DIR" ] || [ -z "$USER_GPX_DIR" ] || [ -z "$MOUNTED_DIR" ] || [ -z "$RSYNC_USER" ] || [ -z "$RSYNC_HOST" ]; then
+
+    # Check basic variables
+    if [ -z "$TMP_DIR" ] || [ -z "$USER_GPX_DIR" ] || [ -z "$MOUNTED_DIR" ] || [ -z "$RSYNC_USER" ]; then
         echo "[ERROR] One or more configuration variables are not set. Please check your gpx_sync.conf." >&2
         exit 4
     fi
+
+    # Build host list: prefer RSYNC_HOSTS, fallback to RSYNC_HOST
+    HOST_LIST=""
+    if [ -n "$RSYNC_HOSTS" ]; then
+        HOST_LIST="$RSYNC_HOSTS"
+    elif [ -n "$RSYNC_HOST" ]; then
+        HOST_LIST="$RSYNC_HOST"
+    else
+        echo "[ERROR] Neither RSYNC_HOSTS nor RSYNC_HOST is set in the configuration." >&2
+        exit 4
+    fi
+
 }
 
 # Check for required commands
@@ -181,6 +203,18 @@ copy_files() {
     find "$source_dir" -maxdepth 1 -name '*.gpx' -type f -exec chmod "$permissions" {} \; -exec cp {} "$destination" \;
 }
 
+# Sync to all configured hosts
+sync_all_hosts() {
+    source="$1"
+    destination_user="$2"
+    rc=0
+    for h in $HOST_LIST; do
+        sync_files "$source" "$destination_user" "$h" || rc=$?
+        [ "$rc" -ne 0 ] && break
+    done
+    return "$rc"
+}
+
 # Perform rsync
 sync_files() {
     source="$1"
@@ -213,7 +247,7 @@ main() {
     check_gpx_files "$TMP_DIR" || exit $?
     copy_files "$TMP_DIR" "$HOME/$USER_GPX_DIR/$CURRENT_YEAR/" "$permissions" || exit $?
     copy_files "$TMP_DIR" "$MOUNTED_DIR/$USER_GPX_DIR/$CURRENT_YEAR/" "$permissions" || exit $?
-    sync_files "$HOME/$USER_GPX_DIR" "$RSYNC_USER" "$RSYNC_HOST" || exit $?
+    sync_all_hosts "$HOME/$USER_GPX_DIR" "$RSYNC_USER" || exit $?
     remove_files "$TMP_DIR"/*.gpx || exit $?
 
     echo "[INFO] All operations completed successfully."
