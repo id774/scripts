@@ -179,6 +179,9 @@ sync_local_logs() {
     copy_if_readable /var/log/cron.log
     copy_if_readable /var/log/cron.log.1
 
+    copy_if_readable /var/log/fail2ban.log
+    copy_if_readable /var/log/fail2ban.log.1
+
     copy_if_readable /var/log/clamav/clamav.log
     copy_if_readable /var/log/clamav/clamav.log.1
 
