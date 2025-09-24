@@ -50,6 +50,8 @@
 #       /etc/cron.d/munin-sync
 #
 #  Version History:
+#  v2.1 2025-09-24
+#       Use FQDN instead of short hostname for sending directory.
 #  v2.0 2025-08-01
 #       Add --uninstall option to remove all installed components.
 #  v1.3 2025-06-23
@@ -136,7 +138,7 @@ setup_directories() {
     sudo chmod 750 /var/lib/munin/etc
     sudo chown munin:munin /var/lib/munin/etc
 
-    SENDING_DIR="/var/lib/munin/sending/$(hostname)"
+    SENDING_DIR="/var/lib/munin/sending/$(hostname -f)"
     if ! sudo mkdir -p "$SENDING_DIR"; then
         echo "[ERROR] Failed to create $SENDING_DIR." >&2
         exit 1

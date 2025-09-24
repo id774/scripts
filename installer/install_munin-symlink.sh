@@ -31,6 +31,8 @@
 #  - The configuration file is deployed with permission 640 (readable by adm group).
 #
 #  Version History:
+#  v2.1 2025-09-24
+#       Fix group ownership and command checks.
 #  v2.0 2025-08-01
 #       Add --uninstall option to remove installed script, config, and cron job.
 #  v1.4 2025-07-30
@@ -109,7 +111,7 @@ deploy_script() {
         echo "[ERROR] Failed to copy munin-symlink.sh." >&2
         exit 1
     fi
-    if ! sudo chown root:root /etc/cron.exec/munin-symlink.sh; then
+    if ! sudo chown root:adm /etc/cron.exec/munin-symlink.sh; then
         echo "[ERROR] Failed to change ownership of munin-symlink.sh." >&2
         exit 1
     fi
@@ -146,7 +148,7 @@ deploy_configuration() {
         echo "[ERROR] Failed to set permissions on configuration file." >&2
         exit 1
     fi
-    if ! sudo chown root:root "$CONFIG_FILE"; then
+    if ! sudo chown root:adm "$CONFIG_FILE"; then
         echo "[ERROR] Failed to change ownership of configuration file." >&2
         exit 1
     fi
@@ -177,7 +179,7 @@ EOF
 # Perform installation steps
 install() {
     check_system
-    check_commands sudo chmod chown tee
+    check_commands sudo chmod chown tee mkdir cp
     check_scripts
     check_sudo
 
