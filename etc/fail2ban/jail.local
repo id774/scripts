@@ -2,10 +2,14 @@
 # Allowlist
 ignoreip = 127.0.0.1/8 ::1 192.168.0.0/16
 
+# Find time: the time window to count failed login attempts
+# Max retry: number of failed login attempts allowed before banning
+# Ban time: duration for which an IP is blocked (e.g., 10m, 1h, 1d, 1w)
+
 # Base policy
-bantime  = 1d
 findtime = 10m
 maxretry = 3
+bantime  = 1d
 
 # Use iptables backend
 banaction = iptables-multiport
@@ -26,12 +30,15 @@ backend = auto
 
 [sshd]
 enabled  = true
+
+# DO NOT LEAVE THIS VALUE WRONG: Change to the actual SSH port configured in /etc/ssh/sshd_config
 port     = 99999
+
 filter   = sshd
 logpath  = /var/log/auth.log
-findtime = 10m
+findtime = 30m
 maxretry = 5
-bantime  = 7d
+bantime  = 1d
 
 [apache-badbots]
 enabled  = true
