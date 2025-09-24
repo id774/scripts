@@ -36,8 +36,10 @@ bantime  = 7d
 [apache-badbots]
 enabled  = true
 port     = http,https
-logpath  = /var/log/apache2/access.log*
-           /var/log/apache2/ssl_access.log*
+logpath  = /var/log/apache2/access.log
+           /var/log/apache2/access.log.1
+           /var/log/apache2/ssl_access.log
+           /var/log/apache2/ssl_access.log.1
 findtime = 10m
 maxretry = 3
 bantime  = 1d
@@ -45,7 +47,8 @@ bantime  = 1d
 [apache-noscript]
 enabled  = true
 port     = http,https
-logpath  = /var/log/apache2/error.log*
+logpath  = /var/log/apache2/error.log
+           /var/log/apache2/error.log.1
 findtime = 10m
 maxretry = 3
 bantime  = 1d
@@ -54,7 +57,8 @@ bantime  = 1d
 enabled  = true
 port     = http,https
 filter   = apache-evasive
-logpath  = /var/log/apache2/error.log*
+logpath  = /var/log/apache2/error.log
+           /var/log/apache2/error.log.1
 findtime = 2m
 maxretry = 10
 bantime  = 15m
