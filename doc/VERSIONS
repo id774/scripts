@@ -7,6 +7,9 @@ v1.5.3 (Release Date: TBD)
 - Add multi host rsync support in gpx_sync.sh via RSYNC_HOSTS with fallback to RSYNC_HOST.
 - Add multi target sync with local reflection and silent log skipping in munin-sync.sh.
 - Enhance server_alive_check.sh to output human readable summary lines with counts and percentages while keeping exit codes unchanged.
+- Use FQDN instead of short hostname for sending directory in install_munin-sync.sh.
+- Fix group ownership and command checks in install-munin-symlink.sh.
+- Reduce logrotate retention across apache and backup logs to more practical levels.
 - Add miscellaneous configuration additions and minor adjustments across scripts.
 
 v1.5.2 (2025-09-11)
