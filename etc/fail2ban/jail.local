@@ -1,6 +1,6 @@
 [DEFAULT]
 # Allowlist
-ignoreip = 127.0.0.1/8 ::1 192.168.0.0/16
+ignoreip = 127.0.0.0/8 ::1 192.168.0.0/16
 
 # Find time: the time window to count failed login attempts
 # Max retry: number of failed login attempts allowed before banning
@@ -74,6 +74,7 @@ bantime  = 15m
 enabled  = true
 filter   = recidive
 logpath  = /var/log/fail2ban.log
+           /var/log/fail2ban.log.1
 banaction = iptables-allports
 findtime = 7d
 bantime  = 30d
