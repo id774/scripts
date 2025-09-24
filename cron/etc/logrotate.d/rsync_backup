@@ -5,5 +5,5 @@
   notifempty
   missingok
   create 0640 root adm
-  rotate 999
+  rotate 30
 }
