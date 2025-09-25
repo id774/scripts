@@ -36,39 +36,10 @@ port     = 99999
 
 filter   = sshd
 logpath  = /var/log/auth.log
+           /var/log/auth.log.1
 findtime = 30m
 maxretry = 5
-bantime  = 1d
-
-[apache-badbots]
-enabled  = true
-port     = http,https
-logpath  = /var/log/apache2/access.log
-           /var/log/apache2/access.log.1
-           /var/log/apache2/ssl_access.log
-           /var/log/apache2/ssl_access.log.1
-findtime = 10m
-maxretry = 3
-bantime  = 1d
-
-[apache-noscript]
-enabled  = true
-port     = http,https
-logpath  = /var/log/apache2/error.log
-           /var/log/apache2/error.log.1
-findtime = 10m
-maxretry = 3
-bantime  = 1d
-
-[apache-evasive]
-enabled  = true
-port     = http,https
-filter   = apache-evasive
-logpath  = /var/log/apache2/error.log
-           /var/log/apache2/error.log.1
-findtime = 2m
-maxretry = 10
-bantime  = 15m
+bantime  = 7d
 
 [recidive]
 enabled  = true
@@ -77,5 +48,5 @@ logpath  = /var/log/fail2ban.log
            /var/log/fail2ban.log.1
 banaction = iptables-allports
 findtime = 7d
-bantime  = 30d
 maxretry = 5
+bantime  = 30d

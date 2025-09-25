@@ -74,9 +74,7 @@
 -A INPUT -p tcp -m tcp --dport 3389 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name RDP3389 --rsource -j LOG --log-prefix "[rdp attack] : "
 -A INPUT -p tcp -m tcp --dport 3389 -m state --state NEW -m recent --update --seconds 600 --hitcount 10 --rttl --name RDP3389 --rsource -j DROP
 
--A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --set --name SSH22 --rsource
--A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH22 --rsource -j LOG --log-prefix "[ssh(default) attack] : "
--A INPUT -p tcp -m tcp --dport 22 -m state --state NEW -m recent --update --seconds 900 --hitcount 10 --rttl --name SSH22 --rsource -j DROP
+-A INPUT -p tcp -m conntrack --ctstate NEW --dport 22 -j DROP
 
 # ----------------------------------------------------------------------------
 # WARNING: This ACCEPT rule also uses port 99999. It must be changed as above.
