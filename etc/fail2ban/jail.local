@@ -2,13 +2,13 @@
 # Allowlist
 ignoreip = 127.0.0.0/8 ::1 192.168.0.0/16
 
-# Find time: the time window to count failed login attempts
 # Max retry: number of failed login attempts allowed before banning
+# Find time: the time window to count failed login attempts
 # Ban time: duration for which an IP is blocked (e.g., 10m, 1h, 1d, 1w)
 
 # Base policy
-findtime = 10m
 maxretry = 3
+findtime = 10m
 bantime  = 1d
 
 # Use iptables backend
@@ -21,7 +21,7 @@ logtarget = /var/log/fail2ban.log
 # Progressive bans (optional but recommended)
 bantime.increment = true
 bantime.factor    = 2
-bantime.maxtime   = 14d
+bantime.maxtime   = 30d
 
 # Backend
 backend = auto
@@ -37,8 +37,8 @@ port     = 99999
 filter   = sshd
 logpath  = /var/log/auth.log
            /var/log/auth.log.1
-findtime = 30m
 maxretry = 5
+findtime = 30m
 bantime  = 7d
 
 [recidive]
@@ -47,6 +47,6 @@ filter   = recidive
 logpath  = /var/log/fail2ban.log
            /var/log/fail2ban.log.1
 banaction = iptables-allports
-findtime = 7d
 maxretry = 5
+findtime = 7d
 bantime  = 30d
