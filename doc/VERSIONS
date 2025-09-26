@@ -1,8 +1,8 @@
 scripts Repository Version History
 ==================================
 
-v1.5.3 (Release Date: TBD)
---------------------------
+v1.5.3 (2025-09-26)
+-------------------
 - Add dynamic download URL generation from host FQDN in send_files.sh.
 - Add multi host rsync support in gpx_sync.sh via RSYNC_HOSTS with fallback to RSYNC_HOST.
 - Add multi target sync with local reflection and silent log skipping in munin-sync.sh.
