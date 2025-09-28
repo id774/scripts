@@ -1,6 +1,10 @@
 scripts Repository Version History
 ==================================
 
+v1.6 (2025-09-29)
+-----------------
+- No updates since v1.5.3. Version number incremented only.
+
 v1.5.3 (2025-09-26)
 -------------------
 - Add dynamic download URL generation from host FQDN in send_files.sh.
