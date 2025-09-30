@@ -195,6 +195,9 @@ ensure_daily() {
         rm -f "$tmp"
         echo "[INFO] Set daily in one or more stanzas"
     fi
+
+    sudo chown root:adm "$TARGET"
+    sudo chmod 640 "$TARGET"
 }
 
 # Ensure a retention line "    rotate 90" exists (and is normalized) in each block
@@ -237,6 +240,9 @@ ensure_rotate90() {
         rm -f "$tmp"
         echo "[INFO] Set rotate 90 in one or more stanzas"
     fi
+
+    sudo chown root:adm "$TARGET"
+    sudo chmod 640 "$TARGET"
 }
 
 # Main entry point of the script
@@ -246,7 +252,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo awk cp cmp grep cat rm
+    check_commands sudo awk cp cmp grep cat rm chown chmod
     check_sudo
     check_target
 
