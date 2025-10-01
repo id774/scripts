@@ -30,6 +30,8 @@
 #  - Run with appropriate permissions if modifying system-wide settings.
 #
 #  Version History:
+#  v3.2 2025-10-01
+#       Refine bulk_deploy to apply chmod only on top level home directories using find.
 #  v3.1 2025-09-05
 #       Add xinputrc to dotfiles deployment
 #  v3.0 2025-08-23
@@ -261,7 +263,7 @@ deploy_dotfiles_to_linux() {
 
 # Deploy dotfiles to multiple users across different OS environments
 bulk_deploy() {
-    test -d "/home" && test -d "/home/$USER" && sudo chmod 0750 /home/*
+    test -d "/home" && test -d "/home/$USER" && find /home -mindepth 1 -maxdepth 1 -type d -exec sudo chmod 0750 {} +
     test -d /home/opt && sudo chmod 0755 /home/opt
 
     # Harden local SSH source permissions if present
