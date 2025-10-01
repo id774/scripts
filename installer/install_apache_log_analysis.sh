@@ -106,7 +106,7 @@ setup_directories() {
     echo "[INFO] Setting up directories."
     if [ ! -d /var/log/sysadmin ]; then
         sudo mkdir -p /var/log/sysadmin
-        sudo chmod 750 /var/log/sysadmin
+        sudo chmod 0750 /var/log/sysadmin
         sudo chown root:adm /var/log/sysadmin
     fi
 }
@@ -119,7 +119,7 @@ deploy_scripts() {
         exit 1
     fi
 
-    sudo chmod 750 /etc/cron.exec
+    sudo chmod 0750 /etc/cron.exec
     sudo chown root:adm /etc/cron.exec
 
     for script in apache_log_analysis.sh apache_calculater.py; do
@@ -128,7 +128,7 @@ deploy_scripts() {
             exit 1
         fi
 
-        sudo chmod 740 "/etc/cron.exec/$script"
+        sudo chmod 0740 "/etc/cron.exec/$script"
         sudo chown root:adm "/etc/cron.exec/$script"
     done
 }
@@ -144,7 +144,7 @@ deploy_configurations() {
         echo "[ERROR] Failed to create $CONFIG_DIR." >&2
         exit 1
     fi
-    sudo chmod 750 "$CONFIG_DIR"
+    sudo chmod 0750 "$CONFIG_DIR"
     sudo chown root:adm "$CONFIG_DIR"
 
     if ! sudo test -f "$CONFIG_FILE"; then
@@ -157,7 +157,7 @@ deploy_configurations() {
         echo "[INFO] Skipping copy to preserve existing configuration."
     fi
 
-    sudo chmod 640 "$CONFIG_FILE"
+    sudo chmod 0640 "$CONFIG_FILE"
     sudo chown root:adm "$CONFIG_FILE"
 }
 
@@ -174,7 +174,7 @@ setup_cron_jobs() {
         exit 1
     fi
 
-    sudo chmod 740 /etc/cron.daily/apache_log_analysis
+    sudo chmod 0740 /etc/cron.daily/apache_log_analysis
     sudo chown root:adm /etc/cron.daily/apache_log_analysis
 }
 
@@ -183,7 +183,7 @@ setup_log_files() {
     echo "[INFO] Setting up log files."
     if [ ! -f /var/log/sysadmin/apache_summary.log ]; then
         sudo touch /var/log/sysadmin/apache_summary.log
-        sudo chmod 640 /var/log/sysadmin/apache_summary.log
+        sudo chmod 0640 /var/log/sysadmin/apache_summary.log
         sudo chown root:adm /var/log/sysadmin/apache_summary.log
     fi
 }
@@ -195,7 +195,7 @@ setup_log_rotation() {
         echo "[ERROR] Failed to deploy logrotate configuration for apache_summary." >&2
         exit 1
     fi
-    sudo chmod 644 /etc/logrotate.d/apache_summary
+    sudo chmod 0644 /etc/logrotate.d/apache_summary
     sudo chown root:root /etc/logrotate.d/apache_summary
 }
 

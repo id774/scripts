@@ -5,6 +5,7 @@ v1.6.1 (Release Date: TBD)
 --------------------------
 - Add setup_rsyslog_logrotate.sh to enforce daily rotation with 90 copies for rsyslog logs.
 - Remove setup_chkrootkit_opts.sh since quiet mode (-q) is no longer applied.
+- Normalize chmod numeric modes to four digit octal across shell scripts.
 
 v1.6 (2025-09-29)
 -----------------

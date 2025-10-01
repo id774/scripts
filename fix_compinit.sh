@@ -110,11 +110,11 @@ fix_permissions() {
 
     # Set secure permissions
     echo "[INFO] Setting directory permissions to 755..."
-    if ! sudo chmod -R 755 /usr/local/Homebrew/completions/zsh/; then
+    if ! sudo chmod -R 0755 /usr/local/Homebrew/completions/zsh/; then
         echo "[ERROR] Failed to set permissions on /usr/local/Homebrew/completions/zsh/." >&2
         exit 1
     fi
-    if ! sudo chmod -R 755 /usr/local/share/zsh/; then
+    if ! sudo chmod -R 0755 /usr/local/share/zsh/; then
         echo "[ERROR] Failed to set permissions on /usr/local/share/zsh/." >&2
         exit 1
     fi

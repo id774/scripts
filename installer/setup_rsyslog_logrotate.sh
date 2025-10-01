@@ -176,7 +176,7 @@ enforce_owner_mode() {
     fi
 
     # Apply permissions
-    if ! sudo chmod 640 "$TARGET"; then
+    if ! sudo chmod 0640 "$TARGET"; then
         echo "[ERROR] Failed to set mode 0640 on $TARGET" >&2
         exit 1
     fi

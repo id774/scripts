@@ -150,7 +150,7 @@ install() {
         echo "[ERROR] Failed to copy chkrootkit cron script." >&2
         exit 1
     fi
-    sudo chmod 740 /etc/cron.weekly/chkrootkit
+    sudo chmod 0740 /etc/cron.weekly/chkrootkit
     sudo chown root:adm /etc/cron.weekly/chkrootkit
 
     # Create log directory if it does not exist
@@ -161,7 +161,7 @@ install() {
             exit 1
         fi
     fi
-    sudo chmod 750 /var/log/chkrootkit
+    sudo chmod 0750 /var/log/chkrootkit
     sudo chown root:adm /var/log/chkrootkit
 
     # Set up chkrootkit log file
@@ -169,7 +169,7 @@ install() {
     if [ ! -f /var/log/chkrootkit/chkrootkit.log ]; then
         sudo touch /var/log/chkrootkit/chkrootkit.log
     fi
-    sudo chmod 640 /var/log/chkrootkit/chkrootkit.log
+    sudo chmod 0640 /var/log/chkrootkit/chkrootkit.log
     sudo chown root:adm /var/log/chkrootkit/chkrootkit.log
 
     # Deploy log rotation configuration
@@ -178,7 +178,7 @@ install() {
         echo "[ERROR] Failed to deploy logrotate configuration." >&2
         exit 1
     fi
-    sudo chmod 644 /etc/logrotate.d/chkrootkit
+    sudo chmod 0644 /etc/logrotate.d/chkrootkit
     sudo chown root:root /etc/logrotate.d/chkrootkit
 
     initialize_baseline

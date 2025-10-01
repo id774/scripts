@@ -141,7 +141,7 @@ deploy_fail2ban() {
 failregex = \[evasive20:error\] \[pid .*?\] \[client <HOST>.*\] client denied by server configuration
 ignoreregex =
 EOF
-        sudo cp "$tmp" "$dest" && sudo chown root:root "$dest" && sudo chmod 644 "$dest" || {
+        sudo cp "$tmp" "$dest" && sudo chown root:root "$dest" && sudo chmod 0644 "$dest" || {
             echo "[ERROR] Failed to create $dest" >&2; rm -f "$tmp"; exit 1;
         }
         rm -f "$tmp"
@@ -161,7 +161,7 @@ deploy_evasive() {
         sudo mkdir -p /var/log/apache2/evasive || { echo "[ERROR] Failed to create log dir" >&2; exit 1; }
     fi
     sudo chown www-data:adm /var/log/apache2/evasive || { echo "[ERROR] Failed to chown log dir" >&2; exit 1; }
-    sudo chmod 750 /var/log/apache2/evasive || { echo "[ERROR] Failed to chmod log dir" >&2; exit 1; }
+    sudo chmod 0750 /var/log/apache2/evasive || { echo "[ERROR] Failed to chmod log dir" >&2; exit 1; }
 }
 
 # Enable Apache module "evasive" and validate configuration, then reload

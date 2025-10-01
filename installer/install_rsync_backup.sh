@@ -130,7 +130,7 @@ install() {
         echo "[INFO] Creating /var/log/sysadmin."
         sudo mkdir -p /var/log/sysadmin
     fi
-    sudo chmod 750 /var/log/sysadmin
+    sudo chmod 0750 /var/log/sysadmin
     sudo chown root:adm /var/log/sysadmin
 
     # Create /etc/cron.config if missing
@@ -138,7 +138,7 @@ install() {
         echo "[INFO] Creating /etc/cron.config."
         sudo mkdir -p /etc/cron.config
     fi
-    sudo chmod 750 /etc/cron.config
+    sudo chmod 0750 /etc/cron.config
     sudo chown root:adm /etc/cron.config
 
     CONFIG_FILE="/etc/cron.config/rsync_backup.conf"
@@ -150,7 +150,7 @@ install() {
         echo "[INFO] Configuration file already exists: $CONFIG_FILE"
         echo "[INFO] Skipping copy to preserve existing configuration."
     fi
-    sudo chmod 640 "$CONFIG_FILE"
+    sudo chmod 0640 "$CONFIG_FILE"
     sudo chown root:adm "$CONFIG_FILE"
 
     # Create /etc/cron.exec if missing
@@ -158,19 +158,19 @@ install() {
         echo "[INFO] Creating /etc/cron.exec."
         sudo mkdir -p /etc/cron.exec
     fi
-    sudo chmod 750 /etc/cron.exec
+    sudo chmod 0750 /etc/cron.exec
     sudo chown root:adm /etc/cron.exec
 
     # Deploy rsync_backup.sh script
     echo "[INFO] Deploying rsync_backup.sh to /etc/cron.exec."
     sudo cp "$SCRIPTS/cron/bin/rsync_backup.sh" /etc/cron.exec/
-    sudo chmod 740 /etc/cron.exec/rsync_backup.sh
+    sudo chmod 0740 /etc/cron.exec/rsync_backup.sh
     sudo chown root:adm /etc/cron.exec/rsync_backup.sh
 
     # Deploy rsync backup cron job trigger
     echo "[INFO] Installing cron job trigger to /etc/cron.hourly."
     sudo cp "$SCRIPTS/cron/bin/rsync_backup" /etc/cron.hourly/
-    sudo chmod 740 /etc/cron.hourly/rsync_backup
+    sudo chmod 0740 /etc/cron.hourly/rsync_backup
     sudo chown root:adm /etc/cron.hourly/rsync_backup
 
     # Set up rsync backup log file
@@ -178,7 +178,7 @@ install() {
         echo "[INFO] Creating rsync_backup log file."
         sudo touch /var/log/sysadmin/rsync_backup.log
     fi
-    sudo chmod 640 /var/log/sysadmin/rsync_backup.log
+    sudo chmod 0640 /var/log/sysadmin/rsync_backup.log
     sudo chown root:adm /var/log/sysadmin/rsync_backup.log
 
     # Deploy logrotate configuration
@@ -186,7 +186,7 @@ install() {
         echo "[INFO] Installing logrotate configuration."
         sudo cp "$SCRIPTS/cron/etc/logrotate.d/rsync_backup" /etc/logrotate.d/
     fi
-    sudo chmod 640 /etc/logrotate.d/rsync_backup
+    sudo chmod 0640 /etc/logrotate.d/rsync_backup
     sudo chown root:adm /etc/logrotate.d/rsync_backup
 
     echo "[INFO] Rsync backup setup completed successfully."

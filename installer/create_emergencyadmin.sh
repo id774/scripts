@@ -69,14 +69,14 @@ check_user_exists() {
 # Set the home directory permission to 700 for emergencyadmin and current user
 set_home_permission() {
     echo "[INFO] Setting permission 700 for /Users/$USERNAME"
-    sudo chmod 700 "/Users/$USERNAME"
+    sudo chmod 0700 "/Users/$USERNAME"
     ls -ld "/Users/$USERNAME"
 
     CURRENT_USER=$(logname)
     CURRENT_HOME=$(dscl . -read /Users/"$CURRENT_USER" NFSHomeDirectory | awk '{print $2}')
 
     echo "[INFO] Setting permission 700 for current user home: $CURRENT_HOME"
-    sudo chmod 700 "$CURRENT_HOME"
+    sudo chmod 0700 "$CURRENT_HOME"
     ls -ld "$CURRENT_HOME"
 }
 

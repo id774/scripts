@@ -121,7 +121,7 @@ setup_log_directory() {
         fi
     fi
 
-    sudo chmod 750 /var/log/sysadmin
+    sudo chmod 0750 /var/log/sysadmin
     sudo chown root:adm /var/log/sysadmin
 }
 
@@ -135,7 +135,7 @@ setup_log_file() {
         fi
     fi
 
-    sudo chmod 640 /var/log/sysadmin/run_tests.log
+    sudo chmod 0640 /var/log/sysadmin/run_tests.log
     sudo chown root:adm /var/log/sysadmin/run_tests.log
 }
 
@@ -149,7 +149,7 @@ deploy_log_rotation() {
         fi
     fi
 
-    sudo chmod 640 /etc/logrotate.d/run_tests
+    sudo chmod 0640 /etc/logrotate.d/run_tests
     sudo chown root:adm /etc/logrotate.d/run_tests
 }
 
@@ -161,7 +161,7 @@ deploy_scripts() {
         exit 1
     fi
 
-    sudo chmod 750 /etc/cron.exec
+    sudo chmod 0750 /etc/cron.exec
     sudo chown root:adm /etc/cron.exec
 
     if ! sudo cp "$SCRIPTS/cron/bin/run_tests" /etc/cron.exec/; then
@@ -176,7 +176,7 @@ deploy_scripts() {
         echo "[ERROR] Failed to create $CONFIG_DIR." >&2
         exit 1
     fi
-    sudo chmod 750 "$CONFIG_DIR"
+    sudo chmod 0750 "$CONFIG_DIR"
     sudo chown root:adm "$CONFIG_DIR"
 
     if ! sudo test -f "$CONFIG_FILE"; then
@@ -190,9 +190,9 @@ deploy_scripts() {
         echo "[INFO] Skipping copy to preserve existing configuration."
     fi
 
-    sudo chmod 740 /etc/cron.exec/run_tests
+    sudo chmod 0740 /etc/cron.exec/run_tests
     sudo chown root:adm /etc/cron.exec/run_tests
-    sudo chmod 640 "$CONFIG_FILE"
+    sudo chmod 0640 "$CONFIG_FILE"
     sudo chown root:adm "$CONFIG_FILE"
 }
 
@@ -212,7 +212,7 @@ setup_cron_job() {
         fi
     fi
 
-    sudo chmod 640 "$CRON_FILE"
+    sudo chmod 0640 "$CRON_FILE"
     sudo chown root:adm "$CRON_FILE"
 }
 

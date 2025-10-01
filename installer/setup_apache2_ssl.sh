@@ -113,7 +113,7 @@ deploy_site_configs() {
             echo "[ERROR] Failed to copy $site configuration." >&2
             exit 1
         fi
-        sudo chmod 644 /etc/apache2/sites-available/$site
+        sudo chmod 0644 /etc/apache2/sites-available/$site
         sudo chown root:root /etc/apache2/sites-available/$site
         echo "[INFO] Please edit /etc/apache2/sites-available/$site"
     done

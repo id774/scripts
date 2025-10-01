@@ -160,7 +160,7 @@ setup_dotemacs() {
       "$1/.emacs.d/tmp" \
       "$1/.emacs.d/tramp-auto-save" \
       "$1/.emacs.d/auto-save-list"
-    sudo chmod 750 "$1/.emacs.d" "$1/.emacs.d/site-lisp" "$1/.emacs.d/anything" "$1/.emacs.d/backups" "$1/.emacs.d/tmp" "$1/.emacs.d/tramp-auto-save" "$1/.emacs.d/auto-save-list"
+    sudo chmod 0750 "$1/.emacs.d" "$1/.emacs.d/site-lisp" "$1/.emacs.d/anything" "$1/.emacs.d/backups" "$1/.emacs.d/tmp" "$1/.emacs.d/tramp-auto-save" "$1/.emacs.d/auto-save-list"
     sudo touch "$1/.emacs.d/anything/anything-c-adaptive-history"
     test -d /usr/local/etc/emacs.d/elisp && \
       sudo ln -fs /usr/local/etc/emacs.d/elisp "$1/.emacs.d/elisp"
@@ -172,8 +172,8 @@ setup_dotemacs() {
 mkdir_skelton() {
     mkdir_if_not_exist \
       "$1/.tmp" "$1/.local" "$1/.config" "$1/tmp" "$1/mnt" "$1/local" "$1/var" "$1/etc" "$1/bin" "$1/arc"
-    sudo chmod 700 "$1/.tmp" "$1/.local" "$1/.config" "$1/tmp" "$1/mnt" "$1/var"
-    sudo chmod 750 "$1/local" "$1/etc" "$1/bin" "$1/arc"
+    sudo chmod 0700 "$1/.tmp" "$1/.local" "$1/.config" "$1/tmp" "$1/mnt" "$1/var"
+    sudo chmod 0750 "$1/local" "$1/etc" "$1/bin" "$1/arc"
     command -v emacs >/dev/null 2>&1 && setup_dotemacs "$1"
 }
 
@@ -198,8 +198,8 @@ copy_ssh_file_if_exists() {
     echo "[INFO] Copying .ssh/$name to $dest_user ($dest)"
     sudo mkdir -p "$dest_ssh"
     sudo cp "$OPTIONS" "$src" "$dest"
-    sudo chmod 700 "$dest_ssh"
-    sudo chmod 600 "$dest"
+    sudo chmod 0700 "$dest_ssh"
+    sudo chmod 0600 "$dest"
     sudo chown -R "$dest_user:$(id -gn "$dest_user")" "$dest_ssh"
 }
 
@@ -261,14 +261,14 @@ deploy_dotfiles_to_linux() {
 
 # Deploy dotfiles to multiple users across different OS environments
 bulk_deploy() {
-    test -d "/home" && test -d "/home/$USER" && sudo chmod 750 /home/*
-    test -d /home/opt && sudo chmod 755 /home/opt
+    test -d "/home" && test -d "/home/$USER" && sudo chmod 0750 /home/*
+    test -d /home/opt && sudo chmod 0755 /home/opt
 
     # Harden local SSH source permissions if present
     if [ -d "$HOME/.ssh" ]; then
-        chmod 700 "$HOME/.ssh"
-        [ -f "$HOME/.ssh/config" ] && chmod 600 "$HOME/.ssh/config"
-        [ -f "$HOME/.ssh/known_hosts" ] && chmod 600 "$HOME/.ssh/known_hosts"
+        chmod 0700 "$HOME/.ssh"
+        [ -f "$HOME/.ssh/config" ] && chmod 0600 "$HOME/.ssh/config"
+        [ -f "$HOME/.ssh/known_hosts" ] && chmod 0600 "$HOME/.ssh/known_hosts"
     fi
 
     deploy_dotfiles_to_linux \

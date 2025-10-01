@@ -254,7 +254,7 @@ configure_repository() {
             echo "[INFO] Repo already configured: $LISTFILE"
         fi
     fi
-    sudo chmod 644 "$KEYRING"
+    sudo chmod 0644 "$KEYRING"
 }
 
 # Ensure the package is installed while keeping re-runs quiet.

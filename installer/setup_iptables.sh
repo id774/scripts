@@ -113,7 +113,7 @@ apply_template_if_needed() {
     else
         echo "[INFO] $RULES_PATH already exists, skipping copy."
     fi
-    sudo chmod 400 "$RULES_PATH"
+    sudo chmod 0400 "$RULES_PATH"
 }
 
 # Load rules into the running kernel

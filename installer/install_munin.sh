@@ -123,7 +123,7 @@ configure_authentication() {
         fi
     fi
     sudo chown root:www-data /etc/apache2/.htpasswd
-    sudo chmod 640 /etc/apache2/.htpasswd
+    sudo chmod 0640 /etc/apache2/.htpasswd
 }
 
 # Restart services

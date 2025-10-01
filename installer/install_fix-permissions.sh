@@ -130,7 +130,7 @@ install() {
         fi
     fi
 
-    sudo chmod 750 /var/log/sysadmin
+    sudo chmod 0750 /var/log/sysadmin
     sudo chown root:adm /var/log/sysadmin
 
     # Create fix-permissions log file if needed
@@ -144,7 +144,7 @@ install() {
         echo "[INFO] Log file already exists: /var/log/sysadmin/fix-permissions.log"
     fi
 
-    sudo chmod 640 /var/log/sysadmin/fix-permissions.log
+    sudo chmod 0640 /var/log/sysadmin/fix-permissions.log
     sudo chown root:adm /var/log/sysadmin/fix-permissions.log
 
     # Deploy logrotate configuration
@@ -158,7 +158,7 @@ install() {
         echo "[INFO] Logrotate config already exists: /etc/logrotate.d/fix-permissions."
     fi
 
-    sudo chmod 640 /etc/logrotate.d/fix-permissions
+    sudo chmod 0640 /etc/logrotate.d/fix-permissions
     sudo chown root:adm /etc/logrotate.d/fix-permissions
 
     # Deploy the fix-permissions script
@@ -169,7 +169,7 @@ install() {
     fi
     echo "[INFO] Cron job deployed: /etc/cron.daily/fix-permissions"
 
-    sudo chmod 740 /etc/cron.daily/fix-permissions
+    sudo chmod 0740 /etc/cron.daily/fix-permissions
     sudo chown root:adm /etc/cron.daily/fix-permissions
 
     # Create /etc/cron.config if needed
@@ -181,7 +181,7 @@ install() {
         fi
     fi
 
-    sudo chmod 750 /etc/cron.config
+    sudo chmod 0750 /etc/cron.config
     sudo chown root:adm /etc/cron.config
 
     # Deploy fix-permissions.conf
@@ -196,7 +196,7 @@ install() {
         echo "[INFO] Skipping deployment to preserve existing configuration."
     fi
 
-    sudo chmod 640 /etc/cron.config/fix-permissions.conf
+    sudo chmod 0640 /etc/cron.config/fix-permissions.conf
     sudo chown root:adm /etc/cron.config/fix-permissions.conf
 
     echo "[INFO] Fix-permissions script setup completed successfully."

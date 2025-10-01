@@ -109,7 +109,7 @@ configure_awstats() {
     done
 
     echo "[INFO] Setting permissions on Apache logs."
-    if ! sudo chmod 440 /var/log/apache2/*; then
+    if ! sudo chmod 0440 /var/log/apache2/*; then
         echo "[ERROR] Failed to set log file permissions." >&2
         exit 1
     fi
@@ -119,7 +119,7 @@ configure_awstats() {
         exit 1
     fi
 
-    if ! sudo chmod 550 /var/log/apache2; then
+    if ! sudo chmod 0550 /var/log/apache2; then
         echo "[ERROR] Failed to set directory permissions." >&2
         exit 1
     fi

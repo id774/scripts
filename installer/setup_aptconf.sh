@@ -88,7 +88,7 @@ check_sudo() {
 deploy_aptconf() {
     echo "[INFO] Deploying apt.conf..."
     sudo cp -v "$SCRIPTS/etc/apt.conf" /etc/apt/apt.conf
-    sudo chmod 644 /etc/apt/apt.conf
+    sudo chmod 0644 /etc/apt/apt.conf
     sudo chown root:root /etc/apt/apt.conf
 }
 

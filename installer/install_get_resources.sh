@@ -120,7 +120,7 @@ install() {
         fi
     fi
 
-    sudo chmod 750 /var/log/sysadmin
+    sudo chmod 0750 /var/log/sysadmin
     sudo chown root:adm /var/log/sysadmin
 
     if [ ! -f /var/log/sysadmin/resources.log ]; then
@@ -131,7 +131,7 @@ install() {
         fi
     fi
 
-    sudo chmod 640 /var/log/sysadmin/resources.log
+    sudo chmod 0640 /var/log/sysadmin/resources.log
     sudo chown root:adm /var/log/sysadmin/resources.log
 
     if [ ! -f /etc/logrotate.d/resources ]; then
@@ -144,7 +144,7 @@ install() {
         echo "[INFO] /etc/logrotate.d/resources already exists. Skipping deployment."
     fi
 
-    sudo chmod 640 /etc/logrotate.d/resources
+    sudo chmod 0640 /etc/logrotate.d/resources
     sudo chown root:adm /etc/logrotate.d/resources
 
     echo "[INFO] Deploying get_resources.sh to /etc/cron.exec."
@@ -156,7 +156,7 @@ install() {
         fi
     fi
 
-    sudo chmod 750 /etc/cron.exec
+    sudo chmod 0750 /etc/cron.exec
     sudo chown root:adm /etc/cron.exec
 
     if ! sudo cp "$SCRIPTS/get_resources.sh" /etc/cron.exec/; then
@@ -164,7 +164,7 @@ install() {
         exit 1
     fi
 
-    sudo chmod 740 /etc/cron.exec/get_resources.sh
+    sudo chmod 0740 /etc/cron.exec/get_resources.sh
     sudo chown root:adm /etc/cron.exec/get_resources.sh
 
     echo "[INFO] Installing cron job to /etc/cron.hourly."
@@ -173,7 +173,7 @@ install() {
         exit 1
     fi
 
-    sudo chmod 740 /etc/cron.hourly/get_resources
+    sudo chmod 0740 /etc/cron.hourly/get_resources
     sudo chown root:adm /etc/cron.hourly/get_resources
 
     echo "[INFO] Server resource report setup completed successfully."

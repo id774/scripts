@@ -104,7 +104,7 @@ deploy_script() {
         exit 1
     fi
 
-    sudo chmod 750 /etc/cron.exec
+    sudo chmod 0750 /etc/cron.exec
     sudo chown root:adm /etc/cron.exec
 
     if ! sudo cp "$SCRIPTS/cron/bin/munin-symlink.sh" /etc/cron.exec/munin-symlink.sh; then
@@ -115,7 +115,7 @@ deploy_script() {
         echo "[ERROR] Failed to change ownership of munin-symlink.sh." >&2
         exit 1
     fi
-    if ! sudo chmod 740 /etc/cron.exec/munin-symlink.sh; then
+    if ! sudo chmod 0740 /etc/cron.exec/munin-symlink.sh; then
         echo "[ERROR] Failed to set permissions on munin-symlink.sh." >&2
         exit 1
     fi
@@ -131,7 +131,7 @@ deploy_configuration() {
         echo "[ERROR] Failed to create $CONFIG_DIR." >&2
         exit 1
     fi
-    sudo chmod 750 "$CONFIG_DIR"
+    sudo chmod 0750 "$CONFIG_DIR"
     sudo chown root:adm "$CONFIG_DIR"
 
     if ! sudo test -f "$CONFIG_FILE"; then
@@ -144,7 +144,7 @@ deploy_configuration() {
         echo "[INFO] Skipping copy to preserve existing configuration."
     fi
 
-    if ! sudo chmod 640 "$CONFIG_FILE"; then
+    if ! sudo chmod 0640 "$CONFIG_FILE"; then
         echo "[ERROR] Failed to set permissions on configuration file." >&2
         exit 1
     fi
@@ -172,7 +172,7 @@ EOF
         echo "[INFO] Skipping creation to preserve existing configuration."
     fi
 
-    sudo chmod 640 "$CRON_FILE"
+    sudo chmod 0640 "$CRON_FILE"
     sudo chown root:adm "$CRON_FILE"
 }
 

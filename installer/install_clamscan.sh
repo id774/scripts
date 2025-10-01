@@ -110,11 +110,11 @@ create_cron_dirs() {
     # /etc/cron.exec
     sudo mkdir -p /etc/cron.exec
     sudo chown root:adm /etc/cron.exec
-    sudo chmod 750 /etc/cron.exec
+    sudo chmod 0750 /etc/cron.exec
     # /etc/cron.config
     sudo mkdir -p /etc/cron.config
     sudo chown root:adm /etc/cron.config
-    sudo chmod 750 /etc/cron.config
+    sudo chmod 0750 /etc/cron.config
 }
 
 # Deploy ClamAV setup files
@@ -128,7 +128,7 @@ install() {
 
     echo "[INFO] Creating /var/log/sysadmin directory."
     sudo mkdir -p /var/log/sysadmin
-    sudo chmod 750 /var/log/sysadmin
+    sudo chmod 0750 /var/log/sysadmin
     sudo chown root:adm /var/log/sysadmin
 
     create_cron_dirs
@@ -139,14 +139,14 @@ install() {
         exit 1
     fi
     sudo chown root:adm /etc/cron.exec/clamscan.sh
-    sudo chmod 740 /etc/cron.exec/clamscan.sh
+    sudo chmod 0740 /etc/cron.exec/clamscan.sh
 
     if ! sudo cp "$SCRIPTS/cron/bin/clamscan" /etc/cron.exec/; then
         echo "[ERROR] Failed to copy clamscan." >&2
         exit 1
     fi
     sudo chown root:adm /etc/cron.exec/clamscan
-    sudo chmod 740 /etc/cron.exec/clamscan
+    sudo chmod 0740 /etc/cron.exec/clamscan
 
     echo "[INFO] Deploying clamscan configuration to /etc/cron.config/clamscan.conf."
     if ! sudo cp "$SCRIPTS/cron/etc/clamscan.conf" /etc/cron.config/clamscan.conf; then
@@ -154,7 +154,7 @@ install() {
         exit 1
     fi
     sudo chown root:adm /etc/cron.config/clamscan.conf
-    sudo chmod 640 /etc/cron.config/clamscan.conf
+    sudo chmod 0640 /etc/cron.config/clamscan.conf
 
     if [ -f /etc/cron.d/clamscan ]; then
         echo "[INFO] Skipping cron job installation: /etc/cron.d/clamscan already exists."
@@ -170,7 +170,7 @@ MAILTO=root
 01 01 * * 0 root test -x /etc/cron.exec/clamscan && /etc/cron.exec/clamscan
 EOF
     fi
-    sudo chmod 640 /etc/cron.d/clamscan
+    sudo chmod 0640 /etc/cron.d/clamscan
     sudo chown root:adm /etc/cron.d/clamscan
 
     echo "[INFO] Setting up ClamAV log files."
@@ -179,7 +179,7 @@ EOF
             echo "[INFO] Creating log file: $log_file"
             sudo touch "$log_file"
         fi
-        sudo chmod 640 "$log_file"
+        sudo chmod 0640 "$log_file"
         sudo chown clamav:adm "$log_file"
     done
 
@@ -191,7 +191,7 @@ EOF
             echo "[ERROR] Failed to copy logrotate configuration." >&2
             exit 1
         fi
-        sudo chmod 640 /etc/logrotate.d/clamscan
+        sudo chmod 0640 /etc/logrotate.d/clamscan
         sudo chown root:adm /etc/logrotate.d/clamscan
     fi
 

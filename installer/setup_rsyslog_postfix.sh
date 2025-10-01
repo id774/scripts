@@ -153,7 +153,7 @@ deploy_conf() {
     if sudo cp "$TMP_FILE" "$TARGET_FILE"; then
         echo "[INFO] Deployed $TARGET_FILE"
         sudo chown root:root "$TARGET_FILE"
-        sudo chmod 644 "$TARGET_FILE"
+        sudo chmod 0644 "$TARGET_FILE"
     else
         echo "[ERROR] Failed to install $TARGET_FILE" >&2
         rm -f "$TMP_FILE"

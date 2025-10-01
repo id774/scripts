@@ -142,7 +142,7 @@ set_mail_permissions() {
     echo "[INFO] Enforcing permission 600 on all mail spools in /var/mail..."
     for mailfile in /var/mail/*; do
         [ -f "$mailfile" ] || continue
-        sudo chmod 600 "$mailfile"
+        sudo chmod 0600 "$mailfile"
     done
 }
 

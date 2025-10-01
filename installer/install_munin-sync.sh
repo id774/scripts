@@ -128,14 +128,14 @@ setup_directories() {
         echo "[ERROR] Failed to create /var/lib/munin/bin." >&2
         exit 1
     fi
-    sudo chmod 750 /var/lib/munin/bin
+    sudo chmod 0750 /var/lib/munin/bin
     sudo chown munin:munin /var/lib/munin/bin
 
     if ! sudo mkdir -p /var/lib/munin/etc; then
         echo "[ERROR] Failed to create /var/lib/munin/etc." >&2
         exit 1
     fi
-    sudo chmod 750 /var/lib/munin/etc
+    sudo chmod 0750 /var/lib/munin/etc
     sudo chown munin:munin /var/lib/munin/etc
 
     SENDING_DIR="/var/lib/munin/sending/$(hostname -f)"
@@ -143,8 +143,8 @@ setup_directories() {
         echo "[ERROR] Failed to create $SENDING_DIR." >&2
         exit 1
     fi
-    sudo chmod 750 /var/lib/munin/sending
-    sudo chmod 750 "$SENDING_DIR"
+    sudo chmod 0750 /var/lib/munin/sending
+    sudo chmod 0750 "$SENDING_DIR"
     sudo chown munin:munin /var/lib/munin/sending
     sudo chown munin:munin "$SENDING_DIR"
 }
@@ -156,7 +156,7 @@ deploy_scripts() {
         echo "[ERROR] Failed to copy munin-sync.sh." >&2
         exit 1
     fi
-    sudo chmod 750 /var/lib/munin/bin/munin-sync.sh
+    sudo chmod 0750 /var/lib/munin/bin/munin-sync.sh
     sudo chown munin:munin /var/lib/munin/bin/munin-sync.sh
 }
 
@@ -175,7 +175,7 @@ deploy_configurations() {
         echo "[INFO] Skipping copy to preserve existing configuration."
     fi
 
-    sudo chmod 640 "$CONFIG_FILE"
+    sudo chmod 0640 "$CONFIG_FILE"
     sudo chown munin:munin "$CONFIG_FILE"
 }
 
@@ -196,7 +196,7 @@ EOF
         echo "[INFO] Cron job already exists: $CRON_FILE"
         echo "[INFO] Skipping creation to preserve existing configuration."
     fi
-    sudo chmod 640 "$CRON_FILE"
+    sudo chmod 0640 "$CRON_FILE"
     sudo chown root:adm "$CRON_FILE"
 }
 
