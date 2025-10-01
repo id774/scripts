@@ -41,6 +41,17 @@
 #      consistent across editors and diffs. Then we fix each block.
 #    * Temporary files are written under /tmp and removed via a trap.
 #
+#  Ownership and mode policy:
+#    * Owner and group: root:adm
+#      - Debian based systems commonly use group "adm" for log reading and
+#        auditing tasks. Assigning the config to root:adm allows controlled
+#        group visibility for operators while keeping the file owned by root.
+#    * Mode: 0640
+#      - Drops world read permission to avoid leaking potentially sensitive
+#        postrotate script fragments or custom paths in this file.
+#      - Group readable for "adm" aligns with least privilege for on-host
+#        troubleshooting without granting global access.
+#
 #  Behavior summary:
 #    1) If the file contains any tab characters, replace all tabs with
 #       four spaces (single pass).
@@ -55,11 +66,11 @@
 #  Requirements:
 #    - Linux
 #    - sudo privileges (script uses sudo for reading/writing the target)
-#    - Commands: sudo, awk, cp, cmp, grep, cat, rm
+#    - Commands: sudo, awk, cp, cmp, grep, cat, rm, chown, chmod
 #
 #  Error Conditions:
-#  0. Success
-#  1. General failure (OS check, sudo, file missing, awk failure, etc.)
+#  0. Success.
+#  1. General failure. (OS check, sudo, file missing, awk failure, etc.)
 #  126. Required command(s) not executable.
 #  127. Required command(s) not installed.
 #
@@ -152,7 +163,26 @@ convert_tabs() {
     fi
 }
 
-# Ensure a frequency line "    daily" exists (and is normalized) in each block
+# Enforce ownership and permissions with explicit error handling.
+# Notes:
+# - Keep failure messages actionable and exit non zero on policy failure.
+# - This helps detect environments where group adm does not exist or
+#   where permission changes are blocked by MAC or ACL policies.
+enforce_owner_mode() {
+    # Apply ownership
+    if ! sudo chown root:adm "$TARGET"; then
+        echo "[ERROR] Failed to set ownership root:adm on $TARGET" >&2
+        exit 1
+    fi
+
+    # Apply permissions
+    if ! sudo chmod 640 "$TARGET"; then
+        echo "[ERROR] Failed to set mode 0640 on $TARGET" >&2
+        exit 1
+    fi
+}
+
+# Ensure a frequency line "    daily" exists (and is normalized) in each block.
 # Implementation details:
 #   - Tracks when we are inside a block between "{" and "}".
 #   - If a frequency line appears (daily/weekly/monthly/yearly), it is
@@ -196,11 +226,19 @@ ensure_daily() {
         echo "[INFO] Set daily in one or more stanzas"
     fi
 
-    sudo chown root:adm "$TARGET"
-    sudo chmod 640 "$TARGET"
+    # Enforce ownership and permissions after content normalization.
+    # Rationale:
+    # - Keep the file under root control while allowing audited group
+    #   visibility via adm and drop world readability.
+    # - Run each pass to stay idempotent and self healing if external
+    #   tools downgraded permissions between runs.
+    # Error handling:
+    # - Fail fast if either ownership or permission cannot be applied.
+    #   This prevents proceeding with a misconfigured policy.
+    enforce_owner_mode
 }
 
-# Ensure a retention line "    rotate 90" exists (and is normalized) in each block
+# Ensure a retention line "    rotate 90" exists (and is normalized) in each block.
 # Implementation details:
 #   - Similar to ensure_daily, but targets "rotate <number>" lines.
 #   - If a rotate line exists, we replace it with "    rotate 90".
@@ -241,8 +279,15 @@ ensure_rotate90() {
         echo "[INFO] Set rotate 90 in one or more stanzas"
     fi
 
-    sudo chown root:adm "$TARGET"
-    sudo chmod 640 "$TARGET"
+    # Reassert the same policy here too.
+    # Why again:
+    # - Each major normalization step ends by enforcing policy so the
+    #   script remains robust even if intermediate edits changed it.
+    # Security note:
+    # - 0640 is sufficient because logrotate runs as root and adm can
+    #   read for on host audits while world access stays disabled.
+    # Error handling mirrors the daily step and fails fast on errors.
+    enforce_owner_mode
 }
 
 # Main entry point of the script
