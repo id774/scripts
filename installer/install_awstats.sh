@@ -25,6 +25,8 @@
 #  - Apache2 must be installed on the system.
 #
 #  Version History:
+#  v1.5 2025-10-01
+#       Harden log-permission step: operate on regular files only via find.
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.3 2025-04-21
@@ -109,7 +111,13 @@ configure_awstats() {
     done
 
     echo "[INFO] Setting permissions on Apache logs."
-    if ! sudo chmod 0440 /var/log/apache2/*; then
+
+    if ! [ -d /var/log/apache2 ]; then
+        echo "[ERROR] /var/log/apache2 not found." >&2
+        exit 1
+    fi
+
+    if ! sudo find /var/log/apache2 -type f -exec chmod 0640 -- {} +; then
         echo "[ERROR] Failed to set log file permissions." >&2
         exit 1
     fi
@@ -119,7 +127,7 @@ configure_awstats() {
         exit 1
     fi
 
-    if ! sudo chmod 0550 /var/log/apache2; then
+    if ! sudo chmod 0750 /var/log/apache2; then
         echo "[ERROR] Failed to set directory permissions." >&2
         exit 1
     fi
