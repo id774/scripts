@@ -17,6 +17,8 @@
 #      ./get_resources.sh
 #
 #  Version History:
+#  v2.1 2025-10-02
+#       Stop monitoring fail2ban.log in this script as log handling is now managed separately.
 #  v2.0 2025-08-07
 #       Slim down redundant outputs and harden uname, grep, fail2ban, lsb_release, ip, and lsof handling.
 #  v1.9 2025-08-04
@@ -153,7 +155,6 @@ gather_logs() {
     display_log "/var/log/auth.log" "Accepted" "Accepted publickey for (munin|git)"
     display_log "/var/log/messages" "attack"
     display_log "/var/log/auth.log" '(Fail|refuse)'
-    display_log "/var/log/fail2ban.log" "WARNING"
 }
 
 # Main entry point of the script
