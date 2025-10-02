@@ -19,6 +19,7 @@
 #  Version History:
 #  v2.1 2025-10-02
 #       Stop monitoring fail2ban.log in this script as log handling is now managed separately.
+#       Replace /proc/cpuinfo dump with concise CPU core count display.
 #  v2.0 2025-08-07
 #       Slim down redundant outputs and harden uname, grep, fail2ban, lsb_release, ip, and lsof handling.
 #  v1.9 2025-08-04
@@ -102,6 +103,7 @@ gather_system_info() {
     fi
     execute_command uname -a
     execute_command uptime
+    execute_command getconf _NPROCESSORS_ONLN
 }
 
 # Gather OS-specific information
@@ -114,7 +116,7 @@ gather_os_specific_info() {
         execute_command top -l 1
         execute_command ps aux
     else
-        execute_command cat /proc/cpuinfo
+        execute_command sh -c "grep -m1 'model name' /proc/cpuinfo | cut -d: -f2"
         execute_command cat /proc/meminfo
         execute_command vmstat
         execute_command df -P -T

@@ -7,7 +7,7 @@ v1.6.1 (Release Date: TBD)
 - Remove setup_chkrootkit_opts.sh since quiet mode (-q) is no longer applied.
 - Harden awstats installer by adding directory check and refining log permission handling in install_awstats.sh.
 - Refine dotfiles installer bulk_deploy to chmod only top level home directories.
-- Stop monitoring fail2ban.log in get_resources.sh as log handling is now managed separately.
+- Remove fail2ban.log monitoring from get_resources.sh and replace cpuinfo dump with concise core count display.
 - Normalize chmod numeric modes to four digit octal across shell scripts.
 
 v1.6 (2025-09-29)
