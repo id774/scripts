@@ -30,6 +30,9 @@
 #      to preserve mode/owner/timestamps.
 #    * Minimal edits: only the target directives are touched; everything
 #      else (delaycompress, postrotate, comments, ordering) is preserved.
+#    * Finally, we normalize permissions on both the rsyslog config file
+#      and the logrotate status file to root:adm 0640 via a reusable
+#      function that accepts a path and desired owner/mode.
 #
 #  Beginner notes:
 #    * "logrotate" reads configuration files describing how to rotate
@@ -61,7 +64,7 @@
 #         - normalize "rotate N"                 => "    rotate 90"
 #         - insert "    rotate 90" if missing
 #    3) After changes, print the final file to the screen and a clear
-#       concluding message.
+#       concluding message. Also fix permissions on status file.
 #
 #  Requirements:
 #    - Linux
@@ -163,23 +166,33 @@ convert_tabs() {
     fi
 }
 
-# Enforce ownership and permissions with explicit error handling.
-# Notes:
-# - Keep failure messages actionable and exit non zero on policy failure.
-# - This helps detect environments where group adm does not exist or
-#   where permission changes are blocked by MAC or ACL policies.
+# Enforce ownership and permissions (reusable)
+# Purpose:
+#   Apply a consistent owner:group and mode to a given file path.
+# Usage:
+#   enforce_owner_mode <path> <owner> <group> <mode>
+# Behavior:
+#   - Fails fast on error, with actionable messages.
+#   - Intended for both the rsyslog config and logrotate status files.
 enforce_owner_mode() {
-    # Apply ownership
-    if ! sudo chown root:adm "$TARGET"; then
-        echo "[ERROR] Failed to set ownership root:adm on $TARGET" >&2
-        exit 1
-    fi
+    path=$1
+    owner=$2
+    group=$3
+    mode=$4
 
-    # Apply permissions
-    if ! sudo chmod 0640 "$TARGET"; then
-        echo "[ERROR] Failed to set mode 0640 on $TARGET" >&2
+    if [ -z "$path" ] || [ -z "$owner" ] || [ -z "$group" ] || [ -z "$mode" ]; then
+        echo "[ERROR] enforce_owner_mode requires: <path> <owner> <group> <mode>" >&2
         exit 1
     fi
+    if ! sudo chown "$owner:$group" "$path"; then
+        echo "[ERROR] Failed to set ownership ${owner}:${group} on $path" >&2
+        exit 1
+    fi
+    if ! sudo chmod "$mode" "$path"; then
+        echo "[ERROR] Failed to set mode $mode on $path" >&2
+        exit 1
+    fi
+    echo "[INFO] Enforced ${owner}:${group} $mode on $path"
 }
 
 # Ensure a frequency line "    daily" exists (and is normalized) in each block.
@@ -235,7 +248,7 @@ ensure_daily() {
     # Error handling:
     # - Fail fast if either ownership or permission cannot be applied.
     #   This prevents proceeding with a misconfigured policy.
-    enforce_owner_mode
+    enforce_owner_mode "$TARGET" root adm 0640
 }
 
 # Ensure a retention line "    rotate 90" exists (and is normalized) in each block.
@@ -287,7 +300,8 @@ ensure_rotate90() {
     # - 0640 is sufficient because logrotate runs as root and adm can
     #   read for on host audits while world access stays disabled.
     # Error handling mirrors the daily step and fails fast on errors.
-    enforce_owner_mode
+    enforce_owner_mode "$TARGET" root adm 0640
+
 }
 
 # Main entry point of the script
@@ -304,6 +318,9 @@ main() {
     convert_tabs
     ensure_daily
     ensure_rotate90
+
+    # Normalize logrotate status file as well
+    enforce_owner_mode /var/lib/logrotate/status root adm 0640
 
     # Final verification output helps humans confirm the result quickly
     echo "----- BEGIN $TARGET -----"
