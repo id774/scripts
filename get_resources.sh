@@ -155,7 +155,7 @@ check_fail2ban_status() {
 # Gather logs
 gather_logs() {
     display_log "/var/log/auth.log" "Accepted" "Accepted publickey for (munin|git)"
-    display_log "/var/log/messages" "attack"
+    display_log "/var/log/syslog" "attack"
     display_log "/var/log/auth.log" '(Fail|refuse)'
 }
 
