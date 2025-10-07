@@ -23,7 +23,7 @@
 #  Requirements:
 #  - Must be run on a Debian-based system.
 #  - Requires sudo privileges to remove system packages.
-#  - systemd should be available for service management.
+#  - systemctl must be available for service management on systemd-based systems.
 #
 #  Notes:
 #  - This script aggressively stops and removes all Tracker components,
@@ -40,6 +40,9 @@
 #    systemd services regardless of installation status.
 #
 #  Version History:
+#  v1.7 2025-10-07
+#       Fix command detection: remove nonexistent 'systemd' from check_commands
+#       and rely on 'systemctl' for service management.
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-04-13
@@ -101,7 +104,7 @@ check_sudo() {
 # Initial checks and setup
 perform_initial_checks() {
     check_system
-    check_commands systemd dpkg pgrep pkill apt systemctl
+    check_commands systemctl dpkg pgrep pkill apt
     check_sudo
 }
 
