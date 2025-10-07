@@ -205,13 +205,13 @@ main() {
     esac
 
     parse_options "$@"
-    perform_initial_checks
 
     if [ "$FORCE_REMOVE" -eq 0 ] && ! command -v tracker3 >/dev/null 2>&1 && ! command -v tracker >/dev/null 2>&1; then
         echo "[INFO] tracker is not installed. Nothing to do."
         return 0
     fi
 
+    perform_initial_checks
     perform_tracker_operations
     echo "[INFO] Tracker has been completely removed and cleaned up."
     return 0
