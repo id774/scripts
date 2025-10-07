@@ -41,8 +41,8 @@
 #
 #  Version History:
 #  v1.7 2025-10-07
-#       Fix command detection: remove nonexistent 'systemd' from check_commands
-#       and rely on 'systemctl' for service management.
+#       Fix command check by removing nonexistent systemd.
+#       Change behavior when tracker is not installed to skip with [INFO] message.
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-04-13
@@ -206,10 +206,12 @@ main() {
 
     parse_options "$@"
     perform_initial_checks
+
     if [ "$FORCE_REMOVE" -eq 0 ] && ! command -v tracker3 >/dev/null 2>&1 && ! command -v tracker >/dev/null 2>&1; then
-        echo "[ERROR] tracker is not installed." >&2
-        exit 1
+        echo "[INFO] tracker is not installed. Nothing to do."
+        return 0
     fi
+
     perform_tracker_operations
     echo "[INFO] Tracker has been completely removed and cleaned up."
     return 0
