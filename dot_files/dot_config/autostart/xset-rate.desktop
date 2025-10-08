@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
 Name=xset key repeat and no-blank
-Exec=/bin/sh -c "delay=\${KEY_REPEAT_DELAY_MS:-200}; interval=\${KEY_REPEAT_INTERVAL_MS:-25}; xset s off -dpms; xset r rate \$delay \$((1000/\$interval))"
+Exec=sh -c 'delay=${KEY_REPEAT_DELAY_MS:-200}; interval=${KEY_REPEAT_INTERVAL_MS:-25}; xset s off -dpms; xset r rate $delay $((1000/$interval))'
 OnlyShowIn=XFCE;
 X-GNOME-Autostart-enabled=true
