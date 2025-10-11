@@ -48,11 +48,11 @@
 #    and applies them immediately via `sysctl --system`.
 #
 #  Version History:
-#  v1.10 2025-10-11
-#        Emit only sysctl keys that exist on the running kernel (/proc/sys probe).
-#        Remove/avoid legacy or conflicting keys (e.g., tcp_frto, tcp_fack,
-#        IPv6 use_tempaddr/max_addresses when disabling IPv6, dhcpv6_autoconf).
-#        Keep TCP timestamps enabled by default; expand verification summary.
+#  v2.0 2025-10-11
+#       Emit only sysctl keys that exist on the running kernel (/proc/sys probe).
+#       Remove/avoid legacy or conflicting keys (e.g., tcp_frto, tcp_fack,
+#       IPv6 use_tempaddr/max_addresses when disabling IPv6, dhcpv6_autoconf).
+#       Keep TCP timestamps enabled by default; expand verification summary.
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.8 2025-04-28
