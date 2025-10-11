@@ -10,6 +10,7 @@ v1.6.1 (Release Date: TBD)
 - Remove setup_chkrootkit_opts.sh since quiet mode (-q) is no longer applied.
 - Fix command check and skip when tracker is not installed with INFO message in remove-tracker.sh.
 - Fix Exec quoting in xset-rate.desktop to avoid parse error in autostart.
+- Emit only existing sysctl keys add Debian 13 notes keep tcp timestamps enabled in configure_sysctl.sh.
 - Normalize chmod numeric modes to four digit octal across shell scripts.
 
 v1.6 (2025-09-29)
