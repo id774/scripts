@@ -101,7 +101,7 @@ call_main_script() {
 call_server_alive_check() {
     # Run only if the post-check script exists and is executable
     if [ -x "$SERVER_ALIVE_CHECK" ]; then
-        echo "[INFO] Executing post-check: $SERVER_ALIVE_CHECK" >> "$JOBLOG" 2>&1
+        echo "[INFO] Executing: $SERVER_ALIVE_CHECK" >> "$JOBLOG" 2>&1
         "$SERVER_ALIVE_CHECK" >> "$JOBLOG" 2>&1
         # No else branch: silently skip if not present or not executable
     fi
