@@ -29,6 +29,7 @@
 #  Version History:
 #  v1.4 2025-10-14
 #       Add optional post-check hook via SERVER_ALIVE_CHECK executed after main.
+#       Rename SCRIPT to GET_RESOURCES for naming consistency.
 #  v1.3 2025-07-30
 #       Update script path to /etc/cron.exec/get_resources.sh to align with new cron execution structure.
 #  v1.2 2025-06-23
@@ -72,7 +73,7 @@ is_joblog_writable() {
 # Initialize environment and log job start
 initialize() {
     JOBLOG="/var/log/sysadmin/resources.log"
-    SCRIPT="/etc/cron.exec/get_resources.sh"
+    GET_RESOURCES="/etc/cron.exec/get_resources.sh"
     SERVER_ALIVE_CHECK="/etc/cron.exec/server_alive_check.sh"
 
     if ! is_running_from_cron; then
@@ -88,11 +89,11 @@ initialize() {
 
 # Execute the main script
 call_main_script() {
-    if [ -x "$SCRIPT" ]; then
-        echo "[INFO] Executing: $SCRIPT" >> "$JOBLOG" 2>&1
-        "$SCRIPT" >> "$JOBLOG" 2>&1
+    if [ -x "$GET_RESOURCES" ]; then
+        echo "[INFO] Executing: $GET_RESOURCES" >> "$JOBLOG" 2>&1
+        "$GET_RESOURCES" >> "$JOBLOG" 2>&1
     else
-        echo "[ERROR] Resource script not found or not executable: $SCRIPT" >> "$JOBLOG" 2>&1
+        echo "[ERROR] Resource script not found or not executable: $GET_RESOURCES" >> "$JOBLOG" 2>&1
     fi
 }
 
