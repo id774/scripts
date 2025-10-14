@@ -8,6 +8,9 @@
 #  in /etc/cron.daily) to collect system resource information. It delegates
 #  the actual collection logic to a separate script (`get_resources.sh`)
 #  and captures the output into a unified job log.
+#  After the main collection, if SERVER_ALIVE_CHECK points to an executable
+#  script (default: /etc/cron.exec/server_alive_check.sh), it will be
+#  executed as an optional post-check. If absent, it is silently skipped.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -24,6 +27,8 @@
 #      5 * * * * root /path/to/get_resources
 #
 #  Version History:
+#  v1.4 2025-10-14
+#       Add optional post-check hook via SERVER_ALIVE_CHECK executed after main.
 #  v1.3 2025-07-30
 #       Update script path to /etc/cron.exec/get_resources.sh to align with new cron execution structure.
 #  v1.2 2025-06-23
@@ -68,6 +73,7 @@ is_joblog_writable() {
 initialize() {
     JOBLOG="/var/log/sysadmin/resources.log"
     SCRIPT="/etc/cron.exec/get_resources.sh"
+    SERVER_ALIVE_CHECK="/etc/cron.exec/server_alive_check.sh"
 
     if ! is_running_from_cron; then
         echo "[ERROR] This script is intended to be run by cron only." >&2
@@ -90,6 +96,16 @@ call_main_script() {
     fi
 }
 
+# Optionally execute server alive check after the main script
+call_server_alive_check() {
+    # Run only if the post-check script exists and is executable
+    if [ -x "$SERVER_ALIVE_CHECK" ]; then
+        echo "[INFO] Executing post-check: $SERVER_ALIVE_CHECK" >> "$JOBLOG" 2>&1
+        "$SERVER_ALIVE_CHECK" >> "$JOBLOG" 2>&1
+        # No else branch: silently skip if not present or not executable
+    fi
+}
+
 # Finalize job and log completion
 finalize() {
     echo -n "*** $0: Job ended on $(hostname) at " >> "$JOBLOG" 2>&1
@@ -105,6 +121,7 @@ main() {
 
     initialize
     call_main_script
+    call_server_alive_check
     finalize
 
     return 0
