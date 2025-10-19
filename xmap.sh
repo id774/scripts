@@ -77,4 +77,3 @@ main() {
 
 # Execute main function
 main "$@"
-exit $?
