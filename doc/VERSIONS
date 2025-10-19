@@ -13,6 +13,7 @@ v1.6.1 (Release Date: TBD)
 - Fix Exec quoting in xset-rate.desktop to avoid parse error in autostart.
 - Emit only existing sysctl keys add Debian 13 notes keep tcp timestamps enabled in configure_sysctl.sh.
 - Normalize chmod numeric modes to four digit octal across shell scripts.
+- Standardize all shell scripts by removing trailing exit status lines (exit $?) for POSIX-safe reuse.
 
 v1.6 (2025-09-29)
 -----------------
