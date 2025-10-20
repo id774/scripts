@@ -166,7 +166,6 @@ apply_dropins() {
     else
         echo "[INFO] No changes; daemon-reload not required"
     fi
-    return 0
 }
 
 # Main entry point of the script
@@ -187,6 +186,9 @@ main() {
 
     echo "[INFO] Target services detected:${SERVICES_FOUND}"
     apply_dropins
+
+    echo "[INFO] Current NTP-related services:"
+    systemctl list-units --type=service 2>/dev/null | grep ntp || echo "[INFO] No NTP services are active."
     return $?
 }
 
