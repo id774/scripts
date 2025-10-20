@@ -156,7 +156,7 @@ apply_dropins() {
     done
 
     if [ "$CHANGED" -eq 1 ]; then
-        if systemctl daemon-reload; then
+        if sudo systemctl daemon-reload; then
             echo "[INFO] daemon-reload done"
         else
             echo "[ERROR] systemctl daemon-reload failed" >&2
