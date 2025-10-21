@@ -292,6 +292,7 @@ setup_config_files() {
 
     # System services and daemons
     "$SCRIPTS/installer/setup_memcached_conf.sh"
+    "$SCRIPTS/installer/setup_ntp_restart_policy.sh"
 
     # User environment and utilities
     "$SCRIPTS/installer/setup_crontab.sh"
