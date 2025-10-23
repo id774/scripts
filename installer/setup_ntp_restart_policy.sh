@@ -135,8 +135,14 @@ RestartSec=30
     fi
 
     if sudo mv "$tmp" "$file"; then
-        sudo chown root:root "$file" 2>/dev/null || true
-        sudo chmod 0644 "$file" 2>/dev/null || true
+        if ! sudo chown root:root "$file" 2>/dev/null; then
+            echo "[ERROR] Failed to set owner root:root on $file" >&2
+            exit 1
+        fi
+        if ! sudo chmod 0644 "$file" 2>/dev/null; then
+            echo "[ERROR] Failed to set permissions 0644 on $file" >&2
+            exit 1
+        fi
         echo "[INFO] ${svc}: wrote $file"
         CHANGED=1
         CREATED_FILES="$CREATED_FILES $file"
