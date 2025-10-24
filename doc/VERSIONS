@@ -1,8 +1,8 @@
 scripts Repository Version History
 ==================================
 
-v1.6.1 (Release Date: TBD)
---------------------------
+v1.6.1 (2025-10-24)
+-------------------
 - Add setup_rsyslog_logrotate.sh to enforce daily rotation with 90 copies for rsyslog logs.
 - Add setup_ntp_restart_policy.sh to enforce Restart on failure for NTP services.
 - Add optional post check via SERVER_ALIVE_CHECK executed after main in get_resources.
