@@ -1,6 +1,10 @@
 scripts Repository Version History
 ==================================
 
+v1.6.2 (Release Date: TBD)
+--------------------------
+- Unify log format in execute_command output in get_resources.sh.
+
 v1.6.1 (2025-10-24)
 -------------------
 - Add setup_rsyslog_logrotate.sh to enforce daily rotation with 90 copies for rsyslog logs.

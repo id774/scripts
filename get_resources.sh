@@ -68,8 +68,8 @@ command_exists() {
 # Display a command's output if the command exists
 execute_command() {
     if command_exists "$1"; then
-        echo "[$@]"
-        "$@" || echo "[ERROR] executing: $@"
+        echo "[INFO] $@"
+        "$@" || echo "[ERROR] Executing: $@"
         echo
     fi
 }
