@@ -81,7 +81,7 @@ display_log() {
             echo "[WARN] Skipping $1 because no pattern was provided." >&2
             return
         fi
-        echo "[Contents of $1 with pattern '$2']"
+        echo "[INFO] Contents of $1 with pattern '$2'"
         if [ -z "$3" ]; then
             grep -E "$2" "$1"
         else
