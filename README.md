@@ -94,7 +94,7 @@ Please ensure your code is well-structured and documented.
 
 ### Implementation Policy
 
-See [doc/POLICY](doc/POLICY) for detailed design and development standards across all supported languages, including Shell and Python implementations.
+See [doc/POLICY](doc/POLICY) for detailed design and development standards across all supported languages, including Shell Script, Python, and Ruby implementations.
 
 ---
 

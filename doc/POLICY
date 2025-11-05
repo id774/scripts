@@ -132,7 +132,7 @@
 # Ruby Implementation Policy
 
 ## Basic Principles
-- Follow the same design philosophy as the Shell and Python policies: clarity, portability, and maintainability.
+- Follow the same design philosophy as the Shell Script and Python policies: clarity, portability, and maintainability.
 - Prefer explicit and predictable structures rather than dynamic or metaprogramming-heavy ones.
 - Clearly state the minimum supported version (e.g., **Ruby 3.0 or later**).
   Do not sacrifice code clarity or maintainability for backward compatibility.
@@ -140,7 +140,7 @@
 ## Error Handling and Exit Codes
 - Catch exceptions explicitly and log `[ERROR]` messages with both cause and context.
 - Never suppress exceptions silently.
-- Exit code conventions (consistent with Shell and Python policies):
+- Exit code conventions (consistent with Shell Script and Python policies):
   - 0: Success
   - 1: General error, invalid arguments, or missing prerequisites
   - 2: Network unreachable
@@ -167,7 +167,7 @@
 ## I/O and Side Effects
 - Verify file existence, type, and permissions before performing destructive operations.
 - Include affected file paths and reasons in all error logs for traceability.
-- Follow the same conventions as the Shell policy for handling temporary files and directories.
+- Follow the same conventions as the Shell Script policy for handling temporary files and directories.
 
 ## Structure and Coding Style
 - Define `main()` as the entry point and finalize with `exit(main) if __FILE__ == $0`.
@@ -176,7 +176,7 @@
 - Avoid global variables and unnecessary constant redefinitions. Keep code deterministic and side-effect free.
 
 ## Documentation
-- Maintain the same header structure as in Shell and Python scripts:
+- Maintain the same header structure as in Shell Script and Python scripts:
   `Description / Requirements / Usage / Options / Test Cases / Version History`.
 - Update documentation consistently with behavior changes.
 - Avoid multiple version increments within the same day.
