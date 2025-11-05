@@ -21,14 +21,14 @@
   - 3: Local prerequisite missing
   - 126: Command or script exists but is not executable
   - 127: Command or script not found
-- Use explicit `exit` only for abnormal or forced termination.  
+- Use explicit `exit` only for abnormal or forced termination.
   For normal flow, use `return` within functions and propagate the final status properly.
-- Do not use `set -e`. Handle errors explicitly and robustly.  
+- Do not use `set -e`. Handle errors explicitly and robustly.
   Perform early and strict checks to detect issues as soon as possible.
 
 ## Dependency and Environment Checks
 - Validate required commands and environment variables at startup.
-- For network operations, verify connectivity before execution.  
+- For network operations, verify connectivity before execution.
   If unreachable, return code 2.
 
 ## I/O and Side Effects
@@ -42,7 +42,7 @@
 
 ## Documentation and Version Control
 - Update documentation (Usage, Options, Test Cases, Version History) in sync with code changes.
-- Do not change version number on the same date.  
+- Do not change version number on the same date.
   Keep the version static until completion.
 
 ## Comments and Language
@@ -53,3 +53,77 @@
 - Verify syntax and exit codes with a dedicated validation script using `-h` mode.
 - Assume cron execution environment; define PATH and other environment variables explicitly.
 - In plugin-based structures, the loader must collect and propagate plugin return codes.
+
+
+# Python Implementation Policy
+
+## Basic Principles
+- Follow the same design philosophy as shell scripts: clarity, portability, and explicit control.
+- Maintain readability and backward compatibility over syntactic shortcuts.
+
+## Supported Versions and Compatibility
+- Target version: **Python 3.2+**, ideally **3.4+**. Ensure downward compatibility when feasible.
+- Avoid features that reduce compatibility unless guarded by version checks:
+  - f-strings, `subprocess.run`, `subprocess.DEVNULL`
+  - `async` / `await`, `yield from`, `asyncio`
+  - Type hints, matrix operator `@`, `nonlocal` usage beyond necessity
+  - `pathlib`, `shutil.which`
+- Use `find_pycompat.py` for compatibility verification.
+  If any issue is detected outside `dummy.py`, exit with code 1.
+
+## Exception Handling and Exit Codes
+- Handle exceptions explicitly; never suppress them silently.
+- Exit code conventions (aligned with shell policy):
+  - 0: Success
+  - 1: General error, invalid arguments, or missing prerequisites
+  - 2: Network unreachable
+  - 3: Local prerequisite missing
+- Use `sys.exit(code)` **only for abnormal or forced termination**.
+  Normal completion should return 0 from `main()` and call `sys.exit(main())`.
+- Avoid implicit termination (like `set -e`); use explicit error checks and early validation.
+
+## Logging and Output
+- Standardize message prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
+- Send errors to `sys.stderr`; informational output to `stdout`.
+- Help output exits with code 0. Errors must include cause and affected target.
+
+## CLI and Usage
+- Include `if __name__ == "__main__":` guard.
+- Use only the standard library (e.g., `argparse` in Python 3.2+).
+- Invalid or missing arguments must trigger concise usage output and exit code 1.
+
+## Dependencies and Environment
+- Depend only on the standard library; external modules discouraged.
+- Avoid `shutil.which`. Implement manual PATH search for command lookup.
+- Always use `encoding="utf-8"` for file operations.
+  Handle paths with `os` / `os.path`.
+
+## I/O and Side Effects
+- Validate files before modification (existence, type, permissions).
+- Include filename and reason in all error logs.
+- Manage temporary files and directories according to shell policy; never alter their conventions.
+
+## Structure and Coding Style
+- Entry point: `main() -> int`. Keep functions short, focused, and independent.
+- Apply early returns to simplify control flow.
+- Handle exceptions at consistent granularity and normalize to standard exit codes.
+- Comments must be **English**, imperative, and brief (e.g., `# Validate input`, `# Read config`).
+- Avoid global variables. Keep code deterministic and testable.
+
+## Documentation
+- Follow the same header order as shell scripts:
+  `Description / Requirements / Usage / Options / Test Cases / Version History`.
+- Update documentation whenever behavior changes.
+  Do not modify version numbers multiple times per day.
+
+## Testing and Verification
+- Store test files in `test/` with names `FILENAME_test.py`.
+  Use only standard libraries.
+- Run `find_pycompat.py .` in CI or local environments for compatibility checks; any detection is a failure.
+- Design functions with argument-driven logic to allow unit testing.
+
+## Network and Process Execution
+- Verify network connectivity before execution; if unreachable, return code 2.
+- Define explicit timeouts and fixed retry counts.
+- When invoking external commands, capture and inspect exit codes and streams.
+  Log root causes and normalize to standard exit codes.
