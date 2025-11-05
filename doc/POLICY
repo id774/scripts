@@ -127,3 +127,67 @@
 - Define explicit timeouts and fixed retry counts.
 - When invoking external commands, capture and inspect exit codes and streams.
   Log root causes and normalize to standard exit codes.
+
+
+# Ruby Implementation Policy
+
+## Basic Principles
+- Follow the same design philosophy as the Shell and Python policies: clarity, portability, and maintainability.
+- Prefer explicit and predictable structures rather than dynamic or metaprogramming-heavy ones.
+- Clearly state the minimum supported version (e.g., **Ruby 3.0 or later**).
+  Do not sacrifice code clarity or maintainability for backward compatibility.
+
+## Error Handling and Exit Codes
+- Catch exceptions explicitly and log `[ERROR]` messages with both cause and context.
+- Never suppress exceptions silently.
+- Exit code conventions (consistent with Shell and Python policies):
+  - 0: Success
+  - 1: General error, invalid arguments, or missing prerequisites
+  - 2: Network unreachable
+  - 3: Local prerequisite missing
+- Use `exit(code)` **only for abnormal or forced termination**.
+  For normal completion, let `main` return an integer and finalize with `exit(main) if __FILE__ == $0`.
+- Perform early input and file validation to detect errors before execution.
+
+## Logging and Output
+- Use unified log prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
+- Direct errors to `STDERR` (via `warn`) and informational messages to `STDOUT`.
+- Help or version output should always exit with code 0.
+
+## CLI Design
+- Use `OptionParser` from the standard library for all command-line interfaces.
+- Provide consistent options: `-h` / `--help`, `-v` / `--version`.
+- On invalid arguments, show concise usage information and exit with code 1.
+
+## Dependencies and Environment
+- Depend only on standard libraries; avoid external gems unless absolutely necessary.
+- Use modern Ruby APIs for external command execution (`Open3.capture3`, `system`) and for file traversal (`File.foreach`, `Dir.glob`, etc.).
+- Always specify UTF-8 encoding for file operations to ensure consistent behavior.
+
+## I/O and Side Effects
+- Verify file existence, type, and permissions before performing destructive operations.
+- Include affected file paths and reasons in all error logs for traceability.
+- Follow the same conventions as the Shell policy for handling temporary files and directories.
+
+## Structure and Coding Style
+- Define `main()` as the entry point and finalize with `exit(main) if __FILE__ == $0`.
+- Keep functions short, focused, and use **early returns** to simplify control flow.
+- Write comments in **English**, imperative, and concise (e.g., `# Validate arguments`, `# Generate password`).
+- Avoid global variables and unnecessary constant redefinitions. Keep code deterministic and side-effect free.
+
+## Documentation
+- Maintain the same header structure as in Shell and Python scripts:
+  `Description / Requirements / Usage / Options / Test Cases / Version History`.
+- Update documentation consistently with behavior changes.
+- Avoid multiple version increments within the same day.
+
+## Testing and Verification
+- Store all test files in the `test/` directory and use **RSpec** for testing.
+- Test filenames must follow the format `FILENAME_test.rb`.
+- Use `describe` / `it` blocks with deterministic, side-effect-free tests.
+- Ensure all tests pass with `bundle exec rspec` before release.
+
+## External Commands and Network Operations
+- Run external commands with `Open3.capture3` or `system`, checking both return codes and outputs explicitly.
+- Verify network reachability before execution; if unreachable, return code 2.
+- Set fixed timeouts and retry intervals to guarantee consistent and reproducible behavior.
