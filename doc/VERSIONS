@@ -3,6 +3,7 @@ scripts Repository Version History
 
 v1.6.2 (Release Date: TBD)
 --------------------------
+- Add multi-language implementation policy to POLICY document.
 - Unify log format in get_resources.sh.
 
 v1.6.1 (2025-10-24)
