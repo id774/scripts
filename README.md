@@ -92,6 +92,10 @@ We welcome contributions! Here's how you can help:
 
 Please ensure your code is well-structured and documented.
 
+### Implementation Policy
+
+See [doc/POLICY](doc/POLICY) for detailed shell script design and development guidelines.
+
 ---
 
 ## 6. License
