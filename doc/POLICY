@@ -1,0 +1,55 @@
+# Shell Script Implementation Policy
+
+## Basic Principles
+- Comply with POSIX (`#!/bin/sh`). Avoid Bash-specific syntax. Do not use `local`.
+- Modularize using functions. Each function should be short and single-purpose.
+- Preserve and update the header documentation, which must include:
+  `Description`, `Requirements`, `Usage`, `Options`, `Test Cases`, and `Version History` (in this order).
+
+## Logging and Output
+- Use unified log prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
+- Direct all error messages to standard error.
+- For cron environments, follow the same log format.
+- Email subject format: `[admin][cron][delivery] FILENAME`.
+
+## Error Handling and Exit Codes
+- Detect command failures and missing prerequisites, output clear log messages.
+- Return code conventions:
+  - 0: Success
+  - 1: Command failure or resource missing
+  - 2: Network unreachable
+  - 3: Local prerequisite missing
+  - 126: Command or script exists but is not executable
+  - 127: Command or script not found
+- Use explicit `exit` only for abnormal or forced termination.  
+  For normal flow, use `return` within functions and propagate the final status properly.
+- Do not use `set -e`. Handle errors explicitly and robustly.  
+  Perform early and strict checks to detect issues as soon as possible.
+
+## Dependency and Environment Checks
+- Validate required commands and environment variables at startup.
+- For network operations, verify connectivity before execution.  
+  If unreachable, return code 2.
+
+## I/O and Side Effects
+- Respect existing temporary file logic and directory structures.
+- Avoid destructive overwrites. Validate paths before modification.
+- Align log writing and rotation with system log policy.
+
+## CLI and Usage
+- Always implement `-h` to display usage and exit with code 0.
+- Parse options in a POSIX-compliant manner. On invalid input, show usage and exit with code 1.
+
+## Documentation and Version Control
+- Update documentation (Usage, Options, Test Cases, Version History) in sync with code changes.
+- Do not change version number on the same date.  
+  Keep the version static until completion.
+
+## Comments and Language
+- Use English comments only.
+- Start comments with an action verb, concise and direct (e.g., `# Check files`, `# Initialize env`).
+
+## Testing and Operation
+- Verify syntax and exit codes with a dedicated validation script using `-h` mode.
+- Assume cron execution environment; define PATH and other environment variables explicitly.
+- In plugin-based structures, the loader must collect and propagate plugin return codes.
