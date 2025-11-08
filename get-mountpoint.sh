@@ -48,6 +48,8 @@
 #  127. Required command is not installed.
 #
 #  Version History:
+#  v1.1 2025-11-09
+#       Remove shared fail function and inline all error handling to comply with implementation policy.
 #  v1.0 2025-08-31
 #       Initial release.
 #
@@ -61,13 +63,6 @@ usage() {
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0
-}
-
-# Print error and exit with code
-fail() {
-    code="$1"; shift
-    echo "[ERROR] $*" >&2
-    exit "$code"
 }
 
 # Check if the system is Linux
@@ -94,7 +89,7 @@ check_commands() {
 
 # Validate CLI arguments and device existence
 validate_args() {
-    if [ $# -ne 1 ]; then
+    if [ "$#" -ne 1 ]; then
         echo "[ERROR] Exactly one device argument is required." >&2
         exit 2
     fi
@@ -141,17 +136,17 @@ get_name_fstype_first_mp() {
     lsblk -rpn -o NAME,FSTYPE,MOUNTPOINTS -P -- "$1" 2>/dev/null | awk '
         {
             nm=""; mp=""; fs="";
-            for(i=1;i<=NF;i++){
-                if ($i ~ /^NAME="/)         nm=$i;
-                else if ($i ~ /^FSTYPE="/)  fs=$i;
-                else if ($i ~ /^MOUNTPOINTS="/) mp=$i;
+            for (i = 1; i <= NF; i++) {
+                if ($i ~ /^NAME="/)            nm = $i;
+                else if ($i ~ /^FSTYPE="/)     fs = $i;
+                else if ($i ~ /^MOUNTPOINTS="/) mp = $i;
             }
             if (nm != "" && mp != "") {
-                gsub(/^[^=]*="/,"",nm); gsub(/"$/,"",nm);
-                gsub(/^[^=]*="/,"",mp); gsub(/"$/,"",mp);
-                n=split(mp, arr, /[[:space:]]+/);
-                if (n>=1) {
-                    gsub(/^[^=]*="/,"",fs); gsub(/"$/,"",fs);
+                gsub(/^[^=]*="/, "", nm); gsub(/"$/, "", nm);
+                gsub(/^[^=]*="/, "", mp); gsub(/"$/, "", mp);
+                n = split(mp, arr, /[[:space:]]+/);
+                if (n >= 1) {
+                    gsub(/^[^=]*="/, "", fs); gsub(/"$/, "", fs);
                     print nm "\t" fs "\t" arr[1];
                 }
             }
@@ -161,9 +156,13 @@ get_name_fstype_first_mp() {
 # Compute depth from BASE to CAND in the block dependency chain
 # returns integer >=0 when CAND descends from BASE, otherwise -1
 depth_from_base() {
-    base="$1"; cand="$2"
+    base="$1"
+    cand="$2"
     d=$(lsblk -rpn -o NAME -s -- "$cand" 2>/dev/null | awk -v b="$base" '{
-        if ($0==b){ print NR-1; exit }
+        if ($0 == b) {
+            print NR - 1
+            exit
+        }
     }')
     if [ -n "$d" ]; then
         printf '%s\n' "$d"
@@ -177,15 +176,21 @@ scan_mountpoint_via_lsblk() {
     DEVPATH="$1"
     lsblk -rpn -o NAME,TYPE,MOUNTPOINTS,MOUNTPOINT -P -- "$DEVPATH" 2>/dev/null | awk '
         {
-            mp="";
-            for(i=1;i<=NF;i++){
-                if ($i ~ /^MOUNTPOINTS="/) mp=$i;
-                else if ($i ~ /^MOUNTPOINT="/ && mp=="") mp=$i;
+            mp = "";
+            for (i = 1; i <= NF; i++) {
+                if ($i ~ /^MOUNTPOINTS="/) {
+                    mp = $i;
+                } else if ($i ~ /^MOUNTPOINT="/ && mp == "") {
+                    mp = $i;
+                }
             }
             if (mp != "") {
-                gsub(/^[^=]*="/,"",mp); gsub(/"$/,"",mp);
-                n=split(mp, arr, /[[:space:]]+/);
-                if (n>=1) { print arr[1]; exit }
+                gsub(/^[^=]*="/, "", mp); gsub(/"$/, "", mp);
+                n = split(mp, arr, /[[:space:]]+/);
+                if (n >= 1) {
+                    print arr[1];
+                    exit
+                }
             }
         }'
 }
@@ -195,11 +200,21 @@ resolve_and_print() {
     DEV="$1"
 
     # 1) Try direct match for the given device
-    MP=$(find_mountpoint_direct "$DEV") && { printf '%s\n' "$MP"; return 0; }
+    MP=$(find_mountpoint_direct "$DEV")
+    if [ "$?" -eq 0 ] && [ -n "$MP" ]; then
+        printf '%s\n' "$MP"
+        return 0
+    fi
 
     # 2) Build candidate list from ancestors and descendants (no subshell leaks)
     tmpfile=""
-    if tmpfile=$(mktemp 2>/dev/null); then :; else fail 1 "Failed to create temporary file"; fi
+    if tmpfile=$(mktemp 2>/dev/null); then
+        :
+    else
+        echo "[ERROR] Failed to create temporary file." >&2
+        exit 1
+    fi
+
     list_related_devices "$DEV" | awk 'NF>0' > "$tmpfile"
 
     candfile=""
@@ -207,12 +222,16 @@ resolve_and_print() {
         :
     else
         rm -f "$tmpfile"
-        fail 1 "Failed to create temporary file"
+        echo "[ERROR] Failed to create temporary file." >&2
+        exit 1
     fi
 
     seen=""
     while IFS= read -r CAND; do
-        case " $seen " in *" $CAND "*) continue ;; *) seen="$seen $CAND" ;; esac
+        case " $seen " in
+            *" $CAND "*) continue ;;
+            *) seen="$seen $CAND" ;;
+        esac
 
         MP=$(find_mountpoint_direct "$CAND")
         if [ -n "$MP" ]; then
@@ -234,32 +253,47 @@ resolve_and_print() {
     while IFS= read -r line; do
         # Extract fields robustly regardless of IFS/tab handling
         CNAME=$(printf '%s\n' "$line" | awk -F '\t' '{print $1}')
-        CFS=$(    printf '%s\n' "$line" | awk -F '\t' '{print $2}')
-        CMP=$(    printf '%s\n' "$line" | awk -F '\t' '{print $3}')
+        CFS=$(printf '%s\n' "$line" | awk -F '\t' '{print $2}')
+        CMP=$(printf '%s\n' "$line" | awk -F '\t' '{print $3}')
         [ -n "$CMP" ] || continue
 
         d=$(depth_from_base "$DEV" "$CNAME")
         [ "$d" -ge 0 ] || continue
 
         if [ "$best_depth" = "-1" ]; then
-            best_depth="$d"; best_mp="$CMP"; best_fs="$CFS"
+            best_depth="$d"
+            best_mp="$CMP"
+            best_fs="$CFS"
             continue
         fi
 
         if [ "$d" -gt "$best_depth" ]; then
-            best_depth="$d"; best_mp="$CMP"; best_fs="$CFS"
+            best_depth="$d"
+            best_mp="$CMP"
+            best_fs="$CFS"
             continue
         fi
 
         if [ "$d" -eq "$best_depth" ]; then
             if [ "$CMP" = "/" ] && [ "$best_mp" != "/" ]; then
-                best_mp="$CMP"; best_fs="$CFS"
+                best_mp="$CMP"
+                best_fs="$CFS"
                 continue
             fi
-            case "$best_fs" in vfat|msdos|exfat|iso9660|squashfs) best_is_vfat=1 ;; *) best_is_vfat=0 ;; esac
-            case "$CFS"         in vfat|msdos|exfat|iso9660|squashfs) cur_is_vfat=1  ;; *) cur_is_vfat=0  ;; esac
+
+            case "$best_fs" in
+                vfat|msdos|exfat|iso9660|squashfs) best_is_vfat=1 ;;
+                *) best_is_vfat=0 ;;
+            esac
+
+            case "$CFS" in
+                vfat|msdos|exfat|iso9660|squashfs) cur_is_vfat=1 ;;
+                *) cur_is_vfat=0 ;;
+            esac
+
             if [ "$best_is_vfat" -eq 1 ] && [ "$cur_is_vfat" -eq 0 ]; then
-                best_mp="$CMP"; best_fs="$CFS"
+                best_mp="$CMP"
+                best_fs="$CFS"
                 continue
             fi
         fi
@@ -279,7 +313,8 @@ resolve_and_print() {
         return 0
     fi
 
-    fail 2 "Device not mounted or no mounted children found: $DEV"
+    echo "[ERROR] Device not mounted or no mounted children found: $DEV" >&2
+    exit 2
 }
 
 # Main entry point of the script

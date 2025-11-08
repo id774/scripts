@@ -4,7 +4,7 @@ scripts Repository Version History
 v1.6.2 (Release Date: TBD)
 --------------------------
 - Add multi-language implementation policy to POLICY document.
-- Inline error handling and update version history in get-device.sh.
+- Inline error handling and update version history in get-device.sh and get-mountpoint.sh.
 - Unify log format in get_resources.sh.
 
 v1.6.1 (2025-10-24)
