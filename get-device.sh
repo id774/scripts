@@ -46,6 +46,8 @@
 #  127. Required command is not installed.
 #
 #  Version History:
+#  v1.1 2025-11-09
+#       Remove shared fail function and inline all error handling to comply with implementation policy.
 #  v1.0 2025-08-31
 #       Initial release.
 #
@@ -59,13 +61,6 @@ usage() {
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0
-}
-
-# Print error and exit with code
-fail() {
-    code="$1"; shift
-    echo "[ERROR] $*" >&2
-    exit "$code"
 }
 
 # Check if the system is Linux
@@ -92,16 +87,15 @@ check_commands() {
 
 # Validate CLI arguments and mountpoint existence
 validate_args() {
-    if [ $# -eq 0 ]; then
+    if [ "$#" -eq 0 ]; then
         MP="."
-    elif [ $# -eq 1 ]; then
+    elif [ "$#" -eq 1 ]; then
         MP="$1"
     else
         echo "[ERROR] Exactly one mountpoint argument is required." >&2
         exit 2
     fi
 
-    # Accept symlinked mountpoints as well
     if [ ! -e "$MP" ]; then
         echo "[ERROR] Mountpoint does not exist: $MP" >&2
         exit 2
@@ -114,10 +108,12 @@ validate_args() {
 # Resolve source device from a mountpoint
 resolve_source() {
     MP="$1"
-    # Fail fast if path itself is missing
+
     [ -e "$MP" ] || return 1
+
     SRC=$(findmnt -no SOURCE -- "$MP" 2>/dev/null || true)
     [ -n "$SRC" ] || return 1
+
     printf '%s\n' "$SRC"
     return 0
 }
@@ -125,18 +121,20 @@ resolve_source() {
 # Convert a device path to its base disk device
 to_base_disk() {
     DEVPATH="$1"
+
     [ -e "$DEVPATH" ] || return 1
+
     case "$DEVPATH" in
         /dev/mapper/*|/dev/dm-*)
             # Walk full dependency chain to the root device (raw, no tree glyphs)
-            BASE=$(lsblk -rnp -o NAME -s -- "$DEVPATH" 2>/dev/null | tail -n1)
+            BASE=$(lsblk -rnp -o NAME -s -- "$DEVPATH" 2>/dev/null | tail -n 1)
             [ -n "$BASE" ] || return 1
             printf '%s\n' "$BASE"
             return 0
             ;;
         *)
             # Prefer PKNAME for regular partitions
-            PK=$(lsblk -no PKNAME -- "$DEVPATH" 2>/dev/null | head -n1)
+            PK=$(lsblk -no PKNAME -- "$DEVPATH" 2>/dev/null | head -n 1)
             if [ -n "$PK" ]; then
                 printf '/dev/%s\n' "$PK"
                 return 0
@@ -153,27 +151,46 @@ to_base_disk() {
             printf '%s\n' "$(echo "$DEVPATH" | sed 's/[0-9]\+$//')"
             ;;
     esac
+
     return 0
 }
 
-# Resolve and print base device with error handling
+# Resolve and print base device with explicit error handling
 resolve_and_print() {
     MP="$1"
 
-    SRC=$(resolve_source "$MP") || fail 2 "Mountpoint not found: $MP"
+    SRC=$(resolve_source "$MP")
+    if [ "$?" -ne 0 ] || [ -z "$SRC" ]; then
+        echo "[ERROR] Mountpoint not found: $MP" >&2
+        exit 2
+    fi
 
     case "$SRC" in
-        /dev/*) : ;;
-        *) fail 3 "Not a block device source: $SRC" ;;
+        /dev/*)
+            ;;
+        *)
+            echo "[ERROR] Not a block device source: $SRC" >&2
+            exit 3
+            ;;
     esac
 
-    [ -e "$SRC" ] || fail 2 "Source not found: $SRC"
+    if [ ! -e "$SRC" ]; then
+        echo "[ERROR] Source not found: $SRC" >&2
+        exit 2
+    fi
 
-    BASE=$(to_base_disk "$SRC") || fail 2 "Failed to resolve base device for $SRC"
+    BASE=$(to_base_disk "$SRC")
+    if [ "$?" -ne 0 ] || [ -z "$BASE" ]; then
+        echo "[ERROR] Failed to resolve base device for $SRC" >&2
+        exit 2
+    fi
+
     # Double-check that the resolved base is actually a block device
     if [ ! -b "$BASE" ]; then
-        fail 3 "Resolved path is not a block device: $BASE"
+        echo "[ERROR] Resolved path is not a block device: $BASE" >&2
+        exit 3
     fi
+
     printf '%s\n' "$BASE"
     return 0
 }
