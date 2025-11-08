@@ -37,6 +37,8 @@
 #  127. Required command is not installed.
 #
 #  Version History:
+#  v1.1 2025-11-09
+#       Remove shared fail function and inline all error handling to comply with implementation policy.
 #  v1.0 2025-08-31
 #       Initial release.
 #
@@ -50,13 +52,6 @@ usage() {
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0
-}
-
-# Print error and exit with code
-fail() {
-    code="$1"; shift
-    echo "[ERROR] $*" >&2
-    exit "$code"
 }
 
 # Check if the system is Linux
@@ -83,14 +78,16 @@ check_commands() {
 
 # Validate argument: must be exactly one /dev/* path
 validate_args() {
-    if [ $# -ne 1 ]; then
+    if [ "$#" -ne 1 ]; then
         echo "[ERROR] Exactly one argument is required: a /dev/* device path." >&2
         exit 2
     fi
+
     DEV="$1"
 
     case "$DEV" in
-        /dev/*) : ;;
+        /dev/*)
+            ;;
         *)
             echo "[ERROR] Not a device path: $DEV" >&2
             echo "[WARN] If you have a mountpoint, resolve it first: get-serial \"\$(get-device <mountpoint>)\"" >&2
@@ -98,8 +95,15 @@ validate_args() {
             ;;
     esac
 
-    [ -e "$DEV" ] || fail 2 "Device not found: $DEV"
-    [ -b "$DEV" ] || fail 3 "Path is not a block device: $DEV"
+    if [ ! -e "$DEV" ]; then
+        echo "[ERROR] Device not found: $DEV" >&2
+        exit 2
+    fi
+
+    if [ ! -b "$DEV" ]; then
+        echo "[ERROR] Path is not a block device: $DEV" >&2
+        exit 3
+    fi
 }
 
 # Query serial using udevadm first, then lsblk as fallback
@@ -117,7 +121,7 @@ print_serial() {
         )
     fi
     if [ -z "$serial" ]; then
-        serial=$(lsblk -ndo SERIAL -- "$dev" 2>/dev/null | head -n1)
+        serial=$(lsblk -ndo SERIAL -- "$dev" 2>/dev/null | head -n 1)
     fi
 
     if [ -n "$serial" ]; then
