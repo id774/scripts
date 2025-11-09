@@ -48,6 +48,7 @@
 #  Version History:
 #  v1.1 2025-11-09
 #       Remove shared fail function and inline all error handling to comply with implementation policy.
+#       Unify argument validation behavior.
 #  v1.0 2025-08-31
 #       Initial release.
 #
@@ -87,12 +88,15 @@ check_commands() {
 
 # Validate CLI arguments and mountpoint existence
 validate_args() {
-    if [ "$#" -eq 0 ]; then
-        MP="."
-    elif [ "$#" -eq 1 ]; then
-        MP="$1"
-    else
+    if [ "$#" -ne 1 ]; then
         echo "[ERROR] Exactly one mountpoint argument is required." >&2
+        exit 2
+    fi
+
+    MP="$1"
+
+    if [ -z "$MP" ]; then
+        echo "[ERROR] Mountpoint argument is empty." >&2
         exit 2
     fi
 
