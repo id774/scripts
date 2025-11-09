@@ -39,6 +39,7 @@
 #  Version History:
 #  v1.1 2025-11-09
 #       Remove shared fail function and inline all error handling to comply with implementation policy.
+#       Unify argument error message.
 #  v1.0 2025-08-31
 #       Initial release.
 #
@@ -79,7 +80,7 @@ check_commands() {
 # Validate argument: must be exactly one /dev/* path
 validate_args() {
     if [ "$#" -ne 1 ]; then
-        echo "[ERROR] Exactly one argument is required: a /dev/* device path." >&2
+        echo "[ERROR] Exactly one device argument is required." >&2
         exit 2
     fi
 
