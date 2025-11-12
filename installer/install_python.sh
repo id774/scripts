@@ -52,7 +52,6 @@
 #       Unify usage information by extracting help text from header comments.
 #  v2.0 2025-03-19
 #       Added network connection check, system validation, command validation, and improved argument handling.
-#       Default Python version 3.14.0 installs in '/opt/python/3.13' directory.
 #       Improved directory navigation safety.
 #       Set default installation path to /opt/python/x.x.
 #  [Further version history truncated for brevity]
