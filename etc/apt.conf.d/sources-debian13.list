@@ -1,11 +1,19 @@
-# Base repository
+# ------------------------------------------------------------
+# Debian 13 "Trixie" Official APT Repository List
+# Base system, security updates, and stable updates
+# Maintainer: id774
+# ------------------------------------------------------------
+# Base Repository: Core system packages and optional components.
 deb     http://deb.debian.org/debian trixie main contrib non-free non-free-firmware
 deb-src http://deb.debian.org/debian trixie main contrib non-free non-free-firmware
-
-# Security updates
+# ------------------------------------------------------------
+# Security Updates: Security fixes and patches maintained by the Debian Security Team.
 deb     http://deb.debian.org/debian-security trixie-security main contrib non-free non-free-firmware
 deb-src http://deb.debian.org/debian-security trixie-security main contrib non-free non-free-firmware
-
-# Stable updates
+# ------------------------------------------------------------
+# Stable Updates: Point releases and important non-security fixes.
 deb     http://deb.debian.org/debian trixie-updates main contrib non-free non-free-firmware
 deb-src http://deb.debian.org/debian trixie-updates main contrib non-free non-free-firmware
+# ------------------------------------------------------------
+# End of sources.list
+# ------------------------------------------------------------
