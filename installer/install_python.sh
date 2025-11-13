@@ -19,10 +19,10 @@
 #      ./install_python.sh
 #
 #  Specify a different Python version:
-#      ./install_python.sh 3.12.9
+#      ./install_python.sh 3.13.9
 #
 #  Specify an installation prefix:
-#      ./install_python.sh 3.12.9 /opt/python/3.12
+#      ./install_python.sh 3.13.9 /opt/python/3.13
 #
 #  Install without sudo (for local user installation):
 #      ./install_python.sh 3.14.0 ~/.local/python --no-sudo
