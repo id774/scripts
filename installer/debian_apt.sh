@@ -9,6 +9,8 @@
 #    - Base tools and editors:
 #        * vim, zsh, screen, w3m/lynx, curl/wget, OpenSSH server, rsync
 #        * Archivers and utils: tar/zip/gzip/unzip/bzip2/unar/p7zip
+#        * Calendar/extra BSD utils: ncal (provides cal), calendar (BSD calendar),
+#          bsdextrautils (col/colcrt/colrm/column/hd/hexdump/look/ul/write)
 #    - Build and debugging toolchain:
 #        * build-essential, gcc/g++/make, gdb/cgdb, valgrind, strace/ltrace, scons
 #        * C/C++ testing/profiling: CUnit, GoogleTest, gperftools, doxygen
@@ -62,6 +64,11 @@
 #  - The script is designed for Debian-based systems.
 #  - Ensure internet connectivity for package downloads.
 #  - Review and modify the package lists within each category function as needed for your setup.
+#  - bsdmainutils is now a transitional/empty package in modern Debian.
+#    Utilities formerly in bsdmainutils were moved to:
+#      * ncal: provides /usr/bin/cal and /usr/bin/ncal
+#      * calendar: BSD "calendar" program
+#      * bsdextrautils: col/colcrt/colrm/column/hd/hexdump/look/ul/write
 #
 #  Error Conditions:
 #  The script checks if each package is already installed to prevent unnecessary reinstallation.
@@ -69,6 +76,8 @@
 #  These should be resolved based on the output of the apt-get command.
 #
 #  Version History:
+#  v2.1 2025-12-02
+#       Add ncal, calendar, and bsdextrautils as explicit replacements for bsdmainutils.
 #  v2.0 2025-08-20
 #       Expanded header documentation to list package categories and representative
 #       software installed via apt for improved clarity.
@@ -141,7 +150,9 @@ basic_packages() {
     smart_apt vim w3m lynx curl wget openssh-server ssh rsync build-essential gcc g++ make \
               gdb cgdb valgrind strace ltrace scons libcunit1 libcunit1-dev libgtest-dev \
               libgoogle-perftools-dev doxygen tar zip gzip unzip bzip2 unar p7zip \
-              p7zip-full zsh screen
+              p7zip-full zsh screen \
+              ncal calendar \
+              bsdextrautils
 }
 
 # System packages
