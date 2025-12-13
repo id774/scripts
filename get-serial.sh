@@ -14,7 +14,7 @@
 #    - Errors: messages to stderr and deterministic exit codes.
 #
 #  Requirements:
-#    - Linux, udevadm(8), lsblk(8), sed(1), head(1)
+#    - Linux, udevadm(8), lsblk(8), sed(1), head(1), awk(1)
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -37,6 +37,8 @@
 #  127. Required command is not installed.
 #
 #  Version History:
+#  v1.2 2025-12-13
+#       Unify exit behavior in print_serial and correct command name in warning message.
 #  v1.1 2025-11-09
 #       Remove shared fail function and inline all error handling to comply with implementation policy.
 #       Unify argument error message.
@@ -91,7 +93,7 @@ validate_args() {
             ;;
         *)
             echo "[ERROR] Not a device path: $DEV" >&2
-            echo "[WARN] If you have a mountpoint, resolve it first: get-serial \"\$(get-device <mountpoint>)\"" >&2
+            echo "[WARN] If you have a mountpoint, resolve it first: get-serial.sh \"\$(get-device.sh <mountpoint>)\"" >&2
             exit 2
             ;;
     esac
@@ -131,7 +133,7 @@ print_serial() {
     fi
 
     echo "[WARN] Serial number could not be determined for: $dev" >&2
-    return 4
+    exit 4
 }
 
 # Main entry point of the script
@@ -142,7 +144,7 @@ main() {
     check_system
     check_commands udevadm lsblk sed head
     validate_args "$@"
-    print_serial "$DEV" || exit "$?"
+    print_serial "$DEV" || exit $?
     return $?
 }
 
