@@ -15,6 +15,12 @@
 #  Usage:
 #      ./restart-sshd.sh
 #
+#  Requirements:
+#    - sudo(8)
+#    - awk(1) for usage() header extraction
+#    - macOS: /System/Library/LaunchDaemons/ssh.plist with launchctl(1)
+#    - Linux: systemctl(1)
+#
 #  Version History:
 #  v2.0 2025-08-04
 #       Fix OS detection by matching 'Darwin' explicitly instead of using wildcard.
