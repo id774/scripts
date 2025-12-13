@@ -19,6 +19,9 @@
 #    - Walks the dependency chain using lsblk to return the actual root device.
 #    - Provides deterministic exit codes to simplify error handling in scripts.
 #
+#  Requirements:
+#    - Linux, findmnt(8), lsblk(8), sed(1), head(1), tail(1), awk(1)
+#
 #  Notes:
 #    - Designed for Linux systems with lsblk(8) and findmnt(8) available.
 #    - Can be invoked interactively for quick checks or from scripts
