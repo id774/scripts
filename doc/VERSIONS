@@ -7,6 +7,7 @@ v1.6.2 (Release Date: TBD)
 - Inline error handling in get-serial.sh, get-device.sh and get-mountpoint.sh.
 - Unify log format in get_resources.sh.
 - Add ncal, calendar, and bsdextrautils as explicit replacements for deprecated bsdmainutils.
+- Brush up multiple scripts for consistency and robustness.
 
 v1.6.1 (2025-10-24)
 -------------------
