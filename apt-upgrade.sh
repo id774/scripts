@@ -22,8 +22,9 @@
 #      ./apt-upgrade.sh
 #
 #  Requirements:
-#  - Must be executed with a user that has `sudo` privileges.
-#  - Works on Debian-based systems such as Ubuntu.
+#  - Debian-based system with apt-get(8) available.
+#  - User with sudo(8) privileges.
+#  - Network connectivity for package index and downloads.
 #
 #  Version History:
 #  v1.5 2025-06-23
