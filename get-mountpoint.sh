@@ -18,6 +18,9 @@
 #    - Handles MOUNTPOINTS column used by newer util-linux.
 #    - Deterministic exit codes for robust scripting.
 #
+#  Requirements:
+#    - Linux, findmnt(8), lsblk(8), awk(1), mktemp(1)
+#
 #  Notes:
 #    - Designed for Linux systems with lsblk(8) and findmnt(8) available.
 #    - Selection policy for multiple candidates:
@@ -48,6 +51,9 @@
 #  127. Required command is not installed.
 #
 #  Version History:
+#  v1.2 2025-12-13
+#       Resolve symlinked device path before block-device check to ensure correct handling of /dev/disk/by-*.
+#       Add explicit Requirements section for findmnt, lsblk, awk, mktemp.
 #  v1.1 2025-11-09
 #       Remove shared fail function and inline all error handling to comply with implementation policy.
 #  v1.0 2025-08-31
@@ -102,13 +108,16 @@ validate_args() {
         exit 2
     fi
 
+    # Resolve to the real block device before checking type
+    REAL_DEV=$(readlink -f -- "$DEV" 2>/dev/null || printf '%s' "$DEV")
+
     # Require a block device (regular file paths are not accepted)
-    if [ ! -b "$DEV" ]; then
+    if [ ! -b "$REAL_DEV" ]; then
         echo "[ERROR] Not a block device: $DEV" >&2
         exit 3
     fi
 
-    DEVICE="$DEV"
+    DEVICE="$REAL_DEV"
     return 0
 }
 
@@ -154,7 +163,7 @@ get_name_fstype_first_mp() {
 }
 
 # Compute depth from BASE to CAND in the block dependency chain
-# returns integer >=0 when CAND descends from BASE, otherwise -1
+# Returns integer >=0 when CAND descends from BASE, otherwise -1
 depth_from_base() {
     base="$1"
     cand="$2"
@@ -233,7 +242,7 @@ resolve_and_print() {
             *) seen="$seen $CAND" ;;
         esac
 
-        MP=$(find_mountpoint_direct "$CAND")
+        MP=$(find_mountpoint_direct "$CAND") || :
         if [ -n "$MP" ]; then
             FS=$(findmnt -nr -S "$CAND" -o FSTYPE 2>/dev/null || true)
             [ -n "$FS" ] || FS=""
@@ -324,7 +333,7 @@ main() {
     esac
 
     check_system
-    check_commands lsblk findmnt awk
+    check_commands lsblk findmnt readlink awk
     validate_args "$@"
     resolve_and_print "$DEVICE"
     return $?
