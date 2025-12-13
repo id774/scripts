@@ -18,7 +18,7 @@
 #  Usage:
 #  To set a package state:
 #      ./dpkg-hold.sh package-name state
-#      (Where 'state' can be 'hold', 'install', etc.)
+#      (Where 'state' is one of: hold, unhold, auto, manual)
 #
 #  To view the current state of a package:
 #      ./dpkg-hold.sh package-name
@@ -40,6 +40,8 @@
 #    like displaying package status do not require sudo.
 #
 #  Version History:
+#  v2.1 2025-12-13
+#       Fix Usage to reflect valid apt-mark states and add validation for hold|unhold|auto|manual.
 #  v2.0 2025-08-12
 #       Replace dpkg --set-selections with apt-mark to reliably set package states.
 #       Require sudo only for apt-mark operations.
@@ -107,6 +109,11 @@ check_sudo() {
     fi
 }
 
+# Validate apt-mark state
+validate_state() {
+    case "$1" in hold|unhold|auto|manual) return 0 ;; *) echo "[ERROR] Invalid state: $1" >&2; exit 2 ;; esac
+}
+
 # Display the current state of a package
 show_package_status() {
     dpkg -l "$1"
@@ -130,6 +137,7 @@ main() {
     check_commands dpkg
 
     if [ -n "$2" ]; then
+        validate_state "$2"
         # If two arguments are provided, set the package state
         set_package_state "$1" "$2"
     elif [ -n "$1" ]; then
