@@ -16,7 +16,13 @@
 #  Usage:
 #      ./gpg-import.sh KEYSERVER PUBKEY
 #
+#  Requirements:
+#  - Debian-based Linux system with gpg, sudo, tee available.
+#  - Recommended: use with APT signed-by= pointing to /usr/share/keyrings/*.gpg
+#
 #  Version History:
+#  v2.0 2025-12-13
+#       Store dearmored key under /usr/share/keyrings and add argument validation & error handling.
 #  v1.9 2025-08-04
 #       Replace deprecated 'apt-key add -' with trusted.gpg.d key file export.
 #  v1.8 2025-06-23
@@ -81,16 +87,35 @@ check_commands() {
     done
 }
 
+# Validate arguments
+validate_args() {
+    if [ "$#" -ne 2 ]; then
+        echo "[ERROR] Exactly two arguments required: KEYSERVER PUBKEY" >&2
+        exit 2
+    fi
+    return 0
+}
+
 # Import a GPG key from the specified keyserver
 import_gpg_key() {
     keyserver="$1"
     pubkey="$2"
 
     echo "[INFO] Importing GPG key from $keyserver..."
-    gpg --keyserver "$keyserver" --recv-keys "$pubkey"
+    if ! gpg --keyserver "$keyserver" --recv-keys "$pubkey"; then
+        echo "[ERROR] Failed to receive key: $pubkey from $keyserver" >&2
+        exit 1
+    fi
 
-    echo "[INFO] Exporting and adding the GPG key to APT keyring..."
-    sudo gpg --armor --export "$pubkey" | sudo tee /etc/apt/trusted.gpg.d/"$pubkey".asc > /dev/null
+    target="/usr/share/keyrings/${pubkey}.gpg"
+    echo "[INFO] Exporting dearmored key to $target ..."
+    if ! sudo sh -c "gpg --export '$pubkey' | gpg --dearmor > '$target'"; then
+        echo "[ERROR] Failed to write dearmored key to $target" >&2
+        exit 1
+    fi
+    # Ensure permissions are sane (0644) respecting umask
+    sudo chmod 0644 "$target" 2>/dev/null || true
+    echo "[INFO] Done. Use it in sources.list as: signed-by=$target"
 }
 
 # Main entry point of the script
@@ -99,15 +124,11 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
-    # Check if both arguments are provided
-    if [ -n "$2" ]; then
-        check_system
-        check_commands gpg sudo
-        check_sudo
-        import_gpg_key "$1" "$2"
-    else
-        usage
-    fi
+    validate_args "$@"
+    check_system
+    check_commands gpg sudo tee
+    check_sudo
+    import_gpg_key "$1" "$2"
     return 0
 }
 
