@@ -20,7 +20,14 @@
 #  The script automatically detects the operating system and performs the appropriate
 #  cleanup actions. Ensure to have the necessary permissions before running.
 #
+#  Requirements:
+#  - awk(1) for usage() header extraction
+#  - find(1), rm(1), uname(1)
+#  - macOS optional: trash(1) if available (non-root path)
+#  - Linux/macOS POSIX sh
+#
 #  Version History:
+#  20251214 - Fix quoted wildcard cleanup and document script requirements.
 #  20250823 - Remove dead.letter and .ssh/known_hosts.old.
 #  20250806 - Remove $HOME/mbox if exists.
 #  20250731 - Add kill-ring-saved.el to Emacs cleanup targets.
@@ -142,8 +149,12 @@ perform_cleanup() {
     rm -vf "$HOME/.bash_history"
     rm -vf "$HOME/.recentf~"
     rm -vf "$HOME/.xsession-errors"
-    rm -vrf "$HOME/.cache/*"
-    rm -vrf "$HOME/.local/share/Trash/*"
+    if [ -d "$HOME/.cache" ]; then
+        find "$HOME/.cache" -mindepth 1 -exec rm -rf {} +
+    fi
+    if [ -d "$HOME/.local/share/Trash" ]; then
+        find "$HOME/.local/share/Trash" -mindepth 1 -exec rm -rf {} +
+    fi
     rm -vf "$HOME"/.ssh/known_hosts.old
     rm -vf "$HOME"/.vim/.netrwhist
     rm -vf "$HOME"/.emacs.d/*~
