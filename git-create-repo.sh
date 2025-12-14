@@ -59,6 +59,8 @@
 #  home directory. This behavior can be overridden with the --sudo or --no-sudo options.
 #
 #  Version History:
+#  v2.0 2025-12-14
+#       Use 'sudo test' instead of 'sudo [' for repository detection to improve portability.
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.8 2025-04-13
@@ -131,11 +133,17 @@ check_directory() {
 is_git_repository() {
     repo_path=$1
     use_sudo=$2
-    if $use_sudo [ -d "${repo_path}/.git" ] || { $use_sudo [ -f "${repo_path}/HEAD" ] && $use_sudo [ -d "${repo_path}/objects" ]; }; then
-        return 0
+    if [ "$use_sudo" = "sudo" ]; then
+        SUDO=sudo
     else
-        return 1
+        SUDO=
     fi
+    if $SUDO test -d "${repo_path}/.git" \
+       || { $SUDO test -f "${repo_path}/HEAD" && $SUDO test -d "${repo_path}/objects"; }
+    then
+        return 0
+    fi
+    return 1
 }
 
 # Create a new Git repository with proper permissions
