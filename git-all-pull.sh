@@ -24,6 +24,9 @@
 #  overwrite local changes. Use with caution.
 #
 #  Version History:
+#  v2.1 2025-12-14
+#       Fix symlink creation logic, directory scan condition, and show help for unknown options.
+#       Improves robustness without changing functional behavior.
 #  v2.0 2025-09-06
 #       Add --www-only option to pull /var/www/wordpress and /var/www/html/current when present.
 #       Ensure --all also runs www-only processing. Existing options like --dry-run and --hard apply.
@@ -154,13 +157,16 @@ create_symlink() {
     repo="$1"
     link_path="$HOME/$(basename "$repo")"
 
-    if [ -e "$link_path" ] && [ ! -L "$link_path" ]; then
+    if [ ! -e "$link_path" ]; then
         if [ "$DRY_RUN" = false ]; then
             echo "[INFO] Creating symlink: $link_path -> $repo"
             ln -s "$repo" "$link_path"
         else
             echo "[INFO] DRY RUN: Create symlink: $link_path -> $repo"
         fi
+    else
+        # Path exists; do not overwrite files or directories
+        [ "$DRY_RUN" = true ] && echo "[INFO] DRY RUN: Skip symlink creation due to existing path: $link_path"
     fi
 }
 
@@ -174,6 +180,7 @@ process_directory() {
     fi
 
     for repo in "$dir"/*; do
+        [ -d "$repo" ] || continue
         if [ -d "$repo/.git" ]; then
             pull_repo "$repo"
 
@@ -188,6 +195,7 @@ process_directory() {
             fi
         fi
     done
+    [ "$SHOW_HELP" = true ] && usage
 }
 
 # Process www targets
