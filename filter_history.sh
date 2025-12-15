@@ -28,6 +28,8 @@
 #  <pattern>: The string to remove from the history file (partial match).
 #
 #  Version History:
+#  v1.7 2025-12-15
+#       Add date to command checks, validate TMP and history file existence, and improve temp file handling.
 #  v1.6 2025-08-07
 #       Use 'grep -F' for fixed-string pattern matching to avoid unintended regex behavior.
 #  v1.5 2025-06-23
@@ -78,7 +80,10 @@ validate_environment() {
         echo "[ERROR] TMP environment variable is not set." >&2
         exit 1
     fi
-
+    if [ ! -d "$TMP" ]; then
+        echo "[ERROR] TMP directory does not exist: $TMP" >&2
+        exit 1
+    fi
     if [ "$#" -ne 1 ]; then
         usage
     fi
@@ -109,12 +114,13 @@ count_matches() {
 # Filter out matching lines and overwrite the original file
 filter_history() {
     # Remove matching lines (fixed string) and replace the original history file
-    if ! grep -F -v "$PATTERN" "$HISTORY_FILE" > "$HISTORY_FILE.tmp"; then
+    tmp="$HISTORY_FILE.tmp.$$"
+    if ! grep -F -v "$PATTERN" "$HISTORY_FILE" > "$tmp"; then
         echo "[ERROR] Failed to create temporary file." >&2
         exit 1
     fi
 
-    if ! mv "$HISTORY_FILE.tmp" "$HISTORY_FILE"; then
+    if ! mv "$tmp" "$HISTORY_FILE"; then
         echo "[ERROR] Failed to overwrite the original history file." >&2
         exit 1
     fi
@@ -138,14 +144,27 @@ main() {
 
     validate_environment "$@"
 
-    check_commands grep cp mv basename diff
+    check_commands grep cp mv basename diff date
 
     HISTORY_FILE="$HOME/.zsh_history"
     PATTERN="$1"
+    if [ ! -f "$HISTORY_FILE" ]; then
+        echo "[ERROR] History file not found: $HISTORY_FILE" >&2
+        exit 1
+    fi
+    if [ ! -w "$HISTORY_FILE" ]; then
+        echo "[ERROR] History file is not writable: $HISTORY_FILE" >&2
+        exit 1
+    fi
 
     create_backup
     count_matches
+
     filter_history
+    if [ "${MATCH_COUNT:-0}" -eq 0 ]; then
+        echo "[INFO] No matching entries. File unchanged."
+    fi
+
     show_diff
     return 0
 }
