@@ -54,6 +54,8 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v2.5 2025-12-15
+#       Add grep/date to command checks to match internal usage.
 #  v2.4 2025-09-22
 #       Add multi host rsync via RSYNC_HOSTS with fallback to RSYNC_HOST and update header docs accordingly.
 #  v2.3 2025-06-23
@@ -239,7 +241,7 @@ main() {
     SCRIPT_DIR=$(dirname "$0")
 
     load_configuration
-    check_commands chmod cp rsync rm find
+    check_commands chmod cp rsync rm find grep date
     parse_arguments "$@"
 
     CURRENT_YEAR=$(date +"%Y")
