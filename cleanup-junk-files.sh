@@ -24,6 +24,9 @@
 #  - It is advisable to perform a dry run or backup important files before execution.
 #
 #  Version History:
+#  v2.0 2025-12-15
+#       Guard against root directory target, fix '*.un~' match, add type filters,
+#       and use batched '-exec ... +' for efficiency.
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.8 2025-04-13
@@ -74,21 +77,31 @@ check_commands() {
     done
 }
 
+# Refuse dangerous target such as root directory
+guard_target_dir() {
+    target="$1"
+    # Prevent '/' explicitly; allow other absolute/relative paths
+    if [ "$target" = "/" ]; then
+        echo "[ERROR] Refuse to operate on '/'" >&2
+        exit 1
+    fi
+}
+
 # Perform cleanup of junk files
 cleanup_junk_files() {
     echo "[INFO] Cleaning up junk files in $1..."
 
     echo "[INFO] Removing ._* AppleDouble files..."
-    find "$1" -name '._*' -exec rm -vf {} \;
+    find "$1" -type f -name '._*' -exec rm -f {} +
 
     echo "[INFO] Removing .DS_Store files..."
-    find "$1" -name '.DS_Store' -exec rm -vf {} \;
+    find "$1" -type f -name '.DS_Store' -exec rm -f {} +
 
     echo "[INFO] Removing temporary Unix files ending with '.un~'..."
-    find "$1" -name '.*.un~' -exec rm -vf {} \;
+    find "$1" -type f -name '*.un~' -exec rm -f {} +
 
     echo "[INFO] Removing __pycache__ directories..."
-    find "$1" -type d -name '__pycache__' -exec rm -vrf {} \;
+    find "$1" -type d -name '__pycache__' -exec rm -rf {} +
 
     echo "[INFO] Cleanup completed."
 }
@@ -107,6 +120,7 @@ main() {
     fi
 
     if [ -d "$1" ]; then
+        guard_target_dir "$1"
         cleanup_junk_files "$1"
     else
         echo "[ERROR] Directory '$1' is not found." >&2

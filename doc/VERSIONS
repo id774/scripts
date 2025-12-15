@@ -9,6 +9,7 @@ v1.6.2 (Release Date: TBD)
 - Add ncal, calendar, and bsdextrautils as explicit replacements for deprecated bsdmainutils.
 - Adopt dearmored key under /usr/share/keyrings in gpg-import.sh and enable signed-by method.
 - Harden setup_scripts.sh to skip missing directories while preserving idempotency.
+- Improve safety and efficiency of cleanup-junk-files.sh.
 - Fix alert flag on unknown timestamps to honor VM exclusion policy in server_alive_check.sh.
 - Brush up multiple scripts for consistency and robustness.
 
