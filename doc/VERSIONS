@@ -8,6 +8,7 @@ v1.6.2 (Release Date: TBD)
 - Unify log format in get_resources.sh.
 - Add ncal, calendar, and bsdextrautils as explicit replacements for deprecated bsdmainutils.
 - Adopt dearmored key under /usr/share/keyrings in gpg-import.sh and enable signed-by method.
+- Harden setup_scripts.sh to skip missing directories while preserving idempotency.
 - Brush up multiple scripts for consistency and robustness.
 
 v1.6.1 (2025-10-24)

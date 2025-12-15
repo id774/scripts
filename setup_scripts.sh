@@ -31,6 +31,8 @@
 #      - To all files under scripts/cron/bin (no extension filter)
 #
 #  Version History:
+#  v2.3 2025-12-15
+#       Skip missing directories (installer, test, cron/bin) without failing to keep idempotent behavior.
 #  v2.2 2025-08-31
 #       Fix include current directory in execute permission handling for *.sh, *.py, *.rb.
 #  v2.1 2025-06-23
@@ -113,16 +115,31 @@ set_permissions() {
     RC2=$?
 
     echo "[INFO] Granting execute permissions to installer scripts (*.sh, *.py, *.rb)."
-    find "$SCRIPTS/installer" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
-    RC3=$?
+    RC3=0
+    if [ -d "$SCRIPTS/installer" ]; then
+        find "$SCRIPTS/installer" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+        RC3=$?
+    else
+        echo "[INFO] installer directory not found; skipping."
+    fi
 
     echo "[INFO] Granting execute permissions to test scripts (*.sh, *.py, *.rb)."
-    find "$SCRIPTS/test" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
-    RC4=$?
+    RC4=0
+    if [ -d "$SCRIPTS/test" ]; then
+        find "$SCRIPTS/test" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+        RC4=$?
+    else
+        echo "[INFO] test directory not found; skipping."
+    fi
 
     echo "[INFO] Granting execute permissions to all files under scripts/cron/bin."
-    find "$SCRIPTS/cron/bin" -type f -exec chmod u+x,g+x,o+x {} \;
-    RC5=$?
+    RC5=0
+    if [ -d "$SCRIPTS/cron/bin" ]; then
+        find "$SCRIPTS/cron/bin" -type f -exec chmod u+x,g+x,o+x {} \;
+        RC5=$?
+    else
+        echo "[INFO] cron/bin directory not found; skipping."
+    fi
 
     if [ "$RC1" -eq 0 ] && [ "$RC2" -eq 0 ] && [ "$RC3" -eq 0 ] && [ "$RC4" -eq 0 ] && [ "$RC5" -eq 0 ]; then
         echo "[INFO] All permission settings completed successfully."
