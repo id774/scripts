@@ -24,6 +24,9 @@
 #  This will merge changes from 'exampleUser/exampleRepo' into the local master branch.
 #
 #  Version History:
+#  v1.9 2025-12-15
+#       Detect upstream default branch (main/master) and merge via a unique temp branch.
+#       Add sed/date/grep to command checks.
 #  v1.8 2025-08-04
 #       Fix argument expansion from $* to "$@" to preserve parameter integrity.
 #  v1.7 2025-06-23
@@ -71,14 +74,60 @@ check_commands() {
     done
 }
 
-# Processes for git merge
+# Resolve upstream default branch name (main/master) with fallback
+resolve_upstream_branch() {
+    user="$1"
+    repo="$2"
+    url="https://github.com/${user}/${repo}"
+
+    # Try to read HEAD symref (e.g., "ref: refs/heads/main HEAD")
+    head_line=$(git ls-remote --symref "$url" HEAD 2>/dev/null | sed -n '1p')
+    if [ -n "$head_line" ]; then
+        # Extract branch name after refs/heads/
+        br=$(printf "%s\n" "$head_line" | sed -n 's#^ref: refs/heads/\([^ ]*\) HEAD#\1#p')
+        if [ -n "$br" ]; then
+            echo "$br"
+            return 0
+        fi
+    fi
+
+    # Fallback: check main first, then master (match non-empty output)
+    if git ls-remote --heads "$url" main 2>/dev/null | grep -qE '\srefs/heads/main$'; then
+        echo "main"
+        return 0
+    fi
+    if git ls-remote --heads "$url" master 2>/dev/null | grep -qE '\srefs/heads/master$'; then
+        echo "master"
+        return 0
+    fi
+
+    # Last resort
+    echo "master"
+    return 0
+}
+
+# Merge upstream changes into local master via a unique temp branch
 git_merge() {
-    git checkout -b merge-master master
-    git pull https://github.com/$1/$2
+    user="$1"
+    repo="$2"
+
+    upstream_branch=$(resolve_upstream_branch "$user" "$repo")
+    url="https://github.com/${user}/${repo}"
+
+    # Unique temp branch name to avoid collision
+    ts=$(date +%Y%m%d%H%M%S)
+    temp_branch="merge-${upstream_branch}-${ts}"
+
+    # Create temp branch from local master
+    git checkout -b "$temp_branch" master
+    # Pull only the resolved upstream branch into temp
+    git pull "$url" "$upstream_branch"
+
+    # Merge into local master and push
     git checkout master
-    git merge merge-master
+    git merge "$temp_branch"
     git push origin master
-    git branch -D merge-master
+    git branch -D "$temp_branch"
 }
 
 # Main entry point of the script
@@ -88,8 +137,8 @@ main() {
     esac
 
     if [ -n "$2" ]; then
-        # Check if Git is installed
-        check_commands git
+        # Ensure required commands exist
+        check_commands git sed date grep
         git_merge "$@"
     else
         usage
