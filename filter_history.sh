@@ -84,6 +84,10 @@ validate_environment() {
         echo "[ERROR] TMP directory does not exist: $TMP" >&2
         exit 1
     fi
+    if [ -z "$1" ]; then
+        echo "[ERROR] No pattern specified." >&2
+        exit 1
+    fi
     if [ "$#" -ne 1 ]; then
         usage
     fi
