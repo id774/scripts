@@ -75,6 +75,8 @@
 #  3. Source directory does not exist.
 #
 #  Version History:
+#  v2.1 2025-12-15
+#       Fix alert flag on unknown timestamps to honor VM exclusion policy.
 #  v2.0 2025-09-14
 #       Add human readable summary output with counters and percentages.
 #       Refactor process_files into smaller functions for readability and maintainability.
@@ -292,9 +294,14 @@ evaluate_and_count() {
     TIMES=$(get_file_times "$FILE")
     if [ -z "$TIMES" ]; then
         echo "[WARN] Failed to retrieve modification time for: $FILE" >&2
-        REGULAR_STALE_FOUND=1
         CLASS=$(classify_host_name "$BASENAME")
         bump_summary_counter "$CLASS" "unknown"
+        # Respect VM exclusion policy: do not set regular alert flag for VM
+        if [ "$CLASS" = "regular" ]; then
+            REGULAR_STALE_FOUND=1
+        else
+            VM_STALE_FOUND=1
+        fi
         return 0
     fi
 
