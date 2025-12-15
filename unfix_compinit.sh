@@ -32,6 +32,8 @@
 #  - After using Homebrew, execute `fix_compinit.sh` to restore secure settings.
 #
 #  Version History:
+#  v1.8 2025-12-15
+#       Resolve Homebrew prefix dynamically and process existing targets only.
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.6 2025-04-28
@@ -69,18 +71,24 @@ check_system() {
     fi
 }
 
+# Check if required commands are available and executable
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
         echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
-        exit 1
-    fi
-}
-
-# Check if a directory exists
-check_directory() {
-    if [ ! -d "$1" ]; then
-        echo "[ERROR] Directory $1 does not exist." >&2
         exit 1
     fi
 }
@@ -93,44 +101,35 @@ adjust_homebrew_permissions() {
     current_user=$(whoami)
     current_group=$(id -gn "$current_user")
 
-    # Check if directories exist
-    check_directory /usr/local/Homebrew
-    check_directory /usr/local/share/zsh/
-    check_directory /usr/local/share/zsh/site-functions
+    # Detect Homebrew prefix dynamically; fallback to /usr/local
+    prefix=$(brew --prefix 2>/dev/null || echo /usr/local)
+    targets="
+${prefix}/Homebrew
+${prefix}/share/zsh/
+${prefix}/share/zsh/site-functions
+"
 
-    check_sudo
-
-    # Change ownership to the current user and their primary group
-    echo "[INFO] Changing ownership to $current_user:$current_group..."
-    if ! sudo chown -R "$current_user":"$current_group" /usr/local/Homebrew; then
-        echo "[ERROR] Failed to change ownership of /usr/local/Homebrew." >&2
-        exit 1
+    changed=0
+    for d in $targets; do
+        if [ -d "$d" ]; then
+            echo "[INFO] Processing: $d"
+            if ! sudo chown -R "$current_user":"$current_group" "$d"; then
+                echo "[ERROR] Failed to change ownership of $d." >&2
+                exit 1
+            fi
+            if ! sudo chmod u+w "$d" 2>/dev/null; then
+                echo "[WARN] Could not set write permission on $d (may be fine for protected paths)." >&2
+            fi
+            ls -ld "$d"
+            changed=1
+        else
+            echo "[WARN] Directory not found: $d" >&2
+        fi
+    done
+    if [ "$changed" -eq 0 ]; then
+        echo "[INFO] No target directories under prefix: $prefix; nothing to do."
+        return 0
     fi
-    if ! sudo chown -R "$current_user":"$current_group" /usr/local/share/zsh/; then
-        echo "[ERROR] Failed to change ownership of /usr/local/share/zsh/." >&2
-        exit 1
-    fi
-    if ! sudo chown -R "$current_user":"$current_group" /usr/local/share/zsh/site-functions; then
-        echo "[ERROR] Failed to change ownership of /usr/local/share/zsh/site-functions." >&2
-        exit 1
-    fi
-
-    # Set write permissions for the current user
-    echo "[INFO] Setting write permissions for the user..."
-    if ! chmod u+w /usr/local/share/zsh/; then
-        echo "[ERROR] Failed to set write permission on /usr/local/share/zsh/." >&2
-        exit 1
-    fi
-    if ! chmod u+w /usr/local/share/zsh/site-functions; then
-        echo "[ERROR] Failed to set write permission on /usr/local/share/zsh/site-functions." >&2
-        exit 1
-    fi
-
-    # Verify changes
-    echo "[INFO] Ownership and permissions have been updated for Homebrew:"
-    ls -Tld /usr/local/Homebrew
-    ls -Tld /usr/local/share/zsh/
-    ls -Tld /usr/local/share/zsh/site-functions
 }
 
 # Main entry point of the script
@@ -140,6 +139,9 @@ main() {
     esac
 
     check_system
+    check_commands uname brew chown chmod ls
+    check_sudo
+
     adjust_homebrew_permissions
     return 0
 }
