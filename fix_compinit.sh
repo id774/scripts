@@ -33,6 +33,8 @@
 #    security standards.
 #
 #  Version History:
+#  v1.8 2025-12-15
+#       Resolve Homebrew prefix dynamically and process existing targets only.
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.6 2025-04-28
@@ -71,6 +73,20 @@ check_system() {
     fi
 }
 
+# Check if required commands are available and executable
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
@@ -79,50 +95,39 @@ check_sudo() {
     fi
 }
 
-# Check if a directory exists
-check_directory() {
-    if [ ! -d "$1" ]; then
-        echo "[ERROR] Directory $1 does not exist." >&2
-        exit 1
-    fi
-}
-
 # Fix ownership and permissions for Zsh directories
 fix_permissions() {
     echo "[INFO] Fixing ownership and permissions for Zsh directories on macOS..."
 
-    # Check if directories exist before proceeding
-    check_directory /usr/local/Homebrew/completions/zsh/
-    check_directory /usr/local/share/zsh/
+    # Detect Homebrew prefix dynamically; fallback to /usr/local
+    prefix=$(brew --prefix 2>/dev/null || echo /usr/local)
+    targets="
+${prefix}/Homebrew/completions/zsh/
+${prefix}/share/zsh/
+"
 
-    check_sudo
-
-    # Change ownership to root:wheel
-    echo "[INFO] Changing ownership to root:wheel..."
-    if ! sudo chown -R root:wheel /usr/local/Homebrew/completions/zsh/; then
-        echo "[ERROR] Failed to change ownership of /usr/local/Homebrew/completions/zsh/." >&2
-        exit 1
+    changed=0
+    for d in $targets; do
+        if [ -d "$d" ]; then
+            echo "[INFO] Processing: $d"
+            if ! sudo chown -R root:wheel "$d"; then
+                echo "[ERROR] Failed to chown: $d" >&2
+                exit 1
+            fi
+            if ! sudo chmod -R 0755 "$d"; then
+                echo "[ERROR] Failed to chmod: $d" >&2
+                exit 1
+            fi
+            ls -ld "$d"
+            changed=1
+        else
+            echo "[WARN] Directory not found: $d" >&2
+        fi
+    done
+    if [ "$changed" -eq 0 ]; then
+        echo "[INFO] No target directories under prefix: $prefix; nothing to do."
+        return 0
     fi
-    if ! sudo chown -R root:wheel /usr/local/share/zsh/; then
-        echo "[ERROR] Failed to change ownership of /usr/local/share/zsh/." >&2
-        exit 1
-    fi
-
-    # Set secure permissions
-    echo "[INFO] Setting directory permissions to 755..."
-    if ! sudo chmod -R 0755 /usr/local/Homebrew/completions/zsh/; then
-        echo "[ERROR] Failed to set permissions on /usr/local/Homebrew/completions/zsh/." >&2
-        exit 1
-    fi
-    if ! sudo chmod -R 0755 /usr/local/share/zsh/; then
-        echo "[ERROR] Failed to set permissions on /usr/local/share/zsh/." >&2
-        exit 1
-    fi
-
-    # Verify changes
-    echo "[INFO] Ownership and permissions have been updated:"
-    ls -Tld /usr/local/Homebrew/completions/zsh/
-    ls -Tld /usr/local/share/zsh/
 }
 
 # Main entry point of the script
@@ -132,6 +137,9 @@ main() {
     esac
 
     check_system
+    check_commands uname brew chown chmod ls
+    check_sudo
+
     fix_permissions
     return 0
 }
