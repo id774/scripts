@@ -17,6 +17,9 @@
 #      ./platex2pdf.sh [tex-file]
 #
 #  Version History:
+#  v1.9 2025-12-15
+#       Improve documentclass and encoding detection.
+#       Add grep to command checks.
 #  v1.8 2025-08-04
 #       Fix documentclass detection logic to correctly ignore end-of-line comments.
 #  v1.7 2025-06-23
@@ -63,25 +66,29 @@ check_commands() {
     done
 }
 
-# Detect encoding using nkf
+# Detect encoding using nkf with tolerant matching
 detect_encoding() {
     encoding=$(nkf -g "$1")
-
     case "$encoding" in
-        UTF-8) echo "-kanji=utf8" ;;
-        EUC-JP) echo "-kanji=euc" ;;
-        Shift-JIS) echo "-kanji=sjis" ;;
-        ISO-2022-JP) echo "-kanji=jis" ;;
-        *) echo "" ;;  # Default to an empty string if encoding is not recognized
+        UTF-8*|*UTF-8*) echo "-kanji=utf8" ;;
+        EUC-JP*|*EUC*) echo "-kanji=euc" ;;
+        Shift-JIS*|CP932*|*SJIS*) echo "-kanji=sjis" ;;
+        ISO-2022-JP*|JIS*) echo "-kanji=jis" ;;
+        *) echo "" ;;
     esac
 }
 
 # Detect which LaTeX engine to use (platex or uplatex)
 detect_latex_engine() {
-    class=$(sed 's/%.*//' "$1" | grep 'documentclass' | sed -n '1p')
-    case "$class" in
-        *{u*) echo "uplatex" ;;
-        *) echo "platex" ;;
+    # Remove comments and find first \documentclass line
+    line=$(sed 's/%.*//' "$1" | grep -m1 -E '^[[:space:]]*\\documentclass')
+    classname=""
+    if [ -n "$line" ]; then
+        classname=$(printf "%s\n" "$line" | sed -n 's/.*{\([^}]*\)}.*/\1/p')
+    fi
+    case "$classname" in
+        u*) echo "uplatex" ;;
+        *)  echo "platex" ;;
     esac
 }
 
@@ -113,7 +120,7 @@ main() {
     fi
 
     # Ensure required commands are available
-    check_commands platex uplatex dvipdfmx nkf sed
+    check_commands platex uplatex dvipdfmx nkf sed grep
 
     convert_to_pdf "$1"
     return 0
