@@ -24,6 +24,8 @@
 #  - It is advisable to perform a dry run or backup important files before execution.
 #
 #  Version History:
+#  v2.1 2025-12-20
+#       Guard against home directory target by resolving and comparing physical paths.
 #  v2.0 2025-12-15
 #       Guard against root directory target, fix '*.un~' match, add type filters,
 #       and use batched '-exec ... +' for efficiency.
@@ -77,13 +79,36 @@ check_commands() {
     done
 }
 
+# Resolve a directory path to an absolute physical path
+resolve_dir_path() {
+    dir="$1"
+    (
+        cd "$dir" 2>/dev/null || exit 1
+        pwd -P 2>/dev/null || pwd
+    )
+}
+
 # Refuse dangerous target such as root directory
 guard_target_dir() {
     target="$1"
-    # Prevent '/' explicitly; allow other absolute/relative paths
-    if [ "$target" = "/" ]; then
+
+    target_real=$(resolve_dir_path "$target")
+    if [ -z "$target_real" ]; then
+        echo "[ERROR] Failed to resolve target directory: $target" >&2
+        exit 1
+    fi
+
+    if [ "$target_real" = "/" ]; then
         echo "[ERROR] Refuse to operate on '/'" >&2
         exit 1
+    fi
+
+    if [ -n "$HOME" ]; then
+        home_real=$(resolve_dir_path "$HOME")
+        if [ -n "$home_real" ] && [ "$target_real" = "$home_real" ]; then
+            echo "[ERROR] Refuse to operate on HOME directory: $home_real" >&2
+            exit 1
+        fi
     fi
 }
 
