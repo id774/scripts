@@ -13,6 +13,7 @@ v1.6.2 (Release Date: TBD)
 - Harden setup_scripts.sh to skip missing directories while preserving idempotency.
 - Improve safety and efficiency of cleanup-junk-files.sh.
 - Fix alert flag on unknown timestamps to honor VM exclusion policy in server_alive_check.sh.
+- Purge $HOME/.cache without find traversal races and document .cache policy in cltmp.sh.
 - Brush up multiple scripts for consistency and robustness.
 
 v1.6.1 (2025-10-24)

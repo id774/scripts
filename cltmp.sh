@@ -8,6 +8,14 @@
 #  It includes specific operations for both macOS (Darwin) and Linux platforms, such as
 #  removing old files from designated directories and clearing system caches.
 #
+#  Policy:
+#  This script intentionally removes all entries under $HOME/.cache.
+#  Per common Unix conventions (e.g., XDG Base Directory), $HOME/.cache is treated as
+#  disposable and must not contain persistent user data. Applications that place
+#  "practically persistent" data in $HOME/.cache are considered nonconforming; this
+#  script does not preserve such data. Running this script may increase startup time
+#  or trigger re-downloads/rebuilds as caches are regenerated.
+
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
@@ -27,6 +35,7 @@
 #  - Linux/macOS POSIX sh
 #
 #  Version History:
+#  20251220 - Purge $HOME/.cache without find traversal races and document cache policy.
 #  20251214 - Fix quoted wildcard cleanup and document script requirements.
 #  20250823 - Remove dead.letter and .ssh/known_hosts.old.
 #  20250806 - Remove $HOME/mbox if exists.
@@ -78,6 +87,17 @@ clean_dir() {
     cmd=${3:-"rm -vf"}
     if [ -d "$dir" ]; then
         find "$dir" -type f -mtime "+$days" -exec $cmd {} \;
+    fi
+}
+
+# Remove all entries under a cache directory without directory traversal races
+purge_dir() {
+    dir=$1
+    if [ -d "$dir" ]; then
+        for p in "$dir"/* "$dir"/.[!.]* "$dir"/..?*; do
+            [ -e "$p" ] || continue
+            rm -rf "$p"
+        done
     fi
 }
 
@@ -143,18 +163,20 @@ perform_cleanup() {
         done
     fi
 
+    # Clean up cache directory
+    purge_dir "$HOME/.cache"
+
     # Additional cleanup
     rm -vf "$HOME/mbox"
     rm -vf "$HOME/dead.letter"
     rm -vf "$HOME/.bash_history"
     rm -vf "$HOME/.recentf~"
     rm -vf "$HOME/.xsession-errors"
-    if [ -d "$HOME/.cache" ]; then
-        find "$HOME/.cache" -mindepth 1 -exec rm -rf {} +
-    fi
+
     if [ -d "$HOME/.local/share/Trash" ]; then
         find "$HOME/.local/share/Trash" -mindepth 1 -exec rm -rf {} +
     fi
+
     rm -vf "$HOME"/.ssh/known_hosts.old
     rm -vf "$HOME"/.vim/.netrwhist
     rm -vf "$HOME"/.emacs.d/*~
