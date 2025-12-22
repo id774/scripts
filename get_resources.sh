@@ -17,6 +17,8 @@
 #      ./get_resources.sh
 #
 #  Version History:
+#  v2.2 2025-12-22
+#       Show only top RSS processes in ps output for hourly observation.
 #  v2.1 2025-10-02
 #       Stop monitoring fail2ban.log in this script as log handling is now managed separately.
 #       Replace /proc/cpuinfo dump with concise CPU core count display.
@@ -115,6 +117,7 @@ gather_os_specific_info() {
         execute_command df -H
         execute_command top -l 1
         execute_command ps aux
+        execute_command ps -axo pid,rss,%mem,etime,comm -r | head -20
     else
         execute_command sh -c "grep -m1 'model name' /proc/cpuinfo | cut -d: -f2"
         execute_command cat /proc/meminfo
@@ -122,7 +125,7 @@ gather_os_specific_info() {
         execute_command df -P -T
         execute_command top -b -n 1
         execute_command ps aux
-        execute_command ps axl --sort -vsize | head -20
+        execute_command ps aux --sort=-rss | head -20
     fi
 }
 
