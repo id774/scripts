@@ -15,21 +15,21 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  Run this script without arguments to install the default Python version (3.14.0):
+#  Run this script without arguments to install the default Python version (3.14.2):
 #      ./install_python.sh
 #
 #  Specify a different Python version:
-#      ./install_python.sh 3.13.9
+#      ./install_python.sh 3.13.11
 #
 #  Specify an installation prefix:
-#      ./install_python.sh 3.13.9 /opt/python/3.13
+#      ./install_python.sh 3.13.11 /opt/python/3.13
 #
 #  Install without sudo (for local user installation):
-#      ./install_python.sh 3.14.0 ~/.local/python --no-sudo
+#      ./install_python.sh 3.14.2 ~/.local/python --no-sudo
 #
 #  Notes:
 #  - By default, if no installation path is provided, Python will be installed under /opt/python/x.x
-#    For example, Python 3.14.0 will be installed to /opt/python/3.14
+#    For example, Python 3.14.2 will be installed to /opt/python/3.14
 #
 #  - Source files are saved to /usr/local/src/python only when using sudo.
 #    If installed without sudo (e.g. using `--no-sudo`), source files will not be saved.
@@ -102,7 +102,7 @@ check_sudo() {
 
 # Setup version and environment
 setup_environment() {
-    VERSION="${1:-3.14.0}"
+    VERSION="${1:-3.14.2}"
     MAJOR_MINOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
     PREFIX="${2:-/opt/python/$MAJOR_MINOR}"
     if [ -z "$3" ] || [ "$3" = "sudo" ]; then
