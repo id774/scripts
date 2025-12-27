@@ -28,6 +28,8 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v1.9 2025-12-27
+#       Split client cache percentage into static vs non-static by excluding static assets from page-like metrics.
 #  v1.8 2025-07-30
 #       Support ignore list lookup in /etc/cron.config first, before falling back to local etc/ paths.
 #  v1.7 2025-07-01
@@ -57,6 +59,8 @@ import os
 import re
 import sys
 
+EXCLUDE_PATH_RE = re.compile(r'\.(css|js|map|woff2?|ttf|otf|eot|png|jpe?g|gif|svg|webp|ico|avif)(\?.*)?$', re.IGNORECASE)
+
 
 def usage():
     """ Display the script header as usage information and exit. """
@@ -84,10 +88,52 @@ def usage():
 class ApacheCalculater(object):
 
     @staticmethod
+    def extractRequestPath(line):
+        """
+        Extract request path from a typical Apache combined log line.
+        Example: "GET /path HTTP/1.1" -> "/path"
+        Returns empty string on failure.
+        """
+        parts = line.split('"')
+        if len(parts) < 2:
+            return ""
+        req = parts[1]
+        tokens = req.split()
+        if len(tokens) < 2:
+            return ""
+        return tokens[1]
+
+    @classmethod
+    def isStaticAssetRequest(cls, line):
+        """
+        Determine whether the log line is for a static asset request.
+        Matching is based on request path extension.
+        """
+        path = cls.extractRequestPath(line)
+        if not path:
+            return False
+        return EXCLUDE_PATH_RE.search(path) is not None
+
+    @classmethod
+    def iterFilteredLines(cls, log, ignore_ips):
+        """
+        Yield log lines after applying common filters (ignore IP list).
+        """
+        with cls.openLogFile(log) as contents:
+            for line in contents:
+                ip = line.split(" ", 1)[0]
+                if ip in ignore_ips:
+                    continue
+                yield line
+
+    @staticmethod
     def loadIgnoreList():
         """
         Load the ignore list from the first available location.
         Use localhost as default if the list is empty or file is not found.
+
+        Search order:
+        ./etc/ -> ../etc/ -> /etc/cron.config
 
         Returns:
             set: A set of IPs to ignore.
@@ -142,38 +188,46 @@ class ApacheCalculater(object):
         ipHitListing = {}
         ignore_ips = cls.loadIgnoreList()
 
-        with cls.openLogFile(log) as contents:
-            for line in contents:
-                # Extract the IP address from each log entry
-                ip = line.split(" ", 1)[0]
-                if ip in ignore_ips:
-                    continue
-                if 6 < len(ip) <= 15:  # Validate the length of the IP address
-                    ipHitListing[ip] = ipHitListing.get(ip, 0) + 1
+        for line in cls.iterFilteredLines(log, ignore_ips):
+            ip = line.split(" ", 1)[0]
+            if 6 < len(ip) <= 15:  # Validate the length of the IP address
+                ipHitListing[ip] = ipHitListing.get(ip, 0) + 1
 
         return sorted(ipHitListing.items(), reverse=True, key=lambda x: x[1])
 
     @classmethod
-    def clientCachePercentage(cls, log):
+    def clientCachePercentageSplit(cls, log):
         """
-        Calculate the percentage of cached client requests.
+        Calculate cache percentage split into static and non-static requests.
 
         Args:
             log (str): Path to the Apache log file.
 
         Returns:
-            float: The percentage of cached requests.
+            tuple: (static_percent, non_static_percent)
         """
-        totalRequests, cachedRequests = 0, 0
+        ignore_ips = cls.loadIgnoreList()
+        total_static, cached_static = 0, 0
+        total_nonstatic, cached_nonstatic = 0, 0
 
-        with cls.openLogFile(log) as contents:
-            for line in contents:
-                totalRequests += 1
-                # Check if the response status is 304 (Not Modified)
-                if line.split(" ")[8] == "304":
-                    cachedRequests += 1
+        for line in cls.iterFilteredLines(log, ignore_ips):
+            fields = line.split(" ")
+            if len(fields) < 9:
+                continue
+            is_cached = (fields[8] == "304")
 
-        return float(100 * cachedRequests) / totalRequests if totalRequests > 0 else 0
+            if cls.isStaticAssetRequest(line):
+                total_static += 1
+                if is_cached:
+                    cached_static += 1
+            else:
+                total_nonstatic += 1
+                if is_cached:
+                    cached_nonstatic += 1
+
+        static_percent = float(100 * cached_static) / total_static if total_static > 0 else 0
+        nonstatic_percent = float(100 * cached_nonstatic) / total_nonstatic if total_nonstatic > 0 else 0
+        return static_percent, nonstatic_percent
 
     @classmethod
     def isValidLogFormat(cls, line):
@@ -211,8 +265,10 @@ def main():
 
     # Calculate and display the results
     print("[INFO] IP Hits:", ApacheCalculater.calculateApacheIpHits(log_file))
-    print("[INFO] Client Cache Percentage:",
-          ApacheCalculater.clientCachePercentage(log_file))
+    static_pct, nonstatic_pct = ApacheCalculater.clientCachePercentageSplit(log_file)
+    print("[INFO] Static Asset Cache Percentage:", static_pct)
+    print("[INFO] Non-static Cache Percentage:", nonstatic_pct)
+
     return 0
 
 

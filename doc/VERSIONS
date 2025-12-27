@@ -7,8 +7,9 @@ v1.6.2 (Release Date: TBD)
 - Inline error handling in get-serial.sh, get-device.sh and get-mountpoint.sh.
 - Unify log format in get_resources.sh.
 - Focus ps output on RSS-heavy processes for hourly resource monitoring in get_resources.sh.
-- Exclude static asset requests (CSS, JS, fonts, images) from Apache access log analysis to focus on meaningful page views.
 - Add ncal, calendar, and bsdextrautils as explicit replacements for deprecated bsdmainutils.
+- Exclude static asset requests (CSS, JS, fonts, images) from Apache access log analysis to focus on meaningful page views.
+- Split client cache percentage into static vs non-static requests in apache_calculater.py to separate asset caching from page-like traffic.
 - Adopt dearmored key under /usr/share/keyrings in gpg-import.sh and enable signed-by method.
 - Auto-detect upstream default branch and merge via a unique temp branch in git-follow-origin.sh.
 - Resolve Homebrew prefix dynamically and operate only on existing paths in fix/unfix_compinit.sh.
