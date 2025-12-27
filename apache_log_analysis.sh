@@ -21,6 +21,8 @@
 #      ./apache_log_analysis.sh /var/log/apache2/ssl_access.log
 #
 #  Version History:
+#  v2.3 2025-12-27
+#       Exclude static assets (css/js/fonts/images) from analysis counts.
 #  v2.2 2025-08-27
 #       Limit Daily Access aggregation to last year and add gdate fallback with command checks.
 #  v2.1 2025-07-30
@@ -56,6 +58,10 @@
 #       Initial release.
 #
 ########################################################################
+
+# Exclude static assets (css/js/fonts/images) from request path counting
+# Note: matched against the request path (2nd token of "$2" in -F'"' awk)
+EXCLUDE_PATH_RE='\.((css|js|map)|(woff2?|ttf|otf|eot)|(png|jpe?g|gif|svg|webp|ico|avif))([?].*)?$'
 
 # Display full script header information extracted from the top comment block
 usage() {
@@ -140,27 +146,42 @@ setup_time_window() {
     ONE_YEAR_AGO=$("$DATE_CMD" -d '1 year ago' +%s)
 }
 
+# Print log lines excluding ignored IPs and static asset requests
+filter_log_lines() {
+    # Use zgrep to cover both plain and gz logs
+    zgrep https "$LOG_FILE"* | \
+    grep -vE "$IGNORE_IPS" | \
+    awk -v ex="${EXCLUDE_PATH_RE}" -F '"' '
+        {
+            # $2: request line (e.g., GET /path HTTP/1.1)
+            split($2, a, " ")
+            if (a[2] ~ ex) next
+            print $0
+        }
+    '
+}
+
 # Analyze the log file and output various access statistics.
 analyze_logs() {
     echo "[Access Count]"
-    zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 100
+    filter_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 100
 
     echo "[Referer]"
-    zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | cut -d " " -f11 | sort | uniq -c | sort -r | head -n 100
+    filter_log_lines | cut -d " " -f11 | sort | uniq -c | sort -r | head -n 100
 
     echo "[User Agent]"
-    zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk -F '"' '{print $6}' | sort | uniq -c | sort -nr | head -n 50
+    filter_log_lines | awk -F '"' '{print $6}' | sort | uniq -c | sort -nr | head -n 50
 
     echo "[Browser]"
     for UA in MSIE Firefox Chrome Safari; do
-        COUNT=$(zgrep 'https' "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | grep "$UA" | wc -l)
+        COUNT=$(filter_log_lines | grep "$UA" | wc -l)
         echo "$UA: $COUNT"
     done
 
     echo "[Daily Access]"
     # Filter to last 1 year based on log timestamp, then aggregate per day.
     # Apache time fields: $4 = [dd/Mon/yyyy:HH:MM:SS   $5 = +ZZZZ]
-    zgrep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | \
+    filter_log_lines | \
     awk -v cutoff="${ONE_YEAR_AGO}" -v datecmd="${DATE_CMD}" '
         BEGIN {
             month["Jan"]="01"; month["Feb"]="02"; month["Mar"]="03"; month["Apr"]="04";
@@ -185,13 +206,13 @@ analyze_logs() {
     ' | LC_ALL=C sort | uniq -c
 
     echo "[Access By Time]"
-    grep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk '{print $4}' | cut -b 2-15 | sort | uniq -c
+    filter_log_lines | awk '{print $4}' | cut -b 2-15 | sort | uniq -c
 
     echo "[Recent Accesses]"
-    grep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 100
+    filter_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 100
 
     echo "[Recent Referer]"
-    grep https "$LOG_FILE"* | grep -vE "$IGNORE_IPS" | cut -d " " -f11 | sort | uniq -c | sort -r | head -n 100
+    filter_log_lines | cut -d " " -f11 | sort | uniq -c | sort -r | head -n 100
 }
 
 # Main entry point of the script
