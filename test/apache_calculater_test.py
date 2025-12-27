@@ -10,12 +10,14 @@
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - Count IP hits correctly excluding ignored IPs.
-#    - Calculate 304 cache hit percentage.
+#    - Calculate 304 cache hit percentage split into static vs non-static requests.
 #    - Validate proper log line format.
 #    - Handle .gz compressed log files.
 #    - Skip malformed or empty lines gracefully.
 #
 #  Version History:
+#  v1.1 2025-12-27
+#       Split client cache percentage into static vs non-static by excluding static assets from page-like metrics.
 #  v1.0 2025-06-24
 #       Initial test implementation.
 #
@@ -77,15 +79,16 @@ class TestApacheCalculater(unittest.TestCase):
         result = ApacheCalculater.calculateApacheIpHits(path)
         self.assertEqual(result, [("1.2.3.4", 2), ("5.6.7.8", 1)])
 
-    def test_client_cache_percentage(self):
+    def test_client_cache_percentage_split(self):
         log_lines = [
             "1.2.3.4 - - [01/Jan/2025:00:00:00 +0900] \"GET /index.html HTTP/1.1\" 200 1234",
             "5.6.7.8 - - [01/Jan/2025:00:01:00 +0900] \"GET /index.html HTTP/1.1\" 304 0",
-            "9.8.7.6 - - [01/Jan/2025:00:02:00 +0900] \"GET /index.html HTTP/1.1\" 304 0",
+            "9.8.7.6 - - [01/Jan/2025:00:02:00 +0900] \"GET /style.css HTTP/1.1\" 304 0",
         ]
         path = self.write_log(log_lines)
-        pct = ApacheCalculater.clientCachePercentage(path)
-        self.assertEqual(round(pct, 2), 66.67)
+        static_pct, nonstatic_pct = ApacheCalculater.clientCachePercentageSplit(path)
+        self.assertEqual(round(static_pct, 2), 100.0)
+        self.assertEqual(round(nonstatic_pct, 2), 50.0)
 
     def test_is_valid_log_format(self):
         valid = "192.168.1.1 - - [01/Jan/2025:00:00:00 +0900] \"GET / HTTP/1.1\" 200 100"
@@ -101,8 +104,9 @@ class TestApacheCalculater(unittest.TestCase):
         path = self.write_log(log_lines, gzip_mode=True)
         hits = ApacheCalculater.calculateApacheIpHits(path)
         self.assertEqual(sorted(hits), sorted([("2.2.2.2", 1), ("1.1.1.1", 1)]))
-        pct = ApacheCalculater.clientCachePercentage(path)
-        self.assertEqual(round(pct, 2), 50.0)
+        static_pct, nonstatic_pct = ApacheCalculater.clientCachePercentageSplit(path)
+        self.assertEqual(round(static_pct, 2), 0.0)
+        self.assertEqual(round(nonstatic_pct, 2), 50.0)
 
     def test_skip_ignored_ips(self):
         log_lines = [
