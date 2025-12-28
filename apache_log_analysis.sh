@@ -61,7 +61,7 @@
 
 # Exclude static assets (css/js/fonts/images) from request path counting
 # Note: matched against the request path (2nd token of "$2" in -F'"' awk)
-EXCLUDE_PATH_RE='\.((css|js|map)|(woff2?|ttf|otf|eot)|(png|jpe?g|gif|svg|webp|ico|avif))([?].*)?$'
+EXCLUDE_PATH_RE='[.]((css|js|map)|(woff2?|ttf|otf|eot)|(png|jpe?g|gif|svg|webp|ico|avif))([?].*)?$'
 
 # Display full script header information extracted from the top comment block
 usage() {
