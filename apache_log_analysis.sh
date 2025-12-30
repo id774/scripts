@@ -21,6 +21,8 @@
 #      ./apache_log_analysis.sh /var/log/apache2/ssl_access.log
 #
 #  Version History:
+#  v2.4 2025-12-30
+#       Redefine "Access By Time" to aggregate by hour-of-day (HH) for clearer time-of-day distribution.
 #  v2.3 2025-12-27
 #       Exclude static assets (css/js/fonts/images) from analysis counts.
 #  v2.2 2025-08-27
@@ -206,7 +208,7 @@ analyze_logs() {
     ' | LC_ALL=C sort | uniq -c
 
     echo "[Access By Time]"
-    filter_log_lines | awk '{print $4}' | cut -b 2-15 | sort | uniq -c
+    filter_log_lines | awk '{t=$4; gsub(/^\[/,"",t); split(t,a,":"); print a[2]}' | LC_ALL=C sort | uniq -c
 
     echo "[Recent Accesses]"
     filter_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 100
