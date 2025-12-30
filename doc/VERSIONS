@@ -1,8 +1,8 @@
 scripts Repository Version History
 ==================================
 
-v1.6.2 (Release Date: TBD)
---------------------------
+v1.6.2 (2025-12-31)
+-------------------
 - Add multi-language implementation policy to POLICY document.
 - Inline error handling in get-serial.sh, get-device.sh and get-mountpoint.sh.
 - Unify log format in get_resources.sh.
