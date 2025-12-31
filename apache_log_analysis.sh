@@ -209,12 +209,6 @@ analyze_logs() {
 
     echo "[Access By Time]"
     filter_log_lines | awk '{t=$4; gsub(/^\[/,"",t); split(t,a,":"); print a[2]}' | LC_ALL=C sort | uniq -c
-
-    echo "[Recent Accesses]"
-    filter_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 100
-
-    echo "[Recent Referer]"
-    filter_log_lines | cut -d " " -f11 | sort | uniq -c | sort -r | head -n 100
 }
 
 # Main entry point of the script
