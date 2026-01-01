@@ -173,7 +173,7 @@ run_check_scripts() {
 
 # Run header documentation consistency check if available
 run_check_header_doc() {
-    # Require a Python interpreter path (reuse first_python_version used for compatibility check)
+    # Require a Python interpreter path (reuse first_python_version from the test loop)
     if [ -z "$first_python_version" ]; then
         return 0
     fi
@@ -194,6 +194,11 @@ run_check_header_doc() {
 
 # Perform Python compatibility check
 run_compatibility_check() {
+    # Require a Python interpreter path (reuse first_python_version from the test loop)
+    if [ -z "$first_python_version" ]; then
+        return 0
+    fi
+
     echo "=== Checking Python compatibility with Python $first_python_version. ===" >> "$JOBLOG" 2>&1
     "/opt/python/$first_python_version/bin/python" "$SCRIPTS/find_pycompat.py" "$SCRIPTS" >> "$JOBLOG" 2>&1
     result=$?
@@ -255,10 +260,8 @@ main() {
 
     run_check_scripts
     run_check_header_doc
+    run_compatibility_check
 
-    if [ ! -z "$first_python_version" ]; then
-        run_compatibility_check
-    fi
     finalize
 
     if [ -n "$ADMIN_MAIL_ADDRESS" ]; then
