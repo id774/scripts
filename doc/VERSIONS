@@ -1,6 +1,10 @@
 scripts Repository Version History
 ==================================
 
+v1.6.3 (Release Date: TBD)
+--------------------------
+- Add check_header_doc.py to detect missing comment markers in header documentation blocks.
+
 v1.6.2 (2025-12-31)
 -------------------
 - Add multi-language implementation policy to POLICY document.
