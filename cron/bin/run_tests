@@ -7,7 +7,8 @@
 #  This script automates the process of running tests for projects developed
 #  in Python and Ruby. It loads configuration settings from an external
 #  configuration file, iterates through specified versions of Python and Ruby
-#  to run tests, and performs a compatibility check using the first Python
+#  to run tests, runs repository-wide script and header validation checks,
+#  and performs a compatibility check using the first Python
 #  version in the loop. It is intended to be executed automatically via cron
 #  jobs and sends a summary email to an administrator upon completion.
 #
@@ -39,6 +40,8 @@
 #  Notes:
 #  - The script is designed to be run in environments where Python and Ruby
 #    are used for development and testing.
+#  - In addition to language-specific tests, the script enforces repository-wide
+#    quality gates by running shell script validation and header documentation checks.
 #  - Ensure the specified Python and Ruby versions are installed and accessible.
 #  - This script is typically deployed to /etc/cron.exec/run_tests and run by cron.
 #
@@ -49,6 +52,9 @@
 #  4. Configuration variables not set.
 #
 #  Version History:
+#  v2.6 2026-01-02
+#       Add header documentation consistency check (check_header_doc.py -a)
+#       after shell script validation to enforce repository-wide header policy.
 #  v2.5 2025-07-30
 #       Update path references for system deployment under /etc/cron.exec and /etc/cron.config.
 #  v2.4 2025-06-23
@@ -165,6 +171,27 @@ run_check_scripts() {
     fi
 }
 
+# Run header documentation consistency check if available
+run_check_header_doc() {
+    # Require a Python interpreter path (reuse first_python_version used for compatibility check)
+    if [ -z "$first_python_version" ]; then
+        return 0
+    fi
+
+    if [ -f "$SCRIPTS/check_header_doc.py" ]; then
+        echo >> "$JOBLOG" 2>&1
+        echo "=== Running check_header_doc.py -a for header documentation validation. ===" >> "$JOBLOG" 2>&1
+        "/opt/python/$first_python_version/bin/python" "$SCRIPTS/check_header_doc.py" -a >> "$JOBLOG" 2>&1
+        result=$?
+        if [ "$result" -ge 1 ]; then
+            echo "[WARN] Header documentation inspection reported issues. Check logs for details." >> "$JOBLOG" 2>&1
+        else
+            echo "[INFO] Header documentation inspection completed successfully." >> "$JOBLOG" 2>&1
+        fi
+        echo >> "$JOBLOG" 2>&1
+    fi
+}
+
 # Perform Python compatibility check
 run_compatibility_check() {
     echo "=== Checking Python compatibility with Python $first_python_version. ===" >> "$JOBLOG" 2>&1
@@ -227,6 +254,8 @@ main() {
     done
 
     run_check_scripts
+    run_check_header_doc
+
     if [ ! -z "$first_python_version" ]; then
         run_compatibility_check
     fi
