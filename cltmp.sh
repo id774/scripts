@@ -15,7 +15,7 @@
 #  "practically persistent" data in $HOME/.cache are considered nonconforming; this
 #  script does not preserve such data. Running this script may increase startup time
 #  or trigger re-downloads/rebuilds as caches are regenerated.
-
+#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
