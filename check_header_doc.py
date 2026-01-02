@@ -4,6 +4,11 @@
 # check_header_doc.py: Header Documentation Consistency Checker
 #
 #  Description:
+#  This tool enforces a repository-wide header documentation policy.
+#  It scans files under a specified root directory without relying on
+#  any VCS metadata, and reports violations in a grep-friendly format
+#  suitable for CI and cron-based quality gates.
+#
 #  This script scans files under a target directory and checks the header
 #  documentation block bounded by separator lines (e.g., "########...").
 #  It detects missing comment markers inside that header block—specifically,
@@ -27,6 +32,11 @@
 #      -a, --all-files: Check all files under root (not only sh/python/ruby scripts).
 #      -q, --quiet:     Quiet mode; only prints file:line hits (no header text).
 #      -v, --version:   Show version and exit.
+#
+#  Notes:
+#  - This script does not depend on Git and works in non-repository directories.
+#  - When violations are found in readable files, diagnostic lines are printed.
+#  - Intended to be used as a mandatory quality gate in automated test pipelines.
 #
 #  Example:
 #      python check_header_doc.py -a --root /path/to/repo

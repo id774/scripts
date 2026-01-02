@@ -7,7 +7,8 @@
 #  This script tests the header documentation consistency checker.
 #  It verifies that blank lines inside the header doc block (between the
 #  first and second separator lines) are detected, and that content outside
-#  the header doc block is ignored. It also tests quiet mode and --all-files.
+#  the header doc block is ignored. It also tests quiet mode, --all-files,
+#  and directory scanning via --root.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -25,6 +26,10 @@
 #        Confirms that quiet mode prints only "file:line".
 #    - test_main_all_files_includes_non_script_extension:
 #        Confirms that --all-files checks non-script extensions under --root and reports issues.
+#    - test_main_invalid_root_directory:
+#        Confirms that specifying a non-existent --root directory results in an error exit.
+#    - test_directory_scan_without_vcs_dependency:
+#        Confirms that files are scanned via filesystem traversal under --root without relying on Git.
 #
 #  Version History:
 #  v1.0 2026-01-02
@@ -140,6 +145,50 @@ class TestCheckHeaderDoc(unittest.TestCase):
                 argv_old = sys.argv[:]
                 try:
                     sys.argv = ["check_header_doc.py", "--all-files", "--root", d]
+                    rc = check_header_doc.main()
+                finally:
+                    sys.argv = argv_old
+
+            out = buf.getvalue()
+            self.assertEqual(rc, 1)
+            self.assertIn("blank line inside header doc", out)
+
+    def test_main_invalid_root_directory(self):
+        buf_out = io.StringIO()
+        buf_err = io.StringIO()
+
+        with contextlib.redirect_stdout(buf_out), contextlib.redirect_stderr(buf_err):
+            argv_old = sys.argv[:]
+            try:
+                sys.argv = ["check_header_doc.py", "--root", "/path/does/not/exist"]
+                rc = check_header_doc.main()
+            finally:
+                sys.argv = argv_old
+
+        self.assertEqual(rc, 2)
+        self.assertIn("root directory not found", buf_err.getvalue())
+
+    def test_directory_scan_without_vcs_dependency(self):
+        content = (
+            "#!/usr/bin/env python\n"
+            "########################################################################\n"
+            "# test: header\n"
+            "\n"  # missing "#"
+            "# ok\n"
+            "########################################################################\n"
+            "print('ok')\n"
+        )
+
+        with tempfile.TemporaryDirectory() as d:
+            fname = os.path.join(d, "script")  # no extension
+            with open(fname, "w", encoding="utf-8") as f:
+                f.write(content)
+
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                argv_old = sys.argv[:]
+                try:
+                    sys.argv = ["check_header_doc.py", "--root", d]
                     rc = check_header_doc.main()
                 finally:
                     sys.argv = argv_old
