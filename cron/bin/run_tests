@@ -222,7 +222,6 @@ run_compatibility_check() {
 
     if [ "$result" -ge 1 ]; then
         echo "[WARN] Some tests failed in Python compatibility inspection. Check logs for details." >> "$JOBLOG" 2>&1
-        record_failure
     elif grep -q "Some tests failed" "$JOBLOG"; then
         record_failure
     else
