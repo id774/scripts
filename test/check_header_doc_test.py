@@ -24,7 +24,7 @@
 #    - test_check_file_quiet_mode_format:
 #        Confirms that quiet mode prints only "file:line".
 #    - test_main_all_files_includes_non_script_extension:
-#        Confirms that --all-files checks non-script extensions and reports issues.
+#        Confirms that --all-files checks non-script extensions under --root and reports issues.
 #
 #  Version History:
 #  v1.0 2026-01-02
@@ -43,7 +43,6 @@ import io
 import subprocess
 import tempfile
 import unittest
-from unittest.mock import patch
 
 import check_header_doc
 
@@ -132,30 +131,22 @@ class TestCheckHeaderDoc(unittest.TestCase):
         )
 
         with tempfile.TemporaryDirectory() as d:
-            old_cwd = os.getcwd()
-            try:
-                os.chdir(d)
+            fname = os.path.join(d, "note.txt")
+            with open(fname, "w", encoding="utf-8") as f:
+                f.write(content)
 
-                fname = "note.txt"
-                with open(fname, "w", encoding="utf-8") as f:
-                    f.write(content)
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf):
+                argv_old = sys.argv[:]
+                try:
+                    sys.argv = ["check_header_doc.py", "--all-files", "--root", d]
+                    rc = check_header_doc.main()
+                finally:
+                    sys.argv = argv_old
 
-                # Patch git ls-files to return our file
-                with patch("subprocess.check_output", return_value=fname + "\n"):
-                    buf = io.StringIO()
-                    with contextlib.redirect_stdout(buf):
-                        argv_old = sys.argv[:]
-                        try:
-                            sys.argv = ["check_header_doc.py", "--all-files"]
-                            rc = check_header_doc.main()
-                        finally:
-                            sys.argv = argv_old
-
-                    out = buf.getvalue()
-                    self.assertEqual(rc, 1)
-                    self.assertIn("blank line inside header doc", out)
-            finally:
-                os.chdir(old_cwd)
+            out = buf.getvalue()
+            self.assertEqual(rc, 1)
+            self.assertIn("blank line inside header doc", out)
 
 
 if __name__ == '__main__':

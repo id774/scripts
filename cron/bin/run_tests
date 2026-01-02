@@ -110,6 +110,11 @@ is_joblog_writable() {
     fi
 }
 
+# Mark overall failure in a grep-friendly way
+record_failure() {
+    echo "[WARN] Some tests failed. Check logs for details." >> "$JOBLOG" 2>&1
+}
+
 # Determine the script's directory and load configuration
 initialize() {
     if ! is_running_from_cron; then
@@ -153,6 +158,11 @@ run_tests() {
         echo "=== Running Tests with Python $python_version only. ===" >> "$JOBLOG" 2>&1
         "$SCRIPTS/run_tests.sh" "/opt/python/$python_version/bin/python" >> "$JOBLOG" 2>&1
     fi
+    result=$?
+
+    if [ "$result" -ge 1 ]; then
+        record_failure
+    fi
 }
 
 # Run shell script validation if available
@@ -162,6 +172,7 @@ run_check_scripts() {
         echo "=== Running check_scripts.sh for shell script validation. ===" >> "$JOBLOG" 2>&1
         "$SCRIPTS/test/check_scripts.sh" >> "$JOBLOG" 2>&1
         result=$?
+
         if [ "$result" -ge 1 ]; then
             echo "[WARN] Some tests failed in shell script tests. Check logs for details." >> "$JOBLOG" 2>&1
         else
@@ -181,10 +192,11 @@ run_check_header_doc() {
     if [ -f "$SCRIPTS/check_header_doc.py" ]; then
         echo >> "$JOBLOG" 2>&1
         echo "=== Running check_header_doc.py -a for header documentation validation. ===" >> "$JOBLOG" 2>&1
-        "/opt/python/$first_python_version/bin/python" "$SCRIPTS/check_header_doc.py" -a >> "$JOBLOG" 2>&1
+        "/opt/python/$first_python_version/bin/python" "$SCRIPTS/check_header_doc.py" -a --root "$SCRIPTS" >> "$JOBLOG" 2>&1
         result=$?
+
         if [ "$result" -ge 1 ]; then
-            echo "[WARN] Header documentation inspection reported issues. Check logs for details." >> "$JOBLOG" 2>&1
+            echo "[WARN] Some tests failed in Header documentation inspection. Check logs for details." >> "$JOBLOG" 2>&1
         else
             echo "[INFO] Header documentation inspection completed successfully." >> "$JOBLOG" 2>&1
         fi
@@ -199,14 +211,20 @@ run_compatibility_check() {
         return 0
     fi
 
+    if [ ! -f "$SCRIPTS/find_pycompat.py" ]; then
+        record_failure
+        return 1
+    fi
+
     echo "=== Checking Python compatibility with Python $first_python_version. ===" >> "$JOBLOG" 2>&1
     "/opt/python/$first_python_version/bin/python" "$SCRIPTS/find_pycompat.py" "$SCRIPTS" >> "$JOBLOG" 2>&1
     result=$?
 
     if [ "$result" -ge 1 ]; then
-        echo "[WARN] Python compatibility inspection failed. Check logs for details." >> "$JOBLOG" 2>&1
+        echo "[WARN] Some tests failed in Python compatibility inspection. Check logs for details." >> "$JOBLOG" 2>&1
+        record_failure
     elif grep -q "Some tests failed" "$JOBLOG"; then
-        echo "[WARN] Some tests failed. Check logs for details." >> "$JOBLOG" 2>&1
+        record_failure
     else
         echo "[INFO] All tests completed successfully for all versions." >> "$JOBLOG" 2>&1
     fi

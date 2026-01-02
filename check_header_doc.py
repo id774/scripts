@@ -4,7 +4,7 @@
 # check_header_doc.py: Header Documentation Consistency Checker
 #
 #  Description:
-#  This script scans Git-tracked shell scripts and checks the header
+#  This script scans files under a target directory and checks the header
 #  documentation block bounded by separator lines (e.g., "########...").
 #  It detects missing comment markers inside that header block—specifically,
 #  blank lines that should be written as a comment line "#".
@@ -23,21 +23,21 @@
 #      python check_header_doc.py [options]
 #
 #  Options:
-#      -a, --all-files: Check all Git-tracked files (not only *.sh / shebang "sh").
+#      -R, --root:      Root directory to scan (default: current directory).
+#      -a, --all-files: Check all files under root (not only sh/python/ruby scripts).
 #      -q, --quiet:     Quiet mode; only prints file:line hits (no header text).
 #      -v, --version:   Show version and exit.
 #
 #  Example:
-#      python check_header_doc.py
+#      python check_header_doc.py -a --root /path/to/repo
 #
 #  Requirements:
 #  - Python Version: 3.3 or later
-#  - Git (git ls-files)
 #
 #  Exit Status:
 #  - 0: No issues found
 #  - 1: Issues found
-#  - 2: Fatal error (e.g., cannot run git)
+#  - 2: Fatal error (e.g., cannot scan root directory)
 #  - 9: Unsupported Python version
 #
 #  Version History:
@@ -48,14 +48,10 @@
 
 import os
 import re
-import subprocess
 import sys
 from optparse import OptionParser
-from pathlib import Path
 
 SEP_RE = re.compile(r"^#{20,}\s*$")
-TARGET_EXTENSIONS = {".sh", ".py", ".rb"}
-TARGET_SHEBANGS = ("sh", "bash", "python", "ruby")
 
 
 def usage():
@@ -81,27 +77,14 @@ def usage():
     sys.exit(0)
 
 
-def run_git_ls_files():
-    """Return Git-tracked file paths via `git ls-files`."""
-    try:
-        out = subprocess.check_output(["git", "ls-files"], text=True, errors="replace")
-    except Exception as e:
-        raise RuntimeError("git ls-files failed: %s" % str(e))
-    return [line.strip() for line in out.splitlines() if line.strip()]
-
-
-def looks_like_target_script(path, check_all_files):
-    """Decide whether the file should be checked (sh / python / ruby)."""
-    if check_all_files:
-        return True
-
-    p = Path(path)
-
-    if p.suffix in TARGET_EXTENSIONS:
+def looks_like_script(path):
+    """Decide whether the file should be checked as a script (sh/python/ruby)."""
+    _, ext = os.path.splitext(path)
+    if ext in (".sh", ".py", ".rb"):
         return True
 
     try:
-        with p.open("r", encoding="utf-8", errors="replace") as f:
+        with open(path, "r", encoding="utf-8", errors="replace") as f:
             first = f.readline()
     except OSError:
         return False
@@ -109,7 +92,22 @@ def looks_like_target_script(path, check_all_files):
     if not first.startswith("#!"):
         return False
 
-    return any(lang in first for lang in TARGET_SHEBANGS)
+    # Keep this conservative.
+    return ("sh" in first) or ("python" in first) or ("ruby" in first)
+
+
+def iter_files(root_dir, check_all_files):
+    """Yield file paths under root_dir (no VCS dependency)."""
+    for dirpath, dirnames, filenames in os.walk(root_dir):
+        # Skip common noise directories
+        dirnames[:] = [d for d in dirnames if d not in (".git", ".svn", ".hg", "__pycache__", ".venv", "venv")]
+        for name in filenames:
+            path = os.path.join(dirpath, name)
+            if check_all_files:
+                yield path
+            else:
+                if looks_like_script(path):
+                    yield path
 
 
 def find_header_bounds(lines):
@@ -140,12 +138,12 @@ def check_file(path, quiet_mode):
     Check a single file and return list of hits (strings).
     Detect blank lines inside the header block (between first and second separators).
     """
-    p = Path(path)
-    if not p.is_file():
+    if not os.path.isfile(path):
         return []
 
     try:
-        raw = p.read_text(encoding="utf-8", errors="replace")
+        with open(path, "r", encoding="utf-8", errors="replace") as f:
+            raw = f.read()
     except OSError:
         return []
 
@@ -162,7 +160,7 @@ def check_file(path, quiet_mode):
             lineno = idx + 1
             hits.append(
                 format_hit(
-                    str(p),
+                    path,
                     lineno,
                     "blank line inside header doc (missing '#')",
                     quiet_mode,
@@ -178,7 +176,9 @@ def main():
     parser = OptionParser("usage: %prog [options]")
     parser.add_option("-v", "--version", help="show the version and exit",
                       action="store_true", dest="version")
-    parser.add_option("-a", "--all-files", help="check all git-tracked files",
+    parser.add_option("-R", "--root", help="root directory to scan",
+                      action="store", type="string", dest="root_dir")
+    parser.add_option("-a", "--all-files", help="check all files",
                       action="store_true", dest="all_files")
     parser.add_option("-q", "--quiet", help="quiet mode (only file:line)",
                       action="store_true", dest="quiet_mode")
@@ -188,16 +188,13 @@ def main():
         print("check_header_doc.py v1.0")
         return 0
 
-    try:
-        files = run_git_ls_files()
-    except RuntimeError as e:
-        print("[ERROR] %s" % str(e), file=sys.stderr)
+    root_dir = options.root_dir or os.getcwd()
+    if not os.path.isdir(root_dir):
+        print("[ERROR] root directory not found: %s" % root_dir, file=sys.stderr)
         return 2
 
     all_hits = []
-    for path in files:
-        if not looks_like_target_script(path, options.all_files):
-            continue
+    for path in iter_files(root_dir, options.all_files):
         all_hits.extend(check_file(path, options.quiet_mode))
 
     for line in all_hits:
