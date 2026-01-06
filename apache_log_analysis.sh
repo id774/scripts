@@ -16,11 +16,19 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./apache_log_analysis.sh [log_file_path]
+#      ./apache_log_analysis.sh [options] [log_file_path]
 #  Example:
 #      ./apache_log_analysis.sh /var/log/apache2/ssl_access.log
+#      ./apache_log_analysis.sh -n 200 /var/log/apache2/ssl_access.log
+#      ./apache_log_analysis.sh --all /var/log/apache2/ssl_access.log
+#
+#  Options:
+#      -n, --top N: Limit "Access Count" and "Referer" output to top N entries (default: 100). Use 0 for no limit.
+#      -a, --all:   No output limit for "Access Count" and "Referer" (same as -n 0).
 #
 #  Version History:
+#  v2.5 2026-01-06
+#       Add configurable output limit for "Access Count" and "Referer" (default top 100, adjustable, or no limit).
 #  v2.4 2025-12-30
 #       Redefine "Access By Time" to aggregate by hour-of-day (HH) for clearer time-of-day distribution.
 #  v2.3 2025-12-27
@@ -163,13 +171,23 @@ filter_log_lines() {
     '
 }
 
+# Print lines with optional top-N limitation.
+print_top() {
+    if [ "$NO_LIMIT" -eq 1 ] || [ "$TOP_N" -eq 0 ]; then
+        cat
+        return 0
+    fi
+    head -n "$TOP_N"
+    return 0
+}
+
 # Analyze the log file and output various access statistics.
 analyze_logs() {
     echo "[Access Count]"
-    filter_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | head -n 100
+    filter_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | print_top
 
     echo "[Referer]"
-    filter_log_lines | cut -d " " -f11 | sort | uniq -c | sort -r | head -n 100
+    filter_log_lines | cut -d " " -f11 | sort | uniq -c | sort -r | print_top
 
     echo "[User Agent]"
     filter_log_lines | awk -F '"' '{print $6}' | sort | uniq -c | sort -nr | head -n 50
@@ -213,15 +231,61 @@ analyze_logs() {
 
 # Main entry point of the script
 main() {
-    case "$1" in
-        -h|--help|-v|--version) usage ;;
-    esac
+    TOP_N=100
+    NO_LIMIT=0
+
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            -h|--help|-v|--version)
+                usage
+                ;;
+            -a|--all)
+                NO_LIMIT=1
+                TOP_N=0
+                shift
+                ;;
+            -n|--top)
+                if [ "$#" -lt 2 ]; then
+                    echo "[ERROR] Option '$1' requires an argument." >&2
+                    exit 2
+                fi
+                TOP_N=$2
+                shift 2
+                ;;
+            --top=*)
+                TOP_N=${1#*=}
+                shift
+                ;;
+            --)
+                shift
+                break
+                ;;
+            -*)
+                echo "[ERROR] Unknown option: $1" >&2
+                exit 2
+                ;;
+            *)
+                break
+                ;;
+        esac
+    done
 
     if [ "$#" -eq 0 ]; then
         usage
     fi
 
-    check_commands grep zgrep awk cut sort uniq wc paste uname
+    case "$TOP_N" in
+        ''|*[!0-9]*)
+            echo "[ERROR] Invalid value for --top: $TOP_N (must be a non-negative integer)." >&2
+            exit 2
+            ;;
+    esac
+
+    if [ "$TOP_N" -eq 0 ]; then
+        NO_LIMIT=1
+    fi
+
+    check_commands grep zgrep awk cut sort uniq wc paste uname cat head
 
     LOG_FILE=$1
 
