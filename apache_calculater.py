@@ -28,6 +28,9 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v2.0 2026-01-06
+#       Fix ignore list lookup order description, unify common filtering/parsing,
+#       robustly extract status from combined log, and strengthen IPv4 validation.
 #  v1.9 2025-12-27
 #       Split client cache percentage into static vs non-static by excluding static assets from page-like metrics.
 #  v1.8 2025-07-30
@@ -103,6 +106,42 @@ class ApacheCalculater(object):
             return ""
         return tokens[1]
 
+    @staticmethod
+    def extractStatusCode(line):
+        """
+        Extract HTTP status code from a typical Apache combined log line.
+        Returns empty string on failure.
+        """
+        parts = line.split('"')
+        if len(parts) < 3:
+            return ""
+        tail = parts[2].lstrip()
+        if not tail:
+            return ""
+        tokens = tail.split()
+        if not tokens:
+            return ""
+        return tokens[0]
+
+    @staticmethod
+    def isValidIPv4(ip):
+        """
+        Validate IPv4 address without external dependencies (Python 3.1 compatible).
+        """
+        if not ip:
+            return False
+        parts = ip.split(".")
+        if len(parts) != 4:
+            return False
+        for p in parts:
+            if p == "" or not p.isdigit():
+                return False
+            # Avoid octet overflow; allow leading zeros
+            n = int(p, 10)
+            if n < 0 or n > 255:
+                return False
+        return True
+
     @classmethod
     def isStaticAssetRequest(cls, line):
         """
@@ -140,7 +179,7 @@ class ApacheCalculater(object):
         """
         ignore_ips = set({"127.0.0.1"})  # Default value
 
-        # Search in this order: /etc/cron.config, ./etc/, ../etc/
+        # Search in this order: ./etc/, ../etc/, /etc/cron.config
         candidate_paths = [
             os.path.join(os.getcwd(), "etc", "apache_ignore.list"),
             os.path.join(os.path.dirname(__file__), "..", "etc", "apache_ignore.list"),
@@ -152,9 +191,12 @@ class ApacheCalculater(object):
                 try:
                     with open(ignore_file, "r") as file:
                         for line in file:
-                            stripped_line = line.strip()
-                            if stripped_line and not stripped_line.startswith("#"):
-                                ignore_ips.add(stripped_line)
+                            raw = line.split("#", 1)[0].strip()
+                            if not raw:
+                                continue
+                            ip = raw.split()[0]
+                            if ip:
+                                ignore_ips.add(ip)
                     break
                 except Exception:
                     continue  # Skip unreadable files
@@ -172,7 +214,9 @@ class ApacheCalculater(object):
         Returns:
             file object: Opened file object.
         """
-        return gzip.open(log, "rt") if log.endswith(".gz") else open(log, "rt")
+        if log.endswith(".gz"):
+            return gzip.open(log, "rt", encoding="utf-8", errors="replace")
+        return open(log, "rt", encoding="utf-8", errors="replace")
 
     @classmethod
     def calculateApacheIpHits(cls, log):
@@ -190,7 +234,7 @@ class ApacheCalculater(object):
 
         for line in cls.iterFilteredLines(log, ignore_ips):
             ip = line.split(" ", 1)[0]
-            if 6 < len(ip) <= 15:  # Validate the length of the IP address
+            if cls.isValidIPv4(ip):
                 ipHitListing[ip] = ipHitListing.get(ip, 0) + 1
 
         return sorted(ipHitListing.items(), reverse=True, key=lambda x: x[1])
@@ -211,10 +255,10 @@ class ApacheCalculater(object):
         total_nonstatic, cached_nonstatic = 0, 0
 
         for line in cls.iterFilteredLines(log, ignore_ips):
-            fields = line.split(" ")
-            if len(fields) < 9:
+            status = cls.extractStatusCode(line)
+            if not status:
                 continue
-            is_cached = (fields[8] == "304")
+            is_cached = (status == "304")
 
             if cls.isStaticAssetRequest(line):
                 total_static += 1
@@ -240,8 +284,11 @@ class ApacheCalculater(object):
         Returns:
             bool: True if the line follows the basic format, False otherwise.
         """
-        # Basic pattern: IP followed by at least two spaces and some more text
-        pattern = r'^\d{1,3}(\.\d{1,3}){3}\s+\S+'
+        ip = line.split(" ", 1)[0]
+        if not cls.isValidIPv4(ip):
+            return False
+        # Basic continuation check: IP followed by at least one space and some more text
+        pattern = r'^\S+\s+\S+'
         return re.match(pattern, line) is not None
 
 def main():
