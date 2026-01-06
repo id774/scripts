@@ -29,6 +29,7 @@
 #  Version History:
 #  v2.5 2026-01-06
 #       Add configurable output limit for "Access Count" and "Referer" (default top 100, adjustable, or no limit).
+#       Fix log filtering to avoid dropping most lines, use safer ignore matching, and parse referer more robustly.
 #  v2.4 2025-12-30
 #       Redefine "Access By Time" to aggregate by hour-of-day (HH) for clearer time-of-day distribution.
 #  v2.3 2025-12-27
@@ -125,11 +126,9 @@ load_ignore_list() {
         fi
     done
 
-    if [ -n "$IGNORE_FILE" ]; then
-        IGNORE_IPS=$(awk '!/^#/ && NF' "$IGNORE_FILE" | paste -sd "|" -)
-    else
-        IGNORE_IPS="127.0.0.1"
-        echo "[WARN] Ignore file not found. Using default ignore IP: $IGNORE_IPS" >&2
+    IGNORE_DEFAULT_IP="127.0.0.1"
+    if [ -z "$IGNORE_FILE" ]; then
+        echo "[WARN] Ignore file not found. Using default ignore IP: $IGNORE_DEFAULT_IP" >&2
     fi
 }
 
@@ -153,22 +152,40 @@ setup_time_window() {
         exit 2
     fi
 
-    ONE_YEAR_AGO=$("$DATE_CMD" -d '1 year ago' +%s)
+    CUTOFF_YMD=$("$DATE_CMD" -d '1 year ago' +%Y-%m-%d)
 }
 
 # Print log lines excluding ignored IPs and static asset requests
 filter_log_lines() {
     # Use zgrep to cover both plain and gz logs
-    zgrep https "$LOG_FILE"* | \
-    grep -vE "$IGNORE_IPS" | \
-    awk -v ex="${EXCLUDE_PATH_RE}" -F '"' '
+    IGNORE_FILE_USE=${IGNORE_FILE:-/dev/null}
+    zgrep -h -e '' "$LOG_FILE"* | \
+    awk -v ex="${EXCLUDE_PATH_RE}" -v default_ip="${IGNORE_DEFAULT_IP}" -F '"' '
+        FNR==NR {
+            line = $0
+            sub(/#.*/, "", line)
+            gsub(/^[[:space:]]+/, "", line)
+            gsub(/[[:space:]]+$/, "", line)
+            if (line == "") next
+            split(line, f, /[[:space:]]+/)
+            if (f[1] == "") next
+            ignore[f[1]] = 1
+            next
+        }
+        BEGIN {
+            ignore[default_ip] = 1
+        }
         {
+            # Exclude ignored IPs (fixed-string match on the first field)
+            ip = $1
+            if (ip in ignore) next
+
             # $2: request line (e.g., GET /path HTTP/1.1)
             split($2, a, " ")
             if (a[2] ~ ex) next
             print $0
         }
-    '
+    ' "$IGNORE_FILE_USE" -
 }
 
 # Print lines with optional top-N limitation.
@@ -187,7 +204,7 @@ analyze_logs() {
     filter_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | print_top
 
     echo "[Referer]"
-    filter_log_lines | cut -d " " -f11 | sort | uniq -c | sort -r | print_top
+    filter_log_lines | awk -F '"' '{print $4}' | sort | uniq -c | sort -nr | print_top
 
     echo "[User Agent]"
     filter_log_lines | awk -F '"' '{print $6}' | sort | uniq -c | sort -nr | head -n 50
@@ -199,10 +216,10 @@ analyze_logs() {
     done
 
     echo "[Daily Access]"
-    # Filter to last 1 year based on log timestamp, then aggregate per day.
+    # Filter to last 1 year by YYYY-MM-DD derived from log timestamp, then aggregate per day.
     # Apache time fields: $4 = [dd/Mon/yyyy:HH:MM:SS   $5 = +ZZZZ]
     filter_log_lines | \
-    awk -v cutoff="${ONE_YEAR_AGO}" -v datecmd="${DATE_CMD}" '
+    awk -v cutoff_ymd="${CUTOFF_YMD}" '
         BEGIN {
             month["Jan"]="01"; month["Feb"]="02"; month["Mar"]="03"; month["Apr"]="04";
             month["May"]="05"; month["Jun"]="06"; month["Jul"]="07"; month["Aug"]="08";
@@ -212,16 +229,9 @@ analyze_logs() {
             t1=$4; gsub(/^\[/,"",t1);            # dd/Mon/yyyy:HH:MM:SS
             t2=$5; gsub(/\]$/,"",t2);            # +ZZZZ
             if (t1 == "" || t2 == "") next;
-            # Build "dd Mon yyyy HH:MM:SS +ZZZZ" for GNU date
             split(t1, a, /[:\/]/);               # a1=dd a2=Mon a3=yyyy a4=HH a5=MM a6=SS
-            ts = a[1] " " a[2] " " a[3] " " a[4] ":" a[5] ":" a[6] " " t2
-            cmd = datecmd " -d \"" ts "\" +%s"
-            cmd | getline epoch
-            close(cmd)
-            if (epoch >= cutoff) {
-                ymd = a[3] "-" month[a[2]] "-" a[1]   # ISO形式で安定ソート
-                print ymd
-            }
+            ymd = a[3] "-" month[a[2]] "-" a[1]  # Sort by ISO format
+            if (ymd >= cutoff_ymd) print ymd
         }
     ' | LC_ALL=C sort | uniq -c
 
@@ -285,7 +295,7 @@ main() {
         NO_LIMIT=1
     fi
 
-    check_commands grep zgrep awk cut sort uniq wc paste uname cat head
+    check_commands grep zgrep awk sort uniq wc paste uname cat head
 
     LOG_FILE=$1
 
