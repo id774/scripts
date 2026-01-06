@@ -23,6 +23,8 @@
 #      45 3 * * * root /path/to/apache_log_analysis
 #
 #  Version History:
+#  v1.4 2026-01-06
+#       Run apache_log_analysis.sh with -n 0 to remove top-N limits in cron logs.
 #  v1.3 2025-07-30
 #       Update documentation to reflect move from /etc/cron.daily to /etc/cron.exec.
 #  v1.2 2025-06-23
@@ -86,7 +88,7 @@ initialize() {
 call_main_scripts() {
     if [ -x "$SCRIPT1" ]; then
         echo "[INFO] Executing: $SCRIPT1 on $ACCESS_LOG" >> "$JOBLOG" 2>&1
-        "$SCRIPT1" "$ACCESS_LOG" >> "$JOBLOG" 2>&1
+        "$SCRIPT1" -n 0 "$ACCESS_LOG" >> "$JOBLOG" 2>&1
     else
         echo "[WARN] Log summary script not found: $SCRIPT1" >> "$JOBLOG" 2>&1
     fi
