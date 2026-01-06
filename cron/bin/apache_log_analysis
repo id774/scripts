@@ -25,6 +25,8 @@
 #  Version History:
 #  v1.4 2026-01-06
 #       Run apache_log_analysis.sh with -n 0 to remove top-N limits in cron logs.
+#       Skip rotated-log IP analysis when ssl_access.log.1 is missing and
+#       avoid misleading "Recent" labeling for rotated logs.
 #  v1.3 2025-07-30
 #       Update documentation to reflect move from /etc/cron.daily to /etc/cron.exec.
 #  v1.2 2025-06-23
@@ -94,9 +96,13 @@ call_main_scripts() {
     fi
 
     if [ -x "$SCRIPT2" ]; then
-        echo "[INFO] Executing: $SCRIPT2 on $ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
-        echo "[Recent IP Hits]" >> "$JOBLOG" 2>&1
-        "$SCRIPT2" "$ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
+        if [ -f "$ACCESS_LOG_ROTATED" ]; then
+            echo "[INFO] Executing: $SCRIPT2 on $ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
+            echo "[IP Hits: Rotated Log ($ACCESS_LOG_ROTATED)]" >> "$JOBLOG" 2>&1
+            "$SCRIPT2" "$ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
+        else
+            echo "[WARN] Rotated access log not found: $ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
+        fi
     else
         echo "[WARN] IP analysis script not found: $SCRIPT2" >> "$JOBLOG" 2>&1
     fi

@@ -4,6 +4,7 @@ scripts Repository Version History
 v1.6.3 (Release Date: TBD)
 --------------------------
 - Add check_header_doc.py to detect missing comment markers in header documentation blocks.
+- Make apache_log_analysis wrapper tolerant of missing rotated logs and clarify rotated-log IP hit labeling.
 - Make apache log summaries configurable for top-N output and remove limits in cron execution.
 - Fix apache_log_analysis.sh filtering and parsing to prevent skewed summaries (remove https-only input, safer ignore matching, robust referer extraction).
 - Fix apache_calculater.py ignore list parsing and combined-log field extraction to keep IP hits and cache rates accurate.
