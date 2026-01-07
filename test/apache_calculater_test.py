@@ -10,12 +10,15 @@
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - Count IP hits correctly excluding ignored IPs.
+#    - Format IP hit output as one IP per line for human-readable display.
 #    - Calculate 304 cache hit percentage split into static vs non-static requests.
 #    - Validate proper log line format.
 #    - Handle .gz compressed log files.
 #    - Skip malformed or empty lines gracefully.
 #
 #  Version History:
+#  v1.2 2026-01-07
+#       Add tests for human-readable IP hit output formatting.
 #  v1.1 2025-12-27
 #       Split client cache percentage into static vs non-static by excluding static assets from page-like metrics.
 #  v1.0 2025-06-24
@@ -23,7 +26,9 @@
 #
 ########################################################################
 
+import contextlib
 import gzip
+import io
 import os
 import subprocess
 import sys
@@ -33,7 +38,7 @@ import unittest
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from apache_calculater import ApacheCalculater
+from apache_calculater import ApacheCalculater, printIpHits
 
 
 class TestApacheCalculater(unittest.TestCase):
@@ -116,6 +121,43 @@ class TestApacheCalculater(unittest.TestCase):
         path = self.write_log(log_lines)
         result = ApacheCalculater.calculateApacheIpHits(path)
         self.assertEqual(result, [("8.8.8.8", 1)])
+
+    def test_skip_malformed_or_empty_lines(self):
+        log_lines = [
+            "",  # empty
+            "garbage line with no IP",  # malformed
+            "999.999.999.999 - - [01/Jan/2025:00:00:00 +0900] \"GET / HTTP/1.1\" 200 100",  # invalid IPv4
+            "1.2.3.4 - - [01/Jan/2025:00:00:00 +0900] \"GET / HTTP/1.1\" 200 100",  # valid
+        ]
+        path = self.write_log(log_lines)
+        hits = ApacheCalculater.calculateApacheIpHits(path)
+        self.assertEqual(hits, [("1.2.3.4", 1)])
+
+    def test_print_ip_hits_formats_one_entry_per_line(self):
+        ip_hits = [("1.2.3.4", 2), ("5.6.7.8", 1)]
+
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            printIpHits(ip_hits)
+
+        out = buf.getvalue().splitlines()
+
+        # Header line first
+        self.assertGreaterEqual(len(out), 3)
+        self.assertEqual(out[0], "[INFO] IP Hits:")
+
+        # One IP per line, IP and hits should appear on the same line.
+        self.assertIn("1.2.3.4", out[1])
+        self.assertTrue(out[1].rstrip().endswith("2"))
+        self.assertIn("5.6.7.8", out[2])
+        self.assertTrue(out[2].rstrip().endswith("1"))
+
+    def test_print_ip_hits_handles_empty(self):
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            printIpHits([])
+        out = buf.getvalue().strip()
+        self.assertEqual(out, "[INFO] IP Hits: (no hits)")
 
 
 if __name__ == '__main__':
