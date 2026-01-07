@@ -6,6 +6,7 @@
 #  Description:
 #  This script tests the functionality of ApacheCalculater, including hit
 #  counting, cache percentage calculation, and log format validation.
+#  Tests are designed to be deterministic and not depend on external ignore list files.
 #
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
@@ -19,6 +20,7 @@
 #  Version History:
 #  v1.2 2026-01-07
 #       Add tests for human-readable IP hit output formatting.
+#       Stabilize tests by isolating ignore list behavior and using sys.executable.
 #  v1.1 2025-12-27
 #       Split client cache percentage into static vs non-static by excluding static assets from page-like metrics.
 #  v1.0 2025-06-24
@@ -45,15 +47,18 @@ class TestApacheCalculater(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.log_path = os.path.join(self.tmp.name, "access.log")
+        self._orig_load_ignore_list = ApacheCalculater.loadIgnoreList
+        ApacheCalculater.loadIgnoreList = staticmethod(lambda: set(["127.0.0.1"]))
 
     def tearDown(self):
+        ApacheCalculater.loadIgnoreList = self._orig_load_ignore_list
         self.tmp.cleanup()
 
     def test_usage_shows_help(self):
         script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         script_path = os.path.join(script_dir, 'apache_calculater.py')
 
-        proc = subprocess.Popen(['python3', script_path, '-h'],
+        proc = subprocess.Popen([sys.executable, script_path, '-h'],
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
         out, err = proc.communicate()
@@ -64,7 +69,7 @@ class TestApacheCalculater(unittest.TestCase):
     def write_log(self, lines, gzip_mode=False):
         if gzip_mode:
             gz_path = self.log_path + ".gz"
-            with gzip.open(gz_path, "wt") as f:
+            with gzip.open(gz_path, "wt", encoding="utf-8") as f:
                 for line in lines:
                     f.write(line + "\n")
             return gz_path
