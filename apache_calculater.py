@@ -28,6 +28,8 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v2.1 2026-01-07
+#       Format IP hit results for human-readable output (one IP per line).
 #  v2.0 2026-01-06
 #       Fix ignore list lookup order description, unify common filtering/parsing,
 #       robustly extract status from combined log, and strengthen IPv4 validation.
@@ -291,6 +293,25 @@ class ApacheCalculater(object):
         pattern = r'^\S+\s+\S+'
         return re.match(pattern, line) is not None
 
+def printIpHits(ip_hits):
+    """
+    Print IP hit counts in a human-readable, one-entry-per-line format.
+    """
+    if not ip_hits:
+        print("[INFO] IP Hits: (no hits)")
+        return
+
+    print("[INFO] IP Hits:")
+
+    max_ip_len = 0
+    for ip, hits in ip_hits:
+        if len(ip) > max_ip_len:
+            max_ip_len = len(ip)
+
+    for ip, hits in ip_hits:
+        print("{0} {1}".format(ip.ljust(max_ip_len), hits))
+
+
 def main():
     if len(sys.argv) != 2:
         usage()
@@ -311,7 +332,7 @@ def main():
             break  # Check only the first line for format
 
     # Calculate and display the results
-    print("[INFO] IP Hits:", ApacheCalculater.calculateApacheIpHits(log_file))
+    printIpHits(ApacheCalculater.calculateApacheIpHits(log_file))
     static_pct, nonstatic_pct = ApacheCalculater.clientCachePercentageSplit(log_file)
     print("[INFO] Static Asset Cache Percentage:", static_pct)
     print("[INFO] Non-static Cache Percentage:", nonstatic_pct)
