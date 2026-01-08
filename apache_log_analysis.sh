@@ -276,6 +276,9 @@ print_blog_entry_access() {
             bot_re_l = tolower(bot_re)
         }
         {
+            # Exclude non-200 responses to approximate actual page views
+            status = $3
+            if (status != "200") next
             ua = tolower($6)
             if (ua == "" || ua == "-") next
             if (ua ~ bot_re_l) next
