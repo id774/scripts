@@ -289,8 +289,15 @@ print_blog_entry_access() {
         }
     ' | awk -F '"' '{print $2}' | awk '{print $2}' | \
     awk '
-        match($0, /(\/[0-9]{4}\/[0-9]{2}\/[0-9]{2}\/[0-9]+\/)$/) {
+        # Accept optional query/hash after the canonical trailing slash.
+        # Always aggregate by the canonical path only (exclude ?... and #...).
+        match($0, /(\/[0-9]{4}\/[0-9]{2}\/[0-9]{2}\/[0-9]+\/)([?#].*)?$/) {
             p = substr($0, RSTART, RLENGTH)
+            q = index(p, "?"); h = index(p, "#")
+            cut = 0
+            if (q > 0) cut = q
+            if (h > 0 && (cut == 0 || h < cut)) cut = h
+            if (cut > 0) p = substr(p, 1, cut - 1)
             cnt[p]++
             split(p, a, "/")
             dkey[p] = a[2] a[3] a[4]
