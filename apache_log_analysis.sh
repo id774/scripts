@@ -278,6 +278,9 @@ print_blog_entry_access() {
         {
             # Exclude non-200 responses to approximate actual page views
             status = $3
+            sub(/^[[:space:]]+/, "", status)
+            split(status, f, /[[:space:]]+/)
+            status = f[1]
             if (status != "200") next
             ua = tolower($6)
             if (ua == "" || ua == "-") next
