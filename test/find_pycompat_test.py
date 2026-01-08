@@ -15,6 +15,32 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - Detect f-strings usage when present.
+#    - Do not detect f-strings usage when absent.
+#    - Detect subprocess.run usage when present.
+#    - Do not detect subprocess.run usage when absent.
+#    - Detect subprocess.DEVNULL usage when present.
+#    - Do not detect subprocess.DEVNULL usage when absent.
+#    - Detect async/await keywords when present.
+#    - Do not detect async/await keywords when absent.
+#    - Detect function type hints (-> return annotation) when present.
+#    - Do not detect function type hints when absent.
+#    - Detect nonlocal keyword when present.
+#    - Do not detect nonlocal keyword when absent.
+#    - Detect matrix multiplication operator only when spaces surround '@' (success case).
+#    - Do not detect matrix multiplication operator when spaces are missing around '@' (a@b).
+#    - Do not detect matrix multiplication operator when '@' is not used (failure case).
+#    - Detect asyncio usage when present.
+#    - Do not detect asyncio usage when absent.
+#    - Detect 'yield from' usage when present.
+#    - Do not detect 'yield from' usage when absent.
+#    - Detect pathlib usage when present.
+#    - Do not detect pathlib usage when absent.
+#    - Detect shutil.which usage when present.
+#    - Do not detect shutil.which usage when absent.
+#
 #  Version History:
 #  v1.4 2024-03-12
 #       Updated tests to reflect the modified detection pattern for the matrix multiplication operator.

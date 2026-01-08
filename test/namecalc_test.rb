@@ -13,6 +13,14 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#  - Shows usage and exits with code 0 when invoked with -h option.
+#  - Produce the expected numerology triangle output for input "1234512345 5432154321".
+#  - Produce the expected numerology triangle output for input "1234512345 1234512345".
+#  - Produce the expected numerology triangle output for input "111 153 111 115".
+#  - Produce the expected numerology triangle output for input "1 2 3 4 5 5 4 3 2 1".
+#  - Produce the expected numerology triangle output for input "5 a 4 b 3 c 2 a 1 1a2b3c4d5e".
+#
 #  Dependencies:
 #  This test script requires the RSpec library. To install RSpec, run:
 #      gem install rspec
@@ -20,10 +28,6 @@
 #  Running the tests:
 #  Execute the test script from the command line:
 #      rspec test/namecalc_test.rb
-#
-#  Test Cases:
-#  - Shows usage and exits with code 0 when invoked with -h option
-#  - Verify correct numerological calculation and graphical representation.
 #
 #  Version History:
 #  v1.0 2023-12-13

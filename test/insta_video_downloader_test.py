@@ -17,6 +17,17 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - Skip all tests when the insta_video_downloader module is not available.
+#    - Skip tests when the instaloader module is not installed.
+#    - Download a single video post (GraphVideo) and apply the specified file permissions.
+#    - Exit gracefully without attempting downloads when the profile has no video posts.
+#    - Handle a multi-video (sidecar) post by downloading each video with the correct numbering.
+#    - Skip downloading when the target filename already exists in the output directory.
+#    - Apply custom file permissions (chmod) when a non-default permissions value is specified.
+#    - Download videos in chronological order when posts are not pre-sorted.
+#
 #  Version History:
 #  v1.0 2025-02-15
 #       Initial release. Test suite for insta_video_downloader.py script.

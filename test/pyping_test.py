@@ -13,8 +13,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - Mark an IP address as "alive" when ping returns successfully.
+#    - Mark an IP address as "-----" when ping returns no response (CalledProcessError).
+#    - Sort ping results in numeric IP order when the --ordered option behavior is used.
+#
 #  Notes:
-#  - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #  - This test simulates the pinging process and does not send actual network requests.
 #  - The script is designed to work with Python 3.
 #

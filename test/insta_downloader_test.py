@@ -17,6 +17,18 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - Skip all tests when the insta_downloader module is not available.
+#    - Skip tests when the instaloader module is not installed.
+#    - Download a single-image post and apply the specified file permissions.
+#    - Exit gracefully without attempting downloads when the profile has no posts.
+#    - Handle a multi-image (sidecar) post by downloading each image with the correct numbering.
+#    - Skip downloading when the target filename already exists in the output directory.
+#    - Apply custom file permissions (chmod) when a non-default permissions value is specified.
+#    - Download images in chronological order when posts are not pre-sorted.
+#    - Handle an empty download set by printing a zero-posts message.
+#
 #  Version History:
 #  v1.0 2025-01-09
 #       Initial release. Test suite for insta_downloader.py script.

@@ -17,6 +17,40 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - List only files modified after a specified start datetime (exclude older and hidden files by default).
+#    - Include hidden files when the '-a' option is used.
+#    - Exclude hidden files by default when the '-a' option is not used.
+#    - List filenames only when the '-f' option is used.
+#    - List full paths only (without timestamps) when the '-fp' option is used.
+#    - List only files modified before a specified end datetime (no start datetime).
+#    - Treat an end date without time as an end boundary and list matching files before it.
+#    - List only files modified before a specified end datetime (end datetime with time specified).
+#    - List files modified within a specified start/end datetime range, including boundary values.
+#    - List files before a specified end datetime including hidden files when the '-a' option is used.
+#    - List filenames only within a specified start/end datetime range when the '-f' option is used.
+#    - Exit with code 2 when an invalid datetime format is provided.
+#    - Exit with code 1 when the specified path does not exist.
+#    - Use the current directory as default when no path is specified.
+#    - Print timestamps in local timezone with offset when the '-l' option is used.
+#    - Exit with code 2 when an invalid datetime format is provided with the '-l' option.
+#    - Use the current directory as default when no path is specified with the '-l' option.
+#    - List files within a specified start/end datetime range in local timezone, including boundaries and excluding out-of-range files.
+#    - List files modified within a specified start/end datetime range in local timezone (simple case).
+#    - Include hidden files when the '-a' option is used with local timezone output.
+#    - List filenames only within a specified start/end datetime range with local timezone output.
+#    - Exclude hidden files and hidden directories by default (do not traverse hidden directories).
+#    - Exclude files inside hidden directories by default.
+#    - Include files inside hidden directories when the '-a' option is used.
+#    - List full paths only when the '-fp' option is used with local timezone output.
+#    - Include hidden files in '-fp' output when '-a' is specified.
+#    - Output full paths correctly for nested directories when the '-fp' option is used.
+#    - Produce no output for an empty directory.
+#    - List recent files correctly across multiple subdirectories (mixed recent/old).
+#    - List filenames only when the '-f' option is used (simple case).
+#    - List recent files correctly in a deep directory structure.
+#
 #  Usage:
 #  Run this script from the command line using:
 #      python test/find_range_test.py

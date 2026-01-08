@@ -13,6 +13,12 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with the -h option.
+#    - Formats MAC addresses correctly by removing separators and normalizing output.
+#    - Creates a valid Wake-on-LAN magic packet from a given MAC address.
+#    - Sends a magic packet without performing actual network communication (mocked UDP broadcast).
+#
 #  Version History:
 #  v1.1 2024-02-26
 #       Modified test cases to suppress message output during tests.

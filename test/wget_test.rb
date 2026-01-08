@@ -12,6 +12,13 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Shows usage and exits with code 0 when invoked with the -h option.
+#    - Exits with usage message when no arguments are given.
+#    - Simulates downloading a file by mocking URI.open without network access.
+#    - Writes downloaded content to a local file using mocked File.open.
+#    - Ensures correct filename derivation from the given URL.
+#
 #  Dependencies:
 #  This test script requires the RSpec library. To install RSpec, run:
 #      gem install rspec
@@ -19,11 +26,6 @@
 #  Running the tests:
 #  Execute the test script from the command line:
 #      rspec test/wget_test.rb
-#
-#  Test Cases:
-#  - Shows usage and exits with code 0 when invoked with -h option
-#  - Exit when no arguments are given
-#  - Simulated file download without touching network or disk
 #
 #  Version History:
 #  v1.0 2025-06-24

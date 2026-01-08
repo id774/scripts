@@ -13,6 +13,17 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - Zero-pad numeric parts of filenames to the specified width and rename files accordingly.
+#    - Truncate/normalize filenames when the numeric part exceeds the specified width.
+#    - Do not rename files that contain no numeric part.
+#    - Do not perform any renames when the directory is empty.
+#    - Suppress logging output when quiet mode is enabled.
+#    - Do not rename files that are already correctly zero-padded for the specified width.
+#    - Rename files containing special characters or spaces while preserving non-numeric parts.
+#    - Rename files in directories whose path contains digits without using directory digits in renaming logic.
+#
 #  Usage:
 #  Run this script from the command line using:
 #      python test/zero_padding_test.py

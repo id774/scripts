@@ -17,6 +17,25 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - Move files from subdirectories into the base directory when move mode is enabled.
+#    - Copy files from subdirectories into the base directory when copy mode is enabled.
+#    - Rename files without moving or copying when rename-only mode is enabled.
+#    - Delete empty subdirectories when delete mode is enabled.
+#    - Perform no file operations in dry-run mode (execute mode disabled).
+#    - Suppress action output in quiet mode.
+#    - Raise PermissionError when a file move fails due to permissions.
+#    - Move files from nested subdirectories into the base directory using flattened destination names.
+#    - Move files to the expected flattened destination names in the base directory.
+#    - Handle name conflicts by overwriting existing destination filenames in the base directory.
+#    - Preserve special characters in filenames when flattening into the base directory.
+#    - Proceed with operations when confirmation prompt input is "yes".
+#    - Proceed with operations when confirmation prompt input is "y".
+#    - Exit without performing operations when confirmation prompt input is "no".
+#    - Exit without performing operations when confirmation prompt input is unexpected.
+#    - Do not prompt for confirmation and perform no operations when execute mode is disabled.
+#
 #  Version History:
 #  v1.3 2024-12-15
 #       Updated tests to mock `input` and suppress print output

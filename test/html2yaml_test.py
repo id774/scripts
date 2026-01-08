@@ -9,14 +9,20 @@
 #  YAML format. The tests depend on BeautifulSoup and PyYAML libraries. If these
 #  libraries are not installed, the tests will be skipped.
 #
-#  Test Data:
-#  The test uses an HTML file located at 'test/html2yaml_data.html', which should contain
-#  a sample HTML structure. The expected YAML output is defined within the test cases.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
+#
+#  Test Data:
+#  The test uses an HTML file located at 'test/html2yaml_data.html', which should contain
+#  a sample HTML structure. The expected YAML output is defined within the test cases.
+#
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - Skip all tests when required dependencies (BeautifulSoup and PyYAML) are not installed.
+#    - Convert a sample HTML document into the expected YAML structure.
+#    - Ensure the generated YAML output includes expected tag names (html, head, title, body, div, ul, li).
 #
 #  Dependencies:
 #  - BeautifulSoup

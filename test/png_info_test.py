@@ -12,6 +12,12 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - Read PNG IHDR metadata from a valid PNG signature and return (width, height, bit depth, color format).
+#    - Raise ValueError when the input is not a valid PNG file (invalid signature / data).
+#    - Raise struct.error when the PNG header/IHDR data is incomplete and cannot be unpacked.
+#
 #  Version History:
 #  v1.1 2024-01-30
 #       Updated test cases to handle multiple reads with mock_open.

@@ -17,6 +17,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with the -h option.
+#    - Skip all tests when the requests module is not installed.
+#    - Download a file successfully and write the response content to the expected local filename.
+#    - Raise a RequestException when an HTTP error occurs during download.
+#    - Raise a MissingSchema exception when an invalid URL is provided.
+#    - Overwrite an existing local file with newly downloaded content.
+#    - Raise a Timeout exception when a network timeout occurs during download.
+#
 #  Version History:
 #  v1.0 2025-01-10
 #       Initial release. Test suite for wget.py script.

@@ -14,6 +14,28 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - Verify check_command does nothing (no output, no exit) when the command exists and is executable.
+#    - Verify check_command prints an error and exits with code 127 when the command does not exist.
+#    - Verify check_command prints an error and exits with code 126 when the command exists but is not executable.
+#    - Run format_file() to invoke autoflake, autopep8, and isort with expected arguments.
+#    - Suppress output on successful run_command() execution.
+#    - Print the provided error prefix and command output when run_command() returns a non-zero status.
+#    - In dry-run mode, run flake8/autoflake/isort checks for a single Python file.
+#    - In dry-run mode, run flake8/autoflake/isort checks for multiple Python files.
+#    - In dry-run mode, run flake8/autoflake/isort checks for a single directory path.
+#    - In dry-run mode, run flake8/autoflake/isort checks for multiple directory paths.
+#    - In execute (auto-fix) mode, format a single Python file via format_file().
+#    - In execute (auto-fix) mode, format a mix of directory and file paths and report an error for invalid paths.
+#    - In execute (auto-fix) mode, format a single directory by formatting each .py file under it.
+#    - In execute (auto-fix) mode, format multiple directories by formatting each .py file under them.
+#    - Detect an existing command path with find_command() when the command is present in PATH.
+#    - Return None from find_command() when the command is not present in PATH.
+#    - Verify check_command behavior via alternate patching for existing executable commands.
+#    - Verify check_command behavior via alternate patching for nonexistent commands.
+#    - Verify check_command behavior via alternate patching for non-executable commands.
+#
 #  Usage:
 #  Run this script from the command line to perform the tests.
 #      python test/pyck_test.py

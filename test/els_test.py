@@ -15,6 +15,18 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - Convert a UNIX timestamp to 'YYYY-MM-DD HH:MM:SS' in local time.
+#    - Raise ValueError when format_time() is called with None.
+#    - Handle negative timestamps (before 1970) in format_time().
+#    - Handle float timestamps in format_time().
+#    - Return correct metadata for a single file in get_file_info().
+#    - Handle symbolic links correctly in get_file_info().
+#    - Return directory listing entries when get_file_info() is called on a directory path.
+#    - Return an [ERROR] message string when get_file_info() is called on a nonexistent path.
+#    - Return an [ERROR] message string when get_file_info() hits a PermissionError while scanning a directory.
+#
 #  Version History:
 #  v1.1 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.

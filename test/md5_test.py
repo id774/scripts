@@ -12,6 +12,11 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with the -h option.
+#    - Calculate the MD5 checksum for a given string and compare it with the expected hash.
+#    - Calculate the MD5 checksum for a given file and compare it with the expected hash.
+#
 #  Usage:
 #  Run this script from the command line using:
 #      python test/md5_test.py

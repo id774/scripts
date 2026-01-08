@@ -13,6 +13,19 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - In dry-run mode, print the planned rename operation and do not call os.rename.
+#    - In execute mode, rename all matching files and call os.rename with expected source/destination paths.
+#    - Exit with code 1 when a rename operation fails with OSError during execute mode.
+#    - Suppress all output in quiet mode.
+#    - Rename matching files in subdirectories (recursive traversal via os.walk).
+#    - Exit when validate_args() is given the same source and destination extensions.
+#    - Exit when validate_args() is given extensions missing the leading dot.
+#    - Exit when validate_args() is given a nonexistent directory.
+#    - Exit when validate_args() is given a directory that is not readable.
+#    - Exit when validate_args() is given a directory that is not writable.
+#
 #  Usage:
 #  Run this script from the command line using:
 #      python test/swapext_test.py

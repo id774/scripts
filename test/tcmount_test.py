@@ -14,6 +14,40 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - Build a default TrueCrypt mount command for a block device with UTF-8 filesystem options.
+#    - Build a default TrueCrypt unmount command for a device mountpoint resolved via get-device/get-mountpoint.
+#    - Build mount-all command list and include the last device (sdz) in the generated commands.
+#    - Build an external container mount command using the default mount target (device name).
+#    - Build a mount command with read-only filesystem option.
+#    - Build a mount command without UTF-8 filesystem option.
+#    - Build a mount command with an explicit target mount directory.
+#    - Build an unmount command with an explicit target mount directory.
+#    - Detect TrueCrypt installation when the truecrypt command is available.
+#    - Detect VeraCrypt installation when the veracrypt command is available.
+#    - Return True from command_exists() when the command is found.
+#    - Return False from command_exists() when the command is not found.
+#    - Execute a shell command via os_exec() using subprocess.call with shell=True.
+#    - In process_mounting(), mount and unmount using mocked builders and os_exec (TrueCrypt path).
+#    - In process_mounting(), mount and unmount using mocked builders and os_exec (VeraCrypt path).
+#    - In process_mounting(), mount and unmount using mocked builders and os_exec (VeraCrypt TC-compat path).
+#    - In process_mounting(), pass an explicit target to build_mount_command and build_unmount_command.
+#    - In process_mounting(), build read-only/no-UTF8 mount command for TrueCrypt.
+#    - In process_mounting(), build read-only mount command for VeraCrypt (utf8,ro).
+#    - In process_mounting(), build no-UTF8 mount command for VeraCrypt TC-compat mode.
+#    - In process_mounting(), mount with explicit target using VeraCrypt when TrueCrypt is unavailable.
+#    - In process_mounting(), mount with explicit target using VeraCrypt TC-compat when TrueCrypt is unavailable.
+#    - In process_mounting(), mount and unmount multiple device names via mocked builders.
+#    - In process_mounting(), build read-only/no-UTF8 mount commands for multiple device names.
+#    - In process_mounting(), generate expected mount commands across option combinations (veracrypt/tc_compat/no_utf8/readonly/all/external).
+#    - In process_mounting(), generate expected mount commands for representative option combinations.
+#    - Build an external container mount command using the default target when explicit target is not provided.
+#    - Build an external container mount command honoring an explicit target mount directory.
+#    - In process_mounting(), delegate external mount (-e) to build_mount_external_command with an explicit target.
+#    - In process_mounting(), unmount an external container with default arguments.
+#    - In process_mounting(), unmount an external container even when an explicit target is provided.
+#
 #  Running the tests:
 #  Execute the test script from the command line:
 #      python test/tcmount_test.py

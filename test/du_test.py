@@ -7,11 +7,19 @@
 #  This test suite validates the disk usage reporting functionality of du.py,
 #  including directory checks, output parsing, and hidden directory filtering.
 #
+#  Author: id774 (More info: http://id774.net)
+#  Source Code: https://github.com/id774/scripts
+#  License: The GPL version 3, or LGPL version 3 (Dual License).
+#  Contact: idnanashi@gmail.com
+#
 #  Test Cases:
 #  - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
-#  - Valid and invalid directory detection
-#  - parse_du_output behavior
-#  - run_custom_du includes/excludes hidden directories
+#  - Accept an existing directory without exiting (valid directory).
+#  - Exit with code 1 when the target path does not exist.
+#  - Exit with code 1 when the target path exists but is not a directory.
+#  - Parse du output and return the size for the requested directory path.
+#  - run_custom_du includes hidden directories when include_hidden is True.
+#  - run_custom_du excludes hidden directories when include_hidden is False.
 #
 #  Version History:
 #  v1.0 2025-06-24

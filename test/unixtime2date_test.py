@@ -12,6 +12,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - Convert a Unix timestamp to an ISO 8601 datetime string in Japan local timezone (UTC+09:00).
+#    - Convert a leap day timestamp (2020-02-29 UTC) to Japan local timezone.
+#    - Convert a century boundary timestamp (1999-12-31 23:59:59 UTC) to Japan local timezone.
+#    - Convert a new-year boundary timestamp (UTC -> Japan local timezone rollover behavior).
+#    - Convert an end-of-year boundary timestamp (UTC -> Japan local timezone rollover behavior).
+#    - Convert a midnight (00:00:00 UTC) timestamp to Japan local timezone.
+#    - Convert a noon (12:00:00 UTC) timestamp to Japan local timezone.
+#
 #  Usage:
 #  Run this script from the command line using:
 #      python test/unixtime2date_test.py

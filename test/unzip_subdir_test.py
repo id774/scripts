@@ -14,9 +14,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Test Cases:
-#  - Shows usage and exits with code 0 when invoked with -h option
-#  - Displays expected output in dry-run mode without creating directories
-#  - Skips extraction if target directory already exists
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - In dry-run mode, lists .zip files found in the target directory without creating directories or executing unzip.
+#    - Skips extraction (and listing in dry-run) when the target subdirectory already exists.
+#    - In execution mode (non–dry-run), creates a subdirectory per .zip file and invokes the unzip command exactly once per archive.
 #
 #  Version History:
 #  v1.1 2025-07-08

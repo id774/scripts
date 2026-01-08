@@ -15,7 +15,8 @@
 #
 #  Test Cases:
 #  - Shows usage and exits with code 0 when invoked with -h option
-#  - Converts "顔文字" entry into Canna format with escaped space
+#  - Converts MS-IME emoji entry to Canna format
+#  - Escapes spaces in emoji entry as expected
 #  - Skips non-emoji entries as expected
 #
 #  Version History:

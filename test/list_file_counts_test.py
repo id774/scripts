@@ -14,6 +14,16 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - Retrieve immediate subdirectories under a target directory.
+#    - Count files in a specific directory, including empty directories.
+#    - Count files across all immediate subdirectories and return a name-to-count mapping.
+#    - Sort subdirectory file counts in descending order by count.
+#    - Raise ValueError when get_subdirectories() is called with an invalid directory.
+#    - Raise ValueError when count_files_in_directory() is called with an invalid directory.
+#    - Raise ValueError when count_files_in_subdirectories() is called with an invalid directory.
+#
 #  Version History:
 #  v1.0 2025-01-05
 #       Initial release.
