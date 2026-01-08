@@ -76,6 +76,15 @@
 # Note: matched against the request path (2nd token of "$2" in -F'"' awk)
 EXCLUDE_PATH_RE='[.]((css|js|map)|(woff2?|ttf|otf|eot)|(png|jpe?g|gif|svg|webp|ico|avif))([?].*)?$'
 
+# Exclude likely automated clients for blog-entry-only aggregation (case-insensitive)
+# Note: tuned for "human views" and may exclude link preview bots as well.
+# Generic crawlers / bots, search engines, SEO tools, SNS preview fetchers, CLI / programmatic clients
+BLOG_BOT_UA_RE='(bot|spider|crawl|slurp|archiver|fetch|scanner|monitor|'\
+'googlebot|bingbot|duckduckbot|baiduspider|yandexbot|'\
+'ahrefsbot|semrushbot|mj12bot|dotbot|'\
+'facebookexternalhit|twitterbot|slackbot|'\
+'curl|wget|python-requests|go-http-client)'
+
 # Display full script header information extracted from the top comment block
 usage() {
     awk '
@@ -261,7 +270,18 @@ print_blog_entry_access() {
     echo "[Blog Entry Access]"
     # Aggregate blog-like pages with pattern: */YYYY/MM/DD/NNNN/
     # Sort by date (YYYYMMDD) descending, then entry id descending.
-    filter_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | \
+    filter_log_lines | \
+    awk -v bot_re="${BLOG_BOT_UA_RE}" -F '"' '
+        BEGIN {
+            bot_re_l = tolower(bot_re)
+        }
+        {
+            ua = tolower($6)
+            if (ua == "" || ua == "-") next
+            if (ua ~ bot_re_l) next
+            print $0
+        }
+    ' | awk -F '"' '{print $2}' | awk '{print $2}' | \
     awk '
         match($0, /(\/[0-9]{4}\/[0-9]{2}\/[0-9]{2}\/[0-9]+\/)$/) {
             p = substr($0, RSTART, RLENGTH)
