@@ -388,13 +388,17 @@ def aggregateLogs(log_files):
 
     return ip_hit_listing, total_static, cached_static, total_nonstatic, cached_nonstatic
 
+def calculatePercent(cached, total):
+    """
+    Calculate percentage from cached and total counters.
+    """
+    return float(100 * cached) / total if total > 0 else 0
 
-def main():
-    if len(sys.argv) < 2:
-        usage()
 
-    log_files = sys.argv[1:]
-
+def run(log_files):
+    """
+    Validate, aggregate, and print results for specified log files.
+    """
     validateLogFiles(log_files)
 
     ip_hit_listing, total_static, cached_static, total_nonstatic, cached_nonstatic = \
@@ -403,10 +407,18 @@ def main():
     ip_hits_sorted = sorted(ip_hit_listing.items(), reverse=True, key=lambda x: x[1])
     printIpHits(ip_hits_sorted)
 
-    static_pct = float(100 * cached_static) / total_static if total_static > 0 else 0
-    nonstatic_pct = float(100 * cached_nonstatic) / total_nonstatic if total_nonstatic > 0 else 0
+    static_pct = calculatePercent(cached_static, total_static)
+    nonstatic_pct = calculatePercent(cached_nonstatic, total_nonstatic)
     print("[INFO] Static Asset Cache Percentage:", static_pct)
     print("[INFO] Non-static Cache Percentage:", nonstatic_pct)
+
+
+def main():
+    if len(sys.argv) < 2:
+        usage()
+
+    log_files = sys.argv[1:]
+    run(log_files)
 
     return 0
 
