@@ -200,6 +200,39 @@ print_top() {
     return 0
 }
 
+# Print top accessed request paths.
+print_access_count() {
+    echo "[Access Count]"
+    filter_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | print_top
+}
+
+# Print top referers.
+print_referer() {
+    echo "[Referer]"
+    filter_log_lines | awk -F '"' '{print $4}' | sort | uniq -c | sort -nr | print_top
+}
+
+# Print top user agents.
+print_user_agent() {
+    echo "[User Agent]"
+    filter_log_lines | awk -F '"' '{print $6}' | sort | uniq -c | sort -nr | head -n 50
+}
+
+# Print browser counts.
+print_browser() {
+    echo "[Browser]"
+    for UA in MSIE Firefox Chrome Safari; do
+        COUNT=$(filter_log_lines | grep "$UA" | wc -l)
+        echo "$UA: $COUNT"
+    done
+}
+
+# Print access counts by hour of day (HH).
+print_access_by_time() {
+    echo "[Access By Time]"
+    filter_log_lines | awk '{t=$4; gsub(/^\[/,"",t); split(t,a,":"); print a[2]}' | LC_ALL=C sort | uniq -c
+}
+
 # Print daily access counts for the last year (YYYY-MM-DD).
 print_daily_access() {
     echo "[Daily Access]"
@@ -247,27 +280,13 @@ print_blog_entry_access() {
 
 # Analyze the log file and output various access statistics.
 analyze_logs() {
-    echo "[Access Count]"
-    filter_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | print_top
-
-    echo "[Referer]"
-    filter_log_lines | awk -F '"' '{print $4}' | sort | uniq -c | sort -nr | print_top
-
-    echo "[User Agent]"
-    filter_log_lines | awk -F '"' '{print $6}' | sort | uniq -c | sort -nr | head -n 50
-
-    echo "[Browser]"
-    for UA in MSIE Firefox Chrome Safari; do
-        COUNT=$(filter_log_lines | grep "$UA" | wc -l)
-        echo "$UA: $COUNT"
-    done
-
-    print_daily_access
-
-    echo "[Access By Time]"
-    filter_log_lines | awk '{t=$4; gsub(/^\[/,"",t); split(t,a,":"); print a[2]}' | LC_ALL=C sort | uniq -c
-
+    print_access_count
     print_blog_entry_access
+    print_referer
+    print_user_agent
+    print_browser
+    print_daily_access
+    print_access_by_time
 }
 
 # Main entry point of the script
