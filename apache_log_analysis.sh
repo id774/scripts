@@ -283,10 +283,10 @@ analyze_logs() {
     print_access_count
     print_blog_entry_access
     print_referer
-    print_user_agent
-    print_browser
     print_daily_access
     print_access_by_time
+    print_user_agent
+    print_browser
 }
 
 # Main entry point of the script
