@@ -14,10 +14,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Test Cases:
-#  - Shows usage and exits with code 0 when invoked with -h option
-#  - Converts MS-IME emoji entry to Canna format
-#  - Escapes spaces in emoji entry as expected
-#  - Skips non-emoji entries as expected
+#    - Shows usage and exits with code 0 when invoked with -h option
+#    - Converts MS-IME emoji entry to Canna format
+#    - Escapes spaces in emoji entry as expected
+#    - Skips non-emoji entries as expected
 #
 #  Version History:
 #  v1.0 2025-07-07

@@ -13,9 +13,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Test Cases:
-#  - Prints Python version with -p
-#  - Shows version for known module
-#  - Reports module as not found when import fails
+#    - Prints Python version with -p
+#    - Shows version for known module
+#    - Reports module as not found when import fails
 #
 #  Version History:
 #  v1.0 2025-07-07

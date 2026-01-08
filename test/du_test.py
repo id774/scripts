@@ -13,13 +13,13 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Test Cases:
-#  - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
-#  - Accept an existing directory without exiting (valid directory).
-#  - Exit with code 1 when the target path does not exist.
-#  - Exit with code 1 when the target path exists but is not a directory.
-#  - Parse du output and return the size for the requested directory path.
-#  - run_custom_du includes hidden directories when include_hidden is True.
-#  - run_custom_du excludes hidden directories when include_hidden is False.
+#    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
+#    - Accept an existing directory without exiting (valid directory).
+#    - Exit with code 1 when the target path does not exist.
+#    - Exit with code 1 when the target path exists but is not a directory.
+#    - Parse du output and return the size for the requested directory path.
+#    - run_custom_du includes hidden directories when include_hidden is True.
+#    - run_custom_du excludes hidden directories when include_hidden is False.
 #
 #  Version History:
 #  v1.0 2025-06-24

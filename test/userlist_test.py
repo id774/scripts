@@ -14,9 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Test Cases:
-#  - Shows usage and exits with code 0 when invoked with -h option
-#  - Displays user with UID >= 1000 on Debian-based system
-#  - Displays user from dscacheutil on macOS if UID >= 500
+#    - Shows usage and exits with code 0 when invoked with -h option
+#    - Displays user with UID >= 1000 on Debian-based system
+#    - Displays user from dscacheutil on macOS if UID >= 500
 #
 #  Version History:
 #  v1.1 2025-07-08

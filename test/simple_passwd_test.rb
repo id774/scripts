@@ -21,13 +21,13 @@
 #      rspec test/simple_passwd_test.rb
 #
 #  Test Cases:
-#  - Shows usage and exits with code 0 when invoked with -h option
-#  - Exit when no arguments are given
-#  - Error on non-numeric length argument
-#  - Error on zero length argument
-#  - Password with symbols includes at least one symbol
-#  - Password without symbols excludes all symbols
-#  - Single-character password with symbols is symbol-only
+#    - Shows usage and exits with code 0 when invoked with -h option
+#    - Exit when no arguments are given
+#    - Error on non-numeric length argument
+#    - Error on zero length argument
+#    - Password with symbols includes at least one symbol
+#    - Password without symbols excludes all symbols
+#    - Single-character password with symbols is symbol-only
 #
 #  Version History:
 #  v1.2 2025-07-03

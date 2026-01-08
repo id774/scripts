@@ -20,8 +20,8 @@
 #    - Sort ping results in numeric IP order when the --ordered option behavior is used.
 #
 #  Notes:
-#  - This test simulates the pinging process and does not send actual network requests.
-#  - The script is designed to work with Python 3.
+#    - This test simulates the pinging process and does not send actual network requests.
+#    - The script is designed to work with Python 3.
 #
 #  Version History:
 #  v1.1 2025-01-06

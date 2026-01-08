@@ -14,11 +14,11 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Test Cases:
-#  - Shows usage and exits with code 0 when invoked with -h option
-#  - Lists users with interactive shells from /etc/passwd (Linux)
-#  - Lists users with interactive shells from dscl (macOS)
-#  - Outputs usernames only with --name-only
-#  - Outputs in username:/shell format with --colon
+#    - Shows usage and exits with code 0 when invoked with -h option
+#    - Lists users with interactive shells from /etc/passwd (Linux)
+#    - Lists users with interactive shells from dscl (macOS)
+#    - Outputs usernames only with --name-only
+#    - Outputs in username:/shell format with --colon
 #
 #  Version History:
 #  v1.1 2025-07-08

@@ -15,9 +15,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Dependencies:
-#  - BeautifulSoup
-#  - PyYAML
-#  - requests
+#    - BeautifulSoup
+#    - PyYAML
+#    - requests
 #
 #  Usage:
 #  Run the test from the command line:
