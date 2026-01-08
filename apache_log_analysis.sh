@@ -27,6 +27,8 @@
 #      -a, --all:   No output limit for "Access Count" and "Referer" (same as -n 0).
 #
 #  Version History:
+#  v2.6 2026-01-08
+#       Add "Blog Entry Access" section to aggregate /XXXX/YYYY/MM/DD/NNNN/ hits and sort by date descending.
 #  v2.5 2026-01-06
 #       Add configurable output limit for "Access Count" and "Referer" (default top 100, adjustable, or no limit).
 #       Fix log filtering to avoid dropping most lines, use safer ignore matching, and parse referer more robustly.
@@ -198,23 +200,8 @@ print_top() {
     return 0
 }
 
-# Analyze the log file and output various access statistics.
-analyze_logs() {
-    echo "[Access Count]"
-    filter_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | print_top
-
-    echo "[Referer]"
-    filter_log_lines | awk -F '"' '{print $4}' | sort | uniq -c | sort -nr | print_top
-
-    echo "[User Agent]"
-    filter_log_lines | awk -F '"' '{print $6}' | sort | uniq -c | sort -nr | head -n 50
-
-    echo "[Browser]"
-    for UA in MSIE Firefox Chrome Safari; do
-        COUNT=$(filter_log_lines | grep "$UA" | wc -l)
-        echo "$UA: $COUNT"
-    done
-
+# Print daily access counts for the last year (YYYY-MM-DD).
+print_daily_access() {
     echo "[Daily Access]"
     # Filter to last 1 year by YYYY-MM-DD derived from log timestamp, then aggregate per day.
     # Apache time fields: $4 = [dd/Mon/yyyy:HH:MM:SS   $5 = +ZZZZ]
@@ -234,9 +221,53 @@ analyze_logs() {
             if (ymd >= cutoff_ymd) print ymd
         }
     ' | LC_ALL=C sort | uniq -c
+}
+
+# Print blog-like entry access counts: */YYYY/MM/DD/NNNN/
+print_blog_entry_access() {
+    echo "[Blog Entry Access]"
+    # Aggregate blog-like pages with pattern: */YYYY/MM/DD/NNNN/
+    # Sort by date (YYYYMMDD) descending, then entry id descending.
+    filter_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | \
+    awk '
+        match($0, /(\/[0-9]{4}\/[0-9]{2}\/[0-9]{2}\/[0-9]+\/)$/) {
+            p = substr($0, RSTART, RLENGTH)
+            cnt[p]++
+            split(p, a, "/")
+            dkey[p] = a[2] a[3] a[4]
+            idkey[p] = a[5]
+        }
+        END {
+            for (p in cnt) {
+                printf "%s %010d %d %s\n", dkey[p], idkey[p], cnt[p], p
+            }
+        }
+    ' | LC_ALL=C sort -k1,1nr -k2,2nr | awk '{print $3, $4}'
+}
+
+# Analyze the log file and output various access statistics.
+analyze_logs() {
+    echo "[Access Count]"
+    filter_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | print_top
+
+    echo "[Referer]"
+    filter_log_lines | awk -F '"' '{print $4}' | sort | uniq -c | sort -nr | print_top
+
+    echo "[User Agent]"
+    filter_log_lines | awk -F '"' '{print $6}' | sort | uniq -c | sort -nr | head -n 50
+
+    echo "[Browser]"
+    for UA in MSIE Firefox Chrome Safari; do
+        COUNT=$(filter_log_lines | grep "$UA" | wc -l)
+        echo "$UA: $COUNT"
+    done
+
+    print_daily_access
 
     echo "[Access By Time]"
     filter_log_lines | awk '{t=$4; gsub(/^\[/,"",t); split(t,a,":"); print a[2]}' | LC_ALL=C sort | uniq -c
+
+    print_blog_entry_access
 }
 
 # Main entry point of the script
