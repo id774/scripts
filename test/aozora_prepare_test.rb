@@ -14,9 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Test Cases:
-#  - Shows usage and exits with code 0 when invoked with -h option
-#  - Successfully converts Aozora Bunko formatted text with expected transformations.
-#  - Displays usage and exits with code 0 when arguments are missing.
+#    - Shows usage and exits with code 0 when invoked with -h option
+#    - Successfully converts Aozora Bunko formatted text with expected transformations.
+#    - Displays usage and exits with code 0 when arguments are missing.
 #
 #  Version History:
 #  v1.0 2025-07-07
