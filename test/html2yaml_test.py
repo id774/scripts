@@ -14,6 +14,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Dependencies:
+#  - BeautifulSoup
+#  - PyYAML
+#  - requests
+#
+#  Usage:
+#  Run the test from the command line:
+#      python test/html2yaml_test.py
+#
 #  Test Data:
 #  The test uses an HTML file located at 'test/html2yaml_data.html', which should contain
 #  a sample HTML structure. The expected YAML output is defined within the test cases.
@@ -23,15 +32,6 @@
 #    - Skip all tests when required dependencies (BeautifulSoup and PyYAML) are not installed.
 #    - Convert a sample HTML document into the expected YAML structure.
 #    - Ensure the generated YAML output includes expected tag names (html, head, title, body, div, ul, li).
-#
-#  Dependencies:
-#  - BeautifulSoup
-#  - PyYAML
-#  - requests
-#
-#  Usage:
-#  Run the test from the command line:
-#      python test/html2yaml_test.py
 #
 #  Version History:
 #  v1.0 2024-01-11

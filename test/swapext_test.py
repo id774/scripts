@@ -13,6 +13,15 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script from the command line using:
+#      python test/swapext_test.py
+#
+#  The script tests the swap_extensions function from swapext.py with
+#  and without the quiet mode (-q) option. It uses mock objects to
+#  simulate file system operations and checks whether the file extensions
+#  are correctly changed as per the specified parameters.
+#
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - In dry-run mode, print the planned rename operation and do not call os.rename.
@@ -25,15 +34,6 @@
 #    - Exit when validate_args() is given a nonexistent directory.
 #    - Exit when validate_args() is given a directory that is not readable.
 #    - Exit when validate_args() is given a directory that is not writable.
-#
-#  Usage:
-#  Run this script from the command line using:
-#      python test/swapext_test.py
-#
-#  The script tests the swap_extensions function from swapext.py with
-#  and without the quiet mode (-q) option. It uses mock objects to
-#  simulate file system operations and checks whether the file extensions
-#  are correctly changed as per the specified parameters.
 #
 #  Version History:
 #  v2.1 2025-06-30

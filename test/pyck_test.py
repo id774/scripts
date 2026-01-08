@@ -14,6 +14,10 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script from the command line to perform the tests.
+#      python test/pyck_test.py
+#
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - Verify check_command does nothing (no output, no exit) when the command exists and is executable.
@@ -35,10 +39,6 @@
 #    - Verify check_command behavior via alternate patching for existing executable commands.
 #    - Verify check_command behavior via alternate patching for nonexistent commands.
 #    - Verify check_command behavior via alternate patching for non-executable commands.
-#
-#  Usage:
-#  Run this script from the command line to perform the tests.
-#      python test/pyck_test.py
 #
 #  Version History:
 #  v1.2 2025-04-14

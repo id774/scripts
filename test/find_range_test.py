@@ -17,6 +17,10 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script from the command line using:
+#      python test/find_range_test.py
+#
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - List only files modified after a specified start datetime (exclude older and hidden files by default).
@@ -50,10 +54,6 @@
 #    - List recent files correctly across multiple subdirectories (mixed recent/old).
 #    - List filenames only when the '-f' option is used (simple case).
 #    - List recent files correctly in a deep directory structure.
-#
-#  Usage:
-#  Run this script from the command line using:
-#      python test/find_range_test.py
 #
 #  Version History:
 #  v1.8 2024-11-16

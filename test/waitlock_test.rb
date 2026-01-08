@@ -12,12 +12,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Test Cases:
-#    - Verifies that the script prints usage and exits with code 0 when invoked with the -h option.
-#    - Shows usage and exits when no arguments are provided.
-#    - Prints an error and exits when an invalid number of arguments (only one) is given.
-#    - Waits while a lockfile exists and proceeds correctly once the lockfile is removed.
-#
 #  Dependencies:
 #  This test script requires the RSpec library. To install RSpec, run:
 #      gem install rspec
@@ -25,6 +19,12 @@
 #  Running the tests:
 #  Execute the test script from the command line:
 #      rspec test/waitlock_test.rb
+#
+#  Test Cases:
+#    - Verifies that the script prints usage and exits with code 0 when invoked with the -h option.
+#    - Shows usage and exits when no arguments are provided.
+#    - Prints an error and exits when an invalid number of arguments (only one) is given.
+#    - Waits while a lockfile exists and proceeds correctly once the lockfile is removed.
 #
 #  Version History:
 #  v1.0 2025-06-24

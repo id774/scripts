@@ -14,6 +14,10 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Running the tests:
+#  Execute the test script from the command line:
+#      python test/tcmount_test.py
+#
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - Build a default TrueCrypt mount command for a block device with UTF-8 filesystem options.
@@ -47,10 +51,6 @@
 #    - In process_mounting(), delegate external mount (-e) to build_mount_external_command with an explicit target.
 #    - In process_mounting(), unmount an external container with default arguments.
 #    - In process_mounting(), unmount an external container even when an explicit target is provided.
-#
-#  Running the tests:
-#  Execute the test script from the command line:
-#      python test/tcmount_test.py
 #
 #  Version History:
 #  v1.3 2025-08-31

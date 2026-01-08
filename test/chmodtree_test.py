@@ -13,6 +13,10 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Running the tests:
+#  Execute the test script from the command line:
+#      python test/chmodtree_test.py
+#
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - Verify check_command does nothing (no output, no exit) when the command exists and is executable.
@@ -23,10 +27,6 @@
 #    - Apply chmod to both files and directories with a name pattern (with sudo, quiet mode).
 #    - Apply chmod to both files and directories with a name pattern (with sudo, verbose mode).
 #    - Apply chmod to both files and directories with a name pattern (no sudo, quiet mode).
-#
-#  Running the tests:
-#  Execute the test script from the command line:
-#      python test/chmodtree_test.py
 #
 #  Version History:
 #  v1.2 2025-04-14

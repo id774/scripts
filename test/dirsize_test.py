@@ -12,6 +12,10 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Usage:
+#  Run this script from the command line using:
+#      python test/dirsize_test.py
+#
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - Convert bytes to human-readable size in B and KiB units (boundary around 1024).
@@ -23,10 +27,6 @@
 #    - Convert bytes to human-readable size in EiB and ZiB units (boundary around 1180591620717411303424).
 #    - Convert bytes to human-readable size in ZiB and YiB units (boundary around 1208925819614629174706176).
 #    - Exit with non-zero status when a target directory does not exist.
-#
-#  Usage:
-#  Run this script from the command line using:
-#      python test/dirsize_test.py
 #
 #  Version History:
 #  v1.0 2023-12-19
