@@ -5,17 +5,20 @@
 #
 #  Description:
 #  This script tests the functionality of ApacheCalculater, including hit
-#  counting, cache percentage calculation, and log format validation.
-#  Tests are designed to be deterministic and not depend on external ignore list files.
+#  counting, cache percentage calculation, log format validation, and
+#  human-readable output formatting. Tests are deterministic and do not
+#  depend on external ignore list files.
 #
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - Count IP hits correctly excluding ignored IPs.
-#    - Format IP hit output as one IP per line for human-readable display.
+#    - Format IP hit output as one IP per line with a header for human-readable display.
+#    - Print a clear "(no hits)" message when IP hit list is empty.
 #    - Calculate 304 cache hit percentage split into static vs non-static requests.
-#    - Validate proper log line format.
+#    - Validate proper Apache log line format.
 #    - Handle .gz compressed log files.
-#    - Skip malformed or empty lines gracefully.
+#    - Skip ignored IPs during hit counting.
+#    - Skip malformed or empty log lines gracefully.
 #
 #  Version History:
 #  v1.2 2026-01-07
