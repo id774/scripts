@@ -6,6 +6,10 @@
 #  Description:
 #  This script analyzes Apache log files to calculate the number of hits per IP
 #  address and the percentage of client cache hits. It supports .gz compressed
+#  log files and can process multiple log files in a single invocation.
+#  When multiple log files are specified, IP hit counts and cache statistics
+#  are aggregated across all provided logs before reporting results.
+#
 #  log files and excludes IPs listed in apache_ignore.list, which is searched
 #  in ./etc/, ../etc/ and /etc/cron.config in that order.
 #  It is designed to provide insights into web server traffic and client behavior.
@@ -16,18 +20,25 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      apache_calculater.py <log_file>
+#      apache_calculater.py <log_file> [<log_file> ...]
 #
 #  The script ignores IPs listed in /etc/cron.config/apache_ignore.list
 #  if the file exists. You can customize it as needed.
 #
 #  Example:
 #      apache_calculater.py /var/log/apache2/access.log
+#      apache_calculater.py /var/log/apache2/access.log /var/log/apache2/access.log.1.gz
+#      apache_calculater.py /var/log/apache2/ssl_access.log*
+#
+#  Multiple log files are treated as a single logical dataset.
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v2.2 2026-01-09
+#       Allow multiple Apache log files to be specified and processed together.
+#       Aggregate IP hit counts and cache metrics across all input logs.
 #  v2.1 2026-01-07
 #       Format IP hit results for human-readable output (one IP per line).
 #  v2.0 2026-01-06
@@ -276,6 +287,35 @@ class ApacheCalculater(object):
         return static_percent, nonstatic_percent
 
     @classmethod
+    def clientCacheCounts(cls, log):
+        """
+        Return raw cache counters split into static and non-static requests.
+
+        Returns:
+            tuple: (total_static, cached_static, total_nonstatic, cached_nonstatic)
+        """
+        ignore_ips = cls.loadIgnoreList()
+        total_static, cached_static = 0, 0
+        total_nonstatic, cached_nonstatic = 0, 0
+
+        for line in cls.iterFilteredLines(log, ignore_ips):
+            status = cls.extractStatusCode(line)
+            if not status:
+                continue
+            is_cached = (status == "304")
+
+            if cls.isStaticAssetRequest(line):
+                total_static += 1
+                if is_cached:
+                    cached_static += 1
+            else:
+                total_nonstatic += 1
+                if is_cached:
+                    cached_nonstatic += 1
+
+        return total_static, cached_static, total_nonstatic, cached_nonstatic
+
+    @classmethod
     def isValidLogFormat(cls, line):
         """
         Check if a log line follows a basic Apache log format.
@@ -312,28 +352,59 @@ def printIpHits(ip_hits):
         print("{0} {1}".format(ip.ljust(max_ip_len), hits))
 
 
+def validateLogFiles(log_files):
+    """
+    Validate existence and basic format of all specified log files.
+    """
+    for log_file in log_files:
+        if not os.path.exists(log_file):
+            print("[ERROR] Log file does not exist - {0}".format(log_file), file=sys.stderr)
+            sys.exit(2)
+
+        with ApacheCalculater.openLogFile(log_file) as contents:
+            for line in contents:
+                if not ApacheCalculater.isValidLogFormat(line):
+                    print("[ERROR] Invalid log format detected in file - {0}".format(log_file), file=sys.stderr)
+                    sys.exit(3)
+                break
+
+def aggregateLogs(log_files):
+    """
+    Aggregate IP hit counts and cache statistics across multiple log files.
+    """
+    ip_hit_listing = {}
+    total_static, cached_static = 0, 0
+    total_nonstatic, cached_nonstatic = 0, 0
+
+    for log_file in log_files:
+        for ip, hits in ApacheCalculater.calculateApacheIpHits(log_file):
+            ip_hit_listing[ip] = ip_hit_listing.get(ip, 0) + hits
+
+        ts, cs, tn, cn = ApacheCalculater.clientCacheCounts(log_file)
+        total_static += ts
+        cached_static += cs
+        total_nonstatic += tn
+        cached_nonstatic += cn
+
+    return ip_hit_listing, total_static, cached_static, total_nonstatic, cached_nonstatic
+
+
 def main():
-    if len(sys.argv) != 2:
+    if len(sys.argv) < 2:
         usage()
 
-    log_file = sys.argv[1]
+    log_files = sys.argv[1:]
 
-    if not os.path.exists(log_file):
-        print("[ERROR] Log file does not exist - {0}".format(log_file), file=sys.stderr)
-        sys.exit(2)
+    validateLogFiles(log_files)
 
-    # Check for valid log format
-    with ApacheCalculater.openLogFile(log_file) as contents:
-        for line in contents:
-            if not ApacheCalculater.isValidLogFormat(line):
-                print(
-                    "[ERROR] Invalid log format detected in file - {0}".format(log_file), file=sys.stderr)
-                sys.exit(3)
-            break  # Check only the first line for format
+    ip_hit_listing, total_static, cached_static, total_nonstatic, cached_nonstatic = \
+        aggregateLogs(log_files)
 
-    # Calculate and display the results
-    printIpHits(ApacheCalculater.calculateApacheIpHits(log_file))
-    static_pct, nonstatic_pct = ApacheCalculater.clientCachePercentageSplit(log_file)
+    ip_hits_sorted = sorted(ip_hit_listing.items(), reverse=True, key=lambda x: x[1])
+    printIpHits(ip_hits_sorted)
+
+    static_pct = float(100 * cached_static) / total_static if total_static > 0 else 0
+    nonstatic_pct = float(100 * cached_nonstatic) / total_nonstatic if total_nonstatic > 0 else 0
     print("[INFO] Static Asset Cache Percentage:", static_pct)
     print("[INFO] Non-static Cache Percentage:", nonstatic_pct)
 
