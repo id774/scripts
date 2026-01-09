@@ -394,7 +394,6 @@ def calculatePercent(cached, total):
     """
     return float(100 * cached) / total if total > 0 else 0
 
-
 def run(log_files):
     """
     Validate, aggregate, and print results for specified log files.
