@@ -17,15 +17,22 @@
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - Count IP hits correctly excluding ignored IPs.
-#    - Format IP hit output as one IP per line with a header for human-readable display.
-#    - Print a clear "(no hits)" message when IP hit list is empty.
+#    - Calculate percent safely when total is zero.
 #    - Calculate 304 cache hit percentage split into static vs non-static requests.
+#    - Calculate raw cache counters split into static vs non-static requests.
 #    - Validate proper Apache log line format.
 #    - Handle .gz compressed log files.
+#    - Aggregate IP hits and cache counters across multiple log files.
+#    - Print aggregated results when processing multiple log files in one invocation.
 #    - Skip ignored IPs during hit counting.
 #    - Skip malformed or empty log lines gracefully.
+#    - Format IP hit output as one IP per line with a header for human-readable display.
+#    - Print a clear "(no hits)" message when IP hit list is empty.
 #
 #  Version History:
+#  v1.3 2026-01-09
+#       Add tests for multi-log aggregation and run() output.
+#       Add tests for clientCacheCounts() and calculatePercent().
 #  v1.2 2026-01-07
 #       Add tests for human-readable IP hit output formatting.
 #       Stabilize tests by isolating ignore list behavior and using sys.executable.
@@ -48,7 +55,8 @@ import unittest
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from apache_calculater import ApacheCalculater, printIpHits
+from apache_calculater import (ApacheCalculater, aggregateLogs,
+                               calculatePercent, printIpHits, run)
 
 
 class TestApacheCalculater(unittest.TestCase):
@@ -97,6 +105,12 @@ class TestApacheCalculater(unittest.TestCase):
         result = ApacheCalculater.calculateApacheIpHits(path)
         self.assertEqual(result, [("1.2.3.4", 2), ("5.6.7.8", 1)])
 
+    def test_calculate_percent_handles_zero_total(self):
+        self.assertEqual(calculatePercent(0, 0), 0)
+        self.assertEqual(calculatePercent(1, 0), 0)
+        self.assertEqual(round(calculatePercent(1, 2), 2), 50.0)
+        self.assertEqual(round(calculatePercent(2, 4), 2), 50.0)
+
     def test_client_cache_percentage_split(self):
         log_lines = [
             "1.2.3.4 - - [01/Jan/2025:00:00:00 +0900] \"GET /index.html HTTP/1.1\" 200 1234",
@@ -107,6 +121,17 @@ class TestApacheCalculater(unittest.TestCase):
         static_pct, nonstatic_pct = ApacheCalculater.clientCachePercentageSplit(path)
         self.assertEqual(round(static_pct, 2), 100.0)
         self.assertEqual(round(nonstatic_pct, 2), 50.0)
+
+    def test_client_cache_counts(self):
+        log_lines = [
+            "1.2.3.4 - - [01/Jan/2025:00:00:00 +0900] \"GET /index.html HTTP/1.1\" 200 1234",
+            "5.6.7.8 - - [01/Jan/2025:00:01:00 +0900] \"GET /index.html HTTP/1.1\" 304 0",
+            "9.8.7.6 - - [01/Jan/2025:00:02:00 +0900] \"GET /style.css HTTP/1.1\" 304 0",
+            "9.8.7.6 - - [01/Jan/2025:00:03:00 +0900] \"GET /style.css HTTP/1.1\" 200 10",
+        ]
+        path = self.write_log(log_lines)
+        ts, cs, tn, cn = ApacheCalculater.clientCacheCounts(path)
+        self.assertEqual((ts, cs, tn, cn), (2, 1, 2, 1))
 
     def test_is_valid_log_format(self):
         valid = "192.168.1.1 - - [01/Jan/2025:00:00:00 +0900] \"GET / HTTP/1.1\" 200 100"
@@ -125,6 +150,67 @@ class TestApacheCalculater(unittest.TestCase):
         static_pct, nonstatic_pct = ApacheCalculater.clientCachePercentageSplit(path)
         self.assertEqual(round(static_pct, 2), 0.0)
         self.assertEqual(round(nonstatic_pct, 2), 50.0)
+
+    def test_aggregate_logs_multiple_files(self):
+        log1 = [
+            '1.1.1.1 - - [01/Jan/2025:00:00:00 +0900] "GET /index.html HTTP/1.1" 200 1',
+            '1.1.1.1 - - [01/Jan/2025:00:00:01 +0900] "GET /index.html HTTP/1.1" 304 0',
+            '2.2.2.2 - - [01/Jan/2025:00:00:02 +0900] "GET /style.css HTTP/1.1" 304 0',
+        ]
+        log2 = [
+            '2.2.2.2 - - [01/Jan/2025:00:00:03 +0900] "GET /index.html HTTP/1.1" 200 1',
+            '3.3.3.3 - - [01/Jan/2025:00:00:04 +0900] "GET /style.css HTTP/1.1" 200 1',
+        ]
+
+        p1 = os.path.join(self.tmp.name, "a.log")
+        p2 = os.path.join(self.tmp.name, "b.log.gz")
+
+        with open(p1, "w") as f:
+            for line in log1:
+                f.write(line + "\n")
+        with gzip.open(p2, "wt", encoding="utf-8") as f:
+            for line in log2:
+                f.write(line + "\n")
+
+        ip_hit_listing, ts, cs, tn, cn = aggregateLogs([p1, p2])
+
+        # IP hits aggregated
+        self.assertEqual(ip_hit_listing.get("1.1.1.1"), 2)
+        self.assertEqual(ip_hit_listing.get("2.2.2.2"), 2)
+        self.assertEqual(ip_hit_listing.get("3.3.3.3"), 1)
+
+        # Cache counters aggregated
+        # Static: style.css appears twice total (one 304, one 200) => total 2, cached 1
+        # Non-static: index.html appears three times total (one 304, two 200) => total 3, cached 1
+        self.assertEqual((ts, cs, tn, cn), (2, 1, 3, 1))
+
+    def test_run_prints_aggregated_results(self):
+        log1 = [
+            '1.1.1.1 - - [01/Jan/2025:00:00:00 +0900] "GET /index.html HTTP/1.1" 200 1',
+            '1.1.1.1 - - [01/Jan/2025:00:00:01 +0900] "GET /index.html HTTP/1.1" 304 0',
+        ]
+        log2 = [
+            '2.2.2.2 - - [01/Jan/2025:00:00:02 +0900] "GET /style.css HTTP/1.1" 304 0',
+        ]
+
+        p1 = os.path.join(self.tmp.name, "c.log")
+        p2 = os.path.join(self.tmp.name, "d.log")
+        with open(p1, "w") as f:
+            for line in log1:
+                f.write(line + "\n")
+        with open(p2, "w") as f:
+            for line in log2:
+                f.write(line + "\n")
+
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            run([p1, p2])
+        out = buf.getvalue()
+        self.assertIn("[INFO] IP Hits:", out)
+        self.assertIn("1.1.1.1", out)
+        self.assertIn("2.2.2.2", out)
+        self.assertIn("[INFO] Static Asset Cache Percentage:", out)
+        self.assertIn("[INFO] Non-static Cache Percentage:", out)
 
     def test_skip_ignored_ips(self):
         log_lines = [
