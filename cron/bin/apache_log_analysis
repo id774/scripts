@@ -23,6 +23,8 @@
 #      45 3 * * * root /path/to/apache_log_analysis
 #
 #  Version History:
+#  v1.5 2026-01-09
+#       Expand rotated Apache log path to include all rotated files in cron execution.
 #  v1.4 2026-01-06
 #       Run apache_log_analysis.sh with -n 0 to remove top-N limits in cron logs.
 #       Skip rotated-log IP analysis when ssl_access.log.1 is missing and
@@ -73,7 +75,7 @@ initialize() {
     SCRIPT1="/etc/cron.exec/apache_log_analysis.sh"
     SCRIPT2="/etc/cron.exec/apache_calculater.py"
     ACCESS_LOG="/var/log/apache2/ssl_access.log"
-    ACCESS_LOG_ROTATED="/var/log/apache2/ssl_access.log.1"
+    ACCESS_LOG_ROTATED="/var/log/apache2/ssl_access.log*"
 
     if ! is_running_from_cron; then
         echo "[ERROR] This script is intended to be run by cron only." >&2
