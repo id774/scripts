@@ -55,8 +55,6 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
-#  v1.1 2026-01-10
-#       Print removed history lines unless quiet mode is enabled.
 #  v1.0 2026-01-10
 #       Initial release.
 #
