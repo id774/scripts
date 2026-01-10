@@ -6,7 +6,8 @@
 #  Description:
 #  This script tests the header documentation consistency checker.
 #  It verifies that blank lines inside the header doc block (between the
-#  first and second separator lines) are detected, and that content outside
+#  first and second separator lines) are detected, that typo lines like "##"
+#  inside the header doc block are detected, and that content outside
 #  the header doc block is ignored. It also tests quiet mode, --all-files,
 #  and directory scanning via --root.
 #
@@ -20,6 +21,8 @@
 #        Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - test_check_file_detects_blank_line_in_header_doc:
 #        Confirms that a blank line inside the header doc block is reported.
+#    - test_check_file_detects_typo_blank_comment_line_in_header_doc:
+#        Confirms that a typo line like "##" inside the header doc block is reported.
 #    - test_check_file_ignores_blank_line_outside_header_doc:
 #        Confirms that blank lines outside the header doc block are not reported.
 #    - test_check_file_quiet_mode_format:
@@ -32,6 +35,8 @@
 #        Confirms that files are scanned via filesystem traversal under --root without relying on Git.
 #
 #  Version History:
+#  v1.1 2026-01-10
+#       Add test for detecting typo blank-comment lines like "##" inside header doc block.
 #  v1.0 2026-01-02
 #       Initial test implementation for check_header_doc.py.
 #
@@ -86,6 +91,28 @@ class TestCheckHeaderDoc(unittest.TestCase):
             hits = check_header_doc.check_file(path, quiet_mode=False)
             self.assertEqual(len(hits), 1)
             self.assertIn("blank line inside header doc", hits[0])
+
+    def test_check_file_detects_typo_blank_comment_line_in_header_doc(self):
+        content = (
+            "#!/bin/sh\n"
+            "\n"
+            "########################################################################\n"
+            "# test: header\n"
+            "#\n"
+            "##\n"  # typo: should be "#"
+            "# after\n"
+            "########################################################################\n"
+            "echo ok\n"
+        )
+
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "t.sh")
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(content)
+
+            hits = check_header_doc.check_file(path, quiet_mode=False)
+            self.assertEqual(len(hits), 1)
+            self.assertIn("invalid blank comment line inside header doc", hits[0])
 
     def test_check_file_ignores_blank_line_outside_header_doc(self):
         content = (

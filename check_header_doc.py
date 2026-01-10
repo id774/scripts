@@ -12,7 +12,8 @@
 #  This script scans files under a target directory and checks the header
 #  documentation block bounded by separator lines (e.g., "########...").
 #  It detects missing comment markers inside that header block—specifically,
-#  blank lines that should be written as a comment line "#".
+#  blank lines that should be written as a comment line "#", and typo lines
+#  like "##" that should be "#".
 #
 #  The header block is defined as the content between the first and second
 #  separator lines consisting of 20 or more "#" characters. Only that region
@@ -51,6 +52,8 @@
 #  - 9: Unsupported Python version
 #
 #  Version History:
+#  v1.1 2026-01-10
+#       Detect typo blank-comment lines like "##" inside header doc block.
 #  v1.0 2026-01-02
 #       Initial release. Detect missing "#" for blank lines inside header doc block.
 #
@@ -62,6 +65,7 @@ import sys
 from optparse import OptionParser
 
 SEP_RE = re.compile(r"^#{20,}\s*$")
+BAD_BLANK_COMMENT_RE = re.compile(r"^##+\s*$")
 
 
 def usage():
@@ -175,6 +179,20 @@ def check_file(path, quiet_mode):
                     "blank line inside header doc (missing '#')",
                     quiet_mode,
                     None,
+                )
+            )
+            continue
+
+        # Detect typo blank-comment lines like "##" (should be "#").
+        if BAD_BLANK_COMMENT_RE.match(lines[idx]):
+            lineno = idx + 1
+            hits.append(
+                format_hit(
+                    path,
+                    lineno,
+                    "invalid blank comment line inside header doc (expected '#')",
+                    quiet_mode,
+                    lines[idx],
                 )
             )
 
