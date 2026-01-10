@@ -76,6 +76,27 @@ initialize() {
     SCRIPT2="/etc/cron.exec/apache_calculater.py"
     ACCESS_LOG="/var/log/apache2/ssl_access.log"
     ACCESS_LOG_ROTATED="/var/log/apache2/ssl_access.log*"
+    ACCESS_LOG_ROTATED_FILES=""
+
+    # Expand rotated log glob safely (POSIX sh)
+    # If the glob does not match any file, it remains literal (contains '*').
+    for f in $ACCESS_LOG_ROTATED; do
+        case "$f" in
+            *\**)
+                break
+                ;;
+        esac
+        if [ -f "$f" ]; then
+            if [ "$f" = "$ACCESS_LOG" ]; then
+                continue
+            fi
+            if [ -z "$ACCESS_LOG_ROTATED_FILES" ]; then
+                ACCESS_LOG_ROTATED_FILES="$f"
+            else
+                ACCESS_LOG_ROTATED_FILES="$ACCESS_LOG_ROTATED_FILES $f"
+            fi
+        fi
+    done
 
     if ! is_running_from_cron; then
         echo "[ERROR] This script is intended to be run by cron only." >&2
@@ -97,17 +118,28 @@ call_main_scripts() {
         echo "[WARN] Log summary script not found: $SCRIPT1" >> "$JOBLOG" 2>&1
     fi
 
-    if [ -x "$SCRIPT2" ]; then
-        if [ -f "$ACCESS_LOG_ROTATED" ]; then
-            echo "[INFO] Executing: $SCRIPT2 on $ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
-            echo "[IP Hits: Rotated Log ($ACCESS_LOG_ROTATED)]" >> "$JOBLOG" 2>&1
-            "$SCRIPT2" "$ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
-        else
-            echo "[WARN] Rotated access log not found: $ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
-        fi
-    else
+    if [ ! -x "$SCRIPT2" ]; then
         echo "[WARN] IP analysis script not found: $SCRIPT2" >> "$JOBLOG" 2>&1
+        return
     fi
+
+    # Build argument list safely using positional parameters
+    set -- "$ACCESS_LOG"
+
+    if [ -n "$ACCESS_LOG_ROTATED_FILES" ]; then
+        for f in $ACCESS_LOG_ROTATED_FILES; do
+            set -- "$@" "$f"
+        done
+        echo "[INFO] Executing: $SCRIPT2 on $*" >> "$JOBLOG" 2>&1
+        echo "[IP Hits: Current + Rotated Logs ($ACCESS_LOG, $ACCESS_LOG_ROTATED)]" >> "$JOBLOG" 2>&1
+    else
+        echo "[WARN] Rotated access log not found: $ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
+        echo "[INFO] Executing: $SCRIPT2 on $ACCESS_LOG only" >> "$JOBLOG" 2>&1
+        echo "[IP Hits: Current Log ($ACCESS_LOG)]" >> "$JOBLOG" 2>&1
+    fi
+
+    # Execute once with all logs (properly quoted per-arg)
+    "$SCRIPT2" "$@" >> "$JOBLOG" 2>&1
 }
 
 # Finalize and log job completion
