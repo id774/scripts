@@ -8,9 +8,13 @@
 #  (~/.zsh_history) in order to quickly remove mistyped or unintended
 #  commands recorded in the shell history.
 #
-#  The tool operates strictly on a line basis and performs an atomic
-#  file replacement to avoid corrupting the history file even if an
-#  error occurs during processing.
+#  By default, the deleted lines themselves are printed to standard
+#  output exactly as they appeared in the history file. This allows
+#  users to visually confirm what was removed.
+#
+#  When quiet mode is enabled (-q / --quiet), no output is produced.
+#  In quiet mode, the script still performs the deletion but suppresses
+#  all standard output.
 #
 #  Default behavior:
 #  - Removes the last 1 line from ~/.zsh_history.
@@ -20,11 +24,14 @@
 #      Removes the last 2 lines (numeric shorthand).
 #  - erase_history.py -n 2
 #      Removes the last 2 lines (explicit option).
+#  - erase_history.py -q | --quiet
+#      Suppress all output.
+#
+#  Removed lines are printed in original order unless quiet mode is enabled.
 #
 #  Notes:
-#  - This script does not attempt to interpret Zsh history entry
-#    boundaries; it simply truncates by line count.
-#  - The script is designed for minimal latency and minimal side effects.
+#  - This script operates strictly on a line basis.
+#  - The file is updated atomically to avoid history corruption.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -35,6 +42,7 @@
 #      erase_history.py
 #      erase_history.py -2
 #      erase_history.py -n 2
+#      erase_history.py -q
 #      erase_history.py -h | --help
 #      erase_history.py -v | --version
 #
@@ -42,6 +50,8 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v1.1 2026-01-10
+#       Print removed history lines unless quiet mode is enabled.
 #  v1.0 2026-01-10
 #       Initial release.
 #
@@ -60,6 +70,7 @@ def usage():
     itself and prints it verbatim, ensuring that the usage output
     always matches the documented behavior.
     """
+
     script_path = os.path.abspath(__file__)
     in_header = False
     try:
@@ -95,26 +106,32 @@ def parse_args(argv):
         argv (list): Argument list excluding the script name.
 
     Returns:
-        int: Number of lines to remove.
+        tuple: (number_of_lines, quiet)
 
     Exits:
         2: On invalid arguments.
     """
+
     n = 1
+    quiet = False
 
     if not argv:
-        return n
+        return n, quiet
 
     if len(argv) == 1:
         a = argv[0]
         if a in ('-h', '--help', '-v', '--version'):
             usage()
+        if a in ('-q', '--quiet'):
+            quiet = True
+            return n, quiet
+
         if a.startswith('-') and len(a) > 1 and a[1:].isdigit():
             n = int(a[1:], 10)
         else:
             print("[ERROR] Unknown option: %s" % a, file=sys.stderr)
             sys.exit(2)
-        return n
+        return n, quiet
 
     if len(argv) == 2:
         if argv[0] in ('-n', '--lines'):
@@ -122,7 +139,12 @@ def parse_args(argv):
                 print("[ERROR] Invalid number for -n: %s" % argv[1], file=sys.stderr)
                 sys.exit(2)
             n = int(argv[1], 10)
-            return n
+            return n, quiet
+        if argv[0] in ('-q', '--quiet'):
+            quiet = True
+            if argv[1].startswith('-') and argv[1][1:].isdigit():
+                n = int(argv[1][1:], 10)
+                return n, quiet
 
     if argv and (argv[0] in ('-h', '--help', '-v', '--version')):
         usage()
@@ -146,7 +168,7 @@ def validate_n(n):
         sys.exit(2)
 
 
-def erase_tail_lines(history_path, n):
+def erase_tail_lines(history_path, n, quiet):
     """
     Remove the last n lines from the specified history file.
 
@@ -162,6 +184,7 @@ def erase_tail_lines(history_path, n):
         1: On read/write failure.
         2: If the history file does not exist.
     """
+
     if not os.path.exists(history_path):
         print("[ERROR] History file does not exist - %s" % history_path, file=sys.stderr)
         sys.exit(2)
@@ -177,6 +200,12 @@ def erase_tail_lines(history_path, n):
     keep = len(lines) - n
     if keep < 0:
         keep = 0
+
+    removed_lines = lines[keep:]
+
+    if not quiet:
+        for line in removed_lines:
+            sys.stdout.write(line)
 
     dir_name = os.path.dirname(history_path) or '.'
     base_name = os.path.basename(history_path)
@@ -222,11 +251,12 @@ def main():
     Parse arguments, validate input, and remove the requested number
     of lines from ~/.zsh_history.
     """
-    n = parse_args(sys.argv[1:])
+
+    n, quiet = parse_args(sys.argv[1:])
     validate_n(n)
 
     history_path = os.path.expanduser('~/.zsh_history')
-    erase_tail_lines(history_path, n)
+    erase_tail_lines(history_path, n, quiet)
     return 0
 
 
