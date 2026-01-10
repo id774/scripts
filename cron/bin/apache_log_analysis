@@ -131,11 +131,11 @@ call_main_scripts() {
             set -- "$@" "$f"
         done
         echo "[INFO] Executing: $SCRIPT2 on $*" >> "$JOBLOG" 2>&1
-        echo "[IP Hits: Current + Rotated Logs ($ACCESS_LOG, $ACCESS_LOG_ROTATED)]" >> "$JOBLOG" 2>&1
+        echo "[IP Hits: Current + Rotated Logs]" >> "$JOBLOG" 2>&1
     else
         echo "[WARN] Rotated access log not found: $ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
         echo "[INFO] Executing: $SCRIPT2 on $ACCESS_LOG only" >> "$JOBLOG" 2>&1
-        echo "[IP Hits: Current Log ($ACCESS_LOG)]" >> "$JOBLOG" 2>&1
+        echo "[IP Hits: Current Log]" >> "$JOBLOG" 2>&1
     fi
 
     # Execute once with all logs (properly quoted per-arg)
