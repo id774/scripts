@@ -8,36 +8,6 @@
 #  (~/.zsh_history) in order to quickly remove mistyped or unintended
 #  commands recorded in the shell history.
 #
-#  By default, the deleted lines themselves are printed to standard
-#  output exactly as they appeared in the history file. This allows
-#  users to visually confirm what will be removed with an explicit info prefix.
-#
-#  When quiet mode is enabled (-q / --quiet), no output is produced.
-#  In quiet mode, the script still performs the deletion but suppresses
-#  all standard output.
-#
-#  Default behavior:
-#  - Removes the last 1 line from ~/.zsh_history.
-#
-#  Safety:
-#  - Maximum removable lines: 10
-#
-#  Options:
-#  - erase_history.py -2
-#      Removes the last 2 lines (numeric shorthand).
-#  - erase_history.py -n 2
-#      Removes the last 2 lines (explicit option).
-#  - erase_history.py -q | --quiet
-#      Suppress all output.
-#
-#  Confirmation:
-#  - When quiet mode is not enabled, this script prompts for confirmation.
-#  - Only "y" or "yes" (case-insensitive) performs deletion.
-#
-#  Notes:
-#  - This script operates strictly on a line basis.
-#  - The file is updated atomically to avoid history corruption.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
@@ -50,6 +20,36 @@
 #      erase_history.py -q
 #      erase_history.py -h | --help
 #      erase_history.py -v | --version
+#
+#  Options:
+#  - erase_history.py -2
+#      Removes the last 2 lines (numeric shorthand).
+#  - erase_history.py -n 2
+#      Removes the last 2 lines (explicit option).
+#  - erase_history.py -q | --quiet
+#      Suppress all output.
+#
+#  Default behavior:
+#  - Removes the last 1 line from ~/.zsh_history.
+#
+#  By default, the deleted lines themselves are printed to standard
+#  output exactly as they appeared in the history file. This allows
+#  users to visually confirm what will be removed with an explicit info prefix.
+#
+#  When quiet mode is enabled (-q / --quiet), no output is produced.
+#  In quiet mode, the script still performs the deletion but suppresses
+#  all standard output.
+#
+#  Confirmation:
+#  - When quiet mode is not enabled, this script prompts for confirmation.
+#  - Only "y" or "yes" (case-insensitive) performs deletion.
+#
+#  Safety:
+#  - Maximum removable lines: 10
+#
+#  Notes:
+#  - This script operates strictly on a line basis.
+#  - The file is updated atomically to avoid history corruption.
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
