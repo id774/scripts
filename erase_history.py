@@ -10,7 +10,7 @@
 #
 #  By default, the deleted lines themselves are printed to standard
 #  output exactly as they appeared in the history file. This allows
-#  users to visually confirm what was removed with an explicit info prefix.
+#  users to visually confirm what will be removed with an explicit info prefix.
 #
 #  When quiet mode is enabled (-q / --quiet), no output is produced.
 #  In quiet mode, the script still performs the deletion but suppresses
@@ -30,7 +30,9 @@
 #  - erase_history.py -q | --quiet
 #      Suppress all output.
 #
-#  Removed lines are printed in original order unless quiet mode is enabled.
+#  Confirmation:
+#  - When quiet mode is not enabled, this script prompts for confirmation.
+#  - Only "y" or "yes" (case-insensitive) performs deletion.
 #
 #  Notes:
 #  - This script operates strictly on a line basis.
@@ -219,7 +221,17 @@ def erase_tail_lines(history_path, n, quiet):
             msg = line.rstrip('\n')
             if msg.endswith('\r'):
                 msg = msg[:-1]
-            print("[INFO] Removed line: %s" % msg)
+            print("[INFO] Will remove line: %s" % msg)
+
+        ans = ""
+        try:
+            ans = input("Proceed with deletion? [y/yes]: ").strip().lower()
+        except EOFError:
+            ans = ""
+
+        if ans not in ("y", "yes"):
+            print("[INFO] Aborted")
+            sys.exit(1)
 
     dir_name = os.path.dirname(history_path) or '.'
     base_name = os.path.basename(history_path)
@@ -256,6 +268,9 @@ def erase_tail_lines(history_path, n, quiet):
         print("[ERROR] Failed to update history file - %s (%s)" %
               (history_path, str(e)), file=sys.stderr)
         sys.exit(1)
+
+    if not quiet:
+        print("[INFO] Deleted")
 
 
 def main():
