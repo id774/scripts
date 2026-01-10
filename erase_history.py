@@ -10,7 +10,7 @@
 #
 #  By default, the deleted lines themselves are printed to standard
 #  output exactly as they appeared in the history file. This allows
-#  users to visually confirm what was removed.
+#  users to visually confirm what was removed with an explicit info prefix.
 #
 #  When quiet mode is enabled (-q / --quiet), no output is produced.
 #  In quiet mode, the script still performs the deletion but suppresses
@@ -18,6 +18,9 @@
 #
 #  Default behavior:
 #  - Removes the last 1 line from ~/.zsh_history.
+#
+#  Safety:
+#  - Maximum removable lines: 10
 #
 #  Options:
 #  - erase_history.py -2
@@ -60,6 +63,8 @@
 import os
 import sys
 import tempfile
+
+MAX_REMOVE_LINES = 10
 
 
 def usage():
@@ -163,8 +168,12 @@ def validate_n(n):
     Exits:
         2: If n is less than 1.
     """
+
     if n <= 0:
         print("[ERROR] N must be >= 1", file=sys.stderr)
+        sys.exit(2)
+    if n > MAX_REMOVE_LINES:
+        print("[ERROR] N must be <= %d" % MAX_REMOVE_LINES, file=sys.stderr)
         sys.exit(2)
 
 
@@ -205,7 +214,12 @@ def erase_tail_lines(history_path, n, quiet):
 
     if not quiet:
         for line in removed_lines:
-            sys.stdout.write(line)
+            # Strip only the trailing newline for consistent single-line output.
+            # Preserve the original content as much as possible.
+            msg = line.rstrip('\n')
+            if msg.endswith('\r'):
+                msg = msg[:-1]
+            print("[INFO] Removed line: %s" % msg)
 
     dir_name = os.path.dirname(history_path) or '.'
     base_name = os.path.basename(history_path)
