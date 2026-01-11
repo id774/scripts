@@ -314,12 +314,12 @@ print_blog_entry_access() {
 # Analyze the log file and output various access statistics.
 analyze_logs() {
     print_blog_entry_access
-    print_access_count
-    print_referer
+    print_browser
+    print_user_agent
     print_daily_access
     print_access_by_time
-    print_user_agent
-    print_browser
+    print_referer
+    print_access_count
 }
 
 # Main entry point of the script
