@@ -130,7 +130,8 @@ call_main_scripts() {
         for f in $ACCESS_LOG_ROTATED_FILES; do
             set -- "$@" "$f"
         done
-        echo "[INFO] Executing: $SCRIPT2 on $*" >> "$JOBLOG" 2>&1
+        LOG_COUNT=$#
+        echo "[INFO] Executing: $SCRIPT2 (logs: $LOG_COUNT)" >> "$JOBLOG" 2>&1
         echo "[IP Hits: Current + Rotated Logs]" >> "$JOBLOG" 2>&1
     else
         echo "[WARN] Rotated access log not found: $ACCESS_LOG_ROTATED" >> "$JOBLOG" 2>&1
