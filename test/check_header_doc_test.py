@@ -23,6 +23,8 @@
 #        Confirms that a blank line inside the header doc block is reported.
 #    - test_check_file_detects_typo_blank_comment_line_in_header_doc:
 #        Confirms that a typo line like "##" inside the header doc block is reported.
+#    - test_check_file_detects_non_comment_line_in_header_doc:
+#        Confirms that a non-comment line inside the header doc block is reported.
 #    - test_check_file_ignores_blank_line_outside_header_doc:
 #        Confirms that blank lines outside the header doc block are not reported.
 #    - test_check_file_quiet_mode_format:
@@ -35,6 +37,8 @@
 #        Confirms that files are scanned via filesystem traversal under --root without relying on Git.
 #
 #  Version History:
+#  v1.2 2026-01-12
+#       Add test for detecting non-comment lines inside header doc block.
 #  v1.1 2026-01-10
 #       Add test for detecting typo blank-comment lines like "##" inside header doc block.
 #  v1.0 2026-01-02
@@ -113,6 +117,28 @@ class TestCheckHeaderDoc(unittest.TestCase):
             hits = check_header_doc.check_file(path, quiet_mode=False)
             self.assertEqual(len(hits), 1)
             self.assertIn("invalid blank comment line inside header doc", hits[0])
+
+    def test_check_file_detects_non_comment_line_in_header_doc(self):
+        content = (
+            "#!/bin/sh\n"
+            "\n"
+            "########################################################################\n"
+            "# test: header\n"
+            "#\n"
+            "oops\n"  # missing "#"
+            "# after\n"
+            "########################################################################\n"
+            "echo ok\n"
+        )
+
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "t.sh")
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(content)
+
+            hits = check_header_doc.check_file(path, quiet_mode=False)
+            self.assertEqual(len(hits), 1)
+            self.assertIn("non-comment line inside header doc", hits[0])
 
     def test_check_file_ignores_blank_line_outside_header_doc(self):
         content = (

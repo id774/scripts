@@ -13,7 +13,8 @@
 #  documentation block bounded by separator lines (e.g., "########...").
 #  It detects missing comment markers inside that header block—specifically,
 #  blank lines that should be written as a comment line "#", and typo lines
-#  like "##" that should be "#".
+#  like "##" that should be "#". It also detects non-comment lines inside
+#  the header doc block.
 #
 #  The header block is defined as the content between the first and second
 #  separator lines consisting of 20 or more "#" characters. Only that region
@@ -52,6 +53,8 @@
 #  - 9: Unsupported Python version
 #
 #  Version History:
+#  v1.2 2026-01-12
+#       Detect non-comment lines inside header doc block.
 #  v1.1 2026-01-10
 #       Detect typo blank-comment lines like "##" inside header doc block.
 #  v1.0 2026-01-02
@@ -170,7 +173,7 @@ def check_file(path, quiet_mode):
     hits = []
 
     for idx in range(start + 1, end):
-        if lines[idx] == "":
+        if lines[idx].strip() == "":
             lineno = idx + 1
             hits.append(
                 format_hit(
@@ -196,14 +199,25 @@ def check_file(path, quiet_mode):
                 )
             )
 
+        # Detect non-comment lines inside header doc block (should start with "#").
+        if not lines[idx].startswith("#"):
+            lineno = idx + 1
+            hits.append(
+                format_hit(
+                    path,
+                    lineno,
+                    "non-comment line inside header doc (missing '#')",
+                    quiet_mode,
+                    lines[idx],
+                )
+            )
+
     return hits
 
 
 def main():
     """Parse arguments and execute header doc checking."""
     parser = OptionParser("usage: %prog [options]")
-    parser.add_option("-v", "--version", help="show the version and exit",
-                      action="store_true", dest="version")
     parser.add_option("-R", "--root", help="root directory to scan",
                       action="store", type="string", dest="root_dir")
     parser.add_option("-a", "--all-files", help="check all files",
@@ -211,10 +225,6 @@ def main():
     parser.add_option("-q", "--quiet", help="quiet mode (only file:line)",
                       action="store_true", dest="quiet_mode")
     (options, _) = parser.parse_args()
-
-    if options.version:
-        print("check_header_doc.py v1.0")
-        return 0
 
     root_dir = options.root_dir or os.getcwd()
     if not os.path.isdir(root_dir):
