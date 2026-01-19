@@ -27,6 +27,8 @@
 #      -a, --all:   No output limit for "Access Count" and "Referer" (same as -n 0).
 #
 #  Version History:
+#  v2.7 2026-01-20
+#       Add "Feed Read Access (Estimated)" section with unique(IP+UA) and 200/304 breakdown.
 #  v2.6 2026-01-08
 #       Add "Blog Entry Access" section to aggregate /XXXX/YYYY/MM/DD/NNNN/ hits and sort by date descending.
 #  v2.5 2026-01-06
@@ -75,6 +77,15 @@
 # Exclude static assets (css/js/fonts/images) from request path counting
 # Note: matched against the request path (2nd token of "$2" in -F'"' awk)
 EXCLUDE_PATH_RE='[.]((css|js|map)|(woff2?|ttf|otf|eot)|(png|jpe?g|gif|svg|webp|ico|avif))([?].*)?$'
+
+# Count "likely human" feed fetches (approximation).
+# Adjust FEED_PATH_RE to match your actual feed endpoint(s).
+# Examples: /feed/, /feed, /index.xml, /atom.xml, /rss.xml, ?feed=rss2
+FEED_PATH_RE='(^/feed(/)?$|/[.](xml|rss|atom)$|/(index|rss|atom)[.]xml$|[?&]feed=)'
+
+# Exclude obvious non-human feed fetchers (indexing/preview fetchers).
+# Note: keep Feedbin / tt-rss / FreshRSS / NextCloud-News.
+FEED_BOT_UA_RE='(feedfetcher-google|googlebot|bingbot|yandexbot|baiduspider|duckduckbot|ahrefsbot|semrushbot|mj12bot|dotbot|facebookexternalhit|twitterbot|slackbot)'
 
 # Exclude likely automated clients for blog-entry-only aggregation (case-insensitive)
 # Note: tuned for "human views" and may exclude link preview bots as well.
@@ -311,9 +322,55 @@ print_blog_entry_access() {
     ' | LC_ALL=C sort -k1,1nr -k2,2nr | awk '{print $3, $4}'
 }
 
+# Print estimated "human" feed fetch count (200/304 only).
+print_feed_read_access() {
+    echo "[Feed Read Access (Estimated)]"
+    filter_log_lines | awk -v feed_re="${FEED_PATH_RE}" -v bot_re="${FEED_BOT_UA_RE}" -F '"' '
+        BEGIN {
+            # Normalize bot UA regex once
+            bot_re_l = tolower(bot_re)
+        }
+        {
+            # Request path
+            split($2, a, " ")
+            path = a[2]
+            if (path == "" || path == "-") next
+            if (path !~ feed_re) next
+
+            # Status (accept 200 and 304)
+            status = $3
+            sub(/^[[:space:]]+/, "", status)
+            split(status, f, /[[:space:]]+/)
+            status = f[1]
+            if (status != "200" && status != "304") next
+
+            # Exclude obvious bots for feed requests
+            ua = tolower($6)
+            if (ua == "" || ua == "-") next
+            if (ua ~ bot_re_l) next
+
+            key = $1 "\t" ua
+            seen[key] = 1
+            total++
+            by_status[status]++
+        }
+        END {
+            uniq = 0
+            for (k in seen) uniq++
+            printf "total: %d\n", total + 0
+            printf "unique(ip+ua): %d\n", uniq + 0
+            if ((by_status["200"] + 0) > 0 || (by_status["304"] + 0) > 0) {
+                printf "  200: %d\n", by_status["200"] + 0
+                printf "  304: %d\n", by_status["304"] + 0
+            }
+        }
+    '
+}
+
 # Analyze the log file and output various access statistics.
 analyze_logs() {
     print_blog_entry_access
+    print_feed_read_access
     print_browser
     print_user_agent
     print_daily_access
