@@ -27,6 +27,8 @@
 #      -a, --all:   No output limit for "Access Count" and "Referer" (same as -n 0).
 #
 #  Version History:
+#  v2.8 2026-01-23
+#       Sort "Daily Access" by date descending.
 #  v2.7 2026-01-20
 #       Add "Feed Read Access (Estimated)" section with unique(IP+UA) and 200/304 breakdown.
 #  v2.6 2026-01-08
@@ -273,7 +275,10 @@ print_daily_access() {
             ymd = a[3] "-" month[a[2]] "-" a[1]  # Sort by ISO format
             if (ymd >= cutoff_ymd) print ymd
         }
-    ' | LC_ALL=C sort | uniq -c
+    ' | LC_ALL=C sort | uniq -c | \
+    awk '{print $2, $1}' | \
+    LC_ALL=C sort -k1,1r | \
+    awk '{print $2, $1}'
 }
 
 # Print blog-like entry access counts: */YYYY/MM/DD/NNNN/
