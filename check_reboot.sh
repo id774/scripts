@@ -38,10 +38,9 @@
 #      -h, --help:     Show this help and exit.
 #      -v, --version:  Show this help and exit (unified behavior).
 #
-#  Exit Codes:
+#  Error Conditions:
 #      0: Success (check completed; see logs for reboot requirement)
-#      1: Command failure or resource missing
-#      3: Local prerequisite missing (e.g., non-Linux)
+#      1: General Failure
 #    126: Command exists but is not executable
 #    127: Command not found
 #
@@ -68,7 +67,7 @@ usage() {
 check_system() {
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
-        exit 3
+        exit 1
     fi
 }
 

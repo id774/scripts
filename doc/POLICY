@@ -16,7 +16,7 @@
 - Detect command failures and missing prerequisites, output clear log messages.
 - Return code conventions:
   - 0: Success
-  - 1: Command failure or resource missing
+  - 1: General failure
   - 2: Network unreachable
   - 3: Local prerequisite missing
   - 126: Command or script exists but is not executable
