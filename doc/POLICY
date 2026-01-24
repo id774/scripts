@@ -113,7 +113,8 @@ or additions to this common policy, in order to avoid redundancy.
 ## Python Implementation Policy
 
 ### Supported Versions and Compatibility
-- Target version: **Python 3.2+**, ideally **3.4+**.
+- Code must fully support Python 3.6+.
+- Backward compatibility down to Python 3.1 is maintained on a best-effort basis and must not break existing behavior intentionally.
 - Avoid features that reduce backward compatibility unless guarded:
   - f-strings, `subprocess.run`, `subprocess.DEVNULL`
   - `async` / `await`, `yield from`, `asyncio`
