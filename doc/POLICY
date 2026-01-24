@@ -19,7 +19,9 @@ Exit code semantics are defined in the Shell Script section and apply equally to
 - Use unified log prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
 - Direct all error messages to standard error.
 - For cron environments, follow the same log format.
-- Email subject format: Use filter-friendly tags in the subject line (e.g. [cron], [admin]) to aid recipient-side mail filtering.
+- Email subject format:
+  Use filter-friendly tags in the subject line (e.g. `[cron]`, `[admin]`)
+  so that recipients can easily classify, filter, or route automated messages.
 
 ### Error Handling and Exit Codes
 - Detect command failures and unmet prerequisites, and output clear, actionable log messages.
@@ -28,10 +30,13 @@ Exit code semantics are defined in the Shell Script section and apply equally to
 #### Exit Code Conventions
 - **0: Success**
   The operation completed successfully.
+  This includes cases where the program terminates after displaying help or usage
+  information without encountering an error.
 
 - **1: General failure**
   The default failure code.
-  Use for invalid arguments, missing resources, processing errors, or any failure that does not require explicit classification.
+  Use for invalid arguments, missing resources, processing errors,
+  or any failure that does not require explicit classification.
 
 - **126: Command or script exists but is not executable**
   Reserved by the shell. Do not redefine.
@@ -61,9 +66,10 @@ Exit code semantics are defined in the Shell Script section and apply equally to
 - Align log writing and rotation with system log policy.
 
 ### CLI and Usage
-- Always implement `-h` to display usage and exit with code 0.
+- Always implement `-h` to display usage and exit with code 0,
+  as help output represents a successful, user-requested termination.
 - Parse options in a POSIX-compliant manner.
-- On invalid input, show usage and exit with code 1.
+- On invalid input or unsupported options, show usage and exit with code 1.
 
 ### Documentation and Version Control
 - Update documentation (Usage, Options, Test Cases, Version History) in sync with code changes.
