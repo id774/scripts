@@ -1,42 +1,46 @@
 # Implementation Policies
 
-This document defines implementation policies for Shell Scripts, Python, and Ruby.
-Design philosophy, logging style, and exit code semantics must be consistent across all languages.
+This document defines implementation policies shared across Shell Scripts, Python, and Ruby,
+followed by language-specific rules. The goal is to minimize redundancy while making the
+design intent explicit and consistent for all contributors.
 
-Exit code semantics are defined in the Shell Script section and apply equally to Python and Ruby unless explicitly stated otherwise.
+The **Common Policy** section defines rules that apply to *all* languages.
+Each language section then specifies only what is unique to that language.
 
 ---
 
-## Shell Script Implementation Policy
+## Common Policy (All Languages)
 
-### Basic Principles
-- Comply with POSIX (`#!/bin/sh`). Avoid Bash-specific syntax. Do not use `local`.
-- Modularize using functions. Each function should be short and single-purpose.
-- Preserve and update the header documentation, which must include:
-  `Description`, `Requirements`, `Usage`, `Options`, `Test Cases`, and `Version History` (in this order).
+### Design Philosophy
+- Prioritize clarity, portability, and explicit control over convenience.
+- Favor predictable behavior and long-term maintainability.
+- Avoid implicit behavior; make control flow, errors, and side effects explicit.
 
 ### Logging and Output
 - Use unified log prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
-- Direct all error messages to standard error.
-- For cron environments, follow the same log format.
-- Email subject format:
-  Use filter-friendly tags in the subject line (e.g. `[cron]`, `[admin]`)
-  so that recipients can easily classify, filter, or route automated messages.
+- Informational messages go to standard output.
+- Error messages always go to standard error.
+- Log messages must be human-readable and suitable for cron execution.
+- For automated emails (cron, admin jobs), use **filter-friendly tags**
+  (e.g. `[cron]`, `[admin]`) in the subject line so recipients can easily
+  classify, filter, or route messages.
 
 ### Error Handling and Exit Codes
-- Detect command failures and unmet prerequisites, and output clear, actionable log messages.
-- Exit codes must follow widely accepted UNIX/GNU/Linux conventions and remain consistent across the repository.
+- Detect command failures and unmet prerequisites early.
+- Always log the reason and affected target when an error occurs.
+- Exit code semantics must follow widely accepted UNIX/GNU/Linux conventions
+  and remain consistent across the repository.
 
 #### Exit Code Conventions
 - **0: Success**
   The operation completed successfully.
-  This includes cases where the program terminates after displaying help or usage
-  information without encountering an error.
+  This includes cases where the program terminates after displaying help or
+  usage information without encountering an error.
 
 - **1: General failure**
   The default failure code.
-  Use for invalid arguments, missing resources, processing errors,
-  or any failure that does not require explicit classification.
+  Use for invalid arguments, missing resources, processing errors, or any
+  failure that does not require explicit classification.
 
 - **126: Command or script exists but is not executable**
   Reserved by the shell. Do not redefine.
@@ -47,14 +51,49 @@ Exit code semantics are defined in the Shell Script section and apply equally to
 - **128 and above: Signal-related termination**
   Reserved by convention (128 + signal number). Do not use for application-defined errors.
 
-> If finer-grained classification is truly required, scripts may adopt `sysexits` codes (64–78).
-> Any such usage must be explicitly documented in the script header.
+> If finer-grained classification is truly required, `sysexits` codes (64–78)
+> may be used, but must be explicitly documented in the script or program header.
 
-#### Implementation Rules
-- Use explicit `exit` only for abnormal or forced termination at the top level.
-- For normal control flow, use `return` within functions and propagate the final status explicitly.
-- Do not use `set -e`.
-- Handle errors explicitly and robustly, performing early and strict checks to detect failures as soon as possible.
+### Control Flow Rules
+- Use explicit termination (`exit`, `sys.exit`, `exit()`) **only for abnormal or forced termination**.
+- Normal execution paths must return normally and propagate status explicitly.
+- Do not rely on implicit termination or language-specific shortcuts
+  (e.g. `set -e` in shell, bare `except` in Python).
+
+### CLI Conventions
+- All command-line tools must provide consistent options:
+  - `-h`, `--help` to display usage information and exit with code `0`.
+  - `-v`, `--version` to display version information and exit with code `0`.
+- Help or version output represents a successful, user-requested termination.
+- Invalid or unsupported options must result in usage output and exit with code `1`.
+
+### Documentation and Versioning
+- Every executable must contain a structured header with:
+  `Description`, `Requirements`, `Usage`, `Options`, `Test Cases`, `Version History`
+  (in this order).
+- Documentation must be updated in sync with behavior changes.
+- Do not increment version numbers multiple times on the same date.
+
+### Comments and Language
+- Comments must be written in **English** only.
+- Comments must be imperative, concise, and action-oriented
+  (e.g. `# Validate input`, `# Initialize environment`).
+
+### Testing and Operation
+- Assume cron execution by default; define `PATH` and required environment variables explicitly.
+- Validation must include syntax checks and exit-code verification.
+- In plugin-based systems, loaders must collect and propagate plugin return codes.
+
+---
+
+## Shell Script Implementation Policy
+
+### Basic Principles
+- Comply strictly with POSIX (`#!/bin/sh`).
+- Avoid Bash-specific syntax and extensions.
+- Do not use `local`.
+- Modularize using small, single-purpose functions.
+- Follow the structured header requirements defined in the Common Policy.
 
 ### Dependency and Environment Checks
 - Validate required commands and environment variables at startup.
@@ -62,132 +101,62 @@ Exit code semantics are defined in the Shell Script section and apply equally to
 
 ### I/O and Side Effects
 - Respect existing temporary file logic and directory structures.
-- Avoid destructive overwrites. Validate paths before modification.
+- Avoid destructive overwrites; validate paths before modification.
 - Align log writing and rotation with system log policy.
-
-### CLI and Usage
-- Always implement `-h` to display usage and exit with code 0,
-  as help output represents a successful, user-requested termination.
-- Parse options in a POSIX-compliant manner.
-- On invalid input or unsupported options, show usage and exit with code 1.
-
-### Documentation and Version Control
-- Update documentation (Usage, Options, Test Cases, Version History) in sync with code changes.
-- Do not change version numbers multiple times on the same date.
-  Keep the version static until completion.
-
-### Comments and Language
-- Use English comments only.
-- Start comments with an action verb, concise and direct
-  (e.g., `# Check files`, `# Initialize environment`).
-
-### Testing and Operation
-- Verify syntax and exit codes with a dedicated validation script using `-h` mode.
-- Assume cron execution environment; define `PATH` and other environment variables explicitly.
-- In plugin-based structures, the loader must collect and propagate plugin return codes.
 
 ---
 
 ## Python Implementation Policy
-
-### Basic Principles
-- Follow the same design philosophy as shell scripts: clarity, portability, and explicit control.
-- Favor long-term compatibility and predictable behavior over syntactic convenience.
+- This section defines Python-specific rules. Common rules are defined in "Common Policy (All Languages)".
 
 ### Supported Versions and Compatibility
 - Target version: **Python 3.2+**, ideally **3.4+**.
-- Avoid features that reduce compatibility unless guarded by version checks:
+- Avoid features that reduce backward compatibility unless guarded:
   - f-strings, `subprocess.run`, `subprocess.DEVNULL`
   - `async` / `await`, `yield from`, `asyncio`
   - Type hints, matrix operator `@`, unnecessary `nonlocal`
   - `pathlib`, `shutil.which`
 - Use `find_pycompat.py` to verify compatibility.
 
-### Error Handling and Exit Codes
-- Exit code semantics are **identical to the Shell Script policy**.
-- Handle exceptions explicitly; never suppress them silently.
-- Normalize errors to standard exit codes defined in the Shell Script policy.
-
 ### Program Structure
 - Define `main() -> int` as the entry point.
-- Terminate execution using `sys.exit(main())`.
+- Terminate execution with `sys.exit(main())`.
 - Use early returns to simplify control flow.
 
-### Logging and Output
-- Use standardized prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
-- Send error messages to `sys.stderr`.
-- Help output must exit with code 0.
-
-### CLI and Usage
-- Use only the standard library (e.g., `argparse`).
-- On invalid arguments, show concise usage and exit with code 1.
-
-### Dependencies and Environment
+### Dependencies and I/O
 - Depend only on the standard library.
-- Implement manual PATH search when command lookup is required.
+- Implement manual PATH search if command lookup is required.
 - Always use `encoding="utf-8"` for file operations.
 
-### I/O and Side Effects
-- Validate file existence, type, and permissions before modification.
-- Include affected paths and reasons in error messages.
-- Follow the same temporary file conventions as shell scripts.
-
-### Comments and Language
-- Write comments in English, imperative, and concise.
-
-### Testing and Verification
-- Store tests in `test/` with names `FILENAME_test.py`.
+### Testing
+- Store tests in `test/` as `FILENAME_test.py`.
 - Use only standard libraries for testing.
 - Any compatibility issue detected by `find_pycompat.py` is a failure.
 
 ---
 
 ## Ruby Implementation Policy
+- This section defines Ruby-specific rules. Common rules are defined in "Common Policy (All Languages)".
 
-### Basic Principles
-- Follow the same design philosophy as the Shell Script and Python policies.
-- Prefer explicit, predictable constructs over dynamic or metaprogramming-heavy ones.
+### Supported Versions
 - Minimum supported version: **Ruby 3.0 or later**.
-
-### Error Handling and Exit Codes
-- Exit code semantics are **identical to the Shell Script policy**.
-- Catch exceptions explicitly and log `[ERROR]` messages with cause and context.
-- Never suppress exceptions silently.
 
 ### Program Structure
 - Define `main` as the entry point.
 - Finalize execution with `exit(main) if __FILE__ == $0`.
 - Use early returns to simplify control flow.
 
-### Logging and Output
-- Use unified log prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
-- Direct errors to `STDERR` and informational output to `STDOUT`.
-- Help or version output must exit with code 0.
+### CLI Implementation
+- Use `OptionParser` from the standard library to implement
+  the common CLI conventions defined above.
 
-### CLI Design
-- Use `OptionParser` from the standard library.
-- Provide consistent options: `-h` / `--help`, `-v` / `--version`.
-- On invalid arguments, show usage and exit with code 1.
-
-### Dependencies and Environment
+### Dependencies and I/O
 - Depend only on standard libraries.
-- Use `Open3.capture3` or `system` for external command execution.
+- Use `Open3.capture3` for external command execution when stdout, stderr, or exit status must be inspected.
+- `system` may be used only when command output is intentionally ignored and success or failure alone is sufficient.
 - Always specify UTF-8 encoding for file operations.
+- Validate file existence, type, and permissions before destructive operations.
 
-### I/O and Side Effects
-- Verify file existence, type, and permissions before destructive operations.
-- Include affected paths and reasons in error logs.
-- Follow the same temporary file conventions as shell scripts.
-
-### Comments and Language
-- Write comments in English, imperative, and concise.
-
-### Documentation and Version Control
-- Maintain the same header structure as shell and Python scripts:
-  `Description / Requirements / Usage / Options / Test Cases / Version History`.
-- Update documentation in sync with behavior changes.
-- Avoid multiple version increments within the same day.
-
-### Testing and Verification
-- Store tests in `test/` using RSpec with names `FILENAME_test.rb`.
+### Testing
+- Store tests in `test/` using RSpec as `FILENAME_test.rb`.
 - Ensure all tests pass before release.
