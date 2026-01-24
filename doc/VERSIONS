@@ -5,6 +5,7 @@ v1.6.3 (Release Date: TBD)
 --------------------------
 - Add erase_history.py for quick removal of recent zsh history lines.
 - Add check_header_doc.py to detect missing comment markers in header documentation blocks.
+- Add check_reboot.sh to detect reboot requirements using both reboot-required flag and needrestart.
 - Make apache_log_analysis wrapper tolerant of missing rotated logs and clarify rotated-log IP hit labeling.
 - Make apache log summaries configurable for top-N output and remove limits in cron execution.
 - Add blog entry access aggregation and reorganize apache_log_analysis.sh reporting into dedicated output functions.
