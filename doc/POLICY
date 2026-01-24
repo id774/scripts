@@ -9,6 +9,10 @@ Each language section then specifies only what is unique to that language.
 
 ---
 
+This section defines rules that apply uniformly to all languages.
+Each language-specific section intentionally describes only deviations from
+or additions to this common policy, in order to avoid redundancy.
+
 ## Common Policy (All Languages)
 
 ### Design Philosophy
@@ -107,7 +111,6 @@ Each language section then specifies only what is unique to that language.
 ---
 
 ## Python Implementation Policy
-- This section defines Python-specific rules. Common rules are defined in "Common Policy (All Languages)".
 
 ### Supported Versions and Compatibility
 - Target version: **Python 3.2+**, ideally **3.4+**.
@@ -136,7 +139,6 @@ Each language section then specifies only what is unique to that language.
 ---
 
 ## Ruby Implementation Policy
-- This section defines Ruby-specific rules. Common rules are defined in "Common Policy (All Languages)".
 
 ### Supported Versions
 - Minimum supported version: **Ruby 3.0 or later**.
