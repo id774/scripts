@@ -12,6 +12,7 @@ v1.6.3 (Release Date: TBD)
 - Fix apache_log_analysis.sh filtering and parsing to prevent skewed summaries (remove https-only input, safer ignore matching, robust referer extraction).
 - Fix apache_calculater.py ignore list parsing and combined-log field extraction to keep IP hits and cache rates accurate.
 - Document test cases explicitly in all test scripts for consistent header documentation.
+- Refine implementation POLICY by centralizing common rules (logging, exit codes, CLI, documentation) and clarifying language-specific responsibilities.
 
 v1.6.2 (2025-12-31)
 -------------------
