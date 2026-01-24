@@ -19,7 +19,7 @@ Exit code semantics are defined in the Shell Script section and apply equally to
 - Use unified log prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
 - Direct all error messages to standard error.
 - For cron environments, follow the same log format.
-- Email subject format: `[admin][cron][delivery] FILENAME`.
+- Email subject format: Use filter-friendly tags in the subject line (e.g. [cron], [admin]) to aid recipient-side mail filtering.
 
 ### Error Handling and Exit Codes
 - Detect command failures and unmet prerequisites, and output clear, actionable log messages.
