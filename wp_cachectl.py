@@ -75,7 +75,7 @@
 #      --l1:             Include L1 transients deletion (after-plugin-update only).
 #      --l3-force:       Include L3 W3TC flush (after-plugin-update only).
 #      --level:          Troubleshoot level (1..4).
-#      -v, --version:    Show version and exit (extracted from header).
+#      --version:        Show version and exit (extracted from header).
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
