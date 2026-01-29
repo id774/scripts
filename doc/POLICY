@@ -137,6 +137,12 @@ or additions to this common policy, in order to avoid redundancy.
 - Use only standard libraries for testing.
 - Any compatibility issue detected by `find_pycompat.py` is a failure.
 
+### Command-Line Option Handling
+
+- When using `optparse.OptionParser`, supporting `-v` as a shorthand for `--version` is not mandatory.
+- Scripts may choose to support only long options (e.g. `--version`) to avoid ambiguity with future `verbose` semantics.
+- In such cases, behavior and documentation must be consistent, and unsupported short options should fail explicitly.
+
 ---
 
 ## Ruby Implementation Policy
