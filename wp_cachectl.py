@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 ########################################################################
-# cachectl.py: Safe WP-CLI Cache Control (Event-driven, Layered)
+# wp_cachectl.py: Safe WP-CLI Cache Control (Event-driven, Layered)
 #
 #  Description:
 #  This script is a practical operations tool for WordPress cache handling.
@@ -38,7 +38,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      python cachectl.py [options] <command>
+#      python wp_cachectl.py [options] <command>
 #
 #  Commands:
 #      status
@@ -400,7 +400,7 @@ def main():
 
     wp_bin = os.environ.get("WP_BIN", "wp")
 
-    parser = OptionParser("usage: %prog [options] <command>", version="cachectl.py %s" % __version__)
+    parser = OptionParser("usage: %prog [options] <command>", version="wp_cachectl.py %s" % __version__)
     parser.add_option("-p", "--path",
                       dest="wp_path",
                       help="WordPress install path (default: %s)" % DEFAULT_WP_PATH,
