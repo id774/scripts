@@ -1,8 +1,8 @@
 scripts Repository Version History
 ==================================
 
-v1.6.3 (Release Date: TBD)
---------------------------
+v1.6.3 (2026-01-30)
+-------------------
 - Add erase_history.py for quick removal of recent zsh history lines.
 - Add check_header_doc.py to detect missing comment markers in header documentation blocks.
 - Add check_reboot.sh to detect reboot requirements using both reboot-required flag and needrestart.
