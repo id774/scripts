@@ -22,6 +22,8 @@
 #  -n   Do not save source files after installation.
 #
 #  Version History:
+#  v2.7 2026-02-05
+#       Remove preflight network connectivity check.
 #  v2.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.5 2025-04-27
@@ -79,14 +81,6 @@ check_commands() {
     done
 }
 
-# Check network connectivity
-check_network() {
-    if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
-        echo "[ERROR] No network connection detected. Please check your internet access." >&2
-        exit 1
-    fi
-}
-
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
@@ -102,12 +96,7 @@ setup_environment() {
 
     echo "[INFO] Checking system requirements..."
     check_commands dmsetup curl wget md5sum tar make sudo rm mkdir cp chown
-
-    echo "[INFO] Checking network connectivity..."
-    check_network
-
     check_sudo
-
     OWNER=root:root
 }
 

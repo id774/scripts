@@ -26,6 +26,8 @@
 #  - Requires `sudo` privileges for modifying system directories.
 #
 #  Version History:
+#  v1.4 2026-02-05
+#       Remove preflight network connectivity check.
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2025-04-13
@@ -79,14 +81,6 @@ check_scripts() {
     fi
 }
 
-# Check network connectivity
-check_network() {
-    if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
-        echo "[ERROR] No network connection detected. Please check your internet access." >&2
-        exit 1
-    fi
-}
-
 # Check if the user has sudo privileges
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
@@ -136,7 +130,6 @@ main() {
     check_system
     check_commands curl sudo rm bash
     check_scripts
-    check_network
     check_required_scripts
     check_sudo
     reinstall_homebrew

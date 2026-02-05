@@ -40,6 +40,8 @@
 #  - Must be executed in a shell environment with internet access.
 #
 #  Version History:
+#  v2.6 2026-02-05
+#       Remove preflight network connectivity check.
 #  v2.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.4 2025-04-27
@@ -82,14 +84,6 @@ check_commands() {
             exit 126
         fi
     done
-}
-
-# Check network connectivity
-check_network() {
-    if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
-        echo "[ERROR] No network connection detected. Please check your internet access." >&2
-        exit 1
-    fi
 }
 
 # Check if the user has sudo privileges (password may be required)
@@ -223,7 +217,6 @@ main() {
 
     # Perform initial checks
     check_commands curl sudo make tar awk mkdir cp chown uname
-    check_network
 
     # Run the installation process
     setup_environment "$@"

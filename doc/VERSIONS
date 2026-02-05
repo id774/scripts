@@ -1,6 +1,10 @@
 scripts Repository Version History
 ==================================
 
+v1.6.4 (Release Date: TBD)
+--------------------------
+- Remove preflight network connectivity checks from installer scripts due to environment-dependent failures.
+
 v1.6.3 (2026-01-30)
 -------------------
 - Add erase_history.py for quick removal of recent zsh history lines.

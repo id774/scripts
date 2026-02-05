@@ -24,6 +24,8 @@
 #  - This script is intended for Linux systems only.
 #
 #  Version History:
+#  v2.6 2026-02-05
+#       Remove preflight network connectivity check.
 #  v2.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.4 2025-04-28
@@ -75,14 +77,6 @@ check_commands() {
     done
 }
 
-# Check network connectivity
-check_network() {
-    if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
-        echo "[ERROR] No network connection detected. Please check your internet access." >&2
-        exit 1
-    fi
-}
-
 # Check if the user has sudo privileges
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
@@ -132,7 +126,6 @@ main() {
 
     check_system
     check_commands curl wget sudo tar chown rm
-    check_network
     check_sudo
     install_gdm_themes2
 

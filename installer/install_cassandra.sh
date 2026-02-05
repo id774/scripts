@@ -28,6 +28,8 @@
 #  - This script is intended for Linux systems only.
 #
 #  Version History:
+#  v1.6 2026-02-05
+#       Remove preflight network connectivity check.
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.4 2025-04-28
@@ -75,14 +77,6 @@ check_commands() {
             exit 126
         fi
     done
-}
-
-# Check network connectivity
-check_network() {
-    if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
-        echo "[ERROR] No network connection detected. Please check your internet access." >&2
-        exit 1
-    fi
 }
 
 # Check if the user has sudo privileges
@@ -181,7 +175,6 @@ main() {
 
     check_system
     check_commands curl wget sudo tar mkdir mv rm
-    check_network
     check_sudo
     install_cassandra "$@"
 

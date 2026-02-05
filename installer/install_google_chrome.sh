@@ -49,6 +49,8 @@
 #      ./install_google_chrome.sh
 #
 #  Version History:
+#  v1.1 2026-02-05
+#       Remove preflight network connectivity check.
 #  v1.0 2025-09-04
 #       Initial release for Debian 13.
 #
@@ -86,14 +88,6 @@ check_commands() {
     done
 }
 
-# Check network connectivity
-check_network() {
-    if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
-        echo "[ERROR] No network connection detected. Please check your internet access." >&2
-        exit 1
-    fi
-}
-
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
@@ -117,10 +111,6 @@ setup_environment() {
     echo "[INFO] Checking required commands..."
     # Verify that all external tools required by the script are available.
     check_commands awk uname cp rm chmod mktemp curl gpg tee apt grep mkdir dpkg
-
-    echo "[INFO] Checking network connectivity..."
-    # Ensure basic internet connectivity is present before continuing.
-    check_network
 
     # Verify the current user has sudo privileges for system modifications.
     check_sudo

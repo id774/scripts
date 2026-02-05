@@ -34,6 +34,8 @@
 #  - `trash` is installed for safer file deletions, replacing `rm`.
 #
 #  Version History:
+#  v1.6 2026-02-05
+#       Remove preflight network connectivity check.
 #  v1.5 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.4 2025-04-13
@@ -70,14 +72,6 @@ check_system() {
     fi
 }
 
-# Check network connectivity
-check_network() {
-    if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
-        echo "[ERROR] No network connection detected. Please check your internet access." >&2
-        exit 1
-    fi
-}
-
 # Check if Homebrew is installed
 check_homebrew() {
     if ! command -v brew >/dev/null 2>&1; then
@@ -93,7 +87,6 @@ main() {
     esac
 
     check_system
-    check_network
     check_homebrew
 
     # Check Homebrew environment

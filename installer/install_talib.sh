@@ -31,6 +31,8 @@
 #  - This script is intended for Linux systems only.
 #
 #  Version History:
+#  v0.9 2026-02-05
+#       Remove preflight network connectivity check.
 #  v0.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v0.7 2025-04-27
@@ -80,14 +82,6 @@ check_commands() {
             exit 126
         fi
     done
-}
-
-# Check network connectivity
-check_network() {
-    if ! curl -s --head --connect-timeout 5 http://clients3.google.com/generate_204 >/dev/null; then
-        echo "[ERROR] No network connection detected. Please check your internet access." >&2
-        exit 1
-    fi
 }
 
 # Check if user has sudo privileges
@@ -190,7 +184,6 @@ main() {
     # Perform initial checks
     check_system
     check_commands curl make sudo tar
-    check_network
     check_sudo
 
     # Run the installation process
