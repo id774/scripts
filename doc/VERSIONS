@@ -3,6 +3,7 @@ scripts Repository Version History
 
 v1.6.4 (Release Date: TBD)
 --------------------------
+- Limit Apache log processing to ssl_access.log and ssl_access.log.1 only.
 - Remove preflight network connectivity checks from installer scripts due to environment-dependent failures.
 
 v1.6.3 (2026-01-30)
