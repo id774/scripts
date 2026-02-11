@@ -16,17 +16,20 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./apache_log_analysis.sh [options] [log_file_path]
+#      ./apache_log_analysis.sh [options] log_file_path [log_file_path ...]
 #  Example:
 #      ./apache_log_analysis.sh /var/log/apache2/ssl_access.log
 #      ./apache_log_analysis.sh -n 200 /var/log/apache2/ssl_access.log
 #      ./apache_log_analysis.sh --all /var/log/apache2/ssl_access.log
+#      ./apache_log_analysis.sh /var/log/apache2/ssl_access.log /var/log/apache2/ssl_access.log.1.gz
 #
 #  Options:
 #      -n, --top N: Limit "Access Count" and "Referer" output to top N entries (default: 100). Use 0 for no limit.
 #      -a, --all:   No output limit for "Access Count" and "Referer" (same as -n 0).
 #
 #  Version History:
+#  v2.9 2026-02-11
+#       Analyze only explicitly specified log file(s) and support multiple log file arguments.
 #  v2.8 2026-01-23
 #       Sort "Daily Access" by date descending.
 #  v2.7 2026-01-20
@@ -177,39 +180,6 @@ setup_time_window() {
     fi
 
     CUTOFF_YMD=$("$DATE_CMD" -d '1 year ago' +%Y-%m-%d)
-}
-
-# Print log lines excluding ignored IPs and static asset requests
-filter_log_lines() {
-    # Use zgrep to cover both plain and gz logs
-    IGNORE_FILE_USE=${IGNORE_FILE:-/dev/null}
-    zgrep -h -e '' "$LOG_FILE"* | \
-    awk -v ex="${EXCLUDE_PATH_RE}" -v default_ip="${IGNORE_DEFAULT_IP}" -F '"' '
-        FNR==NR {
-            line = $0
-            sub(/#.*/, "", line)
-            gsub(/^[[:space:]]+/, "", line)
-            gsub(/[[:space:]]+$/, "", line)
-            if (line == "") next
-            split(line, f, /[[:space:]]+/)
-            if (f[1] == "") next
-            ignore[f[1]] = 1
-            next
-        }
-        BEGIN {
-            ignore[default_ip] = 1
-        }
-        {
-            # Exclude ignored IPs (fixed-string match on the first field)
-            ip = $1
-            if (ip in ignore) next
-
-            # $2: request line (e.g., GET /path HTTP/1.1)
-            split($2, a, " ")
-            if (a[2] ~ ex) next
-            print $0
-        }
-    ' "$IGNORE_FILE_USE" -
 }
 
 # Print lines with optional top-N limitation.
@@ -384,10 +354,24 @@ analyze_logs() {
     print_access_count
 }
 
-# Main entry point of the script
-main() {
+# Initialize default runtime parameters (TOP_N, NO_LIMIT, LOG_FILE_COUNT).
+init_defaults() {
     TOP_N=100
     NO_LIMIT=0
+    LOG_FILE_COUNT=0
+}
+
+# Convert an arbitrary string into a single-quoted, eval-safe shell literal
+# so that file paths containing spaces or special characters can be stored safely.
+quote_sh() {
+    # POSIX sed: escape single quotes and wrap with single quotes
+    printf '%s' "$1" | sed "s/'/'\\\\''/g; 1s/^/'/; \$s/\$/'/"
+}
+
+# Parse command-line options, then store remaining arguments as log file paths
+# into LOG_FILE_1..N variables using eval-safe quoting; also record LOG_FILE_COUNT.
+parse_options() {
+    LOG_FILE_COUNT=0
 
     while [ "$#" -gt 0 ]; do
         case "$1" in
@@ -425,10 +409,24 @@ main() {
         esac
     done
 
+    # Remaining args are log file paths (one or more)
     if [ "$#" -eq 0 ]; then
         usage
     fi
 
+    while [ "$#" -gt 0 ]; do
+        LOG_FILE_COUNT=$((LOG_FILE_COUNT + 1))
+        q=$(quote_sh "$1")
+        eval "LOG_FILE_${LOG_FILE_COUNT}=${q}"
+        shift
+    done
+
+    return 0
+}
+
+# Validate the TOP_N value to ensure it is a non-negative integer and
+# synchronize NO_LIMIT when TOP_N is zero.
+validate_top_n() {
     case "$TOP_N" in
         ''|*[!0-9]*)
             echo "[ERROR] Invalid value for --top: $TOP_N (must be a non-negative integer)." >&2
@@ -439,15 +437,74 @@ main() {
     if [ "$TOP_N" -eq 0 ]; then
         NO_LIMIT=1
     fi
+}
 
-    check_commands grep zgrep awk sort uniq wc paste uname cat head
-
-    LOG_FILE=$1
-
-    if [ ! -f "$LOG_FILE" ]; then
-        echo "[ERROR] Log file not found at $LOG_FILE." >&2
-        exit 1
+# Verify that all specified log files (LOG_FILE_1..N) exist before processing.
+validate_log_files() {
+    if [ "${LOG_FILE_COUNT:-0}" -le 0 ]; then
+        usage
     fi
+
+    i=1
+    while [ "$i" -le "$LOG_FILE_COUNT" ]; do
+        eval "f=\${LOG_FILE_${i}}"
+        if [ ! -f "$f" ]; then
+            echo "[ERROR] Log file not found at $f." >&2
+            exit 1
+        fi
+        i=$((i + 1))
+    done
+}
+
+# Reconstruct the argument vector from stored LOG_FILE_1..N variables and
+# feed those paths to zgrep safely (space-preserving) before applying filters.
+filter_log_lines() {
+    IGNORE_FILE_USE=${IGNORE_FILE:-/dev/null}
+
+    # Reconstruct argv as: set -- "$LOG_FILE_1" ... "$LOG_FILE_N"
+    set --
+    i=1
+    while [ "$i" -le "$LOG_FILE_COUNT" ]; do
+        eval "f=\${LOG_FILE_${i}}"
+        set -- "$@" "$f"
+        i=$((i + 1))
+    done
+
+    zgrep -h -e '' -- "$@" | \
+    awk -v ex="${EXCLUDE_PATH_RE}" -v default_ip="${IGNORE_DEFAULT_IP}" -F '"' '
+        FNR==NR {
+            line = $0
+            sub(/#.*/, "", line)
+            gsub(/^[[:space:]]+/, "", line)
+            gsub(/[[:space:]]+$/, "", line)
+            if (line == "") next
+            split(line, f, /[[:space:]]+/)
+            if (f[1] == "") next
+            ignore[f[1]] = 1
+            next
+        }
+        BEGIN {
+            ignore[default_ip] = 1
+        }
+        {
+            ip = $1
+            if (ip in ignore) next
+
+            split($2, a, " ")
+            if (a[2] ~ ex) next
+            print $0
+        }
+    ' "$IGNORE_FILE_USE" -
+}
+
+# Main entry point of the script
+main() {
+    check_commands grep zgrep awk sort uniq wc paste uname cat head sed
+
+    init_defaults
+    parse_options "$@"
+    validate_top_n
+    validate_log_files
 
     load_ignore_list
     setup_time_window
