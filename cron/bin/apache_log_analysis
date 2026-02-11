@@ -131,9 +131,10 @@ call_main_scripts() {
     set -- "$ACCESS_LOG"
 
     if [ -n "$ACCESS_LOG_ROTATED_FILES" ]; then
-        for f in $ACCESS_LOG_ROTATED_FILES; do
-            set -- "$@" "$f"
-        done
+        # ACCESS_LOG_ROTATED_FILES contains at most one path; append it as a
+        # single argument to avoid unintended word-splitting on whitespace.
+        set -- "$@" "$ACCESS_LOG_ROTATED_FILES"
+
         LOG_COUNT=$#
         echo "[INFO] Executing: $SCRIPT2 (logs: $LOG_COUNT)" >> "$JOBLOG" 2>&1
         echo "[IP Hits: Current + Rotated Logs]" >> "$JOBLOG" 2>&1
