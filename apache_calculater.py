@@ -22,15 +22,17 @@
 #  Usage:
 #      apache_calculater.py <log_file> [<log_file> ...]
 #
-#  The script ignores IPs listed in /etc/cron.config/apache_ignore.list
-#  if the file exists. You can customize it as needed.
-#
 #  Example:
 #      apache_calculater.py /var/log/apache2/access.log
 #      apache_calculater.py /var/log/apache2/access.log /var/log/apache2/access.log.1.gz
-#      apache_calculater.py /var/log/apache2/ssl_access.log*
+#      apache_calculater.py /var/log/apache2/ssl_access.log /var/log/apache2/ssl_access.log.1
 #
-#  Multiple log files are treated as a single logical dataset.
+#  Note:
+#      Only explicitly specified log files are processed.
+#      Rotated logs are not included automatically; specify them explicitly if needed.
+#
+#  The script ignores IPs listed in /etc/cron.config/apache_ignore.list
+#  if the file exists. You can customize it as needed.
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
