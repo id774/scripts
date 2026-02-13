@@ -206,6 +206,11 @@ utils_packages() {
     smart_apt ranger caca-utils highlight atool w3m poppler-utils mediainfo
 }
 
+# Remove Desktop client
+remote_desktop_packages() {
+    smart_apt remmina remmina-plugin-rdp remmina-plugin-vnc
+}
+
 # Optional packages
 optional_packages() {
     smart_apt thunderbird thunderbird-locale-ja firefox firefox-locale-ja \
@@ -232,6 +237,7 @@ main() {
     icon_packages
     gconf_packages
     utils_packages
+    remote_desktop_packages
     optional_packages
 
     echo "[INFO] All specified desktop packages have been installed."

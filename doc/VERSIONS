@@ -3,6 +3,7 @@ scripts Repository Version History
 
 v1.6.4 (Release Date: TBD)
 --------------------------
+- Add Remmina remote desktop client packages to desktop installer.
 - Analyze only explicitly specified Apache log files and support multiple log file arguments.
 - Avoid unintended word splitting when appending the rotated log path in cron execution.
 - Remove frequently used cursor-movement escape bindings (^A, ^B, ^E) to prevent accidental triggers.
