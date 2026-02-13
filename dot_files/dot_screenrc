@@ -9,9 +9,6 @@ defencoding utf-8
 
 # Set custom command prefix key to ^T and define alternate bindings
 escape ^Tt
-bind ^A escape ^Aa
-bind ^B escape ^Bb
-bind ^E escape ^Ee
 bind ^O escape ^Oo
 bind ^Q escape ^Qq
 bind ^V escape ^Vv
@@ -56,4 +53,4 @@ hardcopydir "$TMP"
 deflog on
 
 # Create initial window with a welcome message and fallback shell
-screen sh -c 'screen -v; echo "Command prefix key: ^T (Control-T)"; echo "Custom bindings after prefix: a, b, e, o, q, v, w, x, y, z"; echo ""; exec ${SHELL:-/bin/sh}'
+screen sh -c 'screen -v; echo "Command prefix key: ^T (Control-T)"; echo "Custom bindings after prefix: o, q, v, w, x, y, z"; echo ""; exec ${SHELL:-/bin/sh}'
