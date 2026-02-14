@@ -41,6 +41,8 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
+#  v2.2 2026-02-14
+#       Improve dconf verification logic to compare full key=value entries and ensure required grep dependency.
 #  v2.1 2025-08-20
 #       Expanded header documentation to enumerate all applied configuration
 #       steps and system tuning tasks for consistency and transparency.
@@ -250,10 +252,28 @@ dconf_load_settings() {
         exit 1
     fi
 
-    expected="$(awk -F= '/^[a-zA-Z0-9_-]+=/{print $1"="$2}' "$dc_file" | wc -l | tr -d ' ')"
-    applied="$(awk -F= '/^[a-zA-Z0-9_-]+=/{print $1"="$2}' "$dc_file" | while IFS= read -r kv; do
-        printf "%s\n" "$after_dump" | awk -v kv="$kv" 'BEGIN{s=1} $0==kv{s=0} END{exit s}' && echo ok
-    done | wc -l | tr -d ' ')"
+    # Confirm all key=value lines in the source file exist in the loaded dump
+    # - Skip blank lines, section headers ([...]), and comments
+    # - Compare full "key=value" lines (do not truncate values)
+    expected=0
+    applied=0
+    while IFS= read -r line; do
+        case "$line" in
+            ""|\#*|\;*|\[*\]) continue ;;
+        esac
+        case "$line" in
+            *=*)
+                expected=$((expected + 1))
+                printf "%s\n" "$after_dump" | grep -Fqx -e "$line" && {
+                    applied=$((applied + 1))
+                    continue
+                }
+                echo "[ERROR] dconf key not applied under $dc_path: $line" >&2
+                exit 1
+                ;;
+            *) continue ;;
+        esac
+    done < "$dc_file"
 
     echo "[INFO] Confirming dconf $dc_path keys applied: expected=$expected applied=$applied"
     if [ "$expected" != "$applied" ]; then

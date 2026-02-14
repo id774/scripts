@@ -227,10 +227,27 @@ dconf_load_settings() {
     fi
 
     # Confirm all key=value lines in the source file exist in the loaded dump
-    expected="$(awk -F= '/^[a-zA-Z0-9_-]+=/{print $1"="$2}' "$dc_file" | wc -l | tr -d ' ')"
-    applied="$(awk -F= '/^[a-zA-Z0-9_-]+=/{print $1"="$2}' "$dc_file" | while IFS= read -r kv; do
-        printf "%s\n" "$after_dump" | awk -v kv="$kv" 'BEGIN{s=1} $0==kv{s=0} END{exit s}' && echo ok
-    done | wc -l | tr -d ' ')"
+    # - Skip blank lines, section headers ([...]), and comments
+    # - Compare full "key=value" lines (do not truncate values)
+    expected=0
+    applied=0
+    while IFS= read -r line; do
+        case "$line" in
+            ""|\#*|\;*|\[*\]) continue ;;
+        esac
+        case "$line" in
+            *=*)
+                expected=$((expected + 1))
+                printf "%s\n" "$after_dump" | grep -Fqx -e "$line" && {
+                    applied=$((applied + 1))
+                    continue
+                }
+                echo "[ERROR] dconf key not applied under $dc_path: $line" >&2
+                exit 1
+                ;;
+            *) continue ;;
+        esac
+    done < "$dc_file"
 
     echo "[INFO] Confirming dconf $dc_path keys applied: expected=$expected applied=$applied"
     if [ "$expected" != "$applied" ]; then
@@ -330,7 +347,7 @@ main() {
     check_session_bus
 
     # Verify required commands for this script
-    check_commands gsettings dconf mkdir cp awk uname wc tr systemctl
+    check_commands gsettings dconf mkdir cp awk uname wc tr grep systemctl
 
     # Apply GNOME Shell settings
     apply_media_handling_settings
