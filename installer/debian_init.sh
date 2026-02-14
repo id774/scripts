@@ -33,18 +33,18 @@
 #      ./debian_init.sh                    # base setup only
 #      ./debian_init.sh --xfce             # include XFCE desktop provisioning
 #      ./debian_init.sh --gnome-flashback  # include GNOME Flashback provisioning
+#      ./debian_init.sh --gnome            # include GNOME Shell provisioning
 #
-#  Description:
 #  - Run the script directly; it will configure base system setup.
-#  - Use --xfce or --gnome-flashback to include desktop provisioning steps.
+#  - Use --xfce, --gnome-flashback, or --gnome to include desktop provisioning steps.
 #
 #  Notes:
 #  - The script is designed for Debian-based systems (Debian, Ubuntu, etc.).
 #  - Internet connectivity is required for package installations.
 #  - Review and modify the installation scripts as needed before execution.
 #  - By default, only minimal system setup is applied. Desktop provisioning
-#    runs only when --xfce or --gnome-flashback is specified to avoid
-#    accidental GUI stack installation on server hosts.
+#    runs only when a desktop option is specified to avoid accidental GUI
+#    stack installation on server hosts.
 #
 #  Error Conditions:
 #  - If the system is not Debian-based, the script exits with an error.
@@ -52,6 +52,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v6.2 2026-02-14
+#       Add --gnome option and allow multiple flags while keeping desktop
+#       options mutually exclusive.
 #  v6.1 2025-09-06
 #       Replace --with-desktop with --xfce or --gnome-flashback and pass through
 #       the selected option to debian_desktop_setup.sh.
@@ -166,29 +169,47 @@ confirm_execution() {
     esac
 }
 
+# Set desktop option safely (only one desktop option is allowed)
+set_desktop_option() {
+    # Args: OPTION
+    opt="$1"
+
+    if [ -n "$DESKTOP_OPTION" ] && [ "$DESKTOP_OPTION" != "$opt" ]; then
+        echo "[ERROR] Desktop option is already set: $DESKTOP_OPTION" >&2
+        echo "[ERROR] Only one desktop option is allowed." >&2
+        usage
+    fi
+    DESKTOP_OPTION="$opt"
+}
+
 # Main entry point of the script
 main() {
-    # Handle help and desktop options before any environment checks
+    # Handle options before any environment checks
     DESKTOP_OPTION=""
-    case "$1" in
-        -h|--help|-v|--version)
-            usage
-            ;;
-        --xfce|--gnome-flashback)
-            DESKTOP_OPTION="$1"
-            if [ $# -gt 1 ]; then
-                echo "[ERROR] Too many arguments. Only one option is allowed." >&2
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -h|--help|-v|--version)
                 usage
-            fi
-            ;;
-        "" )
-            : # no option
-            ;;
-        * )
-            echo "[ERROR] Unknown option: $1" >&2
-            usage
-            ;;
-    esac
+                ;;
+            --xfce)
+                set_desktop_option "$1"
+                ;;
+            --gnome-flashback)
+                set_desktop_option "$1"
+                ;;
+            --gnome)
+                set_desktop_option "$1"
+                ;;
+            "")
+                : # no option
+                ;;
+            *)
+                echo "[ERROR] Unknown option: $1" >&2
+                usage
+                ;;
+        esac
+        shift
+    done
 
     # Check if the system is Debian-based before proceeding
     check_system
