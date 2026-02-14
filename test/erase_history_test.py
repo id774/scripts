@@ -30,8 +30,14 @@
 #    - In quiet mode, delete without prompting and produce no output
 #    - In non-quiet mode, show "Will remove" lines and delete only on y/yes
 #    - Abort on non-y/yes and keep the history file unchanged
+#    - Keep erase_history invocation in history when it is the last entry
+#    - Detect self invocation in EXTENDED_HISTORY format and keep it
+#    - Delete the last line normally when the last entry is not self invocation
 #
 #  Version History:
+#  v1.1 2026-02-15
+#       Add tests to ensure erase_history invocation is preserved when it is
+#       the last history entry and preceding commands are removed instead.
 #  v1.0 2026-01-10
 #       Initial release.
 #
@@ -240,6 +246,83 @@ class EraseHistoryTest(unittest.TestCase):
             self.assertIn("[INFO] Will remove line: three", out)
             self.assertIn("[INFO] Aborted", out)
             self.assertEqual("".join(original_lines), _read_file(history_path))
+        finally:
+            try:
+                for fn in os.listdir(tmpdir):
+                    os.unlink(os.path.join(tmpdir, fn))
+            except Exception:
+                pass
+            try:
+                os.rmdir(tmpdir)
+            except Exception:
+                pass
+
+    def test_keep_self_invocation_and_delete_preceding(self):
+        tmpdir = tempfile.mkdtemp()
+        try:
+            history_path = os.path.join(tmpdir, ".zsh_history")
+            _write_file(history_path, [
+                "cmd1\n",
+                "cmd2\n",
+                "erase_history.py\n",
+            ])
+
+            erase_history.erase_tail_lines(history_path, 1, True)
+
+            # cmd2 should be removed, self invocation should remain
+            self.assertEqual("cmd1\nerase_history.py\n", _read_file(history_path))
+        finally:
+            try:
+                for fn in os.listdir(tmpdir):
+                    os.unlink(os.path.join(tmpdir, fn))
+            except Exception:
+                pass
+            try:
+                os.rmdir(tmpdir)
+            except Exception:
+                pass
+
+    def test_keep_self_invocation_extended_history_format(self):
+        tmpdir = tempfile.mkdtemp()
+        try:
+            history_path = os.path.join(tmpdir, ".zsh_history")
+            _write_file(history_path, [
+                ": 1700000000:0;cmd1\n",
+                ": 1700000001:0;cmd2\n",
+                ": 1700000002:0;erase_history.py\n",
+            ])
+
+            erase_history.erase_tail_lines(history_path, 1, True)
+
+            self.assertEqual(
+                ": 1700000000:0;cmd1\n: 1700000002:0;erase_history.py\n",
+                _read_file(history_path),
+            )
+        finally:
+            try:
+                for fn in os.listdir(tmpdir):
+                    os.unlink(os.path.join(tmpdir, fn))
+            except Exception:
+                pass
+            try:
+                os.rmdir(tmpdir)
+            except Exception:
+                pass
+
+    def test_delete_last_when_not_self_invocation(self):
+        tmpdir = tempfile.mkdtemp()
+        try:
+            history_path = os.path.join(tmpdir, ".zsh_history")
+            _write_file(history_path, [
+                "cmd1\n",
+                "cmd2\n",
+                "othercmd\n",
+            ])
+
+            erase_history.erase_tail_lines(history_path, 1, True)
+
+            # last line should be removed normally
+            self.assertEqual("cmd1\ncmd2\n", _read_file(history_path))
         finally:
             try:
                 for fn in os.listdir(tmpdir):
