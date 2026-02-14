@@ -25,9 +25,9 @@
 #
 #  Options:
 #  - erase_history.py -2
-#      Removes the last 2 lines (numeric shorthand).
+#      Removes the last 2 commands (numeric shorthand).
 #  - erase_history.py -n 2
-#      Removes the last 2 lines (explicit option).
+#      Removes the last 2 commands (explicit option).
 #  - erase_history.py -q | --quiet
 #      Suppress all output.
 #
@@ -48,9 +48,6 @@
 #  Confirmation:
 #  - When quiet mode is not enabled, this script prompts for confirmation.
 #  - Only "y" or "yes" (case-insensitive) performs deletion.
-#
-#  History behavior:
-#  - If the last history line is this script invocation, it is kept and the lines before it are removed.
 #
 #  Safety:
 #  - Maximum removable lines: 10
@@ -113,12 +110,12 @@ def usage():
 
 def parse_args(argv):
     """
-    Parse command-line arguments and determine the number of lines to remove.
+    Parse command-line arguments and determine the number of commands to remove.
 
     Supported patterns:
-    - No arguments            -> remove 1 line
-    - -<digits> (e.g. -2)     -> remove <digits> lines
-    - -n <digits>             -> remove <digits> lines
+    - No arguments            -> remove 1 command
+    - -<digits> (e.g. -2)     -> remove <digits> commands
+    - -n <digits>             -> remove <digits> commands
 
     Args:
         argv (list): Argument list excluding the script name.
@@ -173,10 +170,10 @@ def parse_args(argv):
 
 def validate_n(n):
     """
-    Validate the requested number of lines to remove.
+    Validate the requested number of commands to remove.
 
     Args:
-        n (int): Number of lines.
+        n (int): Number of commands.
 
     Exits:
         2: If n is less than 1.
@@ -240,7 +237,7 @@ def erase_tail_lines(history_path, n, quiet):
 
     Args:
         history_path (str): Path to the Zsh history file.
-        n (int): Number of lines to remove.
+        n (int): Number of commands to remove.
 
     Exits:
         1: On read/write failure.
@@ -344,7 +341,7 @@ def main():
     Entry point.
 
     Parse arguments, validate input, and remove the requested number
-    of lines from ~/.zsh_history (default: 1 line).
+    of commands from ~/.zsh_history (default: 1 command).
     """
 
     n, quiet = parse_args(sys.argv[1:])
