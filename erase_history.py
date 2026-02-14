@@ -14,7 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      erase_history.py
+#      erase_history.py          # removes last 2 lines (default)
 #      erase_history.py -2
 #      erase_history.py -n 2
 #      erase_history.py -q
@@ -30,7 +30,7 @@
 #      Suppress all output.
 #
 #  Default behavior:
-#  - Removes the last 1 line from ~/.zsh_history.
+#  - Removes the last 2 lines from ~/.zsh_history.
 #
 #  By default, the deleted lines themselves are printed to standard
 #  output exactly as they appeared in the history file. This allows
@@ -55,6 +55,8 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v1.1 2026-02-15
+#       Change default removal lines from 1 to 2.
 #  v1.0 2026-01-10
 #       Initial release.
 #
@@ -103,7 +105,7 @@ def parse_args(argv):
     Parse command-line arguments and determine the number of lines to remove.
 
     Supported patterns:
-    - No arguments            -> remove 1 line
+    - No arguments            -> remove 2 lines
     - -<digits> (e.g. -2)     -> remove <digits> lines
     - -n <digits>             -> remove <digits> lines
 
@@ -117,7 +119,7 @@ def parse_args(argv):
         2: On invalid arguments.
     """
 
-    n = 1
+    n = 2
     quiet = False
 
     if not argv:
@@ -276,7 +278,7 @@ def main():
     Entry point.
 
     Parse arguments, validate input, and remove the requested number
-    of lines from ~/.zsh_history.
+    of lines from ~/.zsh_history (default: 2 lines).
     """
 
     n, quiet = parse_args(sys.argv[1:])
