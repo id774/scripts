@@ -116,7 +116,7 @@ def parse_args(argv):
     Parse command-line arguments and determine the number of lines to remove.
 
     Supported patterns:
-    - No arguments            -> remove 2 lines
+    - No arguments            -> remove 1 line
     - -<digits> (e.g. -2)     -> remove <digits> lines
     - -n <digits>             -> remove <digits> lines
 
@@ -344,7 +344,7 @@ def main():
     Entry point.
 
     Parse arguments, validate input, and remove the requested number
-    of lines from ~/.zsh_history (default: 2 lines).
+    of lines from ~/.zsh_history (default: 1 line).
     """
 
     n, quiet = parse_args(sys.argv[1:])
