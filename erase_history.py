@@ -4,9 +4,11 @@
 # erase_history.py: Zsh History Tail Line Eraser
 #
 #  Description:
-#  This script deletes the most recent lines from the Zsh history file
-#  (~/.zsh_history) in order to quickly remove mistyped or unintended
-#  commands recorded in the shell history.
+#  This script deletes recently executed commands from the Zsh history
+#  file (~/.zsh_history) in order to quickly remove mistyped or unintended
+#  commands recorded in the shell history. When the last history entry
+#  corresponds to this script invocation, that entry is preserved and
+#  the commands executed immediately before it are removed instead.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -14,7 +16,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      erase_history.py          # removes last 2 lines (default)
+#      erase_history.py          # removes last 1 command (default)
 #      erase_history.py -2
 #      erase_history.py -n 2
 #      erase_history.py -q
@@ -30,7 +32,10 @@
 #      Suppress all output.
 #
 #  Default behavior:
-#  - Removes the last 2 lines from ~/.zsh_history.
+#  - Removes the most recently executed command from ~/.zsh_history.
+#  - If the last history entry is this script invocation, the script
+#    keeps that entry and removes the command executed immediately
+#    before it.
 #
 #  By default, the deleted lines themselves are printed to standard
 #  output exactly as they appeared in the history file. This allows
@@ -44,11 +49,17 @@
 #  - When quiet mode is not enabled, this script prompts for confirmation.
 #  - Only "y" or "yes" (case-insensitive) performs deletion.
 #
+#  History behavior:
+#  - If the last history line is this script invocation, it is kept and the lines before it are removed.
+#
 #  Safety:
 #  - Maximum removable lines: 10
 #
 #  Notes:
 #  - This script operates strictly on a line basis.
+#  - When this script appears as the last history entry, deletion is
+#    applied to the preceding commands so that the invocation itself
+#    remains visible in history.
 #  - The file is updated atomically to avoid history corruption.
 #
 #  Requirements:
@@ -56,7 +67,7 @@
 #
 #  Version History:
 #  v1.1 2026-02-15
-#       Change default removal lines from 1 to 2.
+#       Keep this script invocation in history when it is the last entry.
 #  v1.0 2026-01-10
 #       Initial release.
 #
@@ -119,7 +130,7 @@ def parse_args(argv):
         2: On invalid arguments.
     """
 
-    n = 2
+    n = 1
     quiet = False
 
     if not argv:
@@ -179,6 +190,46 @@ def validate_n(n):
         sys.exit(2)
 
 
+def is_self_invocation(history_line):
+    """
+    Return True if the given history line looks like this script invocation.
+
+    This supports both EXTENDED_HISTORY (": <time>:<dur>;<cmd>") and plain lines.
+    """
+
+    s = history_line.rstrip('\n')
+    if s.endswith('\r'):
+        s = s[:-1]
+
+    if ';' in s:
+        s = s.split(';', 1)[1]
+
+    s = s.strip()
+    if not s:
+        return False
+
+    # Accept common invocations:
+    # - erase_history.py ...
+    # - ./erase_history.py ...
+    # - python erase_history.py ...
+    # - python3 /path/to/erase_history.py ...
+    toks = s.split()
+    if not toks:
+        return False
+
+    head = toks[0]
+    if head.endswith('/erase_history.py') or head == 'erase_history.py' or head == './erase_history.py':
+        return True
+
+    if head in ('python', 'python3'):
+        if len(toks) >= 2:
+            t1 = toks[1]
+            if t1.endswith('/erase_history.py') or t1 == 'erase_history.py' or t1 == './erase_history.py':
+                return True
+
+    return False
+
+
 def erase_tail_lines(history_path, n, quiet):
     """
     Remove the last n lines from the specified history file.
@@ -208,11 +259,26 @@ def erase_tail_lines(history_path, n, quiet):
               (history_path, str(e)), file=sys.stderr)
         sys.exit(1)
 
-    keep = len(lines) - n
-    if keep < 0:
-        keep = 0
+    total = len(lines)
+    if total == 0:
+        removed_lines = []
+        keep_lines = []
+    else:
+        keep_self = is_self_invocation(lines[-1])
+        if keep_self:
+            start = total - (n + 1)
+            end = total - 1
+        else:
+            start = total - n
+            end = total
 
-    removed_lines = lines[keep:]
+        if start < 0:
+            start = 0
+        if end < 0:
+            end = 0
+
+        removed_lines = lines[start:end]
+        keep_lines = lines[:start] + lines[end:]
 
     if not quiet:
         for line in removed_lines:
@@ -243,7 +309,7 @@ def erase_tail_lines(history_path, n, quiet):
             prefix=base_name + '.', suffix='.tmp', dir=dir_name
         )
         with os.fdopen(tmp_fd, 'w', encoding='utf-8', errors='replace') as w:
-            for line in lines[:keep]:
+            for line in keep_lines:
                 w.write(line)
 
         try:
