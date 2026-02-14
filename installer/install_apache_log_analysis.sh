@@ -22,8 +22,11 @@
 #  Requirements:
 #  - Must be executed with sudo privileges.
 #  - The `$SCRIPTS` environment variable must be set.
+#  - SSL Apache logs (ssl_*) must exist under /var/log/apache2.
 #
 #  Version History:
+#  v2.1 2026-02-14
+#       Abort installation if no SSL-related Apache logs exist under /var/log/apache2.
 #  v2.0 2025-08-01
 #       Move apache_log_analysis cron job from /etc/cron.daily to /etc/cron.exec.
 #       Add uninstall option to remove configuration while retaining log file.
@@ -97,6 +100,15 @@ check_scripts() {
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
         echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
+# Check if SSL Apache logs exist
+check_ssl_logs() {
+    if ! sudo sh -c 'set -- /var/log/apache2/ssl_*; [ -e "$1" ]'; then
+        echo "[ERROR] No SSL-related Apache logs found in /var/log/apache2." >&2
+        echo "[ERROR] Ensure that Apache SSL logging is enabled before running this installer." >&2
         exit 1
     fi
 }
@@ -202,9 +214,10 @@ setup_log_rotation() {
 # Perform installation steps
 install() {
     check_system
-    check_commands sudo cp chmod chown mkdir touch
+    check_commands sudo sh cp chmod chown mkdir touch
     check_scripts
     check_sudo
+    check_ssl_logs
 
     setup_directories
     deploy_scripts
