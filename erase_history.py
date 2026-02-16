@@ -355,7 +355,7 @@ def main():
     Entry point.
 
     Parse arguments, validate input, and remove the requested number
-    of commands from ~/.zsh_history (default: 1 command).
+    of history lines from ~/.zsh_history (default: 1 line).
     """
 
     n, quiet = parse_args(sys.argv[1:])
