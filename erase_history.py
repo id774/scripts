@@ -8,7 +8,7 @@
 #  file (~/.zsh_history) in order to quickly remove mistyped or unintended
 #  lines recorded in the shell history. When the last history entry
 #  corresponds to this script invocation, that entry is preserved and
-#  the lines recorded immediately before it are removed instead.
+#  the preceding N lines are removed instead.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -32,10 +32,10 @@
 #      Suppress all output.
 #
 #  Default behavior:
-#  - Removes the most recently appended line from ~/.zsh_history.
+#  - Removes the most recently appended N lines from ~/.zsh_history
+#    (default: 1 line).
 #  - If the last history entry is this script invocation, the script
-#    keeps that entry and removes the line recorded immediately
-#    before it.
+#    keeps that entry and removes the preceding N lines instead.
 #
 #  By default, the deleted lines themselves are printed to standard
 #  output exactly as they appeared in the history file. This allows
@@ -59,7 +59,7 @@
 #
 #  Notes:
 #  - This script operates strictly on a line basis.
-#  - When this script appears as the last history entry, deletion is
+#  - When the last history entry is this script invocation, deletion is
 #    applied to the preceding lines so that the invocation itself
 #    remains visible in history.
 #  - The file is updated atomically to avoid history corruption.
