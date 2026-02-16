@@ -65,10 +65,11 @@
 #  - The file is updated atomically to avoid history corruption.
 #  - Modifying ~/.zsh_history does not automatically update the in-memory
 #    history of already running shell sessions. Users may need to reload
-#    the history manually (for example: `fc -R ~/.zsh_history`) or open a
-#    new shell session.
+#    the history manually (for example: `fc -R ~/.zsh_history` or
+#    `history -n`) or open a new shell session.
 #  - When multiple shell sessions are active, concurrent history writes may
 #    reintroduce entries after this script modifies the history file.
+#    This is expected behavior when SHARE_HISTORY or APPEND_HISTORY is enabled.
 #  - Behavior may vary depending on zsh history options such as
 #    APPEND_HISTORY or SHARE_HISTORY, which control how history is shared
 #    and synchronized across sessions.
