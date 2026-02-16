@@ -5,7 +5,7 @@
 #
 #  Description:
 #  This test suite validates the behavior of erase_history.py, which removes
-#  the last N lines from ~/.zsh_history with optional confirmation and
+#  the last N history lines from ~/.zsh_history with optional confirmation and
 #  quiet mode. Tests focus on argument parsing, safety limits, confirmation
 #  handling, output formatting, and atomic file updates.
 #
@@ -37,7 +37,7 @@
 #  Version History:
 #  v1.1 2026-02-15
 #       Add tests to ensure erase_history invocation is preserved when it is
-#       the last history entry and preceding commands are removed instead.
+#       the last history entry and preceding lines are removed instead.
 #  v1.0 2026-01-10
 #       Initial release.
 #
@@ -69,7 +69,7 @@ import erase_history  # noqa: E402
 
 class _StdCapture(object):
     """
-    Capture stdout/stderr for the duration of a context.
+    Capture stdout/stderr for a context.
     """
 
     def __init__(self):
@@ -114,7 +114,7 @@ class _InputPatch(object):
 
 def _write_file(path, lines):
     """
-    Write lines to file with UTF-8 encoding.
+    Write lines to a file with UTF-8 encoding.
     """
     f = open(path, "w", encoding="utf-8", errors="replace")
     try:
@@ -269,7 +269,7 @@ class EraseHistoryTest(unittest.TestCase):
 
             erase_history.erase_tail_lines(history_path, 1, True)
 
-            # cmd2 should be removed, self invocation should remain
+            # Remove the preceding line and keep the self invocation
             self.assertEqual("cmd1\nerase_history.py\n", _read_file(history_path))
         finally:
             try:
@@ -321,7 +321,7 @@ class EraseHistoryTest(unittest.TestCase):
 
             erase_history.erase_tail_lines(history_path, 1, True)
 
-            # last line should be removed normally
+            # Remove the last line normally
             self.assertEqual("cmd1\ncmd2\n", _read_file(history_path))
         finally:
             try:

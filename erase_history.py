@@ -4,11 +4,11 @@
 # erase_history.py: Zsh History Tail Line Eraser
 #
 #  Description:
-#  This script deletes recently executed commands from the Zsh history
+#  This script deletes recently executed history lines from the Zsh history
 #  file (~/.zsh_history) in order to quickly remove mistyped or unintended
-#  commands recorded in the shell history. When the last history entry
+#  lines recorded in the shell history. When the last history entry
 #  corresponds to this script invocation, that entry is preserved and
-#  the commands executed immediately before it are removed instead.
+#  the lines recorded immediately before it are removed instead.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -16,7 +16,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      erase_history.py          # removes last 1 command (default)
+#      erase_history.py          # removes last 1 line (default)
 #      erase_history.py -2
 #      erase_history.py -n 2
 #      erase_history.py -q
@@ -25,16 +25,16 @@
 #
 #  Options:
 #  - erase_history.py -2
-#      Removes the last 2 commands (numeric shorthand).
+#      Removes the last 2 history lines (numeric shorthand).
 #  - erase_history.py -n 2
-#      Removes the last 2 commands (explicit option).
+#      Removes the last 2 history lines (explicit option).
 #  - erase_history.py -q | --quiet
 #      Suppress all output.
 #
 #  Default behavior:
-#  - Removes the most recently executed command from ~/.zsh_history.
+#  - Removes the most recently appended line from ~/.zsh_history.
 #  - If the last history entry is this script invocation, the script
-#    keeps that entry and removes the command executed immediately
+#    keeps that entry and removes the line recorded immediately
 #    before it.
 #
 #  By default, the deleted lines themselves are printed to standard
@@ -58,6 +58,11 @@
 #    applied to the preceding commands so that the invocation itself
 #    remains visible in history.
 #  - The file is updated atomically to avoid history corruption.
+#
+#  Limitations:
+#  - Multiline commands recorded as multiple physical lines in the history file
+#    are not treated as a single command entry.
+#  - Removing N lines may therefore remove part of a multiline command.
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
@@ -110,12 +115,12 @@ def usage():
 
 def parse_args(argv):
     """
-    Parse command-line arguments and determine the number of commands to remove.
+    Parse command-line arguments and determine the number of history lines to remove.
 
     Supported patterns:
-    - No arguments            -> remove 1 command
-    - -<digits> (e.g. -2)     -> remove <digits> commands
-    - -n <digits>             -> remove <digits> commands
+    - No arguments            -> remove 1 line
+    - -<digits> (e.g. -2)     -> remove <digits> lines
+    - -n <digits>             -> remove <digits> lines
 
     Args:
         argv (list): Argument list excluding the script name.
@@ -170,10 +175,10 @@ def parse_args(argv):
 
 def validate_n(n):
     """
-    Validate the requested number of commands to remove.
+    Validate the requested number of history lines to remove.
 
     Args:
-        n (int): Number of commands.
+        n (int): Number of lines.
 
     Exits:
         2: If n is less than 1.
@@ -229,7 +234,7 @@ def is_self_invocation(history_line):
 
 def erase_tail_lines(history_path, n, quiet):
     """
-    Remove the last n lines from the specified history file.
+    Remove the last n history lines from the specified history file.
 
     The function reads the entire file, writes all but the last n lines
     to a temporary file, and then atomically replaces the original file.
@@ -237,7 +242,7 @@ def erase_tail_lines(history_path, n, quiet):
 
     Args:
         history_path (str): Path to the Zsh history file.
-        n (int): Number of commands to remove.
+        n (int): Number of lines to remove.
 
     Exits:
         1: On read/write failure.
