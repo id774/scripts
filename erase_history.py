@@ -52,17 +52,26 @@
 #  Safety:
 #  - Maximum removable lines: 10
 #
+#  Limitations:
+#  - Multiline history entries recorded as multiple physical lines in the
+#    history file are not treated as a single entry.
+#  - Removing N lines may therefore remove part of a multiline entry.
+#
 #  Notes:
 #  - This script operates strictly on a line basis.
 #  - When this script appears as the last history entry, deletion is
-#    applied to the preceding commands so that the invocation itself
+#    applied to the preceding lines so that the invocation itself
 #    remains visible in history.
 #  - The file is updated atomically to avoid history corruption.
-#
-#  Limitations:
-#  - Multiline commands recorded as multiple physical lines in the history file
-#    are not treated as a single command entry.
-#  - Removing N lines may therefore remove part of a multiline command.
+#  - Modifying ~/.zsh_history does not automatically update the in-memory
+#    history of already running shell sessions. Users may need to reload
+#    the history manually (for example: `fc -R ~/.zsh_history`) or open a
+#    new shell session.
+#  - When multiple shell sessions are active, concurrent history writes may
+#    reintroduce entries after this script modifies the history file.
+#  - Behavior may vary depending on zsh history options such as
+#    APPEND_HISTORY or SHARE_HISTORY, which control how history is shared
+#    and synchronized across sessions.
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
