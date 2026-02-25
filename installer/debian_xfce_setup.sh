@@ -25,6 +25,7 @@
 #    - Power management: disable display power management and sleep timeouts (AC/Battery)
 #    - Profiles & autostart: install xfce4-terminal profile; install xmodmap autostart entry
 #                            install xset-rate autostart entry
+#    - Confirm before applying settings
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -45,6 +46,8 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
+#  v1.1 2026-02-26
+#       Prompt for confirmation before applying settings.
 #  v1.0 2025-09-04
 #       Initial version based on debian_gnome_flashback_setup.sh structure.
 #
@@ -419,6 +422,24 @@ install_xset_autostart() {
     echo "[INFO] xset-rate autostart entry installed"
 }
 
+# Ask user whether to apply settings
+confirm_apply_settings() {
+    echo "[INFO] This script will apply Xfce desktop settings to the current user session."
+    echo "[INFO] It will apply xfconf changes and install user configuration files in your home directory."
+    printf "[INFO] Proceed to apply settings now? [y/N]: "
+    read -r response < /dev/tty
+
+    case "$response" in
+        y|Y|yes|YES)
+            echo "[INFO] Proceeding..."
+            ;;
+        *)
+            echo "[INFO] Aborted."
+            exit 0
+            ;;
+    esac
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
@@ -430,6 +451,8 @@ main() {
     check_session_bus
     check_desktop_installed
     check_commands xfconf-query mkdir cp awk chmod uname grep ls wc tr
+
+    confirm_apply_settings
 
     apply_media_handling_settings
     apply_ui_settings
