@@ -34,6 +34,7 @@
 #    - Detect self invocation in EXTENDED_HISTORY format and keep it
 #    - Detect self invocation via full path and keep it
 #    - Detect self invocation via symlink path and keep it
+#    - Detect self invocation via PATH lookup and keep it
 #    - Delete the last line normally when the last entry is not self invocation
 #
 #  Version History:
@@ -376,6 +377,49 @@ class EraseHistoryTest(unittest.TestCase):
             # Remove the preceding line and keep the invocation via symlink
             self.assertEqual("cmd1\n%s\n" % link_path, _read_file(history_path))
         finally:
+            try:
+                for fn in os.listdir(tmpdir):
+                    os.unlink(os.path.join(tmpdir, fn))
+            except Exception:
+                pass
+            try:
+                os.rmdir(tmpdir)
+            except Exception:
+                pass
+
+    def test_keep_self_invocation_via_path_lookup(self):
+        tmpdir = tempfile.mkdtemp()
+        old_path = os.environ.get("PATH", "")
+        try:
+            self_path = os.path.realpath(getattr(erase_history, "__file__", ""))
+            if not self_path:
+                self.fail("erase_history.__file__ is not available")
+
+            # Create a PATH-resolvable name that points to this script.
+            cmd_name = "erase_history.py"
+            cmd_path = os.path.join(tmpdir, cmd_name)
+            try:
+                os.symlink(self_path, cmd_path)
+            except (AttributeError, NotImplementedError, OSError):
+                # If symlink is not available, skip this test.
+                return
+
+            # Prepend temp dir to PATH so "erase_history.py" resolves to cmd_path.
+            os.environ["PATH"] = tmpdir + os.pathsep + old_path
+
+            history_path = os.path.join(tmpdir, ".zsh_history")
+            _write_file(history_path, [
+                "cmd1\n",
+                "cmd2\n",
+                cmd_name + "\n",
+            ])
+
+            erase_history.erase_tail_lines(history_path, 1, True)
+
+            # Remove the preceding line and keep the command name invocation
+            self.assertEqual("cmd1\n%s\n" % cmd_name, _read_file(history_path))
+        finally:
+            os.environ["PATH"] = old_path
             try:
                 for fn in os.listdir(tmpdir):
                     os.unlink(os.path.join(tmpdir, fn))
