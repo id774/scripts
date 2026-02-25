@@ -35,11 +35,13 @@
 #    - Detect self invocation via full path and keep it
 #    - Detect self invocation via symlink path and keep it
 #    - Detect self invocation via PATH lookup and keep it
+#    - Detect self invocation via alias names in environment and keep it
 #    - Delete the last line normally when the last entry is not self invocation
 #
 #  Version History:
 #  v1.2 2026-02-25
 #       Update self invocation tests for path-based detection and add symlink coverage.
+#       Support alias-based self invocation via ERASE_HISTORY_SELF_NAMES.
 #  v1.1 2026-02-15
 #       Add tests to ensure erase_history invocation is preserved when it is
 #       the last history entry and preceding lines are removed instead.
@@ -420,6 +422,41 @@ class EraseHistoryTest(unittest.TestCase):
             self.assertEqual("cmd1\n%s\n" % cmd_name, _read_file(history_path))
         finally:
             os.environ["PATH"] = old_path
+            try:
+                for fn in os.listdir(tmpdir):
+                    os.unlink(os.path.join(tmpdir, fn))
+            except Exception:
+                pass
+            try:
+                os.rmdir(tmpdir)
+            except Exception:
+                pass
+
+    def test_keep_self_invocation_via_alias_names_env(self):
+        tmpdir = tempfile.mkdtemp()
+        old_env = os.environ.get("ERASE_HISTORY_SELF_NAMES")
+        try:
+            os.environ["ERASE_HISTORY_SELF_NAMES"] = "eh,hh"
+
+            history_path = os.path.join(tmpdir, ".zsh_history")
+            _write_file(history_path, [
+                "cmd1\n",
+                "cmd2\n",
+                "hh\n",
+            ])
+
+            erase_history.erase_tail_lines(history_path, 1, True)
+
+            # Remove the preceding line and keep the alias invocation
+            self.assertEqual("cmd1\nhh\n", _read_file(history_path))
+        finally:
+            if old_env is None:
+                try:
+                    del os.environ["ERASE_HISTORY_SELF_NAMES"]
+                except Exception:
+                    pass
+            else:
+                os.environ["ERASE_HISTORY_SELF_NAMES"] = old_env
             try:
                 for fn in os.listdir(tmpdir):
                     os.unlink(os.path.join(tmpdir, fn))

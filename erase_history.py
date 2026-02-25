@@ -82,6 +82,10 @@
 #  - Invocations through shell aliases or functions may not be detected
 #    as self invocation because the original command name is not stored
 #    in the history file.
+#  - To treat aliases as self invocation, set ERASE_HISTORY_SELF_NAMES
+#    to a comma-separated list of command names (e.g. "eh,hh").
+#    When the first token in the history entry matches one of these names,
+#    it is considered self invocation.
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
@@ -89,6 +93,7 @@
 #  Version History:
 #  v1.2 2026-02-25
 #       Detect self invocation by script path instead of command name.
+#       Support alias-based self invocation via ERASE_HISTORY_SELF_NAMES.
 #  v1.1 2026-02-15
 #       Keep this script invocation in history when it is the last entry.
 #  v1.0 2026-01-10
@@ -234,6 +239,19 @@ def is_self_invocation(history_line):
     toks = s.split()
     if not toks:
         return False
+
+    try:
+        names_env = os.environ.get('ERASE_HISTORY_SELF_NAMES', '')
+        if names_env:
+            names = set()
+            for x in names_env.split(','):
+                x = x.strip()
+                if x:
+                    names.add(x)
+            if names and toks[0] in names:
+                return True
+    except Exception:
+        pass
 
     try:
         self_path = os.path.realpath(__file__)
