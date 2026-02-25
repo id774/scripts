@@ -21,6 +21,7 @@
 #    - Keyboard repeat: enable repeat; default delay=200ms and interval=25ms (overridable via env)
 #    - Profiles & autostart: install xfce4-terminal profile; install xmodmap autostart entry
 #    - Optional: reset gnome-panel to defaults on user confirmation
+#    - Confirm before applying settings and before optional gnome-panel reset
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -41,6 +42,8 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
+#  v2.3 2026-02-26
+#       Prompt for confirmation before applying settings.
 #  v2.2 2026-02-14
 #       Improve dconf verification logic to compare full key=value entries and ensure required grep dependency.
 #  v2.1 2025-08-20
@@ -361,6 +364,24 @@ reset_gnome_panel() {
     esac
 }
 
+# Ask user whether to apply settings
+confirm_apply_settings() {
+    echo "[INFO] This script will apply GNOME settings for Flashback to the current user session."
+    echo "[INFO] It will modify GNOME settings and install configuration files in your home directory."
+    printf "[INFO] Proceed to apply settings now? [y/N]: "
+    read -r response < /dev/tty
+
+    case "$response" in
+        y|Y|yes|YES)
+            echo "[INFO] Proceeding..."
+            ;;
+        *)
+            echo "[INFO] Aborted."
+            exit 0
+            ;;
+    esac
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
@@ -372,6 +393,8 @@ main() {
     check_session_bus
     check_desktop_installed
     check_commands gsettings dconf mkdir cp awk chmod uname grep ls wc tr
+
+    confirm_apply_settings
 
     apply_media_handling_settings
     apply_ui_settings
