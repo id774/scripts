@@ -32,9 +32,13 @@
 #    - Abort on non-y/yes and keep the history file unchanged
 #    - Keep erase_history invocation in history when it is the last entry
 #    - Detect self invocation in EXTENDED_HISTORY format and keep it
+#    - Detect self invocation via full path and keep it
+#    - Detect self invocation via symlink path and keep it
 #    - Delete the last line normally when the last entry is not self invocation
 #
 #  Version History:
+#  v1.2 2026-02-25
+#       Update self invocation tests for path-based detection and add symlink coverage.
 #  v1.1 2026-02-15
 #       Add tests to ensure erase_history invocation is preserved when it is
 #       the last history entry and preceding lines are removed instead.
@@ -260,17 +264,21 @@ class EraseHistoryTest(unittest.TestCase):
     def test_keep_self_invocation_and_delete_preceding(self):
         tmpdir = tempfile.mkdtemp()
         try:
+            self_path = os.path.realpath(getattr(erase_history, "__file__", ""))
+            if not self_path:
+                self.fail("erase_history.__file__ is not available")
+
             history_path = os.path.join(tmpdir, ".zsh_history")
             _write_file(history_path, [
                 "cmd1\n",
                 "cmd2\n",
-                "erase_history.py\n",
+                self_path + "\n",
             ])
 
             erase_history.erase_tail_lines(history_path, 1, True)
 
             # Remove the preceding line and keep the self invocation
-            self.assertEqual("cmd1\nerase_history.py\n", _read_file(history_path))
+            self.assertEqual("cmd1\n%s\n" % self_path, _read_file(history_path))
         finally:
             try:
                 for fn in os.listdir(tmpdir):
@@ -285,19 +293,88 @@ class EraseHistoryTest(unittest.TestCase):
     def test_keep_self_invocation_extended_history_format(self):
         tmpdir = tempfile.mkdtemp()
         try:
+            self_path = os.path.realpath(getattr(erase_history, "__file__", ""))
+            if not self_path:
+                self.fail("erase_history.__file__ is not available")
+
             history_path = os.path.join(tmpdir, ".zsh_history")
             _write_file(history_path, [
                 ": 1700000000:0;cmd1\n",
                 ": 1700000001:0;cmd2\n",
-                ": 1700000002:0;erase_history.py\n",
+                ": 1700000002:0;%s\n" % self_path,
             ])
 
             erase_history.erase_tail_lines(history_path, 1, True)
 
             self.assertEqual(
-                ": 1700000000:0;cmd1\n: 1700000002:0;erase_history.py\n",
+                ": 1700000000:0;cmd1\n: 1700000002:0;%s\n" % self_path,
                 _read_file(history_path),
             )
+        finally:
+            try:
+                for fn in os.listdir(tmpdir):
+                    os.unlink(os.path.join(tmpdir, fn))
+            except Exception:
+                pass
+            try:
+                os.rmdir(tmpdir)
+            except Exception:
+                pass
+
+    def test_keep_self_invocation_full_path_format(self):
+        tmpdir = tempfile.mkdtemp()
+        try:
+            self_path = os.path.realpath(getattr(erase_history, "__file__", ""))
+            if not self_path:
+                self.fail("erase_history.__file__ is not available")
+
+            history_path = os.path.join(tmpdir, ".zsh_history")
+            _write_file(history_path, [
+                "cmd1\n",
+                "cmd2\n",
+                self_path + " -2\n",
+            ])
+
+            erase_history.erase_tail_lines(history_path, 1, True)
+
+            # Remove the preceding line and keep the self invocation (full path)
+            self.assertEqual("cmd1\n%s -2\n" % self_path, _read_file(history_path))
+        finally:
+            try:
+                for fn in os.listdir(tmpdir):
+                    os.unlink(os.path.join(tmpdir, fn))
+            except Exception:
+                pass
+            try:
+                os.rmdir(tmpdir)
+            except Exception:
+                pass
+
+    def test_keep_self_invocation_symlink_path(self):
+        tmpdir = tempfile.mkdtemp()
+        try:
+            self_path = os.path.realpath(getattr(erase_history, "__file__", ""))
+            if not self_path:
+                self.fail("erase_history.__file__ is not available")
+
+            link_path = os.path.join(tmpdir, "eh.py")
+            try:
+                os.symlink(self_path, link_path)
+            except (AttributeError, NotImplementedError, OSError):
+                # Symlink may be unavailable on some platforms/filesystems
+                return
+
+            history_path = os.path.join(tmpdir, ".zsh_history")
+            _write_file(history_path, [
+                "cmd1\n",
+                "cmd2\n",
+                link_path + "\n",
+            ])
+
+            erase_history.erase_tail_lines(history_path, 1, True)
+
+            # Remove the preceding line and keep the invocation via symlink
+            self.assertEqual("cmd1\n%s\n" % link_path, _read_file(history_path))
         finally:
             try:
                 for fn in os.listdir(tmpdir):
