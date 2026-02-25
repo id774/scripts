@@ -73,11 +73,19 @@
 #  - Behavior may vary depending on zsh history options such as
 #    APPEND_HISTORY or SHARE_HISTORY, which control how history is shared
 #    and synchronized across sessions.
+#  - Self invocation detection is based on the script file path rather
+#    than the command name. This allows correct detection when the script
+#    is executed via a full path or symlink.
+#  - Invocations through shell aliases or functions may not be detected
+#    as self invocation because the original command name is not stored
+#    in the history file.
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v1.2 2026-02-25
+#       Detect self invocation by script path instead of command name.
 #  v1.1 2026-02-15
 #       Keep this script invocation in history when it is the last entry.
 #  v1.0 2026-01-10
@@ -220,24 +228,35 @@ def is_self_invocation(history_line):
     if not s:
         return False
 
-    # Accept common invocations:
-    # - erase_history.py ...
-    # - ./erase_history.py ...
-    # - python erase_history.py ...
-    # - python3 /path/to/erase_history.py ...
     toks = s.split()
     if not toks:
         return False
 
-    head = toks[0]
-    if head.endswith('/erase_history.py') or head == 'erase_history.py' or head == './erase_history.py':
-        return True
+    try:
+        self_path = os.path.realpath(__file__)
+    except Exception:
+        return False
 
-    if head in ('python', 'python3'):
+    candidates = []
+
+    # Direct execution:
+    #   /path/to/script.py
+    #   ./script.py
+    candidates.append(toks[0])
+
+    # Interpreter execution:
+    #   python script.py
+    #   python3 script.py
+    if toks[0] in ('python', 'python3'):
         if len(toks) >= 2:
-            t1 = toks[1]
-            if t1.endswith('/erase_history.py') or t1 == 'erase_history.py' or t1 == './erase_history.py':
+            candidates.append(toks[1])
+
+    for c in candidates:
+        try:
+            if os.path.realpath(os.path.expanduser(c)) == self_path:
                 return True
+        except Exception:
+            pass
 
     return False
 
