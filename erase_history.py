@@ -73,9 +73,12 @@
 #  - Behavior may vary depending on zsh history options such as
 #    APPEND_HISTORY or SHARE_HISTORY, which control how history is shared
 #    and synchronized across sessions.
-#  - Self invocation detection is based on the script file path rather
-#    than the command name. This allows correct detection when the script
-#    is executed via a full path or symlink.
+#  - Self invocation detection is based on the script file path.
+#    The command is resolved via PATH when necessary so that
+#    invocations such as "erase_history.py" are correctly detected
+#    even when executed without a path prefix.
+#  - This allows correct detection when the script is executed via
+#    a command name, full path, or symlink.
 #  - Invocations through shell aliases or functions may not be detected
 #    as self invocation because the original command name is not stored
 #    in the history file.
@@ -237,26 +240,47 @@ def is_self_invocation(history_line):
     except Exception:
         return False
 
+    def _resolve_candidate(token):
+        """
+        Resolve token to an absolute real path.
+
+        - If token contains '/', treat as a path.
+        - Otherwise search PATH manually (Python 3.1 compatible).
+        """
+        try:
+            if '/' in token:
+                return os.path.realpath(os.path.expanduser(token))
+
+            path_env = os.environ.get('PATH', '')
+            for d in path_env.split(os.pathsep):
+                candidate = os.path.join(d, token)
+                if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+                    return os.path.realpath(candidate)
+
+        except Exception:
+            return None
+
+        return None
+
     candidates = []
 
     # Direct execution:
-    #   /path/to/script.py
-    #   ./script.py
+    #   erase_history.py ...
+    #   ./erase_history.py ...
+    #   /path/to/erase_history.py ...
     candidates.append(toks[0])
 
     # Interpreter execution:
-    #   python script.py
-    #   python3 script.py
+    #   python erase_history.py ...
+    #   python3 /path/to/erase_history.py ...
     if toks[0] in ('python', 'python3'):
         if len(toks) >= 2:
             candidates.append(toks[1])
 
     for c in candidates:
-        try:
-            if os.path.realpath(os.path.expanduser(c)) == self_path:
-                return True
-        except Exception:
-            pass
+        resolved = _resolve_candidate(c)
+        if resolved and resolved == self_path:
+            return True
 
     return False
 
