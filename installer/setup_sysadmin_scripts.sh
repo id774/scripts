@@ -163,6 +163,7 @@ uninstall_sysadmin_scripts() {
         waitlock \
         swapext \
         els \
+        erase_history \
         git-follow-origin \
         git-co-remote-branch \
         git-ignore \
@@ -222,6 +223,7 @@ setup_scripts() {
     install_scripts 755 chmodtree.py chmodtree
     install_scripts 755 cltmp.sh cltmp
     install_scripts 755 els.py els
+    install_scripts 755 erase_history.py erase_history
     install_scripts 755 userlist.py userlist
     install_scripts 755 usershells.py usershells
     install_scripts 755 pyck.py pyck
