@@ -77,6 +77,9 @@
 #    The command is resolved via PATH when necessary so that
 #    invocations such as "erase_history.py" are correctly detected
 #    even when executed without a path prefix.
+#  - Self invocation detection is based on the last line in the history file.
+#    Depending on history flush timing, the last line may not be the most
+#    recently executed command.
 #  - This allows correct detection when the script is executed via
 #    a command name, full path, or symlink.
 #  - Invocations through shell aliases or functions may not be detected
