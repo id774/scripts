@@ -18,6 +18,7 @@
 #    - Keyboard repeat: enable repeat; default delay=200ms and interval=25ms (overridable via env)
 #    - Profiles: install xfce4-terminal profile if xfce4-terminal is installed
 #    - Disable services: mask background services for a server-like desktop (Tracker/GOA/Evolution/Rygel)
+#    - Confirm before applying settings
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -40,6 +41,8 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
+#  v1.1 2026-02-26
+#       Prompt for confirmation before applying settings.
 #  v1.0 2026-02-14
 #       Initial GNOME Shell version based on debian_gnome_flashback_setup.sh.
 #
@@ -336,6 +339,24 @@ disable_services() {
     echo "[INFO] Service mask steps applied."
 }
 
+# Ask user whether to apply settings
+confirm_apply_settings() {
+    echo "[INFO] This script will apply GNOME Shell settings to the current user session."
+    echo "[INFO] It will apply gsettings/dconf changes, optionally install a terminal profile, and may mask user services."
+    printf "[INFO] Proceed to apply settings now? [y/N]: "
+    read -r response < /dev/tty
+
+    case "$response" in
+        y|Y|yes|YES)
+            echo "[INFO] Proceeding..."
+            ;;
+        *)
+            echo "[INFO] Aborted."
+            exit 0
+            ;;
+    esac
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
@@ -348,6 +369,8 @@ main() {
 
     # Verify required commands for this script
     check_commands gsettings dconf mkdir cp awk uname wc tr grep systemctl
+
+    confirm_apply_settings
 
     # Apply GNOME Shell settings
     apply_media_handling_settings
