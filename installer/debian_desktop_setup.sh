@@ -6,7 +6,8 @@
 #  Description:
 #  Dispatch desktop environment setup to the corresponding script:
 #    --xfce            -> debian_xfce_setup.sh
-#    --gnome-flashback -> debian_gnome_flashback.sh
+#    --gnome-flashback -> debian_gnome_flashback_setup.sh
+#    --gnome           -> debian_gnome_setup.sh
 #
 #  This script does not perform desktop package installation. It only
 #  invokes per-DE setup scripts placed under $HOME/scripts/installer/.
@@ -19,6 +20,7 @@
 #  Usage:
 #      ./debian_desktop_setup.sh --xfce
 #      ./debian_desktop_setup.sh --gnome-flashback
+#      ./debian_desktop_setup.sh --gnome
 #
 #  Notes:
 #  - Run with exactly one option. When no option is given, this usage
@@ -26,6 +28,7 @@
 #  - Expected script locations:
 #      $HOME/scripts/installer/debian_xfce_setup.sh
 #      $HOME/scripts/installer/debian_gnome_flashback_setup.sh
+#      $HOME/scripts/installer/debian_gnome_setup.sh
 #
 #  Error Conditions:
 #  - Non-Linux system (checked and enforced in the invoked setup scripts, not in this launcher).
@@ -33,6 +36,8 @@
 #  - Target setup script not found or not runnable.
 #
 #  Version History:
+#  v1.1 2026-02-26
+#       Add --gnome option to dispatch GNOME Shell setup.
 #  v1.0 2025-09-06
 #       Rewritten from scratch as a new release.
 #
@@ -95,6 +100,13 @@ main() {
             fi
             ;;
         --gnome-flashback)
+            MODE="gnome-flashback"
+            if [ $# -ne 1 ]; then
+                echo "[ERROR] Specify exactly one option." >&2
+                usage
+            fi
+            ;;
+        --gnome)
             MODE="gnome"
             if [ $# -ne 1 ]; then
                 echo "[ERROR] Specify exactly one option." >&2
@@ -117,8 +129,12 @@ main() {
             XFCE_SCRIPT="$HOME/scripts/installer/debian_xfce_setup.sh"
             run_target "$XFCE_SCRIPT"
             ;;
+        gnome-flashback)
+            GNOME_FLASHBACK_SCRIPT="$HOME/scripts/installer/debian_gnome_flashback_setup.sh"
+            run_target "$GNOME_FLASHBACK_SCRIPT"
+            ;;
         gnome)
-            GNOME_SCRIPT="$HOME/scripts/installer/debian_gnome_flashback_setup.sh"
+            GNOME_SCRIPT="$HOME/scripts/installer/debian_gnome_setup.sh"
             run_target "$GNOME_SCRIPT"
             ;;
         *)
