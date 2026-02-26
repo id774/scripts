@@ -352,7 +352,7 @@ confirm_apply_settings() {
             ;;
         *)
             echo "[INFO] Aborted."
-            exit 0
+            exit 1
             ;;
     esac
 }
