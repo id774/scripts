@@ -1,8 +1,8 @@
 scripts Repository Version History
 ==================================
 
-v1.6.4 (Release Date: TBD)
---------------------------
+v1.6.4 (2026-02-27)
+-------------------
 - Add GNOME Shell setup script to apply GNOME settings in user sessions.
 - Add confirmation prompts before applying settings in GNOME and Xfce setup scripts.
 - Add --gnome support to desktop setup launcher and align with debian_init.sh options.
