@@ -1,6 +1,10 @@
 scripts Repository Version History
 ==================================
 
+v1.6.5 (Release Date: TBD)
+--------------------------
+- Handle missing /opt/python and /opt/ruby directories in fix-permissions.conf.
+
 v1.6.4 (2026-02-27)
 -------------------
 - Add GNOME Shell setup script to apply GNOME settings in user sessions.
