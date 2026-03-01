@@ -3,7 +3,8 @@ scripts Repository Version History
 
 v1.6.5 (Release Date: TBD)
 --------------------------
-- Handle missing /opt/python and /opt/ruby directories in fix-permissions.conf.
+- Handle missing /opt/python and /opt/ruby directories.
+- Replace legacy artwork packages with Papirus icon and Bibata cursor themes.
 
 v1.6.4 (2026-02-27)
 -------------------

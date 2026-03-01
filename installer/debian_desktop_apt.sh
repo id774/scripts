@@ -19,7 +19,7 @@
 #        * gstreamer1.0-libav
 #        * (optional) proprietary codecs or extras as needed
 #    - Icon and artwork themes:
-#        * ubuntu-artwork, xubuntu-artwork, human-icon-theme
+#        * papirus-icon-theme, bibata-cursor-theme
 #    - Desktop configuration tools:
 #        * dconf-cli, gnome-tweaks
 #    - Utilities:
@@ -193,7 +193,7 @@ codec_packages() {
 
 # Icon packages
 icon_packages() {
-    smart_apt ubuntu-artwork xubuntu-artwork human-icon-theme
+    smart_apt papirus-icon-theme bibata-cursor-theme
 }
 
 # Configuration tools
