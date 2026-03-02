@@ -1,10 +1,11 @@
 #!/bin/sh
 
 ########################################################################
-# check_sshd_config.sh: SSHD Configuration Check Tool
+# check_sshd_config.sh: SSHD and TCP Wrappers Configuration Check Tool
 #
 #  Description:
-#  This script checks the SSH daemon configuration for both macOS and Linux.
+#  This script checks the SSH daemon configuration and TCP Wrappers access control
+#  settings for both macOS and Linux.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -23,12 +24,15 @@
 #    - ChallengeResponseAuthentication
 #    - AddressFamily
 #    - AllowUsers
+#  - Displays non-comment lines in /etc/hosts.allow and /etc/hosts.deny.
 #  - Detects and supports both macOS and Linux environments.
 #
 #  This script does not require any arguments. It automatically detects
 #  the operating system and checks the SSHD configuration accordingly.
 #
 #  Version History:
+#  v2.4 2026-03-02
+#       Display non-comment lines in /etc/hosts.allow and /etc/hosts.deny.
 #  v2.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.2 2025-04-13
@@ -71,7 +75,16 @@ check_commands() {
 # Define a function to check key SSHD configuration parameters
 check_sshd_config() {
     if [ -f "$1" ]; then
-        grep -E "^(Port|PermitRootLogin|PasswordAuthentication|ChallengeResponseAuthentication|AddressFamily|AllowUsers)" "$1" | grep -v "#"
+        echo "[INFO] Showing SSHD config keys from $1: Port, PermitRootLogin, PasswordAuthentication, ChallengeResponseAuthentication, AddressFamily, AllowUsers"
+        out=$(
+            grep -E "^(Port|PermitRootLogin|PasswordAuthentication|ChallengeResponseAuthentication|AddressFamily|AllowUsers)" "$1" \
+            | grep -v "^[[:space:]]*#"
+        )
+        if [ -n "$out" ]; then
+            printf "%s\n" "$out"
+        else
+            echo "[WARN] No matching non-comment SSHD config keys found in $1" >&2
+        fi
     else
         echo "[ERROR] Configuration file '$1' not found." >&2
     fi
@@ -91,14 +104,36 @@ check_additional_sshd() {
     fi
 }
 
+# Display non-comment lines in hosts.allow and hosts.deny
+check_tcp_wrappers() {
+    for file in /etc/hosts.allow /etc/hosts.deny; do
+        if [ -f "$file" ]; then
+            echo "[INFO] Showing TCP Wrappers non-comment lines from $file"
+            out=$(
+                awk '
+                /^[[:space:]]*#/ { next }
+                /^[[:space:]]*$/ { next }
+                { print }
+                ' "$file"
+            )
+            if [ -n "$out" ]; then
+                printf "%s\n" "$out"
+            else
+                echo "[INFO] No non-comment lines found in $file"
+            fi
+        fi
+    done
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
     esac
-    check_commands grep
+    check_commands awk grep
     check_main_sshd
     check_additional_sshd
+    check_tcp_wrappers
     return 0
 }
 
