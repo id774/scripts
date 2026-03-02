@@ -3,7 +3,7 @@ scripts Repository Version History
 
 v1.6.5 (Release Date: TBD)
 --------------------------
-- Add labeled output for sshd keys and include TCP Wrappers non-comment rules in check_sshd_config.sh.
+- Switch SSHD checks to sshd -T, add public key settings, and report TCP Wrappers effectiveness in check_sshd_config.sh.
 - Handle missing /opt/python and /opt/ruby directories.
 - Replace legacy artwork packages with Papirus icon and Bibata cursor themes.
 

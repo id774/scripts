@@ -24,7 +24,11 @@
 #    - ChallengeResponseAuthentication
 #    - AddressFamily
 #    - AllowUsers
+#    - PubkeyAuthentication
+#    - AuthorizedKeysFile
 #  - Displays non-comment lines in /etc/hosts.allow and /etc/hosts.deny.
+#  - Uses "sshd -T" to show effective SSHD settings rather than inspecting config files.
+#  - Best-effort detection whether TCP Wrappers is effective for sshd (libwrap linkage).
 #  - Detects and supports both macOS and Linux environments.
 #
 #  This script does not require any arguments. It automatically detects
@@ -33,6 +37,8 @@
 #  Version History:
 #  v2.4 2026-03-02
 #       Display non-comment lines in /etc/hosts.allow and /etc/hosts.deny.
+#       Use "sshd -T" to show effective SSHD settings and include public key settings.
+#       Detect whether TCP Wrappers is effective for sshd based on libwrap linkage.
 #  v2.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.2 2025-04-13
@@ -72,36 +78,70 @@ check_commands() {
     done
 }
 
-# Define a function to check key SSHD configuration parameters
-check_sshd_config() {
-    if [ -f "$1" ]; then
-        echo "[INFO] Showing SSHD config keys from $1: Port, PermitRootLogin, PasswordAuthentication, ChallengeResponseAuthentication, AddressFamily, AllowUsers"
-        out=$(
-            grep -E "^(Port|PermitRootLogin|PasswordAuthentication|ChallengeResponseAuthentication|AddressFamily|AllowUsers)" "$1" \
-            | grep -v "^[[:space:]]*#"
-        )
-        if [ -n "$out" ]; then
-            printf "%s\n" "$out"
-        else
-            echo "[WARN] No matching non-comment SSHD config keys found in $1" >&2
-        fi
-    else
-        echo "[ERROR] Configuration file '$1' not found." >&2
+# Check if the user has sudo privileges (password may be required)
+check_sudo() {
+    if ! sudo -v 2>/dev/null; then
+        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
     fi
 }
 
-# Handle main SSHD configuration checks
-check_main_sshd() {
-    sshd_config_file="/etc/ssh/sshd_config"
-    check_sshd_config "$sshd_config_file"
+# Show effective SSHD settings using "sshd -T"
+check_sshd_effective_config() {
+    echo "[INFO] Showing effective SSHD settings via sshd -T"
+
+    out=$(sudo sshd -T 2>/dev/null)
+    if [ -z "$out" ]; then
+        echo "[ERROR] Failed to run 'sshd -T'. Please run as root or ensure sshd is properly installed/configured." >&2
+        return 1
+    fi
+
+    echo "[INFO] Extracting keys: port, permitrootlogin, passwordauthentication, challengeresponseauthentication, addressfamily, allowusers, pubkeyauthentication, authorizedkeysfile"
+    printf "%s\n" "$out" | awk '
+        $1 ~ /^(port|permitrootlogin|passwordauthentication|challengeresponseauthentication|addressfamily|allowusers|pubkeyauthentication|authorizedkeysfile)$/ {
+            print
+        }
+    '
+    return 0
 }
 
-# Handle additional SSHD configuration checks
-check_additional_sshd() {
-    sshd_config_file="/etc/ssh/sshd_config.d/000-sshdconfig.conf"
-    if [ -f "$sshd_config_file" ]; then
-        check_sshd_config "$sshd_config_file"
+# Best-effort detection whether sshd is linked with libwrap (TCP Wrappers)
+check_tcp_wrappers_effective() {
+    sshd_path=$(command -v sshd 2>/dev/null)
+    if [ -z "$sshd_path" ]; then
+        echo "[WARN] sshd not found; cannot determine whether TCP Wrappers is effective." >&2
+        return 0
     fi
+
+    os=$(uname -s 2>/dev/null)
+    case "$os" in
+        Linux)
+            if command -v ldd >/dev/null 2>&1; then
+                if ldd "$sshd_path" 2>/dev/null | grep -q "libwrap"; then
+                    echo "[INFO] TCP Wrappers appears effective for sshd (libwrap linked)."
+                else
+                    echo "[INFO] TCP Wrappers does not appear effective for sshd (libwrap not linked)."
+                fi
+            else
+                echo "[WARN] ldd not found; cannot determine whether TCP Wrappers is effective." >&2
+            fi
+            ;;
+        Darwin)
+            if command -v otool >/dev/null 2>&1; then
+                if otool -L "$sshd_path" 2>/dev/null | grep -q "libwrap"; then
+                    echo "[INFO] TCP Wrappers appears effective for sshd (libwrap linked)."
+                else
+                    echo "[INFO] TCP Wrappers does not appear effective for sshd (libwrap not linked)."
+                fi
+            else
+                echo "[WARN] otool not found; cannot determine whether TCP Wrappers is effective." >&2
+            fi
+            ;;
+        *)
+            echo "[WARN] Unsupported OS '$os'; cannot determine whether TCP Wrappers is effective." >&2
+            ;;
+    esac
+    return 0
 }
 
 # Display non-comment lines in hosts.allow and hosts.deny
@@ -130,10 +170,15 @@ main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
     esac
-    check_commands awk grep
-    check_main_sshd
-    check_additional_sshd
+
+    check_commands awk grep sshd uname
+    check_sudo
+
+    check_sshd_effective_config || return $?
+
+    check_tcp_wrappers_effective
     check_tcp_wrappers
+
     return 0
 }
 
