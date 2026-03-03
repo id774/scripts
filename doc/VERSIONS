@@ -6,7 +6,8 @@ v1.6.5 (Release Date: TBD)
 - Switch SSHD checks to sshd -T, add public key settings, and report TCP Wrappers effectiveness in check_sshd_config.sh.
 - Replace legacy artwork packages with Papirus icon and Bibata cursor themes.
 - Handle missing /opt/python and /opt/ruby directories.
-- Fix bare-domain redirect to preserve request URI and avoid double slashes in Apache configuration.
+- Harden fix-permissions.conf for cron and security config files.
+- Refine bare-domain redirect to preserve request URI and prevent double slashes in Apache configuration.
 
 v1.6.4 (2026-02-27)
 -------------------
