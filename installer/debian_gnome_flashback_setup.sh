@@ -4,9 +4,12 @@
 # debian_gnome_flashback_setup.sh: Apply GNOME settings for Flashback session
 #
 #  Description:
-#  Apply GNOME settings used with Flashback. This script:
+#  Apply GNOME settings used with GNOME Flashback (Metacity session). This script:
 #    - Media handling: disable automount/automount-open and set autorun-never=true
-#    - Desktop & workspaces: hide desktop icons; set org.gnome.desktop.wm.preferences num-workspaces=9
+#    - Desktop & workspaces:
+#        * Hide Home and Trash desktop icons via
+#          org.gnome.gnome-flashback.desktop.icons (show-home=false, show-trash=false)
+#        * Set org.gnome.desktop.wm.preferences num-workspaces=9
 #    - WM keybindings (via dconf load, gnome-wm-keys.conf):
 #        * Switch to workspace 1..9 with <Primary>1..9
 #        * Move window to workspace 1..9 with <Primary><Alt>1..9
@@ -42,6 +45,8 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
+#  v2.4 2026-03-04
+#       Use org.gnome.gnome-flashback.desktop.icons keys to hide Home and Trash desktop icons.
 #  v2.3 2026-02-26
 #       Prompt for confirmation before applying settings.
 #  v2.2 2026-02-14
@@ -184,7 +189,8 @@ apply_media_handling_settings() {
 
 # Apply UI settings (desktop icons, workspaces)
 apply_ui_settings() {
-    gsettings_settings org.gnome.desktop.background show-desktop-icons false
+    gsettings_settings org.gnome.gnome-flashback.desktop.icons show-home false
+    gsettings_settings org.gnome.gnome-flashback.desktop.icons show-trash false
     gsettings_settings org.gnome.desktop.wm.preferences num-workspaces 9
 }
 
