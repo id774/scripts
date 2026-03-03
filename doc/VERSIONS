@@ -5,6 +5,7 @@ v1.6.5 (Release Date: TBD)
 --------------------------
 - Switch SSHD checks to sshd -T, add public key settings, and report TCP Wrappers effectiveness in check_sshd_config.sh.
 - Replace legacy artwork packages with Papirus icon and Bibata cursor themes.
+- Replace legacy X11 bitmap fonts with DejaVu and IPAex in desktop installer.
 - Handle missing /opt/python and /opt/ruby directories.
 - Harden fix-permissions.conf for cron and security config files.
 - Refine bare-domain redirect to preserve request URI and prevent double slashes in Apache configuration.

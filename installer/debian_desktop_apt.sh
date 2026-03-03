@@ -12,7 +12,7 @@
 #    - Japanese input method:
 #        * fcitx5, fcitx5-mozc, fcitx5-config-qt, fcitx5-configtool
 #    - Fonts:
-#        * xfonts-mplus, xfonts-shinonome, ttf-bitstream-vera, fonts-vlgothic, fonts-ipafont
+#        * ttf-bitstream-vera, fonts-vlgothic, fonts-dejavu, fonts-ipafont, fonts-ipaexfont
 #    - GUI package managers:
 #        * synaptic, gdebi
 #    - Multimedia codecs:
@@ -176,7 +176,7 @@ inputs_packages() {
 
 # Font packages
 fonts_packages() {
-    smart_apt xfonts-mplus xfonts-shinonome ttf-bitstream-vera fonts-vlgothic fonts-ipafont
+    smart_apt ttf-bitstream-vera fonts-vlgothic fonts-dejavu fonts-ipafont fonts-ipaexfont
 }
 
 # Package manager tools
