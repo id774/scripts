@@ -7,7 +7,7 @@
 ;;
 ;; Support : Emacs 23.4+
 ;; Extended: Emacs 30+
-;; Policy  : Preserve historical behavior and maintain backward compatibility
+;; Policy  : Preserve historical behavior and maintain backward compatibility.
 ;; Package : DOT_EMACS
 
 ;;; Commentary:
