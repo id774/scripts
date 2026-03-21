@@ -16,7 +16,17 @@
 #  Usage:
 #      ./get_resources.sh
 #
+#  Outputs:
+#      - System information
+#      - CPU, memory, disk, and process information
+#      - Network and time synchronization information
+#      - Concise DNS summary for hourly observation
+#      - Concise power and thermal summary for hourly observation
+#      - Security-related logs and fail2ban status
+#
 #  Version History:
+#  v2.3 2026-03-22
+#       Add concise DNS and ACPI summaries.
 #  v2.2 2025-12-22
 #       Show only top RSS processes in ps output for hourly observation.
 #  v2.1 2025-10-02
@@ -70,8 +80,8 @@ command_exists() {
 # Display a command's output if the command exists
 execute_command() {
     if command_exists "$1"; then
-        echo "[INFO] $@"
-        "$@" || echo "[ERROR] Executing: $@"
+        echo "[INFO] $*"
+        "$@" || echo "[ERROR] Executing: $*"
         echo
     fi
 }
@@ -89,6 +99,51 @@ display_log() {
         else
             grep -E "$2" "$1" | grep -Ev "$3" || true
         fi
+        echo
+    fi
+}
+
+# Display concise DNS summary for hourly observation
+display_dns_summary() {
+    if [ "$OS_NAME" = "Darwin" ]; then
+        return 0
+    fi
+
+    if [ -e /etc/resolv.conf ] || command_exists resolvectl || command_exists nmcli; then
+        echo "[INFO] DNS summary"
+
+        if [ -e /etc/resolv.conf ]; then
+            if command_exists readlink; then
+                echo "[INFO] readlink -f /etc/resolv.conf"
+                readlink -f /etc/resolv.conf 2>/dev/null
+            fi
+
+            echo "[INFO] grep -E '^(nameserver|search|domain)[[:space:]]' /etc/resolv.conf"
+            grep -E '^(nameserver|search|domain)[[:space:]]' /etc/resolv.conf 2>/dev/null || true
+            echo
+        fi
+
+        if command_exists resolvectl; then
+            execute_command resolvectl dns
+            execute_command resolvectl domain
+            execute_command resolvectl default-route
+        fi
+
+        if command_exists nmcli; then
+            execute_command nmcli -g GENERAL.CONNECTION,IP4.GATEWAY,IP4.DNS,IP6.GATEWAY,IP6.DNS device show
+        fi
+    fi
+}
+
+# Display concise power and thermal summary for hourly observation
+display_power_summary() {
+    if [ "$OS_NAME" = "Darwin" ]; then
+        return 0
+    fi
+
+    if command_exists acpi; then
+        echo "[INFO] acpi -b -a -t -i"
+        acpi -b -a -t -i 2>/dev/null
         echo
     fi
 }
@@ -134,6 +189,8 @@ gather_network_info() {
     if command_exists ip; then
         execute_command ip addr show
     fi
+    display_dns_summary
+    display_power_summary
     if command_exists lsof && [ "$(id -u)" -eq 0 ]; then
         execute_command lsof -i
     fi
@@ -159,7 +216,7 @@ check_fail2ban_status() {
 gather_logs() {
     display_log "/var/log/auth.log" "Accepted" "Accepted publickey for (munin|git)"
     display_log "/var/log/syslog" "attack"
-    display_log "/var/log/auth.log" '(Fail|refuse)'
+    display_log "/var/log/auth.log" "(Fail|refuse)"
 }
 
 # Main entry point of the script
