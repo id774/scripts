@@ -15,21 +15,21 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  Run this script without arguments to install the default Ruby version (3.4.8):
+#  Run this script without arguments to install the default Ruby version (4.0.2):
 #      ./install_ruby.sh
 #
 #  Specify a different Ruby version:
-#      ./install_ruby.sh 3.3.10
+#      ./install_ruby.sh 4.0.2
 #
 #  Specify an installation prefix:
-#      ./install_ruby.sh 3.3.10 /opt/ruby/3.3
+#      ./install_ruby.sh 4.0.2 /opt/ruby/4.0
 #
 #  Install without sudo (for local user installation):
-#      ./install_ruby.sh 3.4.8 ~/.local/ruby --no-sudo
+#      ./install_ruby.sh 3.4.9 ~/.local/ruby --no-sudo
 #
 #  Notes:
 #  - By default, if no installation path is provided, Ruby will be installed under /opt/ruby/x.x
-#    For example, Ruby 3.4.8 will be installed to /opt/ruby/3.4
+#    For example, Ruby 3.4.9 will be installed to /opt/ruby/3.4
 #
 #  - Source files are saved to /usr/local/src/ruby only when using sudo.
 #    If installed without sudo (e.g. using `--no-sudo`), source files will not be saved.
@@ -54,7 +54,6 @@
 #       Unify usage information by extracting help text from header comments.
 #  v3.0 2025-03-19
 #       Added network connection check, system validation, command validation, and improved argument handling.
-#       Default Ruby version 3.4.8 installs in '/opt/ruby/3.4' directory.
 #       Improved directory navigation safety.
 #       Set default installation path to /opt/ruby/x.x.
 #  [Further version history truncated for brevity]
@@ -97,7 +96,7 @@ check_sudo() {
 
 # Setup version and environment
 setup_environment() {
-    VERSION="${1:-3.4.8}"
+    VERSION="${1:-4.0.2}"
     RUBY_MAJOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
     PREFIX="${2:-/opt/ruby/$RUBY_MAJOR}"
     if [ -z "$3" ] || [ "$3" = "sudo" ]; then
