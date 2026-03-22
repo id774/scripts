@@ -103,36 +103,48 @@ display_log() {
     fi
 }
 
-# Display concise DNS summary for hourly observation
 display_dns_summary() {
+    echo "[INFO] DNS summary"
+
+    # Handle macOS DNS information
     if [ "$OS_NAME" = "Darwin" ]; then
-        return 0
-    fi
-
-    if [ -e /etc/resolv.conf ] || command_exists resolvectl || command_exists nmcli; then
-        echo "[INFO] DNS summary"
-
-        if command_exists nmcli; then
-            echo "[INFO] nmcli -g GENERAL.CONNECTION,IP4.GATEWAY,IP4.DNS,IP6.GATEWAY,IP6.DNS device show"
-            nmcli -g GENERAL.CONNECTION,IP4.GATEWAY,IP4.DNS,IP6.GATEWAY,IP6.DNS device show 2>/dev/null | sed '/^$/d'
+        # Show primary DNS configuration via system configuration database
+        if command_exists scutil; then
+            execute_command scutil --dns
         fi
 
-        if command_exists resolvectl; then
-            execute_command resolvectl dns
-            execute_command resolvectl domain
-            execute_command resolvectl default-route
-        fi
-
+        # Show resolver file as reference (may not reflect actual resolver)
         if [ -e /etc/resolv.conf ]; then
-            if command_exists readlink; then
-                echo "[INFO] readlink -f /etc/resolv.conf"
-                readlink -f /etc/resolv.conf 2>/dev/null
-            fi
-
             echo "[INFO] grep -E '^(nameserver|search|domain)[[:space:]]' /etc/resolv.conf"
             grep -E '^(nameserver|search|domain)[[:space:]]' /etc/resolv.conf 2>/dev/null || true
             echo
         fi
+
+        return 0
+    fi
+
+    # Handle Linux DNS information
+    if command_exists nmcli; then
+        echo "[INFO] nmcli -g GENERAL.CONNECTION,IP4.GATEWAY,IP4.DNS,IP6.GATEWAY,IP6.DNS device show"
+        nmcli -g GENERAL.CONNECTION,IP4.GATEWAY,IP4.DNS,IP6.GATEWAY,IP6.DNS device show 2>/dev/null | sed '/^$/d'
+    fi
+
+    if command_exists resolvectl; then
+        execute_command resolvectl dns
+        execute_command resolvectl domain
+        execute_command resolvectl default-route
+    fi
+
+    # Show resolver file for compatibility and fallback inspection
+    if [ -e /etc/resolv.conf ]; then
+        if command_exists readlink; then
+            echo "[INFO] readlink -f /etc/resolv.conf"
+            readlink -f /etc/resolv.conf 2>/dev/null
+        fi
+
+        echo "[INFO] grep -E '^(nameserver|search|domain)[[:space:]]' /etc/resolv.conf"
+        grep -E '^(nameserver|search|domain)[[:space:]]' /etc/resolv.conf 2>/dev/null || true
+        echo
     fi
 }
 
