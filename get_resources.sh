@@ -112,6 +112,17 @@ display_dns_summary() {
     if [ -e /etc/resolv.conf ] || command_exists resolvectl || command_exists nmcli; then
         echo "[INFO] DNS summary"
 
+        if command_exists nmcli; then
+            echo "[INFO] nmcli -g GENERAL.CONNECTION,IP4.GATEWAY,IP4.DNS,IP6.GATEWAY,IP6.DNS device show"
+            nmcli -g GENERAL.CONNECTION,IP4.GATEWAY,IP4.DNS,IP6.GATEWAY,IP6.DNS device show 2>/dev/null | sed '/^$/d'
+        fi
+
+        if command_exists resolvectl; then
+            execute_command resolvectl dns
+            execute_command resolvectl domain
+            execute_command resolvectl default-route
+        fi
+
         if [ -e /etc/resolv.conf ]; then
             if command_exists readlink; then
                 echo "[INFO] readlink -f /etc/resolv.conf"
@@ -121,16 +132,6 @@ display_dns_summary() {
             echo "[INFO] grep -E '^(nameserver|search|domain)[[:space:]]' /etc/resolv.conf"
             grep -E '^(nameserver|search|domain)[[:space:]]' /etc/resolv.conf 2>/dev/null || true
             echo
-        fi
-
-        if command_exists resolvectl; then
-            execute_command resolvectl dns
-            execute_command resolvectl domain
-            execute_command resolvectl default-route
-        fi
-
-        if command_exists nmcli; then
-            execute_command nmcli -g GENERAL.CONNECTION,IP4.GATEWAY,IP4.DNS,IP6.GATEWAY,IP6.DNS device show
         fi
     fi
 }
