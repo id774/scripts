@@ -28,7 +28,7 @@
 #  v2.3 2026-03-22
 #       Add concise DNS and ACPI summaries.
 #  v2.2 2025-12-22
-#       Show only top RSS processes in ps output for hourly observation.
+#       Show only top RSS processes in ps output.
 #  v2.1 2025-10-02
 #       Stop monitoring fail2ban.log in this script as log handling is now managed separately.
 #       Replace /proc/cpuinfo dump with concise CPU core count display.
@@ -148,7 +148,7 @@ display_dns_summary() {
     fi
 }
 
-# Display concise power and thermal summary for hourly observation
+# Display concise power and thermal summary available on Linux only
 display_power_summary() {
     if [ "$OS_NAME" = "Darwin" ]; then
         return 0
