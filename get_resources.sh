@@ -80,6 +80,8 @@ command_exists() {
 # Display a command's output if the command exists
 execute_command() {
     if command_exists "$1"; then
+        # Log command as a single line for readability ("$*" is for display only).
+        # Execute with "$@" to preserve argument boundaries.
         echo "[INFO] $*"
         "$@" || echo "[ERROR] Executing: $*"
         echo
