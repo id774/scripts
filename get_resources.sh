@@ -150,10 +150,6 @@ display_dns_summary() {
 
 # Display concise power and thermal summary available on Linux only
 display_power_summary() {
-    if [ "$OS_NAME" = "Darwin" ]; then
-        return 0
-    fi
-
     if command_exists acpi; then
         echo "[INFO] acpi -b -a -t -i"
         acpi -b -a -t -i 2>/dev/null
