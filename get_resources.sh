@@ -19,9 +19,9 @@
 #  Outputs:
 #      - System information
 #      - CPU, memory, disk, and process information
+#      - Concise power and thermal summary
 #      - Network and time synchronization information
-#      - Concise DNS summary for hourly observation
-#      - Concise power and thermal summary for hourly observation
+#      - Concise DNS summary
 #      - Security-related logs and fail2ban status
 #
 #  Version History:
@@ -194,6 +194,7 @@ gather_os_specific_info() {
         execute_command top -b -n 1
         execute_command ps aux
         execute_command ps aux --sort=-rss | head -20
+        display_power_summary
     fi
 }
 
@@ -203,7 +204,6 @@ gather_network_info() {
         execute_command ip addr show
     fi
     display_dns_summary
-    display_power_summary
     if command_exists lsof && [ "$(id -u)" -eq 0 ]; then
         execute_command lsof -i
     fi
