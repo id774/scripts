@@ -3,7 +3,7 @@ scripts Repository Version History
 
 v1.6.5 (Release Date: TBD)
 --------------------------
-- Add enhanced DNS reporting using nmcli and align output behavior with get_resources.sh
+- Add enhanced DNS reporting using nmcli and align output behavior with get_resources.sh.
 - Switch SSHD checks to sshd -T, add public key settings, and report TCP Wrappers effectiveness in check_sshd_config.sh.
 - Replace legacy artwork packages with Papirus icon and Bibata cursor themes.
 - Replace legacy X11 bitmap fonts with DejaVu and IPAex in desktop installer.
