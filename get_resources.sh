@@ -186,6 +186,7 @@ gather_os_specific_info() {
         execute_command top -l 1
         execute_command ps aux
         execute_command ps -axo pid,rss,%mem,etime,comm -r | head -20
+        execute_command pmset -g batt
     else
         execute_command sh -c "grep -m1 'model name' /proc/cpuinfo | cut -d: -f2"
         execute_command cat /proc/meminfo
