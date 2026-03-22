@@ -129,7 +129,7 @@ display_dns_summary() {
         nmcli -g GENERAL.CONNECTION,IP4.GATEWAY,IP4.DNS,IP6.GATEWAY,IP6.DNS device show 2>/dev/null | sed '/^$/d'
     fi
 
-    if command_exists resolvectl; then
+    if command_exists resolvectl && resolvectl status >/dev/null 2>&1; then
         execute_command resolvectl dns
         execute_command resolvectl domain
         execute_command resolvectl default-route
