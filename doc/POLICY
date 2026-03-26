@@ -79,6 +79,17 @@ or additions to this common policy, in order to avoid redundancy.
 - "Test Cases" must be defined only in dedicated test code (e.g., test/, spec/).
 - Documentation must be updated in sync with behavior changes.
 - Do not increment version numbers multiple times on the same date.
+- Multiple updates on the same date must be consolidated into a single version entry.
+
+### Header Formatting Rules
+- Shebang must be:
+  `#!/usr/bin/env python`
+- Do NOT use `python3`
+- Encoding header must be:
+  `# -*- coding: utf-8 -*-`
+- Header indentation:
+  - Title line: 1 space after `#`
+  - Other lines: 2 spaces after `#`
 
 ### Comments and Language
 - Comments must be written in **English** only.
@@ -119,6 +130,10 @@ or additions to this common policy, in order to avoid redundancy.
 ### Supported Versions and Compatibility
 - Code must fully support Python 3.6+.
 - Backward compatibility down to Python 3.1 is maintained on a best-effort basis and must not break existing behavior intentionally.
+- If compatible with general Python 3.x, documentation must state:
+  `Python Version: 3.1 or later`
+- Only when strictly required, state:
+  `Python Version: 3.6+`
 - Avoid features that reduce backward compatibility unless guarded:
   - f-strings, `subprocess.run`, `subprocess.DEVNULL`
   - `async` / `await`, `yield from`, `asyncio`
