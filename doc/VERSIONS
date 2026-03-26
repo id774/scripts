@@ -3,6 +3,7 @@ scripts Repository Version History
 
 v1.6.5 (Release Date: TBD)
 --------------------------
+- Add format_html.py to format HTML with normalized indentation and inline element handling.
 - Add fix_anchor.py to normalize reference anchor placement.
 - Add enhanced DNS reporting using nmcli and align output behavior with get_resources.sh.
 - Switch SSHD checks to sshd -T, add public key settings, and report TCP Wrappers effectiveness in check_sshd_config.sh.
