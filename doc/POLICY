@@ -69,7 +69,9 @@ or additions to this common policy, in order to avoid redundancy.
   - `-h`, `--help` to display usage information and exit with code `0`.
   - `-v`, `--version` to display version information and exit with code `0`.
 - Help or version output represents a successful, user-requested termination.
-- Invalid or unsupported options must result in usage output and exit with code `1`.
+- Invalid or unsupported options must result in usage output.
+- Exit code may be `1` (error) or `0` (non-error usage display),
+- depending on the tool's design, but must be consistent and documented.
 
 ### Documentation and Versioning
 - Every executable must contain a structured header with:
