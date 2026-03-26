@@ -73,8 +73,10 @@ or additions to this common policy, in order to avoid redundancy.
 
 ### Documentation and Versioning
 - Every executable must contain a structured header with:
-  `Description`, `Requirements`, `Usage`, `Options`, `Test Cases`, `Version History`
+  `Description`, `Requirements`, `Usage`, `Options`, `Version History`
   (in this order).
+- "Test Cases" section must NOT be included in production scripts.
+- "Test Cases" must be defined only in dedicated test code (e.g., test/, spec/).
 - Documentation must be updated in sync with behavior changes.
 - Do not increment version numbers multiple times on the same date.
 
@@ -84,6 +86,8 @@ or additions to this common policy, in order to avoid redundancy.
   (e.g. `# Validate input`, `# Initialize environment`).
 
 ### Testing and Operation
+- Test code must include a "Test Cases" section placed immediately before "Version History".
+- Test Cases must describe executable scenarios and expected behavior.
 - Assume cron execution by default; define `PATH` and required environment variables explicitly.
 - Validation must include syntax checks and exit-code verification.
 - In plugin-based systems, loaders must collect and propagate plugin return codes.
