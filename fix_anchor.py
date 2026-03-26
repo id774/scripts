@@ -28,7 +28,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Requirements:
-#  - Python Version: 3.6 or later
+#  - Python Version: 3.1 or later
 #  - Standard library only
 #
 #  Usage:
