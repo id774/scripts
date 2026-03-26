@@ -13,6 +13,7 @@ v1.6.5 (Release Date: TBD)
 - Handle missing /opt/python and /opt/ruby directories.
 - Harden fix-permissions.conf for cron and security config files.
 - Refine bare-domain redirect to preserve request URI and prevent double slashes in Apache configuration.
+- Refine POLICY to enforce documentation structure, separate Test Cases from production code, and consolidate version entries per date.
 
 v1.6.4 (2026-02-27)
 -------------------
