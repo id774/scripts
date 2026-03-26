@@ -128,6 +128,20 @@ def show_version():
     return 0
 
 
+def validate_input_file(path):
+    """Validate the input file path."""
+
+    if not os.path.exists(path):
+        print("[ERROR] Input file does not exist: %s" % path, file=sys.stderr)
+        return 1
+
+    if not os.path.isfile(path):
+        print("[ERROR] Input path is not a file: %s" % path, file=sys.stderr)
+        return 1
+
+    return 0
+
+
 def validate_input_content(path):
     """Validate that the input file is a supported text file for this script."""
 
@@ -183,20 +197,6 @@ def fix(text):
     updated, count1 = fix_with_pattern(text, PATTERN)
     updated, count2 = fix_with_pattern(updated, ENTITY_PATTERN)
     return updated, (count1 + count2)
-
-
-def validate_input_file(path):
-    """Validate the input file path."""
-
-    if not os.path.exists(path):
-        print("[ERROR] Input file does not exist: %s" % path, file=sys.stderr)
-        return 1
-
-    if not os.path.isfile(path):
-        print("[ERROR] Input path is not a file: %s" % path, file=sys.stderr)
-        return 1
-
-    return 0
 
 
 def read_text_file(path):
