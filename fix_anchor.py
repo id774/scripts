@@ -46,12 +46,6 @@
 #  - -v, --version
 #      Display version information and exit.
 #
-#  Test Cases:
-#      fix_anchor.py sample.html
-#      fix_anchor.py sample.html fixed.html
-#      fix_anchor.py -h
-#      fix_anchor.py -v
-#
 #  Version History:
 #  v1.0 2026-03-26
 #       Initial release.
