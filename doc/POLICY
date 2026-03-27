@@ -137,8 +137,7 @@ or additions to this common policy, in order to avoid redundancy.
 - Shebang must be:
   `#!/usr/bin/env python`
 - Do NOT use `python3`
-- Encoding header must be:
-  `# -*- coding: utf-8 -*-`
+- Encoding header may be included if required: # -*- coding: utf-8 -*-
 - Header indentation:
   - Title line: 1 space after `#`
   - Other lines: 2 spaces after `#`
