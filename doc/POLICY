@@ -86,7 +86,7 @@ or additions to this common policy, in order to avoid redundancy.
   - Title line: 1 space after `#`
   - Other lines: 2 spaces after `#`
 - Encoding rules:
-  - Use UTF-8 by default
+  - Use UTF-8 by default.
 
 ### Comments and Language
 - Comments must be written in **English** only.
@@ -141,8 +141,9 @@ or additions to this common policy, in order to avoid redundancy.
 ### Header Formatting Rules
 - Shebang must be:
   `#!/usr/bin/env python`
-- Do NOT use `python3`
-- Encoding header may be included if required: # -*- coding: utf-8 -*-
+- Do NOT use `python3`.
+- Encoding header may be included if required:
+  # -*- coding: utf-8 -*-
 
 ### Program Structure
 - Define `main() -> int` as the entry point.
