@@ -165,8 +165,15 @@ gather_system_info() {
         if [ "$(id -u)" -eq 0 ]; then
             dmesg | grep "Linux version" || true
         fi
+        # Prefer lsb_release output when available
         if command_exists lsb_release; then
             execute_command lsb_release -a
+        fi
+        # Read directly (local state file) to keep separation from external command execution wrapper
+        if [ -f /etc/debian_version ]; then
+            echo "[INFO] Retrieving distribution version from /etc/debian_version"
+            cat /etc/debian_version
+            echo
         fi
     fi
     execute_command uname -a
