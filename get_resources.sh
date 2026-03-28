@@ -18,6 +18,7 @@
 #
 #  Outputs:
 #      - System information
+#      - Distribution version details (including Debian minor version when available)
 #      - CPU, memory, disk, and process information
 #      - Concise power and thermal summary
 #      - Network and time synchronization information
@@ -25,6 +26,8 @@
 #      - Security-related logs and fail2ban status
 #
 #  Version History:
+#  v2.4 2026-03-28
+#       Add Debian version reporting from /etc/debian_version.
 #  v2.3 2026-03-22
 #       Add concise DNS and ACPI summaries.
 #  v2.2 2025-12-22
