@@ -1,6 +1,10 @@
 scripts Repository Version History
 ==================================
 
+v1.6.6 (Release Date: TBD)
+--------------------------
+- Update Apache virtual host and TLS configuration.
+
 v1.6.5 (2026-03-28)
 -------------------
 - Add format_html.py to format HTML with normalized indentation and inline element handling.
