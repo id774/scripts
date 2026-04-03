@@ -9,10 +9,13 @@
 #    four-space indent:
 #        "    daily"
 #        "    rotate 90"
+#        "    maxsize 100M"
 #    If a block already has a frequency directive (daily/weekly/monthly/
 #    yearly), it is normalized to "    daily". If a block already has
-#    "rotate N", it is normalized to "    rotate 90". If either directive
-#    is missing, it is inserted immediately before the closing brace.
+#    "rotate N", it is normalized to "    rotate 90". If a block already
+#    has "maxsize N", it is normalized to "    maxsize 100M". If any of
+#    these directives is missing, it is inserted immediately before the
+#    closing brace.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -39,7 +42,8 @@
 #      (rename and compress) logs. rsyslog writes system logs such as
 #      /var/log/auth.log and /var/log/syslog. Placing "daily" reduces
 #      each file’s size by rotating every day; "rotate 90" keeps 90
-#      generations (roughly 90 days).
+#      generations (roughly 90 days). "maxsize 100M" forces rotation
+#      when the file exceeds 100MB.
 #    * We first normalize tabs to four spaces so indentation looks
 #      consistent across editors and diffs. Then we fix each block.
 #    * Temporary files are written under /tmp and removed via a trap.
@@ -63,6 +67,8 @@
 #         - insert "    daily" if missing
 #         - normalize "rotate N"                 => "    rotate 90"
 #         - insert "    rotate 90" if missing
+#         - normalize maxsize N              => "    maxsize 100M"
+#         - insert "    maxsize 100M" if missing
 #    3) After changes, print the final file to the screen and a clear
 #       concluding message. Also fix permissions on status file.
 #
@@ -78,6 +84,8 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v1.1 2026-04-03
+#       Add maxsize 100M enforcement for each logrotate block.
 #  v1.0 2025-09-29
 #       Initial release.
 #
@@ -304,6 +312,46 @@ ensure_rotate90() {
 
 }
 
+# Ensure a size limit line "    maxsize 100M" exists (and is normalized) in each block.
+ensure_maxsize() {
+    tmp="/tmp/rsyslog_maxsize.$$"
+    if ! sudo awk '
+        BEGIN { inblk=0; seen=0 }
+        { sub(/\r$/, "") }
+        /{[[:space:]]*$/ {
+            inblk=1; seen=0; print; next
+        }
+        inblk && /^[[:space:]]*maxsize[[:space:]]+[0-9]+[kKmMgG]?[[:space:]]*(#.*)?$/ {
+            if (seen==0) { print "    maxsize 100M"; seen=1 }
+            next
+        }
+        inblk && /^[[:space:]]*}[[:space:]]*$/ {
+            if (seen==0) { print "    maxsize 100M" }
+            print; inblk=0; seen=0; next
+        }
+        { print }
+    ' "$TARGET" > "$tmp"; then
+        rm -f "$tmp"
+        echo "[ERROR] Failed to process maxsize." >&2
+        exit 1
+    fi
+
+    if sudo cmp -s "$tmp" "$TARGET"; then
+        rm -f "$tmp"
+        echo "[INFO] maxsize already set for all stanzas"
+    else
+        if ! sudo cp -p "$tmp" "$TARGET"; then
+            rm -f "$tmp"
+            echo "[ERROR] Failed to apply maxsize changes." >&2
+            exit 1
+        fi
+        rm -f "$tmp"
+        echo "[INFO] Set maxsize 100M in one or more stanzas"
+    fi
+
+    enforce_owner_mode "$TARGET" root adm 0640
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
@@ -318,6 +366,7 @@ main() {
     convert_tabs
     ensure_daily
     ensure_rotate90
+    ensure_maxsize
 
     # Normalize logrotate status file as well
     enforce_owner_mode /var/lib/logrotate/status root adm 0640
