@@ -1,11 +1,11 @@
 #!/bin/sh
 
 ########################################################################
-# setup_rsyslog_logrotate.sh: Enforce daily and rotate 90 for rsyslog
+# setup_rsyslog_logrotate.sh: Enforce rsyslog logrotate and journald limits
 #
 #  Description:
 #    This script makes sure /etc/logrotate.d/rsyslog contains, inside
-#    every brace block `{ ... }`, the two directives below with a
+#    every brace block `{ ... }`, the three directives below with a
 #    four-space indent:
 #        "    daily"
 #        "    rotate 90"
@@ -16,6 +16,13 @@
 #    has "maxsize N", it is normalized to "    maxsize 100M". If any of
 #    these directives is missing, it is inserted immediately before the
 #    closing brace.
+#
+#    In addition, the script manages a dedicated journald drop-in file:
+#        /etc/systemd/journald.conf.d/99-storage-limits.conf
+#    with the following content:
+#        [Journal]
+#        SystemMaxUse=500M
+#        RuntimeMaxUse=200M
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -28,14 +35,15 @@
 #
 #  Why this approach:
 #    * Idempotent: running the script multiple times does not keep
-#      changing the file once it is in the desired state.
+#      changing files once they are in the desired state.
 #    * Safe metadata handling: updated content is copied back with cp -p
-#      to preserve mode/owner/timestamps.
+#      for rsyslog logrotate config to preserve mode/owner/timestamps.
 #    * Minimal edits: only the target directives are touched; everything
 #      else (delaycompress, postrotate, comments, ordering) is preserved.
-#    * Finally, we normalize permissions on both the rsyslog config file
-#      and the logrotate status file to root:adm 0640 via a reusable
-#      function that accepts a path and desired owner/mode.
+#    * Separate journald policy: a dedicated drop-in file is managed so
+#      the main journald.conf file remains untouched.
+#    * Immediate effect: systemd-journald is restarted only when the
+#      managed journald drop-in content actually changes.
 #
 #  Beginner notes:
 #    * "logrotate" reads configuration files describing how to rotate
@@ -44,6 +52,10 @@
 #      each file’s size by rotating every day; "rotate 90" keeps 90
 #      generations (roughly 90 days). "maxsize 100M" forces rotation
 #      when the file exceeds 100MB.
+#    * "SystemMaxUse=500M" limits how much disk space persistent journal
+#      files under /var/log/journal may use in total.
+#    * "RuntimeMaxUse=200M" limits how much temporary journal data under
+#      /run/log/journal may use while the system is running.
 #    * We first normalize tabs to four spaces so indentation looks
 #      consistent across editors and diffs. Then we fix each block.
 #    * Temporary files are written under /tmp and removed via a trap.
@@ -58,24 +70,34 @@
 #        postrotate script fragments or custom paths in this file.
 #      - Group readable for "adm" aligns with least privilege for on-host
 #        troubleshooting without granting global access.
+#    * /etc/logrotate.d/rsyslog
+#      - Owner and group: root:adm
+#      - Mode: 0640
+#    * /etc/systemd/journald.conf.d/99-storage-limits.conf
+#      - Owner and group: root:root
+#      - Mode: 0644
 #
 #  Behavior summary:
-#    1) If the file contains any tab characters, replace all tabs with
-#       four spaces (single pass).
+#    1) If the rsyslog logrotate file contains any tab characters,
+#       replace all tabs with four spaces (single pass).
 #    2) In each brace block:
 #         - normalize daily/weekly/monthly/yearly => "    daily"
 #         - insert "    daily" if missing
 #         - normalize "rotate N"                 => "    rotate 90"
 #         - insert "    rotate 90" if missing
-#         - normalize maxsize N              => "    maxsize 100M"
+#         - normalize "maxsize N"               => "    maxsize 100M"
 #         - insert "    maxsize 100M" if missing
-#    3) After changes, print the final file to the screen and a clear
-#       concluding message. Also fix permissions on status file.
+#    3) Ensure the journald drop-in file contains the required
+#       [Journal] limits.
+#    4) Restart systemd-journald only when the drop-in content changed.
+#    5) After changes, print the final files to the screen and a clear
+#       concluding message. Also fix permissions on the logrotate status file.
 #
 #  Requirements:
 #    - Linux
-#    - sudo privileges (script uses sudo for reading/writing the target)
-#    - Commands: sudo, awk, cp, cmp, grep, cat, rm, chown, chmod
+#    - sudo privileges (script uses sudo for reading/writing targets)
+#    - Commands: sudo, awk, cp, cmp, grep, cat, rm, chown, chmod,
+#      mkdir, systemctl, uname
 #
 #  Error Conditions:
 #  0. Success.
@@ -84,6 +106,8 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v1.2 2026-04-04
+#       Add journald drop-in management for SystemMaxUse and RuntimeMaxUse.
 #  v1.1 2026-04-03
 #       Add maxsize 100M enforcement for each logrotate block.
 #  v1.0 2025-09-29
@@ -91,8 +115,10 @@
 #
 ########################################################################
 
-# Target configuration file
+# Define managed paths
 TARGET="/etc/logrotate.d/rsyslog"
+JOURNALD_DIR="/etc/systemd/journald.conf.d"
+JOURNALD_DROPIN="${JOURNALD_DIR}/99-storage-limits.conf"
 
 # Display full script header information extracted from the top comment block
 usage() {
@@ -144,7 +170,11 @@ check_target() {
 
 # Remove temp files on normal exit or interruption
 cleanup() {
-    rm -f /tmp/rsyslog_tabs.$$ /tmp/rsyslog_daily.$$ /tmp/rsyslog_rotate.$$
+    rm -f /tmp/rsyslog_tabs.$$ \
+          /tmp/rsyslog_daily.$$ \
+          /tmp/rsyslog_rotate.$$ \
+          /tmp/rsyslog_maxsize.$$ \
+          /tmp/journald_limits.$$
 }
 trap cleanup EXIT INT TERM
 
@@ -201,6 +231,14 @@ enforce_owner_mode() {
         exit 1
     fi
     echo "[INFO] Enforced ${owner}:${group} $mode on $path"
+}
+
+# Ensure the journald drop-in directory exists
+ensure_journald_dir() {
+    if ! sudo mkdir -p "$JOURNALD_DIR"; then
+        echo "[ERROR] Failed to create $JOURNALD_DIR" >&2
+        exit 1
+    fi
 }
 
 # Ensure a frequency line "    daily" exists (and is normalized) in each block.
@@ -309,10 +347,9 @@ ensure_rotate90() {
     #   read for on host audits while world access stays disabled.
     # Error handling mirrors the daily step and fails fast on errors.
     enforce_owner_mode "$TARGET" root adm 0640
-
 }
 
-# Ensure a size limit line "    maxsize 100M" exists (and is normalized) in each block.
+# Ensure a size limit line "    maxsize 100M" exists (and is normalized) in each block
 ensure_maxsize() {
     tmp="/tmp/rsyslog_maxsize.$$"
     if ! sudo awk '
@@ -352,6 +389,47 @@ ensure_maxsize() {
     enforce_owner_mode "$TARGET" root adm 0640
 }
 
+# Ensure the journald drop-in file contains the desired limits
+# Return codes:
+#   0: content updated
+#   1: already in desired state
+ensure_journald_limits() {
+    tmp="/tmp/journald_limits.$$"
+
+    # Build the desired drop-in content in a temporary file first
+    cat > "$tmp" <<'EOF'
+[Journal]
+SystemMaxUse=500M
+RuntimeMaxUse=200M
+EOF
+
+    if sudo test -f "$JOURNALD_DROPIN" && sudo cmp -s "$tmp" "$JOURNALD_DROPIN"; then
+        rm -f "$tmp"
+        echo "[INFO] journald limits already configured"
+        return 1
+    fi
+
+    if ! sudo cp "$tmp" "$JOURNALD_DROPIN"; then
+        rm -f "$tmp"
+        echo "[ERROR] Failed to write $JOURNALD_DROPIN" >&2
+        exit 1
+    fi
+    rm -f "$tmp"
+
+    enforce_owner_mode "$JOURNALD_DROPIN" root root 0644
+    echo "[INFO] Updated $JOURNALD_DROPIN"
+    return 0
+}
+
+# Restart journald only after the drop-in content changed
+restart_journald() {
+    if ! sudo systemctl restart systemd-journald; then
+        echo "[ERROR] Failed to restart systemd-journald" >&2
+        exit 1
+    fi
+    echo "[INFO] Restarted systemd-journald"
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
@@ -359,22 +437,33 @@ main() {
     esac
 
     check_system
-    check_commands sudo awk cp cmp grep cat rm chown chmod
+    check_commands sudo awk cp cmp grep cat rm chown chmod mkdir systemctl
     check_sudo
     check_target
+    ensure_journald_dir
 
     convert_tabs
     ensure_daily
     ensure_rotate90
     ensure_maxsize
 
+    # Update journald limits only when needed
+    if ensure_journald_limits; then
+        restart_journald
+    fi
+
     # Normalize logrotate status file as well
     enforce_owner_mode /var/lib/logrotate/status root adm 0640
 
-    # Final verification output helps humans confirm the result quickly
+    # Show the final files for quick human verification
     echo "----- BEGIN $TARGET -----"
     sudo cat "$TARGET"
     echo "----- END $TARGET -----"
+
+    echo "----- BEGIN $JOURNALD_DROPIN -----"
+    sudo cat "$JOURNALD_DROPIN"
+    echo "----- END $JOURNALD_DROPIN -----"
+
     echo "[INFO] This is the final result"
     return 0
 }
