@@ -6,8 +6,35 @@
 #  Description:
 #  This script automates the setup of an SSL-enabled Apache2 server by:
 #  - Generating an SSL certificate for Apache2.
-#  - Deploying custom site configuration files.
+#  - Deploying Apache site configuration templates.
+#  - Installing deployed files under host-specific FQDN-based names.
 #  - Enabling SSL and configuring virtual hosts.
+#
+#  Template deployment:
+#  - The configuration files distributed with this script are templates.
+#  - They are stored under fixed template names and do not need to be
+#    renamed before execution.
+#  - This script detects the current host FQDN and copies each template
+#    to /etc/apache2/sites-available/ using host-specific file names.
+#  - The deployed files are intended to be reviewed and edited on each
+#    target host after deployment.
+#
+#  Naming convention:
+#  - Distributed template files use the following fixed names:
+#      hostname.sitename.conf
+#      hostname.sitename-ssl.conf
+#  - Example template names:
+#      hostname.sitename.conf
+#      hostname.sitename-ssl.conf
+#  - On deployment, these templates are installed using the detected
+#    host FQDN:
+#      <host-fqdn>.conf
+#      <host-fqdn>-ssl.conf
+#  - Example installed file names on host wyvern.id774.net:
+#      wyvern.id774.net.conf
+#      wyvern.id774.net-ssl.conf
+#  - This keeps the distributed template names stable while ensuring
+#    that the deployed file names match the target host identity.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -22,8 +49,13 @@
 #  - Must be executed with sudo privileges.
 #  - The `$SCRIPTS` environment variable must be set.
 #  - Apache2 must be installed on the system.
+#  - Template files must exist under:
+#      $SCRIPTS/etc/apache/hostname.sitename.conf
+#      $SCRIPTS/etc/apache/hostname.sitename-ssl.conf
 #
 #  Version History:
+#  v1.6 2026-04-07
+#       Adopt FQDN-based naming and deploy Apache configs from templates with host-specific installation.
 #  v1.5 2025-08-27
 #       Rename Apache custom configs to use .conf suffix.
 #  v1.4 2025-06-23
@@ -80,17 +112,36 @@ check_commands() {
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
-        echo "Please set the SCRIPTS variable to the directory containing the Apache2 with SSL configuration files." >&2
+        echo "[ERROR] Please set SCRIPTS to the directory containing Apache templates." >&2
         exit 1
     fi
 }
 
-# Check if the user has sudo privileges (password may be required)
+# Check if the user has sudo privileges
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
         echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
+}
+
+# Detect target host FQDN
+detect_host_fqdn() {
+    HOST_FQDN=$(hostname -f 2>/dev/null)
+    if [ -z "$HOST_FQDN" ]; then
+        echo "[ERROR] Failed to detect the host FQDN using hostname -f." >&2
+        exit 1
+    fi
+}
+
+# Check template files
+check_templates() {
+    for template in hostname.sitename.conf hostname.sitename-ssl.conf; do
+        if [ ! -f "$SCRIPTS/etc/apache/$template" ]; then
+            echo "[ERROR] Missing template file: $SCRIPTS/etc/apache/$template" >&2
+            exit 1
+        fi
+    done
 }
 
 # Deploy SSL certificate
@@ -105,18 +156,30 @@ deploy_ssl_cert() {
     fi
 }
 
-# Deploy Apache site configuration files
+# Deploy Apache site configuration files from fixed templates
 deploy_site_configs() {
     echo "[INFO] Deploying site configurations..."
-    for site in custom.conf custom-ssl.conf; do
-        if ! sudo cp "$SCRIPTS/etc/apache/$site" /etc/apache2/sites-available/; then
-            echo "[ERROR] Failed to copy $site configuration." >&2
-            exit 1
-        fi
-        sudo chmod 0644 /etc/apache2/sites-available/$site
-        sudo chown root:root /etc/apache2/sites-available/$site
-        echo "[INFO] Please edit /etc/apache2/sites-available/$site"
-    done
+
+    if ! sudo cp "$SCRIPTS/etc/apache/hostname.sitename.conf" \
+        "/etc/apache2/sites-available/$HOST_FQDN.conf"; then
+        echo "[ERROR] Failed to copy hostname.sitename.conf." >&2
+        exit 1
+    fi
+
+    if ! sudo cp "$SCRIPTS/etc/apache/hostname.sitename-ssl.conf" \
+        "/etc/apache2/sites-available/$HOST_FQDN-ssl.conf"; then
+        echo "[ERROR] Failed to copy hostname.sitename-ssl.conf." >&2
+        exit 1
+    fi
+
+    sudo chmod 0644 "/etc/apache2/sites-available/$HOST_FQDN.conf"
+    sudo chmod 0644 "/etc/apache2/sites-available/$HOST_FQDN-ssl.conf"
+    sudo chown root:root "/etc/apache2/sites-available/$HOST_FQDN.conf"
+    sudo chown root:root "/etc/apache2/sites-available/$HOST_FQDN-ssl.conf"
+
+    echo "[INFO] Installed /etc/apache2/sites-available/$HOST_FQDN.conf"
+    echo "[INFO] Installed /etc/apache2/sites-available/$HOST_FQDN-ssl.conf"
+    echo "[INFO] Please review and edit the deployed files as needed."
 }
 
 # Configure Apache2
@@ -134,12 +197,12 @@ configure_apache() {
         echo "[ERROR] Failed to disable default-ssl site." >&2
         exit 1
     fi
-    if ! sudo a2ensite custom; then
-        echo "[ERROR] Failed to enable custom site." >&2
+    if ! sudo a2ensite "$HOST_FQDN"; then
+        echo "[ERROR] Failed to enable $HOST_FQDN site." >&2
         exit 1
     fi
-    if ! sudo a2ensite custom-ssl; then
-        echo "[ERROR] Failed to enable custom-ssl site." >&2
+    if ! sudo a2ensite "$HOST_FQDN-ssl"; then
+        echo "[ERROR] Failed to enable $HOST_FQDN-ssl site." >&2
         exit 1
     fi
     if ! sudo systemctl reload apache2; then
@@ -150,16 +213,18 @@ configure_apache() {
     fi
 }
 
-# Main entry point of the script
+# Main entry point
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
     esac
 
     check_system
-    check_commands sudo systemctl apache2 make-ssl-cert a2enmod a2ensite a2dissite
+    check_commands sudo systemctl apache2 make-ssl-cert a2enmod a2ensite a2dissite hostname
     check_scripts
     check_sudo
+    detect_host_fqdn
+    check_templates
 
     deploy_ssl_cert
     deploy_site_configs
