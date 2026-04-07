@@ -50,8 +50,8 @@
 #  - The `$SCRIPTS` environment variable must be set.
 #  - Apache2 must be installed on the system.
 #  - Template files must exist under:
-#      $SCRIPTS/etc/apache/hostname.sitename.conf
-#      $SCRIPTS/etc/apache/hostname.sitename-ssl.conf
+#      $SCRIPTS/etc/apache/sites-available/hostname.sitename.conf
+#      $SCRIPTS/etc/apache/sites-available/hostname.sitename-ssl.conf
 #
 #  Version History:
 #  v1.6 2026-04-07
@@ -137,8 +137,8 @@ detect_host_fqdn() {
 # Check template files
 check_templates() {
     for template in hostname.sitename.conf hostname.sitename-ssl.conf; do
-        if [ ! -f "$SCRIPTS/etc/apache/$template" ]; then
-            echo "[ERROR] Missing template file: $SCRIPTS/etc/apache/$template" >&2
+        if [ ! -f "$SCRIPTS/etc/apache/sites-available/$template" ]; then
+            echo "[ERROR] Missing template file: $SCRIPTS/etc/apache/sites-available/$template" >&2
             exit 1
         fi
     done
@@ -160,13 +160,13 @@ deploy_ssl_cert() {
 deploy_site_configs() {
     echo "[INFO] Deploying site configurations..."
 
-    if ! sudo cp "$SCRIPTS/etc/apache/hostname.sitename.conf" \
+    if ! sudo cp "$SCRIPTS/etc/apache/sites-available/hostname.sitename.conf" \
         "/etc/apache2/sites-available/$HOST_FQDN.conf"; then
         echo "[ERROR] Failed to copy hostname.sitename.conf." >&2
         exit 1
     fi
 
-    if ! sudo cp "$SCRIPTS/etc/apache/hostname.sitename-ssl.conf" \
+    if ! sudo cp "$SCRIPTS/etc/apache/sites-available/hostname.sitename-ssl.conf" \
         "/etc/apache2/sites-available/$HOST_FQDN-ssl.conf"; then
         echo "[ERROR] Failed to copy hostname.sitename-ssl.conf." >&2
         exit 1
