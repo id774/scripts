@@ -328,6 +328,7 @@ import_xfce_keybindings() {
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>e" "emacs"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>f" "exo-open --launch WebBrowser"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>g" "gthumb"
+    xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>r" "remmina"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>v" "vmware"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>w" "xfce4-settings-manager"
     xfconf_settings_string "$ch" "/commands/custom/<Primary><Alt>s" "xfce4-screenshooter -f"

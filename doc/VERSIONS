@@ -3,6 +3,7 @@ scripts Repository Version History
 
 v1.6.6 (Release Date: TBD)
 --------------------------
+- Add Remmina keybinding for both GNOME and Xfce environments.
 - Enforce rsyslog logrotate policy and journald storage limits.
 - Adopt FQDN-based naming and deploy Apache configs from fixed templates with host-specific installation.
 
