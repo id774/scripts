@@ -16,6 +16,7 @@
 #  Behavior:
 #    - Idempotent deployment: only writes when missing or content differs.
 #    - Pre-checks if an equivalent split already exists and skips if so.
+#    - Renames /etc/rsyslog.d/postfix.conf to 10-postfix-socket.conf if present.
 #    - Validates rsyslog config with 'rsyslogd -N1' and restarts the service.
 #
 #  Example content of 30-postfix.conf (rsyslog v8 property-based filter):
@@ -42,9 +43,11 @@
 #  Requirements:
 #  - Linux operating system
 #  - sudo privileges for writing under /etc/rsyslog.d and controlling rsyslog
-#  - Commands: sudo, awk, find, grep, cmp, chown, chmod, cp, mktemp, rsyslogd, uname, test
+#  - Commands: sudo, awk, find, grep, cmp, chown, chmod, cp, mktemp, mv, rsyslogd, uname, test
 #
 #  Version History:
+#  v1.1 2026-04-15
+#       Rename postfix.conf to 10-postfix-socket.conf when present.
 #  v1.0 2025-08-26
 #       Initial release.
 #
@@ -52,6 +55,7 @@
 
 TARGET_DIR="/etc/rsyslog.d"
 TARGET_FILE="$TARGET_DIR/30-postfix.conf"
+RENAME_DONE=0
 
 # Display full script header information extracted from the top comment block
 usage() {
@@ -133,6 +137,27 @@ has_postfix_split() {
         $files_main $files_dropin 2>/dev/null | grep -q .
 }
 
+
+# Rename default postfix socket config if present
+rename_postfix_socket_conf() {
+    LEGACY_FILE="$TARGET_DIR/postfix.conf"
+    SOCKET_FILE="$TARGET_DIR/10-postfix-socket.conf"
+
+    if ! sudo test -f "$LEGACY_FILE"; then
+        return 0
+    fi
+
+    if sudo mv -f "$LEGACY_FILE" "$SOCKET_FILE"; then
+        echo "[INFO] Renamed $LEGACY_FILE to $SOCKET_FILE"
+        sudo chown root:root "$SOCKET_FILE"
+        sudo chmod 0644 "$SOCKET_FILE"
+        RENAME_DONE=1
+    else
+        echo "[ERROR] Failed to rename $LEGACY_FILE to $SOCKET_FILE" >&2
+        exit 1
+    fi
+}
+
 # Deploy the config if needed (content differs or file absent)
 deploy_conf() {
     SRC_FILE="$SCRIPTS/etc/rsyslog.d/30-postfix.conf"
@@ -188,6 +213,9 @@ maybe_deploy_and_restart() {
     if has_postfix_split; then
         echo "[INFO] Existing config already splits postfix logs."
         echo "[INFO] Skipping deployment of $TARGET_FILE."
+        if [ "$RENAME_DONE" -eq 1 ]; then
+            validate_and_restart
+        fi
     else
         deploy_conf
         validate_and_restart
@@ -202,10 +230,11 @@ main() {
 
     check_system
     check_scripts
-    check_commands awk find grep cmp chown chmod cp mktemp rsyslogd uname
+    check_commands awk find grep cmp chown chmod cp mktemp mv rsyslogd uname
     check_sudo
     check_source_file
     check_target_dir
+    rename_postfix_socket_conf
 
     maybe_deploy_and_restart
     return 0
