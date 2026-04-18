@@ -8,6 +8,7 @@ v1.6.6 (Release Date: TBD)
 - Rename default postfix rsyslog socket config to 10-postfix-socket.conf and deploy postfix-only routing.
 - Enforce rsyslog logrotate policy and journald storage limits.
 - Adopt FQDN-based naming and deploy Apache configs from fixed templates with host-specific installation.
+- Normalize Python invocation across scripts and tests.
 
 v1.6.5 (2026-03-28)
 -------------------

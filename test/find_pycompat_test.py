@@ -87,7 +87,7 @@ class TestFindPyCompat(unittest.TestCase):
         script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         script_path = os.path.join(script_dir, 'find_pycompat.py')
 
-        proc = subprocess.Popen(['python3', script_path, '-h'],
+        proc = subprocess.Popen(['python', script_path, '-h'],
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
         out, err = proc.communicate()

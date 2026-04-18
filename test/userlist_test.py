@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 ########################################################################
 # userlist_test.py: Test for userlist.py
@@ -43,7 +43,7 @@ class TestUserlist(unittest.TestCase):
     script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../userlist.py'))
 
     def run_script(self, args=None, input_data=None):
-        command = ['python3', self.script_path]
+        command = ['python', self.script_path]
         if args:
             command += args
         process = subprocess.Popen(

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 ########################################################################
 # cal_test.py: Test for cal.py
@@ -40,7 +40,7 @@ import cal
 class TestCal(unittest.TestCase):
     def run_script(self, args=None):
         script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../cal.py'))
-        command = ['python3', script_path]
+        command = ['python', script_path]
         if args:
             command += args
         proc = subprocess.Popen(

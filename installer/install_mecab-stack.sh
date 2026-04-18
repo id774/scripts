@@ -62,8 +62,8 @@
 #      1. Navigate to the CaboCha Python binding directory:
 #         cd /usr/local/src/mecab-stack/cabocha/python
 #      2. Build and install the Python binding:
-#         python3 setup.py build
-#         sudo python3 setup.py install --prefix=$PREFIX
+#         python setup.py build
+#         sudo python setup.py install --prefix=$PREFIX
 #      3. Ensure the installed path is included in your PYTHONPATH.
 #
 #    For Ruby (CaboCha):

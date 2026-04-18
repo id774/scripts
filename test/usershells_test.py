@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 ########################################################################
 # usershells_test.py: Test for usershells.py
@@ -46,7 +46,7 @@ class TestUsershells(unittest.TestCase):
     script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../usershells.py'))
 
     def run_script(self, args=None, input_data=None):
-        command = ['python3', self.script_path]
+        command = ['python', self.script_path]
         if args:
             command += args
         process = subprocess.Popen(

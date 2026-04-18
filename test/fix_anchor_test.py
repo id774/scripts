@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 ########################################################################
 # fix_anchor_test.py: Unit Tests for fix_anchor.py

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 ########################################################################
 # unzip_subdir_test.py: Test for unzip_subdir.py
@@ -44,7 +44,7 @@ class TestUnzipSubdir(unittest.TestCase):
     def test_help_option(self):
         script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../unzip_subdir.py'))
         from subprocess import PIPE, Popen
-        process = Popen(['python3', script_path, '-h'], stdout=PIPE, stderr=PIPE)
+        process = Popen(['python', script_path, '-h'], stdout=PIPE, stderr=PIPE)
         stdout, _ = process.communicate()
         self.assertEqual(process.returncode, 0)
         self.assertIn("Usage", stdout.decode('utf-8'))
