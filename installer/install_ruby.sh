@@ -15,14 +15,14 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  Run this script without arguments to install the default Ruby version (4.0.2):
+#  Run this script without arguments to install the default Ruby version (4.0.3):
 #      ./install_ruby.sh
 #
 #  Specify a different Ruby version:
-#      ./install_ruby.sh 4.0.2
+#      ./install_ruby.sh 3.4.9
 #
 #  Specify an installation prefix:
-#      ./install_ruby.sh 4.0.2 /opt/ruby/4.0
+#      ./install_ruby.sh 4.0.3 /opt/ruby/4.0
 #
 #  Install without sudo (for local user installation):
 #      ./install_ruby.sh 3.4.9 ~/.local/ruby --no-sudo
@@ -96,7 +96,7 @@ check_sudo() {
 
 # Setup version and environment
 setup_environment() {
-    VERSION="${1:-4.0.2}"
+    VERSION="${1:-4.0.3}"
     RUBY_MAJOR="$(echo "$VERSION" | awk -F. '{print $1"."$2}')"
     PREFIX="${2:-/opt/ruby/$RUBY_MAJOR}"
     if [ -z "$3" ] || [ "$3" = "sudo" ]; then
