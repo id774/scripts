@@ -1,0 +1,24 @@
+# Ubuntu sources have moved to /etc/apt/sources.list.d/ubuntu.sources
+# ------------------------------------------------------------
+# Ubuntu 26.04 "Resolute Raccoon" Official APT Repository List
+# Base system, security updates, and updates
+# Maintainer: id774
+# ------------------------------------------------------------
+# Base Repository: Core system packages and optional components.
+deb     http://archive.ubuntu.com/ubuntu resolute main restricted universe multiverse
+deb-src http://archive.ubuntu.com/ubuntu resolute main restricted universe multiverse
+# ------------------------------------------------------------
+# Updates: Stable updates and bug fixes.
+deb     http://archive.ubuntu.com/ubuntu resolute-updates main restricted universe multiverse
+deb-src http://archive.ubuntu.com/ubuntu resolute-updates main restricted universe multiverse
+# ------------------------------------------------------------
+# Security Updates: Security fixes maintained by Ubuntu Security Team.
+deb     http://security.ubuntu.com/ubuntu resolute-security main restricted universe multiverse
+deb-src http://security.ubuntu.com/ubuntu resolute-security main restricted universe multiverse
+# ------------------------------------------------------------
+# Backports: Optional newer versions of packages.
+deb     http://archive.ubuntu.com/ubuntu resolute-backports main restricted universe multiverse
+deb-src http://archive.ubuntu.com/ubuntu resolute-backports main restricted universe multiverse
+# ------------------------------------------------------------
+# End of sources.list
+# ------------------------------------------------------------
