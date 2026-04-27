@@ -1,6 +1,6 @@
 " vim:set ts=8 sts=2 sw=2 tw=0
 "
-" Last Change: 18-Jul-2025.
+" Last Change: 28-Apr-2026.
 " Maintainer:  id774 <idnanashi@gmail.com>
 
 if &encoding !=# 'utf-8'
@@ -26,7 +26,6 @@ else
     set fileencodings+=cp932
     set fileencodings-=euc-jp
     set fileencodings-=euc-jisx0213
-    let &encoding = s:enc_euc
     else
       let &fileencodings = &fileencodings .','. s:enc_euc
     endif
@@ -287,4 +286,4 @@ if exists('&ambiwidth')
   set ambiwidth=double
 endif
 
-" Copyright (C) 2008-2025 id774 <idnanashi@gmail.com>
+" Copyright (C) 2008-2026 id774 <idnanashi@gmail.com>
