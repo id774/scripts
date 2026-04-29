@@ -1,8 +1,8 @@
 scripts Repository Version History
 ==================================
 
-v1.6.6 (Release Date: TBD)
---------------------------
+v1.6.6 (2026-04-29)
+-------------------
 - Add apt sources list configuration for Ubuntu 26.04 LTS.
 - Add Remmina keybinding for both GNOME and Xfce environments.
 - Add utility to normalize HTML structure with section separators.
