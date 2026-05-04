@@ -16,6 +16,33 @@
 #  script does not preserve such data. Running this script may increase startup time
 #  or trigger re-downloads/rebuilds as caches are regenerated.
 #
+#  Cleanup Retention Policy:
+#  The cleanup retention period differs by directory and operating system.
+#
+#  Common cleanup targets:
+#  - $HOME/.cache: remove all entries regardless of age.
+#  - $HOME/.gem, $HOME/.pip, $HOME/.npm: remove files older than 0 days.
+#  - $HOME/.tmp, $HOME/twitter_viewer/log, $HOME/fastladder/log: remove files older than 7 days.
+#  - $HOME/.emacs.d/tmp, $HOME/.emacs.d/backups,
+#    $HOME/.emacs.d/auto-save-list, $HOME/.emacs.d/tramp-auto-save:
+#    remove files older than 30 days.
+#
+#  Linux cleanup targets:
+#  - /root/.cache: remove files older than 0 days when executed as root.
+#  - $HOME/tmp: remove files older than 1 day.
+#  - $HOME/Pictures, $HOME/Documents: remove files older than 30 days.
+#  - $HOME/Downloads, $HOME/Desktop: remove files older than 7 days.
+#  - $HOME/.local/share/Trash: remove all entries when the directory exists.
+#
+#  macOS cleanup targets:
+#  - $HOME/tmp: remove files older than 3 days.
+#  - When executed as root or trash(1) is unavailable:
+#    $HOME/Pictures and $HOME/Documents are cleaned after 30 days,
+#    while $HOME/Downloads and $HOME/Desktop are cleaned after 7 days.
+#  - When trash(1) is available for a non-root user:
+#    $HOME/Pictures and $HOME/Documents are moved to trash after 7 days,
+#    while $HOME/Downloads and $HOME/Desktop are moved to trash after 3 days.
+#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
@@ -35,6 +62,7 @@
 #  - Linux/macOS POSIX sh
 #
 #  Version History:
+#  20260505 - Document per-directory cleanup retention periods.
 #  20251220 - Purge $HOME/.cache without find traversal races and document cache policy.
 #  20251214 - Fix quoted wildcard cleanup and document script requirements.
 #  20250823 - Remove dead.letter and .ssh/known_hosts.old.
