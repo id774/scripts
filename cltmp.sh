@@ -17,31 +17,28 @@
 #  or trigger re-downloads/rebuilds as caches are regenerated.
 #
 #  Cleanup Retention Policy:
-#  The cleanup retention period differs by directory and operating system.
+#  Retention periods are normalized to four human-readable tiers: 0, 1, 7, and 30 days.
+#  The tiers are based on how disposable each target is, not on the operating system.
 #
-#  Common cleanup targets:
-#  - $HOME/.cache: remove all entries regardless of age.
-#  - $HOME/.gem, $HOME/.pip, $HOME/.npm: remove files older than 0 days.
-#  - $HOME/.tmp, $HOME/twitter_viewer/log, $HOME/fastladder/log: remove files older than 7 days.
-#  - $HOME/.emacs.d/tmp, $HOME/.emacs.d/backups,
-#    $HOME/.emacs.d/auto-save-list, $HOME/.emacs.d/tramp-auto-save:
-#    remove files older than 30 days.
+#  - 0 days: disposable cache and trash data.
+#    Targets: $HOME/.cache, $HOME/.gem, $HOME/.pip, $HOME/.npm,
+#    /root/.cache when executed as root, and $HOME/.local/share/Trash.
 #
-#  Linux cleanup targets:
-#  - /root/.cache: remove files older than 0 days when executed as root.
-#  - $HOME/tmp: remove files older than 1 day.
-#  - $HOME/Pictures, $HOME/Documents: remove files older than 30 days.
-#  - $HOME/Downloads, $HOME/Desktop: remove files older than 7 days.
-#  - $HOME/.local/share/Trash: remove all entries when the directory exists.
+#  - 1 day: short-lived temporary files.
+#    Targets: $HOME/tmp.
 #
-#  macOS cleanup targets:
-#  - $HOME/tmp: remove files older than 3 days.
-#  - When executed as root or trash(1) is unavailable:
-#    $HOME/Pictures and $HOME/Documents are cleaned after 30 days,
-#    while $HOME/Downloads and $HOME/Desktop are cleaned after 7 days.
-#  - When trash(1) is available for a non-root user:
-#    $HOME/Pictures and $HOME/Documents are moved to trash after 7 days,
-#    while $HOME/Downloads and $HOME/Desktop are moved to trash after 3 days.
+#  - 7 days: ordinary temporary work files, downloads, desktop clutter, and short-term logs.
+#    Targets: $HOME/.tmp, $HOME/Downloads, $HOME/Desktop,
+#    $HOME/twitter_viewer/log, and $HOME/fastladder/log.
+#
+#  - 30 days: user-visible files and editor recovery files.
+#    Targets: $HOME/Pictures, $HOME/Documents, $HOME/.emacs.d/tmp,
+#    $HOME/.emacs.d/backups, $HOME/.emacs.d/auto-save-list,
+#    and $HOME/.emacs.d/tramp-auto-save.
+#
+#  Platform-specific behavior:
+#  - macOS uses trash(1) for user-visible directories when available for a non-root user.
+#  - Linux purges $HOME/.local/share/Trash when the directory exists.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -62,6 +59,7 @@
 #  - Linux/macOS POSIX sh
 #
 #  Version History:
+#  20260508 - Normalize cleanup retention periods to 0, 1, 7, and 30 days.
 #  20260505 - Document per-directory cleanup retention periods.
 #  20251220 - Purge $HOME/.cache without find traversal races and document cache policy.
 #  20251214 - Fix quoted wildcard cleanup and document script requirements.
@@ -138,7 +136,7 @@ perform_cleanup() {
         for dir in "$HOME/Pictures" "$HOME/Documents" "$HOME/Downloads" "$HOME/Desktop"; do
             test -d "$dir" && touch "$dir/.localized"
         done
-        clean_dir "$HOME/tmp" 3 "rm -vf"
+        clean_dir "$HOME/tmp" 1 "rm -vf"
     elif [ "$os" = "Linux" ]; then
         if [ "$(id -u)" -eq 0 ]; then
             clean_dir /root/.cache 0 "rm -vrf"
@@ -174,10 +172,10 @@ perform_cleanup() {
             # Use trash for non-root users
             trash -ev
             for dir in "$HOME/Pictures" "$HOME/Documents"; do
-                clean_dir "$dir" 7 trash
+                clean_dir "$dir" 30 trash
             done
             for dir in "$HOME/Downloads" "$HOME/Desktop"; do
-                clean_dir "$dir" 3 trash
+                clean_dir "$dir" 7 trash
             done
             echo "Show trash contents..."
             trash -lv
