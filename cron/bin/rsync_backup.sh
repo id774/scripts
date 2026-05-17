@@ -9,8 +9,25 @@
 #  timestamps, performing cleanup tasks, and syncing data between disks and
 #  over SSH. The script is configured via /etc/cron.config/rsync_backup.conf
 #  and intended to be run automatically from cron.
+#
 #  Before any device operation, the script resolves the base block device
-#  by running `get-device <mountpoint>` and uses its result.#
+#  by running `get-device <mountpoint>` and uses its result.
+#
+#  Backup Data Layout:
+#  The device root contains top-level data areas.
+#  - base:
+#    Stores the standard backup area for the conventional storage layout.
+#    Existing logical directories are placed under this area.
+#  - extended:
+#    Stores the expanded backup area for larger-capacity storage layouts.
+#    This area is optional. If it does not exist, it is skipped.
+#
+#  Synchronization Policy:
+#  - If base exists under the source device root, base is synchronized.
+#  - If extended exists under the source device root, extended is also synchronized.
+#  - If a data area does not exist, it is skipped without warning.
+#  - Synchronization is performed by top-level data area, not by each
+#    logical directory under base.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -29,6 +46,7 @@
 #  - The system must have `get-device` command installed and available in PATH.
 #
 #  Version History:
+#  v4.0  2026-05-17 - Adopt base and extended data area layout for backup synchronization.
 #  v3.3  2025-08-31 - Resolve device via get-device before device operations.
 #  v3.2  2025-08-29 - Enable device argument in smart_info and smart_check.
 #  v3.1  2025-07-30 - Update script and config paths to /etc/cron.exec and /etc/cron.config respectively.
@@ -82,9 +100,9 @@ usage() {
 # Check if the script is running from cron
 is_running_from_cron() {
     if tty -s; then
-        return 1  # Terminal attached (interactive session)
+        return 1
     else
-        return 0  # No terminal (likely cron)
+        return 0
     fi
 }
 
@@ -96,6 +114,7 @@ print_serial_number() {
     else
         DEVPATH="/dev/$T_DEVICE"
     fi
+
     if [ -n "$T_DEVICE" ] && [ -b "$DEVPATH" ]; then
         SERIAL=$(udevadm info --query=all --name="$DEVPATH" 2>/dev/null | sed -n 's/^E: ID_SERIAL_SHORT=//p')
         if [ -n "$SERIAL" ]; then
@@ -114,6 +133,7 @@ display_and_update_timestamp() {
         echo "[INFO] ls -l $T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
         ls -l "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
     fi
+
     echo "[INFO] touch $T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
     touch "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
 }
@@ -124,6 +144,7 @@ version_info() {
         echo "[INFO] Checking installed version of TrueCrypt."
         /usr/bin/truecrypt -t --version
     fi
+
     if [ -x /usr/bin/veracrypt ]; then
         echo "[INFO] Checking installed version of VeraCrypt."
         /usr/bin/veracrypt -t --version
@@ -145,15 +166,16 @@ smart_info() {
     fi
 
     for DEV in $DEV_LIST; do
-        # Resolve with get-device using the appropriate mountpoint
         MP=""
         [ "$DEV" = "$B_DEVICE" ] && MP="$B_HOME/$B_MOUNT/$B_DEVICE"
         [ "$DEV" = "$T_DEVICE" ] && MP="$T_HOME/$T_MOUNT/$T_DEVICE"
+
         if command -v get-device >/dev/null 2>&1 && [ -n "$MP" ]; then
             DEVPATH=$(get-device "$MP" 2>/dev/null)
         else
             DEVPATH="/dev/$DEV"
         fi
+
         if [ -b "$DEVPATH" ]; then
             echo "[INFO] Attempting smartctl -a -d sat $DEVPATH"
             if ! smartctl -a -d sat "$DEVPATH"; then
@@ -178,10 +200,10 @@ smart_check() {
         DEV=$T_DEVICE
     fi
 
-    # Prefer get-device resolution using mountpoint
     MP=""
     [ "$DEV" = "$T_DEVICE" ] && MP="$T_HOME/$T_MOUNT/$T_DEVICE"
     [ "$DEV" = "$B_DEVICE" ] && MP="$B_HOME/$B_MOUNT/$B_DEVICE"
+
     if command -v get-device >/dev/null 2>&1 && [ -n "$MP" ]; then
         DEVPATH=$(get-device "$MP" 2>/dev/null)
     else
@@ -193,7 +215,6 @@ smart_check() {
         return 1
     fi
 
-    # Decide base path for flag files: prefer target path, then backup path, else fallback to target path
     BASE_HOME=$T_HOME
     BASE_MOUNT=$T_MOUNT
     if [ -d "$T_HOME/$T_MOUNT/$DEV" ]; then
@@ -204,7 +225,6 @@ smart_check() {
         BASE_MOUNT=$B_MOUNT
     fi
 
-    # Choose long or short test by presence of longtest flag file
     LONG_FLAG="$BASE_HOME/$BASE_MOUNT/$DEV/smart_longtest"
     SHORT_FLAG="$BASE_HOME/$BASE_MOUNT/$DEV/smart_shorttest"
 
@@ -227,23 +247,39 @@ smart_check() {
 
 # Show disk space usage of backup directories
 show_capacity_of_directories() {
-    if [ -d "$B_HOME/$B_MOUNT/$B_DEVICE/largefiles" ]; then
-        echo "[INFO] Disk usage of $B_HOME/$B_MOUNT/$B_DEVICE."
-        du -h --max-depth=2 "$B_HOME/$B_MOUNT/$B_DEVICE"
+    DEVICE_ROOT="$B_HOME/$B_MOUNT/$B_DEVICE"
+
+    if [ ! -d "$DEVICE_ROOT" ]; then
+        echo "[WARN] Skipped disk usage check: device root not found: $DEVICE_ROOT" >&2
+        return 1
     fi
+
+    echo "[INFO] Disk usage of $DEVICE_ROOT."
+    du -h --max-depth=3 "$DEVICE_ROOT"
 }
 
 # Remove unnecessary files such as macOS metadata and temp files
 cleanup() {
-    echo "[INFO] Removing junk files in $B_HOME/$B_MOUNT/$B_DEVICE..."
+    DEVICE_ROOT="$B_HOME/$B_MOUNT/$B_DEVICE"
+
+    if [ ! -d "$DEVICE_ROOT" ]; then
+        echo "[WARN] Skipped cleanup: device root not found: $DEVICE_ROOT" >&2
+        return 1
+    fi
+
+    echo "[INFO] Removing junk files in $DEVICE_ROOT..."
     echo "[INFO] Removing ._* AppleDouble files..."
-    find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '._*' -exec rm -vf {} \;
+    find "$DEVICE_ROOT" -name '._*' -exec rm -vf {} \;
+
     echo "[INFO] Removing .DS_Store files..."
-    find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '.DS_Store' -exec rm -vf {} \;
+    find "$DEVICE_ROOT" -name '.DS_Store' -exec rm -vf {} \;
+
     echo "[INFO] Removing temporary Unix files ending with '.un~'..."
-    find "$B_HOME/$B_MOUNT/$B_DEVICE" -name '.*.un~' -exec rm -vf {} \;
+    find "$DEVICE_ROOT" -name '.*.un~' -exec rm -vf {} \;
+
     echo "[INFO] Removing __pycache__ directories..."
-    find "$B_HOME/$B_MOUNT/$B_DEVICE" -type d -name '__pycache__' -exec rm -vrf {} \;
+    find "$DEVICE_ROOT" -type d -name '__pycache__' -exec rm -vrf {} \;
+
     echo "[INFO] Cleanup completed."
 }
 
@@ -280,7 +316,7 @@ git_backup() {
         return 1
     fi
 
-    cd "$HOME"
+    cd "$HOME" || return 1
 }
 
 # Back up GitHub repositories locally
@@ -302,88 +338,75 @@ github_backup() {
     fi
 }
 
-# Sync user directories from disk to remote server via SSH
-rsync_disk2ssh_1() {
-    echo -n "[INFO] Executing: rsync_disk2ssh_1 $B_DEVICE -> $T_DEVICE of $T_HOST at "
+# Sync backup data areas from disk to remote server via SSH
+rsync_disk2ssh() {
+    echo -n "[INFO] Executing: rsync_disk2ssh $B_DEVICE -> $T_DEVICE of $T_HOST at "
     date "+%Y/%m/%d %T"
 
-    SRC_DIR="$B_HOME/$B_MOUNT/$B_DEVICE"
-    DEST_DIR="$T_HOME/$T_MOUNT/$T_DEVICE"
+    SRC_ROOT="$B_HOME/$B_MOUNT/$B_DEVICE"
+    DEST_ROOT="$T_HOME/$T_MOUNT/$T_DEVICE"
     SSH_TARGET="$T_USER@$T_HOST"
+    OVERALL_RC=0
 
-    for USER_DIR in user1 user2 user3; do
-        if ping -c 1 "$T_HOST" > /dev/null 2>&1 && [ -d "$SRC_DIR/$USER_DIR" ]; then
-            echo "[INFO] Syncing $USER_DIR via SSH"
-            rsync -avz --no-o --no-g --delete -e ssh "$SRC_DIR/$USER_DIR" "$SSH_TARGET:$DEST_DIR/"
-            RC=$?
-        else
-            echo "[WARN] Skipped syncing $USER_DIR: either host unreachable or source directory missing." >&2
-            RC=1
-        fi
-        echo "[INFO] Return code is $RC"
-    done
-}
-
-# Sync large files from disk to remote server via SSH
-rsync_disk2ssh_2() {
-    echo -n "[INFO] Executing: rsync_disk2ssh_2 $B_DEVICE -> $T_DEVICE of $T_HOST at "
-    date "+%Y/%m/%d %T"
-
-    SRC_DIR="$B_HOME/$B_MOUNT/$B_DEVICE"
-    DEST_DIR="$T_HOME/$T_MOUNT/$T_DEVICE"
-    SSH_TARGET="$T_USER@$T_HOST"
-
-    if ping -c 1 "$T_HOST" > /dev/null 2>&1 && [ -d "$SRC_DIR/largefiles" ]; then
-        echo "[INFO] Syncing largefiles via SSH"
-        rsync -avz --no-o --no-g --delete -e ssh "$SRC_DIR/largefiles" "$SSH_TARGET:$DEST_DIR/"
-        RC=$?
-    else
-        echo "[WARN] Skipped syncing largefiles: either host unreachable or source directory missing." >&2
-        RC=1
+    if [ ! -d "$SRC_ROOT" ]; then
+        echo "[WARN] Source device root not found: $SRC_ROOT" >&2
+        return 1
     fi
 
-    echo "[INFO] Return code is $RC"
-}
-
-# Sync user directories between two local disks
-rsync_disk2disk_1() {
-    echo -n "[INFO] Executing: rsync_disk2disk_1 $B_DEVICE -> $T_DEVICE at "
-    date "+%Y/%m/%d %T"
-
-    SRC_DIR="$B_HOME/$B_MOUNT/$B_DEVICE"
-    DEST_DIR="$T_HOME/$T_MOUNT/$T_DEVICE"
-
-    for USER_DIR in user1 user2 user3; do
-        if [ -d "$SRC_DIR/$USER_DIR" ] && [ -d "$DEST_DIR/$USER_DIR" ]; then
-            echo "[INFO] Syncing $USER_DIR locally"
-            rsync -avz --no-o --no-g --delete "$SRC_DIR/$USER_DIR" "$DEST_DIR/"
-            RC=$?
-        else
-            echo "[WARN] Skipped syncing $USER_DIR: source or target directory does not exist." >&2
-            RC=1
-        fi
-        echo "[INFO] Return code is $RC"
-    done
-}
-
-# Sync large files between two local disks
-rsync_disk2disk_2() {
-    echo -n "[INFO] Executing: rsync_disk2disk_2 $B_DEVICE -> $T_DEVICE at "
-    date "+%Y/%m/%d %T"
-
-    SRC_DIR="$B_HOME/$B_MOUNT/$B_DEVICE"
-    DEST_DIR="$T_HOME/$T_MOUNT/$T_DEVICE"
-
-    if [ -d "$SRC_DIR/largefiles" ] && [ -d "$DEST_DIR/largefiles" ]; then
-        echo "[INFO] Syncing largefiles locally"
-        rsync -avz --no-o --no-g --delete "$SRC_DIR/largefiles" "$DEST_DIR/"
-        RC=$?
-    else
-        echo "[WARN] Skipped syncing largefiles: source or target directory does not exist." >&2
-        RC=1
+    if ! ping -c 1 "$T_HOST" > /dev/null 2>&1; then
+        echo "[WARN] Skipped SSH synchronization: host unreachable: $T_HOST" >&2
+        return 1
     fi
 
-    echo "[INFO] Return code is $RC"
+    for DATA_AREA in base extended; do
+        if [ -d "$SRC_ROOT/$DATA_AREA" ]; then
+            echo "[INFO] Syncing $DATA_AREA via SSH"
+            rsync -avz --no-o --no-g --delete -e ssh "$SRC_ROOT/$DATA_AREA" "$SSH_TARGET:$DEST_ROOT/"
+            RC=$?
+            echo "[INFO] Return code is $RC"
+
+            if [ "$RC" -ne 0 ]; then
+                OVERALL_RC=$RC
+            fi
+        fi
+    done
+
+    return "$OVERALL_RC"
+}
+
+# Sync backup data areas between two local disks
+rsync_disk2disk() {
+    echo -n "[INFO] Executing: rsync_disk2disk $B_DEVICE -> $T_DEVICE at "
+    date "+%Y/%m/%d %T"
+
+    SRC_ROOT="$B_HOME/$B_MOUNT/$B_DEVICE"
+    DEST_ROOT="$T_HOME/$T_MOUNT/$T_DEVICE"
+    OVERALL_RC=0
+
+    if [ ! -d "$SRC_ROOT" ]; then
+        echo "[WARN] Source device root not found: $SRC_ROOT" >&2
+        return 1
+    fi
+
+    if [ ! -d "$DEST_ROOT" ]; then
+        echo "[WARN] Target device root not found: $DEST_ROOT" >&2
+        return 1
+    fi
+
+    for DATA_AREA in base extended; do
+        if [ -d "$SRC_ROOT/$DATA_AREA" ]; then
+            echo "[INFO] Syncing $DATA_AREA locally"
+            rsync -avz --no-o --no-g --delete "$SRC_ROOT/$DATA_AREA" "$DEST_ROOT/"
+            RC=$?
+            echo "[INFO] Return code is $RC"
+
+            if [ "$RC" -ne 0 ]; then
+                OVERALL_RC=$RC
+            fi
+        fi
+    done
+
+    return "$OVERALL_RC"
 }
 
 # Main entry point of the script
