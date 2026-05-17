@@ -100,9 +100,9 @@ usage() {
 # Check if the script is running from cron
 is_running_from_cron() {
     if tty -s; then
-        return 1
+        return 1  # Terminal attached (interactive session)
     else
-        return 0
+        return 0  # No terminal (likely cron)
     fi
 }
 
@@ -166,6 +166,7 @@ smart_info() {
     fi
 
     for DEV in $DEV_LIST; do
+        # Resolve with get-device using the appropriate mountpoint
         MP=""
         [ "$DEV" = "$B_DEVICE" ] && MP="$B_HOME/$B_MOUNT/$B_DEVICE"
         [ "$DEV" = "$T_DEVICE" ] && MP="$T_HOME/$T_MOUNT/$T_DEVICE"
@@ -200,6 +201,7 @@ smart_check() {
         DEV=$T_DEVICE
     fi
 
+    # Prefer get-device resolution using mountpoint
     MP=""
     [ "$DEV" = "$T_DEVICE" ] && MP="$T_HOME/$T_MOUNT/$T_DEVICE"
     [ "$DEV" = "$B_DEVICE" ] && MP="$B_HOME/$B_MOUNT/$B_DEVICE"
@@ -215,6 +217,7 @@ smart_check() {
         return 1
     fi
 
+    # Decide base path for flag files: prefer target path, then backup path, else fallback to target path
     BASE_HOME=$T_HOME
     BASE_MOUNT=$T_MOUNT
     if [ -d "$T_HOME/$T_MOUNT/$DEV" ]; then
@@ -225,6 +228,7 @@ smart_check() {
         BASE_MOUNT=$B_MOUNT
     fi
 
+    # Choose long or short test by presence of longtest flag file
     LONG_FLAG="$BASE_HOME/$BASE_MOUNT/$DEV/smart_longtest"
     SHORT_FLAG="$BASE_HOME/$BASE_MOUNT/$DEV/smart_shorttest"
 
