@@ -162,7 +162,7 @@ system_packages() {
               cifs-utils exfat-fuse exfat-utils postfix sysstat dstat anacron clamav \
               chkrootkit lshw jq arp-scan nmap tcpdump iperf wvdial pwgen vrms manpages-ja \
               manpages-ja-dev lm-sensors needrestart acpi hddtemp smartmontools aptitude \
-              libfuse2t64
+              libfuse2t64 tcplay
 }
 
 # Debian developer tools
