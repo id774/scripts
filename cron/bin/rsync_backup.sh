@@ -348,11 +348,11 @@ show_local_data_area_usage() {
     DEST_AREA=$2
 
     if [ -d "$SRC_AREA" ]; then
-        du --max-depth=1 "$SRC_AREA"
+        du --apparent-size --max-depth=1 "$SRC_AREA"
     fi
 
     if [ -d "$DEST_AREA" ]; then
-        du --max-depth=1 "$DEST_AREA"
+        du --apparent-size --max-depth=1 "$DEST_AREA"
     fi
 }
 
