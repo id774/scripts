@@ -342,6 +342,20 @@ github_backup() {
     fi
 }
 
+# Show disk usage for synchronized local data areas
+show_local_data_area_usage() {
+    SRC_AREA=$1
+    DEST_AREA=$2
+
+    if [ -d "$SRC_AREA" ]; then
+        du --max-depth=1 "$SRC_AREA"
+    fi
+
+    if [ -d "$DEST_AREA" ]; then
+        du --max-depth=1 "$DEST_AREA"
+    fi
+}
+
 # Sync backup data areas from disk to remote server via SSH
 rsync_disk2ssh() {
     echo -n "[INFO] Executing: rsync_disk2ssh $B_DEVICE -> $T_DEVICE of $T_HOST at "
@@ -406,6 +420,9 @@ rsync_disk2disk() {
 
             if [ "$RC" -ne 0 ]; then
                 OVERALL_RC=$RC
+            else
+                echo "[INFO] Disk usage after syncing $DATA_AREA locally"
+                show_local_data_area_usage "$SRC_ROOT/$DATA_AREA" "$DEST_ROOT/$DATA_AREA"
             fi
         fi
     done
