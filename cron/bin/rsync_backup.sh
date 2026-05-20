@@ -348,11 +348,13 @@ show_local_data_area_usage() {
     DEST_AREA=$2
 
     if [ -d "$SRC_AREA" ]; then
-        du --apparent-size --max-depth=1 "$SRC_AREA"
+        echo "[INFO] Source apparent usage: $SRC_AREA"
+        du --apparent-size --max-depth=1 "$SRC_AREA" | sort -k2
     fi
 
     if [ -d "$DEST_AREA" ]; then
-        du --apparent-size --max-depth=1 "$DEST_AREA"
+        echo "[INFO] Destination apparent usage: $DEST_AREA"
+        du --apparent-size --max-depth=1 "$DEST_AREA" | sort -k2
     fi
 }
 
