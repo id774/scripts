@@ -3,8 +3,10 @@ scripts Repository Version History
 
 v1.7.1 (Release Date: TBD)
 --------------------------
-- Document per-directory cleanup retention periods in cltmp.sh.
-- Adapt backup operations for the LUKS-based base/extended storage layout.
+- Document and normalize cleanup retention policies.
+- Rework backup synchronization for the LUKS-based base/extended storage layout.
+- Centralize protected storage updates in backup workflows and stop direct mounted storage writes from helper scripts.
+- Normalize permission handling across backup, synchronization, and encrypted storage workflows.
 
 v1.7 (2026-05-01)
 -----------------
