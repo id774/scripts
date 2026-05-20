@@ -374,7 +374,7 @@ normalize_local_data_area_permissions() {
 
     echo "[INFO] Normalizing preserved permissions for $DATA_AREA_PATH"
     chown -R root:root "$DATA_AREA_PATH" || return 1
-    chmodtree -q -d 755 -f 644 "$DATA_AREA_PATH" || return 1
+    chmodtree -q -d 0755 -f 0644 "$DATA_AREA_PATH" || return 1
 
     return 0
 }
