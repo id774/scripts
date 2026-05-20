@@ -54,6 +54,8 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v2.6 2026-05-20
+#       Separate file copying from permission application and use sudo rsync for protected mounted storage.
 #  v2.5 2025-12-15
 #       Add grep/date to command checks to match internal usage.
 #  v2.4 2025-09-22
@@ -189,17 +191,40 @@ load_configuration() {
 
 }
 
-# Set permissions and copy files to a directory
-copy_files() {
+# Copy files to user storage
+copy_files_to_user_storage() {
     source_dir="$1"
     destination="$2"
-    permissions="$3"
     if [ ! -d "$destination" ]; then
         echo "[ERROR] Destination directory $destination does not exist." >&2
         return 2
     fi
-    echo "[INFO] Copying files from $source_dir to $destination"
-    find "$source_dir" -maxdepth 1 -name '*.gpx' -type f -exec chmod "$permissions" {} \; -exec cp {} "$destination" \;
+    echo "[INFO] Copying files from $source_dir to user storage: $destination"
+    find "$source_dir" -maxdepth 1 -name '*.gpx' -type f -exec cp {} "$destination" \;
+}
+
+# Copy files to mounted storage
+copy_files_to_mounted_storage() {
+    source_dir="$1"
+    destination="$2"
+    if [ ! -d "$destination" ]; then
+        echo "[ERROR] Destination directory $destination does not exist." >&2
+        return 2
+    fi
+    echo "[INFO] Copying files from $source_dir to mounted storage: $destination"
+    sudo rsync -auvz --no-o --no-g --no-p "$source_dir"/*.gpx "$destination" || return $?
+}
+
+# Set permissions for copied GPX files
+set_file_permissions() {
+    destination="$1"
+    permissions="$2"
+    if [ ! -d "$destination" ]; then
+        echo "[ERROR] Destination directory $destination does not exist." >&2
+        return 2
+    fi
+    echo "[INFO] Setting GPX file permissions in $destination to $permissions"
+    find "$destination" -maxdepth 1 -name '*.gpx' -type f -exec chmod "$permissions" {} \;
 }
 
 # Sync to all configured hosts
@@ -241,14 +266,17 @@ main() {
     SCRIPT_DIR=$(dirname "$0")
 
     load_configuration
-    check_commands chmod cp rsync rm find grep date
+    check_commands chmod cp sudo rsync rm find grep date
     parse_arguments "$@"
 
     CURRENT_YEAR=$(date +"%Y")
+    HOME_GPX_DEST="$HOME/$USER_GPX_DIR/$CURRENT_YEAR/"
+    MOUNTED_GPX_DEST="$MOUNTED_DIR/$USER_GPX_DIR/$CURRENT_YEAR/"
 
     check_gpx_files "$TMP_DIR" || exit $?
-    copy_files "$TMP_DIR" "$HOME/$USER_GPX_DIR/$CURRENT_YEAR/" "$permissions" || exit $?
-    copy_files "$TMP_DIR" "$MOUNTED_DIR/$USER_GPX_DIR/$CURRENT_YEAR/" "$permissions" || exit $?
+    copy_files_to_user_storage "$TMP_DIR" "$HOME_GPX_DEST" || exit $?
+    copy_files_to_mounted_storage "$TMP_DIR" "$MOUNTED_GPX_DEST" || exit $?
+    set_file_permissions "$HOME_GPX_DEST" "$permissions" || exit $?
     sync_all_hosts "$HOME/$USER_GPX_DIR" "$RSYNC_USER" || exit $?
     remove_files "$TMP_DIR"/*.gpx || exit $?
 
