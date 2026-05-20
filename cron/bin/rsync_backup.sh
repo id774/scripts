@@ -356,6 +356,27 @@ show_local_data_area_usage() {
     fi
 }
 
+# Normalize preserved local data area permissions
+normalize_local_data_area_permissions() {
+    DATA_AREA_PATH=$1
+
+    if [ ! -d "$DATA_AREA_PATH" ]; then
+        echo "[WARN] Data area path not found: $DATA_AREA_PATH" >&2
+        return 1
+    fi
+
+    if ! command -v chmodtree >/dev/null 2>&1; then
+        echo "[WARN] chmodtree command not found." >&2
+        return 1
+    fi
+
+    echo "[INFO] Normalizing preserved permissions for $DATA_AREA_PATH"
+    chown -R root:root "$DATA_AREA_PATH" || return 1
+    chmodtree -q -d 755 -f 644 "$DATA_AREA_PATH" || return 1
+
+    return 0
+}
+
 # Sync backup data areas from disk to remote server via SSH
 rsync_disk2ssh() {
     echo -n "[INFO] Executing: rsync_disk2ssh $B_DEVICE -> $T_DEVICE of $T_HOST at "
@@ -384,6 +405,7 @@ rsync_disk2ssh() {
             echo "[INFO] Return code is $RC"
 
             if [ "$RC" -ne 0 ]; then
+                # Keep the rsync failure status for the failed data area.
                 OVERALL_RC=$RC
             fi
         fi
@@ -419,10 +441,21 @@ rsync_disk2disk() {
             echo "[INFO] Return code is $RC"
 
             if [ "$RC" -ne 0 ]; then
+                # Keep the rsync failure status and skip preservation steps
+                # for the failed data area.
                 OVERALL_RC=$RC
             else
-                echo "[INFO] Disk usage after syncing $DATA_AREA locally"
-                show_local_data_area_usage "$SRC_ROOT/$DATA_AREA" "$DEST_ROOT/$DATA_AREA"
+                # Normalize the destination data area for preservation
+                # before showing source and destination apparent sizes.
+                if normalize_local_data_area_permissions "$DEST_ROOT/$DATA_AREA"; then
+                    echo "[INFO] Disk usage after syncing $DATA_AREA locally"
+                    show_local_data_area_usage "$SRC_ROOT/$DATA_AREA" "$DEST_ROOT/$DATA_AREA"
+                else
+                    # Treat preservation failure as an overall backup failure
+                    # even when rsync itself completed successfully.
+                    echo "[WARN] Failed to normalize permissions for $DEST_ROOT/$DATA_AREA" >&2
+                    OVERALL_RC=1
+                fi
             fi
         fi
     done
