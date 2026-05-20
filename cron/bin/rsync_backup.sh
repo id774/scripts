@@ -292,7 +292,7 @@ git_backup() {
     rm -f "$ARCHIVE_DIR/$ARCHIVE_NAME_GIT"
 
     echo "[INFO] Saving Git repositories to local storage."
-    if rsync -avz --no-o --no-g --delete "$1@$2:$REMOTE_GIT_DIR" "$ARCHIVE_DIR/"; then
+    if rsync -avz --no-o --no-g --no-p --delete "$1@$2:$REMOTE_GIT_DIR" "$ARCHIVE_DIR/"; then
         echo "[INFO] Synchronization completed successfully."
     else
         echo "[WARN] Synchronization failed while retrieving repositories from the remote host." >&2
@@ -402,7 +402,7 @@ rsync_disk2ssh() {
     for DATA_AREA in base extended; do
         if [ -d "$SRC_ROOT/$DATA_AREA" ]; then
             echo "[INFO] Syncing $DATA_AREA via SSH"
-            rsync -avz --no-o --no-g --delete -e ssh "$SRC_ROOT/$DATA_AREA" "$SSH_TARGET:$DEST_ROOT/"
+            rsync -avz --no-o --no-g --no-p --delete -e ssh "$SRC_ROOT/$DATA_AREA" "$SSH_TARGET:$DEST_ROOT/"
             RC=$?
             echo "[INFO] Return code is $RC"
 
@@ -438,7 +438,7 @@ rsync_disk2disk() {
     for DATA_AREA in base extended; do
         if [ -d "$SRC_ROOT/$DATA_AREA" ]; then
             echo "[INFO] Syncing $DATA_AREA locally"
-            rsync -avz --no-o --no-g --delete "$SRC_ROOT/$DATA_AREA" "$DEST_ROOT/"
+            rsync -avz --no-o --no-g --no-p --delete "$SRC_ROOT/$DATA_AREA" "$DEST_ROOT/"
             RC=$?
             echo "[INFO] Return code is $RC"
 
