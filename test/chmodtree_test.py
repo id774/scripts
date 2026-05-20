@@ -107,12 +107,12 @@ class TestChmodTree(unittest.TestCase):
         options = MagicMock()
         options.sudo = False
         options.quiet = True
-        options.files = '644'
+        options.files = '0644'
         options.dirs = None
         options.name = '*.py'
         chmodtree.chmodtree(options, 'testdir1')
         mock_os_exec.assert_called_with(
-            'find testdir1 -name "*.py" -type f -exec chmod 644 {} \\;')
+            'find testdir1 -name "*.py" -type f -exec chmod 0644 {} \\;')
 
     @patch('chmodtree.os_exec')
     def test_dirs_chmod(self, mock_os_exec):
@@ -121,11 +121,11 @@ class TestChmodTree(unittest.TestCase):
         options.sudo = True
         options.quiet = False
         options.files = None
-        options.dirs = '755'
+        options.dirs = '0755'
         options.name = None
         chmodtree.chmodtree(options, 'testdir2')
         mock_os_exec.assert_called_with(
-            'sudo find testdir2 -type d -exec chmod -v 755 {} \\;')
+            'sudo find testdir2 -type d -exec chmod -v 0755 {} \\;')
 
     @patch('chmodtree.os_exec')
     def test_files_and_dirs_chmod_with_pattern(self, mock_os_exec):
@@ -133,14 +133,14 @@ class TestChmodTree(unittest.TestCase):
         options = MagicMock()
         options.sudo = True
         options.quiet = True
-        options.files = '600'
-        options.dirs = '700'
+        options.files = '0600'
+        options.dirs = '0700'
         options.name = '*.rb'
         chmodtree.chmodtree(options, 'testdir3')
 
         expected_calls = [
-            ('sudo find testdir3 -name "*.rb" -type f -exec chmod 600 {} \\;',),
-            ('sudo find testdir3 -name "*.rb" -type d -exec chmod 700 {} \\;',)
+            ('sudo find testdir3 -name "*.rb" -type f -exec chmod 0600 {} \\;',),
+            ('sudo find testdir3 -name "*.rb" -type d -exec chmod 0700 {} \\;',)
         ]
         actual_calls = [call_args[0]
                         for call_args in mock_os_exec.call_args_list]
@@ -152,14 +152,14 @@ class TestChmodTree(unittest.TestCase):
         options = MagicMock()
         options.sudo = True
         options.quiet = False
-        options.files = '640'
-        options.dirs = '750'
+        options.files = '0640'
+        options.dirs = '0750'
         options.name = '*.txt'
         chmodtree.chmodtree(options, 'testdir4')
 
         expected_calls = [
-            ('sudo find testdir4 -name "*.txt" -type f -exec chmod -v 640 {} \\;',),
-            ('sudo find testdir4 -name "*.txt" -type d -exec chmod -v 750 {} \\;',)
+            ('sudo find testdir4 -name "*.txt" -type f -exec chmod -v 0640 {} \\;',),
+            ('sudo find testdir4 -name "*.txt" -type d -exec chmod -v 0750 {} \\;',)
         ]
         actual_calls = [call_args[0]
                         for call_args in mock_os_exec.call_args_list]
@@ -171,14 +171,14 @@ class TestChmodTree(unittest.TestCase):
         options = MagicMock()
         options.sudo = False
         options.quiet = True
-        options.files = '775'
-        options.dirs = '750'
+        options.files = '0775'
+        options.dirs = '0750'
         options.name = '*.sh'
         chmodtree.chmodtree(options, 'testdir5')
 
         expected_calls = [
-            ('find testdir5 -name "*.sh" -type f -exec chmod 775 {} \\;',),
-            ('find testdir5 -name "*.sh" -type d -exec chmod 750 {} \\;',)
+            ('find testdir5 -name "*.sh" -type f -exec chmod 0775 {} \\;',),
+            ('find testdir5 -name "*.sh" -type d -exec chmod 0750 {} \\;',)
         ]
         actual_calls = [call_args[0]
                         for call_args in mock_os_exec.call_args_list]
