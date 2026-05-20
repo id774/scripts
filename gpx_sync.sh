@@ -40,7 +40,7 @@
 #  - Remote synchronization runs for each host in RSYNC_HOSTS, or for RSYNC_HOST if provided.
 #  - The script updates file permissions as needed and performs clean-up operations.
 #  - Remote synchronization is attempted only if the remote server is reachable.
-#  - The permissions argument must be a 3-digit octal number. Any other format will result in an error.
+#  - The permissions argument must be a 3-digit or 4-digit octal number. Any other format will result in an error.
 #
 #  Error Conditions:
 #  1. No GPX files found in the specified temporary directory.
@@ -48,13 +48,14 @@
 #  3. Configuration file not found.
 #  4. Necessary configuration variable(s) not set.
 #  5. DEFAULT_PERMISSIONS not set in configuration file when no permissions argument provided.
-#  6. Invalid permissions argument (not a 3-digit octal number).
+#  6. Invalid permissions argument (not a 3-digit or 4-digit octal number).
 #  126. Required command(s) not executable.
 #  127. Required command(s) not installed.
 #
 #  Version History:
 #  v2.6 2026-05-20
 #       Stop copying GPX files to mounted backup storage.
+#       Allow 3-digit and 4-digit octal permission values.
 #  v2.5 2025-12-15
 #       Add grep/date to command checks to match internal usage.
 #  v2.4 2025-09-22
@@ -149,11 +150,11 @@ parse_arguments() {
         exit 5
     fi
 
-    # Validate permissions format (3-digit octal number)
-    if echo "$permissions" | grep -E '^[0-7][0-7][0-7]$' >/dev/null 2>&1; then
+    # Validate permissions format (3-digit or 4-digit octal number)
+    if echo "$permissions" | grep -E '^[0-7]{3,4}$' >/dev/null 2>&1; then
         :
     else
-        echo "[ERROR] Permissions must be a 3-digit octal number." >&2
+        echo "[ERROR] Permissions must be a 3-digit or 4-digit octal number." >&2
         exit 6
     fi
 }
