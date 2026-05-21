@@ -5,6 +5,7 @@ v1.7.1 (Release Date: TBD)
 --------------------------
 - Document and normalize cleanup retention policies.
 - Rework backup synchronization for the LUKS-based base/extended storage layout.
+- Split Git repository archive operations into an independent workflow with dedicated configuration.
 - Centralize protected storage updates in backup workflows and stop direct mounted storage writes from helper scripts.
 - Normalize permission handling across backup, synchronization, and encrypted storage workflows.
 
