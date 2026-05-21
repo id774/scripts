@@ -47,6 +47,7 @@
 #
 #  Version History:
 #  v4.0  2026-05-17 - Adopt base and extended data area layout for backup synchronization.
+#                     Separate Git archive handling from this backup synchronization script.
 #  v3.3  2025-08-31 - Resolve device via get-device before device operations.
 #  v3.2  2025-08-29 - Enable device argument in smart_info and smart_check.
 #  v3.1  2025-07-30 - Update script and config paths to /etc/cron.exec and /etc/cron.config respectively.
@@ -285,61 +286,6 @@ cleanup() {
     find "$DEVICE_ROOT" -type d -name '__pycache__' -exec rm -vrf {} \;
 
     echo "[INFO] Cleanup completed."
-}
-
-# Create a local backup of Git repositories
-git_backup() {
-    rm -f "$ARCHIVE_DIR/$ARCHIVE_NAME_GIT"
-
-    echo "[INFO] Saving Git repositories to local storage."
-    if rsync -avz --no-o --no-g --no-p --delete "$1@$2:$REMOTE_GIT_DIR" "$ARCHIVE_DIR/"; then
-        echo "[INFO] Synchronization completed successfully."
-    else
-        echo "[WARN] Synchronization failed while retrieving repositories from the remote host." >&2
-        return 1
-    fi
-
-    if cd "$ARCHIVE_DIR"; then
-        echo "[INFO] Creating archive $ARCHIVE_NAME_GIT from git/."
-        if tar czvf "$ARCHIVE_NAME_GIT" git/ > /dev/null; then
-            echo "[INFO] Archive created: $ARCHIVE_DIR/$ARCHIVE_NAME_GIT"
-        else
-            echo "[WARN] Failed to create archive." >&2
-            return 1
-        fi
-    else
-        echo "[WARN] Failed to change directory to $ARCHIVE_DIR." >&2
-        return 1
-    fi
-
-    if [ -d "$DEST_GIT_ARCHIVE" ]; then
-        echo "[INFO] Copying archive to $DEST_GIT_ARCHIVE"
-        cp -v "$ARCHIVE_DIR/$ARCHIVE_NAME_GIT" "$DEST_GIT_ARCHIVE/"
-    else
-        echo "[WARN] Destination directory not found: $DEST_GIT_ARCHIVE" >&2
-        return 1
-    fi
-
-    cd "$HOME" || return 1
-}
-
-# Back up GitHub repositories locally
-github_backup() {
-    rm -f "$ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB"
-
-    if [ -d "$GITHUB_SRC" ]; then
-        echo "[INFO] Creating archive: $ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB from $GITHUB_SRC"
-        tar czvf "$ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB" "$GITHUB_SRC" > /dev/null
-    else
-        echo "[WARN] Directory not found: $GITHUB_SRC" >&2
-    fi
-
-    if [ -f "$ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB" ] && [ -d "$DEST_GIT_ARCHIVE" ]; then
-        echo "[INFO] Copying archive to $DEST_GIT_ARCHIVE"
-        cp -v "$ARCHIVE_DIR/$ARCHIVE_NAME_GITHUB" "$DEST_GIT_ARCHIVE/"
-    else
-        echo "[WARN] Skipping copy: archive or destination not available." >&2
-    fi
 }
 
 # Show disk usage for synchronized local data areas
