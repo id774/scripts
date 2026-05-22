@@ -4,11 +4,11 @@
 # rsync_backup.sh: Backup and Syncing Removable Disk Script
 #
 #  Description:
-#  This script facilitates the backup and syncing of data to removable
-#  disks. It includes functionalities like checking disk health, updating
-#  timestamps, performing cleanup tasks, and syncing data between disks and
-#  over SSH. The script is configured via /etc/cron.config/rsync_backup.conf
-#  and intended to be run automatically from cron.
+#  This script facilitates backup and synchronization of data to removable
+#  disks. It checks disk health, updates timestamps, removes unnecessary
+#  metadata files, and synchronizes data between local disks or over SSH.
+#  The script is configured via /etc/cron.config/rsync_backup.conf and is
+#  intended to be run automatically from cron.
 #
 #  Before any device operation, the script resolves the base block device
 #  by running `get-device <mountpoint>` and uses its result.
@@ -21,8 +21,20 @@
 #    disks, such as 2TB portable HDDs.
 #  - extended:
 #    Stores the expanded backup area for larger-capacity storage layouts.
-#    This area is optional and intended for destination disks that explicitly
-#    provide an extended data area.
+#    This area is intended for data that should be synchronized only to
+#    destination disks that explicitly provide an extended data area.
+#
+#  Capacity Tier Policy:
+#  - base and extended are capacity-tier data areas, not arbitrary directory
+#    groups.
+#  - base is the portable baseline data area. It is expected to fit on smaller
+#    removable disks, including 2TB 2.5-inch HDDs.
+#  - extended is the large-capacity data area. It is intended for larger disks,
+#    such as multi-terabyte HDDs, where additional data can be preserved.
+#  - A large source disk may contain both base and extended, while a smaller
+#    destination disk may intentionally contain only base.
+#  - In that case, only base is synchronized. extended is not created on the
+#    destination side.
 #
 #  Synchronization Policy:
 #  - The destination data area layout is authoritative.
@@ -35,8 +47,26 @@
 #  - If a data area does not exist on either side, it is skipped without warning.
 #  - This preserves smaller destination layouts, such as synchronizing only
 #    base from a larger disk to a 2TB portable disk.
-#  - Synchronization is performed by top-level data area, not by each
-#    logical directory under base.
+#  - Synchronization is performed by top-level data area, not by each logical
+#    directory under base.
+#  - rsync updates the contents of existing destination data areas. It does not
+#    define the destination capacity layout.
+#
+#  FAT Destination Policy:
+#  - FAT-like destination filesystems are supported for file-content backup
+#    when Unix metadata is not required.
+#  - This is useful for TrueCrypt or compatible encrypted volumes formatted
+#    with FAT-like filesystems and used as portable backup media.
+#  - FAT-like filesystems do not preserve Unix ownership, group, and permission
+#    metadata in the same way as Unix filesystems.
+#  - They also do not preserve symbolic-link, device-file, FIFO, or socket
+#    metadata as Unix filesystems do.
+#  - This script is suitable for FAT-like destinations when the synchronized
+#    data consists of ordinary files and directories and when file contents are
+#    the preservation target.
+#  - Large files that exceed the destination filesystem limit, such as the
+#    4GiB-per-file limit of FAT32, must not be placed in the data area intended
+#    for such destinations.
 #
 #  Permission Normalization Policy:
 #  - After local disk-to-disk synchronization, destination data area permissions
@@ -48,6 +78,20 @@
 #    destination filesystems to avoid treating successful file synchronization
 #    as a failure.
 #  - Permission normalization execution and skip decisions are logged explicitly.
+#  - When permission normalization is enabled, the destination data area is
+#    normalized to root:root ownership, 0755 directories, and 0644 files.
+#
+#  Operational Examples:
+#  - Large HDD to large HDD:
+#    If both source and destination contain base and extended, both data areas
+#    are synchronized.
+#  - Large HDD to 2TB portable HDD:
+#    If the source contains base and extended but the destination contains only
+#    base, only base is synchronized.
+#  - LUKS + ext4 to TrueCrypt + FAT:
+#    If the destination contains only base, only base is synchronized. FAT-like
+#    permission normalization is skipped, and the backup focuses on preserving
+#    ordinary file contents.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -64,6 +108,10 @@
 #
 #  Requirements:
 #  - The system must have `get-device` command installed and available in PATH.
+#  - rsync must be installed.
+#  - chmodtree is required only when permission normalization is actually run.
+#  - findmnt or stat is used to determine the destination filesystem type for
+#    local disk-to-disk permission normalization decisions.
 #
 #  Version History:
 #  v4.0  2026-05-17 - Adopt base and extended data area layout for backup synchronization.
