@@ -17,17 +17,24 @@
 #  The device root contains top-level data areas.
 #  - base:
 #    Stores the standard backup area for the conventional storage layout.
-#    Existing logical directories are placed under this area.
+#    This area is intended for data that should fit on smaller destination
+#    disks, such as 2TB portable HDDs.
 #  - extended:
 #    Stores the expanded backup area for larger-capacity storage layouts.
-#    This area is optional. If it does not exist, it is skipped.
+#    This area is optional and intended for destination disks that explicitly
+#    provide an extended data area.
 #
 #  Synchronization Policy:
+#  - The destination data area layout is authoritative.
 #  - If base exists under both the source and destination device roots,
 #    base is synchronized.
 #  - If extended exists under both the source and destination device roots,
-#    extended is also synchronized.
+#    extended is synchronized.
+#  - If a data area exists only on the source side, it is skipped without
+#    warning and is not created on the destination side.
 #  - If a data area does not exist on either side, it is skipped without warning.
+#  - This preserves smaller destination layouts, such as synchronizing only
+#    base from a larger disk to a 2TB portable disk.
 #  - Synchronization is performed by top-level data area, not by each
 #    logical directory under base.
 #
