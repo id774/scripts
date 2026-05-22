@@ -38,6 +38,17 @@
 #  - Synchronization is performed by top-level data area, not by each
 #    logical directory under base.
 #
+#  Permission Normalization Policy:
+#  - After local disk-to-disk synchronization, destination data area permissions
+#    are normalized only when the destination filesystem is known to preserve
+#    Unix ownership and permission metadata.
+#  - FAT-like destination filesystems, such as FAT, VFAT, MS-DOS FAT, and exFAT,
+#    do not preserve Unix ownership and permission metadata.
+#  - Permission normalization is skipped for FAT-like, unsupported, or unknown
+#    destination filesystems to avoid treating successful file synchronization
+#    as a failure.
+#  - Permission normalization execution and skip decisions are logged explicitly.
+#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
@@ -327,11 +338,70 @@ normalize_local_data_area_permissions() {
         return 1
     fi
 
-    echo "[INFO] Normalizing preserved permissions for $DATA_AREA_PATH"
+    echo "[INFO] Applying permission normalization to $DATA_AREA_PATH"
+    echo "[INFO] Running: chown -R root:root $DATA_AREA_PATH"
     chown -R root:root "$DATA_AREA_PATH" || return 1
+
+    echo "[INFO] Running: chmodtree -q -d 0755 -f 0644 $DATA_AREA_PATH"
     chmodtree -q -d 0755 -f 0644 "$DATA_AREA_PATH" || return 1
 
+    echo "[INFO] Permission normalization completed: $DATA_AREA_PATH"
     return 0
+}
+
+# Get the filesystem type for a path
+get_filesystem_type() {
+    TARGET_PATH=$1
+    FS_TYPE=""
+
+    if [ ! -e "$TARGET_PATH" ]; then
+        echo "[WARN] Filesystem check target not found: $TARGET_PATH" >&2
+        return 1
+    fi
+
+    if command -v findmnt >/dev/null 2>&1; then
+        FS_TYPE=$(findmnt -n -o FSTYPE -T "$TARGET_PATH" 2>/dev/null)
+    fi
+
+    if [ -z "$FS_TYPE" ] && command -v stat >/dev/null 2>&1; then
+        FS_TYPE=$(stat -f -c %T "$TARGET_PATH" 2>/dev/null)
+    fi
+
+    if [ -z "$FS_TYPE" ]; then
+        echo "[WARN] Filesystem type could not be determined: $TARGET_PATH" >&2
+        return 1
+    fi
+
+    echo "$FS_TYPE"
+    return 0
+}
+
+# Check whether permission normalization should run on a destination path
+should_normalize_local_permissions() {
+    TARGET_PATH=$1
+
+    FS_TYPE=$(get_filesystem_type "$TARGET_PATH")
+    RC=$?
+
+    if [ "$RC" -ne 0 ]; then
+        echo "[WARN] Skipping permission normalization because filesystem type is unknown: $TARGET_PATH" >&2
+        return 1
+    fi
+
+    case "$FS_TYPE" in
+        vfat|msdos|fat|exfat)
+            echo "[INFO] Skipping permission normalization for FAT-like filesystem ($FS_TYPE): $TARGET_PATH"
+            return 1
+            ;;
+        ext2|ext3|ext4|xfs|btrfs|f2fs|zfs|jfs|reiserfs|reiser4)
+            echo "[INFO] Permission normalization is enabled for filesystem ($FS_TYPE): $TARGET_PATH"
+            return 0
+            ;;
+        *)
+            echo "[WARN] Skipping permission normalization for unsupported filesystem ($FS_TYPE): $TARGET_PATH" >&2
+            return 1
+            ;;
+    esac
 }
 
 # Sync backup data areas from disk to remote server via SSH
@@ -401,7 +471,7 @@ rsync_disk2disk() {
                 # Keep the rsync failure status and skip preservation steps
                 # for the failed data area.
                 OVERALL_RC=$RC
-            else
+            elif should_normalize_local_permissions "$DEST_ROOT/$DATA_AREA"; then
                 # Normalize the destination data area for preservation
                 # before showing source and destination apparent sizes.
                 if normalize_local_data_area_permissions "$DEST_ROOT/$DATA_AREA"; then
@@ -413,6 +483,9 @@ rsync_disk2disk() {
                     echo "[WARN] Failed to normalize permissions for $DEST_ROOT/$DATA_AREA" >&2
                     OVERALL_RC=1
                 fi
+            else
+                echo "[INFO] Disk usage after syncing $DATA_AREA locally"
+                show_local_data_area_usage "$SRC_ROOT/$DATA_AREA" "$DEST_ROOT/$DATA_AREA"
             fi
         fi
     done
