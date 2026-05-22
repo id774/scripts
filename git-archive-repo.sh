@@ -29,8 +29,8 @@
 #  Default values:
 #  - GITHUB_SRC="$HOME/local/github"
 #  - GIT_SRC="$HOME/local/git"
-#  - GITHUB_ARCHIVE="$HOME/user2/arc/git/github.tar.gz"
-#  - GIT_ARCHIVE="$HOME/user2/arc/git/git.tar.gz"
+#  - GITHUB_ARCHIVE="$HOME/git/github.tar.gz"
+#  - GIT_ARCHIVE="$HOME/git/git.tar.gz"
 #
 #  Notes:
 #  - Existing archive files are removed before archive creation.
