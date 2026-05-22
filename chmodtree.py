@@ -29,18 +29,21 @@
 #  Options include --sudo to execute with superuser privileges, --quiet to reduce output verbosity,
 #  --files and --dirs to specify chmod permissions for files and directories, and --name to filter
 #  by filename pattern.
+#  Permission modes are passed directly to chmod, so both zero-prefixed forms such as 0644/0755
+#  and non-prefixed forms such as 644/755 can be used.
+#  This script does not validate permission mode strings; invalid values are passed to chmod as-is.
 #
 #  Example:
 #      Changing permissions of files only, matching a specific pattern:
-#          chmodtree.py -f 644 -n '*.py' your_dir1
+#          chmodtree.py -f 0644 -n '*.py' your_dir1
 #      Changing permissions of directories only, using sudo:
-#          chmodtree.py -s -d 755 your_dir2
+#          chmodtree.py -s -d 0755 your_dir2
 #      Changing permissions of both files and directories, matching a specific pattern:
-#          chmodtree.py -s -f 600 -d 700 -n '*.rb' your_dir3
+#          chmodtree.py -s -f 0600 -d 0700 -n '*.rb' your_dir3
 #      Changing permissions with verbose output:
-#          chmodtree.py -s -q -f 640 -d 750 -n '*.txt' your_dir4
+#          chmodtree.py -s -q -f 0640 -d 0750 -n '*.txt' your_dir4
 #      Changing permissions in quiet mode, matching a specific pattern:
-#          chmodtree.py -f 775 -d 750 -n '*.sh' your_dir5
+#          chmodtree.py -f 0775 -d 0750 -n '*.sh' your_dir5
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
