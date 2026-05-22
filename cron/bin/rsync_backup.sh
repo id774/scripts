@@ -23,9 +23,11 @@
 #    This area is optional. If it does not exist, it is skipped.
 #
 #  Synchronization Policy:
-#  - If base exists under the source device root, base is synchronized.
-#  - If extended exists under the source device root, extended is also synchronized.
-#  - If a data area does not exist, it is skipped without warning.
+#  - If base exists under both the source and destination device roots,
+#    base is synchronized.
+#  - If extended exists under both the source and destination device roots,
+#    extended is also synchronized.
+#  - If a data area does not exist on either side, it is skipped without warning.
 #  - Synchronization is performed by top-level data area, not by each
 #    logical directory under base.
 #
@@ -346,9 +348,9 @@ rsync_disk2ssh() {
     fi
 
     for DATA_AREA in base extended; do
-        if [ -d "$SRC_ROOT/$DATA_AREA" ]; then
+        if [ -d "$SRC_ROOT/$DATA_AREA" ] && ssh "$SSH_TARGET" "test -d '$DEST_ROOT/$DATA_AREA'"; then
             echo "[INFO] Syncing $DATA_AREA via SSH"
-            rsync -avz --no-o --no-g --no-p --delete -e ssh "$SRC_ROOT/$DATA_AREA" "$SSH_TARGET:$DEST_ROOT/"
+            rsync -avz --no-o --no-g --no-p --delete -e ssh "$SRC_ROOT/$DATA_AREA/" "$SSH_TARGET:$DEST_ROOT/$DATA_AREA/"
             RC=$?
             echo "[INFO] Return code is $RC"
 
@@ -382,9 +384,9 @@ rsync_disk2disk() {
     fi
 
     for DATA_AREA in base extended; do
-        if [ -d "$SRC_ROOT/$DATA_AREA" ]; then
+        if [ -d "$SRC_ROOT/$DATA_AREA" ] && [ -d "$DEST_ROOT/$DATA_AREA" ]; then
             echo "[INFO] Syncing $DATA_AREA locally"
-            rsync -avz --no-o --no-g --no-p --delete "$SRC_ROOT/$DATA_AREA" "$DEST_ROOT/"
+            rsync -avz --no-o --no-g --no-p --delete "$SRC_ROOT/$DATA_AREA/" "$DEST_ROOT/$DATA_AREA/"
             RC=$?
             echo "[INFO] Return code is $RC"
 
