@@ -21,8 +21,8 @@
 #    disks, such as 2TB portable HDDs.
 #  - extended:
 #    Stores the expanded backup area for larger-capacity storage layouts.
-#    This area is intended for data that should be synchronized only to
-#    destination disks that explicitly provide an extended data area.
+#    This area is intended to be synchronized only to destination disks that
+#    explicitly provide an extended data area.
 #
 #  Capacity Tier Policy:
 #  - base and extended are capacity-tier data areas, not arbitrary directory
@@ -116,6 +116,7 @@
 #  Version History:
 #  v4.0  2026-05-17 - Adopt base and extended data area layout for backup synchronization.
 #                     Separate Git archive handling from this backup synchronization script.
+#                     Add timestamped progress logs for long-running backup steps.
 #  v3.3  2025-08-31 - Resolve device via get-device before device operations.
 #  v3.2  2025-08-29 - Enable device argument in smart_info and smart_check.
 #  v3.1  2025-07-30 - Update script and config paths to /etc/cron.exec and /etc/cron.config respectively.
@@ -173,6 +174,11 @@ is_running_from_cron() {
     else
         return 0  # No terminal (likely cron)
     fi
+}
+
+# Display an informational message with the current timestamp
+log_info_time() {
+    printf '[INFO] %s at %s\n' "$*" "$(date '+%Y/%m/%d %T')"
 }
 
 # Display the serial number of a given device
@@ -340,6 +346,7 @@ cleanup() {
         return 1
     fi
 
+    log_info_time "Starting cleanup in $DEVICE_ROOT"
     echo "[INFO] Removing junk files in $DEVICE_ROOT..."
     echo "[INFO] Removing ._* AppleDouble files..."
     find "$DEVICE_ROOT" -name '._*' -exec rm -vf {} \;
@@ -353,6 +360,7 @@ cleanup() {
     echo "[INFO] Removing __pycache__ directories..."
     find "$DEVICE_ROOT" -type d -name '__pycache__' -exec rm -vrf {} \;
 
+    log_info_time "Finished cleanup in $DEVICE_ROOT"
     echo "[INFO] Cleanup completed."
 }
 
@@ -454,8 +462,7 @@ should_normalize_local_permissions() {
 
 # Sync backup data areas from disk to remote server via SSH
 rsync_disk2ssh() {
-    echo -n "[INFO] Executing: rsync_disk2ssh $B_DEVICE -> $T_DEVICE of $T_HOST at "
-    date "+%Y/%m/%d %T"
+    log_info_time "Executing: rsync_disk2ssh $B_DEVICE -> $T_DEVICE of $T_HOST"
 
     SRC_ROOT="$B_HOME/$B_MOUNT/$B_DEVICE"
     DEST_ROOT="$T_HOME/$T_MOUNT/$T_DEVICE"
@@ -475,8 +482,10 @@ rsync_disk2ssh() {
     for DATA_AREA in base extended; do
         if [ -d "$SRC_ROOT/$DATA_AREA" ] && ssh "$SSH_TARGET" "test -d '$DEST_ROOT/$DATA_AREA'"; then
             echo "[INFO] Syncing $DATA_AREA via SSH"
+            log_info_time "Starting SSH sync for $DATA_AREA"
             rsync -avz --no-o --no-g --no-p --delete -e ssh "$SRC_ROOT/$DATA_AREA/" "$SSH_TARGET:$DEST_ROOT/$DATA_AREA/"
             RC=$?
+            log_info_time "Finished SSH sync for $DATA_AREA"
             echo "[INFO] Return code is $RC"
 
             if [ "$RC" -ne 0 ]; then
@@ -491,8 +500,7 @@ rsync_disk2ssh() {
 
 # Sync backup data areas between two local disks
 rsync_disk2disk() {
-    echo -n "[INFO] Executing: rsync_disk2disk $B_DEVICE -> $T_DEVICE at "
-    date "+%Y/%m/%d %T"
+    log_info_time "Executing: rsync_disk2disk $B_DEVICE -> $T_DEVICE"
 
     SRC_ROOT="$B_HOME/$B_MOUNT/$B_DEVICE"
     DEST_ROOT="$T_HOME/$T_MOUNT/$T_DEVICE"
@@ -511,8 +519,10 @@ rsync_disk2disk() {
     for DATA_AREA in base extended; do
         if [ -d "$SRC_ROOT/$DATA_AREA" ] && [ -d "$DEST_ROOT/$DATA_AREA" ]; then
             echo "[INFO] Syncing $DATA_AREA locally"
+            log_info_time "Starting local sync for $DATA_AREA"
             rsync -avz --no-o --no-g --no-p --delete "$SRC_ROOT/$DATA_AREA/" "$DEST_ROOT/$DATA_AREA/"
             RC=$?
+            log_info_time "Finished local sync for $DATA_AREA"
             echo "[INFO] Return code is $RC"
 
             if [ "$RC" -ne 0 ]; then
@@ -522,9 +532,13 @@ rsync_disk2disk() {
             elif should_normalize_local_permissions "$DEST_ROOT/$DATA_AREA"; then
                 # Normalize the destination data area for preservation
                 # before showing source and destination apparent sizes.
+                log_info_time "Starting permission normalization for $DATA_AREA"
                 if normalize_local_data_area_permissions "$DEST_ROOT/$DATA_AREA"; then
+                    log_info_time "Finished permission normalization for $DATA_AREA"
                     echo "[INFO] Disk usage after syncing $DATA_AREA locally"
+                    log_info_time "Starting disk usage check for $DATA_AREA"
                     show_local_data_area_usage "$SRC_ROOT/$DATA_AREA" "$DEST_ROOT/$DATA_AREA"
+                    log_info_time "Finished disk usage check for $DATA_AREA"
                 else
                     # Treat preservation failure as an overall backup failure
                     # even when rsync itself completed successfully.
@@ -533,7 +547,9 @@ rsync_disk2disk() {
                 fi
             else
                 echo "[INFO] Disk usage after syncing $DATA_AREA locally"
+                log_info_time "Starting disk usage check for $DATA_AREA"
                 show_local_data_area_usage "$SRC_ROOT/$DATA_AREA" "$DEST_ROOT/$DATA_AREA"
+                log_info_time "Finished disk usage check for $DATA_AREA"
             fi
         fi
     done
