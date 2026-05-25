@@ -8,7 +8,7 @@ v1.7.1 (Release Date: TBD)
 - Split Git repository archive operations into an independent workflow with dedicated configuration.
 - Centralize protected storage updates in backup workflows and stop direct mounted storage writes from helper scripts.
 - Normalize permission handling across backup, synchronization, and encrypted storage workflows.
-- Document timestamped progress logging policy.
+- Standardize timestamped progress logging for long-running maintenance operations.
 
 v1.7 (2026-05-01)
 -----------------
