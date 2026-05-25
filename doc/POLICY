@@ -25,6 +25,17 @@ or additions to this common policy, in order to avoid redundancy.
 - Informational messages go to standard output.
 - Error messages always go to standard error.
 - Log messages must be human-readable and suitable for cron execution.
+- Timestamped progress logs are intended only for major progress points in long-running operations.
+- Do not add timestamps to every log message.
+- The purpose of timestamped progress logs is to make long-running steps observable in cron logs
+  and administrative emails, not to convert all output into structured logs.
+- Timestamped progress logs should be used for major start and finish points of external I/O,
+  synchronization, recursive scans, recursive modifications, cleanup operations, and other steps
+  whose duration is operationally significant.
+- Short validation checks, simple branch decisions, static configuration messages, and immediate
+  return-code messages should normally use standard log prefixes without timestamps.
+- When a timestamp is needed, append it naturally at the end of the message.
+- Timestamped log helpers must generate the timestamp at call time, not at initialization time.
 - For automated emails (cron, admin jobs), use **filter-friendly tags**
   (e.g. `[cron]`, `[admin]`) in the subject line so recipients can easily
   classify, filter, or route messages.
@@ -114,6 +125,29 @@ or additions to this common policy, in order to avoid redundancy.
 ### Dependency and Environment Checks
 - Validate required commands and environment variables at startup.
 - For network operations, verify connectivity before execution.
+
+### Logging Style
+- Shell scripts must keep normal log output based on `[INFO]`, `[WARN]`, and `[ERROR]`.
+- Shell scripts must not timestamp every log message.
+- Timestamped progress logs are used only at major start and finish points of long-running operations.
+- This natural sentence style is intentional. If every message were timestamped, a fully
+  structured format such as `2026-05-25 00:00:00 [INFO] message` would be more appropriate.
+- Because timestamps are added only to selected progress messages, placing them at the end
+  preserves consistency with surrounding non-timestamped log output.
+- Timestamped informational progress logs must use the following POSIX-compliant helper:
+
+```sh
+log_info_time() {
+    printf '[INFO] %s at %s\n' "$*" "$(date '+%Y/%m/%d %T')"
+}
+```
+
+- Do not write timestamped progress logs by combining `echo -n` and `date` directly.
+- Do not store the timestamp in a global variable for reuse across multiple log messages.
+- The timestamp must be evaluated each time the helper is called.
+- Use `log_info_time` only where timing context is operationally useful.
+- Use plain `[INFO]`, `[WARN]`, and `[ERROR]` messages for ordinary status messages,
+  short checks, branch decisions, and immediate return-code reporting.
 
 ### I/O and Side Effects
 - Respect existing temporary file logic and directory structures.
