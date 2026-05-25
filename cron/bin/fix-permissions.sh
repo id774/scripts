@@ -82,6 +82,11 @@ is_joblog_writable() {
     fi
 }
 
+# Display an informational message with the current timestamp
+log_info_time() {
+    printf '[INFO] %s at %s\n' "$*" "$(date '+%Y/%m/%d %T')" >> "$JOBLOG" 2>&1
+}
+
 # Initialize environment and log start
 initialize() {
     LC_CTYPE=ja_JP.UTF-8
