@@ -1,8 +1,8 @@
 scripts Repository Version History
 ==================================
 
-v1.7.1 (Release Date: TBD)
---------------------------
+v1.7.1 (2026-05-26)
+-------------------
 - Document and normalize cleanup retention policies.
 - Rework backup synchronization for the LUKS-based base/extended storage layout.
 - Split Git repository archive operations into an independent workflow with dedicated configuration.
