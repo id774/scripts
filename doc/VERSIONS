@@ -1,6 +1,10 @@
 scripts Repository Version History
 ==================================
 
+v1.7.2 (Release Date: TBD)
+--------------------------
+- Remove automatic TrueCrypt and VeraCrypt installation from the Debian setup workflow.
+
 v1.7.1 (2026-05-26)
 -------------------
 - Document and normalize cleanup retention policies.

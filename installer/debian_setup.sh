@@ -13,8 +13,6 @@
 #        * dot_vim: when Vim is available, run installer/install_dotvim.sh.
 #        * dot_emacs: when Emacs is available and local configs are absent, clone id774/dot_emacs,
 #          symlink to $HOME/dot_emacs, then run install_dotemacs.sh.
-#    - Cryptography tools:
-#        * Install TrueCrypt and VeraCrypt if not already installed (installer/install_truecrypt.sh, install_veracrypt.sh).
 #    - Sysadmin utilities & helpers:
 #        * Deploy sysadmin scripts by uninstalling then reinstalling to refresh (setup_sysadmin_scripts.sh).
 #        * Set up a consistent python command symlink (setup_python_symlink.sh).
@@ -68,6 +66,8 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v2.1 2026-06-03
+#       Remove automatic TrueCrypt and VeraCrypt installation from the Debian setup workflow.
 #  v2.0 2025-08-20
 #       Expanded header documentation to enumerate all applied configuration
 #       steps and system tuning tasks for consistency and transparency.
@@ -230,17 +230,6 @@ install_dot_emacs() {
     fi
 }
 
-# Install cryptographic tools
-install_crypt() {
-    if ! command -v truecrypt >/dev/null 2>&1; then
-        "$SCRIPTS/installer/install_truecrypt.sh"
-    fi
-
-    if ! command -v veracrypt >/dev/null 2>&1; then
-        "$SCRIPTS/installer/install_veracrypt.sh"
-    fi
-}
-
 # Setup various system utilities
 setup_sysadmin_scripts() {
     "$SCRIPTS/installer/setup_sysadmin_scripts.sh" uninstall
@@ -337,7 +326,6 @@ main() {
     install_dot_zsh
     install_dot_vim
     install_dot_emacs
-    install_crypt
     setup_sysadmin_scripts
     setup_python_symlink
     setup_get_resources
