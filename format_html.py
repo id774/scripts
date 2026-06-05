@@ -11,6 +11,7 @@
 #  - Indent elements based on HTML nesting structure
 #  - Collapse simple text-only elements (e.g. p, td, th) into a single line
 #  - Preserve raw content in preformatted elements (pre, script, style, textarea)
+#  - Preserve raw code elements without parsing or rewriting their contents
 #  - Normalize excessive blank lines to a single blank line
 #  - Keep inline elements without introducing unnecessary line breaks
 #
@@ -36,6 +37,8 @@
 #      Display version information and exit.
 #
 #  Version History:
+#  v1.1 2026-06-05
+#       Preserve raw code elements during formatting.
 #  v1.0 2026-03-26
 #       Initial release.
 #
@@ -45,6 +48,7 @@ from __future__ import print_function
 
 import io
 import os
+import re
 import sys
 from html.parser import HTMLParser
 
@@ -180,6 +184,31 @@ def normalize_blank_lines(text):
         result.pop()
 
     return "\n".join(result) + "\n"
+
+
+def protect_code_elements(text):
+    """Replace code elements with placeholders before parsing."""
+    pattern = re.compile(r"(?is)<code\b[^>]*>.*?</code>")
+    protected = []
+
+    def replace(match):
+        index = len(protected)
+        protected.append(match.group(0))
+        return "__FORMAT_HTML_CODE_ELEMENT_{0}__".format(index)
+
+    return pattern.sub(replace, text), protected
+
+
+def restore_code_elements(text, protected):
+    """Restore protected code elements after formatting."""
+    index = 0
+
+    while index < len(protected):
+        placeholder = "__FORMAT_HTML_CODE_ELEMENT_{0}__".format(index)
+        text = text.replace(placeholder, protected[index])
+        index += 1
+
+    return text
 
 
 class Node(object):
@@ -456,12 +485,15 @@ def render_node(node, level, inline_mode):
 
 def format_html(text):
     """Format HTML text."""
+    protected_text, protected_code = protect_code_elements(text)
+
     parser = HTMLTreeBuilder()
-    parser.feed(text)
+    parser.feed(protected_text)
     parser.close()
 
     formatted = render_node(parser.root, 0, False)
-    return normalize_blank_lines(formatted)
+    normalized = normalize_blank_lines(formatted)
+    return restore_code_elements(normalized, protected_code)
 
 
 def read_text(path):
