@@ -9,7 +9,8 @@
 #  indentation and whitespace handling.
 #
 #  Tests focus on whitespace normalization, attribute formatting,
-#  block and inline element rendering, input/output validation,
+#  block and inline element rendering, raw code element preservation,
+#  input/output validation,
 #  argument parsing, UTF-8 file handling, and main entry point behavior.
 #
 #  Author: id774 (More info: http://id774.net)
@@ -32,6 +33,7 @@
 #    - Paragraph text normalization
 #    - Table cell text normalization
 #    - Preformatted text preservation
+#    - Raw code element preservation
 #    - Void element rendering
 #    - Doctype and comment rendering
 #    - INPUT-only argument parsing
@@ -46,6 +48,8 @@
 #    - main() file output
 #
 #  Version History:
+#  v1.1 2026-06-05
+#       Add raw code element preservation tests.
 #  v1.0 2026-03-26
 #       Initial release.
 #
@@ -178,6 +182,31 @@ class FormatHtmlTest(unittest.TestCase):
             "    line2\n"
             "\n"
             "</pre>\n"
+        )
+        self.assertEqual(expected, format_html.format_html(text))
+
+    def test_format_html_preserves_code_content(self):
+        text = (
+            "<div>"
+            "<p>before</p>"
+            "<code>\n"
+            "if (a < b && c > d) {\n"
+            "  return \"<tag>\";\n"
+            "}\n"
+            "</code>"
+            "<p>after</p>"
+            "</div>"
+        )
+        expected = (
+            "<div>\n"
+            "  <p>before</p>\n"
+            "  <code>\n"
+            "if (a < b && c > d) {\n"
+            "  return \"<tag>\";\n"
+            "}\n"
+            "</code>\n"
+            "  <p>after</p>\n"
+            "</div>\n"
         )
         self.assertEqual(expected, format_html.format_html(text))
 
