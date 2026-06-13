@@ -49,6 +49,12 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v2.9 2026-06-13
+#       Improved performance for large directory trees by batching chmod execution
+#       with find -exec ... {} + instead of invoking chmod once per path.
+#       Replaced shell command execution with argument-list execution to avoid shell
+#       interpretation and propagate command failures to the script exit status.
+#       Fixed Linux platform detection for chmod -c on Python 3.
 #  v2.8 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v2.7 2025-06-23
@@ -108,6 +114,7 @@ def usage():
         sys.exit(1)
     sys.exit(0)
 
+
 def check_sudo():
     """ Check if the user has sudo privileges (password may be required). """
     try:
@@ -119,6 +126,7 @@ def check_sudo():
     except Exception as e:
         print("[ERROR] Failed to check sudo privileges: {}".format(e), file=sys.stderr)
         sys.exit(1)
+
 
 def setup_option_parser():
     """ Initialize and return an argument parser for command-line options. """
@@ -133,13 +141,15 @@ def setup_option_parser():
                       help="name pattern of find (ex. -n '*.sh')")
     return parser
 
+
 def find_command(cmd):
     """ Check if a given command exists in the system's PATH. """
-    for path in os.environ["PATH"].split(os.pathsep):
+    for path in os.environ.get("PATH", "").split(os.pathsep):
         full_path = os.path.join(path, cmd)
         if os.path.isfile(full_path):
             return full_path
     return None
+
 
 def check_command(cmd):
     """ Verify if a command is available and executable in the system's PATH. """
@@ -153,36 +163,59 @@ def check_command(cmd):
         print("[ERROR] Command '{}' is not executable. Please check the permissions.".format(cmd), file=sys.stderr)
         sys.exit(126)
 
+
 def os_exec(cmd):
     """ Execute a system command using subprocess. """
-    subprocess.call(cmd, shell=True)
+    return subprocess.call(cmd)
+
 
 def build_find_command(options, directory):
     """ Build the find command based on provided options and directory. """
-    base_cmd = 'find ' + directory
+    base_cmd = ['find', directory]
     if options.name:
-        base_cmd += ' -name "{}"'.format(options.name)
+        base_cmd.extend(['-name', options.name])
     return base_cmd
+
 
 def build_chmod_command(base_cmd, options, file_type):
     """ Build the chmod command for either files or directories. """
-    chmod_cmd = '{} -type {} -exec chmod {}{} {{}} \\;'.format(
-        base_cmd, file_type, '-c ' if not options.quiet and sys.platform == 'linux2' else '-v ' if not options.quiet else '',
-        options.files if file_type == 'f' else options.dirs)
-    return chmod_cmd
+    mode = options.files if file_type == 'f' else options.dirs
+    chmod_opts = []
+
+    if not options.quiet:
+        if sys.platform.startswith('linux'):
+            chmod_opts.append('-c')
+        else:
+            chmod_opts.append('-v')
+
+    return base_cmd + [
+        '-type', file_type,
+        '-exec', 'chmod'
+    ] + chmod_opts + [
+        '--', mode, '{}', '+'
+    ]
+
 
 def chmodtree(options, directory):
     """ Apply chmod to files and directories in the given directory based on options. """
     base_cmd = build_find_command(options, directory)
-    sudo_prefix = 'sudo ' if options.sudo else ''
+    sudo_prefix = ['sudo'] if options.sudo else []
+    status = 0
 
     if options.files:
         file_cmd = build_chmod_command(base_cmd, options, 'f')
-        os_exec(sudo_prefix + file_cmd)
+        rc = os_exec(sudo_prefix + file_cmd)
+        if rc != 0 and status == 0:
+            status = rc
 
     if options.dirs:
         dir_cmd = build_chmod_command(base_cmd, options, 'd')
-        os_exec(sudo_prefix + dir_cmd)
+        rc = os_exec(sudo_prefix + dir_cmd)
+        if rc != 0 and status == 0:
+            status = rc
+
+    return status
+
 
 def main():
     """ Main function to parse options and execute chmodtree. """
@@ -194,11 +227,12 @@ def main():
 
     if len(args) != 1:
         parser.print_help()
-    else:
-        if options.sudo:
-            check_sudo()
-        chmodtree(options, args[0])
-        return 0
+        return 1
+
+    if options.sudo:
+        check_sudo()
+
+    return chmodtree(options, args[0])
 
 
 if __name__ == "__main__":
