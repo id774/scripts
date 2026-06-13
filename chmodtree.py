@@ -49,7 +49,7 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
-#  v2.9 2026-06-13
+#  v3.0 2026-06-13
 #       Improved performance for large directory trees by batching chmod execution
 #       with find -exec ... {} + instead of invoking chmod once per path.
 #       Replaced shell command execution with argument-list execution to avoid shell
