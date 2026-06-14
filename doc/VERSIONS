@@ -7,6 +7,7 @@ v1.7.2 (Release Date: TBD)
 - Preserve raw code elements during HTML formatting in format_html.py.
 - Rework filesystem layout and update rsync_backup configuration mount paths accordingly.
 - Fix severe chmodtree.py performance issue when processing large file sets.
+- Extend chmodtree.py to normalize ownership and update only mismatched entries by default.
 
 v1.7.1 (2026-05-26)
 -------------------
