@@ -78,8 +78,9 @@
 #    destination filesystems to avoid treating successful file synchronization
 #    as a failure.
 #  - Permission normalization execution and skip decisions are logged explicitly.
-#  - When permission normalization is enabled, the destination data area is
-#    normalized to root:root ownership, 0755 directories, and 0644 files.
+#  - When permission normalization is enabled, chmodtree normalizes only entries
+#    whose current ownership or permissions differ from the requested values:
+#    root:root ownership, 0755 directories, and 0644 files.
 #
 #  Operational Examples:
 #  - Large HDD to large HDD:
@@ -109,11 +110,14 @@
 #  Requirements:
 #  - The system must have `get-device` command installed and available in PATH.
 #  - rsync must be installed.
-#  - chmodtree is required only when permission normalization is actually run.
+#  - chmodtree v3.1 or later is required only when permission normalization is
+#    actually run.
 #  - findmnt or stat is used to determine the destination filesystem type for
 #    local disk-to-disk permission normalization decisions.
 #
 #  Version History:
+#  v4.1  2026-06-15 - Use chmodtree to normalize backup ownership and permissions
+#                     only for entries whose attributes differ from the requested values.
 #  v4.0  2026-05-17 - Adopt base and extended data area layout for backup synchronization.
 #                     Separate Git archive handling from this backup synchronization script.
 #                     Add timestamped progress logs for long-running backup steps.
@@ -394,12 +398,9 @@ normalize_local_data_area_permissions() {
         return 1
     fi
 
-    echo "[INFO] Applying permission normalization to $DATA_AREA_PATH"
-    echo "[INFO] Running: chown -R root:root $DATA_AREA_PATH"
-    chown -R root:root "$DATA_AREA_PATH" || return 1
-
-    echo "[INFO] Running: chmodtree -q -d 0755 -f 0644 $DATA_AREA_PATH"
-    chmodtree -q -d 0755 -f 0644 "$DATA_AREA_PATH" || return 1
+    echo "[INFO] Applying ownership and permission normalization to $DATA_AREA_PATH"
+    echo "[INFO] Running: chmodtree -q --user root --group root -d 0755 -f 0644 $DATA_AREA_PATH"
+    chmodtree -q --user root --group root -d 0755 -f 0644 "$DATA_AREA_PATH" || return 1
 
     echo "[INFO] Permission normalization completed: $DATA_AREA_PATH"
     return 0
