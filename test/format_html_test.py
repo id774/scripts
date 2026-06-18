@@ -41,13 +41,18 @@
 #    - Help and version parsing
 #    - Invalid argument rejection
 #    - Unknown option rejection
+#    - Zero argument rejection
 #    - Missing input file rejection
 #    - Invalid output directory rejection
 #    - UTF-8 file I/O
-#    - main() stdout output
+#    - main() in-place overwrite
 #    - main() file output
+#    - main() overwrite when input equals output
 #
 #  Version History:
+#  v1.2 2026-06-18
+#       Update tests to reflect in-place overwrite behavior for single argument.
+#       Add zero argument rejection and input-equals-output overwrite tests.
 #  v1.1 2026-06-05
 #       Add raw code element preservation tests.
 #  v1.0 2026-03-26
@@ -234,7 +239,7 @@ class FormatHtmlTest(unittest.TestCase):
     def test_parse_args_input_only(self):
         parsed = format_html.parse_args(["format_html.py", "in.html"])
         self.assertEqual(
-            {"mode": "run", "input": "in.html", "output": None},
+            {"mode": "run", "input": "in.html", "output": "in.html"},
             parsed,
         )
 
@@ -252,6 +257,11 @@ class FormatHtmlTest(unittest.TestCase):
     def test_parse_args_version(self):
         parsed = format_html.parse_args(["format_html.py", "-v"])
         self.assertEqual({"mode": "version"}, parsed)
+
+    def test_parse_args_no_args(self):
+        with _StdCapture():
+            parsed = format_html.parse_args(["format_html.py"])
+        self.assertEqual(None, parsed)
 
     def test_parse_args_invalid_count(self):
         with _StdCapture():
@@ -331,7 +341,7 @@ class FormatHtmlTest(unittest.TestCase):
             except Exception:
                 pass
 
-    def test_main_writes_to_stdout(self):
+    def test_main_overwrites_input_file(self):
         tmpdir = tempfile.mkdtemp()
         old_argv = sys.argv[:]
         try:
@@ -339,13 +349,12 @@ class FormatHtmlTest(unittest.TestCase):
             _write_text(in_path, "<div><p>hello</p></div>")
 
             sys.argv = ["format_html.py", in_path]
-            with _StdCapture() as cap:
-                status = format_html.main()
+            status = format_html.main()
 
             self.assertEqual(0, status)
             self.assertEqual(
                 "<div>\n  <p>hello</p>\n</div>\n",
-                cap.out.getvalue(),
+                _read_text(in_path),
             )
         finally:
             sys.argv = old_argv
@@ -379,6 +388,32 @@ class FormatHtmlTest(unittest.TestCase):
             try:
                 for fn in os.listdir(tmpdir):
                     os.unlink(os.path.join(tmpdir, fn))
+            except Exception:
+                pass
+            try:
+                os.rmdir(tmpdir)
+            except Exception:
+                pass
+
+    def test_main_overwrites_when_input_equals_output(self):
+        tmpdir = tempfile.mkdtemp()
+        old_argv = sys.argv[:]
+        try:
+            in_path = os.path.join(tmpdir, "in.html")
+            _write_text(in_path, "<div><p>hello</p></div>")
+
+            sys.argv = ["format_html.py", in_path, in_path]
+            status = format_html.main()
+
+            self.assertEqual(0, status)
+            self.assertEqual(
+                "<div>\n  <p>hello</p>\n</div>\n",
+                _read_text(in_path),
+            )
+        finally:
+            sys.argv = old_argv
+            try:
+                os.unlink(in_path)
             except Exception:
                 pass
             try:
