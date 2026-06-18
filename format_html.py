@@ -30,6 +30,8 @@
 #  Usage:
 #  format_html.py [OPTIONS] INPUT [OUTPUT]
 #
+#  If OUTPUT is omitted, the input file is overwritten in place.
+#
 #  Options:
 #  -h, --help
 #      Display usage information and exit.
@@ -37,6 +39,8 @@
 #      Display version information and exit.
 #
 #  Version History:
+#  v1.2 2026-06-18
+#       Overwrite input file in place when OUTPUT is omitted.
 #  v1.1 2026-06-05
 #       Preserve raw code elements during formatting.
 #  v1.0 2026-03-26
@@ -575,7 +579,7 @@ def parse_args(argv):
     result = {
         "mode": "run",
         "input": positional[0],
-        "output": None
+        "output": positional[0]
     }
 
     if len(positional) == 2:
