@@ -8,6 +8,7 @@ v1.7.2 (Release Date: TBD)
 - Rework filesystem layout and update rsync_backup configuration mount paths accordingly.
 - Improve chmodtree.py performance and add mismatch-only permission and ownership normalization.
 - Use chmodtree-based mismatch-only normalization in fix-permissions.conf to reduce repeated metadata updates.
+- Change format_html.py to overwrite the input file in place when only one argument is given.
 
 v1.7.1 (2026-05-26)
 -------------------
