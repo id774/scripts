@@ -28,7 +28,13 @@
 #    - In execute mode, rename all matching files and call os.rename with expected source/destination paths.
 #    - Exit with code 1 when a rename operation fails with OSError during execute mode.
 #    - Suppress all output in quiet mode.
-#    - Rename matching files in subdirectories (recursive traversal via os.walk).
+#    - By default (non-recursive), only rename files directly under the target directory.
+#    - By default (non-recursive), leave files in subdirectories untouched.
+#    - With recursive=True, rename matching files in subdirectories (traversal via os.walk).
+#    - iter_target_files yields only the target directory's own files when recursive is False.
+#    - iter_target_files delegates to os.walk when recursive is True.
+#    - CLI without -r only renames files directly under the target directory (dry-run, subprocess).
+#    - CLI with -r also renames files in subdirectories (dry-run, subprocess).
 #    - Exit when validate_args() is given the same source and destination extensions.
 #    - Exit when validate_args() is given extensions missing the leading dot.
 #    - Exit when validate_args() is given a nonexistent directory.
@@ -36,6 +42,10 @@
 #    - Exit when validate_args() is given a directory that is not writable.
 #
 #  Version History:
+#  v2.2 2026-07-06
+#       Added test cases for the -r option: non-recursive default behavior,
+#       iter_target_files direct coverage, and CLI-level recursive vs non-recursive checks.
+#       Updated existing swap_extensions calls for the new recursive argument.
 #  v2.1 2025-06-30
 #       Added unit tests for argument validation in swapext.validate_args.
 #       Covers same extension, missing dot, unreadable/unwritable or missing directory.
@@ -57,6 +67,7 @@
 import os
 import subprocess
 import sys
+import tempfile
 import unittest
 from unittest.mock import call, patch
 
@@ -78,19 +89,23 @@ class TestSwapExt(unittest.TestCase):
         self.assertIn('Usage:', out.decode('utf-8'))
 
     @patch('os.rename')
-    @patch('os.walk')
-    def test_dry_run_output(self, mock_walk, mock_rename):
-        mock_walk.return_value = [('/testdir', [], ['file1.txt'])]
+    @patch('os.path.isfile')
+    @patch('os.listdir')
+    def test_dry_run_output(self, mock_listdir, mock_isfile, mock_rename):
+        mock_listdir.return_value = ['file1.txt']
+        mock_isfile.return_value = True
         with patch('builtins.print') as mock_print:
-            swapext.swap_extensions('/testdir', '.txt', '.md', dry_run=True, quiet_mode=False)
+            swapext.swap_extensions('/testdir', '.txt', '.md', dry_run=True, quiet_mode=False, recursive=False)
             mock_print.assert_any_call('[INFO] DRY RUN: Renamed: /testdir/file1.txt -> /testdir/file1.md')
         mock_rename.assert_not_called()
 
     @patch('os.rename')
-    @patch('os.walk')
-    def test_execute_rename(self, mock_walk, mock_rename):
-        mock_walk.return_value = [('/testdir', [], ['a.txt', 'b.txt'])]
-        swapext.swap_extensions('/testdir', '.txt', '.md', dry_run=False, quiet_mode=True)
+    @patch('os.path.isfile')
+    @patch('os.listdir')
+    def test_execute_rename(self, mock_listdir, mock_isfile, mock_rename):
+        mock_listdir.return_value = ['a.txt', 'b.txt']
+        mock_isfile.return_value = True
+        swapext.swap_extensions('/testdir', '.txt', '.md', dry_run=False, quiet_mode=True, recursive=False)
         expected = [
             call('/testdir/a.txt', '/testdir/a.md'),
             call('/testdir/b.txt', '/testdir/b.md')
@@ -98,35 +113,109 @@ class TestSwapExt(unittest.TestCase):
         mock_rename.assert_has_calls(expected, any_order=True)
 
     @patch('sys.stderr')
-    @patch('os.walk')
+    @patch('os.path.isfile')
+    @patch('os.listdir')
     @patch('os.rename', side_effect=OSError("fail"))
-    def test_rename_failure_exits(self, mock_rename, mock_walk, mock_stderr):
-        mock_walk.return_value = [('/faildir', [], ['bad.txt'])]
+    def test_rename_failure_exits(self, mock_rename, mock_listdir, mock_isfile, mock_stderr):
+        mock_listdir.return_value = ['bad.txt']
+        mock_isfile.return_value = True
         with self.assertRaises(SystemExit) as cm:
-            swapext.swap_extensions('/faildir', '.txt', '.md', dry_run=False, quiet_mode=True)
+            swapext.swap_extensions('/faildir', '.txt', '.md', dry_run=False, quiet_mode=True, recursive=False)
         self.assertEqual(cm.exception.code, 1)
 
     @patch('os.rename')
-    @patch('os.walk')
-    def test_quiet_mode_suppresses_output(self, mock_walk, mock_rename):
-        mock_walk.return_value = [('/quietdir', [], ['file.txt'])]
+    @patch('os.path.isfile')
+    @patch('os.listdir')
+    def test_quiet_mode_suppresses_output(self, mock_listdir, mock_isfile, mock_rename):
+        mock_listdir.return_value = ['file.txt']
+        mock_isfile.return_value = True
         with patch('builtins.print') as mock_print:
-            swapext.swap_extensions('/quietdir', '.txt', '.md', dry_run=True, quiet_mode=True)
+            swapext.swap_extensions('/quietdir', '.txt', '.md', dry_run=True, quiet_mode=True, recursive=False)
             mock_print.assert_not_called()
 
     @patch('os.rename')
     @patch('os.walk')
-    def test_subdirectories_are_handled(self, mock_walk, mock_rename):
+    def test_recursive_mode_handles_subdirectories(self, mock_walk, mock_rename):
         mock_walk.return_value = [
             ('/dir', ['sub'], ['a.txt']),
             ('/dir/sub', [], ['b.txt'])
         ]
-        swapext.swap_extensions('/dir', '.txt', '.md', dry_run=False, quiet_mode=True)
+        swapext.swap_extensions('/dir', '.txt', '.md', dry_run=False, quiet_mode=True, recursive=True)
         expected = [
             call('/dir/a.txt', '/dir/a.md'),
             call('/dir/sub/b.txt', '/dir/sub/b.md')
         ]
         mock_rename.assert_has_calls(expected, any_order=True)
+
+    @patch('os.rename')
+    @patch('os.path.isfile')
+    @patch('os.listdir')
+    def test_non_recursive_mode_ignores_subdirectories(self, mock_listdir, mock_isfile, mock_rename):
+        mock_listdir.return_value = ['a.txt', 'sub']
+        mock_isfile.side_effect = lambda path: path.endswith('a.txt')
+        swapext.swap_extensions('/dir', '.txt', '.md', dry_run=False, quiet_mode=True, recursive=False)
+        mock_rename.assert_called_once_with('/dir/a.txt', '/dir/a.md')
+
+    @patch('os.walk')
+    def test_iter_target_files_recursive_delegates_to_walk(self, mock_walk):
+        mock_walk.return_value = [
+            ('/dir', ['sub'], ['a.txt']),
+            ('/dir/sub', [], ['b.txt'])
+        ]
+        result = list(swapext.iter_target_files('/dir', recursive=True))
+        self.assertEqual(result, [
+            ('/dir', ['a.txt']),
+            ('/dir/sub', ['b.txt'])
+        ])
+        mock_walk.assert_called_once_with('/dir')
+
+    @patch('os.path.isfile')
+    @patch('os.listdir')
+    def test_iter_target_files_non_recursive_yields_top_level_only(self, mock_listdir, mock_isfile):
+        mock_listdir.return_value = ['a.txt', 'sub']
+        mock_isfile.side_effect = lambda path: path.endswith('a.txt')
+        result = list(swapext.iter_target_files('/dir', recursive=False))
+        self.assertEqual(result, [('/dir', ['a.txt'])])
+
+    def test_cli_default_is_non_recursive(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'swapext.py')
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sub_dir = os.path.join(tmpdir, 'sub')
+            os.makedirs(sub_dir)
+            top_file = os.path.join(tmpdir, 'a.txt')
+            sub_file = os.path.join(sub_dir, 'b.txt')
+            open(top_file, 'w').close()
+            open(sub_file, 'w').close()
+
+            proc = subprocess.Popen(['python', script_path, tmpdir, '.txt', '.md'],
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+            out, err = proc.communicate()
+
+            self.assertIn(top_file, out.decode('utf-8'))
+            self.assertNotIn(sub_file, out.decode('utf-8'))
+
+    def test_cli_recursive_flag_covers_subdirectories(self):
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'swapext.py')
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            sub_dir = os.path.join(tmpdir, 'sub')
+            os.makedirs(sub_dir)
+            top_file = os.path.join(tmpdir, 'a.txt')
+            sub_file = os.path.join(sub_dir, 'b.txt')
+            open(top_file, 'w').close()
+            open(sub_file, 'w').close()
+
+            proc = subprocess.Popen(['python', script_path, tmpdir, '.txt', '.md', '-r'],
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+            out, err = proc.communicate()
+
+            self.assertIn(top_file, out.decode('utf-8'))
+            self.assertIn(sub_file, out.decode('utf-8'))
 
     @patch('sys.stderr')
     def test_same_extension_exits(self, mock_stderr):
