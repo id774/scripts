@@ -14,17 +14,20 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  swapext.py <dir> <before_ext> <after_ext> [-x] [-q]
+#  swapext.py <dir> <before_ext> <after_ext> [-x] [-q] [-r]
 #     (Note: Extensions must start with a dot, e.g., '.txt' '.md')
 #
 #  Options:
 #    -x    Execute mode (default is dry-run)
 #    -q    Quiet mode (suppress output)
+#    -r    Recurse into subdirectories (default is target directory only)
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v2.4 2026-07-06
+#       Changed default scope to target directory only, added -r option to recurse into subdirectories.
 #  v2.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v2.2 2025-06-30
@@ -129,9 +132,19 @@ def rename_file(old_path, new_path, dry_run, quiet_mode):
             print("[ERROR] Error renaming {} to {}: {}".format(old_path, new_path, e), file=sys.stderr)
             sys.exit(1)
 
-def swap_extensions(target_dir, before_ext, after_ext, dry_run, quiet_mode):
+def iter_target_files(target_dir, recursive):
+    """ Yield directory paths and their files, honoring the recursive flag. """
+    if recursive:
+        for path, _, files in os.walk(target_dir):
+            yield path, files
+    else:
+        entries = os.listdir(target_dir)
+        files = [f for f in entries if os.path.isfile(os.path.join(target_dir, f))]
+        yield target_dir, files
+
+def swap_extensions(target_dir, before_ext, after_ext, dry_run, quiet_mode, recursive):
     count = 0
-    for path, _, files in os.walk(target_dir):
+    for path, files in iter_target_files(target_dir, recursive):
         for oldfile in files:
             if oldfile.endswith(before_ext):
                 base_name = os.path.splitext(oldfile)[0]
@@ -145,13 +158,15 @@ def swap_extensions(target_dir, before_ext, after_ext, dry_run, quiet_mode):
         print("[WARN] No files with extension {} found.".format(before_ext), file=sys.stderr)
 
 def main():
-    usage_msg = "usage: %prog <dir> <before_ext> <after_ext> [-x] [-q]"
+    usage_msg = "usage: %prog <dir> <before_ext> <after_ext> [-x] [-q] [-r]"
     global parser
     parser = OptionParser(usage=usage_msg)
     parser.add_option("-x", action="store_true", dest="execute_mode", default=False,
                       help="execute rename operations (default is dry-run)")
     parser.add_option("-q", action="store_true", dest="quiet_mode", default=False,
                       help="suppress output")
+    parser.add_option("-r", action="store_true", dest="recursive", default=False,
+                      help="recurse into subdirectories (default is target directory only)")
     (options, args) = parser.parse_args()
 
     if len(args) != 3:
@@ -162,7 +177,7 @@ def main():
     if options.execute_mode:
         confirm_execution(target_dir)
 
-    swap_extensions(target_dir, before_ext, after_ext, not options.execute_mode, options.quiet_mode)
+    swap_extensions(target_dir, before_ext, after_ext, not options.execute_mode, options.quiet_mode, options.recursive)
 
     return 0
 
