@@ -24,6 +24,8 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v1.6 2026-07-08
+#       Specify UTF-8 encoding when reading /etc/passwd.
 #  v1.5 2025-07-08
 #       Fixed compatibility issues with Python 3.4.
 #  v1.4 2025-07-01
@@ -104,7 +106,7 @@ def show_userlist(threshold):
             print("Error retrieving user list: %s" % str(e), file=sys.stderr)
     else:
         try:
-            with open('/etc/passwd', 'r') as fo:
+            with open('/etc/passwd', 'r', encoding='utf-8') as fo:
                 for line in fo:
                     parts = line.strip().split(':')
                     if len(parts) >= 3 and parts[2].isdigit():

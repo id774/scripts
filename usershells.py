@@ -28,6 +28,8 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v1.8 2026-07-08
+#       Specify UTF-8 encoding when reading /etc/passwd.
 #  v1.7 2025-08-06
 #       Add --name-only and --colon output options.
 #  v1.6 2025-07-08
@@ -81,7 +83,7 @@ def usage():
 def get_shells_from_passwd():
     shells = {}
     try:
-        with open("/etc/passwd", 'r') as fo:
+        with open("/etc/passwd", 'r', encoding='utf-8') as fo:
             for line in fo:
                 line = line.strip()
                 fields = line.split(":")
