@@ -38,6 +38,8 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v2.3 2026-07-08
+#       Specify UTF-8 encoding when reading the ignore list file.
 #  v2.2 2026-01-09
 #       Allow multiple Apache log files to be specified and processed together.
 #       Aggregate IP hit counts and cache metrics across all input logs.
@@ -204,7 +206,7 @@ class ApacheCalculater(object):
         for ignore_file in candidate_paths:
             if os.path.isfile(ignore_file):
                 try:
-                    with open(ignore_file, "r") as file:
+                    with open(ignore_file, "r", encoding="utf-8") as file:
                         for line in file:
                             raw = line.split("#", 1)[0].strip()
                             if not raw:

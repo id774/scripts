@@ -44,6 +44,8 @@
 #  - Dependencies: bs4, pyyaml, requests
 #
 #  Version History:
+#  v1.6 2026-07-08
+#       Specify UTF-8 encoding when reading a local HTML file.
 #  v1.5 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.4 2025-06-23
@@ -121,7 +123,7 @@ def main():
             response = requests.get(source)
             html = BeautifulSoup(response.text, 'html.parser')
         else:
-            with open(source, 'r') as file:
+            with open(source, 'r', encoding='utf-8') as file:
                 html = BeautifulSoup(file, 'html.parser')
 
         yaml_data = html_to_yaml(html)
