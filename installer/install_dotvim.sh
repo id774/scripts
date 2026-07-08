@@ -32,6 +32,8 @@
 #  - Must be executed in a shell environment where `cp` and `vim` are available.
 #
 #  Version History:
+#  v2.1 2026-07-08
+#       Remove non-POSIX local keyword to comply with strict /bin/sh usage.
 #  v2.0 2025-08-01
 #       Add --uninstall option to remove dot_vim and optionally nvim configuration.
 #  v1.8 2025-07-15
@@ -126,7 +128,7 @@ install_dotvim() {
 
 # Install dot_vim configuration for nvim if exist
 maybe_copy_to_nvim() {
-    local nvim_config="$HOME/.config/nvim"
+    nvim_config="$HOME/.config/nvim"
     if [ -d "$nvim_config" ]; then
         echo "[INFO] Detected $nvim_config. Copying dot_vim contents..."
         if ! cp $OPTIONS "$SCRIPTS/dot_files/dot_vim"/* "$nvim_config"/; then

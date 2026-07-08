@@ -4,6 +4,7 @@ scripts Repository Version History
 v1.7.3 (Release Date: TBD)
 --------------------------
 - Make recursive directory traversal in swapext.py opt-in via a new -r option.
+- Remove a non-POSIX local keyword from install_dotvim.sh.
 
 v1.7.2 (2026-06-30)
 -------------------
