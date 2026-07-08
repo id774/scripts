@@ -28,6 +28,9 @@
 #  <pattern>: The string to remove from the history file (partial match).
 #
 #  Version History:
+#  v1.8 2026-07-08
+#       Treat grep exit code 1 (no matches) as a valid result in count_matches
+#       and filter_history so that absent patterns no longer cause a spurious failure.
 #  v1.7 2025-12-15
 #       Add date to command checks, validate TMP and history file existence, and improve temp file handling.
 #  v1.6 2025-08-07
@@ -108,8 +111,11 @@ create_backup() {
 count_matches() {
     # Count matching lines (fixed string)
     MATCH_COUNT=$(grep -F -c "$PATTERN" "$HISTORY_FILE" 2>/dev/null)
+    status=$?
 
-    if [ $? -ne 0 ]; then
+    # grep returns 1 when there are no matches, which is not an error.
+    # Only exit code 2 or higher indicates a real failure.
+    if [ "$status" -ge 2 ]; then
         echo "[ERROR] Failed to count matches in history file." >&2
         exit 1
     fi
@@ -119,7 +125,12 @@ count_matches() {
 filter_history() {
     # Remove matching lines (fixed string) and replace the original history file
     tmp="$HISTORY_FILE.tmp.$$"
-    if ! grep -F -v "$PATTERN" "$HISTORY_FILE" > "$tmp"; then
+    grep -F -v "$PATTERN" "$HISTORY_FILE" > "$tmp"
+    status=$?
+
+    # grep returns 1 when all lines match (empty output), which is not an error.
+    # Only exit code 2 or higher indicates a real failure.
+    if [ "$status" -ge 2 ]; then
         echo "[ERROR] Failed to create temporary file." >&2
         exit 1
     fi
