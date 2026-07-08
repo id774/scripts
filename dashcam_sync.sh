@@ -36,6 +36,9 @@
 #  5. One or more configuration variables not set.
 #
 #  Version History:
+#  v1.8 2026-07-08
+#       Create the destination yearly directory before moving files so that
+#       the first run of a new year no longer fails with a move error.
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.6 2025-04-13
@@ -120,6 +123,14 @@ move_files() {
     if [ -z "$(find "$src" -type f | head -n 1)" ]; then
         echo "[WARN] No files to move from $src." >&2
         return 0
+    fi
+
+    # Ensure the destination directory exists before moving
+    if [ ! -d "$dest" ]; then
+        if ! mkdir -p "$dest"; then
+            echo "[ERROR] Failed to create destination directory '$dest'." >&2
+            exit 3
+        fi
     fi
 
     echo "Moving files from '$src' to '$dest'..."
