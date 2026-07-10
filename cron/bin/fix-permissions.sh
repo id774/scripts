@@ -27,6 +27,8 @@
 #  Requirements:
 #  - Must be executed with sufficient permissions to change ownership
 #    and modify file attributes (typically as root).
+#  - chmodtree v3.2 or later must be installed and available in PATH, since
+#    fix-permissions.conf relies on its --chown-symlinks option.
 #  - The `mail` command must be installed and configured to send emails.
 #  - Ensure the `nkf` command is installed for UTF-8 email conversion.
 #

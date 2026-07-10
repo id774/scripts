@@ -81,6 +81,10 @@
 #  - When permission normalization is enabled, chmodtree normalizes only entries
 #    whose current ownership or permissions differ from the requested values:
 #    root:root ownership, 0755 directories, and 0644 files.
+#  - Symbolic links preserved by rsync -a are left unmodified by ownership
+#    normalization, since chmodtree excludes symbolic links from --user/--group
+#    normalization by default. This avoids following a preserved symlink that
+#    points outside the synchronized data area.
 #
 #  Operational Examples:
 #  - Large HDD to large HDD:
@@ -110,8 +114,11 @@
 #  Requirements:
 #  - The system must have `get-device` command installed and available in PATH.
 #  - rsync must be installed.
-#  - chmodtree v3.1 or later is required only when permission normalization is
-#    actually run.
+#  - chmodtree v3.2 or later is required only when permission normalization is
+#    actually run. v3.2 or later is required specifically because it excludes
+#    symbolic links from ownership normalization by default; earlier versions
+#    dereferenced symlinks preserved by rsync -a and could alter ownership of
+#    files outside the synchronized data area.
 #  - findmnt or stat is used to determine the destination filesystem type for
 #    local disk-to-disk permission normalization decisions.
 #
