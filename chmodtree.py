@@ -28,6 +28,16 @@
 #  comparison. Numeric modes such as 0644, 0755, 1777, and 2755 are pre-filtered
 #  unless --force is specified.
 #
+#  Owner and group normalization excludes symbolic links by default. This
+#  script's contract is to normalize the files and directories inside a tree,
+#  not to perform ownership operations on symbolic links, whose behavior can
+#  vary across platforms and network/FUSE filesystems. Use --chown-symlinks to
+#  opt in to normalizing symbolic link ownership as well; when enabled, chown
+#  is invoked with -h so the link itself is changed instead of its target.
+#  Even when symbolic links are excluded, chown is still invoked with -h as a
+#  defense against a matched path being replaced by a symbolic link between
+#  the find scan and the chown call.
+#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
@@ -47,14 +57,17 @@
 #    -n NAME, --name=NAME  name pattern of find (ex. -n '*.sh')
 #    --user=USER           normalize owner with chown
 #    --group=GROUP         normalize group with chown
+#    --chown-symlinks      include symbolic links in owner/group
+#                          normalization (uses chown -h)
 #    --force               apply chmod/chown to all matched entries without
 #                          skipping entries that already match
 #
 #  Options include --sudo to execute with superuser privileges, --quiet to
 #  reduce output verbosity, --files and --dirs to specify chmod permissions for
-#  files and directories, --user and --group to normalize ownership, --name to
-#  filter by filename pattern, and --force to restore the previous all-matched
-#  reapplication behavior.
+#  files and directories, --user and --group to normalize ownership,
+#  --chown-symlinks to opt in to symbolic link ownership normalization, --name
+#  to filter by filename pattern, and --force to restore the previous
+#  all-matched reapplication behavior.
 #
 #  Permission modes are passed directly to chmod, so both zero-prefixed forms
 #  such as 0644/0755 and non-prefixed forms such as 644/755 can be used.
@@ -84,12 +97,25 @@
 #          chmodtree.py -f 0755 -n '*.sh' your_dir5
 #      Reapply chmod/chown to all matched entries even if already correct:
 #          chmodtree.py --force -f 0644 -d 0755 --user root --group root your_dir6
+#      Normalize ownership including symbolic links themselves:
+#          chmodtree.py -s -q --user root --group root --chown-symlinks your_dir7
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
 #  - External commands: find, chmod, chown when --user or --group is used
+#  - chown must support the -h (--no-dereference) option when --user or
+#    --group is used. This is required by POSIX and provided by GNU coreutils,
+#    macOS/BSD chown, and current BusyBox.
 #
 #  Version History:
+#  v3.2 2026-07-10
+#       Changed owner/group normalization to exclude symbolic links by default,
+#       since chown without -h dereferences the link and unexpectedly changes
+#       the ownership of its target instead of the link itself. Added
+#       --chown-symlinks to opt in to normalizing symbolic link ownership with
+#       chown -h. chown is now always invoked with -h, including when symbolic
+#       links are excluded, as a defense against a matched path being replaced
+#       by a symbolic link between the find scan and the chown call.
 #  v3.1 2026-06-14
 #       Added owner and group normalization support with --user and --group.
 #       Changed the default behavior to update only entries whose current
@@ -189,6 +215,8 @@ def setup_option_parser():
                       help="name pattern of find (ex. -n '*.sh')")
     parser.add_option("--user", dest="user", help="normalize owner with chown")
     parser.add_option("--group", dest="group", help="normalize group with chown")
+    parser.add_option("--chown-symlinks", help="include symbolic links in owner/group normalization (uses chown -h)",
+                      action="store_true", dest="chown_symlinks")
     parser.add_option("--force", help="apply chmod/chown to all matched entries",
                       action="store_true", dest="force")
     return parser
@@ -308,13 +336,21 @@ def build_chown_filter(options):
     return []
 
 
+def build_chown_type_filter(options):
+    """ Build the find predicate that excludes symbolic links unless --chown-symlinks is specified. """
+    if options.chown_symlinks:
+        return []
+    return ['!', '-type', 'l']
+
+
 def build_chown_command(base_cmd, options):
     """ Build the chown command for owner and/or group normalization. """
     chown_spec = build_chown_spec(options)
     cmd = list(base_cmd)
 
+    cmd.extend(build_chown_type_filter(options))
     cmd.extend(build_chown_filter(options))
-    cmd.extend(['-exec', 'chown'])
+    cmd.extend(['-exec', 'chown', '-h'])
     cmd.extend(build_chown_options(options))
     cmd.extend(['--', chown_spec, '{}', '+'])
 

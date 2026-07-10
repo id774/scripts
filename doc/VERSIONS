@@ -8,6 +8,7 @@ v1.7.3 (Release Date: TBD)
 - Treat grep no-match exit code as a valid result in filter_history.sh to avoid spurious failures.
 - Create the yearly destination directory before moving files in dashcam_sync.sh.
 - Specify UTF-8 encoding when reading text files in html2yaml.py, usershells.py, userlist.py, and apache_calculater.py.
+- Exclude symbolic links from chmodtree.py owner/group normalization by default and add --chown-symlinks to opt in, since chown without -h dereferenced links and altered target ownership instead.
 
 v1.7.2 (2026-06-30)
 -------------------

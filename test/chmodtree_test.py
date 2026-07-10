@@ -10,8 +10,9 @@
 #
 #  The tests cover command construction, default mismatch-only filtering,
 #  forced all-entry reapplication, batched find -exec ... {} + execution,
-#  owner/group normalization with chown, command availability checks, and
-#  exit status propagation.
+#  owner/group normalization with chown, the default exclusion of symbolic
+#  links from ownership normalization and the --chown-symlinks opt-in,
+#  command availability checks, and exit status propagation.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -36,14 +37,21 @@
 #    - Apply chmod with --force without mismatch-only permission filtering.
 #    - Build chown specs for user, group, and user:group normalization.
 #    - Build owner/group mismatch filters for chown.
-#    - Apply chown to user and group only when entries differ.
-#    - Apply chown to all matched entries with --force.
+#    - Build the symbolic link inclusion/exclusion filter for chown.
+#    - Apply chown to user and group only when entries differ, excluding symbolic links by default.
+#    - Apply chown to all matched entries with --force, still excluding symbolic links by default.
+#    - Apply chown with --chown-symlinks to include symbolic links using chown -h.
+#    - Apply chown with --force and --chown-symlinks combined.
 #    - Apply chmod and chown together and verify execution order.
 #    - Verify chmodtree returns the first non-zero exit status while continuing remaining operations.
 #    - Verify main checks chmod only when chmod options are used.
 #    - Verify main checks chown only when owner/group options are used.
 #
 #  Version History:
+#  v1.5 2026-07-10
+#       Expanded tests for chmodtree.py v3.2 default exclusion of symbolic
+#       links from owner/group normalization, the --chown-symlinks opt-in,
+#       and the always-on chown -h dereference-safe invocation.
 #  v1.4 2026-06-14
 #       Expanded tests for chmodtree.py v3.1 owner/group normalization,
 #       default mismatch-only behavior, --force, symbolic chmod modes, octal
@@ -78,7 +86,8 @@ class TestChmodTree(unittest.TestCase):
     """ Unit tests for the chmodtree.py script. """
 
     def make_options(self, sudo=False, quiet=True, files=None, dirs=None,
-                     name=None, user=None, group=None, force=False):
+                     name=None, user=None, group=None, chown_symlinks=False,
+                     force=False):
         """ Create a simple options object for chmodtree tests. """
         options = MagicMock()
         options.sudo = sudo
@@ -88,6 +97,7 @@ class TestChmodTree(unittest.TestCase):
         options.name = name
         options.user = user
         options.group = group
+        options.chown_symlinks = chown_symlinks
         options.force = force
         return options
 
@@ -105,6 +115,7 @@ class TestChmodTree(unittest.TestCase):
         self.assertIn('Usage:', out.decode('utf-8'))
         self.assertIn('--user=USER', out.decode('utf-8'))
         self.assertIn('--group=GROUP', out.decode('utf-8'))
+        self.assertIn('--chown-symlinks', out.decode('utf-8'))
         self.assertIn('--force', out.decode('utf-8'))
 
     @patch('chmodtree.os.access')
@@ -400,10 +411,23 @@ class TestChmodTree(unittest.TestCase):
         options = self.make_options(user='root', group='adm', force=True)
         self.assertEqual(chmodtree.build_chown_filter(options), [])
 
+    def test_build_chown_type_filter_excludes_symlinks_by_default(self):
+        """ Test symbolic links are excluded from ownership normalization by default. """
+        options = self.make_options(user='root', group='root')
+        self.assertEqual(
+            chmodtree.build_chown_type_filter(options),
+            ['!', '-type', 'l']
+        )
+
+    def test_build_chown_type_filter_includes_symlinks_when_opted_in(self):
+        """ Test --chown-symlinks includes symbolic links in ownership normalization. """
+        options = self.make_options(user='root', group='root', chown_symlinks=True)
+        self.assertEqual(chmodtree.build_chown_type_filter(options), [])
+
     @patch('chmodtree.sys.platform', 'linux')
     @patch('chmodtree.os_exec')
     def test_chown_user_and_group_command(self, mock_os_exec):
-        """ Test user/group normalization uses chown with mismatch filters. """
+        """ Test user/group normalization uses chown -h, excludes symlinks, and applies mismatch filters. """
         mock_os_exec.return_value = 0
         options = self.make_options(
             sudo=False,
@@ -417,15 +441,16 @@ class TestChmodTree(unittest.TestCase):
         self.assertEqual(status, 0)
         mock_os_exec.assert_called_once_with([
             'find', 'testdir7',
+            '!', '-type', 'l',
             '(', '!', '-user', 'root', '-o', '!', '-group', 'root', ')',
-            '-exec', 'chown',
+            '-exec', 'chown', '-h',
             '-c',
             '--', 'root:root', '{}', '+'
         ])
 
     @patch('chmodtree.os_exec')
     def test_chown_group_only_command(self, mock_os_exec):
-        """ Test group-only normalization uses chown :group. """
+        """ Test group-only normalization uses chown :group, chown -h, and excludes symlinks. """
         mock_os_exec.return_value = 0
         options = self.make_options(
             sudo=True,
@@ -439,14 +464,15 @@ class TestChmodTree(unittest.TestCase):
         mock_os_exec.assert_called_once_with([
             'sudo',
             'find', 'testdir8',
+            '!', '-type', 'l',
             '!', '-group', 'adm',
-            '-exec', 'chown',
+            '-exec', 'chown', '-h',
             '--', ':adm', '{}', '+'
         ])
 
     @patch('chmodtree.os_exec')
     def test_force_chown_command(self, mock_os_exec):
-        """ Test --force applies chown to all matched entries. """
+        """ Test --force applies chown to all matched entries but still excludes symlinks by default. """
         mock_os_exec.return_value = 0
         options = self.make_options(
             sudo=False,
@@ -461,7 +487,52 @@ class TestChmodTree(unittest.TestCase):
         self.assertEqual(status, 0)
         mock_os_exec.assert_called_once_with([
             'find', 'testdir9',
-            '-exec', 'chown',
+            '!', '-type', 'l',
+            '-exec', 'chown', '-h',
+            '--', 'root:root', '{}', '+'
+        ])
+
+    @patch('chmodtree.os_exec')
+    def test_chown_symlinks_option_includes_symlinks_with_dereference_safe_chown(self, mock_os_exec):
+        """ Test --chown-symlinks includes symbolic links and still uses chown -h to change the link itself. """
+        mock_os_exec.return_value = 0
+        options = self.make_options(
+            sudo=False,
+            quiet=True,
+            user='root',
+            group='root',
+            chown_symlinks=True
+        )
+
+        status = chmodtree.chmodtree(options, 'testdir9b')
+
+        self.assertEqual(status, 0)
+        mock_os_exec.assert_called_once_with([
+            'find', 'testdir9b',
+            '(', '!', '-user', 'root', '-o', '!', '-group', 'root', ')',
+            '-exec', 'chown', '-h',
+            '--', 'root:root', '{}', '+'
+        ])
+
+    @patch('chmodtree.os_exec')
+    def test_force_and_chown_symlinks_combined(self, mock_os_exec):
+        """ Test --force and --chown-symlinks together apply chown -h to all entries including symlinks. """
+        mock_os_exec.return_value = 0
+        options = self.make_options(
+            sudo=False,
+            quiet=True,
+            user='root',
+            group='root',
+            chown_symlinks=True,
+            force=True
+        )
+
+        status = chmodtree.chmodtree(options, 'testdir9c')
+
+        self.assertEqual(status, 0)
+        mock_os_exec.assert_called_once_with([
+            'find', 'testdir9c',
+            '-exec', 'chown', '-h',
             '--', 'root:root', '{}', '+'
         ])
 
@@ -505,8 +576,9 @@ class TestChmodTree(unittest.TestCase):
                 'sudo',
                 'find', 'testdir10',
                 '-name', '*.sh',
+                '!', '-type', 'l',
                 '(', '!', '-user', 'root', '-o', '!', '-group', 'root', ')',
-                '-exec', 'chown',
+                '-exec', 'chown', '-h',
                 '--', 'root:root', '{}', '+'
             ])
         ]
