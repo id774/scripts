@@ -45,6 +45,9 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
+#  v2.5 2026-07-11
+#       Replace the awk {n,} interval expression in usage() with a portable
+#       equivalent, since mawk on some systems matches it incorrectly.
 #  v2.4 2026-03-04
 #       Use org.gnome.gnome-flashback.desktop.icons keys to hide Home and Trash desktop icons.
 #  v2.3 2026-02-26
@@ -73,7 +76,7 @@
 usage() {
     awk '
         BEGIN { in_header = 0 }
-        /^#{10,}$/ { if (!in_header) { in_header = 1; next } else exit }
+        /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0

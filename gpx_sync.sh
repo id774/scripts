@@ -53,6 +53,9 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v2.7 2026-07-11
+#       Replace the awk {n,} interval expression in usage() with a portable
+#       equivalent, since mawk on some systems matches it incorrectly.
 #  v2.6 2026-05-20
 #       Stop copying GPX files to mounted backup storage.
 #       Allow 3-digit and 4-digit octal permission values.
@@ -109,7 +112,7 @@
 usage() {
     awk '
         BEGIN { in_header = 0 }
-        /^#{10,}$/ { if (!in_header) { in_header = 1; next } else exit }
+        /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0

@@ -59,6 +59,8 @@
 #  - Linux/macOS POSIX sh
 #
 #  Version History:
+#  20260711 - Replace the awk {n,} interval expression in usage() with a portable
+#             equivalent, since mawk on some systems matches it incorrectly.
 #  20260508 - Normalize cleanup retention periods to 0, 1, 7, and 30 days.
 #  20260505 - Document per-directory cleanup retention periods.
 #  20251220 - Purge $HOME/.cache without find traversal races and document cache policy.
@@ -86,7 +88,7 @@
 usage() {
     awk '
         BEGIN { in_header = 0 }
-        /^#{10,}$/ { if (!in_header) { in_header = 1; next } else exit }
+        /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0

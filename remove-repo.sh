@@ -27,6 +27,9 @@
 #      ./remove-repo.sh -x repo1 repo2     # remove multiple repositories
 #
 #  Version History:
+#  v1.7 2026-07-11
+#       Replace the awk {n,} interval expression in usage() with a portable
+#       equivalent, since mawk on some systems matches it incorrectly.
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-04-13
@@ -49,7 +52,7 @@
 usage() {
     awk '
         BEGIN { in_header = 0 }
-        /^#{10,}$/ { if (!in_header) { in_header = 1; next } else exit }
+        /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0

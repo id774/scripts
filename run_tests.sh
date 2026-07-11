@@ -21,6 +21,9 @@
 #  If no paths are specified, it will use the default system paths.
 #
 #  Version History:
+#  v3.3 2026-07-11
+#       Replace the awk {n,} interval expression in usage() with a portable
+#       equivalent, since mawk on some systems matches it incorrectly.
 #  v3.2 2025-07-09
 #       Refactor Ruby test handling to check ruby before rspec and require matching pair to avoid fallback.
 #       Enforce validation of explicitly passed python path and fallback only when unspecified.
@@ -72,7 +75,7 @@ export PYTHONDONTWRITEBYTECODE=1
 usage() {
     awk '
         BEGIN { in_header = 0 }
-        /^#{10,}$/ { if (!in_header) { in_header = 1; next } else exit }
+        /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0

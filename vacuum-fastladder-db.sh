@@ -23,6 +23,9 @@
 #  - The script requires sqlite3 to be installed on the system.
 #
 #  Version History:
+#  v1.9 2026-07-11
+#       Replace the awk {n,} interval expression in usage() with a portable
+#       equivalent, since mawk on some systems matches it incorrectly.
 #  v1.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.7 2025-04-13
@@ -52,7 +55,7 @@ DB_PATH="$DB_DIR/fastladder.db"
 usage() {
     awk '
         BEGIN { in_header = 0 }
-        /^#{10,}$/ { if (!in_header) { in_header = 1; next } else exit }
+        /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0

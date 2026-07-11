@@ -28,6 +28,9 @@
 #  <pattern>: The string to remove from the history file (partial match).
 #
 #  Version History:
+#  v1.9 2026-07-11
+#       Replace the awk {n,} interval expression in usage() with a portable
+#       equivalent, since mawk on some systems matches it incorrectly.
 #  v1.8 2026-07-08
 #       Treat grep exit code 1 (no matches) as a valid result in count_matches
 #       and filter_history so that absent patterns no longer cause a spurious failure.
@@ -56,7 +59,7 @@
 usage() {
     awk '
         BEGIN { in_header = 0 }
-        /^#{10,}$/ { if (!in_header) { in_header = 1; next } else exit }
+        /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0

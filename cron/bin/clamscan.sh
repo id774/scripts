@@ -20,6 +20,9 @@
 #  This script is intended to be executed periodically by cron.
 #
 #  Version History:
+#  v2.1 2026-07-11
+#       Replace the awk {n,} interval expression in usage() with a portable
+#       equivalent, since mawk on some systems matches it incorrectly.
 #  v2.0 2025-08-12
 #       Support comments and blank lines in exclude file and anchor regex paths
 #       to prevent over matching while keeping POSIX compliance.
@@ -55,7 +58,7 @@
 usage() {
     awk '
         BEGIN { in_header = 0 }
-        /^#{10,}$/ { if (!in_header) { in_header = 1; next } else exit }
+        /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0

@@ -25,6 +25,9 @@
 #  - SSL Apache logs (ssl_*) must exist under /var/log/apache2.
 #
 #  Version History:
+#  v2.2 2026-07-11
+#       Replace the awk {n,} interval expression in usage() with a portable
+#       equivalent, since mawk on some systems matches it incorrectly.
 #  v2.1 2026-02-14
 #       Abort installation if no SSL-related Apache logs exist under /var/log/apache2.
 #  v2.0 2025-08-01
@@ -59,7 +62,7 @@
 usage() {
     awk '
         BEGIN { in_header = 0 }
-        /^#{10,}$/ { if (!in_header) { in_header = 1; next } else exit }
+        /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0

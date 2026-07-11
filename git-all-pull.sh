@@ -24,6 +24,9 @@
 #  overwrite local changes. Use with caution.
 #
 #  Version History:
+#  v2.2 2026-07-11
+#       Replace the awk {n,} interval expression in usage() with a portable
+#       equivalent, since mawk on some systems matches it incorrectly.
 #  v2.1 2025-12-14
 #       Fix symlink creation logic, directory scan condition, and show help for unknown options.
 #       Improves robustness without changing functional behavior.
@@ -68,7 +71,7 @@ SHOW_HELP=false
 usage() {
     awk '
         BEGIN { in_header = 0 }
-        /^#{10,}$/ { if (!in_header) { in_header = 1; next } else exit }
+        /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0

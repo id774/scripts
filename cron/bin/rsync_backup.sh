@@ -123,6 +123,9 @@
 #    local disk-to-disk permission normalization decisions.
 #
 #  Version History:
+#  v4.2  2026-07-11 - Replace the awk {n,} interval expression in usage() with a
+#                     portable equivalent, since mawk on some systems matches it
+#                     incorrectly.
 #  v4.1  2026-06-15 - Use chmodtree to normalize backup ownership and permissions
 #                     only for entries whose attributes differ from the requested values.
 #  v4.0  2026-05-17 - Adopt base and extended data area layout for backup synchronization.
@@ -172,7 +175,7 @@
 usage() {
     awk '
         BEGIN { in_header = 0 }
-        /^#{10,}$/ { if (!in_header) { in_header = 1; next } else exit }
+        /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0

@@ -12,6 +12,7 @@ v1.7.3 (Release Date: TBD)
 - Add --chown-symlinks to fix-permissions.conf for /opt/python, /opt/ruby, /usr/local/etc, and /usr/local/src to keep normalizing version-switch symlink ownership under the new chmodtree.py default.
 - Document the chmodtree.py v3.2 dependency and default symlink exclusion in rsync_backup.sh and fix-permissions.sh.
 - Fix png_info.py to process every glob-matched file instead of exiting after the first one.
+- Replace the awk {n,} interval expression in usage() across all shell scripts with a portable equivalent, since some mawk builds (e.g. Ubuntu 24.04's default /usr/bin/awk) match it incorrectly and silently print an empty help message.
 
 v1.7.2 (2026-06-30)
 -------------------
