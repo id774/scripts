@@ -27,6 +27,9 @@
 #  - Ruby Version: 2.0 or later
 #
 #  Version History:
+#  v1.4 2026-07-11
+#       Specify UTF-8 encoding when usage() reads the script's own source,
+#       to avoid an Encoding::CompatibilityError under a non-UTF-8 locale.
 #  v1.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.2 2025-06-23
@@ -44,7 +47,7 @@
 def usage
   script = File.expand_path(__FILE__)
   in_header = false
-  File.foreach(script) do |line|
+  File.foreach(script, encoding: 'UTF-8') do |line|
     if line.strip.start_with?('#' * 10)
       in_header = !in_header
       next

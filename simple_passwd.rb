@@ -23,6 +23,9 @@
 #  - Ruby Version: 2.0 or later
 #
 #  Version History:
+#  v1.6 2026-07-11
+#       Specify UTF-8 encoding when usage() reads the script's own source,
+#       to avoid an Encoding::CompatibilityError under a non-UTF-8 locale.
 #  v1.5 2025-07-03
 #       Ensure at least one symbol is included when use_symbols is enabled.
 #  v1.4 2025-07-01
@@ -44,7 +47,7 @@ require 'optparse'
 def usage
   script = File.expand_path(__FILE__)
   in_header = false
-  File.foreach(script) do |line|
+  File.foreach(script, encoding: 'UTF-8') do |line|
     if line.strip.start_with?('#' * 10)
       in_header = !in_header
       next

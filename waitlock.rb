@@ -40,6 +40,9 @@
 #  v1.5 2026-07-11
 #       Use $0 instead of $PROGRAM_NAME for the main-script check, matching
 #       the convention used by the other Ruby scripts in this repository.
+#       Also specify UTF-8 encoding when usage() reads the script's own
+#       source, to avoid an Encoding::CompatibilityError under a non-UTF-8
+#       locale.
 #  v1.4 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23
@@ -58,7 +61,7 @@
 def usage
   script = File.expand_path(__FILE__)
   in_header = false
-  File.foreach(script) do |line|
+  File.foreach(script, encoding: 'UTF-8') do |line|
     if line.strip.start_with?('#' * 10)
       in_header = !in_header
       next
