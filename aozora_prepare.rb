@@ -24,7 +24,9 @@
 #       Specify UTF-8 encoding explicitly when opening the output file, matching
 #       the explicit encoding already used for the input file. Also specify it
 #       when usage() reads the script's own source, to avoid an
-#       Encoding::CompatibilityError under a non-UTF-8 locale.
+#       Encoding::CompatibilityError under a non-UTF-8 locale. Wrap the entry
+#       point in a main() function terminated by exit(main), matching the
+#       structure used by every other Ruby script in this repository.
 #  v1.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.2 2025-06-23
@@ -69,10 +71,12 @@ class Aozora
   end
 end
 
-if __FILE__ == $0
+def main
   if ARGV.length == 2
-    exit(Aozora.new(ARGV).run)
+    return Aozora.new(ARGV).run
   else
     usage
   end
 end
+
+exit(main) if __FILE__ == $0
