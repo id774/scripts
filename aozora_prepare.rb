@@ -20,6 +20,9 @@
 #  - Ruby Version: 2.0 or later
 #
 #  Version History:
+#  v1.4 2026-07-11
+#       Specify UTF-8 encoding explicitly when opening the output file, matching
+#       the explicit encoding already used for the input file.
 #  v1.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.2 2025-06-23
@@ -52,7 +55,7 @@ class Aozora
 
   def run
     File.open(@infile, "r:Windows-31J:UTF-8") do |source|
-      File.open(@outfile, "w") do |data|
+      File.open(@outfile, "w:UTF-8") do |data|
         content = source.read
         content.gsub!(/《[^》]+》/, "")
         content.gsub!(/　/, "  ")

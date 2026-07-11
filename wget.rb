@@ -20,6 +20,9 @@
 #  - Ruby Version: 2.4 or later
 #
 #  Version History:
+#  v1.3 2026-07-11
+#       Use $0 instead of $PROGRAM_NAME for the main-script check, matching
+#       the convention used by the other Ruby scripts in this repository.
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2023-12-06
@@ -69,4 +72,4 @@ def main
   return 0
 end
 
-exit(main) if __FILE__ == $PROGRAM_NAME
+exit(main) if __FILE__ == $0

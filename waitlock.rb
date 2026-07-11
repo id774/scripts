@@ -37,6 +37,9 @@
 #  - Ruby Version: 2.0 or later
 #
 #  Version History:
+#  v1.5 2026-07-11
+#       Use $0 instead of $PROGRAM_NAME for the main-script check, matching
+#       the convention used by the other Ruby scripts in this repository.
 #  v1.4 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23
@@ -92,4 +95,4 @@ def main
   return 0
 end
 
-exit(main) if __FILE__ == $PROGRAM_NAME
+exit(main) if __FILE__ == $0
