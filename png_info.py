@@ -24,6 +24,11 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v1.6 2026-07-11
+#       Fixed a bug where only the first matched file was processed; all
+#       glob-matched files across all arguments are now processed. Added a
+#       main() entry point so the script returns status instead of exiting
+#       from within the processing loop.
 #  v1.5 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.4 2025-06-23
@@ -105,23 +110,34 @@ def read_png_info(png_file_path):
         return width, height, bit_depth, color_type_name
 
 
+def print_png_info(filename):
+    """ Print width, height, bit depth, and color type for one PNG file. """
+    width, height, bit_depth, color_type_name = read_png_info(filename)
+    print("[INFO] File: {}".format(filename))
+    print("Width:        {:4d}".format(width))
+    print("Height:       {:4d}".format(height))
+    print("Bit Depth:    {:4d}".format(bit_depth))
+    print("Color Type:   {}".format(color_type_name))
+    print("")
+
+
+def main(argv):
+    """ Process every file matched by the given glob patterns. """
+    status = 0
+
+    for arg in argv[1:]:
+        for filename in glob.glob(arg):
+            try:
+                print_png_info(filename)
+            except Exception as e:
+                print("[ERROR] Error processing {}: {}".format(filename, e), file=sys.stderr)
+                status = 1
+
+    return status
+
+
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
-    else:
-        # Process each file matching the provided glob pattern
-        for arg in sys.argv[1:]:
-            for filename in glob.glob(arg):
-                try:
-                    width, height, bit_depth, color_type_name = read_png_info(
-                        filename)
-                    print("[INFO] File: {}".format(filename))
-                    print("Width:        {:4d}".format(width))
-                    print("Height:       {:4d}".format(height))
-                    print("Bit Depth:    {:4d}".format(bit_depth))
-                    print("Color Type:   {}".format(color_type_name))
-                    print("")
-                    sys.exit(0)
-                except Exception as e:
-                    print("[ERROR] Error processing {}: {}".format(filename, e), file=sys.stderr)
-                    sys.exit(1)
+
+    sys.exit(main(sys.argv))

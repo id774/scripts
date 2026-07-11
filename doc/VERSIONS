@@ -11,6 +11,7 @@ v1.7.3 (Release Date: TBD)
 - Exclude symbolic links from chmodtree.py owner/group normalization by default and add --chown-symlinks to opt in, since chown without -h dereferenced links and altered target ownership instead.
 - Add --chown-symlinks to fix-permissions.conf for /opt/python, /opt/ruby, /usr/local/etc, and /usr/local/src to keep normalizing version-switch symlink ownership under the new chmodtree.py default.
 - Document the chmodtree.py v3.2 dependency and default symlink exclusion in rsync_backup.sh and fix-permissions.sh.
+- Fix png_info.py to process every glob-matched file instead of exiting after the first one.
 
 v1.7.2 (2026-06-30)
 -------------------

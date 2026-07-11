@@ -17,8 +17,12 @@
 #    - Read PNG IHDR metadata from a valid PNG signature and return (width, height, bit depth, color format).
 #    - Raise ValueError when the input is not a valid PNG file (invalid signature / data).
 #    - Raise struct.error when the PNG header/IHDR data is incomplete and cannot be unpacked.
+#    - Process every file matched across multiple command-line arguments, not just the first one.
+#    - Continue past a failing file, report it on stderr, and exit with status 1.
 #
 #  Version History:
+#  v1.2 2026-07-11
+#       Added tests covering multi-file processing and partial-failure exit status.
 #  v1.1 2024-01-30
 #       Updated test cases to handle multiple reads with mock_open.
 #  v1.0 2024-01-11
@@ -30,12 +34,22 @@ import os
 import struct
 import subprocess
 import sys
+import tempfile
 import unittest
 from unittest.mock import mock_open, patch
 
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from png_info import read_png_info
+
+
+def write_minimal_png(path, width, height, bit_depth=8, color_type=2):
+    """ Write a minimal PNG file containing only a signature and an IHDR chunk. """
+    ihdr_data = struct.pack(">IIBBBBB", width, height, bit_depth, color_type, 0, 0, 0)
+    with open(path, 'wb') as f:
+        f.write(b'\x89PNG\r\n\x1a\n')
+        f.write(struct.pack(">I4s", len(ihdr_data), b'IHDR'))
+        f.write(ihdr_data)
 
 
 class TestPngInfo(unittest.TestCase):
@@ -86,6 +100,51 @@ class TestPngInfo(unittest.TestCase):
 
         with self.assertRaises(struct.error):
             read_png_info('incomplete.png')
+
+    def test_multiple_files_are_all_processed(self):
+        """ Test that every file matched across arguments is processed, not just the first. """
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'png_info.py')
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path_a = os.path.join(tmpdir, 'a.png')
+            path_b = os.path.join(tmpdir, 'b.png')
+            write_minimal_png(path_a, 10, 20)
+            write_minimal_png(path_b, 30, 40)
+
+            proc = subprocess.Popen(['python', script_path, path_a, path_b],
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+            out, err = proc.communicate()
+            out = out.decode('utf-8')
+
+            self.assertEqual(proc.returncode, 0)
+            self.assertIn('File: {}'.format(path_a), out)
+            self.assertIn('File: {}'.format(path_b), out)
+
+    def test_failing_file_is_reported_and_processing_continues(self):
+        """ Test that a failing file is reported on stderr while remaining files still succeed. """
+        script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        script_path = os.path.join(script_dir, 'png_info.py')
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path_bad = os.path.join(tmpdir, 'bad.png')
+            path_good = os.path.join(tmpdir, 'good.png')
+            with open(path_bad, 'wb') as f:
+                f.write(b'not a png')
+            write_minimal_png(path_good, 50, 60)
+
+            proc = subprocess.Popen(['python', script_path, path_bad, path_good],
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE)
+            out, err = proc.communicate()
+            out = out.decode('utf-8')
+            err = err.decode('utf-8')
+
+            self.assertEqual(proc.returncode, 1)
+            self.assertIn('[ERROR]', err)
+            self.assertIn(path_bad, err)
+            self.assertIn('File: {}'.format(path_good), out)
 
 
 if __name__ == '__main__':
