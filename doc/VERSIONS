@@ -8,7 +8,7 @@ v1.7.3 (Release Date: TBD)
 - Treat grep no-match exit code as a valid result in filter_history.sh to avoid spurious failures.
 - Create the yearly destination directory before moving files in dashcam_sync.sh.
 - Specify UTF-8 encoding for html2yaml.py, usershells.py, userlist.py, apache_calculater.py.
-- Exclude symlinks from chmodtree.py ownership normalization by default; --chown-symlinks opts in.
+- Exclude symlinks from chmodtree.py ownership normalization by default, opt in with --chown-symlinks.
 - Add --chown-symlinks to fix-permissions.conf for version-switch symlink paths.
 - Document chmodtree.py v3.2 dependency, symlink exclusion in rsync_backup.sh, fix-permissions.sh.
 - Fix png_info.py to process every glob-matched file instead of exiting after the first one.
