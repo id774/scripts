@@ -104,8 +104,8 @@
 #  - Python Version: 3.1 or later
 #  - External commands: find, chmod, chown when --user or --group is used
 #  - chown must support the -h (--no-dereference) option when --user or
-#    --group is used. This is required by POSIX and provided by GNU coreutils,
-#    macOS/BSD chown, and current BusyBox.
+#    --group is used. This is a common extension, not mandated by POSIX,
+#    but is provided by GNU coreutils, macOS/BSD chown, and current BusyBox.
 #
 #  Version History:
 #  v3.2 2026-07-10
