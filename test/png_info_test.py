@@ -21,6 +21,10 @@
 #    - Continue past a failing file, report it on stderr, and exit with status 1.
 #
 #  Version History:
+#  v1.3 2026-07-12
+#       Use sys.executable instead of a hardcoded 'python' when launching
+#       png_info.py as a subprocess, for portability to systems without a
+#       'python' executable on PATH.
 #  v1.2 2026-07-11
 #       Added tests covering multi-file processing and partial-failure exit status.
 #  v1.1 2024-01-30
@@ -59,7 +63,7 @@ class TestPngInfo(unittest.TestCase):
         script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         script_path = os.path.join(script_dir, 'png_info.py')
 
-        proc = subprocess.Popen(['python', script_path, '-h'],
+        proc = subprocess.Popen([sys.executable, script_path, '-h'],
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
         out, err = proc.communicate()
@@ -112,7 +116,7 @@ class TestPngInfo(unittest.TestCase):
             write_minimal_png(path_a, 10, 20)
             write_minimal_png(path_b, 30, 40)
 
-            proc = subprocess.Popen(['python', script_path, path_a, path_b],
+            proc = subprocess.Popen([sys.executable, script_path, path_a, path_b],
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE)
             out, err = proc.communicate()
@@ -134,7 +138,7 @@ class TestPngInfo(unittest.TestCase):
                 f.write(b'not a png')
             write_minimal_png(path_good, 50, 60)
 
-            proc = subprocess.Popen(['python', script_path, path_bad, path_good],
+            proc = subprocess.Popen([sys.executable, script_path, path_bad, path_good],
                                     stdout=subprocess.PIPE,
                                     stderr=subprocess.PIPE)
             out, err = proc.communicate()
