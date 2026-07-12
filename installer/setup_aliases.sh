@@ -31,6 +31,9 @@
 #  - The system must have a compatible MTA (e.g., Postfix or Sendmail).
 #
 #  Version History:
+#  v1.2 2026-07-12
+#       Replace GNU-only sed -i with a temporary file and mv for POSIX
+#       portability, matching the rest of the repository.
 #  v1.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -112,7 +115,8 @@ remove_self_alias() {
 
     if grep -q "^${username}: root$" "$ALIASES_FILE"; then
         echo "[INFO] Removing self alias: $username: root"
-        sudo sed -i "/^${username}: root$/d" "$ALIASES_FILE"
+        tmp="/tmp/setup_aliases.$$"
+        sed "/^${username}: root$/d" "$ALIASES_FILE" > "$tmp" && sudo mv "$tmp" "$ALIASES_FILE"
     fi
 }
 
@@ -167,7 +171,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo grep tee newaliases sed id truncate
+    check_commands sudo grep tee newaliases sed mv id truncate
     check_scripts
 
     SCRIPT_PATH="$SCRIPTS/usershells.py"
