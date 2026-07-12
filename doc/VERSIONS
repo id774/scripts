@@ -7,14 +7,14 @@ v1.7.3 (Release Date: TBD)
 - Remove a non-POSIX local keyword from install_dotvim.sh.
 - Treat grep no-match exit code as a valid result in filter_history.sh to avoid spurious failures.
 - Create the yearly destination directory before moving files in dashcam_sync.sh.
-- Specify UTF-8 encoding when reading text files in html2yaml.py, usershells.py, userlist.py, and apache_calculater.py.
-- Exclude symbolic links from chmodtree.py owner/group normalization by default and add --chown-symlinks to opt in, since chown without -h dereferenced links and altered target ownership instead.
-- Add --chown-symlinks to fix-permissions.conf for /opt/python, /opt/ruby, /usr/local/etc, and /usr/local/src to keep normalizing version-switch symlink ownership under the new chmodtree.py default.
-- Document the chmodtree.py v3.2 dependency and default symlink exclusion in rsync_backup.sh and fix-permissions.sh.
+- Specify UTF-8 encoding for html2yaml.py, usershells.py, userlist.py, apache_calculater.py.
+- Exclude symlinks from chmodtree.py ownership normalization by default; --chown-symlinks opts in.
+- Add --chown-symlinks to fix-permissions.conf for version-switch symlink paths.
+- Document chmodtree.py v3.2 dependency, symlink exclusion in rsync_backup.sh, fix-permissions.sh.
 - Fix png_info.py to process every glob-matched file instead of exiting after the first one.
-- Replace the awk {n,} interval expression in usage() across all shell scripts with a portable equivalent, since some mawk builds (e.g. Ubuntu 24.04's default /usr/bin/awk) match it incorrectly and silently print an empty help message.
-- Refactor Ruby scripts for consistency: use $0 instead of $PROGRAM_NAME, specify UTF-8 encoding explicitly for file I/O (including usage() reading its own source), recognize --help/--version before getopts parsing in two shell scripts, and wrap aozora_prepare.rb's entry point in a main() function.
-- Use sys.executable instead of a hardcoded 'python' when png_info_test.py launches png_info.py as a subprocess, so the tests run correctly on systems without a 'python' executable on PATH.
+- Replace awk {n,} interval expression in usage() with a portable equivalent for mawk compatibility.
+- Refactor Ruby scripts for consistency.
+- Use sys.executable instead of hardcoded 'python' in png_info_test.py subprocess calls.
 
 v1.7.2 (2026-06-30)
 -------------------
