@@ -3,6 +3,7 @@ scripts Repository Version History
 
 v1.7.3 (Release Date: TBD)
 --------------------------
+- Require the configuration file in git-archive-repo.sh and stop auto-creating missing directories.
 - Make recursive directory traversal in swapext.py opt-in via a new -r option.
 - Remove a non-POSIX local keyword from install_dotvim.sh.
 - Treat grep no-match exit code as a valid result in filter_history.sh to avoid spurious failures.

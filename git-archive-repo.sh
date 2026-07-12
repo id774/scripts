@@ -5,11 +5,11 @@
 #
 #  Description:
 #  This script creates compressed archive files from local Git repository
-#  directories. By default, it archives ~/local/github and ~/local/git into
-#  ~/user2/arc/git/github.tar.gz and ~/user2/arc/git/git.tar.gz.
+#  directories, using source and archive paths defined in a required
+#  configuration file.
 #
-#  The script can load an optional configuration file named
-#  'git-archive-repo.conf' to override the default source and archive paths.
+#  The script loads a configuration file named 'git-archive-repo.conf',
+#  which must define the source and archive paths described below.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -20,33 +20,33 @@
 #  Run the script without any arguments:
 #      ./git-archive-repo.sh
 #
-#  Configuration file ('git-archive-repo.conf') variables:
+#  Configuration file ('git-archive-repo.conf') variables (all required):
 #  - GITHUB_SRC     : Source directory for GitHub repositories.
 #  - GIT_SRC        : Source directory for local Git repositories.
 #  - GITHUB_ARCHIVE : Archive file path for GitHub repositories.
 #  - GIT_ARCHIVE    : Archive file path for local Git repositories.
 #
-#  Default values:
-#  - GITHUB_SRC="$HOME/local/github"
-#  - GIT_SRC="$HOME/local/git"
-#  - GITHUB_ARCHIVE="$HOME/git/github.tar.gz"
-#  - GIT_ARCHIVE="$HOME/git/git.tar.gz"
-#
 #  Notes:
 #  - Existing archive files are removed before archive creation.
-#  - Archive parent directories are created automatically if missing.
+#  - Archive parent directories must already exist; they are not created
+#    automatically.
 #  - Each archive stores the source directory by its basename, not by its
 #    absolute path.
 #
 #  Error Conditions:
 #  1. Source directory not found.
-#  2. Failed to create archive parent directory.
+#  2. Archive parent directory not found.
 #  3. Failed to remove existing archive.
 #  4. Failed to create archive.
+#  5. Configuration file not found or a required variable is not set.
 #  126. Required command(s) not executable.
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v1.2 2026-07-12
+#       Require the configuration file and all its variables, and stop
+#       creating missing source or archive directories, treating them as
+#       errors instead.
 #  v1.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -79,29 +79,33 @@ check_commands() {
     done
 }
 
-# Apply default configuration values
-apply_defaults() {
-    GITHUB_SRC=${GITHUB_SRC:-"$HOME/local/github"}
-    GIT_SRC=${GIT_SRC:-"$HOME/local/git"}
-    GITHUB_ARCHIVE=${GITHUB_ARCHIVE:-"$HOME/arc/github.tar.gz"}
-    GIT_ARCHIVE=${GIT_ARCHIVE:-"$HOME/arc/git.tar.gz"}
+# Verify that all required configuration variables are set
+check_configuration() {
+    for var in GITHUB_SRC GIT_SRC GITHUB_ARCHIVE GIT_ARCHIVE; do
+        eval "value=\${$var:-}"
+        if [ -z "$value" ]; then
+            echo "[ERROR] Required configuration variable '$var' is not set." >&2
+            exit 5
+        fi
+    done
 }
 
-# Load optional configuration
+# Load required configuration
 load_configuration() {
     CONF_FILE="$SCRIPT_DIR/etc/git-archive-repo.conf"
     if [ ! -f "$CONF_FILE" ]; then
         CONF_FILE="$SCRIPT_DIR/../etc/git-archive-repo.conf"
     fi
 
-    if [ -f "$CONF_FILE" ]; then
-        echo "[INFO] Loaded configuration from $CONF_FILE."
-        . "$CONF_FILE"
-    else
-        echo "[INFO] Configuration file not found. Using default settings."
+    if [ ! -f "$CONF_FILE" ]; then
+        echo "[ERROR] Configuration file not found: git-archive-repo.conf" >&2
+        exit 5
     fi
 
-    apply_defaults
+    echo "[INFO] Loaded configuration from $CONF_FILE."
+    . "$CONF_FILE"
+
+    check_configuration
 }
 
 # Create archive from a source directory
@@ -119,8 +123,8 @@ create_archive() {
     source_base=$(basename "$source_dir")
 
     if [ ! -d "$archive_dir" ]; then
-        echo "[INFO] Creating archive directory: $archive_dir"
-        mkdir -p "$archive_dir" || return 2
+        echo "[ERROR] Archive directory not found: $archive_dir" >&2
+        return 2
     fi
 
     if [ -f "$archive_file" ]; then
@@ -147,7 +151,7 @@ main() {
 
     SCRIPT_DIR=$(dirname "$0")
 
-    check_commands awk basename dirname mkdir rm tar
+    check_commands awk basename dirname rm tar
     load_configuration
 
     create_archive "$GITHUB_SRC" "$GITHUB_ARCHIVE" || exit $?
