@@ -44,7 +44,7 @@
 #
 #  Error Conditions:
 #  1. No GPX files found in the specified temporary directory.
-#  2. Destination directory for copying files does not exist.
+#  2. Failed to create the destination directory for copying files.
 #  3. Configuration file not found.
 #  4. Necessary configuration variable(s) not set.
 #  5. DEFAULT_PERMISSIONS not set in configuration file when no permissions argument provided.
@@ -53,6 +53,9 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v2.8 2026-07-12
+#       Create the destination yearly directory before copying files so that
+#       the first run of a new year no longer fails with a missing directory.
 #  v2.7 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -199,8 +202,10 @@ copy_files_to_user_storage() {
     source_dir="$1"
     destination="$2"
     if [ ! -d "$destination" ]; then
-        echo "[ERROR] Destination directory $destination does not exist." >&2
-        return 2
+        if ! mkdir -p "$destination"; then
+            echo "[ERROR] Failed to create destination directory $destination." >&2
+            return 2
+        fi
     fi
     echo "[INFO] Copying files from $source_dir to user storage: $destination"
     find "$source_dir" -maxdepth 1 -name '*.gpx' -type f -exec cp {} "$destination" \;
