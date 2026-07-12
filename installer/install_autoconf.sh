@@ -31,7 +31,7 @@
 #  - This script is intended for Linux systems only.
 #
 #  Version History:
-#  v0.10 2026-07-11
+#  v1.0 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
 #  v0.9 2026-02-05
