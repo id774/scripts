@@ -10,6 +10,7 @@ v1.7.3 (Release Date: TBD)
 - Create the yearly destination directory before moving files in dashcam_sync.sh.
 - Create the yearly destination directory before copying files in gpx_sync.sh.
 - Replace GNU-only sed -i with a temporary file and mv in setup_aliases.sh for POSIX portability.
+- Check touch and chown availability before setup_aliases.sh manages mail spools.
 - Specify UTF-8 encoding for html2yaml.py, usershells.py, userlist.py, apache_calculater.py.
 - Exclude symlinks from chmodtree.py ownership normalization by default, opt in with --chown-symlinks.
 - Add --chown-symlinks to fix-permissions.conf for version-switch symlink paths.
