@@ -31,6 +31,8 @@
 #  - The system must have a compatible MTA (e.g., Postfix or Sendmail).
 #
 #  Version History:
+#  v1.3 2026-07-13
+#       Preserve root-owned aliases file permissions when removing self alias.
 #  v1.2 2026-07-12
 #       Replace GNU-only sed -i with a temporary file and mv for POSIX
 #       portability, matching the rest of the repository.
@@ -116,7 +118,16 @@ remove_self_alias() {
     if grep -q "^${username}: root$" "$ALIASES_FILE"; then
         echo "[INFO] Removing self alias: $username: root"
         tmp="/tmp/setup_aliases.$$"
-        sed "/^${username}: root$/d" "$ALIASES_FILE" > "$tmp" && sudo mv "$tmp" "$ALIASES_FILE"
+        if sed "/^${username}: root$/d" "$ALIASES_FILE" > "$tmp" &&
+            sudo cp "$tmp" "$ALIASES_FILE" &&
+            sudo chown root:root "$ALIASES_FILE" &&
+            sudo chmod 0644 "$ALIASES_FILE"; then
+            rm "$tmp"
+        else
+            rm -f "$tmp"
+            echo "[ERROR] Failed to update $ALIASES_FILE." >&2
+            exit 1
+        fi
     fi
 }
 
@@ -171,7 +182,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo grep tee newaliases sed mv id truncate
+    check_commands sudo grep tee newaliases sed cp rm id truncate touch chown chmod
     check_scripts
 
     SCRIPT_PATH="$SCRIPTS/usershells.py"
