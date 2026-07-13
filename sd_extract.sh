@@ -45,6 +45,8 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v2.2 2026-07-13
+#       Persist failed file names across the subshell used by the find pipeline.
 #  v2.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -158,6 +160,7 @@ sync_files() {
     permissions=$4
     # Create a temporary flag file to detect if any files have been copied
     flag_file="/tmp/files_copied_$$"
+    error_file="/tmp/error_files_$$"
 
     # Check if the source directory exists
     if [ ! -d "$source_dir" ]; then
@@ -177,11 +180,11 @@ sync_files() {
                 touch "$flag_file"
             else
                 echo "[ERROR] Failed to set permissions for $dest_dir/$(basename "$file")."
-                error_files="$error_files $file"
+                echo "$file" >> "$error_file"
             fi
         else
             echo "[ERROR] Rsync failed for $file. Skipping."
-            error_files="$error_files $file"
+            echo "$file" >> "$error_file"
         fi
     done
 
@@ -190,6 +193,13 @@ sync_files() {
         files_copied=true
         # Remove the flag file after setting the flag
         rm "$flag_file"
+    fi
+
+    if [ -f "$error_file" ]; then
+        while IFS= read -r failed_file; do
+            error_files="$error_files $failed_file"
+        done < "$error_file"
+        rm "$error_file"
     fi
 }
 
