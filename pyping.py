@@ -35,6 +35,8 @@
 #  - This script may take time to complete based on the range specified.
 #
 #  Version History:
+#  v1.5 2026-07-14
+#       Added range validation and robust handling when ping command cannot be executed.
 #  v1.4 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23
@@ -93,8 +95,21 @@ def ping(ip, results):
             subprocess.check_output(
                 ["ping", "-c", "1", "-i", "1", ip], stderr=DEVNULL)
             results[ip] = "alive"
-    except subprocess.CalledProcessError:
+    except (subprocess.CalledProcessError, OSError):
         results[ip] = "-----"
+
+
+def validate_range(start_ip, end_ip):
+    """Validate the host-number range used for the ping sweep."""
+    if start_ip < 0 or end_ip > 255:
+        print("[ERROR] IP range values must be between 0 and 255.", file=sys.stderr)
+        return False
+
+    if start_ip > end_ip:
+        print("[ERROR] start_ip must be less than or equal to end_ip.", file=sys.stderr)
+        return False
+
+    return True
 
 
 def main(subnet, start_ip, end_ip, ordered):
@@ -107,6 +122,9 @@ def main(subnet, start_ip, end_ip, ordered):
         end_ip (int): End of the IP address range.
         ordered (bool): Whether to sort the results before displaying.
     """
+    if not validate_range(start_ip, end_ip):
+        return 1
+
     threads = []  # List to store threading.Thread objects
     results = {}  # Dictionary to store ping results
 
