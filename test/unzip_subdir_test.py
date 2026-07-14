@@ -107,6 +107,7 @@ class TestUnzipSubdir(unittest.TestCase):
             unzip_subdir.unzip_files([tmpdir], dry_run=False)
 
             self.assertFalse(os.path.exists(os.path.join(tmpdir, 'outside.txt')))
+            self.assertFalse(os.path.exists(os.path.join(tmpdir, 'evil')))
 
     def test_extracts_zip_files_from_nested_directories(self):
         with tempfile.TemporaryDirectory() as tmpdir:
