@@ -81,13 +81,18 @@ def usage():
         sys.exit(1)
     sys.exit(0)
 
-def safe_extract(archive, target_dir):
-    """Extract a ZipFile while preventing path traversal entries."""
+def validate_members(archive, target_dir):
+    """Reject ZipFile members that would escape target_dir."""
     target_abs = os.path.abspath(target_dir)
     for member in archive.infolist():
         destination = os.path.abspath(os.path.join(target_dir, member.filename))
         if destination != target_abs and not destination.startswith(target_abs + os.sep):
             raise ValueError("Unsafe zip member path: {}".format(member.filename))
+
+
+def safe_extract(archive, target_dir):
+    """Extract a validated ZipFile into target_dir."""
+    os.mkdir(target_dir)
     archive.extractall(target_dir)
 
 
@@ -107,8 +112,8 @@ def unzip_files(args, dry_run=False):
             else:
                 zip_path = os.path.join(root, f)
                 try:
-                    os.mkdir(target_dir)
                     with zipfile.ZipFile(zip_path) as archive:
+                        validate_members(archive, target_dir)
                         safe_extract(archive, target_dir)
                 except Exception as e:
                     print("Error unzipping {}: {}".format(zip_path, str(e)), file=sys.stderr)
