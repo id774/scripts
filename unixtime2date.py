@@ -68,6 +68,7 @@ def usage():
         sys.exit(1)
     sys.exit(0)
 
+
 JST = datetime.timezone(datetime.timedelta(hours=9))
 
 
