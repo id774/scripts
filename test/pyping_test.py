@@ -17,6 +17,8 @@
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - Mark an IP address as "alive" when ping returns successfully.
 #    - Mark an IP address as "-----" when ping returns no response (CalledProcessError).
+#    - Mark an IP address as "-----" when ping command execution fails (OSError).
+#    - Reject invalid IP ranges before launching worker threads.
 #    - Sort ping results in numeric IP order when the --ordered option behavior is used.
 #
 #  Notes:
@@ -24,6 +26,8 @@
 #    - The script is designed to work with Python 3.
 #
 #  Version History:
+#  v1.2 2026-07-14
+#       Added validation tests for invalid ranges and unavailable ping command handling.
 #  v1.1 2025-01-06
 #       Added test case for the --ordered option to verify sorted output.
 #  v1.0 2024-01-12
@@ -71,6 +75,27 @@ class TestPyPing(unittest.TestCase):
         results = {}
         pyping.ping('192.168.11.2', results)
         self.assertEqual(results['192.168.11.2'], '-----')
+
+    @patch('subprocess.check_output', side_effect=FileNotFoundError('ping'))
+    def test_ping_command_unavailable(self, mock_check_output):
+        """ Test if ping execution errors are treated as no response. """
+        results = {}
+        pyping.ping('192.168.11.3', results)
+        self.assertEqual(results['192.168.11.3'], '-----')
+
+    def test_validate_range_rejects_reversed_range(self):
+        """ Test if start_ip greater than end_ip is rejected. """
+        with patch('sys.stderr'):
+            self.assertFalse(pyping.validate_range(10, 1))
+
+    def test_validate_range_rejects_out_of_bounds_range(self):
+        """ Test if host-number values outside 0-255 are rejected. """
+        with patch('sys.stderr'):
+            self.assertFalse(pyping.validate_range(-1, 256))
+
+    def test_validate_range_accepts_valid_range(self):
+        """ Test if a valid host-number range is accepted. """
+        self.assertTrue(pyping.validate_range(1, 254))
 
     @patch('subprocess.check_output')
     def test_ordered_option(self, mock_check_output):

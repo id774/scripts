@@ -5,7 +5,7 @@
 #
 #  Description:
 #  This script converts a Unix timestamp to a human-readable date format in ISO 8601.
-#  It uses the local timezone for conversion.
+#  It uses Japan Standard Time (UTC+09:00) for deterministic conversion.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -23,6 +23,8 @@
 #  - Python Version: 3.3 or later
 #
 #  Version History:
+#  v1.6 2026-07-14
+#       Use an explicit Japan Standard Time timezone instead of environment-dependent local time.
 #  v1.5 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.4 2025-06-23
@@ -66,10 +68,12 @@ def usage():
         sys.exit(1)
     sys.exit(0)
 
+JST = datetime.timezone(datetime.timedelta(hours=9))
+
+
 def unixtime2date(its):
-    """ Convert Unix timestamp to human-readable date in local timezone (ISO 8601 format). """
-    local_datetime = datetime.datetime.fromtimestamp(
-        its, datetime.timezone.utc).astimezone()
+    """ Convert Unix timestamp to ISO 8601 date in Japan Standard Time. """
+    local_datetime = datetime.datetime.fromtimestamp(its, JST)
     return local_datetime.isoformat()
 
 def main(args):
