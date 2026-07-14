@@ -8,7 +8,8 @@
 #  into separate subdirectories. If a subdirectory already exists, it
 #  skips the extraction for that zip file. The --dry-run option lists
 #  the zip files that would be extracted without performing the actual
-#  extraction.
+#  extraction. Archives are extracted with Python's zipfile module
+#  and entries that would escape the target directory are rejected.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -27,8 +28,12 @@
 #  - Ensure that you have the necessary permissions to read and write
 #    files in the source directory.
 #  - The script does not overwrite existing directories.
+#  - Archive members containing unsafe paths are rejected before extraction.
 #
 #  Version History:
+#  v1.7 2026-07-14
+#       Replaced shell unzip execution with zipfile extraction, fixed nested
+#       archive paths, and rejected unsafe zip member traversal.
 #  v1.6 2025-07-08
 #       Fixed compatibility issues with Python 3.4.
 #  v1.5 2025-07-01
@@ -49,6 +54,7 @@
 import os
 import re
 import sys
+import zipfile
 from optparse import OptionParser
 
 
@@ -75,6 +81,16 @@ def usage():
         sys.exit(1)
     sys.exit(0)
 
+def safe_extract(archive, target_dir):
+    """Extract a ZipFile while preventing path traversal entries."""
+    target_abs = os.path.abspath(target_dir)
+    for member in archive.infolist():
+        destination = os.path.abspath(os.path.join(target_dir, member.filename))
+        if destination != target_abs and not destination.startswith(target_abs + os.sep):
+            raise ValueError("Unsafe zip member path: {}".format(member.filename))
+    archive.extractall(target_dir)
+
+
 def unzip_files(args, dry_run=False):
     for root, dirs, files in os.walk(args[0]):
         for f in files:
@@ -89,15 +105,13 @@ def unzip_files(args, dry_run=False):
             if dry_run:
                 print("[INFO] DRY RUN: Would unzip {} into {}".format(f, target_dir))
             else:
+                zip_path = os.path.join(root, f)
                 try:
                     os.mkdir(target_dir)
-                    current = os.getcwd()
-                    os.chdir(target_dir)
-                    cmd = "unzip {}".format(os.path.join(args[0], f))
-                    os.system(cmd)
-                    os.chdir(current)
+                    with zipfile.ZipFile(zip_path) as archive:
+                        safe_extract(archive, target_dir)
                 except Exception as e:
-                    print("Error unzipping {}: {}".format(f, str(e)), file=sys.stderr)
+                    print("Error unzipping {}: {}".format(zip_path, str(e)), file=sys.stderr)
 
 
 def main():
