@@ -6,7 +6,8 @@
 #  Description:
 #  This script tests unzip_subdir.py, which extracts each .zip file in a
 #  given directory into a separate subdirectory. It verifies dry-run behavior,
-#  skipping existing directories, and proper help message output.
+#  skipping existing directories, safe zipfile extraction, nested directory
+#  traversal, unsafe archive member rejection, and proper help message output.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,9 +18,13 @@
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - In dry-run mode, lists .zip files found in the target directory without creating directories or executing unzip.
 #    - Skips extraction (and listing in dry-run) when the target subdirectory already exists.
-#    - In execution mode (non–dry-run), creates a subdirectory per .zip file and invokes the unzip command exactly once per archive.
+#    - In execution mode (non–dry-run), creates a subdirectory per .zip file and extracts archive contents with zipfile.
+#    - Rejects archive entries that would be written outside the target directory.
+#    - Extracts .zip files discovered in nested subdirectories using the discovered archive path.
 #
 #  Version History:
+#  v1.2 2026-07-14
+#       Documented and tested zipfile extraction, nested paths, and unsafe member rejection.
 #  v1.1 2025-07-08
 #       Fixed compatibility issues with Python 3.4.
 #  v1.0 2025-07-07
@@ -32,8 +37,8 @@ import os
 import sys
 import tempfile
 import unittest
+import zipfile
 from contextlib import redirect_stdout
-from unittest.mock import patch
 
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -77,24 +82,46 @@ class TestUnzipSubdir(unittest.TestCase):
             # Should not list it because dir already exists
             self.assertNotIn("data.zip", output)
 
-    @patch('os.system')
-    def test_actual_unzip_command_called(self, mock_system):
+    def test_actual_unzip_extracts_archive_contents(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             zip_path = os.path.join(tmpdir, 'foo.zip')
-            with open(zip_path, 'w') as f:
-                f.write('dummy zip')
+            with zipfile.ZipFile(zip_path, 'w') as archive:
+                archive.writestr('bar.txt', 'extracted content')
 
-            # no target dir should exist
             f = io.StringIO()
             with redirect_stdout(f):
                 unzip_subdir.unzip_files([tmpdir], dry_run=False)
-            output = f.getvalue()
 
-            # Ensure directory was created
+            extracted_path = os.path.join(tmpdir, 'foo', 'bar.txt')
             self.assertTrue(os.path.isdir(os.path.join(tmpdir, 'foo')))
-            # Replace assert_called_once (Python 3.6+ only)
-            self.assertEqual(mock_system.call_count, 1)
-            self.assertIn('foo', os.listdir(tmpdir))
+            self.assertTrue(os.path.isfile(extracted_path))
+            with open(extracted_path) as extracted:
+                self.assertEqual(extracted.read(), 'extracted content')
+
+    def test_rejects_zip_entries_outside_target_directory(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            zip_path = os.path.join(tmpdir, 'evil.zip')
+            with zipfile.ZipFile(zip_path, 'w') as archive:
+                archive.writestr('../outside.txt', 'should not escape')
+
+            unzip_subdir.unzip_files([tmpdir], dry_run=False)
+
+            self.assertFalse(os.path.exists(os.path.join(tmpdir, 'outside.txt')))
+
+    def test_extracts_zip_files_from_nested_directories(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            nested_dir = os.path.join(tmpdir, 'nested')
+            os.mkdir(nested_dir)
+            zip_path = os.path.join(nested_dir, 'child.zip')
+            with zipfile.ZipFile(zip_path, 'w') as archive:
+                archive.writestr('child.txt', 'nested content')
+
+            unzip_subdir.unzip_files([tmpdir], dry_run=False)
+
+            extracted_path = os.path.join(nested_dir, 'child', 'child.txt')
+            self.assertTrue(os.path.isfile(extracted_path))
+            with open(extracted_path) as extracted:
+                self.assertEqual(extracted.read(), 'nested content')
 
 
 if __name__ == '__main__':
