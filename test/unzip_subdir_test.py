@@ -38,7 +38,7 @@ import sys
 import tempfile
 import unittest
 import zipfile
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -104,7 +104,8 @@ class TestUnzipSubdir(unittest.TestCase):
             with zipfile.ZipFile(zip_path, 'w') as archive:
                 archive.writestr('../outside.txt', 'should not escape')
 
-            unzip_subdir.unzip_files([tmpdir], dry_run=False)
+            with redirect_stderr(io.StringIO()):
+                unzip_subdir.unzip_files([tmpdir], dry_run=False)
 
             self.assertFalse(os.path.exists(os.path.join(tmpdir, 'outside.txt')))
             self.assertFalse(os.path.exists(os.path.join(tmpdir, 'evil')))
