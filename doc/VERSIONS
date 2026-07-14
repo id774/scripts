@@ -20,6 +20,8 @@ v1.7.3 (Release Date: TBD)
 - Replace awk {n,} interval expression in usage() with a portable equivalent for mawk compatibility.
 - Refactor Ruby scripts for consistency.
 - Use sys.executable instead of hardcoded 'python' in png_info_test.py subprocess calls.
+- Use explicit JST conversion in unixtime2date.py for deterministic timestamp output.
+- Validate pyping.py host ranges and handle ping execution failures as unreachable hosts.
 
 v1.7.2 (2026-06-30)
 -------------------
