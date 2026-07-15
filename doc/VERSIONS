@@ -23,6 +23,7 @@ v1.7.3 (Release Date: TBD)
 - Use explicit JST conversion in unixtime2date.py for deterministic timestamp output.
 - Validate pyping.py host ranges and handle ping execution failures as unreachable hosts.
 - Validate unzip_subdir.py archive members before creating extraction directories.
+- Quote file and directory paths in pyck.py before interpolating them into shell commands.
 
 v1.7.2 (2026-06-30)
 -------------------

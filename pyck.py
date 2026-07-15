@@ -37,6 +37,9 @@
 #  - Dependencies: autopep8, flake8, autoflake, isort
 #
 #  Version History:
+#  v2.7 2026-07-15
+#       Quote file and directory paths before interpolating them into
+#       shell commands, to support paths containing spaces.
 #  v2.6 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v2.5 2025-06-23
@@ -73,6 +76,7 @@
 import argparse
 import glob
 import os
+import shlex
 import subprocess
 import sys
 
@@ -132,7 +136,7 @@ def check_command(cmd):
 
 def format_imports(file_path):
     """ Format and organize imports in a Python file using 'isort'. """
-    command = "isort {}".format(file_path)
+    command = "isort {}".format(shlex.quote(file_path))
     subprocess.Popen(command, shell=True).wait()
 
 def dry_run_formatting(paths, ignore_errors):
@@ -141,10 +145,10 @@ def dry_run_formatting(paths, ignore_errors):
         print(
             "[INFO] DRY RUN: No files will be modified for '{}'. Use -i to auto-fix.".format(path))
         run_command("flake8 --ignore={} {}".format(ignore_errors,
-                    path), show_files="Would format:")
-        run_command("autoflake --imports=django,requests,urllib3 --check {}".format(path),
+                    shlex.quote(path)), show_files="Would format:")
+        run_command("autoflake --imports=django,requests,urllib3 --check {}".format(shlex.quote(path)),
                     show_files="Would clean:")
-        run_command("isort --check-only {}".format(path),
+        run_command("isort --check-only {}".format(shlex.quote(path)),
                     show_files="Would sort imports in:")
 
 def execute_formatting(paths, ignore_errors):
@@ -167,9 +171,9 @@ def execute_formatting(paths, ignore_errors):
 def format_file(file_path, ignore_errors):
     """ Format a single Python file by cleaning up imports, and applying 'autopep8' and 'isort'. """
     command = "autoflake --imports=django,requests,urllib3 -i {}".format(
-        file_path)
+        shlex.quote(file_path))
     subprocess.Popen(command, shell=True).wait()
-    command = "autopep8 --ignore={} -v -i {}".format(ignore_errors, file_path)
+    command = "autopep8 --ignore={} -v -i {}".format(ignore_errors, shlex.quote(file_path))
     subprocess.Popen(command, shell=True).wait()
     format_imports(file_path)
 
