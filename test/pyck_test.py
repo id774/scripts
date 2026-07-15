@@ -24,9 +24,11 @@
 #    - Verify check_command prints an error and exits with code 127 when the command does not exist.
 #    - Verify check_command prints an error and exits with code 126 when the command exists but is not executable.
 #    - Run format_file() to invoke autoflake, autopep8, and isort with expected arguments.
+#    - Verify format_file() quotes a file path containing spaces before passing it to the shell.
 #    - Suppress output on successful run_command() execution.
 #    - Print the provided error prefix and command output when run_command() returns a non-zero status.
 #    - In dry-run mode, run flake8/autoflake/isort checks for a single Python file.
+#    - In dry-run mode, verify a path containing spaces is quoted before being passed to the shell.
 #    - In dry-run mode, run flake8/autoflake/isort checks for multiple Python files.
 #    - In dry-run mode, run flake8/autoflake/isort checks for a single directory path.
 #    - In dry-run mode, run flake8/autoflake/isort checks for multiple directory paths.
@@ -41,6 +43,9 @@
 #    - Verify check_command behavior via alternate patching for non-executable commands.
 #
 #  Version History:
+#  v1.3 2026-07-15
+#       Add test cases verifying that paths with spaces are quoted
+#       before being passed to format_file and dry_run_formatting.
 #  v1.2 2025-04-14
 #       Unify error and info message formatting with stderr and prefix tags.
 #  v1.1 2024-01-28
@@ -130,6 +135,22 @@ class TestPyck(unittest.TestCase):
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
+    def test_format_file_quotes_path_with_spaces(self, mock_print, mock_popen):
+        pyck.format_file('path/to/my file.py', 'E302,E402,E501')
+
+        expected_calls = [
+            call(
+                "autoflake --imports=django,requests,urllib3 -i 'path/to/my file.py'", shell=True),
+            call().wait(),
+            call("autopep8 --ignore=E302,E402,E501 -v -i 'path/to/my file.py'", shell=True),
+            call().wait(),
+            call("isort 'path/to/my file.py'", shell=True),
+            call().wait()
+        ]
+        mock_popen.assert_has_calls(expected_calls, any_order=True)
+
+    @patch('pyck.subprocess.Popen')
+    @patch('pyck.print')
     def test_run_command_success(self, mock_print, mock_popen):
         # Test scenario for successful command execution
         mock_process = MagicMock()
@@ -197,6 +218,24 @@ class TestPyck(unittest.TestCase):
                  shell=True, stdout=-1)
         ]
         mock_popen.assert_has_calls(expected_calls, any_order=True)
+
+    @patch('pyck.subprocess.Popen')
+    @patch('pyck.print')
+    def test_dry_run_formatting_quotes_path_with_spaces(self, mock_print, mock_popen):
+        mock_process = MagicMock()
+        mock_process.communicate.return_value = ('output', 'error')
+        mock_process.returncode = 0
+        mock_popen.return_value = mock_process
+
+        # Testing dry-run for a path containing spaces
+        pyck.dry_run_formatting(['path/to/my file.py'], 'E302,E402,E501')
+
+        mock_popen.assert_any_call(
+            "flake8 --ignore=E302,E402,E501 'path/to/my file.py'", shell=True, stdout=-1)
+        mock_popen.assert_any_call(
+            "autoflake --imports=django,requests,urllib3 --check 'path/to/my file.py'", shell=True, stdout=-1)
+        mock_popen.assert_any_call(
+            "isort --check-only 'path/to/my file.py'", shell=True, stdout=-1)
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
