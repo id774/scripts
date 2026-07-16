@@ -40,6 +40,21 @@ or additions to this common policy, in order to avoid redundancy.
   (e.g. `[cron]`, `[admin]`) in the subject line so recipients can easily
   classify, filter, or route messages.
 
+### Control Flow Rules
+- Use explicit termination (`exit`, `sys.exit`, `exit()`) **only for abnormal or forced termination**.
+- Normal execution paths must return normally and propagate status explicitly.
+- Do not rely on implicit termination or language-specific shortcuts
+  (e.g. `set -e` in shell, bare `except` in Python).
+
+### CLI Conventions
+- All command-line tools must provide consistent options:
+  - `-h`, `--help` to display usage information and exit with code `0`.
+  - `-v`, `--version` to display version information and exit with code `0`.
+- Help or version output represents a successful, user-requested termination.
+- Invalid or unsupported options must result in usage output.
+- Exit code may be `1` (error) or `0` (non-error usage display),
+- depending on the tool's design, but must be consistent and documented.
+
 ### Error Handling and Exit Codes
 - Detect command failures and unmet prerequisites early.
 - Always log the reason and affected target when an error occurs.
@@ -68,21 +83,6 @@ or additions to this common policy, in order to avoid redundancy.
 
 > If finer-grained classification is truly required, `sysexits` codes (64–78)
 > may be used, but must be explicitly documented in the script or program header.
-
-### Control Flow Rules
-- Use explicit termination (`exit`, `sys.exit`, `exit()`) **only for abnormal or forced termination**.
-- Normal execution paths must return normally and propagate status explicitly.
-- Do not rely on implicit termination or language-specific shortcuts
-  (e.g. `set -e` in shell, bare `except` in Python).
-
-### CLI Conventions
-- All command-line tools must provide consistent options:
-  - `-h`, `--help` to display usage information and exit with code `0`.
-  - `-v`, `--version` to display version information and exit with code `0`.
-- Help or version output represents a successful, user-requested termination.
-- Invalid or unsupported options must result in usage output.
-- Exit code may be `1` (error) or `0` (non-error usage display),
-- depending on the tool's design, but must be consistent and documented.
 
 ### Documentation and Versioning
 - Every executable must contain a structured header with:
