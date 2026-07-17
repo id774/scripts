@@ -71,6 +71,13 @@
 # Prevent __pycache__ directory creation
 export PYTHONDONTWRITEBYTECODE=1
 
+# Initialize SCRIPTS from the script directory when unset
+initialize_scripts() {
+    if [ -z "$SCRIPTS" ]; then
+        SCRIPTS=$(CDPATH= cd "$(dirname "$0")" && pwd)
+    fi
+}
+
 # Display full script header information extracted from the top comment block
 usage() {
     awk '
@@ -311,6 +318,7 @@ run_tests() {
 
 # Main entry point of the script
 main() {
+    initialize_scripts
     check_scripts
     run_tests "$@"
     return 0
