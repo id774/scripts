@@ -19,8 +19,11 @@
 #      ./run_tests.sh [Python path] [RSpec path]
 #
 #  If no paths are specified, it will use the default system paths.
+#  If SCRIPTS is unset, this script uses its own directory automatically.
 #
 #  Version History:
+#  v3.4 2026-07-17
+#       Initialize SCRIPTS from the script directory when it is unset.
 #  v3.3 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -71,13 +74,6 @@
 # Prevent __pycache__ directory creation
 export PYTHONDONTWRITEBYTECODE=1
 
-# Initialize SCRIPTS from the script directory when unset
-initialize_scripts() {
-    if [ -z "$SCRIPTS" ]; then
-        SCRIPTS=$(CDPATH= cd "$(dirname "$0")" && pwd)
-    fi
-}
-
 # Display full script header information extracted from the top comment block
 usage() {
     awk '
@@ -94,6 +90,13 @@ check_scripts() {
         echo "[ERROR] SCRIPTS environment variable is not set." >&2
         echo "Please set the SCRIPTS variable to the path of your script collection." >&2
         exit 1
+    fi
+}
+
+# Initialize SCRIPTS from the script directory when unset
+initialize_scripts() {
+    if [ -z "$SCRIPTS" ]; then
+        SCRIPTS=$(CDPATH= cd "$(dirname "$0")" && pwd)
     fi
 }
 
