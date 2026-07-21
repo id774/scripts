@@ -22,6 +22,8 @@
 #  If SCRIPTS is unset, this script uses its own directory automatically.
 #
 #  Version History:
+#  v3.5 2026-07-21
+#       Treat non-zero Python and RSpec exit codes as test failures.
 #  v3.4 2026-07-17
 #       Initialize SCRIPTS from the script directory when it is unset.
 #  v3.3 2026-07-11
@@ -168,8 +170,10 @@ run_python_tests() {
         if [ -f "$file" ]; then
             echo "[INFO] Running Python test: $file"
             output=$("$python_path" "$file" 2>&1)
+            test_status=$?
             echo "$output"
-            if ! echo "$output" | grep -qE "OK|SKIPPED|OK (skipped=[0-9]+)"; then
+            if [ "$test_status" -ne 0 ] ||
+                ! echo "$output" | grep -qE "OK|SKIPPED|OK (skipped=[0-9]+)"; then
                 echo "[WARN] Failure in Python test: $file" >&2
                 python_failures=$((python_failures + 1))
             fi
@@ -233,8 +237,10 @@ run_ruby_tests() {
         if [ -f "$file" ]; then
             echo "[INFO] Running Ruby test: $file"
             output=$("$rspec_path" "$file" 2>&1)
+            test_status=$?
             echo "$output"
-            if ! echo "$output" | grep -q "0 failures"; then
+            if [ "$test_status" -ne 0 ] ||
+                ! echo "$output" | grep -q "0 failures"; then
                 echo "[WARN] Failure in Ruby test: $file" >&2
                 ruby_failures=$(expr "$ruby_failures" + 1)
             fi
