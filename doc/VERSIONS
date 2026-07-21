@@ -10,8 +10,7 @@ v1.7.3 (Release Date: TBD)
 - Treat grep no-match exit code as a valid result in filter_history.sh to avoid spurious failures.
 - Create the yearly destination directory before moving files in dashcam_sync.sh.
 - Create the yearly destination directory before copying files in gpx_sync.sh.
-- Replace non-POSIX sed -i with a portable root-owned aliases update in setup_aliases.sh.
-- Check touch and chown availability before setup_aliases.sh manages mail spools.
+- Make setup_aliases.sh aliases updates portable and validate mail spool commands.
 - Specify UTF-8 encoding for html2yaml.py, usershells.py, userlist.py, apache_calculater.py.
 - Exclude symlinks from chmodtree.py ownership normalization by default, opt in with --chown-symlinks.
 - Add --chown-symlinks to fix-permissions.conf for version-switch symlink paths.
@@ -25,8 +24,7 @@ v1.7.3 (Release Date: TBD)
 - Validate unzip_subdir.py archive members before creating extraction directories.
 - Quote file and directory paths in pyck.py before interpolating them into shell commands.
 - Reorder the common policy so exit-code conventions follow the general CLI rules.
-- Set SCRIPTS automatically in run_tests.sh when it is not provided.
-- Treat non-zero Python and RSpec exit codes as test failures in run_tests.sh.
+- Improve run_tests.sh path initialization, failure detection, and Python interpreter fallback.
 
 v1.7.2 (2026-06-30)
 -------------------
