@@ -26,6 +26,7 @@ v1.7.3 (Release Date: TBD)
 - Quote file and directory paths in pyck.py before interpolating them into shell commands.
 - Reorder the common policy so exit-code conventions follow the general CLI rules.
 - Set SCRIPTS automatically in run_tests.sh when it is not provided.
+- Treat non-zero Python and RSpec exit codes as test failures in run_tests.sh.
 
 v1.7.2 (2026-06-30)
 -------------------
