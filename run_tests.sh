@@ -22,6 +22,8 @@
 #  If SCRIPTS is unset, this script uses its own directory automatically.
 #
 #  Version History:
+#  v3.6 2026-07-21
+#       Fall back to python3 when the python command is unavailable.
 #  v3.5 2026-07-21
 #       Treat non-zero Python and RSpec exit codes as test failures.
 #  v3.4 2026-07-17
@@ -147,6 +149,9 @@ run_python_tests() {
     # Fallback to system python if not explicitly set
     if [ -z "$python_path" ]; then
         python_path=$(command -v python)
+        if [ -z "$python_path" ]; then
+            python_path=$(command -v python3)
+        fi
     fi
 
     # Validate python_path executable
