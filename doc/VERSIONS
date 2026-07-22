@@ -12,9 +12,8 @@ v1.7.3 (Release Date: TBD)
 - Create the yearly destination directory before copying files in gpx_sync.sh.
 - Make setup_aliases.sh aliases updates portable and validate mail spool commands.
 - Specify UTF-8 encoding for html2yaml.py, usershells.py, userlist.py, apache_calculater.py.
-- Exclude symlinks from chmodtree.py ownership normalization by default, opt in with --chown-symlinks.
+- Exclude symlinks from chmodtree.py ownership normalization by default, opt in with --chown-symlinks; document the v3.2 dependency and symlink exclusion in rsync_backup.sh, fix-permissions.sh.
 - Add --chown-symlinks to fix-permissions.conf for version-switch symlink paths.
-- Document chmodtree.py v3.2 dependency, symlink exclusion in rsync_backup.sh, fix-permissions.sh.
 - Fix png_info.py to process every glob-matched file instead of exiting after the first one.
 - Replace awk {n,} interval expression in usage() with a portable equivalent for mawk compatibility.
 - Refactor Ruby scripts for consistency.
