@@ -23,6 +23,8 @@
 #    - Extracts .zip files discovered in nested subdirectories using the discovered archive path.
 #
 #  Version History:
+#  v1.3 2026-07-23
+#       Added coverage for cleanup after extraction failures.
 #  v1.2 2026-07-14
 #       Documented and tested zipfile extraction, nested paths, and unsafe member rejection.
 #  v1.1 2025-07-08
@@ -39,6 +41,7 @@ import tempfile
 import unittest
 import zipfile
 from contextlib import redirect_stderr, redirect_stdout
+from unittest import mock
 
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -109,6 +112,19 @@ class TestUnzipSubdir(unittest.TestCase):
 
             self.assertFalse(os.path.exists(os.path.join(tmpdir, 'outside.txt')))
             self.assertFalse(os.path.exists(os.path.join(tmpdir, 'evil')))
+
+    def test_removes_target_directory_when_extraction_fails(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            zip_path = os.path.join(tmpdir, 'broken.zip')
+            with zipfile.ZipFile(zip_path, 'w') as archive:
+                archive.writestr('partial.txt', 'partial content')
+
+            with mock.patch.object(zipfile.ZipFile, 'extractall',
+                                   side_effect=OSError('extraction failed')):
+                with redirect_stderr(io.StringIO()):
+                    unzip_subdir.unzip_files([tmpdir], dry_run=False)
+
+            self.assertFalse(os.path.exists(os.path.join(tmpdir, 'broken')))
 
     def test_extracts_zip_files_from_nested_directories(self):
         with tempfile.TemporaryDirectory() as tmpdir:

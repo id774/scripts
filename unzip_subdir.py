@@ -31,6 +31,8 @@
 #  - Archive members containing unsafe paths are rejected before extraction.
 #
 #  Version History:
+#  v1.8 2026-07-23
+#       Removed incomplete target directories after extraction failures.
 #  v1.7 2026-07-14
 #       Replaced shell unzip execution with zipfile extraction, fixed nested
 #       archive paths, and rejected unsafe zip member traversal.
@@ -53,6 +55,7 @@
 
 import os
 import re
+import shutil
 import sys
 import zipfile
 from optparse import OptionParser
@@ -93,7 +96,11 @@ def validate_members(archive, target_dir):
 def safe_extract(archive, target_dir):
     """Extract a validated ZipFile into target_dir."""
     os.mkdir(target_dir)
-    archive.extractall(target_dir)
+    try:
+        archive.extractall(target_dir)
+    except Exception:
+        shutil.rmtree(target_dir)
+        raise
 
 
 def unzip_files(args, dry_run=False):

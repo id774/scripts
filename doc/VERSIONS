@@ -24,6 +24,7 @@ v1.7.3 (Release Date: TBD)
 - Quote file and directory paths in pyck.py before interpolating them into shell commands.
 - Reorder the common policy so exit-code conventions follow the general CLI rules.
 - Improve run_tests.sh path initialization, failure detection, and Python interpreter fallback.
+- Remove incomplete unzip_subdir.py target directories when archive extraction fails.
 
 v1.7.2 (2026-06-30)
 -------------------
