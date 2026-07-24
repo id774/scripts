@@ -5,12 +5,13 @@
 #
 #  Description:
 #  This test suite validates the behavior of fix_anchor.py, which normalizes
-#  HTML reference anchor placement so that anchors linked to "#ref<number>"
-#  appear before Japanese full stops.
+#  reference link placement so that HTML anchors linked to "#ref<number>" and
+#  Markdown reference links appear before Japanese full stops.
 #
-#  Tests focus on reference normalization, HTML entity handling, argument
-#  parsing, input file validation, content validation, UTF-8 handling,
-#  and file read/write behavior.
+#  Tests focus on reference normalization, HTML entity handling, Markdown
+#  reference handling, false-positive rejection, argument parsing, input file
+#  validation, content validation, UTF-8 handling, and file read/write
+#  behavior.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -27,6 +28,10 @@
 #    - Normalize a literal Japanese full stop followed by one reference anchor
 #    - Normalize consecutive reference anchors after a literal full stop
 #    - Normalize HTML entity full stop followed by a reference anchor
+#    - Normalize a full stop followed by an escaped Markdown reference link
+#    - Normalize a full stop followed by an unescaped Markdown reference link
+#    - Normalize consecutive Markdown reference links after a full stop
+#    - Leave a plain Markdown link with numeric text unchanged
 #    - Leave text unchanged when no target pattern exists
 #    - Extract script version from the header
 #    - Parse INPUT only as in-place update
@@ -37,11 +42,15 @@
 #    - Reject a directory path as input
 #    - Reject binary input content
 #    - Reject non-UTF-8 text input
-#    - Reject non-target text input without anchors
+#    - Reject non-target text input without anchors or references
+#    - Reject a plain Markdown link with numeric text as non-target
 #    - Accept valid HTML input content
+#    - Accept valid Markdown reference input content
 #    - Read and write UTF-8 text files correctly
 #
 #  Version History:
+#  v1.1 2026-07-24
+#       Add Markdown reference and false-positive rejection tests.
 #  v1.0 2026-03-26
 #       Initial release.
 #
@@ -147,6 +156,33 @@ class FixAnchorTest(unittest.TestCase):
         updated, count = fix_anchor.fix(text)
         self.assertEqual('<p>abc<a href="#ref1">[1]</a>&#12290;</p>', updated)
         self.assertEqual(1, count)
+
+    def test_fix_markdown_escaped_single_reference(self):
+        text = '本文。[\\[1\\]](https://example.com/a)'
+        updated, count = fix_anchor.fix(text)
+        self.assertEqual('本文[\\[1\\]](https://example.com/a)。', updated)
+        self.assertEqual(1, count)
+
+    def test_fix_markdown_unescaped_single_reference(self):
+        text = '本文。[[1]](https://example.com/a)'
+        updated, count = fix_anchor.fix(text)
+        self.assertEqual('本文[[1]](https://example.com/a)。', updated)
+        self.assertEqual(1, count)
+
+    def test_fix_markdown_multiple_references(self):
+        text = '本文。 [\\[1\\]](https://example.com/a)[\\[2\\]](https://example.com/b)'
+        updated, count = fix_anchor.fix(text)
+        self.assertEqual(
+            '本文[\\[1\\]](https://example.com/a)[\\[2\\]](https://example.com/b)。',
+            updated,
+        )
+        self.assertEqual(1, count)
+
+    def test_fix_markdown_plain_numeric_link_unchanged(self):
+        text = '本文。[3](https://example.com/a)'
+        updated, count = fix_anchor.fix(text)
+        self.assertEqual(text, updated)
+        self.assertEqual(0, count)
 
     def test_fix_no_target_pattern_keeps_text(self):
         text = '<p>abc。def</p>'
@@ -259,7 +295,32 @@ class FixAnchorTest(unittest.TestCase):
             with _StdCapture() as cap:
                 status = fix_anchor.validate_input_content(path)
             self.assertEqual(1, status)
-            self.assertIn("does not look like target HTML text", cap.err.getvalue())
+            self.assertIn(
+                "does not look like target HTML or Markdown text",
+                cap.err.getvalue(),
+            )
+        finally:
+            try:
+                os.unlink(path)
+            except Exception:
+                pass
+            try:
+                os.rmdir(tmpdir)
+            except Exception:
+                pass
+
+    def test_validate_input_content_rejects_plain_markdown_link(self):
+        tmpdir = tempfile.mkdtemp()
+        try:
+            path = os.path.join(tmpdir, "plain.md")
+            _write_text(path, '本文。[語句](https://example.com/a)\n')
+            with _StdCapture() as cap:
+                status = fix_anchor.validate_input_content(path)
+            self.assertEqual(1, status)
+            self.assertIn(
+                "does not look like target HTML or Markdown text",
+                cap.err.getvalue(),
+            )
         finally:
             try:
                 os.unlink(path)
@@ -275,6 +336,23 @@ class FixAnchorTest(unittest.TestCase):
         try:
             path = os.path.join(tmpdir, "sample.html")
             _write_text(path, '<p>abc。<a href="#ref1">[1]</a></p>\n')
+            status = fix_anchor.validate_input_content(path)
+            self.assertEqual(0, status)
+        finally:
+            try:
+                os.unlink(path)
+            except Exception:
+                pass
+            try:
+                os.rmdir(tmpdir)
+            except Exception:
+                pass
+
+    def test_validate_input_content_accepts_valid_markdown(self):
+        tmpdir = tempfile.mkdtemp()
+        try:
+            path = os.path.join(tmpdir, "sample.md")
+            _write_text(path, '本文。[\\[1\\]](https://example.com/a)\n')
             status = fix_anchor.validate_input_content(path)
             self.assertEqual(0, status)
         finally:

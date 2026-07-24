@@ -5,10 +5,11 @@
 # fix_anchor.py: Normalize reference anchor placement before punctuation
 #
 #  Description:
-#  This script normalizes HTML reference anchors so that anchors linked to
-#  "#ref<number>" appear before Japanese full stops.
+#  This script normalizes reference links so that anchors appear before
+#  Japanese full stops. It supports HTML anchors linked to "#ref<number>"
+#  and Markdown reference links whose text is a bracketed number.
 #
-#  It rewrites patterns such as:
+#  It rewrites HTML patterns such as:
 #      。<a href="#ref1">[1]</a>
 #      。 <a href="#ref1">[1]</a>
 #      。<a href="#ref1">[1]</a><a href="#ref2">[2]</a>
@@ -18,6 +19,14 @@
 #      <a href="#ref1">[1]</a>。
 #      <a href="#ref1">[1]</a><a href="#ref2">[2]</a>。
 #      <a href="#ref1">[1]</a>&#12290;
+#
+#  It rewrites Markdown patterns such as:
+#      。[\[1\]](URL)
+#      。[[1]](URL)
+#
+#  into:
+#      [\[1\]](URL)。
+#      [[1]](URL)。
 #
 #  The script updates the input file in place by default, or writes to a
 #  separate output file when OUTPUT is specified.
@@ -38,15 +47,17 @@
 #
 #  Options:
 #  - INPUT
-#      Input HTML file.
+#      Input HTML or Markdown file.
 #  - OUTPUT
-#      Output HTML file. If omitted, INPUT is updated in place.
+#      Output file. If omitted, INPUT is updated in place.
 #  - -h, --help
 #      Display this help and exit.
 #  - -v, --version
 #      Display version information and exit.
 #
 #  Version History:
+#  v1.1 2026-07-24
+#       Support Markdown reference links in addition to HTML anchors.
 #  v1.0 2026-03-26
 #       Initial release.
 #
@@ -71,6 +82,19 @@ PATTERN = re.compile(
 # Match HTML entity form of Japanese full stop followed by refs.
 ENTITY_PATTERN = re.compile(
     r'(?P<punct>&#12290;)(?P<gap>[ \t\r\n]*)(?P<refs>%s)' % REF_RUN
+)
+
+# Match a Markdown reference link whose text is a bracketed number.
+# Accept both escaped and unescaped brackets: [\[1\]](URL) or [[1]](URL).
+MD_REF = r'\[\\?\[\d+\\?\]\]\([^()\s]+\)'
+
+# Match consecutive Markdown reference links.
+# Preserve whitespace between links as part of the matched block.
+MD_REF_RUN = r'%s(?:[ \t\r\n]*%s)*' % (MD_REF, MD_REF)
+
+# Match literal Japanese full stop followed by Markdown reference links.
+MD_PATTERN = re.compile(
+    r'(?P<punct>。)(?P<gap>[ \t\r\n]*)(?P<refs>%s)' % MD_REF_RUN
 )
 
 
@@ -163,9 +187,11 @@ def validate_input_content(path):
               (path, str(exc)), file=sys.stderr)
         return 1
 
-    if "<a" not in text or "#ref" not in text:
-        print("[ERROR] Input file does not look like target HTML text: %s" % path,
-              file=sys.stderr)
+    has_html = "<a" in text and "#ref" in text
+    has_markdown = re.search(MD_REF, text) is not None
+    if not (has_html or has_markdown):
+        print("[ERROR] Input file does not look like target HTML or Markdown text: %s"
+              % path, file=sys.stderr)
         return 1
 
     return 0
@@ -190,7 +216,8 @@ def fix(text):
 
     updated, count1 = fix_with_pattern(text, PATTERN)
     updated, count2 = fix_with_pattern(updated, ENTITY_PATTERN)
-    return updated, (count1 + count2)
+    updated, count3 = fix_with_pattern(updated, MD_PATTERN)
+    return updated, (count1 + count2 + count3)
 
 
 def read_text_file(path):

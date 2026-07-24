@@ -25,6 +25,7 @@ v1.7.3 (Release Date: TBD)
 - Reorder the common policy so exit-code conventions follow the general CLI rules.
 - Improve run_tests.sh path initialization, failure detection, and Python interpreter fallback.
 - Remove incomplete unzip_subdir.py target directories when archive extraction fails.
+- Support Markdown reference links in addition to HTML anchors in fix_anchor.py.
 
 v1.7.2 (2026-06-30)
 -------------------
