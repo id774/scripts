@@ -29,8 +29,12 @@
 #    files in the source directory.
 #  - The script does not overwrite existing directories.
 #  - Archive members containing unsafe paths are rejected before extraction.
+#  - Processing continues after a failed archive, and the exit status is 1
+#    when at least one archive failed to extract.
 #
 #  Version History:
+#  v1.9 2026-07-26
+#       Return exit status 1 when any archive fails to extract.
 #  v1.8 2026-07-23
 #       Removed incomplete target directories after extraction failures.
 #  v1.7 2026-07-14
@@ -104,6 +108,9 @@ def safe_extract(archive, target_dir):
 
 
 def unzip_files(args, dry_run=False):
+    """Extract every archive found and return the number of failures."""
+    failures = 0
+
     for root, dirs, files in os.walk(args[0]):
         for f in files:
             if not f.lower().endswith(".zip"):
@@ -124,6 +131,9 @@ def unzip_files(args, dry_run=False):
                         safe_extract(archive, target_dir)
                 except Exception as e:
                     print("Error unzipping {}: {}".format(zip_path, str(e)), file=sys.stderr)
+                    failures += 1
+
+    return failures
 
 
 def main():
@@ -136,7 +146,10 @@ def main():
         parser.print_help()
         return 1
     else:
-        unzip_files(args, options.dry_run)
+        failures = unzip_files(args, options.dry_run)
+        if failures > 0:
+            print("[ERROR] Failed to extract {} archive(s).".format(failures), file=sys.stderr)
+            return 1
         return 0
 
 

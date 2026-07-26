@@ -6,9 +6,9 @@
 #  Description:
 #  Tests candidate/asset-confirmed page-view extraction, IP/User-Agent/
 #  Referer/time-window correlation, estimated session aggregation, and
-#  output formatting for apache_blog_analysis.py. Test cases follow the
-#  scenarios enumerated in the "Apache access log blog view refinement"
-#  requirements document (section 14.1, TC-001..TC-020).
+#  output formatting for apache_blog_analysis.py, including the exact
+#  asset-confirmation and session time boundaries, ignore-list resolution
+#  from an unrelated working directory, and a fixture-based end-to-end run.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -16,6 +16,10 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
+#  v1.1 2026-07-26
+#       Added exact time-boundary cases, malformed input cases,
+#       ignore-list resolution outside the working directory, and a
+#       fixture-based end-to-end assertion.
 #  v1.0 2026-07-26
 #       Initial test implementation.
 #
@@ -25,6 +29,7 @@ import contextlib
 import gzip
 import io
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -291,6 +296,113 @@ class TestApacheBlogAnalysis(unittest.TestCase):
         start = lines.index("[Blog Entry Access]") + 1
         paths = [lines[start + i].split(" ", 1)[1] for i in range(3)]
         self.assertEqual(paths, ["/2026/07/26/5128/", "/2026/07/26/5001/", "/2026/07/25/5127/"])
+
+    # -- Asset exactly 5 seconds before the article request confirms ------------------
+    def test_asset_exactly_before_limit_confirms(self):
+        log = self.write_log([
+            '203.0.113.10 - - [26/Jul/2026:20:15:40 +0900] "GET /wp-content/themes/x/style.css HTTP/1.1" 200 1200 "https://example.com/entry/2026/07/26/5128/" "Mozilla/5.0"',
+            '203.0.113.10 - - [26/Jul/2026:20:15:45 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" "Mozilla/5.0"',
+        ])
+        out = self.run_and_capture([log])
+        self.assertEqual(self.counts_for_section(out, "Blog Entry Access (Asset Confirmed)"), {"/2026/07/26/5128/": 1})
+
+    # -- Asset exactly 60 seconds after the article request confirms ------------------
+    def test_asset_exactly_after_limit_confirms(self):
+        log = self.write_log([
+            '203.0.113.10 - - [26/Jul/2026:20:15:40 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" "Mozilla/5.0"',
+            '203.0.113.10 - - [26/Jul/2026:20:16:40 +0900] "GET /wp-content/themes/x/style.css HTTP/1.1" 200 1200 "https://example.com/entry/2026/07/26/5128/" "Mozilla/5.0"',
+        ])
+        out = self.run_and_capture([log])
+        self.assertEqual(self.counts_for_section(out, "Blog Entry Access (Asset Confirmed)"), {"/2026/07/26/5128/": 1})
+
+    # -- Exactly the session timeout keeps a single session ---------------------------
+    def test_gap_exactly_session_timeout_is_one_session(self):
+        log = self.write_log([
+            '203.0.113.10 - - [26/Jul/2026:20:00:00 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" "Mozilla/5.0"',
+            '203.0.113.10 - - [26/Jul/2026:20:30:00 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" "Mozilla/5.0"',
+        ])
+        out = self.run_and_capture([log])
+        self.assertEqual(self.counts_for_section(out, "Blog Entry Sessions (Estimated)"), {"/2026/07/26/5128/": 1})
+
+    # -- One second beyond the session timeout splits the session ---------------------
+    def test_gap_one_second_beyond_session_timeout_splits(self):
+        log = self.write_log([
+            '203.0.113.10 - - [26/Jul/2026:20:00:00 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" "Mozilla/5.0"',
+            '203.0.113.10 - - [26/Jul/2026:20:30:01 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" "Mozilla/5.0"',
+        ])
+        out = self.run_and_capture([log])
+        self.assertEqual(self.counts_for_section(out, "Blog Entry Sessions (Estimated)"), {"/2026/07/26/5128/": 2})
+
+    # -- Different UTC offsets describing the same instant stay correlated ------------
+    def test_different_utc_offsets_are_compared_absolutely(self):
+        log = self.write_log([
+            '203.0.113.10 - - [26/Jul/2026:20:15:40 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" "Mozilla/5.0"',
+            '203.0.113.10 - - [26/Jul/2026:11:15:43 +0000] "GET /wp-content/themes/x/style.css HTTP/1.1" 200 1200 "https://example.com/entry/2026/07/26/5128/" "Mozilla/5.0"',
+        ])
+        out = self.run_and_capture([log])
+        self.assertEqual(self.counts_for_section(out, "Blog Entry Access (Asset Confirmed)"), {"/2026/07/26/5128/": 1})
+
+    # -- Malformed timestamps, empty User-Agent and broken lines are skipped ----------
+    def test_malformed_lines_are_skipped(self):
+        log = self.write_log([
+            '203.0.113.10 - - [32/Xxx/2026:99:99:99 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" "Mozilla/5.0"',
+            '203.0.113.11 - - [26/Jul/2026:20:15:40 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" ""',
+            'this is not a combined log line at all',
+            '203.0.113.12 - - [26/Jul/2026:20:15:40 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" "Mozilla/5.0"',
+        ])
+        out = self.run_and_capture([log])
+        self.assertEqual(self.counts_for_section(out, "Blog Entry Access"), {"/2026/07/26/5128/": 1})
+
+    # -- Ignore list is resolved relative to the script, not the working directory ----
+    def test_ignore_list_resolved_relative_to_script_directory(self):
+        bin_dir = os.path.join(self.tmp.name, 'cron.exec')
+        etc_dir = os.path.join(self.tmp.name, 'etc')
+        other_dir = os.path.join(self.tmp.name, 'elsewhere')
+        for path in (bin_dir, etc_dir, other_dir):
+            os.mkdir(path)
+
+        source = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                              'apache_blog_analysis.py')
+        script_copy = os.path.join(bin_dir, 'apache_blog_analysis.py')
+        shutil.copyfile(source, script_copy)
+
+        with open(os.path.join(etc_dir, 'apache_ignore.list'), 'w') as f:
+            f.write('203.0.113.10\n')
+
+        log = self.write_log([
+            '203.0.113.10 - - [26/Jul/2026:20:15:40 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" "Mozilla/5.0"',
+            '203.0.113.11 - - [26/Jul/2026:20:15:40 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" "Mozilla/5.0"',
+        ])
+
+        proc = subprocess.Popen([sys.executable, script_copy, log],
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                 cwd=other_dir)
+        out, _ = proc.communicate()
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertEqual(
+            self.counts_for_section(out.decode('utf-8'), "Blog Entry Access"),
+            {"/2026/07/26/5128/": 1})
+
+    # -- End-to-end run over the committed log fixture --------------------------------
+    def test_fixture_end_to_end_counts(self):
+        fixture = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                               'apache_blog_analysis_fixture.log')
+        script = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                              'apache_blog_analysis.py')
+
+        proc = subprocess.Popen([sys.executable, script, fixture],
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, _ = proc.communicate()
+        output = out.decode('utf-8')
+
+        self.assertEqual(proc.returncode, 0)
+        self.assertEqual(self.counts_for_section(output, "Blog Entry Access"),
+                          {"/2026/07/26/5128/": 2, "/2026/07/25/5127/": 2, "/2026/07/24/5126/": 2})
+        self.assertEqual(self.counts_for_section(output, "Blog Entry Access (Asset Confirmed)"),
+                          {"/2026/07/26/5128/": 1, "/2026/07/25/5127/": 1})
+        self.assertEqual(self.counts_for_section(output, "Blog Entry Sessions (Estimated)"),
+                          {"/2026/07/26/5128/": 2, "/2026/07/25/5127/": 2, "/2026/07/24/5126/": 1})
 
     def test_usage_shows_help(self):
         script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

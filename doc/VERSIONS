@@ -28,6 +28,10 @@ v1.7.3 (Release Date: TBD)
 - Support Markdown reference links in addition to HTML anchors in fix_anchor.py.
 - Add apache_blog_analysis.py to report asset-confirmed blog page views and estimated sessions alongside apache_log_analysis.sh.
 - Remove the resulting duplicate Blog Entry Access logic from apache_log_analysis.sh, and align apache_blog_analysis.py and apache_calculater.py ignore-list resolution with it.
+- Return a non-zero exit status from unzip_subdir.py when any archive fails to extract.
+- Aggregate Apache analysis helper exit statuses in cron/bin/apache_log_analysis and report the failing helper in the job log.
+- Add regression tests for run_tests.sh failure detection, the Apache analysis cron wrapper, and apache_blog_analysis.py boundaries and ignore-list resolution.
+- Document the Markdown link forms fix_anchor.py does not rewrite.
 
 v1.7.2 (2026-06-30)
 -------------------
