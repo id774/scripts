@@ -28,14 +28,6 @@
 #      -a, --all:   No output limit for "Access Count" and "Referer" (same as -n 0).
 #
 #  Version History:
-#  v3.1 2026-07-26
-#       Delegate blog-entry metrics to the companion apache_blog_analysis.py
-#       script (following the existing apache_calculater.py pattern) and add
-#       asset-confirmed page views and estimated sessions alongside the
-#       existing "Blog Entry Access" candidate page-view count. Split
-#       filter_log_lines() into an IP-only stage and a static-asset-exclusion
-#       stage so existing aggregates keep excluding static assets while the
-#       new companion script can see WordPress asset requests.
 #  v3.0 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -106,13 +98,11 @@ FEED_BOT_UA_RE='(feedfetcher-google|googlebot|bingbot|yandexbot|baiduspider|duck
 # Exclude likely automated clients for blog-entry-only aggregation (case-insensitive)
 # Note: tuned for "human views" and may exclude link preview bots as well.
 # Generic crawlers / bots, search engines, SEO tools, SNS preview fetchers, CLI / programmatic clients
-# Exported so the apache_blog_analysis.py companion script uses the same definition.
 BLOG_BOT_UA_RE='(bot|spider|crawl|slurp|archiver|fetch|scanner|monitor|'\
 'googlebot|bingbot|duckduckbot|baiduspider|yandexbot|'\
 'ahrefsbot|semrushbot|mj12bot|dotbot|'\
 'facebookexternalhit|twitterbot|slackbot|'\
 'curl|wget|python-requests|go-http-client)'
-export BLOG_BOT_UA_RE
 
 # Display full script header information extracted from the top comment block
 usage() {
@@ -208,26 +198,26 @@ print_top() {
 # Print top accessed request paths.
 print_access_count() {
     echo "[Access Count]"
-    filter_content_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | print_top
+    filter_log_lines | awk -F '"' '{print $2}' | awk '{print $2}' | sort | uniq -c | sort -nr | print_top
 }
 
 # Print top referers.
 print_referer() {
     echo "[Referer]"
-    filter_content_log_lines | awk -F '"' '{print $4}' | sort | uniq -c | sort -nr | print_top
+    filter_log_lines | awk -F '"' '{print $4}' | sort | uniq -c | sort -nr | print_top
 }
 
 # Print top user agents.
 print_user_agent() {
     echo "[User Agent]"
-    filter_content_log_lines | awk -F '"' '{print $6}' | sort | uniq -c | sort -nr | head -n 50
+    filter_log_lines | awk -F '"' '{print $6}' | sort | uniq -c | sort -nr | head -n 50
 }
 
 # Print browser counts.
 print_browser() {
     echo "[Browser]"
     for UA in MSIE Firefox Chrome Safari; do
-        COUNT=$(filter_content_log_lines | grep "$UA" | wc -l)
+        COUNT=$(filter_log_lines | grep "$UA" | wc -l)
         echo "$UA: $COUNT"
     done
 }
@@ -235,7 +225,7 @@ print_browser() {
 # Print access counts by hour of day (HH).
 print_access_by_time() {
     echo "[Access By Time]"
-    filter_content_log_lines | awk '{t=$4; gsub(/^\[/,"",t); split(t,a,":"); print a[2]}' | LC_ALL=C sort | uniq -c
+    filter_log_lines | awk '{t=$4; gsub(/^\[/,"",t); split(t,a,":"); print a[2]}' | LC_ALL=C sort | uniq -c
 }
 
 # Print daily access counts for the last year (YYYY-MM-DD).
@@ -243,7 +233,7 @@ print_daily_access() {
     echo "[Daily Access]"
     # Filter to last 1 year by YYYY-MM-DD derived from log timestamp, then aggregate per day.
     # Apache time fields: $4 = [dd/Mon/yyyy:HH:MM:SS   $5 = +ZZZZ]
-    filter_content_log_lines | \
+    filter_log_lines | \
     awk -v cutoff_ymd="${CUTOFF_YMD}" '
         BEGIN {
             month["Jan"]="01"; month["Feb"]="02"; month["Mar"]="03"; month["Apr"]="04";
@@ -264,29 +254,56 @@ print_daily_access() {
     awk '{print $2, $1}'
 }
 
-# Print blog-entry candidate/asset-confirmed page views and estimated
-# sessions via the companion apache_blog_analysis.py script.
-# Note: this correlates article requests with WordPress asset requests
-# (css/js/images under wp-content/wp-includes), so the raw log files are
-# passed through as-is; apache_blog_analysis.py applies its own IP-ignore
-# filtering and must see static assets, unlike filter_content_log_lines()
-# which strips them out for the other sections below.
-print_blog_metrics() {
-    set --
-    i=1
-    while [ "$i" -le "$LOG_FILE_COUNT" ]; do
-        eval "f=\${LOG_FILE_${i}}"
-        set -- "$@" "$f"
-        i=$((i + 1))
-    done
-
-    "$PYTHON_CMD" "$BLOG_ANALYSIS_PY" "$@"
+# Print blog-like entry access counts: */YYYY/MM/DD/NNNN/
+print_blog_entry_access() {
+    echo "[Blog Entry Access]"
+    # Aggregate blog-like pages with pattern: */YYYY/MM/DD/NNNN/
+    # Sort by date (YYYYMMDD) descending, then entry id descending.
+    filter_log_lines | \
+    awk -v bot_re="${BLOG_BOT_UA_RE}" -F '"' '
+        BEGIN {
+            bot_re_l = tolower(bot_re)
+        }
+        {
+            # Exclude non-200 responses to approximate actual page views
+            status = $3
+            sub(/^[[:space:]]+/, "", status)
+            split(status, f, /[[:space:]]+/)
+            status = f[1]
+            if (status != "200") next
+            ua = tolower($6)
+            if (ua == "" || ua == "-") next
+            if (ua ~ bot_re_l) next
+            print $0
+        }
+    ' | awk -F '"' '{print $2}' | awk '{print $2}' | \
+    awk '
+        # Accept optional query/hash after the canonical trailing slash.
+        # Always aggregate by the canonical path only (exclude ?... and #...).
+        match($0, /(\/[0-9]{4}\/[0-9]{2}\/[0-9]{2}\/[0-9]+\/)([?#].*)?$/) {
+            p = substr($0, RSTART, RLENGTH)
+            q = index(p, "?"); h = index(p, "#")
+            cut = 0
+            if (q > 0) cut = q
+            if (h > 0 && (cut == 0 || h < cut)) cut = h
+            if (cut > 0) p = substr(p, 1, cut - 1)
+            cnt[p]++
+            split(p, a, "/")
+            dkey[p] = a[2] a[3] a[4]
+            idkey[p] = a[5]
+        }
+        END {
+            for (p in cnt) {
+                printf "%s %010d %d %s\n", dkey[p], idkey[p], cnt[p], p
+            }
+        }
+    ' | LC_ALL=C sort -k1,1nr -k2,2nr | awk '{print $3, $4}'
 }
 
 # Print estimated "human" feed fetch count (200/304 only).
 print_feed_read_access() {
     echo "[Feed Read Access (Estimated)]"
-    filter_content_log_lines | awk -v feed_re="${FEED_PATH_RE}" -v bot_re="${FEED_BOT_UA_RE}" -F '"' '
+    filter_log_lines | awk -v feed_re="${FEED_PATH_RE}" -v bot_re="${FEED_BOT_UA_RE}" -F '"' '
         BEGIN {
             # Normalize bot UA regex once
             bot_re_l = tolower(bot_re)
@@ -330,7 +347,7 @@ print_feed_read_access() {
 
 # Analyze the log file and output various access statistics.
 analyze_logs() {
-    print_blog_metrics
+    print_blog_entry_access
     print_feed_read_access
     print_browser
     print_user_agent
@@ -443,12 +460,8 @@ validate_log_files() {
 }
 
 # Reconstruct the argument vector from stored LOG_FILE_1..N variables and
-# feed those paths to zgrep safely (space-preserving), excluding only
-# ignore-listed IPs. Static assets are kept, since callers that need
-# WordPress asset requests (e.g. print_blog_metrics) read the raw log
-# files directly; this stage exists to keep the IP-exclusion logic in one
-# place for filter_content_log_lines() below.
-filter_raw_log_lines() {
+# feed those paths to zgrep safely (space-preserving) before applying filters.
+filter_log_lines() {
     IGNORE_FILE_USE=${IGNORE_FILE:-/dev/null}
 
     # Reconstruct argv as: set -- "$LOG_FILE_1" ... "$LOG_FILE_N"
@@ -461,7 +474,7 @@ filter_raw_log_lines() {
     done
 
     zgrep -h -e '' -- "$@" | \
-    awk -v default_ip="${IGNORE_DEFAULT_IP}" -F '"' '
+    awk -v ex="${EXCLUDE_PATH_RE}" -v default_ip="${IGNORE_DEFAULT_IP}" -F '"' '
         FNR==NR {
             line = $0
             sub(/#.*/, "", line)
@@ -479,39 +492,17 @@ filter_raw_log_lines() {
         {
             ip = $1
             if (ip in ignore) next
+
+            split($2, a, " ")
+            if (a[2] ~ ex) next
             print $0
         }
     ' "$IGNORE_FILE_USE" -
 }
 
-# IP-excluded log lines with static assets (css/js/fonts/images) also
-# excluded. Used by all the legacy aggregates (Access Count, Referer,
-# User Agent, Browser, Daily Access, Access By Time, Feed Read Access).
-filter_content_log_lines() {
-    filter_raw_log_lines | \
-    awk -v ex="${EXCLUDE_PATH_RE}" -F '"' '
-        {
-            split($2, a, " ")
-            if (a[2] ~ ex) next
-            print $0
-        }
-    '
-}
-
-# Locate the companion Python script that computes blog-entry metrics.
-resolve_blog_analysis_script() {
-    script_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
-    BLOG_ANALYSIS_PY="${script_dir}/apache_blog_analysis.py"
-    if [ ! -f "$BLOG_ANALYSIS_PY" ]; then
-        echo "[ERROR] Companion script not found: $BLOG_ANALYSIS_PY" >&2
-        exit 1
-    fi
-}
-
 # Main entry point of the script
 main() {
     check_commands grep zgrep awk sort uniq wc paste uname cat head sed
-    PYTHON_CMD=$(check_commands_any python3 python) || exit 127
 
     init_defaults
     parse_options "$@"
@@ -520,7 +511,6 @@ main() {
 
     load_ignore_list
     setup_time_window
-    resolve_blog_analysis_script
     analyze_logs
     return 0
 }

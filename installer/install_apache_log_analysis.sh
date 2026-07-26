@@ -25,6 +25,9 @@
 #  - SSL Apache logs (ssl_*) must exist under /var/log/apache2.
 #
 #  Version History:
+#  v2.3 2026-07-26
+#       Deploy and uninstall apache_blog_analysis.py alongside the existing
+#       apache_log_analysis.sh and apache_calculater.py scripts.
 #  v2.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -137,7 +140,7 @@ deploy_scripts() {
     sudo chmod 0750 /etc/cron.exec
     sudo chown root:adm /etc/cron.exec
 
-    for script in apache_log_analysis.sh apache_calculater.py; do
+    for script in apache_log_analysis.sh apache_calculater.py apache_blog_analysis.py; do
         if ! sudo cp "$SCRIPTS/$script" "/etc/cron.exec/$script"; then
             echo "[ERROR] Failed to copy $script to /etc/cron.exec." >&2
             exit 1
@@ -243,6 +246,7 @@ uninstall() {
         /etc/cron.daily/apache_log_analysis \
         /etc/cron.exec/apache_log_analysis.sh \
         /etc/cron.exec/apache_calculater.py \
+        /etc/cron.exec/apache_blog_analysis.py \
         /etc/cron.config/apache_ignore.list \
         /etc/logrotate.d/apache_summary
     do

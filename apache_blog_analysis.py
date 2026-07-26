@@ -34,11 +34,15 @@
 #  view count. None of the three metrics should be presented as an
 #  exact human visitor count.
 #
-#  This script is invoked by apache_log_analysis.sh but can also be run
-#  standalone, following the same convention as apache_calculater.py:
-#  it performs its own log reading (including gzip support) and its own
-#  apache_ignore.list lookup, so it does not depend on any state from
-#  the calling shell script.
+#  This script is fully standalone, following the same convention as
+#  apache_calculater.py: it performs its own log reading (including gzip
+#  support), its own apache_ignore.list lookup, and its own bot User-Agent
+#  and article/asset pattern matching. It does not call, import, or share
+#  any state with apache_log_analysis.sh or apache_calculater.py, and
+#  neither of those scripts calls it either. Each tool is deployed to
+#  /etc/cron.exec by installer/install_apache_log_analysis.sh and invoked
+#  independently by cron/bin/apache_log_analysis, exactly like the other
+#  Apache log analysis scripts in this repository.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -64,10 +68,11 @@
 #
 #  Version History:
 #  v1.0 2026-07-26
-#       Initial release. Split out of apache_log_analysis.sh: correlate
-#       article requests with WordPress asset requests by IP, User-Agent,
-#       Referer and timestamp to produce asset-confirmed page views and
-#       estimated sessions, without changing the legacy page-view count.
+#       Initial release. A standalone companion to apache_log_analysis.sh
+#       (deployed and invoked independently, not called by it) that
+#       correlates article requests with WordPress asset requests by IP,
+#       User-Agent, Referer and timestamp to report candidate page views,
+#       asset-confirmed page views, and estimated sessions.
 #
 ########################################################################
 
@@ -101,9 +106,10 @@ WORDPRESS_ASSET_EXCLUDE_PATH_RE = re.compile(
 # Trailing "/YYYY/MM/DD/NNNN/" article path, with any leading path allowed.
 ARTICLE_TAIL_RE = re.compile(r'(/[0-9]{4}/[0-9]{2}/[0-9]{2}/[0-9]+/)$')
 
-# Exclude likely automated clients (case-insensitive), same intent as the
-# legacy BLOG_BOT_UA_RE constant that used to live in apache_log_analysis.sh.
-DEFAULT_BOT_UA_RE = (
+# Exclude likely automated clients (case-insensitive). Intentionally
+# maintained independently of the BLOG_BOT_UA_RE constant in
+# apache_log_analysis.sh: the two scripts do not share configuration.
+BOT_UA_RE = (
     r'(bot|spider|crawl|slurp|archiver|fetch|scanner|monitor|'
     r'googlebot|bingbot|duckduckbot|baiduspider|yandexbot|'
     r'ahrefsbot|semrushbot|mj12bot|dotbot|'
@@ -433,8 +439,7 @@ def validate_log_files(log_files):
 
 def run(log_files):
     ignore_ips = load_ignore_list()
-    bot_re_source = os.environ.get('BLOG_BOT_UA_RE', DEFAULT_BOT_UA_RE)
-    bot_re = re.compile(bot_re_source, re.IGNORECASE)
+    bot_re = re.compile(BOT_UA_RE, re.IGNORECASE)
 
     candidates, assets = collect_candidates_and_assets(log_files, ignore_ips, bot_re)
     correlate_assets(candidates, assets, ASSET_CONFIRM_BEFORE_SECONDS, ASSET_CONFIRM_AFTER_SECONDS)

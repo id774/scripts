@@ -40,12 +40,9 @@ class TestApacheBlogAnalysis(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self._orig_load_ignore_list = blog.load_ignore_list
         blog.load_ignore_list = lambda: set(["127.0.0.1"])
-        self._orig_env_bot_re = os.environ.pop('BLOG_BOT_UA_RE', None)
 
     def tearDown(self):
         blog.load_ignore_list = self._orig_load_ignore_list
-        if self._orig_env_bot_re is not None:
-            os.environ['BLOG_BOT_UA_RE'] = self._orig_env_bot_re
         self.tmp.cleanup()
 
     def write_log(self, lines, name="access.log", gzip_mode=False):
