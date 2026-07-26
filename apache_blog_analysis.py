@@ -60,13 +60,20 @@
 #      Only explicitly specified log files are processed.
 #      Rotated logs are not included automatically; specify them explicitly if needed.
 #
-#  The script ignores IPs listed in /etc/cron.config/apache_ignore.list
-#  if the file exists (search order: ./etc/, ../etc/, /etc/cron.config).
+#  The script ignores IPs listed in apache_ignore.list, searched relative
+#  to this script's own directory, then /etc/cron.config (search order:
+#  <script_dir>/etc/, <script_dir>/../etc/, /etc/cron.config).
 #
 #  Requirements:
 #  - Python Version: 3.2 or later (uses timezone-aware datetime parsing)
 #
 #  Version History:
+#  v1.1 2026-07-26
+#       Resolve the ignore list's local etc/ candidates relative to this
+#       script's own directory instead of the current working directory,
+#       matching apache_log_analysis.sh's dirname "$0"-based resolution
+#       so both tools agree on which apache_ignore.list to use regardless
+#       of where the script is invoked from.
 #  v1.0 2026-07-26
 #       Initial release. A standalone companion to apache_log_analysis.sh
 #       (deployed and invoked independently, not called by it) that
@@ -309,15 +316,18 @@ def open_log_lines(path):
 
 def load_ignore_list():
     """
-    Load IP addresses to ignore, searching ./etc/, ../etc/, then
-    /etc/cron.config, mirroring apache_calculater.py and
-    apache_log_analysis.sh. Falls back to 127.0.0.1 only.
+    Load IP addresses to ignore, searching this script's own directory,
+    its parent directory, then /etc/cron.config, matching
+    apache_log_analysis.sh's dirname "$0"-based resolution so both tools
+    agree on which apache_ignore.list to use regardless of the caller's
+    current working directory. Falls back to 127.0.0.1 only.
     """
     ignore_ips = set([IGNORE_DEFAULT_IP])
 
+    script_dir = os.path.dirname(os.path.abspath(__file__))
     candidate_paths = [
-        os.path.join(os.getcwd(), "etc", "apache_ignore.list"),
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "etc", "apache_ignore.list"),
+        os.path.join(script_dir, "etc", "apache_ignore.list"),
+        os.path.join(script_dir, "..", "etc", "apache_ignore.list"),
         "/etc/cron.config/apache_ignore.list",
     ]
 
