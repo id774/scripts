@@ -26,7 +26,8 @@ v1.7.3 (Release Date: TBD)
 - Improve run_tests.sh path initialization, failure detection, and Python interpreter fallback.
 - Remove incomplete unzip_subdir.py target directories when archive extraction fails.
 - Support Markdown reference links in addition to HTML anchors in fix_anchor.py.
-- Add apache_blog_analysis.py to report asset-confirmed blog page views and estimated sessions, remove the resulting duplicate "Blog Entry Access" logic from apache_log_analysis.sh, and align ignore-list path resolution across apache_blog_analysis.py and apache_calculater.py with apache_log_analysis.sh.
+- Add apache_blog_analysis.py to report asset-confirmed blog page views and estimated sessions alongside apache_log_analysis.sh.
+- Remove the resulting duplicate Blog Entry Access logic from apache_log_analysis.sh, and align apache_blog_analysis.py and apache_calculater.py ignore-list resolution with it.
 
 v1.7.2 (2026-06-30)
 -------------------
