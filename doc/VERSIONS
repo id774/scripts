@@ -20,18 +20,14 @@ v1.7.3 (Release Date: TBD)
 - Use sys.executable instead of hardcoded 'python' in png_info_test.py subprocess calls.
 - Use explicit JST conversion in unixtime2date.py for deterministic timestamp output.
 - Validate pyping.py host ranges and handle ping execution failures as unreachable hosts.
-- Validate unzip_subdir.py archive members before creating extraction directories.
+- Harden unzip_subdir.py extraction: validate archive members, clean up incomplete target directories, and return a non-zero exit status on failure.
 - Quote file and directory paths in pyck.py before interpolating them into shell commands.
 - Reorder the common policy so exit-code conventions follow the general CLI rules.
 - Improve run_tests.sh path initialization, failure detection, and Python interpreter fallback.
-- Remove incomplete unzip_subdir.py target directories when archive extraction fails.
-- Support Markdown reference links in addition to HTML anchors in fix_anchor.py.
-- Add apache_blog_analysis.py to report asset-confirmed blog page views and estimated sessions alongside apache_log_analysis.sh.
-- Remove the resulting duplicate Blog Entry Access logic from apache_log_analysis.sh, and align apache_blog_analysis.py and apache_calculater.py ignore-list resolution with it.
-- Return a non-zero exit status from unzip_subdir.py when any archive fails to extract.
+- Support Markdown reference links in fix_anchor.py in addition to HTML anchors, and document the link forms it does not rewrite.
+- Add apache_blog_analysis.py alongside apache_log_analysis.sh, then deduplicate Blog Entry Access logic and align ignore-list resolution across the Apache analysis scripts.
 - Aggregate Apache analysis helper exit statuses in cron/bin/apache_log_analysis and report the failing helper in the job log.
 - Add regression tests for run_tests.sh failure detection, the Apache analysis cron wrapper, and apache_blog_analysis.py boundaries and ignore-list resolution.
-- Document the Markdown link forms fix_anchor.py does not rewrite.
 
 v1.7.2 (2026-06-30)
 -------------------
