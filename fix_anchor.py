@@ -28,6 +28,11 @@
 #      [\[1\]](URL)。
 #      [[1]](URL)。
 #
+#  The Markdown form handled here is an inline link whose text is a
+#  bracketed number. Link destinations containing parentheses or a link
+#  title, and Markdown shortcut/collapsed reference links, are left
+#  untouched.
+#
 #  The script updates the input file in place by default, or writes to a
 #  separate output file when OUTPUT is specified.
 #

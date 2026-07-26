@@ -21,8 +21,13 @@
 #    - In execution mode (non–dry-run), creates a subdirectory per .zip file and extracts archive contents with zipfile.
 #    - Rejects archive entries that would be written outside the target directory.
 #    - Extracts .zip files discovered in nested subdirectories using the discovered archive path.
+#    - Continues after a failed archive and reports the failure count.
+#    - Exits with status 1 from the CLI when an extraction fails.
 #
 #  Version History:
+#  v1.4 2026-07-26
+#       Added coverage for failure counting and non-zero CLI exit status,
+#       and switched the help test to sys.executable.
 #  v1.3 2026-07-23
 #       Added coverage for cleanup after extraction failures.
 #  v1.2 2026-07-14
@@ -52,7 +57,7 @@ class TestUnzipSubdir(unittest.TestCase):
     def test_help_option(self):
         script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../unzip_subdir.py'))
         from subprocess import PIPE, Popen
-        process = Popen(['python', script_path, '-h'], stdout=PIPE, stderr=PIPE)
+        process = Popen([sys.executable, script_path, '-h'], stdout=PIPE, stderr=PIPE)
         stdout, _ = process.communicate()
         self.assertEqual(process.returncode, 0)
         self.assertIn("Usage", stdout.decode('utf-8'))
@@ -125,6 +130,50 @@ class TestUnzipSubdir(unittest.TestCase):
                     unzip_subdir.unzip_files([tmpdir], dry_run=False)
 
             self.assertFalse(os.path.exists(os.path.join(tmpdir, 'broken')))
+
+    def test_mixed_archives_extract_valid_and_report_failure(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            good_zip = os.path.join(tmpdir, 'good.zip')
+            with zipfile.ZipFile(good_zip, 'w') as archive:
+                archive.writestr('good.txt', 'good content')
+
+            broken_zip = os.path.join(tmpdir, 'broken.zip')
+            with open(broken_zip, 'w') as f:
+                f.write('not a zip archive')
+
+            with redirect_stderr(io.StringIO()):
+                failures = unzip_subdir.unzip_files([tmpdir], dry_run=False)
+
+            self.assertEqual(failures, 1)
+            self.assertTrue(os.path.isfile(os.path.join(tmpdir, 'good', 'good.txt')))
+            self.assertFalse(os.path.exists(os.path.join(tmpdir, 'broken')))
+
+    def test_cli_exits_non_zero_when_extraction_fails(self):
+        script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../unzip_subdir.py'))
+        from subprocess import PIPE, Popen
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with open(os.path.join(tmpdir, 'broken.zip'), 'w') as f:
+                f.write('not a zip archive')
+
+            process = Popen([sys.executable, script_path, tmpdir], stdout=PIPE, stderr=PIPE)
+            _, stderr = process.communicate()
+
+            self.assertEqual(process.returncode, 1)
+            self.assertIn('broken.zip', stderr.decode('utf-8'))
+            self.assertFalse(os.path.exists(os.path.join(tmpdir, 'broken')))
+
+    def test_cli_exits_zero_when_all_archives_extract(self):
+        script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../unzip_subdir.py'))
+        from subprocess import PIPE, Popen
+        with tempfile.TemporaryDirectory() as tmpdir:
+            with zipfile.ZipFile(os.path.join(tmpdir, 'good.zip'), 'w') as archive:
+                archive.writestr('good.txt', 'good content')
+
+            process = Popen([sys.executable, script_path, tmpdir], stdout=PIPE, stderr=PIPE)
+            process.communicate()
+
+            self.assertEqual(process.returncode, 0)
+            self.assertTrue(os.path.isfile(os.path.join(tmpdir, 'good', 'good.txt')))
 
     def test_extracts_zip_files_from_nested_directories(self):
         with tempfile.TemporaryDirectory() as tmpdir:

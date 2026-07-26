@@ -68,6 +68,8 @@
 #  - Python Version: 3.2 or later (uses timezone-aware datetime parsing)
 #
 #  Version History:
+#  v1.2 2026-07-26
+#       Drop comment references to an unavailable requirements document.
 #  v1.1 2026-07-26
 #       Resolve the ignore list's local etc/ candidates relative to this
 #       script's own directory instead of the current working directory,
@@ -92,7 +94,7 @@ from datetime import datetime, timedelta, timezone
 from urllib.parse import urlsplit
 
 # ----------------------------------------------------------------------
-# Configuration (see requirements doc section 8 for rationale/defaults)
+# Configuration
 # ----------------------------------------------------------------------
 
 # WordPress paths treated as display-relevant static assets.
@@ -434,7 +436,7 @@ def article_sort_key(article_path):
 
 
 def print_section(title, counts):
-    """ Print one "[Title]" section with "count path" lines (FR-063/064/065). """
+    """ Print one "[Title]" section with "count path" lines. """
     print("[{0}]".format(title))
     for path in sorted(counts.keys(), key=article_sort_key, reverse=True):
         print("{0} {1}".format(counts[path], path))

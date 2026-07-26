@@ -23,6 +23,9 @@
 #      45 3 * * * root /path/to/apache_log_analysis
 #
 #  Version History:
+#  v1.9 2026-07-26
+#       Record each helper script exit status, keep running the remaining
+#       helpers, and exit non-zero when any helper fails or is missing.
 #  v1.8 2026-07-26
 #       Invoke apache_blog_analysis.py as an independent third helper
 #       script, alongside apache_log_analysis.sh and apache_calculater.py,
@@ -87,6 +90,7 @@ initialize() {
     ACCESS_LOG="/var/log/apache2/ssl_access.log"
     ACCESS_LOG_ROTATED_1="/var/log/apache2/ssl_access.log.1"
     ACCESS_LOG_ROTATED_FILES=""
+    ANALYSIS_STATUS=0
 
     # Use only latest rotated log (.1) if present
     if [ -f "$ACCESS_LOG_ROTATED_1" ]; then
@@ -116,6 +120,12 @@ initialize() {
     date "+%Y/%m/%d %T" >> "$JOBLOG" 2>&1
 }
 
+# Record a helper failure and keep the aggregated status non-zero
+record_failure() {
+    echo "[ERROR] $1 failed with exit status $2" >> "$JOBLOG" 2>&1
+    ANALYSIS_STATUS=1
+}
+
 # Call helper scripts to analyze logs
 call_main_scripts() {
     if [ -x "$SCRIPT1" ]; then
@@ -126,8 +136,11 @@ call_main_scripts() {
             echo "[INFO] Executing: $SCRIPT1 on $ACCESS_LOG only" >> "$JOBLOG" 2>&1
             "$SCRIPT1" -n 0 "$ACCESS_LOG" >> "$JOBLOG" 2>&1
         fi
+        status=$?
+        [ "$status" -ne 0 ] && record_failure "$SCRIPT1" "$status"
     else
-        echo "[WARN] Log summary script not found: $SCRIPT1" >> "$JOBLOG" 2>&1
+        echo "[ERROR] Log summary script not found: $SCRIPT1" >> "$JOBLOG" 2>&1
+        ANALYSIS_STATUS=1
     fi
 
     # Build argument list safely using positional parameters, shared by
@@ -149,16 +162,22 @@ call_main_scripts() {
         echo "[INFO] Executing: $SCRIPT2 (logs: $#)" >> "$JOBLOG" 2>&1
         echo "[IP Hits: $LOG_LABEL]" >> "$JOBLOG" 2>&1
         "$SCRIPT2" "$@" >> "$JOBLOG" 2>&1
+        status=$?
+        [ "$status" -ne 0 ] && record_failure "$SCRIPT2" "$status"
     else
-        echo "[WARN] IP analysis script not found: $SCRIPT2" >> "$JOBLOG" 2>&1
+        echo "[ERROR] IP analysis script not found: $SCRIPT2" >> "$JOBLOG" 2>&1
+        ANALYSIS_STATUS=1
     fi
 
     if [ -x "$SCRIPT3" ]; then
         echo "[INFO] Executing: $SCRIPT3 (logs: $#)" >> "$JOBLOG" 2>&1
         echo "[Blog Entry Metrics: $LOG_LABEL]" >> "$JOBLOG" 2>&1
         "$SCRIPT3" "$@" >> "$JOBLOG" 2>&1
+        status=$?
+        [ "$status" -ne 0 ] && record_failure "$SCRIPT3" "$status"
     else
-        echo "[WARN] Blog metrics script not found: $SCRIPT3" >> "$JOBLOG" 2>&1
+        echo "[ERROR] Blog metrics script not found: $SCRIPT3" >> "$JOBLOG" 2>&1
+        ANALYSIS_STATUS=1
     fi
 }
 
@@ -179,7 +198,7 @@ main() {
     call_main_scripts
     finalize
 
-    return 0
+    return "$ANALYSIS_STATUS"
 }
 
 # Execute main function
