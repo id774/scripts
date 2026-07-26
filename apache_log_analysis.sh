@@ -9,6 +9,9 @@
 #  agents, browser counts, daily accesses, access by time, and recent
 #  accesses and referrers. It excludes requests from IPs listed in
 #  apache_ignore.list, searched in ./etc/, ../etc/ and /etc/cron.config.
+#  Blog-entry page-view metrics are reported by the separate, independently
+#  deployed apache_blog_analysis.py script; this script does not compute
+#  them, to avoid two scripts implementing the same aggregation.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -28,6 +31,12 @@
 #      -a, --all:   No output limit for "Access Count" and "Referer" (same as -n 0).
 #
 #  Version History:
+#  v3.1 2026-07-26
+#       Remove the "Blog Entry Access" section: it duplicated logic now
+#       owned by the independently deployed apache_blog_analysis.py
+#       script, which reports that same candidate page-view count plus
+#       asset-confirmed page views and estimated sessions. Drop the
+#       now-unused BLOG_BOT_UA_RE constant.
 #  v3.0 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -94,15 +103,6 @@ FEED_PATH_RE='(^/feed(/)?$|/[.](xml|rss|atom)$|/(index|rss|atom)[.]xml$|[?&]feed
 # Exclude obvious non-human feed fetchers (indexing/preview fetchers).
 # Note: keep Feedbin / tt-rss / FreshRSS / NextCloud-News.
 FEED_BOT_UA_RE='(feedfetcher-google|googlebot|bingbot|yandexbot|baiduspider|duckduckbot|ahrefsbot|semrushbot|mj12bot|dotbot|facebookexternalhit|twitterbot|slackbot)'
-
-# Exclude likely automated clients for blog-entry-only aggregation (case-insensitive)
-# Note: tuned for "human views" and may exclude link preview bots as well.
-# Generic crawlers / bots, search engines, SEO tools, SNS preview fetchers, CLI / programmatic clients
-BLOG_BOT_UA_RE='(bot|spider|crawl|slurp|archiver|fetch|scanner|monitor|'\
-'googlebot|bingbot|duckduckbot|baiduspider|yandexbot|'\
-'ahrefsbot|semrushbot|mj12bot|dotbot|'\
-'facebookexternalhit|twitterbot|slackbot|'\
-'curl|wget|python-requests|go-http-client)'
 
 # Display full script header information extracted from the top comment block
 usage() {
@@ -254,52 +254,6 @@ print_daily_access() {
     awk '{print $2, $1}'
 }
 
-# Print blog-like entry access counts: */YYYY/MM/DD/NNNN/
-print_blog_entry_access() {
-    echo "[Blog Entry Access]"
-    # Aggregate blog-like pages with pattern: */YYYY/MM/DD/NNNN/
-    # Sort by date (YYYYMMDD) descending, then entry id descending.
-    filter_log_lines | \
-    awk -v bot_re="${BLOG_BOT_UA_RE}" -F '"' '
-        BEGIN {
-            bot_re_l = tolower(bot_re)
-        }
-        {
-            # Exclude non-200 responses to approximate actual page views
-            status = $3
-            sub(/^[[:space:]]+/, "", status)
-            split(status, f, /[[:space:]]+/)
-            status = f[1]
-            if (status != "200") next
-            ua = tolower($6)
-            if (ua == "" || ua == "-") next
-            if (ua ~ bot_re_l) next
-            print $0
-        }
-    ' | awk -F '"' '{print $2}' | awk '{print $2}' | \
-    awk '
-        # Accept optional query/hash after the canonical trailing slash.
-        # Always aggregate by the canonical path only (exclude ?... and #...).
-        match($0, /(\/[0-9]{4}\/[0-9]{2}\/[0-9]{2}\/[0-9]+\/)([?#].*)?$/) {
-            p = substr($0, RSTART, RLENGTH)
-            q = index(p, "?"); h = index(p, "#")
-            cut = 0
-            if (q > 0) cut = q
-            if (h > 0 && (cut == 0 || h < cut)) cut = h
-            if (cut > 0) p = substr(p, 1, cut - 1)
-            cnt[p]++
-            split(p, a, "/")
-            dkey[p] = a[2] a[3] a[4]
-            idkey[p] = a[5]
-        }
-        END {
-            for (p in cnt) {
-                printf "%s %010d %d %s\n", dkey[p], idkey[p], cnt[p], p
-            }
-        }
-    ' | LC_ALL=C sort -k1,1nr -k2,2nr | awk '{print $3, $4}'
-}
-
 # Print estimated "human" feed fetch count (200/304 only).
 print_feed_read_access() {
     echo "[Feed Read Access (Estimated)]"
@@ -347,7 +301,6 @@ print_feed_read_access() {
 
 # Analyze the log file and output various access statistics.
 analyze_logs() {
-    print_blog_entry_access
     print_feed_read_access
     print_browser
     print_user_agent
