@@ -21,6 +21,10 @@
 #    - Exits non-zero when a helper is missing, while running the others.
 #
 #  Version History:
+#  v1.1 2026-07-26
+#       Detach the wrapper from the caller's terminal so its cron-only
+#       check passes when tests run from an interactive shell, and report
+#       its stderr when the job log is missing.
 #  v1.0 2026-07-26
 #       Initial release.
 #
@@ -83,9 +87,14 @@ class TestApacheLogAnalysisCron(unittest.TestCase):
 
     def run_wrapper(self):
         wrapper = self.build_wrapper()
+        # The wrapper refuses to run with a terminal attached, so stdin must
+        # not be inherited from an interactive test session.
         process = subprocess.Popen(['/bin/sh', wrapper],
+                                   stdin=subprocess.DEVNULL,
                                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        process.communicate()
+        _, stderr = process.communicate()
+        self.assertTrue(os.path.isfile(self.joblog),
+                        'job log was not created: %s' % stderr.decode('utf-8'))
         with open(self.joblog, 'r') as f:
             joblog = f.read()
         return process.returncode, joblog
