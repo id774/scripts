@@ -231,7 +231,7 @@ class TestApacheBlogAnalysis(unittest.TestCase):
         ])
         out = self.run_and_capture([log])
         self.assertEqual(self.counts_for_section(out, "Blog Entry Sessions (Estimated)"),
-                          {"/2026/07/26/5128/": 1, "/2026/07/25/5127/": 1})
+                         {"/2026/07/26/5128/": 1, "/2026/07/25/5127/": 1})
 
     # -- TC-017: query string is stripped from the aggregation key ------------------
     def test_query_string_aggregated_into_same_article(self):
@@ -375,8 +375,8 @@ class TestApacheBlogAnalysis(unittest.TestCase):
         ])
 
         proc = subprocess.Popen([sys.executable, script_copy, log],
-                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                 cwd=other_dir)
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                cwd=other_dir)
         out, _ = proc.communicate()
 
         self.assertEqual(proc.returncode, 0)
@@ -392,25 +392,25 @@ class TestApacheBlogAnalysis(unittest.TestCase):
                               'apache_blog_analysis.py')
 
         proc = subprocess.Popen([sys.executable, script, fixture],
-                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, _ = proc.communicate()
         output = out.decode('utf-8')
 
         self.assertEqual(proc.returncode, 0)
         self.assertEqual(self.counts_for_section(output, "Blog Entry Access"),
-                          {"/2026/07/26/5128/": 2, "/2026/07/25/5127/": 2, "/2026/07/24/5126/": 2})
+                         {"/2026/07/26/5128/": 2, "/2026/07/25/5127/": 2, "/2026/07/24/5126/": 2})
         self.assertEqual(self.counts_for_section(output, "Blog Entry Access (Asset Confirmed)"),
-                          {"/2026/07/26/5128/": 1, "/2026/07/25/5127/": 1})
+                         {"/2026/07/26/5128/": 1, "/2026/07/25/5127/": 1})
         self.assertEqual(self.counts_for_section(output, "Blog Entry Sessions (Estimated)"),
-                          {"/2026/07/26/5128/": 2, "/2026/07/25/5127/": 2, "/2026/07/24/5126/": 1})
+                         {"/2026/07/26/5128/": 2, "/2026/07/25/5127/": 2, "/2026/07/24/5126/": 1})
 
     def test_usage_shows_help(self):
         script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         script_path = os.path.join(script_dir, 'apache_blog_analysis.py')
 
         proc = subprocess.Popen([sys.executable, script_path, '-h'],
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE)
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
         out, err = proc.communicate()
 
         self.assertEqual(proc.returncode, 0)
@@ -419,7 +419,7 @@ class TestApacheBlogAnalysis(unittest.TestCase):
     def test_missing_log_file_errors(self):
         proc = subprocess.Popen(
             [sys.executable, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                                           'apache_blog_analysis.py'),
+                                          'apache_blog_analysis.py'),
              os.path.join(self.tmp.name, 'no-such-file.log')],
             stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         out, err = proc.communicate()

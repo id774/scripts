@@ -223,7 +223,7 @@ def parse_apache_time(raw):
     offset_minutes = sign * (int(tz[1:3]) * 60 + int(tz[3:5]))
     try:
         dt = datetime(int(year), month, int(day), int(hh), int(mm), int(ss),
-                       tzinfo=timezone(timedelta(minutes=offset_minutes)))
+                      tzinfo=timezone(timedelta(minutes=offset_minutes)))
     except ValueError:
         return None
     return dt.timestamp()
