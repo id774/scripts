@@ -89,9 +89,10 @@ class TestApacheLogAnalysisCron(unittest.TestCase):
         wrapper = self.build_wrapper()
         # The wrapper refuses to run with a terminal attached, so stdin must
         # not be inherited from an interactive test session.
-        process = subprocess.Popen(['/bin/sh', wrapper],
-                                   stdin=subprocess.DEVNULL,
-                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        with open(os.devnull, 'r') as devnull:
+            process = subprocess.Popen(['/bin/sh', wrapper],
+                                       stdin=devnull,
+                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         _, stderr = process.communicate()
         self.assertTrue(os.path.isfile(self.joblog),
                         'job log was not created: %s' % stderr.decode('utf-8'))
