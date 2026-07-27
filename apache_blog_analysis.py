@@ -60,6 +60,56 @@
 #      Only explicitly specified log files are processed.
 #      Rotated logs are not included automatically; specify them explicitly if needed.
 #
+#  Output:
+#      This script prints exactly three sections to stdout, each a
+#      "[Section Name]" header followed by zero or more "COUNT PATH"
+#      lines (one line per distinct article URL, sorted by publish date
+#      then entry id, both descending). These are the only three section
+#      headers this script ever prints, and their literal text is:
+#
+#      [Blog Entry Access]
+#          Candidate page view count per article: GET requests that
+#          returned HTTP 200 for that article URL, after excluding
+#          requests with an empty or "-" User-Agent, or one matching
+#          BOT_UA_RE below. This is the "candidate page views" metric
+#          described above, and is equivalent in spirit to the legacy
+#          Blog Entry Access count that apache_log_analysis.sh itself
+#          used to compute before this script existed.
+#
+#      [Blog Entry Access (Asset Confirmed)]
+#          Subset of the [Blog Entry Access] count above: candidate page
+#          views for which a matching WordPress asset request (same IP
+#          address, same User-Agent, Referer pointing back at the same
+#          article, within the configured time window) was also observed.
+#          This is the "asset-confirmed views" metric described above: a
+#          lower-bound estimate, never an exact human view count.
+#
+#      [Blog Entry Sessions (Estimated)]
+#          Estimated session count per article: candidate page views
+#          (the same set counted in [Blog Entry Access], regardless of
+#          asset confirmation) sharing the same IP address, User-Agent
+#          and article URL are collapsed into one session whenever they
+#          occur within BLOG_SESSION_TIMEOUT_SECONDS of the previous one
+#          for that same IP/User-Agent/article combination. This is the
+#          "estimated sessions" metric described above.
+#
+#      When this script is invoked by cron/bin/apache_log_analysis, the
+#      three sections above are preceded in the combined joblog by a
+#      line such as:
+#
+#          [Blog Entry Metrics: Current Log]
+#          [Blog Entry Metrics: Current + Rotated Logs]
+#
+#      That line is NOT printed by this script; grep this file for
+#      "Blog Entry Metrics" and it will not be found. It is a context
+#      label that cron/bin/apache_log_analysis itself prints immediately
+#      before invoking this script, stating only which log file(s) were
+#      passed as arguments for that run (the current SSL access log
+#      alone, or the current log plus the latest rotated log). It carries
+#      no information about, and does not change the meaning of, the
+#      three sections above, which are identical regardless of which log
+#      files were supplied.
+#
 #  The script ignores IPs listed in apache_ignore.list, searched relative
 #  to this script's own directory, then /etc/cron.config (search order:
 #  <script_dir>/etc/, <script_dir>/../etc/, /etc/cron.config).
