@@ -128,6 +128,36 @@ record_failure() {
 
 # Call helper scripts to analyze logs
 call_main_scripts() {
+    # Build argument list safely using positional parameters, shared by
+    # SCRIPT2 and SCRIPT3 below. Each script is invoked independently, so
+    # one being missing never prevents the others from running.
+    set -- "$ACCESS_LOG"
+
+    if [ -n "$ACCESS_LOG_ROTATED_FILES" ]; then
+        # ACCESS_LOG_ROTATED_FILES contains at most one path; append it as a
+        # single argument to avoid unintended word-splitting on whitespace.
+        set -- "$@" "$ACCESS_LOG_ROTATED_FILES"
+        LOG_LABEL="Current + Rotated Logs"
+    else
+        echo "[WARN] Rotated access log not found: $ACCESS_LOG_ROTATED_1" >> "$JOBLOG" 2>&1
+        LOG_LABEL="Current Log"
+    fi
+
+    # Run blog metrics first so they keep their historical position at the
+    # top of the joblog, matching the order used before apache_blog_analysis.py
+    # became a separate script (blog entry access used to be the first
+    # section apache_log_analysis.sh itself printed).
+    if [ -x "$SCRIPT3" ]; then
+        echo "[INFO] Executing: $SCRIPT3 (logs: $#)" >> "$JOBLOG" 2>&1
+        echo "[Blog Entry Metrics: $LOG_LABEL]" >> "$JOBLOG" 2>&1
+        "$SCRIPT3" "$@" >> "$JOBLOG" 2>&1
+        status=$?
+        [ "$status" -ne 0 ] && record_failure "$SCRIPT3" "$status"
+    else
+        echo "[ERROR] Blog metrics script not found: $SCRIPT3" >> "$JOBLOG" 2>&1
+        ANALYSIS_STATUS=1
+    fi
+
     if [ -x "$SCRIPT1" ]; then
         if [ -n "$ACCESS_LOG_ROTATED_FILES" ]; then
             echo "[INFO] Executing: $SCRIPT1 on current + latest rotated log" >> "$JOBLOG" 2>&1
@@ -143,21 +173,6 @@ call_main_scripts() {
         ANALYSIS_STATUS=1
     fi
 
-    # Build argument list safely using positional parameters, shared by
-    # SCRIPT2 and SCRIPT3 below. Each script is invoked independently, so
-    # one being missing never prevents the other from running.
-    set -- "$ACCESS_LOG"
-
-    if [ -n "$ACCESS_LOG_ROTATED_FILES" ]; then
-        # ACCESS_LOG_ROTATED_FILES contains at most one path; append it as a
-        # single argument to avoid unintended word-splitting on whitespace.
-        set -- "$@" "$ACCESS_LOG_ROTATED_FILES"
-        LOG_LABEL="Current + Rotated Logs"
-    else
-        echo "[WARN] Rotated access log not found: $ACCESS_LOG_ROTATED_1" >> "$JOBLOG" 2>&1
-        LOG_LABEL="Current Log"
-    fi
-
     if [ -x "$SCRIPT2" ]; then
         echo "[INFO] Executing: $SCRIPT2 (logs: $#)" >> "$JOBLOG" 2>&1
         echo "[IP Hits: $LOG_LABEL]" >> "$JOBLOG" 2>&1
@@ -166,17 +181,6 @@ call_main_scripts() {
         [ "$status" -ne 0 ] && record_failure "$SCRIPT2" "$status"
     else
         echo "[ERROR] IP analysis script not found: $SCRIPT2" >> "$JOBLOG" 2>&1
-        ANALYSIS_STATUS=1
-    fi
-
-    if [ -x "$SCRIPT3" ]; then
-        echo "[INFO] Executing: $SCRIPT3 (logs: $#)" >> "$JOBLOG" 2>&1
-        echo "[Blog Entry Metrics: $LOG_LABEL]" >> "$JOBLOG" 2>&1
-        "$SCRIPT3" "$@" >> "$JOBLOG" 2>&1
-        status=$?
-        [ "$status" -ne 0 ] && record_failure "$SCRIPT3" "$status"
-    else
-        echo "[ERROR] Blog metrics script not found: $SCRIPT3" >> "$JOBLOG" 2>&1
         ANALYSIS_STATUS=1
     fi
 }
