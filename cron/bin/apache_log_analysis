@@ -23,11 +23,6 @@
 #      45 3 * * * root /path/to/apache_log_analysis
 #
 #  Version History:
-#  v1.10 2026-07-26
-#       Run apache_blog_analysis.py before apache_log_analysis.sh and
-#       apache_calculater.py, restoring blog entry metrics as the first
-#       section recorded in the joblog now that apache_log_analysis.sh
-#       no longer reports them itself.
 #  v1.9 2026-07-26
 #       Record each helper script exit status, keep running the remaining
 #       helpers, and exit non-zero when any helper fails or is missing.
