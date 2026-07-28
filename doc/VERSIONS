@@ -8,27 +8,28 @@ v1.7.3 (Release Date: TBD)
 - Make recursive directory traversal in swapext.py opt-in via a new -r option.
 - Remove a non-POSIX local keyword from install_dotvim.sh.
 - Treat grep no-match exit code as a valid result in filter_history.sh to avoid spurious failures.
-- Create the yearly destination directory before moving files in dashcam_sync.sh.
-- Create the yearly destination directory before copying files in gpx_sync.sh.
+- Create the yearly destination directory before syncing in dashcam_sync.sh and gpx_sync.sh.
 - Make setup_aliases.sh aliases updates portable and validate mail spool commands.
+- Honor a preset ZSH_ROOT in dot_zshrc and skip the search path loop.
 - Specify UTF-8 encoding for html2yaml.py, usershells.py, userlist.py, apache_calculater.py.
-- Exclude symlinks from chmodtree.py ownership normalization by default, opt in with --chown-symlinks; document the v3.2 dependency and symlink exclusion in rsync_backup.sh, fix-permissions.sh.
-- Add --chown-symlinks to fix-permissions.conf for version-switch symlink paths.
+- Exclude symlinks from chmodtree.py ownership normalization; --chown-symlinks opts back in.
+- Adopt the new chmodtree.py symlink policy in the fix-permissions and rsync_backup workflows.
 - Fix png_info.py to process every glob-matched file instead of exiting after the first one.
 - Replace awk {n,} interval expression in usage() with a portable equivalent for mawk compatibility.
 - Refactor Ruby scripts for consistency.
 - Use sys.executable instead of hardcoded 'python' in png_info_test.py subprocess calls.
 - Use explicit JST conversion in unixtime2date.py for deterministic timestamp output.
 - Validate pyping.py host ranges and handle ping execution failures as unreachable hosts.
-- Harden unzip_subdir.py extraction: validate archive members, clean up incomplete target directories, and return a non-zero exit status on failure.
+- Harden unzip_subdir.py extraction and return a non-zero exit status when any archive fails.
 - Quote file and directory paths in pyck.py before interpolating them into shell commands.
-- Reorder the common policy so exit-code conventions follow the general CLI rules.
-- Align the Ruby policy minimum supported version with README as Ruby 2.4 or later.
+- Support Markdown reference links in fix_anchor.py in addition to HTML anchors.
 - Improve run_tests.sh path initialization, failure detection, and Python interpreter fallback.
-- Support Markdown reference links in fix_anchor.py in addition to HTML anchors, and document the link forms it does not rewrite.
-- Add apache_blog_analysis.py alongside apache_log_analysis.sh, then deduplicate Blog Entry Access logic and align ignore-list resolution across the Apache analysis scripts.
-- Aggregate Apache analysis helper exit statuses in cron/bin/apache_log_analysis and report the failing helper in the job log.
-- Add regression tests for run_tests.sh failure detection, the Apache analysis cron wrapper, and apache_blog_analysis.py boundaries and ignore-list resolution.
+- Add apache_blog_analysis.py to report asset-confirmed blog page views and estimated sessions.
+- Deduplicate Blog Entry Access logic and align ignore-list resolution across the Apache scripts.
+- Report the failing helper and aggregate its exit status in cron/bin/apache_log_analysis.
+- Add regression tests for run_tests.sh and the Apache log analysis scripts.
+- Reorder the common policy so exit-code conventions follow the general CLI rules.
+- Align POLICY with actual practice for Ruby and Python minimum versions and shell logging.
 
 v1.7.2 (2026-06-30)
 -------------------
