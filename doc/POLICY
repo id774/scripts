@@ -243,8 +243,13 @@ log_info_time() {
 
 ## Ruby Implementation Policy
 
-### Supported Versions
-- Minimum supported version: **Ruby 3.0 or later**.
+### Supported Versions and Compatibility
+- Code must fully support Ruby 2.4+.
+- Backward compatibility down to Ruby 2.0 is maintained on a best-effort basis and must not break existing behavior intentionally.
+- If compatible with Ruby 2.0, documentation must state:
+  `Ruby Version: 2.0 or later`
+- Only when strictly required, state:
+  `Ruby Version: 2.4 or later`
 
 ### Program Structure
 - Define `main` as the entry point.

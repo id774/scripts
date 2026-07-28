@@ -23,6 +23,7 @@ v1.7.3 (Release Date: TBD)
 - Harden unzip_subdir.py extraction: validate archive members, clean up incomplete target directories, and return a non-zero exit status on failure.
 - Quote file and directory paths in pyck.py before interpolating them into shell commands.
 - Reorder the common policy so exit-code conventions follow the general CLI rules.
+- Align the Ruby policy minimum supported version with README as Ruby 2.4 or later.
 - Improve run_tests.sh path initialization, failure detection, and Python interpreter fallback.
 - Support Markdown reference links in fix_anchor.py in addition to HTML anchors, and document the link forms it does not rewrite.
 - Add apache_blog_analysis.py alongside apache_log_analysis.sh, then deduplicate Blog Entry Access logic and align ignore-list resolution across the Apache analysis scripts.
