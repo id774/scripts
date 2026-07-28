@@ -8,7 +8,8 @@
 #  web server traffic. It reports on top accessed URLs, referrers, user
 #  agents, browser counts, daily accesses, access by time, and recent
 #  accesses and referrers. It excludes requests from IPs listed in
-#  apache_ignore.list, searched in ./etc/, ../etc/ and /etc/cron.config.
+#  apache_ignore.list, searched in <script_dir>/etc/, <script_dir>/../etc/
+#  and /etc/cron.config in that order.
 #  Blog-entry page-view metrics are reported by the separate, independently
 #  deployed apache_blog_analysis.py script; this script does not compute
 #  them, to avoid two scripts implementing the same aggregation.

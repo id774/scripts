@@ -139,7 +139,7 @@ import gzip
 import os
 import re
 import sys
-from collections import Counter, defaultdict, namedtuple
+from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urlsplit
 
@@ -202,8 +202,6 @@ LOG_LINE_RE = re.compile(
 
 APACHE_TIME_RE = re.compile(
     r'^(\d{2})/([A-Za-z]{3})/(\d{4}):(\d{2}):(\d{2}):(\d{2}) ([+-]\d{4})$')
-
-Candidate = namedtuple('Candidate', ['ip', 'ua', 'article_path', 'ts'])
 
 
 class MutableCandidate(object):

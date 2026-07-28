@@ -10,7 +10,7 @@
 #  When multiple log files are specified, IP hit counts and cache statistics
 #  are aggregated across all provided logs before reporting results.
 #
-#  log files and excludes IPs listed in apache_ignore.list, which is searched
+#  It excludes IPs listed in apache_ignore.list, which is searched
 #  in <script_dir>/etc/, <script_dir>/../etc/ and /etc/cron.config in that order.
 #  It is designed to provide insights into web server traffic and client behavior.
 #
