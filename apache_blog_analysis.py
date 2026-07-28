@@ -68,7 +68,7 @@
 #  <script_dir>/etc/, <script_dir>/../etc/, /etc/cron.config).
 #
 #  Requirements:
-#  - Python Version: 3.2 or later
+#  - Python Version: 3.3 or later
 #
 #  Version History:
 #  v1.0 2026-07-26

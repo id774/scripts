@@ -86,7 +86,7 @@ or additions to this common policy, in order to avoid redundancy.
 
 ### Documentation and Versioning
 - Every executable must contain a structured header with:
-  `Description`, `Requirements`, `Usage`, `Options`, `Version History`
+  `Description`, `Usage`, `Options`, `Requirements`, `Version History`
   (in this order).
 - "Test Cases" section must NOT be included in production scripts.
 - "Test Cases" must be defined only in dedicated test code (e.g., test/, spec/).

@@ -15,6 +15,30 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
+#  Test Cases:
+#    - Confirm a candidate page view when a matching asset request follows it.
+#    - Confirm a candidate page view from a 304 asset request.
+#    - Skip confirmation when the asset Referer, User-Agent or IP differs.
+#    - Skip confirmation when the asset falls outside the time window.
+#    - Confirm at the exact before and after time-window boundaries.
+#    - Count multiple assets for one article as a single confirmed view.
+#    - Exclude bot User-Agents, HEAD requests and 304 article responses.
+#    - Report an article without any asset request as unconfirmed.
+#    - Collapse reloads within the session timeout into one session.
+#    - Split sessions on a gap beyond the session timeout.
+#    - Count sessions per article independently.
+#    - Aggregate query-string variants into the same article path.
+#    - Confirm a page view across a gzip-compressed log file.
+#    - Confirm an asset logged before its article line.
+#    - Exclude IPs listed in the ignore list.
+#    - Print all section headers even when no hits are found.
+#    - Sort output by publish date then entry id, both descending.
+#    - Compare timestamps absolutely across differing UTC offsets.
+#    - Skip malformed log lines.
+#    - Resolve the ignore list relative to the script directory.
+#    - Produce expected counts for the end-to-end fixture log.
+#    - Show usage information and fail on a missing log file.
+#
 #  Version History:
 #  v1.0 2026-07-26
 #       Initial test implementation.

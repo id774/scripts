@@ -172,4 +172,5 @@ main() {
     return 0
 }
 
+# Execute main function
 main "$@"

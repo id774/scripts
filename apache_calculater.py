@@ -32,7 +32,7 @@
 #      Rotated logs are not included automatically; specify them explicitly if needed.
 #
 #  Requirements:
-#  - Python Version: 3.1 or later
+#  - Python Version: 3.3 or later
 #
 #  Version History:
 #  v2.4 2026-07-26

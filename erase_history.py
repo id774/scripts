@@ -91,7 +91,7 @@
 #    it is considered self invocation.
 #
 #  Requirements:
-#  - Python Version: 3.1 or later
+#  - Python Version: 3.3 or later
 #
 #  Version History:
 #  v1.2 2026-02-25
