@@ -32,7 +32,7 @@
 #    -r, --rename-only  Only rename files, without moving or copying
 #
 #  Requirements:
-#  - Python Version: 3.1 or later
+#  - Python Version: 3.3 or later
 #
 #  Notes:
 #  - Use with caution as it can significantly modify directory contents.

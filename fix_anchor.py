@@ -41,10 +41,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Requirements:
-#  - Python Version: 3.1 or later
-#  - Standard library only
-#
 #  Usage:
 #      fix_anchor.py INPUT [OUTPUT]
 #      fix_anchor.py -h | --help
@@ -59,6 +55,10 @@
 #      Display this help and exit.
 #  - -v, --version
 #      Display version information and exit.
+#
+#  Requirements:
+#  - Python Version: 3.1 or later
+#  - Standard library only
 #
 #  Version History:
 #  v1.1 2026-07-24

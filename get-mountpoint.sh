@@ -18,9 +18,6 @@
 #    - Handles MOUNTPOINTS column used by newer util-linux.
 #    - Deterministic exit codes for robust scripting.
 #
-#  Requirements:
-#    - Linux, findmnt(8), lsblk(8), awk(1), mktemp(1)
-#
 #  Notes:
 #    - Designed for Linux systems with lsblk(8) and findmnt(8) available.
 #    - Selection policy for multiple candidates:
@@ -49,6 +46,9 @@
 #  3. Path is not a block device.
 #  126. Required command is not executable.
 #  127. Required command is not installed.
+#
+#  Requirements:
+#    - Linux, findmnt(8), lsblk(8), awk(1), mktemp(1)
 #
 #  Version History:
 #  v1.3 2026-07-11

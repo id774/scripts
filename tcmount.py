@@ -65,6 +65,9 @@
 #                     If a positional target is provided (e.g., disk3), it mounts to ~/mnt/<target>.
 #                     Example: tcmount.py -e sde disk3
 #
+#  Note: -v is reserved for --veracrypt here, and --version reports the installed
+#  TrueCrypt or VeraCrypt versions, so it requires either tool to be present.
+#
 #  Requirements:
 #  - Python Version: 3.1 or later
 #
