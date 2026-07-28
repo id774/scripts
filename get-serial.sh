@@ -13,9 +13,6 @@
 #    - Output: the serial number only (no extra decoration) on success.
 #    - Errors: messages to stderr and deterministic exit codes.
 #
-#  Requirements:
-#    - Linux, udevadm(8), lsblk(8), sed(1), head(1), awk(1)
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
@@ -35,6 +32,9 @@
 #  4. Serial number could not be determined.
 #  126. Required command is not executable.
 #  127. Required command is not installed.
+#
+#  Requirements:
+#    - Linux, udevadm(8), lsblk(8), sed(1), head(1), awk(1)
 #
 #  Version History:
 #  v1.3 2026-07-11

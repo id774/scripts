@@ -35,11 +35,6 @@
 #      requires the availability of chmod and is safe to run repeatedly because
 #      the operation is idempotent.
 #
-#  Requirements:
-#    - Linux system with: sudo, awk, uname, cp, rm, chmod, mktemp, curl, gpg, tee, apt, grep, mkdir, dpkg
-#    - Network connectivity to dl.google.com
-#    - Sudo privilege for system modifications
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
@@ -47,6 +42,11 @@
 #
 #  Usage:
 #      ./install_google_chrome.sh
+#
+#  Requirements:
+#    - Linux system with: sudo, awk, uname, cp, rm, chmod, mktemp, curl, gpg, tee, apt, grep, mkdir, dpkg
+#    - Network connectivity to dl.google.com
+#    - Sudo privilege for system modifications
 #
 #  Version History:
 #  v1.2 2026-07-11

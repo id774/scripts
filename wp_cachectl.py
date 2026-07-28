@@ -187,7 +187,7 @@ def log_warn(msg):
 
 def log_error(msg):
     """Print an error message to stderr."""
-    print("[EROR] %s" % msg, file=sys.stderr)
+    print("[ERROR] %s" % msg, file=sys.stderr)
 
 
 def die(code, msg):

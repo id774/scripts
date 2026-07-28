@@ -23,10 +23,6 @@
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
 #
-#  Requirements:
-#  - Python Version: 3.1 or later
-#  - Standard library only
-#
 #  Usage:
 #  format_html.py [OPTIONS] INPUT [OUTPUT]
 #
@@ -37,6 +33,10 @@
 #      Display usage information and exit.
 #  -v, --version
 #      Display version information and exit.
+#
+#  Requirements:
+#  - Python Version: 3.1 or later
+#  - Standard library only
 #
 #  Version History:
 #  v1.2 2026-06-18

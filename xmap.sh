@@ -15,12 +15,12 @@
 #  Usage:
 #      xmap.sh
 #
-#  Requirements:
-#    - xmodmap(1) installed
-#
 #  Options:
 #    -h, --help       Show this help (prints the header block)
 #    -v, --version    Show the version (prints the header block)
+#
+#  Requirements:
+#    - xmodmap(1) installed
 #
 #  Version History:
 #  v1.1 2026-07-11
