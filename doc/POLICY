@@ -92,7 +92,9 @@ or additions to this common policy, in order to avoid redundancy.
 - "Test Cases" must be defined only in dedicated test code (e.g., test/, spec/).
 - Documentation must be updated in sync with behavior changes.
 
-#### When to Bump the Version
+#### When to Bump an Executable Version
+- The following rules apply to the version history in each executable's structured header.
+- Repository release versions and Git tags follow the separate rules below.
 - Do not bump the version mechanically every time a file is touched. Decide
   based on the nature of the change:
   - Documentation-only changes (comments, help text, README/POLICY/VERSIONS
@@ -107,13 +109,18 @@ or additions to this common policy, in order to avoid redundancy.
     a new change. Classify that entry as version-only or as containing real
     changes based on what the entry actually contains, not on the date edit.
 
-#### Version Numbering
+#### Executable Version Numbering
 - Versions use a two-level `major.minor` scheme.
 - When incrementing `minor` would reach `10`, roll over instead: increment
   `major` by 1 and reset `minor` to `0` (e.g. `v0.9` -> `v1.0`,
   `v1.9` -> `v2.0`, `v2.9` -> `v3.0`).
 - Do not continue `minor` past `9` as in standard semantic versioning
   (e.g. do not use `v1.10`, `v1.11`, ...).
+
+#### Repository Versioning
+- Repository release versions are independent of individual executable versions.
+- Record repository release versions in `doc/VERSIONS` and use the same versions for Git tags.
+- Repository release versions may use a three-level `major.minor.patch` scheme.
 
 #### doc/VERSIONS Structure
 - `doc/VERSIONS` must read as a version-level summary of overall changes, not
