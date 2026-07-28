@@ -183,6 +183,8 @@ log_info_time() {
 ```
 
 - Do not write timestamped progress logs by combining `echo -n` and `date` directly.
+- Exceptionally, the fixed job start and end banners in `cron/bin` scripts keep that form,
+  since they frame the whole job rather than report progress within it.
 - Do not store the timestamp in a global variable for reuse across multiple log messages.
 - The timestamp must be evaluated each time the helper is called.
 - Use `log_info_time` only where timing context is operationally useful.
@@ -203,8 +205,9 @@ log_info_time() {
 - Backward compatibility down to Python 3.1 is maintained on a best-effort basis and must not break existing behavior intentionally.
 - If compatible with general Python 3.x, documentation must state:
   `Python Version: 3.1 or later`
-- Only when strictly required, state:
-  `Python Version: 3.6+`
+- When a required feature raises the minimum, state that version instead,
+  using the same form (e.g. `Python Version: 3.2 or later`).
+- Do not state a minimum higher than the code actually requires.
 - Avoid features that reduce backward compatibility unless guarded:
   - f-strings, `subprocess.run`, `subprocess.DEVNULL`
   - `async` / `await`, `yield from`, `asyncio`

@@ -16,10 +16,6 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Version History:
-#  v1.1 2026-07-26
-#       Added exact time-boundary cases, malformed input cases,
-#       ignore-list resolution outside the working directory, and a
-#       fixture-based end-to-end assertion.
 #  v1.0 2026-07-26
 #       Initial test implementation.
 #

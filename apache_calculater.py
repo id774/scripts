@@ -31,9 +31,6 @@
 #      Only explicitly specified log files are processed.
 #      Rotated logs are not included automatically; specify them explicitly if needed.
 #
-#  The script ignores IPs listed in /etc/cron.config/apache_ignore.list
-#  if the file exists. You can customize it as needed.
-#
 #  Requirements:
 #  - Python Version: 3.1 or later
 #

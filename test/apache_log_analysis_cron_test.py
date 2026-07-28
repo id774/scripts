@@ -21,10 +21,6 @@
 #    - Exits non-zero when a helper is missing, while running the others.
 #
 #  Version History:
-#  v1.1 2026-07-26
-#       Detach the wrapper from the caller's terminal so its cron-only
-#       check passes when tests run from an interactive shell, and report
-#       its stderr when the job log is missing.
 #  v1.0 2026-07-26
 #       Initial release.
 #

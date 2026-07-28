@@ -8,41 +8,31 @@
 #  logs) to refine simple "HTTP 200 on an article URL" counting into
 #  three distinct, non-interchangeable metrics:
 #
-#    - Candidate page views:   GET + HTTP 200 on an article URL, after
-#                               excluding empty/bot User-Agent strings.
-#                               (Equivalent in spirit to the legacy
-#                               "Blog Entry Access" count.)
-#    - Asset-confirmed views:  Candidate page views for which at least
-#                               one WordPress theme/plugin/upload/core
-#                               asset request from the same IP address
-#                               and User-Agent, with a Referer pointing
-#                               back at the article, was observed within
-#                               a short time window. This is additional
-#                               evidence that a real browser rendered the
-#                               page, not a stricter replacement count.
-#    - Estimated sessions:     Candidate page views for the same IP
-#                               address, User-Agent and article URL are
-#                               collapsed into a single session when they
-#                               occur within a configurable idle timeout
-#                               of each other.
+#    - Candidate page views:  GET + HTTP 200 on an article URL, after
+#                             excluding empty and bot User-Agent strings.
+#    - Asset-confirmed views: Candidate page views for which a WordPress
+#                             theme/plugin/upload/core asset request from
+#                             the same IP address and User-Agent, with a
+#                             Referer pointing back at the article, was
+#                             observed within a short time window.
+#    - Estimated sessions:    Candidate page views for the same IP
+#                             address, User-Agent and article URL,
+#                             collapsed into one session within an idle
+#                             timeout.
 #
-#  Asset requests are used only as a confirmation signal and are never
-#  added to any page-view count. Because browser caching, Service
-#  Workers, CDNs, Referrer-Policy restrictions and aborted page loads
-#  can all suppress the asset requests of a genuine page view, the
-#  asset-confirmed count is a lower-bound estimate, not an exact human
-#  view count. None of the three metrics should be presented as an
-#  exact human visitor count.
+#  Asset requests confirm rendering only and are never added to any
+#  page-view count. Browser caching, Service Workers, CDNs,
+#  Referrer-Policy restrictions and aborted page loads all suppress them,
+#  so the asset-confirmed count is a lower bound. None of the three
+#  metrics is an exact human visitor count.
 #
-#  This script is fully standalone, following the same convention as
+#  This script is standalone, following the same convention as
 #  apache_calculater.py: it performs its own log reading (including gzip
-#  support), its own apache_ignore.list lookup, and its own bot User-Agent
-#  and article/asset pattern matching. It does not call, import, or share
-#  any state with apache_log_analysis.sh or apache_calculater.py, and
-#  neither of those scripts calls it either. Each tool is deployed to
-#  /etc/cron.exec by installer/install_apache_log_analysis.sh and invoked
-#  independently by cron/bin/apache_log_analysis, exactly like the other
-#  Apache log analysis scripts in this repository.
+#  support), apache_ignore.list lookup, and bot User-Agent and
+#  article/asset pattern matching. It neither calls nor is called by
+#  apache_log_analysis.sh or apache_calculater.py. All three are deployed
+#  to /etc/cron.exec by installer/install_apache_log_analysis.sh and
+#  invoked independently by cron/bin/apache_log_analysis.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -61,71 +51,26 @@
 #      Rotated logs are not included automatically; specify them explicitly if needed.
 #
 #  Output:
-#      This script prints exactly three sections to stdout, each a
-#      "[Section Name]" header followed by zero or more "COUNT PATH"
-#      lines (one line per distinct article URL, sorted by publish date
-#      then entry id, both descending). These are the only three section
-#      headers this script ever prints, and their literal text is:
+#      Exactly three sections are printed to stdout, each a
+#      "[Section Name]" header followed by "COUNT PATH" lines, one per
+#      article URL, sorted by publish date then entry id, both descending:
 #
-#      [Blog Entry Access]
-#          Candidate page view count per article: GET requests that
-#          returned HTTP 200 for that article URL, after excluding
-#          requests with an empty or "-" User-Agent, or one matching
-#          BOT_UA_RE below. This is the "candidate page views" metric
-#          described above, and is equivalent in spirit to the legacy
-#          Blog Entry Access count that apache_log_analysis.sh itself
-#          used to compute before this script existed.
+#          [Blog Entry Access]                    candidate page views
+#          [Blog Entry Access (Asset Confirmed)]  asset-confirmed subset
+#          [Blog Entry Sessions (Estimated)]      estimated sessions
 #
-#      [Blog Entry Access (Asset Confirmed)]
-#          Subset of the [Blog Entry Access] count above: candidate page
-#          views for which a matching WordPress asset request (same IP
-#          address, same User-Agent, Referer pointing back at the same
-#          article, within the configured time window) was also observed.
-#          This is the "asset-confirmed views" metric described above: a
-#          lower-bound estimate, never an exact human view count.
-#
-#      [Blog Entry Sessions (Estimated)]
-#          Estimated session count per article: candidate page views
-#          (the same set counted in [Blog Entry Access], regardless of
-#          asset confirmation) sharing the same IP address, User-Agent
-#          and article URL are collapsed into one session whenever they
-#          occur within BLOG_SESSION_TIMEOUT_SECONDS of the previous one
-#          for that same IP/User-Agent/article combination. This is the
-#          "estimated sessions" metric described above.
-#
-#      When this script is invoked by cron/bin/apache_log_analysis, the
-#      three sections above are preceded in the combined joblog by a
-#      line such as:
-#
-#          [Blog Entry Metrics: Current Log]
-#          [Blog Entry Metrics: Current + Rotated Logs]
-#
-#      That line is NOT printed by this script; grep this file for
-#      "Blog Entry Metrics" and it will not be found. It is a context
-#      label that cron/bin/apache_log_analysis itself prints immediately
-#      before invoking this script, stating only which log file(s) were
-#      passed as arguments for that run (the current SSL access log
-#      alone, or the current log plus the latest rotated log). It carries
-#      no information about, and does not change the meaning of, the
-#      three sections above, which are identical regardless of which log
-#      files were supplied.
+#      The "[Blog Entry Metrics: ...]" line preceding them in the cron
+#      joblog is printed by cron/bin/apache_log_analysis, not by this
+#      script, and records only which log files that run was given.
 #
 #  The script ignores IPs listed in apache_ignore.list, searched relative
 #  to this script's own directory, then /etc/cron.config (search order:
 #  <script_dir>/etc/, <script_dir>/../etc/, /etc/cron.config).
 #
 #  Requirements:
-#  - Python Version: 3.2 or later (uses timezone-aware datetime parsing)
+#  - Python Version: 3.2 or later
 #
 #  Version History:
-#  v1.2 2026-07-26
-#       Drop comment references to an unavailable requirements document.
-#  v1.1 2026-07-26
-#       Resolve the ignore list's local etc/ candidates relative to this
-#       script's own directory instead of the current working directory,
-#       matching apache_log_analysis.sh's dirname "$0"-based resolution
-#       so both tools agree on which apache_ignore.list to use regardless
-#       of where the script is invoked from.
 #  v1.0 2026-07-26
 #       Initial release. A standalone companion to apache_log_analysis.sh
 #       (deployed and invoked independently, not called by it) that
