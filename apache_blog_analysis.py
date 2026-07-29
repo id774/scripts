@@ -55,9 +55,31 @@
 #      "[Section Name]" header followed by "COUNT PATH" lines, one per
 #      article URL, sorted by publish date then entry id, both descending:
 #
-#          [Blog Entry Access]                    candidate page views
-#          [Blog Entry Access (Asset Confirmed)]  asset-confirmed subset
-#          [Blog Entry Sessions (Estimated)]      estimated sessions
+#      [Blog Entry Access]
+#          Candidate page view count per article: GET requests that
+#          returned HTTP 200 for that article URL, after excluding
+#          requests with an empty or "-" User-Agent, or one matching
+#          BOT_UA_RE below. This is the "candidate page views" metric
+#          described above, and is equivalent in spirit to the legacy
+#          Blog Entry Access count that apache_log_analysis.sh itself
+#          used to compute before this script existed.
+#
+#      [Blog Entry Access (Asset Confirmed)]
+#          Subset of the [Blog Entry Access] count above: candidate page
+#          views for which a matching WordPress asset request (same IP
+#          address, same User-Agent, Referer pointing back at the same
+#          article, within the configured time window) was also observed.
+#          This is the "asset-confirmed views" metric described above: a
+#          lower-bound estimate, never an exact human view count.
+#
+#      [Blog Entry Sessions (Estimated)]
+#          Estimated session count per article: candidate page views
+#          (the same set counted in [Blog Entry Access], regardless of
+#          asset confirmation) sharing the same IP address, User-Agent
+#          and article URL are collapsed into one session whenever they
+#          occur within BLOG_SESSION_TIMEOUT_SECONDS of the previous one
+#          for that same IP/User-Agent/article combination. This is the
+#          "estimated sessions" metric described above.
 #
 #      The "[Blog Entry Metrics: ...]" line preceding them in the cron
 #      joblog is printed by cron/bin/apache_log_analysis, not by this
