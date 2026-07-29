@@ -33,7 +33,6 @@ root ALL=(ALL:ALL) ALL
 # Allow members of group sudo to execute any command
 %sudo ALL=(ALL:ALL) ALL
 %sudo ALL=(root) NOPASSWD: SHUTDOWN, PROCESSES, NETWORKING, IPTABLES, POSTMASTER, SMARTTOOLS
-%munin ALL=(root) NOPASSWD: IPTABLES
 
 # See sudoers(5) for more information on "#include" directives:
 
