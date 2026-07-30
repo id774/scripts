@@ -1,5 +1,5 @@
 # .zshrc
-# Last Change: 19-Jul-2026.
+# Last Change: 30-Jul-2026.
 # Maintainer:  id774 <idnanashi@gmail.com>
 
 main() {
@@ -28,4 +28,8 @@ main() {
 main
 unset -f main
 unset ZSH_SEARCH_PATH
-test -f "$HOME/.zshrc_local" && . "$HOME/.zshrc_local"
+# Use if instead of && so a missing file does not leave a non-zero status,
+# which the prompt would report as a failed command.
+if [ -f "$HOME/.zshrc_local" ]; then
+    . "$HOME/.zshrc_local"
+fi
