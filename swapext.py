@@ -27,7 +27,8 @@
 #
 #  Version History:
 #  v3.0 2026-07-06
-#       Changed default scope to target directory only, added -r option to recurse into subdirectories.
+#       Change the default scope to the target directory only, and add the -r
+#       option to recurse into subdirectories.
 #  v2.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v2.2 2025-06-30

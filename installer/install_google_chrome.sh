@@ -44,7 +44,9 @@
 #      ./install_google_chrome.sh
 #
 #  Requirements:
-#    - Linux system with: sudo, awk, uname, cp, rm, chmod, mktemp, curl, gpg, tee, apt, grep, mkdir, dpkg
+#    - Linux
+#    - Commands: sudo, awk, uname, cp, rm, chmod, mktemp, curl, gpg, tee, apt,
+#      grep, mkdir, dpkg
 #    - Network connectivity to dl.google.com
 #    - Sudo privilege for system modifications
 #

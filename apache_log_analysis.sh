@@ -59,7 +59,8 @@
 #  v2.2 2025-08-27
 #       Limit Daily Access aggregation to last year and add gdate fallback with command checks.
 #  v2.1 2025-07-30
-#       Search apache_ignore.list in /etc/cron.config first, before fallback to local etc/ paths.
+#       Add /etc/cron.config as an apache_ignore.list location, searched after
+#       the local etc/ paths.
 #  v2.0 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.9 2025-04-13

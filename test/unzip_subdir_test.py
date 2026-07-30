@@ -18,7 +18,7 @@
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - In dry-run mode, lists .zip files found in the target directory without creating directories or executing unzip.
 #    - Skips extraction (and listing in dry-run) when the target subdirectory already exists.
-#    - In execution mode (non–dry-run), creates a subdirectory per .zip file and extracts archive contents with zipfile.
+#    - In execution mode, creates a subdirectory per .zip file and extracts it with zipfile.
 #    - Rejects archive entries that would be written outside the target directory.
 #    - Extracts .zip files discovered in nested subdirectories using the discovered archive path.
 #    - Continues after a failed archive and reports the failure count.
@@ -26,12 +26,12 @@
 #
 #  Version History:
 #  v1.4 2026-07-26
-#       Added coverage for failure counting and non-zero CLI exit status,
-#       and switched the help test to sys.executable.
+#       Add coverage for failure counting and non-zero CLI exit status,
+#       and switch the help test to sys.executable.
 #  v1.3 2026-07-23
-#       Added coverage for cleanup after extraction failures.
+#       Add coverage for cleanup after extraction failures.
 #  v1.2 2026-07-14
-#       Documented and tested zipfile extraction, nested paths, and unsafe member rejection.
+#       Document and test zipfile extraction, nested paths, and unsafe member rejection.
 #  v1.1 2025-07-08
 #       Fixed compatibility issues with Python 3.4.
 #  v1.0 2025-07-07

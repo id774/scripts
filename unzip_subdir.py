@@ -36,10 +36,10 @@
 #  v2.0 2026-07-26
 #       Return exit status 1 when any archive fails to extract.
 #  v1.8 2026-07-23
-#       Removed incomplete target directories after extraction failures.
+#       Remove incomplete target directories after extraction failures.
 #  v1.7 2026-07-14
-#       Replaced shell unzip execution with zipfile extraction, fixed nested
-#       archive paths, and rejected unsafe zip member traversal.
+#       Replace shell unzip execution with zipfile extraction, fix nested
+#       archive paths, and reject unsafe zip member traversal.
 #  v1.6 2025-07-08
 #       Fixed compatibility issues with Python 3.4.
 #  v1.5 2025-07-01
@@ -88,8 +88,9 @@ def usage():
         sys.exit(1)
     sys.exit(0)
 
+
 def validate_members(archive, target_dir):
-    """Reject ZipFile members that would escape target_dir."""
+    """ Reject ZipFile members that would escape target_dir. """
     target_abs = os.path.abspath(target_dir)
     for member in archive.infolist():
         destination = os.path.abspath(os.path.join(target_dir, member.filename))
@@ -98,7 +99,7 @@ def validate_members(archive, target_dir):
 
 
 def safe_extract(archive, target_dir):
-    """Extract a validated ZipFile into target_dir."""
+    """ Extract a validated ZipFile into target_dir. """
     os.mkdir(target_dir)
     try:
         archive.extractall(target_dir)
@@ -108,7 +109,7 @@ def safe_extract(archive, target_dir):
 
 
 def unzip_files(args, dry_run=False):
-    """Extract every archive found and return the number of failures."""
+    """ Extract every archive found and return the number of failures. """
     failures = 0
 
     for root, dirs, files in os.walk(args[0]):
