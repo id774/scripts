@@ -53,7 +53,7 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
-#  v2.8 2026-07-12
+#  v3.0 2026-07-12
 #       Create the destination yearly directory before copying files so that
 #       the first run of a new year no longer fails with a missing directory.
 #  v2.7 2026-07-11

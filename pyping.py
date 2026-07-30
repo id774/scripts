@@ -35,19 +35,19 @@
 #  - This script may take time to complete based on the range specified.
 #
 #  Version History:
-#  v1.5 2026-07-14
+#  v2.0 2026-07-14
 #       Added range validation and robust handling when ping command cannot be executed.
 #  v1.4 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2025-01-06
-#      Added `--ordered` option with shorthand `-o` for sorted output.
+#       Added `--ordered` option with shorthand `-o` for sorted output.
 #  v1.1 2024-01-15
-#      Suppressed standard error output from ping command.
-#      Improved command line argument interface using argparse.
+#       Suppressed standard error output from ping command.
+#       Improved command line argument interface using argparse.
 #  v1.0 2024-01-12
-#      Initial release. Python version of the rubyping.rb script.
+#       Initial release. Python version of the rubyping.rb script.
 #
 ########################################################################
 

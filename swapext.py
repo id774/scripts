@@ -26,7 +26,7 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
-#  v2.4 2026-07-06
+#  v3.0 2026-07-06
 #       Changed default scope to target directory only, added -r option to recurse into subdirectories.
 #  v2.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.

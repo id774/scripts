@@ -33,7 +33,7 @@
 #    when at least one archive failed to extract.
 #
 #  Version History:
-#  v1.9 2026-07-26
+#  v2.0 2026-07-26
 #       Return exit status 1 when any archive fails to extract.
 #  v1.8 2026-07-23
 #       Removed incomplete target directories after extraction failures.

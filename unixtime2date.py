@@ -23,7 +23,7 @@
 #  - Python Version: 3.3 or later
 #
 #  Version History:
-#  v1.6 2026-07-14
+#  v2.0 2026-07-14
 #       Use an explicit Japan Standard Time timezone instead of environment-dependent local time.
 #  v1.5 2025-07-01
 #       Standardized termination behavior for consistent script execution.

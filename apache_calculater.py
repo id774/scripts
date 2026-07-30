@@ -35,7 +35,7 @@
 #  - Python Version: 3.3 or later
 #
 #  Version History:
-#  v2.4 2026-07-26
+#  v3.0 2026-07-26
 #       Resolve the ignore list's local etc/ candidates relative to this
 #       script's own directory instead of the current working directory,
 #       matching apache_log_analysis.sh's dirname "$0"-based resolution

@@ -23,7 +23,7 @@
 #      45 3 * * * root /path/to/apache_log_analysis
 #
 #  Version History:
-#  v1.8 2026-07-26
+#  v2.0 2026-07-26
 #       Invoke apache_blog_analysis.py as an independent third helper
 #       script, alongside apache_log_analysis.sh and apache_calculater.py,
 #       to report asset-confirmed blog page views and estimated sessions.

@@ -24,7 +24,7 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
-#  v1.6 2026-07-11
+#  v2.0 2026-07-11
 #       Fixed a bug where only the first matched file was processed; all
 #       glob-matched files across all arguments are now processed. Added a
 #       main() entry point so the script returns status instead of exiting

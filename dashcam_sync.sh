@@ -36,7 +36,7 @@
 #  5. One or more configuration variables not set.
 #
 #  Version History:
-#  v1.9 2026-07-11
+#  v2.0 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
 #  v1.8 2026-07-08
