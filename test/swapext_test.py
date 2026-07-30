@@ -43,9 +43,9 @@
 #
 #  Version History:
 #  v2.2 2026-07-06
-#       Added test cases for the -r option: non-recursive default behavior,
+#       Add test cases for the -r option: non-recursive default behavior,
 #       iter_target_files direct coverage, and CLI-level recursive vs non-recursive checks.
-#       Updated existing swap_extensions calls for the new recursive argument.
+#       Update existing swap_extensions calls for the new recursive argument.
 #  v2.1 2025-06-30
 #       Added unit tests for argument validation in swapext.validate_args.
 #       Covers same extension, missing dot, unreadable/unwritable or missing directory.

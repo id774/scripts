@@ -27,7 +27,7 @@
 #
 #  Version History:
 #  v1.2 2026-07-14
-#       Added validation tests for invalid ranges and unavailable ping command handling.
+#       Add validation tests for invalid ranges and an unavailable ping command.
 #  v1.1 2025-01-06
 #       Added test case for the --ordered option to verify sorted output.
 #  v1.0 2024-01-12

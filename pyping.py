@@ -36,7 +36,7 @@
 #
 #  Version History:
 #  v2.0 2026-07-14
-#       Added range validation and robust handling when ping command cannot be executed.
+#       Add range validation and handle a ping command that cannot be executed.
 #  v1.4 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23
@@ -100,7 +100,7 @@ def ping(ip, results):
 
 
 def validate_range(start_ip, end_ip):
-    """Validate the host-number range used for the ping sweep."""
+    """ Validate the host-number range used for the ping sweep. """
     if start_ip < 0 or end_ip > 255:
         print("[ERROR] IP range values must be between 0 and 255.", file=sys.stderr)
         return False

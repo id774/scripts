@@ -25,8 +25,8 @@
 #
 #  Version History:
 #  v2.0 2026-07-11
-#       Fixed a bug where only the first matched file was processed; all
-#       glob-matched files across all arguments are now processed. Added a
+#       Fix a bug where only the first matched file was processed; all
+#       glob-matched files across all arguments are now processed. Add a
 #       main() entry point so the script returns status instead of exiting
 #       from within the processing loop.
 #  v1.5 2025-07-01

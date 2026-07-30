@@ -109,9 +109,9 @@
 #
 #  Version History:
 #  v3.2 2026-07-10
-#       Changed owner/group normalization to exclude symbolic links by default,
+#       Change owner/group normalization to exclude symbolic links by default,
 #       since chown without -h dereferences the link and unexpectedly changes
-#       the ownership of its target instead of the link itself. Added
+#       the ownership of its target instead of the link itself. Add
 #       --chown-symlinks to opt in to normalizing symbolic link ownership with
 #       chown -h. chown is now always invoked with -h, including when symbolic
 #       links are excluded, as a defense against a matched path being replaced
@@ -337,7 +337,7 @@ def build_chown_filter(options):
 
 
 def build_chown_type_filter(options):
-    """ Build the find predicate that excludes symbolic links unless --chown-symlinks is specified. """
+    """ Build the find predicate excluding symbolic links unless --chown-symlinks is set. """
     if options.chown_symlinks:
         return []
     return ['!', '-type', 'l']

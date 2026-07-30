@@ -26,7 +26,7 @@
 #       png_info.py as a subprocess, for portability to systems without a
 #       'python' executable on PATH.
 #  v1.2 2026-07-11
-#       Added tests covering multi-file processing and partial-failure exit status.
+#       Add tests covering multi-file processing and partial-failure exit status.
 #  v1.1 2024-01-30
 #       Updated test cases to handle multiple reads with mock_open.
 #  v1.0 2024-01-11

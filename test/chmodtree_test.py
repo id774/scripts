@@ -49,7 +49,7 @@
 #
 #  Version History:
 #  v1.5 2026-07-10
-#       Expanded tests for chmodtree.py v3.2 default exclusion of symbolic
+#       Expand tests for chmodtree.py v3.2 default exclusion of symbolic
 #       links from owner/group normalization, the --chown-symlinks opt-in,
 #       and the always-on chown -h dereference-safe invocation.
 #  v1.4 2026-06-14
