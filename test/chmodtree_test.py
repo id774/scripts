@@ -427,7 +427,7 @@ class TestChmodTree(unittest.TestCase):
     @patch('chmodtree.sys.platform', 'linux')
     @patch('chmodtree.os_exec')
     def test_chown_user_and_group_command(self, mock_os_exec):
-        """ Test user/group normalization uses chown -h, excludes symlinks, and applies mismatch filters. """
+        """ Test normalization uses chown -h, excludes symlinks, and applies mismatch filters. """
         mock_os_exec.return_value = 0
         options = self.make_options(
             sudo=False,
@@ -472,7 +472,7 @@ class TestChmodTree(unittest.TestCase):
 
     @patch('chmodtree.os_exec')
     def test_force_chown_command(self, mock_os_exec):
-        """ Test --force applies chown to all matched entries but still excludes symlinks by default. """
+        """ Test --force applies chown to all entries but still excludes symlinks by default. """
         mock_os_exec.return_value = 0
         options = self.make_options(
             sudo=False,
@@ -494,7 +494,7 @@ class TestChmodTree(unittest.TestCase):
 
     @patch('chmodtree.os_exec')
     def test_chown_symlinks_option_includes_symlinks_with_dereference_safe_chown(self, mock_os_exec):
-        """ Test --chown-symlinks includes symbolic links and still uses chown -h to change the link itself. """
+        """ Test --chown-symlinks includes symlinks and uses chown -h on the link itself. """
         mock_os_exec.return_value = 0
         options = self.make_options(
             sudo=False,
@@ -516,7 +516,7 @@ class TestChmodTree(unittest.TestCase):
 
     @patch('chmodtree.os_exec')
     def test_force_and_chown_symlinks_combined(self, mock_os_exec):
-        """ Test --force and --chown-symlinks together apply chown -h to all entries including symlinks. """
+        """ Test --force and --chown-symlinks apply chown -h to all entries including symlinks. """
         mock_os_exec.return_value = 0
         options = self.make_options(
             sudo=False,
