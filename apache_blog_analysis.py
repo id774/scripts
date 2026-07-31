@@ -71,6 +71,11 @@
 #          article, within the configured time window) was also observed.
 #          This is the "asset-confirmed views" metric described above: a
 #          lower-bound estimate, never an exact human view count.
+#          Asset paths are recognized wherever the WordPress marker
+#          directory appears, so a subdirectory install (WP_SITEURL such
+#          as https://blog.example.com/entry, serving its assets from
+#          /entry/wp-content/ and /entry/wp-includes/) is handled the same
+#          way as one at the document root.
 #
 #      [Blog Entry Sessions (Estimated)]
 #          Estimated session count per article: candidate page views
@@ -93,6 +98,13 @@
 #  - Python Version: 3.3 or later
 #
 #  Version History:
+#  v1.1 2026-07-31
+#       Recognize WordPress assets served from a subdirectory install.
+#       The asset path patterns were anchored at the document root, so a
+#       site with WP_SITEURL under a prefix (for example /entry) never
+#       matched any asset and [Blog Entry Access (Asset Confirmed)] was
+#       always empty, even though article paths were already matched with
+#       an arbitrary leading path.
 #  v1.0 2026-07-26
 #       Initial release. A standalone companion to apache_log_analysis.sh
 #       (deployed and invoked independently, not called by it) that
@@ -114,9 +126,14 @@ from urllib.parse import urlsplit
 # Configuration
 # ----------------------------------------------------------------------
 
-# WordPress paths treated as display-relevant static assets.
+# WordPress paths treated as display-relevant static assets. The marker
+# directory is matched anywhere in the path, not only at the document root,
+# because WordPress is commonly installed in a subdirectory (WP_SITEURL such
+# as https://blog.example.com/entry), which serves every asset below that
+# prefix (/entry/wp-content/..., /entry/wp-includes/...). This mirrors
+# ARTICLE_TAIL_RE, which already allows any leading path.
 WORDPRESS_ASSET_PATH_RE = re.compile(
-    r'^/(wp-content/(themes|plugins|uploads)/|wp-includes/)')
+    r'(^|/)(wp-content/(themes|plugins|uploads)/|wp-includes/)')
 
 # Extensions treated as display-relevant static assets (matched after the
 # query string has already been stripped from the request path).
@@ -125,9 +142,10 @@ WORDPRESS_ASSET_EXTENSION_RE = re.compile(
     re.IGNORECASE)
 
 # Paths that must never be treated as a display-confirming asset, even if
-# they happen to fall under a WordPress path prefix above.
+# they happen to fall under a WordPress path prefix above. Matched anywhere
+# in the path for the same subdirectory-install reason.
 WORDPRESS_ASSET_EXCLUDE_PATH_RE = re.compile(
-    r'^/(wp-cron\.php|wp-json/|xmlrpc\.php|wp-admin/admin-ajax\.php)')
+    r'(^|/)(wp-cron\.php|wp-json/|xmlrpc\.php|wp-admin/admin-ajax\.php)')
 
 # Trailing "/YYYY/MM/DD/NNNN/" article path, with any leading path allowed.
 ARTICLE_TAIL_RE = re.compile(r'(/[0-9]{4}/[0-9]{2}/[0-9]{2}/[0-9]+/)$')
@@ -276,9 +294,9 @@ def is_wordpress_asset_path(path):
     """ Determine whether a (query-stripped) path is a WordPress display asset. """
     if not path:
         return False
-    if WORDPRESS_ASSET_EXCLUDE_PATH_RE.match(path):
+    if WORDPRESS_ASSET_EXCLUDE_PATH_RE.search(path):
         return False
-    if not WORDPRESS_ASSET_PATH_RE.match(path):
+    if not WORDPRESS_ASSET_PATH_RE.search(path):
         return False
     return WORDPRESS_ASSET_EXTENSION_RE.search(path) is not None
 
