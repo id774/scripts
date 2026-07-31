@@ -17,6 +17,8 @@
 #
 #  Test Cases:
 #    - Confirm a candidate page view when a matching asset request follows it.
+#    - Confirm assets served from a subdirectory WordPress install.
+#    - Reject a lookalike path that only contains the asset marker as a substring.
 #    - Confirm a candidate page view from a 304 asset request.
 #    - Skip confirmation when the asset Referer, User-Agent or IP differs.
 #    - Skip confirmation when the asset falls outside the time window.
@@ -40,6 +42,10 @@
 #    - Show usage information and fail on a missing log file.
 #
 #  Version History:
+#  v1.1 2026-07-31
+#       Cover subdirectory WordPress installs, whose assets are served
+#       below the WP_SITEURL prefix, and align the fixture log with that
+#       layout.
 #  v1.0 2026-07-26
 #       Initial test implementation.
 #
@@ -111,6 +117,34 @@ class TestApacheBlogAnalysis(unittest.TestCase):
         self.assertEqual(self.counts_for_section(out, "Blog Entry Access"), {"/2026/07/26/5128/": 1})
         self.assertEqual(self.counts_for_section(out, "Blog Entry Access (Asset Confirmed)"), {"/2026/07/26/5128/": 1})
         self.assertEqual(self.counts_for_section(out, "Blog Entry Sessions (Estimated)"), {"/2026/07/26/5128/": 1})
+
+    # -- TC-001b: WordPress installed in a subdirectory (WP_SITEURL prefix) --
+    def test_subdirectory_install_assets_confirm(self):
+        log = self.write_log([
+            '203.0.113.10 - - [26/Jul/2026:20:15:40 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" "Mozilla/5.0"',
+            '203.0.113.10 - - [26/Jul/2026:20:15:41 +0900] "GET /entry/wp-content/themes/x/style.css?ver=1.2 HTTP/1.1" 200 1200 "https://blog.example.com/entry/2026/07/26/5128/" "Mozilla/5.0"',
+        ])
+        out = self.run_and_capture([log])
+        self.assertEqual(self.counts_for_section(out, "Blog Entry Access (Asset Confirmed)"), {"/2026/07/26/5128/": 1})
+
+    # -- TC-001c: subdirectory install serving a wp-includes asset ----------
+    def test_subdirectory_install_wp_includes_asset_confirms(self):
+        log = self.write_log([
+            '203.0.113.10 - - [26/Jul/2026:20:15:40 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" "Mozilla/5.0"',
+            '203.0.113.10 - - [26/Jul/2026:20:15:41 +0900] "GET /entry/wp-includes/js/jquery/jquery.min.js HTTP/1.1" 304 0 "https://blog.example.com/entry/2026/07/26/5128/" "Mozilla/5.0"',
+        ])
+        out = self.run_and_capture([log])
+        self.assertEqual(self.counts_for_section(out, "Blog Entry Access (Asset Confirmed)"), {"/2026/07/26/5128/": 1})
+
+    # -- TC-001d: a lookalike path is not accepted as a WordPress asset -----
+    def test_lookalike_asset_path_does_not_confirm(self):
+        log = self.write_log([
+            '203.0.113.10 - - [26/Jul/2026:20:15:40 +0900] "GET /entry/2026/07/26/5128/ HTTP/1.1" 200 5000 "-" "Mozilla/5.0"',
+            '203.0.113.10 - - [26/Jul/2026:20:15:41 +0900] "GET /assets/notwp-content/themes/x/style.css HTTP/1.1" 200 1200 "https://blog.example.com/entry/2026/07/26/5128/" "Mozilla/5.0"',
+        ])
+        out = self.run_and_capture([log])
+        self.assertEqual(self.counts_for_section(out, "Blog Entry Access"), {"/2026/07/26/5128/": 1})
+        self.assertEqual(self.counts_for_section(out, "Blog Entry Access (Asset Confirmed)"), {})
 
     # -- TC-002: asset returned 304 still confirms --------------------------
     def test_asset_304_confirms(self):
