@@ -7,7 +7,10 @@ v2.0.1 (Release Date: TBD)
   Author/Source Code/License/Contact block and the optional sections.
 - Unify the header section that lists exit codes under the name Exit Status.
 - Record the repository layout, the license policy, and the etc/ configuration
-  file conventions in doc/POLICY.
+  file conventions in doc/POLICY, distinguishing sourced configuration files
+  from list files that are read line by line.
+- State in clamscan.conf and apache_ignore.list that they are lists rather than
+  shell code, and name clamscan.conf after its file name like the others.
 - Document check_commands as the standard dependency check, and note that a
   script with check_sudo need not also check sudo itself.
 - State that an incompatible change bumps the major version regardless of the

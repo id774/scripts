@@ -238,26 +238,43 @@ or additions to this common policy, in order to avoid redundancy.
   that a later change does not quietly undo it.
 
 ### Configuration Files
-- A script that needs site-specific values reads them from a configuration file
-  under `etc/`, named after the script (e.g. `etc/dashcam_sync.conf`), instead
-  of carrying them as constants.
-- Resolve the file relative to the script's own directory and fall back to the
-  parent's `etc/`, so that the script works both inside the repository and from
-  a deployed location: `$SCRIPT_DIR/etc/NAME.conf`, then
-  `$SCRIPT_DIR/../etc/NAME.conf`.
-- A missing configuration file, and a required variable left unset, are both
-  refused before any work starts, each with its own exit status and an
-  `[ERROR]` message naming what is missing.
-- A configuration file is sourced, not executed. It must be POSIX sh
-  compatible, must not carry a shebang, and must not be executable.
-- Each configuration file opens with the same header block used by scripts,
-  stating what sources it, a `Rules` section (blank lines are allowed, lines
-  starting with `#` are comments, POSIX sh compatible, no shebang), and a
-  `Variables` section naming every variable, what it decides, and whether it is
-  required.
+- A script that needs site-specific values reads them from a file under `etc/`,
+  named after the script (e.g. `etc/dashcam_sync.conf`), instead of carrying
+  them as constants.
+- A top-level script resolves the file relative to its own directory and falls
+  back to the parent's `etc/`, so that it works both inside the repository and
+  from a deployed location: `$SCRIPT_DIR/etc/NAME.conf`, then
+  `$SCRIPT_DIR/../etc/NAME.conf`. A `cron/bin/` job reads its deployed path
+  under `/etc/cron.config/` directly, since it only ever runs from
+  `/etc/cron.exec`.
+- A missing file, and a required value left unset, are both refused before any
+  work starts, each with its own exit status and an `[ERROR]` message naming
+  what is missing.
+- Every such file opens with the same header block used by scripts: a title
+  line naming the file, a sentence saying which script reads it and what it
+  decides, and a `Rules` section describing its format. It carries no shebang
+  and is not executable.
+- Two kinds exist, and the `Rules` section says which one the file is.
+
+#### Sourced Configuration Files
+- Sourced by the script, so the file must be POSIX sh compatible. Its `Rules`
+  section states that blank lines are allowed, that lines starting with `#` are
+  comments, that the file must be POSIX sh compatible, and that it carries no
+  shebang because it is sourced rather than executed.
+- A `Variables` section names every variable, what it decides, and whether it
+  is required. A file that also defines a function documents it under
+  `Functions`.
 - The variables a script requires are named in two places that must agree: the
   `Variables` section of the configuration file, and the header of the script
   that reads it.
+
+#### List Files
+- Read line by line rather than sourced, so the file is data and not shell
+  code: `etc/apache_ignore.list` and `cron/etc/clamscan.conf` are of this kind.
+- Its `Rules` section states that blank lines are ignored, that lines starting
+  with `#` are comments, that the file is read line by line rather than
+  sourced, and what one non-comment line means.
+- An `Examples` section shows the accepted line forms.
 
 ### Network Operations
 - Every outbound request carries an explicit timeout. An unattended run must
