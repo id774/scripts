@@ -42,7 +42,7 @@
 #  - Local backup directory must exist prior to running this script.
 #  - Remote sync is attempted only if the remote server is reachable.
 #
-#  Error Conditions:
+#  Exit Status:
 #  1. No argument provided.
 #  2. Instagram account directory does not exist.
 #  3. Local backup directory does not exist.

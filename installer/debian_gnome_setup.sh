@@ -36,7 +36,7 @@
 #      DISABLE_SERVICES: "yes" to apply service mask steps (default: yes)
 #      If xfce4-terminal is installed, this script installs its terminal profile.
 #
-#  Error Conditions:
+#  Exit Status:
 #  - If required commands are missing, execution is halted.
 #  - If DBus session is not available, execution is halted.
 #

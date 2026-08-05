@@ -34,7 +34,7 @@
 #  - Run this script with sufficient permissions to access source directories and write to the destination directory.
 #  - The permissions argument must be a 3-digit octal number. Any other format will result in an error.
 #
-#  Error Conditions:
+#  Exit Status:
 #  1. No matching files found to copy.
 #  2. Destination directory does not exist.
 #  5. Configuration file not found.

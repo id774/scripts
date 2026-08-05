@@ -99,7 +99,7 @@
 #    - Commands: sudo, awk, cp, cmp, grep, cat, rm, chown, chmod,
 #      mkdir, systemctl, uname
 #
-#  Error Conditions:
+#  Exit Status:
 #  0. Success.
 #  1. General failure. (OS check, sudo, file missing, awk failure, etc.)
 #  126. Required command(s) not executable.

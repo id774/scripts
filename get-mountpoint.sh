@@ -39,16 +39,16 @@
 #      get-mountpoint.sh /dev/sde
 #      => /            # when the deepest descendant mounts "/"
 #
-#  Error Conditions:
+#  Requirements:
+#    - Linux, findmnt(8), lsblk(8), awk(1), mktemp(1)
+#
+#  Exit Status:
 #  0. Success.
 #  1. General failure.
 #  2. Device not found or not mounted.
 #  3. Path is not a block device.
 #  126. Required command is not executable.
 #  127. Required command is not installed.
-#
-#  Requirements:
-#    - Linux, findmnt(8), lsblk(8), awk(1), mktemp(1)
 #
 #  Version History:
 #  v1.3 2026-07-11

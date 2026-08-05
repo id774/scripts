@@ -33,7 +33,7 @@
 #  - Internet connectivity is required for package updates.
 #  - Review and modify configurations as needed before execution.
 #
-#  Error Conditions:
+#  Exit Status:
 #  - If apt-get is unavailable, the script exits with an error.
 #  - If required commands are missing, execution is halted.
 #  - Errors from underlying scripts should be resolved based on their output.

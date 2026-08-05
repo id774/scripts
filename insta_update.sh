@@ -56,7 +56,7 @@
 #  - Lines starting with '#' in 'exclude_accounts.txt'
 #    and 'include_accounts.txt' are treated as comments and ignored.
 #
-#  Error Conditions:
+#  Exit Status:
 #  1. Configuration file not found or incomplete: The script will terminate if
 #     it cannot find 'insta_update.conf' or if any required variables are unset.
 #  2. Unknown command-line options: If any unrecognized options are provided,

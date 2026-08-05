@@ -37,16 +37,16 @@
 #      get-device.sh ~/mnt/disk1
 #      => /dev/sdc
 #
-#  Error Conditions:
+#  Requirements:
+#    - Linux, findmnt(8), lsblk(8), sed(1), head(1), tail(1), awk(1)
+#
+#  Exit Status:
 #  0. Success.
 #  1. General failure.
 #  2. Mountpoint or source not found.
 #  3. Source is not a block device.
 #  126. Required command is not executable.
 #  127. Required command is not installed.
-#
-#  Requirements:
-#    - Linux, findmnt(8), lsblk(8), sed(1), head(1), tail(1), awk(1)
 #
 #  Version History:
 #  v1.2 2026-07-11

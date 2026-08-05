@@ -55,7 +55,7 @@
 #  - Either the start datetime '-s' or the end datetime '-e' can be specified independently for
 #    more flexible searches, both expected to be in UTC unless '--localtime' is used.
 #
-#  Error Conditions and Return Codes:
+#  Exit Status:
 #  0: Success
 #  1: Specified path does not exist or no arguments provided
 #  2: Incorrect datetime format or mutually exclusive options '-f' and '-fp' were used together

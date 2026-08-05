@@ -40,7 +40,7 @@
 #  - SCRIPTS environment variable must point to the root of this repo to load
 #    keybinding files and terminal profile.
 #
-#  Error Conditions:
+#  Exit Status:
 #  - If required commands are missing, execution is halted.
 #  - If DBus session is not available, execution is halted.
 #

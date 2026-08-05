@@ -1,6 +1,10 @@
 scripts Repository Version History
 ==================================
 
+v2.0.1 (Release Date: TBD)
+--------------------------
+- Large-scale documentation revision, recorded here as an exception.
+
 v2.0 (2026-07-31)
 -----------------
 - Preserve sd_extract.sh failed file tracking across its find pipeline subshell.

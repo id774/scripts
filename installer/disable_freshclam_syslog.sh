@@ -22,7 +22,7 @@
 #  - This script has no effect on journal output unless forwarded to syslog.
 #  - Use `journalctl -u clamav-freshclam` to view remaining logs.
 #
-#  Error Conditions:
+#  Exit Status:
 #  1. General failure.
 #  2. Failed to create override directory.
 #  3. Failed to write override file.

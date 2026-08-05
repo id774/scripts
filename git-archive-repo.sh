@@ -33,7 +33,7 @@
 #  - Each archive stores the source directory by its basename, not by its
 #    absolute path.
 #
-#  Error Conditions:
+#  Exit Status:
 #  1. Source directory not found.
 #  2. Archive parent directory not found.
 #  3. Failed to remove existing archive.

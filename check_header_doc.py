@@ -39,6 +39,13 @@
 #  - This script does not depend on Git and works in non-repository directories.
 #  - When violations are found in readable files, diagnostic lines are printed.
 #  - Intended to be used as a mandatory quality gate in automated test pipelines.
+#  - This gate is wired into the nightly cron job cron/bin/run_tests, which
+#    invokes it once as 'check_header_doc.py -a --root $SCRIPTS' after the
+#    per-interpreter test runs. It is deliberately not called from
+#    run_tests.sh: the header documentation of a file does not depend on the
+#    Python or Ruby version under test, so running it there would repeat the
+#    same whole-repository scan once per interpreter and report the same
+#    violations several times in one job log.
 #
 #  Example:
 #      python check_header_doc.py -a --root /path/to/repo

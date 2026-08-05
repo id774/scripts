@@ -82,7 +82,7 @@
 #  This change replaces the legacy behavior (`sudo truecrypt -d ~/mnt/<target>`)
 #  which could fail when the logical path did not match the actual mountpoint.
 #
-#  Note on Custom Return Codes:
+#  Exit Status:
 #  This script uses custom return codes to indicate specific error conditions:
 #  - 0: Success. The operation completed without any errors.
 #  - 1: Neither TrueCrypt nor VeraCrypt is installed. The script requires one of them to be installed to function.

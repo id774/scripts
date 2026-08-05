@@ -20,6 +20,20 @@ or additions to this common policy, in order to avoid redundancy.
 - Favor predictable behavior and long-term maintainability.
 - Avoid implicit behavior; make control flow, errors, and side effects explicit.
 
+### Repository Layout
+- Top level: the scripts a user runs directly, in Shell Script, Python, and Ruby.
+- `installer/`: setup and installation scripts. They follow the same header,
+  logging, CLI, and exit code rules as the top level, and `test/check_scripts.sh`
+  exercises them through their `-h` option.
+- `cron/bin/`: job scripts deployed as `/etc/cron.exec`.
+  `cron/etc/`: their configuration files, deployed as `/etc/cron.config`.
+- `etc/`: configuration files and data files read by the top-level scripts.
+- `dot_files/`: dot files deployed into a user's home directory.
+- `test/`: the test suite.
+- `doc/`: this policy, the repository version history, and the license texts.
+- Placement says what a file is for, not which rules apply to it. Every
+  executable in the repository follows the Common Policy.
+
 ### Logging and Output
 - Use unified log prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
 - Informational messages go to standard output.
@@ -40,6 +54,21 @@ or additions to this common policy, in order to avoid redundancy.
   (e.g. `[cron]`, `[admin]`) in the subject line so recipients can easily
   classify, filter, or route messages.
 
+### Credentials and Secrets
+- A credential that authenticates against a remote service is read from a
+  configuration file or from the environment. It is never passed as a command
+  line argument, because a command line is readable by every user of the host.
+- A credential is never logged and never quoted in an error message.
+  Report it as present or absent.
+- No configuration file under `etc/` carries a credential. Those files are
+  committed with real values, so a setting that must stay secret does not
+  belong in them.
+- Exception: a secret that the script itself generates for local use, that
+  authenticates nothing remote, and that exists in order to be handed to the
+  operator, may be passed to a local command and printed. `send_files.sh`
+  generates an archive password this way; the password is stored locally and
+  is never sent together with the archive.
+
 ### Control Flow Rules
 - Use explicit termination (`exit`, `sys.exit`, `exit()`) **only for abnormal or forced termination**.
 - Normal execution paths must return normally and propagate status explicitly.
@@ -54,6 +83,15 @@ or additions to this common policy, in order to avoid redundancy.
 - Invalid or unsupported options must result in usage output.
 - Exit code may be `1` (error) or `0` (non-error usage display),
 - depending on the tool's design, but must be consistent and documented.
+
+#### Recommended Option Names
+- The following names are recommendations, not requirements. A script that has
+  a reason to differ may differ; a script that has none should reuse the
+  established name rather than invent a synonym for it.
+  - `--dry-run`: report what would be done, and change nothing.
+  - `-q`, `--quiet`: suppress non-error messages.
+  - `--force`: process every matched entry, skipping the checks that normally
+    narrow the work.
 
 ### Error Handling and Exit Codes
 - Detect command failures and unmet prerequisites early.
@@ -85,9 +123,34 @@ or additions to this common policy, in order to avoid redundancy.
 > may be used, but must be explicitly documented in the script or program header.
 
 ### Documentation and Versioning
-- Every executable must contain a structured header with:
-  `Description`, `Usage`, `Options`, `Requirements`, `Version History`
-  (in this order).
+- Every executable must contain a structured header block, delimited above and
+  below by a separator line of 20 or more `#` characters.
+- The header contains the following sections, in this order:
+  `Description`, the standard `Author`, `Source Code`, `License`, `Contact`
+  block, `Usage`, `Options` (scripts that take options only), `Requirements`,
+  `Exit Status` (scripts that can end with more than one status),
+  `Version History`.
+- `Description` says what the script is, and the identifying block follows it
+  because it says whose it is. `Usage`, `Options`, and `Exit Status` say how
+  the script is driven, and come after both.
+- Optional sections such as `Notes`, `Example`, `Features`, `Design Notes`, and
+  the configuration file requirements of a script that reads one, are placed
+  where they read best between `Usage` and `Version History`.
+- `Requirements` names the language version first (`Python Version: 3.1 or
+  later`, `Ruby Version: 2.0 or later`), then what the script needs beyond it.
+  A shell script may omit the section: the commands it needs are already
+  declared by its `check_commands` call, and repeating them in the header only
+  creates a second list to keep in sync.
+- Name the section that lists exit codes `Exit Status`. Do not use
+  `Error Conditions`, `Exit Codes`, or any other synonym.
+- Every line inside the header block is a comment line. A line that would be
+  blank is written as a bare `#`, never as an empty line and never as `##`.
+  `check_header_doc.py` enforces this.
+- Header indentation:
+  - Title line: 1 space after `#`
+  - Other lines: 2 spaces after `#`
+- `Version History` entries are written as `vX.Y YYYY-MM-DD`, newest first,
+  each followed by an indented description of what changed.
 - "Test Cases" section must NOT be included in production scripts.
 - "Test Cases" must be defined only in dedicated test code (e.g., test/, spec/).
 - Documentation must be updated in sync with behavior changes.
@@ -116,11 +179,30 @@ or additions to this common policy, in order to avoid redundancy.
   `v1.9` -> `v2.0`, `v2.9` -> `v3.0`).
 - Do not continue `minor` past `9` as in standard semantic versioning
   (e.g. do not use `v1.10`, `v1.11`, ...).
+- A change that is not backward compatible bumps `major` and resets `minor` to
+  `0`, whatever `minor` currently stands at (e.g. `v2.4` -> `v3.0`). Reaching
+  `10` is not the only reason to raise `major`.
+- Removing or renaming an option, changing what an existing argument means,
+  changing a default so that an unchanged invocation does something else, and
+  changing how a path or a configuration value is resolved are all
+  incompatible changes.
 
 #### Repository Versioning
 - Repository release versions are independent of individual executable versions.
 - Record repository release versions in `doc/VERSIONS` and use the same versions for Git tags.
 - Repository release versions may use a three-level `major.minor.patch` scheme.
+- A release that carries an incompatible change to any script takes the next
+  `major`, on the same reasoning as an executable version.
+- Work that is not released yet takes no version of its own: it belongs to the
+  entry already standing at the top of `doc/VERSIONS`.
+- An unreleased entry carries `(Release Date: TBD)`, and its version number
+  stays provisional until it ships. An entry opened as
+  `v1.7.3 (Release Date: TBD)` is released as `v2.0` when what accumulated in
+  it turns out to be incompatible.
+- Replacing `TBD` with the actual release date is the release itself, not a
+  change to record in the entry.
+- A documentation-only change takes no `doc/VERSIONS` entry, unless its scale
+  makes it worth one line saying so.
 
 #### doc/VERSIONS Structure
 - `doc/VERSIONS` must read as a version-level summary of overall changes, not
@@ -133,16 +215,85 @@ or additions to this common policy, in order to avoid redundancy.
     reads as a coherent, reviewable whole rather than an unordered sequence
     of unrelated lines.
 
-- Header indentation:
-  - Title line: 1 space after `#`
-  - Other lines: 2 spaces after `#`
+- Each entry opens with a heading of the form `vX.Y.Z (YYYY-MM-DD)`, or
+  `vX.Y.Z (Release Date: TBD)` while it is unreleased, underlined with `-`
+  characters, followed by one `-` bullet per change.
 - Encoding rules:
   - Use UTF-8 by default.
+
+### License
+- The repository is dual licensed under the GPL version 3 or the LGPL version 3,
+  at the user's option. The full texts live in `doc/LICENSE`, `doc/COPYING`,
+  and `doc/COPYING.LESSER`.
+- Every script header repeats the license line of the standard identifying
+  block, so that a file read on its own still states its terms:
+  `License: The GPL version 3, or LGPL version 3 (Dual License).`
+- Add a dependency only when its license is compatible with that choice.
 
 ### Comments and Language
 - Comments must be written in **English** only.
 - Comments must be imperative, concise, and action-oriented
   (e.g. `# Validate input`, `# Initialize environment`).
+- A comment says why, not what. Where a decision looks arbitrary, such as a
+  portable substitute for a construct that some implementation gets wrong, a
+  retention period, or a hard-coded fallback, the comment gives the reason, so
+  that a later change does not quietly undo it.
+
+### Configuration Files
+- A script that needs site-specific values reads them from a file under `etc/`,
+  named after the script (e.g. `etc/dashcam_sync.conf`), instead of carrying
+  them as constants.
+- A top-level script resolves the file relative to its own directory and falls
+  back to the parent's `etc/`, so that it works both inside the repository and
+  from a deployed location: `$SCRIPT_DIR/etc/NAME.conf`, then
+  `$SCRIPT_DIR/../etc/NAME.conf`. A `cron/bin/` job reads its deployed path
+  under `/etc/cron.config/` directly, since it only ever runs from
+  `/etc/cron.exec`.
+- A missing file, and a required value left unset, are both refused before any
+  work starts, each with its own exit status and an `[ERROR]` message naming
+  what is missing.
+- Every such file opens with the same header block used by scripts: a title
+  line naming the file, a sentence saying which script reads it and what it
+  decides, and a `Rules` section describing its format. It carries no shebang
+  and is not executable.
+- Two kinds exist, and the `Rules` section says which one the file is.
+
+#### Sourced Configuration Files
+- Sourced by the script, so the file must be POSIX sh compatible. Its `Rules`
+  section states that blank lines are allowed, that lines starting with `#` are
+  comments, that the file must be POSIX sh compatible, and that it carries no
+  shebang because it is sourced rather than executed.
+- A `Variables` section names every variable, what it decides, and whether it
+  is required. A file that also defines a function documents it under
+  `Functions`.
+- The variables a script requires are named in two places that must agree: the
+  `Variables` section of the configuration file, and the header of the script
+  that reads it.
+
+#### List Files
+- Read line by line rather than sourced, so the file is data and not shell
+  code: `etc/apache_ignore.list` and `cron/etc/clamscan.conf` are of this kind.
+- Its `Rules` section states that blank lines are ignored, that lines starting
+  with `#` are comments, that the file is read line by line rather than
+  sourced, and what one non-comment line means.
+- An `Examples` section shows the accepted line forms.
+
+### Network Operations
+- Every outbound request carries an explicit timeout. An unattended run must
+  not hang until the next one starts.
+- Exception: a script whose primary use is manual, run in the foreground by a
+  person who can see it hang and interrupt it, may leave the timeout to the
+  caller.
+- Report an unreachable target as a failure, naming the target.
+
+### Destructive Operations
+- The following are recommendations. A script that has a reason to skip a check
+  may skip it, but should say why in a comment.
+- Validate existence, type, and permissions before a destructive operation, and
+  validate a path before modifying it.
+- Offer `--dry-run` on a script that renames, moves, or deletes.
+- Do not widen the scope of a deletion in order to recover from unexpected
+  input.
 
 ### Testing and Operation
 - Test code must include a "Test Cases" section placed immediately before "Version History".
@@ -150,6 +301,26 @@ or additions to this common policy, in order to avoid redundancy.
 - Assume cron execution by default; define `PATH` and required environment variables explicitly.
 - Validation must include syntax checks and exit-code verification.
 - In plugin-based systems, loaders must collect and propagate plugin return codes.
+- `run_tests.sh` is the entry point of the suite. It runs the Python tests and
+  the Ruby specs under `test/` for one interpreter pair, reports the counts,
+  and exits non-zero when any of them fails.
+- The nightly `cron/bin/run_tests` job is the second layer. It drives
+  `run_tests.sh` once per configured Python and Ruby version, then runs
+  `test/check_scripts.sh` (which exercises every shell script through `-h`),
+  `check_header_doc.py -a`, and the `find_pycompat.py` compatibility check
+  across the repository, and mails the result to the administrator.
+- A gate that belongs to the repository as a whole, rather than to one
+  interpreter version, is wired into the cron job rather than into
+  `run_tests.sh`, so that it runs once per night instead of once per
+  interpreter.
+- A test must not perform network access. Replace the fetch with a stub and
+  feed the code fixed input instead.
+- A test writes nothing outside a temporary directory, and needs no credential
+  and no reachable host.
+- A fix for a defect arrives together with the test that fails without it.
+- A script a cron job runs must be safe to run twice. A second run over the
+  same input replaces or skips what the first one produced, rather than
+  duplicating it or refusing to start.
 
 ---
 
@@ -164,6 +335,32 @@ or additions to this common policy, in order to avoid redundancy.
 
 ### Dependency and Environment Checks
 - Validate required commands and environment variables at startup.
+- Declare the commands a script needs with the following POSIX-compliant
+  helper, which maps a missing command to `127` and a present but
+  non-executable one to `126`:
+
+```sh
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+```
+
+- Call it once, before any work begins, listing the commands the script
+  actually runs.
+- A script that requires elevated privileges checks them with `check_sudo`,
+  which runs `sudo -v` and refuses the run when it fails.
+- A script that has `check_sudo` does not also list `sudo` in `check_commands`:
+  `sudo -v` already establishes that `sudo` is present and usable, so the
+  second check adds nothing.
 - For network operations, verify connectivity before execution.
 
 ### Logging Style
@@ -193,7 +390,9 @@ log_info_time() {
 
 ### I/O and Side Effects
 - Respect existing temporary file logic and directory structures.
-- Avoid destructive overwrites; validate paths before modification.
+- Follow the destructive operation recommendations of the Common Policy; in
+  particular, avoid destructive overwrites and validate paths before
+  modification.
 - Align log writing and rotation with system log policy.
 
 ---
@@ -229,8 +428,18 @@ log_info_time() {
 
 ### Dependencies and I/O
 - Depend only on the standard library.
-- Implement manual PATH search if command lookup is required.
+- Implement manual PATH search if command lookup is required, and exit `127`
+  when the command is not found, matching the shell helper.
 - Always use `encoding="utf-8"` for file operations.
+
+### Docstrings
+- Every function and class carries a docstring stating what the call does or
+  returns.
+- A one-line docstring stays on one line, with a space inside each pair of
+  quotes: `""" Return True when the path is inside the target directory. """`.
+- A longer docstring opens on the line after the quotes.
+- Modules that still use the tight form (`"""Do the thing."""`) are normalized
+  when they are next edited for another reason, not in bulk.
 
 ### Testing
 - Store tests in `test/` as `FILENAME_test.py`.
@@ -268,7 +477,7 @@ log_info_time() {
 - Use `Open3.capture3` for external command execution when stdout, stderr, or exit status must be inspected.
 - `system` may be used only when command output is intentionally ignored and success or failure alone is sufficient.
 - Always specify UTF-8 encoding for file operations.
-- Validate file existence, type, and permissions before destructive operations.
+- Follow the destructive operation recommendations of the Common Policy.
 
 ### Testing
 - Store tests in `test/` using RSpec as `FILENAME_test.rb`.
