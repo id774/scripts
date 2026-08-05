@@ -201,6 +201,8 @@ or additions to this common policy, in order to avoid redundancy.
   it turns out to be incompatible.
 - Replacing `TBD` with the actual release date is the release itself, not a
   change to record in the entry.
+- A documentation-only change takes no `doc/VERSIONS` entry, unless its scale
+  makes it worth one line saying so.
 
 #### doc/VERSIONS Structure
 - `doc/VERSIONS` must read as a version-level summary of overall changes, not
