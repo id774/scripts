@@ -24,7 +24,10 @@
 #    Compose with get-device.sh:
 #      get-serial.sh "$(get-device.sh ~/mnt/disk1)"
 #
-#  Exit Codes:
+#  Requirements:
+#    - Linux, udevadm(8), lsblk(8), sed(1), head(1), awk(1)
+#
+#  Exit Status:
 #  0. Success.
 #  1. General failure.
 #  2. Invalid argument or device not found.
@@ -32,9 +35,6 @@
 #  4. Serial number could not be determined.
 #  126. Required command is not executable.
 #  127. Required command is not installed.
-#
-#  Requirements:
-#    - Linux, udevadm(8), lsblk(8), sed(1), head(1), awk(1)
 #
 #  Version History:
 #  v1.3 2026-07-11

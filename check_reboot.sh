@@ -38,7 +38,7 @@
 #      -h, --help:     Show this help and exit.
 #      -v, --version:  Show this help and exit (unified behavior).
 #
-#  Error Conditions:
+#  Exit Status:
 #      0: Success (check completed; see logs for reboot requirement)
 #      1: General Failure
 #    126: Command exists but is not executable

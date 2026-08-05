@@ -53,7 +53,7 @@
 #  - Internet connectivity is required for package downloads.
 #  - Review and modify the package lists as needed for your setup.
 #
-#  Error Conditions:
+#  Exit Status:
 #  The script checks if each package is already installed to prevent unnecessary reinstallation.
 #  However, it does not explicitly handle errors such as package unavailability or network issues.
 #  These should be resolved based on the output of the apt-get command.

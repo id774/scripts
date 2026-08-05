@@ -24,7 +24,7 @@
 #  Requirements:
 #  - Conda must be installed prior to executing this script.
 #
-#  Exit Codes:
+#  Exit Status:
 #  0: Success - All libraries were installed successfully.
 #  1: Error - A critical issue occurred (e.g., missing dependencies).
 #

@@ -59,7 +59,7 @@
 #  - Internet connectivity is required for downloading dotfiles and system utilities.
 #  - Review and modify the installation scripts as needed before execution.
 #
-#  Error Conditions:
+#  Exit Status:
 #  - If the system is not Linux, the script exits with an error.
 #  - If required commands are missing, the script exits with an error.
 #  - If the user lacks sudo privileges, execution is halted.

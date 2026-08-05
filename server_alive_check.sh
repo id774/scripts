@@ -69,7 +69,7 @@
 #  - Ensure the monitored servers regularly generate _is_alive files to avoid false alerts.
 #  - Use appropriate permissions and ownership for the monitored directory.
 #
-#  Error Conditions:
+#  Exit Status:
 #  1. One or more regular hosts are stale.
 #  2. No '_is_alive' files found.
 #  3. Source directory does not exist.

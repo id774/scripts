@@ -24,7 +24,7 @@
 #  - Will not overwrite /etc/iptables/rules.v4 if it already exists.
 #  - Designed for Debian and Ubuntu systems using iptables.
 #
-#  Error Conditions:
+#  Exit Status:
 #  - Exits if SCRIPTS is not set.
 #  - Exits if required commands are missing.
 #  - Exits if not running on Linux.

@@ -42,7 +42,7 @@
 #  - Remote synchronization is attempted only if the remote server is reachable.
 #  - The permissions argument must be a 3-digit or 4-digit octal number. Any other format will result in an error.
 #
-#  Error Conditions:
+#  Exit Status:
 #  1. No GPX files found in the specified temporary directory.
 #  2. Failed to create the destination directory for copying files.
 #  3. Configuration file not found.

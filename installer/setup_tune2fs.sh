@@ -24,7 +24,7 @@
 #  - Ensure that tune2fs is installed before execution.
 #  - Modifications apply to system partitions; review configurations beforehand.
 #
-#  Error Conditions:
+#  Exit Status:
 #  - If the system is not Linux, the script exits with an error.
 #  - If required commands are missing, the script exits with an error.
 #  - If no applicable devices are found, execution halts.

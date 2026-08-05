@@ -81,6 +81,16 @@ This script will:
 - Run all test files in the `test` directory.
 - Output paths and versions for troubleshooting.
 
+It exits with a non-zero status when any test fails.
+
+A second layer runs nightly from `cron/bin/run_tests`, which drives
+`run_tests.sh` once per configured Python and Ruby version and then applies the
+repository-wide gates: the shell script validation (`test/check_scripts.sh`),
+the header documentation check (`check_header_doc.py -a`), and the
+compatibility check (`find_pycompat.py`). Checks that belong to the repository
+as a whole, rather than to one interpreter version, are wired there instead of
+into `run_tests.sh`.
+
 ---
 
 ## 5. Contribution
@@ -91,6 +101,12 @@ We welcome contributions! Here's how you can help:
 3. Submit a pull request with clear documentation and changes.
 
 Please ensure your code is well-structured and documented.
+
+Every executable carries a structured header block stating what it is, who
+wrote it, how it is driven, and what changed in each version. Read
+[doc/POLICY](doc/POLICY) before adding one: it defines the sections that block
+contains, when a version is bumped, and how configuration files, exit codes,
+and logging are expected to behave.
 
 ### Implementation Policy
 

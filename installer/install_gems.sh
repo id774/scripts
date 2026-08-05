@@ -25,7 +25,7 @@
 #  Requirements:
 #  - Ruby and gem must be installed prior to executing this script.
 #
-#  Exit Codes:
+#  Exit Status:
 #  0: Success - All gems were installed successfully.
 #  1: Error - A critical issue occurred (e.g., missing dependencies).
 #

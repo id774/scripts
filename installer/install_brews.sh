@@ -22,7 +22,7 @@
 #  Requirements:
 #  - Homebrew must be installed prior to executing this script.
 #
-#  Exit Codes:
+#  Exit Status:
 #  0: Success - All packages were installed successfully.
 #  1: Error - Homebrew is not installed or a critical issue occurred.
 #

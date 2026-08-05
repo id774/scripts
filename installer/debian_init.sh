@@ -46,7 +46,7 @@
 #    runs only when a desktop option is specified to avoid accidental GUI
 #    stack installation on server hosts.
 #
-#  Error Conditions:
+#  Exit Status:
 #  - If the system is not Debian-based, the script exits with an error.
 #  - If the required directory does not exist, an error message is displayed.
 #  - Errors from underlying scripts should be resolved based on their output.

@@ -24,7 +24,7 @@
 #  - Internet connectivity is required for package installation.
 #  - Ensure that $SCRIPTS is set correctly before execution.
 #
-#  Error Conditions:
+#  Exit Status:
 #  - If the system is not Linux, the script exits with an error.
 #  - If required commands are missing, the script exits with an error.
 #  - Errors from underlying commands should be resolved based on their output.

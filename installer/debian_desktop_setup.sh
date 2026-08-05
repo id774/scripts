@@ -30,7 +30,7 @@
 #      $HOME/scripts/installer/debian_gnome_flashback_setup.sh
 #      $HOME/scripts/installer/debian_gnome_setup.sh
 #
-#  Error Conditions:
+#  Exit Status:
 #  - Non-Linux system (checked and enforced in the invoked setup scripts, not in this launcher).
 #  - Missing $HOME/scripts directory.
 #  - Target setup script not found or not runnable.

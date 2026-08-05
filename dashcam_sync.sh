@@ -28,7 +28,7 @@
 #  - Both source and destination directories must exist and be writable.
 #  - Files are first synced to a 'daily' subdirectory, then moved to a yearly directory.
 #
-#  Error Conditions:
+#  Exit Status:
 #  1. Source or destination directory does not exist.
 #  2. Rsync operation failed.
 #  3. Moving files failed.

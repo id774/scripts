@@ -44,7 +44,7 @@
 #  - No password is sent in the email — it is stored locally only.
 #  - To use 7z, the `7z` command must be available in PATH.
 #
-#  Error Conditions:
+#  Exit Status:
 #  1. General failure (e.g., password generation or ZIP failure).
 #  2. Configuration file not found.
 #  3. Source directory does not exist.
