@@ -3,23 +3,7 @@ scripts Repository Version History
 
 v2.0.1 (Release Date: TBD)
 --------------------------
-- Document the structured header block as it is actually written, including the
-  Author/Source Code/License/Contact block and the optional sections.
-- Unify the header section that lists exit codes under the name Exit Status.
-- Record the repository layout, the license policy, and the etc/ configuration
-  file conventions in doc/POLICY, distinguishing sourced configuration files
-  from list files that are read line by line.
-- State in clamscan.conf and apache_ignore.list that they are lists rather than
-  shell code, and name clamscan.conf after its file name like the others.
-- Document check_commands as the standard dependency check, and note that a
-  script with check_sudo need not also check sudo itself.
-- State that an incompatible change bumps the major version regardless of the
-  minor rollover rule, for both executables and repository releases.
-- Record the (Release Date: TBD) workflow and the doc/VERSIONS entry format.
-- Add credential handling, network timeout, re-run safety, and test isolation
-  policies, each with the exceptions the repository actually relies on.
-- Describe the two-layer test structure and note in check_header_doc.py why its
-  gate belongs to the nightly cron job rather than to run_tests.sh.
+- Large-scale documentation revision, recorded here as an exception.
 
 v2.0 (2026-07-31)
 -----------------
