@@ -4,6 +4,16 @@ scripts Repository Version History
 v2.0.1 (Release Date: TBD)
 --------------------------
 - Large-scale documentation revision, recorded here as an exception.
+- Add .gitattributes. The Markdown documents take diff=markdown, so that a
+  diff hunk header names the section it falls in; doc/POLICY and doc/LICENSE
+  also take linguist-language=Markdown for highlighting on GitHub. doc/VERSIONS
+  is left out because it is underlined plain text, and diff=markdown empties
+  the hunk headers that otherwise name the version.
+- State the document file naming and attribute rules in doc/POLICY: a Markdown
+  document takes .md, the fixed names under doc/ keep no extension, and an
+  existing document is not renamed for its extension.
+- Remove etc/pathext.txt. It listed Windows PATHEXT values, was read by nothing
+  in the repository, and is obsolete.
 
 v2.0 (2026-07-31)
 -----------------

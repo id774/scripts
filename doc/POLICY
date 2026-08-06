@@ -221,6 +221,35 @@ or additions to this common policy, in order to avoid redundancy.
 - Encoding rules:
   - Use UTF-8 by default.
 
+#### Document File Naming
+- A document written in Markdown is named with a `.md` extension, except for
+  the fixed names below.
+- `doc/POLICY`, `doc/VERSIONS`, `doc/LICENSE`, `doc/COPYING`, and
+  `doc/COPYING.LESSER` carry no extension. They are the fixed document names
+  shared with the author's other repositories, found by name rather than by
+  extension. A new repository creates them under the same names.
+- Every other document is named for what it holds and takes `.md`.
+- An existing document is never renamed to add or change an extension. A path
+  here is a public URL that the README, the other repositories, and pages
+  outside them link to. Renaming breaks those links, and the ones outside
+  cannot be found or repaired.
+- Rename only when the current name causes an actual failure, and only after
+  examining the references to it. Being shown as plain text on GitHub is not a
+  failure: `doc/POLICY` is Markdown that GitHub does not render, and that is
+  accepted.
+
+#### Document File Attributes
+- `.gitattributes` gives `diff=markdown` to `*.md` and to the extensionless
+  Markdown documents, so that a diff hunk header names the section it falls in.
+  `doc/POLICY` and `doc/LICENSE` also take `linguist-language=Markdown`, which
+  gives them Markdown highlighting on GitHub. No attribute makes GitHub render
+  them.
+- `doc/VERSIONS` is excluded. It is underlined plain text, and `diff=markdown`
+  empties the hunk headers that otherwise name the version.
+- `doc/COPYING` and `doc/COPYING.LESSER` are excluded as the licence texts.
+- Attributes name each path. A glob would catch the `#` comment lines of the
+  scripts and the configuration files.
+
 ### License
 - The repository is dual licensed under the GPL version 3 or the LGPL version 3,
   at the user's option. The full texts live in `doc/LICENSE`, `doc/COPYING`,
