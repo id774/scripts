@@ -4,7 +4,7 @@ scripts Repository Version History
 v2.0.1 (Release Date: TBD)
 --------------------------
 - Large-scale documentation revision, recorded here as an exception.
-- Add .gitattributes, marking the Markdown documents for diff and language.
+- Add .gitattributes, marking the Markdown documents for diff.
 - Add the document file naming and attribute rules to doc/POLICY.
 - Remove etc/pathext.txt, an obsolete list of Windows PATHEXT values.
 
