@@ -8,6 +8,7 @@ v2.0.1 (Release Date: TBD)
 - Add the document file naming and attribute rules to doc/POLICY.
 - Remove etc/pathext.txt, an obsolete list of Windows PATHEXT values.
 - Wrap the lines of this file at 75 columns.
+- Wrap the lines of doc/POLICY at 80 columns.
 
 v2.0 (2026-07-31)
 -----------------
