@@ -238,19 +238,22 @@ or additions to this common policy, in order to avoid redundancy.
   and that is the intended result. The rule applies at creation, and naming
   that matches across repositories is not a goal that outranks a published path
   staying where it is.
-- Rename only when the current name causes an actual failure, and only after
-  examining the references to it. Being shown as plain text on GitHub is not a
-  failure: `doc/POLICY` is Markdown that GitHub does not render, and that is
-  accepted.
+- Rename only when the current name causes a failure that outweighs the links
+  it breaks, and only after examining the references to it. GitHub shows
+  `doc/POLICY` as plain text instead of rendering it, and that cost is accepted
+  here, because the references that live outside this repository can be neither
+  found nor repaired.
 
 #### Document File Attributes
 - `.gitattributes` gives `diff=markdown` to `*.md` and to the extensionless
   Markdown documents, so that a diff hunk header names the section it falls in.
-  `doc/POLICY` and `doc/LICENSE` also take `linguist-language=Markdown`, which
-  gives them Markdown highlighting on GitHub. No attribute makes GitHub render
-  them.
 - A document created with `.md` is covered by the `*.md` line and needs no
   entry of its own.
+- No file is given `linguist-language`. Nothing in `.gitattributes` makes GitHub
+  render a document that carries no extension, and setting that attribute
+  changed how `doc/POLICY` and `doc/LICENSE` are displayed on the web, for the
+  worse. How a document reads on GitHub is decided by its name, not by an
+  attribute.
 - `doc/VERSIONS` is excluded. It is underlined plain text, and `diff=markdown`
   empties the hunk headers that otherwise name the version.
 - `doc/COPYING` and `doc/COPYING.LESSER` are excluded as the licence texts.

@@ -2,8 +2,12 @@
 # Each path is named on its own: a glob would catch the `#` comment lines of
 # the scripts and the configuration files.
 *.md        diff=markdown
-doc/POLICY  diff=markdown linguist-language=Markdown
-doc/LICENSE diff=markdown linguist-language=Markdown
+doc/POLICY  diff=markdown
+doc/LICENSE diff=markdown
+
+# No file is given linguist-language. It does not make GitHub render a document
+# that carries no extension, and setting it changed how doc/POLICY and
+# doc/LICENSE are displayed on the web, for the worse.
 
 # doc/VERSIONS is underlined plain text, not Markdown. With diff=markdown its
 # hunk headers lose the version line they now carry. doc/COPYING and
