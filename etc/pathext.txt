@@ -1,1 +1,0 @@
-.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.pl;.rb;.pyo;.pyc;.py;.pyw;.PSC1;.RBW

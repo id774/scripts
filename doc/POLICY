@@ -221,6 +221,43 @@ or additions to this common policy, in order to avoid redundancy.
 - Encoding rules:
   - Use UTF-8 by default.
 
+#### Document File Naming
+- A document written in Markdown takes a `.md` extension when it is newly
+  created. This holds for the documents under `doc/` as well: a repository
+  created from now on names its policy `doc/POLICY.md`.
+- The licence files are the exception. `COPYING`, `COPYING.LESSER`, and
+  `LICENSE` keep the extensionless names by which they are recognised, whether
+  they are new or not.
+- A document that is not Markdown takes no extension, or `.txt`.
+- An existing document is never renamed to add or change an extension. A path
+  here is a public URL that the README, the other repositories, and pages
+  outside them link to. Renaming breaks those links, and the ones outside
+  cannot be found or repaired.
+- `doc/POLICY` and `doc/VERSIONS` therefore keep their names here. The same
+  document is `POLICY` in this repository and `POLICY.md` in one started later,
+  and that is the intended result. The rule applies at creation, and naming
+  that matches across repositories is not a goal that outranks a published path
+  staying where it is.
+- Rename only when the current name causes an actual failure, and only after
+  examining the references to it. Being shown as plain text on GitHub is not a
+  failure: `doc/POLICY` is Markdown that GitHub does not render, and that is
+  accepted.
+
+#### Document File Attributes
+- `.gitattributes` gives `diff=markdown` to `*.md` and to the extensionless
+  Markdown documents, so that a diff hunk header names the section it falls in.
+  `doc/POLICY` and `doc/LICENSE` also take `linguist-language=Markdown`, which
+  gives them Markdown highlighting on GitHub. No attribute makes GitHub render
+  them.
+- A document created with `.md` is covered by the `*.md` line and needs no
+  entry of its own.
+- `doc/VERSIONS` is excluded. It is underlined plain text, and `diff=markdown`
+  empties the hunk headers that otherwise name the version.
+- `doc/COPYING` and `doc/COPYING.LESSER` are excluded as the licence texts.
+- The extensionless documents are listed one path at a time. A glob over the
+  files that carry no extension would catch the `#` comment lines of the
+  scripts and the configuration files.
+
 ### License
 - The repository is dual licensed under the GPL version 3 or the LGPL version 3,
   at the user's option. The full texts live in `doc/LICENSE`, `doc/COPYING`,
