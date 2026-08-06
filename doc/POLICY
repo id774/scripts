@@ -218,25 +218,83 @@ or additions to this common policy, in order to avoid redundancy.
 
 #### doc/VERSIONS Structure
 - `doc/VERSIONS` must read as a version-level summary of overall changes, not
-  a raw commit log:
-  - When multiple changes to the same file within one version are really one
-    coherent change, merge them into a single bullet instead of listing them
-    separately.
-  - When changes are independent, still place entries that touch the same
-    file or the same feature near each other, so that each version's entry
-    reads as a coherent, reviewable whole rather than an unordered sequence
-    of unrelated lines.
-
+  a raw commit log. It tells a reader what a release changed. It is not the
+  place to transcribe how that work happened to be committed.
 - Each entry opens with a heading of the form `vX.Y.Z (YYYY-MM-DD)`, or
   `vX.Y.Z (Release Date: TBD)` while it is unreleased, underlined with `-`
   characters, followed by one `-` bullet per change.
 - Encoding rules:
   - Use UTF-8 by default.
 
+##### One Change per Line
+- One coherent change is one bullet, written on one physical line. The entry
+  is a list meant to be scanned, and a wrapped bullet costs it that: the eye
+  no longer finds the changes by counting lines, and a diff no longer shows
+  one added line per added change.
+- This is a deliberate exception to the line length guidance that the other
+  plain text documents follow, not an oversight in this file. Do not rewrap
+  `doc/VERSIONS` to 80 columns, and do not report a long bullet here as a
+  violation of that guidance.
+- Aim for about 100 columns. A bullet that has to carry file names, command
+  names, function names, option names, or configuration names may run to
+  about 120 columns, or past that when the names it needs are that long.
+- Those figures are a prompt to reread the bullet, not a limit to enforce.
+  They ask whether the sentence has grown past what a reader of the version
+  history needs. A bullet that is long because the change is long is correct.
+- Bullets written before this rule are left wrapped as they stand. The rule
+  applies to what is written from now on.
+
+##### Shortening a Long Entry
+- When a bullet runs long, the first move is to abstract it, never to break
+  it across lines. Drop the implementation detail, the examples, the reason,
+  and the secondary effects, and state what the change is.
+- Keep what a reader of the release cannot reconstruct without it: what was
+  changed, what is now observably different from outside, what it does to
+  compatibility, what it does to safety, and the identifiers someone would
+  search for.
+- A bullet that is long because it names what it must name stays long. Do not
+  cut a file name, an option name, or a configuration key to reach a column
+  count.
+
+##### Grouping and Order
+- When multiple changes to the same file within one version are really one
+  coherent change, merge them into a single bullet instead of listing them
+  separately. Changes that serve one purpose are described together even when
+  they touch several files.
+- Changes to one file that carry independent meaning are not forced together.
+  Coherence decides, not the file name.
+- When changes are independent, still place entries that touch the same file
+  or the same feature near each other, so that each version's entry reads as
+  a coherent, reviewable whole rather than an unordered sequence of unrelated
+  lines.
+- An independent change that belongs with nothing already listed is appended
+  to the end of the current version's entry.
+- Order within a version serves the reader, not the commit history. Do not
+  preserve commit order at the cost of the entry reading as a whole.
+
+#### Document Format
+- The format of a document is decided by its name, its history, the paths
+  already published for it, the references that point at it, the
+  compatibility those references demand, and the role it plays in the
+  repository. It is not decided by whether its text happens to parse as
+  Markdown.
+- A document that carries `.md` is a Markdown document.
+- The extensionless documents here are plain text documents on purpose:
+  `POLICY`, `LICENSE`, `COPYING`, `COPYING.LESSER`, and `VERSIONS`. Several
+  of them use headings, bullets, emphasis, or links that a Markdown renderer
+  would accept, and that changes nothing. Readable structure is not a
+  declaration of format.
+- That a document would render as Markdown is therefore not a reason to
+  rename it. Neither is uniformity: making the extensions or the appearance
+  of the documents match each other is not on its own a reason to rename
+  anything.
+
 #### Document File Naming
 - A document written in Markdown takes a `.md` extension when it is newly
   created. This holds for the documents under `doc/` as well: a repository
   created from now on names its policy `doc/POLICY.md`.
+- The rule applies at creation. It is not applied backwards to documents that
+  already exist, and an existing document is not brought into line with it.
 - The licence files are the exception. `COPYING`, `COPYING.LESSER`, and
   `LICENSE` keep the extensionless names by which they are recognised, whether
   they are new or not.
@@ -247,9 +305,8 @@ or additions to this common policy, in order to avoid redundancy.
   cannot be found or repaired.
 - `doc/POLICY` and `doc/VERSIONS` therefore keep their names here. The same
   document is `POLICY` in this repository and `POLICY.md` in one started later,
-  and that is the intended result. The rule applies at creation, and naming
-  that matches across repositories is not a goal that outranks a published path
-  staying where it is.
+  and that is the intended result. Naming that matches across repositories is
+  not a goal that outranks a published path staying where it is.
 - Rename only when the current name causes a failure that outweighs the links
   it breaks, and only after examining the references to it. GitHub shows
   `doc/POLICY` as plain text instead of rendering it, and that cost is accepted
@@ -259,6 +316,14 @@ or additions to this common policy, in order to avoid redundancy.
 #### Document File Attributes
 - `.gitattributes` gives `diff=markdown` to `*.md` and to the extensionless
   Markdown documents, so that a diff hunk header names the section it falls in.
+- `diff=markdown` is a diff aid and nothing else. It teaches `git diff` to
+  recognise headings when it picks a hunk header. It does not change a file's
+  format, does not change its name, and does not change how GitHub displays
+  it.
+- Giving an extensionless document `diff=markdown` is therefore correct, and
+  is not evidence that the document should carry `.md`. Reading a diff
+  through the Markdown driver and maintaining a document as Markdown are
+  separate decisions.
 - A document created with `.md` is covered by the `*.md` line and needs no
   entry of its own.
 - No file is given `linguist-language`. Nothing in `.gitattributes` makes GitHub
@@ -272,6 +337,26 @@ or additions to this common policy, in order to avoid redundancy.
 - The extensionless documents are listed one path at a time. A glob over the
   files that carry no extension would catch the `#` comment lines of the
   scripts and the configuration files.
+
+#### Plain Text Document Line Length
+- A plain text document is meant to be read with nothing between the reader
+  and the file, on a fixed-width terminal of 80 columns included. Ordinary
+  prose is therefore wrapped near 80 columns wherever that is practical.
+- The figure is a guide for keeping the text readable, not a check to run
+  against the file. A line past 80 columns is not by itself a defect, and is
+  not by itself something to fix.
+- Lines that are not ordinary prose may exceed it: URLs, legal wording quoted
+  as it stands, commands, identifiers, tables, and any line that is clearer
+  left whole.
+- Where wrapping would cost more than it gains, do not wrap. It costs more
+  when it splits a unit of meaning, when it makes the diff harder to follow,
+  when it hides a phrase from a search, or when it makes a command awkward to
+  copy.
+- In `doc/LICENSE`, `doc/COPYING`, and `doc/COPYING.LESSER` the exact wording
+  and the references it carries come first. Those texts are reproduced as
+  they are issued and are not rewrapped.
+- `doc/VERSIONS` follows the rule stated under doc/VERSIONS Structure above.
+  There, one change per physical line comes before this guidance.
 
 ### License
 - The repository is dual licensed under the GPL version 3 or the LGPL version 3,
