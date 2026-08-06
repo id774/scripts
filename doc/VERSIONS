@@ -7,7 +7,6 @@ v2.0.1 (Release Date: TBD)
 - Add .gitattributes, marking the Markdown documents for diff.
 - Add the document file naming and attribute rules to doc/POLICY.
 - Remove etc/pathext.txt, an obsolete list of Windows PATHEXT values.
-- Wrap the lines of this file at 75 columns.
 
 v2.0 (2026-07-31)
 -----------------
