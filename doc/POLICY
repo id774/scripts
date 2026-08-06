@@ -1,8 +1,9 @@
 # Implementation Policies
 
-This document defines implementation policies shared across Shell Scripts, Python, and Ruby,
-followed by language-specific rules. The goal is to minimize redundancy while making the
-design intent explicit and consistent for all contributors.
+This document defines implementation policies shared across Shell Scripts,
+Python, and Ruby, followed by language-specific rules. The goal is to minimize
+redundancy while making the design intent explicit and consistent for all
+contributors.
 
 The **Common Policy** section defines rules that apply to *all* languages.
 Each language section then specifies only what is unique to that language.
@@ -21,10 +22,11 @@ or additions to this common policy, in order to avoid redundancy.
 - Avoid implicit behavior; make control flow, errors, and side effects explicit.
 
 ### Repository Layout
-- Top level: the scripts a user runs directly, in Shell Script, Python, and Ruby.
+- Top level: the scripts a user runs directly, in Shell Script, Python, and
+  Ruby.
 - `installer/`: setup and installation scripts. They follow the same header,
-  logging, CLI, and exit code rules as the top level, and `test/check_scripts.sh`
-  exercises them through their `-h` option.
+  logging, CLI, and exit code rules as the top level, and
+  `test/check_scripts.sh` exercises them through their `-h` option.
 - `cron/bin/`: job scripts deployed as `/etc/cron.exec`.
   `cron/etc/`: their configuration files, deployed as `/etc/cron.config`.
 - `etc/`: configuration files and data files read by the top-level scripts.
@@ -39,17 +41,22 @@ or additions to this common policy, in order to avoid redundancy.
 - Informational messages go to standard output.
 - Error messages always go to standard error.
 - Log messages must be human-readable and suitable for cron execution.
-- Timestamped progress logs are intended only for major progress points in long-running operations.
+- Timestamped progress logs are intended only for major progress points in
+  long-running operations.
 - Do not add timestamps to every log message.
-- The purpose of timestamped progress logs is to make long-running steps observable in cron logs
-  and administrative emails, not to convert all output into structured logs.
-- Timestamped progress logs should be used for major start and finish points of external I/O,
-  synchronization, recursive scans, recursive modifications, cleanup operations, and other steps
-  whose duration is operationally significant.
-- Short validation checks, simple branch decisions, static configuration messages, and immediate
-  return-code messages should normally use standard log prefixes without timestamps.
+- The purpose of timestamped progress logs is to make long-running steps
+  observable in cron logs and administrative emails, not to convert all output
+  into structured logs.
+- Timestamped progress logs should be used for major start and finish points of
+  external I/O, synchronization, recursive scans, recursive modifications,
+  cleanup operations, and other steps whose duration is operationally
+  significant.
+- Short validation checks, simple branch decisions, static configuration
+  messages, and immediate return-code messages should normally use standard log
+  prefixes without timestamps.
 - When a timestamp is needed, append it naturally at the end of the message.
-- Timestamped log helpers must generate the timestamp at call time, not at initialization time.
+- Timestamped log helpers must generate the timestamp at call time, not at
+  initialization time.
 - For automated emails (cron, admin jobs), use **filter-friendly tags**
   (e.g. `[cron]`, `[admin]`) in the subject line so recipients can easily
   classify, filter, or route messages.
@@ -70,7 +77,8 @@ or additions to this common policy, in order to avoid redundancy.
   is never sent together with the archive.
 
 ### Control Flow Rules
-- Use explicit termination (`exit`, `sys.exit`, `exit()`) **only for abnormal or forced termination**.
+- Use explicit termination (`exit`, `sys.exit`, `exit()`) **only for abnormal or
+  forced termination**.
 - Normal execution paths must return normally and propagate status explicitly.
 - Do not rely on implicit termination or language-specific shortcuts
   (e.g. `set -e` in shell, bare `except` in Python).
@@ -117,10 +125,12 @@ or additions to this common policy, in order to avoid redundancy.
   Reserved by the shell. Do not redefine.
 
 - **128 and above: Signal-related termination**
-  Reserved by convention (128 + signal number). Do not use for application-defined errors.
+  Reserved by convention (128 + signal number). Do not use for
+  application-defined errors.
 
 > If finer-grained classification is truly required, `sysexits` codes (64–78)
-> may be used, but must be explicitly documented in the script or program header.
+> may be used, but must be explicitly documented in the script or program
+> header.
 
 ### Documentation and Versioning
 - Every executable must contain a structured header block, delimited above and
@@ -156,7 +166,8 @@ or additions to this common policy, in order to avoid redundancy.
 - Documentation must be updated in sync with behavior changes.
 
 #### When to Bump an Executable Version
-- The following rules apply to the version history in each executable's structured header.
+- The following rules apply to the version history in each executable's
+  structured header.
 - Repository release versions and Git tags follow the separate rules below.
 - Do not bump the version mechanically every time a file is touched. Decide
   based on the nature of the change:
@@ -189,7 +200,8 @@ or additions to this common policy, in order to avoid redundancy.
 
 #### Repository Versioning
 - Repository release versions are independent of individual executable versions.
-- Record repository release versions in `doc/VERSIONS` and use the same versions for Git tags.
+- Record repository release versions in `doc/VERSIONS` and use the same versions
+  for Git tags.
 - Repository release versions may use a three-level `major.minor.patch` scheme.
 - A release that carries an incompatible change to any script takes the next
   `major`, on the same reasoning as an executable version.
@@ -336,11 +348,14 @@ or additions to this common policy, in order to avoid redundancy.
   input.
 
 ### Testing and Operation
-- Test code must include a "Test Cases" section placed immediately before "Version History".
+- Test code must include a "Test Cases" section placed immediately before
+  "Version History".
 - Test Cases must describe executable scenarios and expected behavior.
-- Assume cron execution by default; define `PATH` and required environment variables explicitly.
+- Assume cron execution by default; define `PATH` and required environment
+  variables explicitly.
 - Validation must include syntax checks and exit-code verification.
-- In plugin-based systems, loaders must collect and propagate plugin return codes.
+- In plugin-based systems, loaders must collect and propagate plugin return
+  codes.
 - `run_tests.sh` is the entry point of the suite. It runs the Python tests and
   the Ruby specs under `test/` for one interpreter pair, reports the counts,
   and exits non-zero when any of them fails.
@@ -404,14 +419,18 @@ check_commands() {
 - For network operations, verify connectivity before execution.
 
 ### Logging Style
-- Shell scripts must keep normal log output based on `[INFO]`, `[WARN]`, and `[ERROR]`.
+- Shell scripts must keep normal log output based on `[INFO]`, `[WARN]`, and
+  `[ERROR]`.
 - Shell scripts must not timestamp every log message.
-- Timestamped progress logs are used only at major start and finish points of long-running operations.
-- This natural sentence style is intentional. If every message were timestamped, a fully
-  structured format such as `2026-05-25 00:00:00 [INFO] message` would be more appropriate.
-- Because timestamps are added only to selected progress messages, placing them at the end
-  preserves consistency with surrounding non-timestamped log output.
-- Timestamped informational progress logs must use the following POSIX-compliant helper:
+- Timestamped progress logs are used only at major start and finish points of
+  long-running operations.
+- This natural sentence style is intentional. If every message were timestamped,
+  a fully structured format such as `2026-05-25 00:00:00 [INFO] message` would
+  be more appropriate.
+- Because timestamps are added only to selected progress messages, placing them
+  at the end preserves consistency with surrounding non-timestamped log output.
+- Timestamped informational progress logs must use the following POSIX-compliant
+  helper:
 
 ```sh
 log_info_time() {
@@ -419,14 +438,17 @@ log_info_time() {
 }
 ```
 
-- Do not write timestamped progress logs by combining `echo -n` and `date` directly.
-- Exceptionally, the fixed job start and end banners in `cron/bin` scripts keep that form,
-  since they frame the whole job rather than report progress within it.
-- Do not store the timestamp in a global variable for reuse across multiple log messages.
+- Do not write timestamped progress logs by combining `echo -n` and `date`
+  directly.
+- Exceptionally, the fixed job start and end banners in `cron/bin` scripts keep
+  that form, since they frame the whole job rather than report progress within
+  it.
+- Do not store the timestamp in a global variable for reuse across multiple log
+  messages.
 - The timestamp must be evaluated each time the helper is called.
 - Use `log_info_time` only where timing context is operationally useful.
-- Use plain `[INFO]`, `[WARN]`, and `[ERROR]` messages for ordinary status messages,
-  short checks, branch decisions, and immediate return-code reporting.
+- Use plain `[INFO]`, `[WARN]`, and `[ERROR]` messages for ordinary status
+  messages, short checks, branch decisions, and immediate return-code reporting.
 
 ### I/O and Side Effects
 - Respect existing temporary file logic and directory structures.
@@ -441,7 +463,8 @@ log_info_time() {
 
 ### Supported Versions and Compatibility
 - Code must fully support Python 3.6+.
-- Backward compatibility down to Python 3.1 is maintained on a best-effort basis and must not break existing behavior intentionally.
+- Backward compatibility down to Python 3.1 is maintained on a best-effort basis
+  and must not break existing behavior intentionally.
 - If compatible with general Python 3.x, documentation must state:
   `Python Version: 3.1 or later`
 - When a required feature raises the minimum, state that version instead,
@@ -487,9 +510,12 @@ log_info_time() {
 - Any compatibility issue detected by `find_pycompat.py` is a failure.
 
 ### Command-Line Option Handling
-- When using `optparse.OptionParser`, supporting `-v` as a shorthand for `--version` is not mandatory.
-- Scripts may choose to support only long options (e.g. `--version`) to avoid ambiguity with future `verbose` semantics.
-- In such cases, behavior and documentation must be consistent, and unsupported short options should fail explicitly.
+- When using `optparse.OptionParser`, supporting `-v` as a shorthand for
+  `--version` is not mandatory.
+- Scripts may choose to support only long options (e.g. `--version`) to avoid
+  ambiguity with future `verbose` semantics.
+- In such cases, behavior and documentation must be consistent, and unsupported
+  short options should fail explicitly.
 
 ---
 
@@ -497,7 +523,8 @@ log_info_time() {
 
 ### Supported Versions and Compatibility
 - Code must fully support Ruby 2.4+.
-- Backward compatibility down to Ruby 2.0 is maintained on a best-effort basis and must not break existing behavior intentionally.
+- Backward compatibility down to Ruby 2.0 is maintained on a best-effort basis
+  and must not break existing behavior intentionally.
 - If compatible with Ruby 2.0, documentation must state:
   `Ruby Version: 2.0 or later`
 - Only when strictly required, state:
@@ -514,8 +541,10 @@ log_info_time() {
 
 ### Dependencies and I/O
 - Depend only on standard libraries.
-- Use `Open3.capture3` for external command execution when stdout, stderr, or exit status must be inspected.
-- `system` may be used only when command output is intentionally ignored and success or failure alone is sufficient.
+- Use `Open3.capture3` for external command execution when stdout, stderr, or
+  exit status must be inspected.
+- `system` may be used only when command output is intentionally ignored and
+  success or failure alone is sufficient.
 - Always specify UTF-8 encoding for file operations.
 - Follow the destructive operation recommendations of the Common Policy.
 
