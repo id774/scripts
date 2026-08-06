@@ -7,54 +7,89 @@ v2.0.1 (Release Date: TBD)
 - Add .gitattributes, marking the Markdown documents for diff.
 - Add the document file naming and attribute rules to doc/POLICY.
 - Remove etc/pathext.txt, an obsolete list of Windows PATHEXT values.
+- Wrap the lines of this file at 75 columns.
 
 v2.0 (2026-07-31)
 -----------------
-- Preserve sd_extract.sh failed file tracking across its find pipeline subshell.
-- Require the configuration file in git-archive-repo.sh and stop auto-creating missing directories.
-- Make recursive directory traversal in swapext.py opt-in via a new -r option.
+- Preserve sd_extract.sh failed file tracking across its find pipeline
+  subshell.
+- Require the configuration file in git-archive-repo.sh and stop
+  auto-creating missing directories.
+- Make recursive directory traversal in swapext.py opt-in via a new -r
+  option.
 - Remove a non-POSIX local keyword from install_dotvim.sh.
-- Treat grep no-match exit code as a valid result in filter_history.sh to avoid spurious failures.
-- Create the yearly destination directory before syncing in dashcam_sync.sh and gpx_sync.sh.
-- Make setup_aliases.sh aliases updates portable and validate mail spool commands.
+- Treat grep no-match exit code as a valid result in filter_history.sh to
+  avoid spurious failures.
+- Create the yearly destination directory before syncing in dashcam_sync.sh
+  and gpx_sync.sh.
+- Make setup_aliases.sh aliases updates portable and validate mail spool
+  commands.
 - Honor a preset ZSH_ROOT in dot_zshrc and skip the search path loop.
-- Specify UTF-8 encoding for html2yaml.py, usershells.py, userlist.py, apache_calculater.py.
-- Exclude symlinks from chmodtree.py ownership normalization; --chown-symlinks opts back in.
-- Adopt the new chmodtree.py symlink policy in the fix-permissions and rsync_backup workflows.
-- Fix png_info.py to process every glob-matched file instead of exiting after the first one.
-- Use sys.executable instead of hardcoded 'python' in png_info_test.py subprocess calls.
-- Replace awk {n,} interval expression in usage() with a portable equivalent for mawk compatibility.
+- Specify UTF-8 encoding for html2yaml.py, usershells.py, userlist.py,
+  apache_calculater.py.
+- Exclude symlinks from chmodtree.py ownership normalization;
+  --chown-symlinks opts back in.
+- Adopt the new chmodtree.py symlink policy in the fix-permissions and
+  rsync_backup workflows.
+- Fix png_info.py to process every glob-matched file instead of exiting
+  after the first one.
+- Use sys.executable instead of hardcoded 'python' in png_info_test.py
+  subprocess calls.
+- Replace awk {n,} interval expression in usage() with a portable
+  equivalent for mawk compatibility.
 - Refactor Ruby scripts for consistency.
-- Use explicit JST conversion in unixtime2date.py for deterministic timestamp output.
-- Validate pyping.py host ranges and handle ping execution failures as unreachable hosts.
-- Harden unzip_subdir.py extraction and return a non-zero exit status when any archive fails.
-- Quote file and directory paths in pyck.py before interpolating them into shell commands.
-- Support Markdown reference links in fix_anchor.py in addition to HTML anchors.
-- Improve run_tests.sh path initialization, failure detection, and Python interpreter fallback.
-- Add apache_blog_analysis.py to report asset-confirmed blog page views and estimated sessions.
-- Deduplicate Blog Entry Access logic and align ignore-list resolution across the Apache scripts.
-- Report the failing helper and aggregate its exit status in cron/bin/apache_log_analysis.
-- Add regression tests for run_tests.sh and the Apache log analysis scripts.
-- Reorder the common policy so exit-code conventions follow the general CLI rules.
-- Align POLICY with actual practice for Ruby and Python minimum versions and shell logging.
+- Use explicit JST conversion in unixtime2date.py for deterministic
+  timestamp output.
+- Validate pyping.py host ranges and handle ping execution failures as
+  unreachable hosts.
+- Harden unzip_subdir.py extraction and return a non-zero exit status when
+  any archive fails.
+- Quote file and directory paths in pyck.py before interpolating them into
+  shell commands.
+- Support Markdown reference links in fix_anchor.py in addition to HTML
+  anchors.
+- Improve run_tests.sh path initialization, failure detection, and Python
+  interpreter fallback.
+- Add apache_blog_analysis.py to report asset-confirmed blog page views and
+  estimated sessions.
+- Deduplicate Blog Entry Access logic and align ignore-list resolution
+  across the Apache scripts.
+- Report the failing helper and aggregate its exit status in
+  cron/bin/apache_log_analysis.
+- Add regression tests for run_tests.sh and the Apache log analysis
+  scripts.
+- Reorder the common policy so exit-code conventions follow the general CLI
+  rules.
+- Align POLICY with actual practice for Ruby and Python minimum versions
+  and shell logging.
 
 v1.7.2 (2026-06-30)
 -------------------
-- Remove automatic TrueCrypt and VeraCrypt installation from the Debian setup workflow.
+- Remove automatic TrueCrypt and VeraCrypt installation from the Debian
+  setup workflow.
 - Preserve raw code elements during HTML formatting in format_html.py.
-- Rework filesystem layout and update rsync_backup configuration mount paths accordingly.
-- Improve chmodtree.py performance and add mismatch-only permission and ownership normalization.
-- Use chmodtree-based mismatch-only normalization in fix-permissions.conf to reduce repeated metadata updates.
-- Change format_html.py to overwrite the input file in place when only one argument is given.
+- Rework filesystem layout and update rsync_backup configuration mount
+  paths accordingly.
+- Improve chmodtree.py performance and add mismatch-only permission and
+  ownership normalization.
+- Use chmodtree-based mismatch-only normalization in fix-permissions.conf
+  to reduce repeated metadata updates.
+- Change format_html.py to overwrite the input file in place when only one
+  argument is given.
 
 v1.7.1 (2026-05-26)
 -------------------
 - Document and normalize cleanup retention policies.
-- Rework backup synchronization for the LUKS-based base/extended storage layout.
-- Split Git repository archive operations into an independent workflow with dedicated configuration.
-- Centralize protected storage updates in backup workflows and stop direct mounted storage writes from helper scripts.
-- Normalize permission handling across backup, synchronization, and encrypted storage workflows.
-- Standardize timestamped progress logging for long-running maintenance operations.
+- Rework backup synchronization for the LUKS-based base/extended storage
+  layout.
+- Split Git repository archive operations into an independent workflow with
+  dedicated configuration.
+- Centralize protected storage updates in backup workflows and stop direct
+  mounted storage writes from helper scripts.
+- Normalize permission handling across backup, synchronization, and
+  encrypted storage workflows.
+- Standardize timestamped progress logging for long-running maintenance
+  operations.
 
 v1.7 (2026-05-01)
 -----------------
@@ -65,88 +100,141 @@ v1.6.6 (2026-04-29)
 - Add apt sources list configuration for Ubuntu 26.04 LTS.
 - Add Remmina keybinding for both GNOME and Xfce environments.
 - Add utility to normalize HTML structure with section separators.
-- Rename default postfix rsyslog socket config to 10-postfix-socket.conf and deploy postfix-only routing.
+- Rename default postfix rsyslog socket config to 10-postfix-socket.conf
+  and deploy postfix-only routing.
 - Enforce rsyslog logrotate policy and journald storage limits.
-- Adopt FQDN-based naming and deploy Apache configs from fixed templates with host-specific installation.
-- Stop overriding internal encoding in Vim configuration to ensure stable UTF-8 behavior.
+- Adopt FQDN-based naming and deploy Apache configs from fixed templates
+  with host-specific installation.
+- Stop overriding internal encoding in Vim configuration to ensure stable
+  UTF-8 behavior.
 - Normalize Python invocation across scripts and tests.
 
 v1.6.5 (2026-03-28)
 -------------------
-- Add format_html.py to format HTML with normalized indentation and inline element handling.
+- Add format_html.py to format HTML with normalized indentation and inline
+  element handling.
 - Add fix_anchor.py to normalize reference anchor placement.
-- Add enhanced DNS reporting using nmcli and align output behavior with get_resources.sh.
-- Switch SSHD checks to sshd -T, add public key settings, and report TCP Wrappers effectiveness in check_sshd_config.sh.
-- Replace legacy artwork packages with Papirus icon and Bibata cursor themes.
-- Replace legacy X11 bitmap fonts with DejaVu and IPAex in desktop installer.
-- Switch Xfce4 Terminal font from Bitstream Vera Sans Mono to DejaVu Sans Mono.
-- Update GNOME Flashback setup to hide Home/Trash icons using gnome-flashback desktop keys.
+- Add enhanced DNS reporting using nmcli and align output behavior with
+  get_resources.sh.
+- Switch SSHD checks to sshd -T, add public key settings, and report TCP
+  Wrappers effectiveness in check_sshd_config.sh.
+- Replace legacy artwork packages with Papirus icon and Bibata cursor
+  themes.
+- Replace legacy X11 bitmap fonts with DejaVu and IPAex in desktop
+  installer.
+- Switch Xfce4 Terminal font from Bitstream Vera Sans Mono to DejaVu Sans
+  Mono.
+- Update GNOME Flashback setup to hide Home/Trash icons using
+  gnome-flashback desktop keys.
 - Handle missing /opt/python and /opt/ruby directories.
 - Harden fix-permissions.conf for cron and security config files.
-- Refine bare-domain redirect to preserve request URI and prevent double slashes in Apache configuration.
-- Refine POLICY to enforce documentation structure, separate Test Cases from production code, and consolidate version entries per date.
+- Refine bare-domain redirect to preserve request URI and prevent double
+  slashes in Apache configuration.
+- Refine POLICY to enforce documentation structure, separate Test Cases
+  from production code, and consolidate version entries per date.
 
 v1.6.4 (2026-02-27)
 -------------------
 - Add GNOME Shell setup script to apply GNOME settings in user sessions.
-- Add confirmation prompts before applying settings in GNOME and Xfce setup scripts.
-- Add --gnome support to desktop setup launcher and align with debian_init.sh options.
+- Add confirmation prompts before applying settings in GNOME and Xfce setup
+  scripts.
+- Add --gnome support to desktop setup launcher and align with
+  debian_init.sh options.
 - Add Remmina remote desktop client packages to desktop installer.
-- Align xfce4-terminal default font with Emacs using Bitstream Vera Sans Mono.
+- Align xfce4-terminal default font with Emacs using Bitstream Vera Sans
+  Mono.
 - Keep erase_history.py invocation in history when it is the last entry.
 - Integrate erase_history into sysadmin scripts environment.
-- Analyze only explicitly specified Apache log files and support multiple log file arguments.
-- Abort installation when SSL Apache logs are missing under /var/log/apache2.
-- Avoid unintended word splitting when appending the rotated log path in cron execution.
-- Remove frequently used cursor-movement escape bindings (^A, ^B, ^E) to prevent accidental triggers.
-- Remove preflight network connectivity checks from installer scripts due to environment-dependent failures.
+- Analyze only explicitly specified Apache log files and support multiple
+  log file arguments.
+- Abort installation when SSL Apache logs are missing under
+  /var/log/apache2.
+- Avoid unintended word splitting when appending the rotated log path in
+  cron execution.
+- Remove frequently used cursor-movement escape bindings (^A, ^B, ^E) to
+  prevent accidental triggers.
+- Remove preflight network connectivity checks from installer scripts due
+  to environment-dependent failures.
 
 v1.6.3 (2026-01-30)
 -------------------
 - Add erase_history.py for quick removal of recent zsh history lines.
-- Add check_header_doc.py to detect missing comment markers in header documentation blocks.
-- Add check_reboot.sh to detect reboot requirements using both reboot-required flag and needrestart.
-- Add wp_cachectl.py to provide event-driven WordPress cache control via WP-CLI.
-- Make apache_log_analysis wrapper tolerant of missing rotated logs and clarify rotated-log IP hit labeling.
-- Make apache log summaries configurable for top-N output and remove limits in cron execution.
-- Add blog entry access aggregation and reorganize apache_log_analysis.sh reporting into dedicated output functions.
-- Fix apache_log_analysis.sh filtering and parsing to prevent skewed summaries (remove https-only input, safer ignore matching, robust referer extraction).
-- Fix apache_calculater.py ignore list parsing and combined-log field extraction to keep IP hits and cache rates accurate.
-- Document test cases explicitly in all test scripts for consistent header documentation.
-- Refine implementation POLICY by centralizing common rules (logging, exit codes, CLI, documentation) and clarifying language-specific responsibilities.
+- Add check_header_doc.py to detect missing comment markers in header
+  documentation blocks.
+- Add check_reboot.sh to detect reboot requirements using both
+  reboot-required flag and needrestart.
+- Add wp_cachectl.py to provide event-driven WordPress cache control via
+  WP-CLI.
+- Make apache_log_analysis wrapper tolerant of missing rotated logs and
+  clarify rotated-log IP hit labeling.
+- Make apache log summaries configurable for top-N output and remove limits
+  in cron execution.
+- Add blog entry access aggregation and reorganize apache_log_analysis.sh
+  reporting into dedicated output functions.
+- Fix apache_log_analysis.sh filtering and parsing to prevent skewed
+  summaries (remove https-only input, safer ignore matching, robust referer
+  extraction).
+- Fix apache_calculater.py ignore list parsing and combined-log field
+  extraction to keep IP hits and cache rates accurate.
+- Document test cases explicitly in all test scripts for consistent header
+  documentation.
+- Refine implementation POLICY by centralizing common rules (logging, exit
+  codes, CLI, documentation) and clarifying language-specific
+  responsibilities.
 
 v1.6.2 (2025-12-31)
 -------------------
 - Add multi-language implementation policy to POLICY document.
-- Inline error handling in get-serial.sh, get-device.sh and get-mountpoint.sh.
+- Inline error handling in get-serial.sh, get-device.sh and
+  get-mountpoint.sh.
 - Unify log format in get_resources.sh.
-- Focus ps output on RSS-heavy processes for hourly resource monitoring in get_resources.sh.
-- Add ncal, calendar, and bsdextrautils as explicit replacements for deprecated bsdmainutils.
-- Exclude static asset requests (CSS, JS, fonts, images) from Apache access log analysis to focus on meaningful page views.
-- Split client cache percentage into static vs non-static requests in apache_calculater.py to separate asset caching from page-like traffic.
-- Adopt dearmored key under /usr/share/keyrings in gpg-import.sh and enable signed-by method.
-- Auto-detect upstream default branch and merge via a unique temp branch in git-follow-origin.sh.
-- Resolve Homebrew prefix dynamically and operate only on existing paths in fix/unfix_compinit.sh.
-- Harden setup_scripts.sh to skip missing directories while preserving idempotency.
+- Focus ps output on RSS-heavy processes for hourly resource monitoring in
+  get_resources.sh.
+- Add ncal, calendar, and bsdextrautils as explicit replacements for
+  deprecated bsdmainutils.
+- Exclude static asset requests (CSS, JS, fonts, images) from Apache access
+  log analysis to focus on meaningful page views.
+- Split client cache percentage into static vs non-static requests in
+  apache_calculater.py to separate asset caching from page-like traffic.
+- Adopt dearmored key under /usr/share/keyrings in gpg-import.sh and enable
+  signed-by method.
+- Auto-detect upstream default branch and merge via a unique temp branch in
+  git-follow-origin.sh.
+- Resolve Homebrew prefix dynamically and operate only on existing paths in
+  fix/unfix_compinit.sh.
+- Harden setup_scripts.sh to skip missing directories while preserving
+  idempotency.
 - Improve safety and efficiency of cleanup-junk-files.sh.
-- Fix alert flag on unknown timestamps to honor VM exclusion policy in server_alive_check.sh.
-- Purge $HOME/.cache without find traversal races and document .cache policy in cltmp.sh.
+- Fix alert flag on unknown timestamps to honor VM exclusion policy in
+  server_alive_check.sh.
+- Purge $HOME/.cache without find traversal races and document .cache
+  policy in cltmp.sh.
 - Brush up multiple scripts for consistency and robustness.
 
 v1.6.1 (2025-10-24)
 -------------------
-- Add setup_rsyslog_logrotate.sh to enforce daily rotation with 90 copies for rsyslog logs.
-- Add setup_ntp_restart_policy.sh to enforce Restart on failure for NTP services.
-- Add optional post check via SERVER_ALIVE_CHECK executed after main in get_resources.
-- Remove fail2ban.log monitoring from get_resources.sh and replace cpuinfo dump with concise core count display.
-- Remove setup_chkrootkit_opts.sh since quiet mode (-q) is no longer applied.
-- Harden awstats installer by adding directory check and refining log permission handling in install_awstats.sh.
-- Refine dotfiles installer bulk_deploy to chmod only top level home directories.
-- Fix command check and skip when tracker is not installed with INFO message in remove-tracker.sh.
+- Add setup_rsyslog_logrotate.sh to enforce daily rotation with 90 copies
+  for rsyslog logs.
+- Add setup_ntp_restart_policy.sh to enforce Restart on failure for NTP
+  services.
+- Add optional post check via SERVER_ALIVE_CHECK executed after main in
+  get_resources.
+- Remove fail2ban.log monitoring from get_resources.sh and replace cpuinfo
+  dump with concise core count display.
+- Remove setup_chkrootkit_opts.sh since quiet mode (-q) is no longer
+  applied.
+- Harden awstats installer by adding directory check and refining log
+  permission handling in install_awstats.sh.
+- Refine dotfiles installer bulk_deploy to chmod only top level home
+  directories.
+- Fix command check and skip when tracker is not installed with INFO
+  message in remove-tracker.sh.
 - Fix Exec quoting in xset-rate.desktop to avoid parse error in autostart.
-- Emit only existing sysctl keys add Debian 13 notes keep tcp timestamps enabled in configure_sysctl.sh.
+- Emit only existing sysctl keys add Debian 13 notes keep tcp timestamps
+  enabled in configure_sysctl.sh.
 - Normalize chmod numeric modes to four digit octal across shell scripts.
-- Standardize all shell scripts by removing trailing exit status lines (exit $?) for POSIX-safe reuse.
+- Standardize all shell scripts by removing trailing exit status lines
+  (exit $?) for POSIX-safe reuse.
 
 v1.6 (2025-09-29)
 -----------------
@@ -155,238 +243,366 @@ v1.6 (2025-09-29)
 v1.5.3 (2025-09-26)
 -------------------
 - Add dynamic download URL generation from host FQDN in send_files.sh.
-- Add multi host rsync support in gpx_sync.sh via RSYNC_HOSTS with fallback to RSYNC_HOST.
-- Add multi target sync with local reflection and silent log skipping in munin-sync.sh.
-- Enhance server_alive_check.sh to output human readable summary lines with counts and percentages while keeping exit codes unchanged.
-- Use FQDN instead of short hostname for sending directory in install_munin-sync.sh.
+- Add multi host rsync support in gpx_sync.sh via RSYNC_HOSTS with fallback
+  to RSYNC_HOST.
+- Add multi target sync with local reflection and silent log skipping in
+  munin-sync.sh.
+- Enhance server_alive_check.sh to output human readable summary lines with
+  counts and percentages while keeping exit codes unchanged.
+- Use FQDN instead of short hostname for sending directory in
+  install_munin-sync.sh.
 - Fix group ownership and command checks in install-munin-symlink.sh.
-- Reduce logrotate retention across apache and backup logs to more practical levels.
-- Add miscellaneous configuration additions and minor adjustments across scripts.
+- Reduce logrotate retention across apache and backup logs to more
+  practical levels.
+- Add miscellaneous configuration additions and minor adjustments across
+  scripts.
 
 v1.5.2 (2025-09-11)
 -------------------
 - Add script to rebuild and sign VMware kernel modules for Secure Boot.
-- Add debian_xfce_setup.sh to configure Xfce desktop settings with keybindings and autostart entries.
-- Add debian_gnome_flashback_setup.sh to configure GNOME Flashback desktop settings with keybindings and session tweaks.
-- Update debian_init.sh to replace --with-desktop with --xfce or --gnome-flashback and pass the option through to desktop setup.
-- Refine debian_desktop_setup.sh to dispatch to per desktop setup scripts based on --xfce or --gnome-flashback.
-- Add install_google_chrome.sh for Debian to add the Google repository and install google-chrome-stable with keyring verification and idempotent behavior.
+- Add debian_xfce_setup.sh to configure Xfce desktop settings with
+  keybindings and autostart entries.
+- Add debian_gnome_flashback_setup.sh to configure GNOME Flashback desktop
+  settings with keybindings and session tweaks.
+- Update debian_init.sh to replace --with-desktop with --xfce or
+  --gnome-flashback and pass the option through to desktop setup.
+- Refine debian_desktop_setup.sh to dispatch to per desktop setup scripts
+  based on --xfce or --gnome-flashback.
+- Add install_google_chrome.sh for Debian to add the Google repository and
+  install google-chrome-stable with keyring verification and idempotent
+  behavior.
 - Add confirmation prompt before deploying DoS guard configurations.
-- Add xmap command to run xmodmap internally and integrate into system scripts.
-- Add www only option and make selector flags additive with all including www in git-all-pull.sh.
-- Add git-symlink.sh to manage symlinks in home directory for github and git bases.
+- Add xmap command to run xmodmap internally and integrate into system
+  scripts.
+- Add www only option and make selector flags additive with all including
+  www in git-all-pull.sh.
+- Add git-symlink.sh to manage symlinks in home directory for github and
+  git bases.
 - Add get-serial utility to print disk serial number from a device path.
 - Add get-mountpoint utility to resolve mountpoint from a device path.
 - Add get-device utility to resolve base block device from mountpoint.
 - Use get-device for dynamic device resolution in rsync_backup.sh.
-- Fix external mount to honor explicit target and preserve legacy container path in tcmount.py.
-- Fix bug where files in the current directory were not handled by execute permission logic in setup_scripts.sh.
-- Update setup_xdg_dirs_en.sh to allow execution by non-sudo users with --no-sudo option.
-- Initialize chkrootkit baseline during installation and remove chkrootkit opts setup.
+- Fix external mount to honor explicit target and preserve legacy container
+  path in tcmount.py.
+- Fix bug where files in the current directory were not handled by execute
+  permission logic in setup_scripts.sh.
+- Update setup_xdg_dirs_en.sh to allow execution by non-sudo users with
+  --no-sudo option.
+- Initialize chkrootkit baseline during installation and remove chkrootkit
+  opts setup.
 
 v1.5.1 (2025-08-29)
 -------------------
 - Add fail2ban and mod_evasive setup script with configuration files.
 - Add setup_rsyslog_postfix.sh to deploy postfix log split config.
-- Update macos_setup.sh header and refine cleanup to remove only bash history.
+- Update macos_setup.sh header and refine cleanup to remove only bash
+  history.
 - Review configuration files and add clarifying entries.
-- Broaden unnecessary files cleanup script and include additional removal targets.
-- Exclude hosts marked as obsolete from monitoring in server_alive_check.sh.
+- Broaden unnecessary files cleanup script and include additional removal
+  targets.
+- Exclude hosts marked as obsolete from monitoring in
+  server_alive_check.sh.
 - Extend dotfiles deployment to include SSH configuration files.
-- Enhance rsync backup process by revising mount program arguments and script constants to increase abstraction level.
+- Enhance rsync backup process by revising mount program arguments and
+  script constants to increase abstraction level.
 
 v1.5 (2025-08-20)
 -----------------
 - Standardize all cron scripts to use /etc/cron.exec and /etc/cron.config.
 - Add --uninstall option to several installer scripts for clean removal.
 - Add kill-ring save file to Emacs cleanup targets in cltmp.sh.
-- Enforce existing su access restriction to the wheel group on Linux for idempotence.
+- Enforce existing su access restriction to the wheel group on Linux for
+  idempotence.
 - Add new config setup scripts and unify their calls in debian_setup.sh.
 - Add two display options to usershells.py for flexible output control.
-- Streamline log output in get_resources.sh by pruning redundant data collection.
-- Enhanced server_alive_check.sh by handling VM hosts separately and adding gstat support on macOS.
-- Fix pattern matching in filter_history.sh by switching to fixed-string grep for safety.
-- Improve robustness of several utility scripts by adding argument validation, file safety checks, and error suppression.
+- Streamline log output in get_resources.sh by pruning redundant data
+  collection.
+- Enhanced server_alive_check.sh by handling VM hosts separately and adding
+  gstat support on macOS.
+- Fix pattern matching in filter_history.sh by switching to fixed-string
+  grep for safety.
+- Improve robustness of several utility scripts by adding argument
+  validation, file safety checks, and error suppression.
 - Standardize case word quoting across all Shell scripts.
-- Review clamscan exclude list and standardize headers for config files under etc.
-- Refine Debian desktop setup in line with Debian 13 Trixie to standardize desktop environment configuration across systems.
+- Review clamscan exclude list and standardize headers for config files
+  under etc.
+- Refine Debian desktop setup in line with Debian 13 Trixie to standardize
+  desktop environment configuration across systems.
 
 v1.4.5 (2025-07-22)
 -------------------
-- Add support for NeoVim installation, enable Vim/NeoVim switching, and allow dot_vim configuration to be applied to NeoVim.
+- Add support for NeoVim installation, enable Vim/NeoVim switching, and
+  allow dot_vim configuration to be applied to NeoVim.
 - Implement test coverage for all Python and Ruby scripts.
-- Standardize termination behavior for consistent script execution across all Python and Ruby scripts.
-- Specify minimum required Python version for all scripts and note that the test suite requires Python 3.6 or later to run successfully.
-- Ensure backward compatibility of select Python scripts down to at least Python 3.4.
-- Specify minimum required Ruby version (2.4 or later) in all applicable script headers.
-- Replace deprecated `Kconv#toutf8` with `String#encode` in convert_msime2canna.rb for compatibility with Ruby 2.0-3.x.
-- Require valid Python and RSpec paths, rejecting invalid explicit inputs and falling back only when unspecified.
+- Standardize termination behavior for consistent script execution across
+  all Python and Ruby scripts.
+- Specify minimum required Python version for all scripts and note that the
+  test suite requires Python 3.6 or later to run successfully.
+- Ensure backward compatibility of select Python scripts down to at least
+  Python 3.4.
+- Specify minimum required Ruby version (2.4 or later) in all applicable
+  script headers.
+- Replace deprecated `Kconv#toutf8` with `String#encode` in
+  convert_msime2canna.rb for compatibility with Ruby 2.0-3.x.
+- Require valid Python and RSpec paths, rejecting invalid explicit inputs
+  and falling back only when unspecified.
 - Add usage test case with -h option to all Python and Ruby test scripts.
-- Extract __version__ from script header in tcmount.py to eliminate hardcoded version.
-- Ensure at least one symbol is included in generated passwords when symbols are enabled.
+- Extract __version__ from script header in tcmount.py to eliminate
+  hardcoded version.
+- Ensure at least one symbol is included in generated passwords when
+  symbols are enabled.
 - Implement safety checks and clarify required dot prefix in swapext.py.
-- Add emergencyadmin and munin users to dotfiles deployment and fix ownership handling for macOS users.
+- Add emergencyadmin and munin users to dotfiles deployment and fix
+  ownership handling for macOS users.
 - Add support for deploying ~/.ssh/config to target users if it exists.
-- Suppress git pull warning by explicitly setting rebase to false in dot_gitconfig.
-- Sort server list in server_alive_check output by ascending filename in server_alive_check.sh.
-- Unify usage semantics and simplify source-saving behavior across installer scripts.
-- Standardize comments in Shell scripts to start with verbs instead of using 'Function to' phrasing.
-- Reorder script headers to place usage and requirements before version history for improved readability.
+- Suppress git pull warning by explicitly setting rebase to false in
+  dot_gitconfig.
+- Sort server list in server_alive_check output by ascending filename in
+  server_alive_check.sh.
+- Unify usage semantics and simplify source-saving behavior across
+  installer scripts.
+- Standardize comments in Shell scripts to start with verbs instead of
+  using 'Function to' phrasing.
+- Reorder script headers to place usage and requirements before version
+  history for improved readability.
 
 v1.4.4 (2025-06-26)
 -------------------
-- Update Shell scripts and Python/Ruby scripts to display full header block as help message.
-- Improve script reliability by explicitly returning exit codes in all main functions.
+- Update Shell scripts and Python/Ruby scripts to display full header block
+  as help message.
+- Improve script reliability by explicitly returning exit codes in all main
+  functions.
 - Add several new Python and Ruby test scripts.
-- Add create_emergencyadmin.sh for secure creation of a fallback admin user with SecureToken and FileVault access.
-- Add device serial display using udevadm and improve smartctl USB compatibility in rsync_backup.sh.
+- Add create_emergencyadmin.sh for secure creation of a fallback admin user
+  with SecureToken and FileVault access.
+- Add device serial display using udevadm and improve smartctl USB
+  compatibility in rsync_backup.sh.
 - Externalize archive paths and unify rsync variables in rsync_backup.sh.
-- Recreate .vim directory before install to ensure clean setup in install_dotvim.sh.
+- Recreate .vim directory before install to ensure clean setup in
+  install_dotvim.sh.
 - Fix joblog writability check after config load in run_tests.
 - Fix incorrect Ruby test case counting in run_tests.sh.
-- Fix missing execute permission handling for all files under scripts/installer in setup_scripts.sh.
+- Fix missing execute permission handling for all files under
+  scripts/installer in setup_scripts.sh.
 
 v1.4.3 (2025-05-30)
 -------------------
-- Add send_files.sh script to securely archive a directory and send it via Gmail with external config support.
-- Enhance server_alive_check.sh to show timestamps and status per file with summary result and configurable threshold.
-- Enhance get_resources.sh to suppress repeated munin or git entries in auth.log output.
-- Add disable_freshclam_syslog.sh to suppress freshclam output to syslog via systemd override.
+- Add send_files.sh script to securely archive a directory and send it via
+  Gmail with external config support.
+- Enhance server_alive_check.sh to show timestamps and status per file with
+  summary result and configurable threshold.
+- Enhance get_resources.sh to suppress repeated munin or git entries in
+  auth.log output.
+- Add disable_freshclam_syslog.sh to suppress freshclam output to syslog
+  via systemd override.
 - Add cron.log and Apache logs to munin-sync local log synchronization.
-- Modify sync_local_logs in munin-sync.sh to include *.log.1 files while excluding *.log.2 and older logs.
-- Restrict cron file permissions by removing all rights from others, allowing only read for group, and changing group ownership to adm.
-- Add return 0 to all main functions and exit $? at end of all cron scripts for consistent exit status handling.
-- Add is_joblog_writable check to all cron scripts for early failure on unwritable log files.
-- Refactor all cron scripts to unify structure: POSIX compliance, function-based design, cron execution check, and usage display.
-- Refactor setup_scripts.sh to use find-based permission setting and grant execute permission to all scripts/cron/bin files.
-- Refactor fix-permissions.sh to load config from /etc/cron.config and update installer and log message format.
-- Refactor sudoers to reduced timestamp_timeout, improved passprompt and restricted NOPASSWD to safe commands only.
-- Replaced all uses of 'which' with POSIX-compliant 'command -v' across scripts for improved compatibility.
+- Modify sync_local_logs in munin-sync.sh to include *.log.1 files while
+  excluding *.log.2 and older logs.
+- Restrict cron file permissions by removing all rights from others,
+  allowing only read for group, and changing group ownership to adm.
+- Add return 0 to all main functions and exit $? at end of all cron scripts
+  for consistent exit status handling.
+- Add is_joblog_writable check to all cron scripts for early failure on
+  unwritable log files.
+- Refactor all cron scripts to unify structure: POSIX compliance,
+  function-based design, cron execution check, and usage display.
+- Refactor setup_scripts.sh to use find-based permission setting and grant
+  execute permission to all scripts/cron/bin files.
+- Refactor fix-permissions.sh to load config from /etc/cron.config and
+  update installer and log message format.
+- Refactor sudoers to reduced timestamp_timeout, improved passprompt and
+  restricted NOPASSWD to safe commands only.
+- Replaced all uses of 'which' with POSIX-compliant 'command -v' across
+  scripts for improved compatibility.
 
 v1.4.2 (2025-04-29)
 -------------------
-- Add check_scripts.sh to validate installer scripts with POSIX-compliant structure and sequential help-option testing.
-- Rewrite run_tests.sh for full POSIX compliance by removing Bash-specific syntax and structures.
-- Modify test iteration to pair each Python version with the corresponding Ruby version in run_tests.
+- Add check_scripts.sh to validate installer scripts with POSIX-compliant
+  structure and sequential help-option testing.
+- Rewrite run_tests.sh for full POSIX compliance by removing Bash-specific
+  syntax and structures.
+- Modify test iteration to pair each Python version with the corresponding
+  Ruby version in run_tests.
 - Add munin-sync.sh for synchronizing Munin data and logs to remote server.
 - Add munin-symlink.sh for dynamic monitoring target management in Munin.
 - Add server_alive_check.sh for server availability monitoring.
-- Add `rsync` installation via Homebrew to support full-featured GNU rsync instead of openrsync in macOS.
-- Enhance security by excluding /usr/local/bin from secure_path in sudoers template of macOS.
-- Fix SyntaxWarning in unzip_subdir.py by using raw string for regex in re.sub.
-- Fix inaccurate rsync return code logging by assigning RC immediately after execution in rsync_backup.sh.
-- Rename rsync_backup to rsync_backup.log and update logrotate configuration to preserve numbered rotation format.
+- Add `rsync` installation via Homebrew to support full-featured GNU rsync
+  instead of openrsync in macOS.
+- Enhance security by excluding /usr/local/bin from secure_path in sudoers
+  template of macOS.
+- Fix SyntaxWarning in unzip_subdir.py by using raw string for regex in
+  re.sub.
+- Fix inaccurate rsync return code logging by assigning RC immediately
+  after execution in rsync_backup.sh.
+- Rename rsync_backup to rsync_backup.log and update logrotate
+  configuration to preserve numbered rotation format.
 - Remove smb.py script as it is no longer in use.
-- Rewrite swapext.py with dry-run mode, safety prompt, and OptionParser integration.
-- Prevent overwriting existing configuration files in multiple installer scripts to ensure safe redeployment.
-- Ensure idempotency of crontab setups, maintaining consistent behavior regardless of the scheduled day or time.
+- Rewrite swapext.py with dry-run mode, safety prompt, and OptionParser
+  integration.
+- Prevent overwriting existing configuration files in multiple installer
+  scripts to ensure safe redeployment.
+- Ensure idempotency of crontab setups, maintaining consistent behavior
+  regardless of the scheduled day or time.
 - Transition ClamAV cron setup from /etc/cron.weekly to /etc/cron.weekend.
-- Standardize log level tags as [INFO], [WARN], and [ERROR] across all scripts.
-- Add detailed [INFO] log messages to many installer scripts to improve traceability during execution.
-- Redirect error messages to stderr across scripts for improved log handling and automation support.
-- Add strict error handling across installer scripts to ensure proper validation of operations.
+- Standardize log level tags as [INFO], [WARN], and [ERROR] across all
+  scripts.
+- Add detailed [INFO] log messages to many installer scripts to improve
+  traceability during execution.
+- Redirect error messages to stderr across scripts for improved log
+  handling and automation support.
+- Add strict error handling across installer scripts to ensure proper
+  validation of operations.
 
 v1.4.1 (2025-03-28)
 -------------------
 - Add startup screen window to display prefix key and custom key bindings.
 - Move this history file to doc directory and rename it to VERSIONS.
-- Add apply and force apply options and encapsulate logic in main function in configure_sysctl script.
-- Add setup_iptables.sh to install and apply default iptables rules with persistence.
+- Add apply and force apply options and encapsulate logic in main function
+  in configure_sysctl script.
+- Add setup_iptables.sh to install and apply default iptables rules with
+  persistence.
 - Integrate iptables setup into initial system configuration process.
-- Add setup script for custom Munin plugin process_monitoring and revise plugin installation flow.
-- Create new installer for NLP stack under /opt/mecab-stack and remove legacy /usr/local-based installers.
+- Add setup script for custom Munin plugin process_monitoring and revise
+  plugin installation flow.
+- Create new installer for NLP stack under /opt/mecab-stack and remove
+  legacy /usr/local-based installers.
 - Minor improvements and formatting adjustments.
 
 v1.4 (2025-03-23)
 -----------------
 - Added home directory cleanup and command check in cltmp.sh.
-- Refactored many scripts to be POSIX compliant and improved maintainability.
-- Overhauled Debian setup scripts for better idempotency and system compatibility.
-- Organized and streamlined numerous installation scripts, strengthening environment checks.
+- Refactored many scripts to be POSIX compliant and improved
+  maintainability.
+- Overhauled Debian setup scripts for better idempotency and system
+  compatibility.
+- Organized and streamlined numerous installation scripts, strengthening
+  environment checks.
 - Improved sudo privilege handling and added necessary validations.
-- Enhanced error messages by redirecting them to stderr for better logging and debugging.
-- Updated screen prefix keys with Ctrl as the modifier where t is the main key and a, b, e, o, q, v, w, x, y, and z are additional keys.
+- Enhanced error messages by redirecting them to stderr for better logging
+  and debugging.
+- Updated screen prefix keys with Ctrl as the modifier where t is the main
+  key and a, b, e, o, q, v, w, x, y, and z are additional keys.
 - Unify usage information by extracting help text from header comments.
-- Switched the repository license from LGPLv3 to a dual license under GPLv3 or LGPLv3, and updated related documentation.
+- Switched the repository license from LGPLv3 to a dual license under GPLv3
+  or LGPLv3, and updated related documentation.
 
 v1.3.2 (2025-02-27)
 -------------------
 - Added brew-upgrade.sh for Homebrew maintenance automation.
 - Added create_ubygems.sh for compatibility with older Vim plugins.
-- Added els.py and its test suite els_test.py for extended file listing with timestamps.
+- Added els.py and its test suite els_test.py for extended file listing
+  with timestamps.
 - Added remove-tracker.sh to forcibly stop and remove Tracker from Debian.
 - Moved one-time setup scripts to the installer directory.
 - Added insta_video_downloader.py for downloading Instagram videos only.
-- Improved .gitconfig by replacing hardcoded paths with ~/.gitignore and adjusting diff colors.
+- Improved .gitconfig by replacing hardcoded paths with ~/.gitignore and
+  adjusting diff colors.
 - Disabled netrw history file creation by setting g:netrw_dirhistmax to 0.
 - Improved install_dotfiles.sh to ensure idempotency.
 - Added toggle_ipv6_macos.sh for enabling/disabling IPv6 on macOS.
-- Added configure_sysctl.sh for disabling IPv6 and enhancing security settings on GNU/Linux.
-- Added filter_history.sh to remove specific entries from Zsh history with backup and diff support.
-- Refactored gsettings_set_org_gnome_desktop.sh for improved GNOME settings management.
-- Refactored multiple scripts for improved readability, error handling, and configurability.
+- Added configure_sysctl.sh for disabling IPv6 and enhancing security
+  settings on GNU/Linux.
+- Added filter_history.sh to remove specific entries from Zsh history with
+  backup and diff support.
+- Refactored gsettings_set_org_gnome_desktop.sh for improved GNOME settings
+  management.
+- Refactored multiple scripts for improved readability, error handling, and
+  configurability.
 
 v1.3.1 (2025-01-24)
 -------------------
-- Improved the "Running:" message in insta_update.sh to display the absolute path of the target subdirectory.
-- Added support for detecting and displaying AllowUsers configuration in check_sshd_config.sh.
+- Improved the "Running:" message in insta_update.sh to display the
+  absolute path of the target subdirectory.
+- Added support for detecting and displaying AllowUsers configuration in
+  check_sshd_config.sh.
 - Added restart-sshd as a system command in setup_sysadmin_scripts.sh.
-- Added list_file_counts.py for calculating file counts in subdirectories and its corresponding test code.
-- Added --ordered option in pyping.py to display ping results in ascending IP order.
-- Added test cases and enhancements to multiple scripts, including support for additional scenarios and improved test coverage.
-- Enhanced run_tests.sh to display Python and Ruby versions and skipped test cases in reports.
-- Enabled GNU-style file listing on macOS by adding Coreutils to Homebrew defaults.
-- Refactored several scripts for bulk installation of packages, improving maintainability and efficiency.
-- Removed multiple macports-related scripts following the transition to Homebrew as the default package manager.
-- Updated fix_compinit.sh for Zsh security settings and created unfix_compinit.sh for Homebrew permissions.
-- Improved the structure and detail of the README.md for better user guidance.
-- Fixed wildcard handling in `rm` commands within cltmp.sh to ensure proper file deletion.
+- Added list_file_counts.py for calculating file counts in subdirectories
+  and its corresponding test code.
+- Added --ordered option in pyping.py to display ping results in ascending
+  IP order.
+- Added test cases and enhancements to multiple scripts, including support
+  for additional scenarios and improved test coverage.
+- Enhanced run_tests.sh to display Python and Ruby versions and skipped
+  test cases in reports.
+- Enabled GNU-style file listing on macOS by adding Coreutils to Homebrew
+  defaults.
+- Refactored several scripts for bulk installation of packages, improving
+  maintainability and efficiency.
+- Removed multiple macports-related scripts following the transition to
+  Homebrew as the default package manager.
+- Updated fix_compinit.sh for Zsh security settings and created
+  unfix_compinit.sh for Homebrew permissions.
+- Improved the structure and detail of the README.md for better user
+  guidance.
+- Fixed wildcard handling in `rm` commands within cltmp.sh to ensure proper
+  file deletion.
 
 v1.3 (2024-12-25)
 -----------------
-- Add customizable --sleep option with default 10 seconds between downloads in instagram downloader.
-- Added '-fp' option to list only the full path and filename without modification time in find_range.py.
-- Added error handling for command execution and fail2ban status checks in get_resources.sh.
-- Refactored cltmp.sh to simplify cleanup logic using loops and improve maintainability.
-- Added apt-upgrade.sh script for automating Debian-based system updates and upgrades with environment checks.
-- Added fix-permissions.sh script for managing file and directory permissions with logging and email notifications.
-- Added runtime confirmation feature to flatdirs.py to enhance execution safety.
+- Add customizable --sleep option with default 10 seconds between downloads
+  in instagram downloader.
+- Added '-fp' option to list only the full path and filename without
+  modification time in find_range.py.
+- Added error handling for command execution and fail2ban status checks in
+  get_resources.sh.
+- Refactored cltmp.sh to simplify cleanup logic using loops and improve
+  maintainability.
+- Added apt-upgrade.sh script for automating Debian-based system updates
+  and upgrades with environment checks.
+- Added fix-permissions.sh script for managing file and directory
+  permissions with logging and email notifications.
+- Added runtime confirmation feature to flatdirs.py to enhance execution
+  safety.
 
 v1.2.5 (2024-11-02)
 -------------------
-- Modified several scripts to display a help message instead of executing in the current directory when no arguments are specified.
-- Fixed account handling in insta_update.sh when specifying an account name as an argument.
-- Refined .screenrc escape sequences: standardized to Ctrl-Y with Ctrl-T as an alternative.
-- Added validation to ensure that the permissions argument is a 3-digit octal number in relevant scripts.
-- Improved handling of trailing slashes and backslashes in account name arguments.
+- Modified several scripts to display a help message instead of executing
+  in the current directory when no arguments are specified.
+- Fixed account handling in insta_update.sh when specifying an account name
+  as an argument.
+- Refined .screenrc escape sequences: standardized to Ctrl-Y with Ctrl-T as
+  an alternative.
+- Added validation to ensure that the permissions argument is a 3-digit
+  octal number in relevant scripts.
+- Improved handling of trailing slashes and backslashes in account name
+  arguments.
 
 v1.2.4 (2024-07-30)
 -------------------
-- Fixed issue with incorrect range handling when using local time option in file search script.
-- Enhanced git repository creation script with additional options and bug fixes.
+- Fixed issue with incorrect range handling when using local time option in
+  file search script.
+- Enhanced git repository creation script with additional options and bug
+  fixes.
 - Improved insta_update.sh processing order and added comment handling.
 
 v1.2.3 (2024-05-30)
 -------------------
-- Added notification feature to CI scripts for sending email updates to a specified address.
-- Enhanced insta_update.sh to process Instagram content on a per-account basis.
-- Improved error handling in SD card script to skip and report failed file copies.
-- Added error handling for HTTP 401 Unauthorized and other HTTP errors in Instagram Downloader.
+- Added notification feature to CI scripts for sending email updates to a
+  specified address.
+- Enhanced insta_update.sh to process Instagram content on a per-account
+  basis.
+- Improved error handling in SD card script to skip and report failed file
+  copies.
+- Added error handling for HTTP 401 Unauthorized and other HTTP errors in
+  Instagram Downloader.
 
 v1.2.2 (2024-03-29)
 -------------------
 - Added CI cron scripts.
-- Modified run_tests.sh to display the total number of test scripts and test cases.
+- Modified run_tests.sh to display the total number of test scripts and
+  test cases.
 - Renamed find_recent.py to find_range.py with enhanced range options.
 - Added support for ISO format and local timezone in find_range.py.
 - Enhanced checks in existing scripts.
-- Added several test cases to enrich the testing of new features and ensure robustness.
+- Added several test cases to enrich the testing of new features and ensure
+  robustness.
 - Updated several installer scripts to modern specifications.
 
 v1.2.1 (2024-02-28)
 -------------------
 - Resolved a critical issue with the Python compatibility search script.
-- Significant renaming and specification changes to the Instagram download script.
+- Significant renaming and specification changes to the Instagram download
+  script.
 - Added the ability to specify permissions in several scripts.
 - Numerous refactorings and documentation updates.
 - Added some useful scripts and added entry for HISTORY.txt itself.
@@ -406,12 +622,15 @@ v1.0 (2023-11-25)
 
 [2008-2023]
 -----------
-- Numerous changes and versions were made throughout this period, marking continuous development and improvement of the project.
+- Numerous changes and versions were made throughout this period, marking
+  continuous development and improvement of the project.
 
 v0.1 (2008-10-31)
 -----------------
-- The very first initial version of the project, marking the start of public releases.
+- The very first initial version of the project, marking the start of
+  public releases.
 
 First Commit (2008-08-22)
 -------------------------
-- Commemorating the first commit and push, marking the inception of the project.
+- Commemorating the first commit and push, marking the inception of the
+  project.
