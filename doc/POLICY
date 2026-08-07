@@ -81,7 +81,7 @@ or additions to this common policy, in order to avoid redundancy.
   forced termination**.
 - Normal execution paths must return normally and propagate status explicitly.
 - Do not rely on implicit termination or language-specific shortcuts
-  (e.g. `set -e` in shell, bare `except` in Python).
+  (e.g. `set -e` in a shell script, bare `except` in Python).
 
 ### CLI Conventions
 - All command-line tools must provide consistent options:
@@ -397,6 +397,12 @@ or additions to this common policy, in order to avoid redundancy.
   portable substitute for a construct that some implementation gets wrong, a
   retention period, or a hard-coded fallback, the comment gives the reason, so
   that a later change does not quietly undo it.
+- Name a thing by what it is, not by a part of it. A shell script is a shell
+  script: the shell is the interpreter that runs it, and naming the script
+  after the interpreter is as loose as calling a USB memory stick a USB. The
+  same holds wherever a shorthand reaches for the interface, the format, or
+  the container instead of the thing itself. This applies to the headers, the
+  documents, and the commit messages as much as to the comments.
 
 ### Configuration Files
 - A script that needs site-specific values reads them from a file under `etc/`,
@@ -621,7 +627,7 @@ log_info_time() {
 ### Dependencies and I/O
 - Depend only on the standard library.
 - Implement manual PATH search if command lookup is required, and exit `127`
-  when the command is not found, matching the shell helper.
+  when the command is not found, matching the shell script helper.
 - Always use `encoding="utf-8"` for file operations.
 
 ### Docstrings
