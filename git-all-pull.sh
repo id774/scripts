@@ -17,13 +17,19 @@
 #      ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--www-only] [--all]
 #
 #  Default behavior is to show this help message. Use '--all' to pull from github, git, and www targets.
-#  Note: Specifying both '--github-only' and '--git-only' selects both trees (github and git) and does not include www.
-#  '--reset' can be used as an alias of '--hard'.
+#  Notes:
+#      Specifying both '--github-only' and '--git-only' selects both trees
+#      (github and git) and does not include www.
+#      '--reset' can be used as an alias of '--hard'.
+#      Pulls prune remote-tracking branches deleted from remotes.
+#      Pruning does not delete local branches.
 #
 #  WARNING: The '--hard' option performs 'git reset --hard' which can
 #  overwrite local changes. Use with caution.
 #
 #  Version History:
+#  v2.3 2026-08-07
+#       Prune stale remote-tracking branches during repository pulls.
 #  v2.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -149,7 +155,7 @@ pull_repo() {
 
     if [ "$DRY_RUN" = false ]; then
         echo "[INFO] Pulling repository: $repo"
-        git -C "$repo" pull
+        git -C "$repo" pull --prune
     else
         echo "[INFO] DRY RUN: Pull repository: $repo"
     fi

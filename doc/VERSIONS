@@ -11,6 +11,7 @@ v2.0.1 (Release Date: TBD)
 - Wrap the lines of this file at 75 columns.
 - Add the shared version history description guidelines to the end of this
   file.
+- Prune stale remote-tracking branches when git-all-pull.sh pulls repositories.
 
 v2.0 (2026-07-31)
 -----------------
