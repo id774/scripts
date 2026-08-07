@@ -132,6 +132,28 @@ or additions to this common policy, in order to avoid redundancy.
 > may be used, but must be explicitly documented in the script or program
 > header.
 
+### Optional Dependencies
+- `check_commands` declares what a script requires. A capability the script can
+  work without is not declared there; it is detected where it is used.
+- Detection asks whether the capability is usable, not only whether the command
+  exists. A command may be present while the subcommand or the option the
+  script needs is not.
+- Decide in advance what an absent optional capability leads to: use the
+  alternative, skip the step and say so once, or refuse the run. Which one is
+  right depends on where the script runs.
+- An unattended script in an environment that will never supply what it needs
+  says so once and ends with a documented status, rather than reporting an
+  error on every scheduled run. A failure the operator can act on is still
+  reported as one.
+
+### Environment Differences
+- Branch on what the environment provides, not on what it is called. A
+  distribution name, a release number, and a desktop session name each answer a
+  question the script is not asking. The question is whether the command, the
+  file, the service, or the configuration format it needs is there.
+- Keep that detection in one place. The same question answered separately in
+  several places drifts apart as environments change.
+
 ### Documentation and Versioning
 - Every executable must contain a structured header block, delimited above and
   below by a separator line of 20 or more `#` characters.
@@ -458,9 +480,13 @@ or additions to this common policy, in order to avoid redundancy.
 - A test writes nothing outside a temporary directory, and needs no credential
   and no reachable host.
 - A fix for a defect arrives together with the test that fails without it.
-- A script a cron job runs must be safe to run twice. A second run over the
-  same input replaces or skips what the first one produced, rather than
-  duplicating it or refusing to start.
+- A script that changes state is safe to run twice, whether a cron job runs it
+  or a person does. This covers the installers as much as the scheduled jobs: a
+  second run over the same input replaces or skips what the first one produced,
+  rather than duplicating it or refusing to start.
+- Check the current state before changing it. Appending a line, creating a
+  link, enabling a service, and installing a package each need to know whether
+  an earlier run already did it.
 
 ---
 
@@ -470,8 +496,24 @@ or additions to this common policy, in order to avoid redundancy.
 - Comply strictly with POSIX (`#!/bin/sh`).
 - Avoid Bash-specific syntax and extensions.
 - Do not use `local`.
+- `/bin/sh` is dash on Debian and Ubuntu. A construct that works because
+  `/bin/sh` links to bash elsewhere is still a defect here.
+- The constructs most often mistaken for portable are `[[ ... ]]`, arrays, the
+  `function` keyword, `source`, and process substitution. Use `[ ... ]`,
+  positional parameters or a delimited string, a plain `name()` definition,
+  `.`, and a temporary file or a pipeline instead.
 - Modularize using small, single-purpose functions.
 - Follow the structured header requirements defined in the Common Policy.
+
+### Quoting and Word Splitting
+- Quote every variable expansion that is not deliberately being split. A path
+  holding a space, an empty value, and an unset variable each turn an unquoted
+  expansion into a different command.
+- Guard a value that may be empty or unset before it reaches a command that
+  would otherwise act on the wrong target.
+- Do not let a pattern reach a destructive command unexamined. A glob that
+  matches nothing and a glob that matches more than intended both change what
+  the command operates on.
 
 ### Dependency and Environment Checks
 - Validate required commands and environment variables at startup.
@@ -501,6 +543,8 @@ check_commands() {
 - A script that has `check_sudo` does not also list `sudo` in `check_commands`:
   `sudo -v` already establishes that `sudo` is present and usable, so the
   second check adds nothing.
+- Elevated privileges cover the operations that need them and no more. A script
+  that needs root for one step does not run its whole body under it.
 - For network operations, verify connectivity before execution.
 
 ### Logging Style
