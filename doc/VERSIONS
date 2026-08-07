@@ -644,6 +644,8 @@ Version History Guidelines
 - Keep entries near 100 columns where practical. Necessary file names,
   command names, option names, and configuration names may extend an entry
   to approximately 120 columns.
+- When a version history already exists, balance a new entry against the
+  length of the existing lines, so that the whole file stays consistent.
 - When an entry becomes substantially longer, omit or abstract implementation
   details, examples, reasons, and secondary effects where possible.
 - Preserve the changed target, externally observable behavior, compatibility
