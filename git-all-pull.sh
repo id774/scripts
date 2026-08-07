@@ -17,6 +17,7 @@
 #      ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--www-only] [--all]
 #
 #  Default behavior is to show this help message. Use '--all' to pull from github, git, and www targets.
+#
 #  Notes:
 #      Specifying both '--github-only' and '--git-only' selects both trees
 #      (github and git) and does not include www.
