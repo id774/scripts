@@ -5,7 +5,7 @@ v2.0.1 (Release Date: TBD)
 --------------------------
 - Large-scale documentation revision, recorded here as an exception.
 - Add .gitattributes, marking the Markdown documents for diff.
-- Add the document file naming and attribute rules to doc/POLICY.
+- Expand doc/POLICY substantially across documents, portability, dependencies, environments, and repeated execution.
 - Remove etc/pathext.txt, an obsolete list of Windows PATHEXT values.
 - Wrap the lines of this file at 75 columns.
 - Add the shared version history description guidelines to the end of this file.
