@@ -476,6 +476,55 @@ or additions to this common policy, in order to avoid redundancy.
   preserve commit order at the cost of the entry reading as a whole.
 
 
+### Pull Request Scope and History
+
+#### One Purpose to a Pull Request
+- A pull request presents the change it proposes, not the sequence of
+  corrections that produced it, and it carries one purpose.
+- Changes that serve different purposes are proposed separately, as a rule,
+  even when they touch one file and even when one was noticed while the other
+  was being made. A pull request is accepted or rejected whole, and a mixed one
+  leaves no way to take the part that is wanted.
+- A change noticed in passing is proposed on a branch of its own. It is not
+  carried along because the working tree happened to be open at it, and it does
+  not enlarge the request already under review.
+- Tidying, renaming, and reformatting that the change does not require are a
+  change of their own. Attached to something else, they bury the change the
+  reviewer came to read.
+- Work that cannot stand without the change is not a second purpose. Its
+  `doc/VERSIONS` entry, the `Version History` entry in the header of the script
+  it changes, and the test that fails without it belong to the change that
+  requires them.
+- Where the separation is genuinely artificial, because neither part is correct
+  or reviewable without the other, they are proposed together and the request
+  says why.
+
+#### Keeping a Branch to Its Change
+- A branch that carries one coherent change carries it as one commit. That
+  commit is amended and force pushed with `--force-with-lease`, rather than
+  gaining a further commit for each remark received.
+- Commits such as "fix review comment", "address feedback" or "resolve
+  conflict" describe the review rather than the change, and do not belong in
+  the history that is merged.
+- A branch is split into several commits only when it genuinely carries several
+  independent changes. The reasoning is the one that decides a `doc/VERSIONS`
+  bullet: coherence, not chronology.
+
+#### Leaving No Trace of the Correction
+- When the direction is revised part way through a review, the branch is
+  rewritten so that it reads as the change finally intended, and merges as if
+  it had been written that way.
+- Each revision is read against the base branch, not against the revision
+  before it, so that a correction leaves no residue in the diff that is merged.
+- A correction withdraws what it replaces. Code, comments, and wording
+  introduced by an earlier revision and since abandoned are removed, not left
+  standing beside their replacement.
+- Conflicts with the base branch are resolved by rebasing onto it, so that no
+  merge commit enters the branch.
+- A rewritten branch invalidates the copies others have fetched. Force pushing
+  is confined to the branch under review, and the rewrite is stated whenever
+  the branch is shared.
+
 ### License
 - The repository is dual licensed under the GPL version 3 or the LGPL version 3,
   at the user's option. The full texts live in `doc/LICENSE`, `doc/COPYING`,
