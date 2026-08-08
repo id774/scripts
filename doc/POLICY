@@ -10,20 +10,20 @@ Each language section then specifies only what is unique to that language.
 
 ---
 
-## Common Policy (All Languages)
+## 1. Common Policy (All Languages)
 
 This section defines rules that apply uniformly to all languages.
 Each language-specific section intentionally describes only deviations from
 or additions to this common policy, in order to avoid redundancy.
 
-### Design and Repository
+### 1.1 Design and Repository
 
-#### Design Philosophy
+#### 1.1.1 Design Philosophy
 - Prioritize clarity, portability, and explicit control over convenience.
 - Favor predictable behavior and long-term maintainability.
 - Avoid implicit behavior; make control flow, errors, and side effects explicit.
 
-#### Repository Layout
+#### 1.1.2 Repository Layout
 - Top level: the scripts a user runs directly, in Shell Script, Python, and
   Ruby.
 - `installer/`: setup and installation scripts. They follow the same header,
@@ -38,16 +38,16 @@ or additions to this common policy, in order to avoid redundancy.
 - Placement says what a file is for, not which rules apply to it. Every
   executable in the repository follows the Common Policy.
 
-### Implementation Fundamentals
+### 1.2 Implementation Fundamentals
 
-#### Control Flow Rules
+#### 1.2.1 Control Flow Rules
 - Use explicit termination (`exit`, `sys.exit`, `exit()`) **only for abnormal or
   forced termination**.
 - Normal execution paths must return normally and propagate status explicitly.
 - Do not rely on implicit termination or language-specific shortcuts
   (e.g. `set -e` in a shell script, bare `except` in Python).
 
-#### Optional Dependencies
+#### 1.2.2 Optional Dependencies
 - `check_commands` declares what a script requires. A capability the script can
   work without is not declared there; it is detected where it is used.
 - Detection asks whether the capability is usable, not only whether the command
@@ -61,7 +61,7 @@ or additions to this common policy, in order to avoid redundancy.
   error on every scheduled run. A failure the operator can act on is still
   reported as one.
 
-#### Environment Differences
+#### 1.2.3 Environment Differences
 - Branch on what the environment provides, not on what it is called. A
   distribution name, a release number, and a desktop session name each answer a
   question the script is not asking. The question is whether the command, the
@@ -69,7 +69,7 @@ or additions to this common policy, in order to avoid redundancy.
 - Keep that detection in one place. The same question answered separately in
   several places drifts apart as environments change.
 
-#### Comments and Language
+#### 1.2.4 Comments and Language
 - Comments must be written in **English** only.
 - Comments must be imperative, concise, and action-oriented
   (e.g. `# Validate input`, `# Initialize environment`).
@@ -84,9 +84,9 @@ or additions to this common policy, in order to avoid redundancy.
   the container instead of the thing itself. This applies to the headers, the
   documents, and the commit messages as much as to the comments.
 
-### Command-Line Interface and Output
+### 1.3 Command-Line Interface and Output
 
-#### CLI Conventions
+#### 1.3.1 CLI Conventions
 - All command-line tools must provide consistent options:
   - `-h`, `--help` to display usage information and exit with code `0`.
   - `-v`, `--version` to display version information and exit with code `0`.
@@ -95,7 +95,7 @@ or additions to this common policy, in order to avoid redundancy.
 - Exit code may be `1` (error) or `0` (non-error usage display),
 - depending on the tool's design, but must be consistent and documented.
 
-##### Recommended Option Names
+##### 1.3.1.1 Recommended Option Names
 - The following names are recommendations, not requirements. A script that has
   a reason to differ may differ; a script that has none should reuse the
   established name rather than invent a synonym for it.
@@ -104,13 +104,13 @@ or additions to this common policy, in order to avoid redundancy.
   - `--force`: process every matched entry, skipping the checks that normally
     narrow the work.
 
-#### Error Handling and Exit Codes
+#### 1.3.2 Error Handling and Exit Codes
 - Detect command failures and unmet prerequisites early.
 - Always log the reason and affected target when an error occurs.
 - Exit code semantics must follow widely accepted UNIX/GNU/Linux conventions
   and remain consistent across the repository.
 
-##### Exit Code Conventions
+##### 1.3.2.1 Exit Code Conventions
 - **0: Success**
   The operation completed successfully.
   This includes cases where the program terminates after displaying help or
@@ -135,7 +135,7 @@ or additions to this common policy, in order to avoid redundancy.
 > may be used, but must be explicitly documented in the script or program
 > header.
 
-#### Logging and Output
+#### 1.3.3 Logging and Output
 - Use unified log prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
 - Informational messages go to standard output.
 - Error messages always go to standard error.
@@ -160,9 +160,9 @@ or additions to this common policy, in order to avoid redundancy.
   (e.g. `[cron]`, `[admin]`) in the subject line so recipients can easily
   classify, filter, or route messages.
 
-### Configuration and External Resources
+### 1.4 Configuration and External Resources
 
-#### Configuration Files
+#### 1.4.1 Configuration Files
 - A script that needs site-specific values reads them from a file under `etc/`,
   named after the script (e.g. `etc/dashcam_sync.conf`), instead of carrying
   them as constants.
@@ -181,7 +181,7 @@ or additions to this common policy, in order to avoid redundancy.
   and is not executable.
 - Two kinds exist, and the `Rules` section says which one the file is.
 
-##### Sourced Configuration Files
+##### 1.4.1.1 Sourced Configuration Files
 - Sourced by the script, so the file must be POSIX sh compatible. Its `Rules`
   section states that blank lines are allowed, that lines starting with `#` are
   comments, that the file must be POSIX sh compatible, and that it carries no
@@ -193,7 +193,7 @@ or additions to this common policy, in order to avoid redundancy.
   `Variables` section of the configuration file, and the header of the script
   that reads it.
 
-##### List Files
+##### 1.4.1.2 List Files
 - Read line by line rather than sourced, so the file is data and not shell
   code: `etc/apache_ignore.list` and `cron/etc/clamscan.conf` are of this kind.
 - Its `Rules` section states that blank lines are ignored, that lines starting
@@ -201,7 +201,7 @@ or additions to this common policy, in order to avoid redundancy.
   sourced, and what one non-comment line means.
 - An `Examples` section shows the accepted line forms.
 
-#### Credentials and Secrets
+#### 1.4.2 Credentials and Secrets
 - A credential that authenticates against a remote service is read from a
   configuration file or from the environment. It is never passed as a command
   line argument, because a command line is readable by every user of the host.
@@ -216,7 +216,7 @@ or additions to this common policy, in order to avoid redundancy.
   generates an archive password this way; the password is stored locally and
   is never sent together with the archive.
 
-#### Network Operations
+#### 1.4.3 Network Operations
 - Every outbound request carries an explicit timeout. An unattended run must
   not hang until the next one starts.
 - Exception: a script whose primary use is manual, run in the foreground by a
@@ -224,9 +224,9 @@ or additions to this common policy, in order to avoid redundancy.
   caller.
 - Report an unreachable target as a failure, naming the target.
 
-### Safety and Side Effects
+### 1.5 Safety and Side Effects
 
-#### Destructive Operations
+#### 1.5.1 Destructive Operations
 - The following are recommendations. A script that has a reason to skip a check
   may skip it, but should say why in a comment.
 - Validate existence, type, and permissions before a destructive operation, and
@@ -235,7 +235,7 @@ or additions to this common policy, in order to avoid redundancy.
 - Do not widen the scope of a deletion in order to recover from unexpected
   input.
 
-#### Idempotency and State Checks
+#### 1.5.2 Idempotency and State Checks
 - A script that changes state is safe to run twice, whether a cron job runs it
   or a person does. This covers the installers as much as the scheduled jobs: a
   second run over the same input replaces or skips what the first one produced,
@@ -244,9 +244,9 @@ or additions to this common policy, in order to avoid redundancy.
   link, enabling a service, and installing a package each need to know whether
   an earlier run already did it.
 
-### Documentation
+### 1.6 Documentation
 
-#### Executable Header Structure
+#### 1.6.1 Executable Header Structure
 - Every executable must contain a structured header block, delimited above and
   below by a separator line of 20 or more `#` characters.
 - The header contains the following sections, in this order:
@@ -279,8 +279,7 @@ or additions to this common policy, in order to avoid redundancy.
 - "Test Cases" must be defined only in dedicated test code (e.g., test/, spec/).
 - Documentation must be updated in sync with behavior changes.
 
-
-#### Document Format
+#### 1.6.2 Document Format
 - The format of a document is decided by its name, its history, the paths
   already published for it, the references that point at it, the
   compatibility those references demand, and the role it plays in the
@@ -297,7 +296,7 @@ or additions to this common policy, in order to avoid redundancy.
   of the documents match each other is not on its own a reason to rename
   anything.
 
-#### Document File Naming
+#### 1.6.3 Document File Naming
 - A document written in Markdown takes a `.md` extension when it is newly
   created. This holds for the documents under `doc/` as well: a repository
   created from now on names its policy `doc/POLICY.md`.
@@ -321,7 +320,7 @@ or additions to this common policy, in order to avoid redundancy.
   here, because the references that live outside this repository can be neither
   found nor repaired.
 
-#### Document File Attributes
+#### 1.6.4 Document File Attributes
 - `.gitattributes` gives `diff=markdown` to `*.md` and to the extensionless
   Markdown documents, so that a diff hunk header names the section it falls in.
 - `diff=markdown` is a diff aid and nothing else. It teaches `git diff` to
@@ -346,7 +345,7 @@ or additions to this common policy, in order to avoid redundancy.
   files that carry no extension would catch the `#` comment lines of the
   scripts and the configuration files.
 
-#### Plain Text Document Line Length
+#### 1.6.5 Plain Text Document Line Length
 - A plain text document is meant to be read with nothing between the reader
   and the file, on a fixed-width terminal of 80 columns included. Ordinary
   prose is therefore wrapped near 80 columns wherever that is practical.
@@ -366,9 +365,9 @@ or additions to this common policy, in order to avoid redundancy.
 - `doc/VERSIONS` follows the rule stated under doc/VERSIONS Structure above.
   There, one change per physical line comes before this guidance.
 
-### Versioning
+### 1.7 Versioning
 
-#### When to Bump an Executable Version
+#### 1.7.1 When to Bump an Executable Version
 - The following rules apply to the version history in each executable's
   structured header.
 - Repository release versions and Git tags follow the separate rules below.
@@ -386,7 +385,7 @@ or additions to this common policy, in order to avoid redundancy.
     a new change. Classify that entry as version-only or as containing real
     changes based on what the entry actually contains, not on the date edit.
 
-#### Executable Version Numbering
+#### 1.7.2 Executable Version Numbering
 - Versions use a two-level `major.minor` scheme.
 - When incrementing `minor` would reach `10`, roll over instead: increment
   `major` by 1 and reset `minor` to `0` (e.g. `v0.9` -> `v1.0`,
@@ -401,7 +400,7 @@ or additions to this common policy, in order to avoid redundancy.
   changing how a path or a configuration value is resolved are all
   incompatible changes.
 
-#### Repository Versioning
+#### 1.7.3 Repository Versioning
 - Repository release versions are independent of individual executable versions.
 - Record repository release versions in `doc/VERSIONS` and use the same versions
   for Git tags.
@@ -419,7 +418,7 @@ or additions to this common policy, in order to avoid redundancy.
 - A documentation-only change takes no `doc/VERSIONS` entry, unless its scale
   makes it worth one line saying so.
 
-#### doc/VERSIONS Structure
+#### 1.7.4 doc/VERSIONS Structure
 - `doc/VERSIONS` must read as a version-level summary of overall changes, not
   a raw commit log. It tells a reader what a release changed. It is not the
   place to transcribe how that work happened to be committed.
@@ -429,7 +428,7 @@ or additions to this common policy, in order to avoid redundancy.
 - Encoding rules:
   - Use UTF-8 by default.
 
-##### One Change per Line
+##### 1.7.4.1 One Change per Line
 - One coherent change is one bullet, written on one physical line. The entry
   is a list meant to be scanned, and a wrapped bullet costs it that: the eye
   no longer finds the changes by counting lines, and a diff no longer shows
@@ -453,7 +452,7 @@ or additions to this common policy, in order to avoid redundancy.
   version history stays of a piece. That consistency comes before the one
   physical line asked for above.
 
-##### Shortening a Long Entry
+##### 1.7.4.2 Shortening a Long Entry
 - When a bullet runs long, the first move is to abstract it, never to break
   it across lines. Drop the implementation detail, the examples, the reason,
   and the secondary effects, and state what the change is.
@@ -465,7 +464,7 @@ or additions to this common policy, in order to avoid redundancy.
   cut a file name, an option name, or a configuration key to reach a column
   count.
 
-##### Grouping and Order
+##### 1.7.4.3 Grouping and Order
 - When multiple changes to the same file within one version are really one
   coherent change, merge them into a single bullet instead of listing them
   separately. Changes that serve one purpose are described together even when
@@ -481,10 +480,9 @@ or additions to this common policy, in order to avoid redundancy.
 - Order within a version serves the reader, not the commit history. Do not
   preserve commit order at the cost of the entry reading as a whole.
 
+### 1.8 Pull Request Scope and History
 
-### Pull Request Scope and History
-
-#### One Purpose to a Pull Request
+#### 1.8.1 One Purpose to a Pull Request
 - A pull request presents the change it proposes, not the sequence of
   corrections that produced it, and it carries one purpose.
 - Changes that serve different purposes are proposed separately, as a rule,
@@ -505,7 +503,7 @@ or additions to this common policy, in order to avoid redundancy.
   or reviewable without the other, they are proposed together and the request
   says why.
 
-#### Keeping a Branch to Its Change
+#### 1.8.2 Keeping a Branch to Its Change
 - A branch that carries one coherent change carries it as one commit. That
   commit is amended and force pushed with `--force-with-lease`, rather than
   gaining a further commit for each remark received.
@@ -516,7 +514,7 @@ or additions to this common policy, in order to avoid redundancy.
   independent changes. The reasoning is the one that decides a `doc/VERSIONS`
   bullet: coherence, not chronology.
 
-#### Leaving No Trace of the Correction
+#### 1.8.3 Leaving No Trace of the Correction
 - When the direction is revised part way through a review, the branch is
   rewritten so that it reads as the change finally intended, and merges as if
   it had been written that way.
@@ -531,7 +529,7 @@ or additions to this common policy, in order to avoid redundancy.
   is confined to the branch under review, and the rewrite is stated whenever
   the branch is shared.
 
-### License
+### 1.9 License
 - The repository is dual licensed under the GPL version 3 or the LGPL version 3,
   at the user's option. The full texts live in `doc/LICENSE`, `doc/COPYING`,
   and `doc/COPYING.LESSER`.
@@ -540,7 +538,7 @@ or additions to this common policy, in order to avoid redundancy.
   `License: The GPL version 3, or LGPL version 3 (Dual License).`
 - Add a dependency only when its license is compatible with that choice.
 
-### Testing and Operation
+### 1.10 Testing and Operation
 - Test code must include a "Test Cases" section placed immediately before
   "Version History".
 - Test Cases must describe executable scenarios and expected behavior.
@@ -569,9 +567,9 @@ or additions to this common policy, in order to avoid redundancy.
 
 ---
 
-## Shell Script Implementation Policy
+## 2. Shell Script Implementation Policy
 
-### Basic Principles
+### 2.1 Basic Principles
 - Comply strictly with POSIX (`#!/bin/sh`).
 - Avoid Bash-specific syntax and extensions.
 - Do not use `local`.
@@ -584,7 +582,7 @@ or additions to this common policy, in order to avoid redundancy.
 - Modularize using small, single-purpose functions.
 - Follow the structured header requirements defined in the Common Policy.
 
-### Quoting and Word Splitting
+### 2.2 Quoting and Word Splitting
 - Quote every variable expansion that is not deliberately being split. A path
   holding a space, an empty value, and an unset variable each turn an unquoted
   expansion into a different command.
@@ -594,7 +592,7 @@ or additions to this common policy, in order to avoid redundancy.
   matches nothing and a glob that matches more than intended both change what
   the command operates on.
 
-### Dependency and Environment Checks
+### 2.3 Dependency and Environment Checks
 - Validate required commands and environment variables at startup.
 - Declare the commands a script needs with the following POSIX-compliant
   helper, which maps a missing command to `127` and a present but
@@ -626,7 +624,7 @@ check_commands() {
   that needs root for one step does not run its whole body under it.
 - For network operations, verify connectivity before execution.
 
-### Logging Style
+### 2.4 Logging Style
 - Shell scripts must keep normal log output based on `[INFO]`, `[WARN]`, and
   `[ERROR]`.
 - Shell scripts must not timestamp every log message.
@@ -658,7 +656,7 @@ log_info_time() {
 - Use plain `[INFO]`, `[WARN]`, and `[ERROR]` messages for ordinary status
   messages, short checks, branch decisions, and immediate return-code reporting.
 
-### I/O and Side Effects
+### 2.5 I/O and Side Effects
 - Respect existing temporary file logic and directory structures.
 - Follow the destructive operation recommendations of the Common Policy; in
   particular, avoid destructive overwrites and validate paths before
@@ -667,9 +665,9 @@ log_info_time() {
 
 ---
 
-## Python Implementation Policy
+## 3. Python Implementation Policy
 
-### Supported Versions and Compatibility
+### 3.1 Supported Versions and Compatibility
 - Code must fully support Python 3.6+.
 - Backward compatibility down to Python 3.1 is maintained on a best-effort basis
   and must not break existing behavior intentionally.
@@ -685,25 +683,25 @@ log_info_time() {
   - `pathlib`, `shutil.which`
 - Use `find_pycompat.py` to verify compatibility.
 
-### Header Formatting Rules
+### 3.2 Header Formatting Rules
 - Shebang must be:
   `#!/usr/bin/env python`
 - Do NOT use `python3`.
 - Encoding header may be included if required:
   # -*- coding: utf-8 -*-
 
-### Program Structure
+### 3.3 Program Structure
 - Define `main() -> int` as the entry point.
 - Terminate execution with `sys.exit(main())`.
 - Use early returns to simplify control flow.
 
-### Dependencies and I/O
+### 3.4 Dependencies and I/O
 - Depend only on the standard library.
 - Implement manual PATH search if command lookup is required, and exit `127`
   when the command is not found, matching the shell script helper.
 - Always use `encoding="utf-8"` for file operations.
 
-### Docstrings
+### 3.5 Docstrings
 - Every function and class carries a docstring stating what the call does or
   returns.
 - A one-line docstring stays on one line, with a space inside each pair of
@@ -712,12 +710,12 @@ log_info_time() {
 - Modules that still use the tight form (`"""Do the thing."""`) are normalized
   when they are next edited for another reason, not in bulk.
 
-### Testing
+### 3.6 Testing
 - Store tests in `test/` as `FILENAME_test.py`.
 - Use only standard libraries for testing.
 - Any compatibility issue detected by `find_pycompat.py` is a failure.
 
-### Command-Line Option Handling
+### 3.7 Command-Line Option Handling
 - When using `optparse.OptionParser`, supporting `-v` as a shorthand for
   `--version` is not mandatory.
 - Scripts may choose to support only long options (e.g. `--version`) to avoid
@@ -727,9 +725,9 @@ log_info_time() {
 
 ---
 
-## Ruby Implementation Policy
+## 4. Ruby Implementation Policy
 
-### Supported Versions and Compatibility
+### 4.1 Supported Versions and Compatibility
 - Code must fully support Ruby 2.4+.
 - Backward compatibility down to Ruby 2.0 is maintained on a best-effort basis
   and must not break existing behavior intentionally.
@@ -738,16 +736,16 @@ log_info_time() {
 - Only when strictly required, state:
   `Ruby Version: 2.4 or later`
 
-### Program Structure
+### 4.2 Program Structure
 - Define `main` as the entry point.
 - Finalize execution with `exit(main) if __FILE__ == $0`.
 - Use early returns to simplify control flow.
 
-### CLI Implementation
+### 4.3 CLI Implementation
 - Use `OptionParser` from the standard library to implement
   the common CLI conventions defined above.
 
-### Dependencies and I/O
+### 4.4 Dependencies and I/O
 - Depend only on standard libraries.
 - Use `Open3.capture3` for external command execution when stdout, stderr, or
   exit status must be inspected.
@@ -756,6 +754,6 @@ log_info_time() {
 - Always specify UTF-8 encoding for file operations.
 - Follow the destructive operation recommendations of the Common Policy.
 
-### Testing
+### 4.5 Testing
 - Store tests in `test/` using RSpec as `FILENAME_test.rb`.
 - Ensure all tests pass before release.
