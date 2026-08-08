@@ -10,18 +10,20 @@ Each language section then specifies only what is unique to that language.
 
 ---
 
+## Common Policy (All Languages)
+
 This section defines rules that apply uniformly to all languages.
 Each language-specific section intentionally describes only deviations from
 or additions to this common policy, in order to avoid redundancy.
 
-## Common Policy (All Languages)
+### Design and Repository
 
-### Design Philosophy
+#### Design Philosophy
 - Prioritize clarity, portability, and explicit control over convenience.
 - Favor predictable behavior and long-term maintainability.
 - Avoid implicit behavior; make control flow, errors, and side effects explicit.
 
-### Repository Layout
+#### Repository Layout
 - Top level: the scripts a user runs directly, in Shell Script, Python, and
   Ruby.
 - `installer/`: setup and installation scripts. They follow the same header,
@@ -36,54 +38,55 @@ or additions to this common policy, in order to avoid redundancy.
 - Placement says what a file is for, not which rules apply to it. Every
   executable in the repository follows the Common Policy.
 
-### Logging and Output
-- Use unified log prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
-- Informational messages go to standard output.
-- Error messages always go to standard error.
-- Log messages must be human-readable and suitable for cron execution.
-- Timestamped progress logs are intended only for major progress points in
-  long-running operations.
-- Do not add timestamps to every log message.
-- The purpose of timestamped progress logs is to make long-running steps
-  observable in cron logs and administrative emails, not to convert all output
-  into structured logs.
-- Timestamped progress logs should be used for major start and finish points of
-  external I/O, synchronization, recursive scans, recursive modifications,
-  cleanup operations, and other steps whose duration is operationally
-  significant.
-- Short validation checks, simple branch decisions, static configuration
-  messages, and immediate return-code messages should normally use standard log
-  prefixes without timestamps.
-- When a timestamp is needed, append it naturally at the end of the message.
-- Timestamped log helpers must generate the timestamp at call time, not at
-  initialization time.
-- For automated emails (cron, admin jobs), use **filter-friendly tags**
-  (e.g. `[cron]`, `[admin]`) in the subject line so recipients can easily
-  classify, filter, or route messages.
+### Implementation Fundamentals
 
-### Credentials and Secrets
-- A credential that authenticates against a remote service is read from a
-  configuration file or from the environment. It is never passed as a command
-  line argument, because a command line is readable by every user of the host.
-- A credential is never logged and never quoted in an error message.
-  Report it as present or absent.
-- No configuration file under `etc/` carries a credential. Those files are
-  committed with real values, so a setting that must stay secret does not
-  belong in them.
-- Exception: a secret that the script itself generates for local use, that
-  authenticates nothing remote, and that exists in order to be handed to the
-  operator, may be passed to a local command and printed. `send_files.sh`
-  generates an archive password this way; the password is stored locally and
-  is never sent together with the archive.
-
-### Control Flow Rules
+#### Control Flow Rules
 - Use explicit termination (`exit`, `sys.exit`, `exit()`) **only for abnormal or
   forced termination**.
 - Normal execution paths must return normally and propagate status explicitly.
 - Do not rely on implicit termination or language-specific shortcuts
   (e.g. `set -e` in a shell script, bare `except` in Python).
 
-### CLI Conventions
+#### Optional Dependencies
+- `check_commands` declares what a script requires. A capability the script can
+  work without is not declared there; it is detected where it is used.
+- Detection asks whether the capability is usable, not only whether the command
+  exists. A command may be present while the subcommand or the option the
+  script needs is not.
+- Decide in advance what an absent optional capability leads to: use the
+  alternative, skip the step and say so once, or refuse the run. Which one is
+  right depends on where the script runs.
+- An unattended script in an environment that will never supply what it needs
+  says so once and ends with a documented status, rather than reporting an
+  error on every scheduled run. A failure the operator can act on is still
+  reported as one.
+
+#### Environment Differences
+- Branch on what the environment provides, not on what it is called. A
+  distribution name, a release number, and a desktop session name each answer a
+  question the script is not asking. The question is whether the command, the
+  file, the service, or the configuration format it needs is there.
+- Keep that detection in one place. The same question answered separately in
+  several places drifts apart as environments change.
+
+#### Comments and Language
+- Comments must be written in **English** only.
+- Comments must be imperative, concise, and action-oriented
+  (e.g. `# Validate input`, `# Initialize environment`).
+- A comment says why, not what. Where a decision looks arbitrary, such as a
+  portable substitute for a construct that some implementation gets wrong, a
+  retention period, or a hard-coded fallback, the comment gives the reason, so
+  that a later change does not quietly undo it.
+- Name a thing by what it is, not by a part of it. A shell script is a shell
+  script: the shell is the interpreter that runs it, and naming the script
+  after the interpreter is as loose as calling a USB memory stick a USB. The
+  same holds wherever a shorthand reaches for the interface, the format, or
+  the container instead of the thing itself. This applies to the headers, the
+  documents, and the commit messages as much as to the comments.
+
+### Command-Line Interface and Output
+
+#### CLI Conventions
 - All command-line tools must provide consistent options:
   - `-h`, `--help` to display usage information and exit with code `0`.
   - `-v`, `--version` to display version information and exit with code `0`.
@@ -92,7 +95,7 @@ or additions to this common policy, in order to avoid redundancy.
 - Exit code may be `1` (error) or `0` (non-error usage display),
 - depending on the tool's design, but must be consistent and documented.
 
-#### Recommended Option Names
+##### Recommended Option Names
 - The following names are recommendations, not requirements. A script that has
   a reason to differ may differ; a script that has none should reuse the
   established name rather than invent a synonym for it.
@@ -101,13 +104,13 @@ or additions to this common policy, in order to avoid redundancy.
   - `--force`: process every matched entry, skipping the checks that normally
     narrow the work.
 
-### Error Handling and Exit Codes
+#### Error Handling and Exit Codes
 - Detect command failures and unmet prerequisites early.
 - Always log the reason and affected target when an error occurs.
 - Exit code semantics must follow widely accepted UNIX/GNU/Linux conventions
   and remain consistent across the repository.
 
-#### Exit Code Conventions
+##### Exit Code Conventions
 - **0: Success**
   The operation completed successfully.
   This includes cases where the program terminates after displaying help or
@@ -132,29 +135,118 @@ or additions to this common policy, in order to avoid redundancy.
 > may be used, but must be explicitly documented in the script or program
 > header.
 
-### Optional Dependencies
-- `check_commands` declares what a script requires. A capability the script can
-  work without is not declared there; it is detected where it is used.
-- Detection asks whether the capability is usable, not only whether the command
-  exists. A command may be present while the subcommand or the option the
-  script needs is not.
-- Decide in advance what an absent optional capability leads to: use the
-  alternative, skip the step and say so once, or refuse the run. Which one is
-  right depends on where the script runs.
-- An unattended script in an environment that will never supply what it needs
-  says so once and ends with a documented status, rather than reporting an
-  error on every scheduled run. A failure the operator can act on is still
-  reported as one.
+#### Logging and Output
+- Use unified log prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
+- Informational messages go to standard output.
+- Error messages always go to standard error.
+- Log messages must be human-readable and suitable for cron execution.
+- Timestamped progress logs are intended only for major progress points in
+  long-running operations.
+- Do not add timestamps to every log message.
+- The purpose of timestamped progress logs is to make long-running steps
+  observable in cron logs and administrative emails, not to convert all output
+  into structured logs.
+- Timestamped progress logs should be used for major start and finish points of
+  external I/O, synchronization, recursive scans, recursive modifications,
+  cleanup operations, and other steps whose duration is operationally
+  significant.
+- Short validation checks, simple branch decisions, static configuration
+  messages, and immediate return-code messages should normally use standard log
+  prefixes without timestamps.
+- When a timestamp is needed, append it naturally at the end of the message.
+- Timestamped log helpers must generate the timestamp at call time, not at
+  initialization time.
+- For automated emails (cron, admin jobs), use **filter-friendly tags**
+  (e.g. `[cron]`, `[admin]`) in the subject line so recipients can easily
+  classify, filter, or route messages.
 
-### Environment Differences
-- Branch on what the environment provides, not on what it is called. A
-  distribution name, a release number, and a desktop session name each answer a
-  question the script is not asking. The question is whether the command, the
-  file, the service, or the configuration format it needs is there.
-- Keep that detection in one place. The same question answered separately in
-  several places drifts apart as environments change.
+### Configuration and External Resources
 
-### Documentation and Versioning
+#### Configuration Files
+- A script that needs site-specific values reads them from a file under `etc/`,
+  named after the script (e.g. `etc/dashcam_sync.conf`), instead of carrying
+  them as constants.
+- A top-level script resolves the file relative to its own directory and falls
+  back to the parent's `etc/`, so that it works both inside the repository and
+  from a deployed location: `$SCRIPT_DIR/etc/NAME.conf`, then
+  `$SCRIPT_DIR/../etc/NAME.conf`. A `cron/bin/` job reads its deployed path
+  under `/etc/cron.config/` directly, since it only ever runs from
+  `/etc/cron.exec`.
+- A missing file, and a required value left unset, are both refused before any
+  work starts, each with its own exit status and an `[ERROR]` message naming
+  what is missing.
+- Every such file opens with the same header block used by scripts: a title
+  line naming the file, a sentence saying which script reads it and what it
+  decides, and a `Rules` section describing its format. It carries no shebang
+  and is not executable.
+- Two kinds exist, and the `Rules` section says which one the file is.
+
+##### Sourced Configuration Files
+- Sourced by the script, so the file must be POSIX sh compatible. Its `Rules`
+  section states that blank lines are allowed, that lines starting with `#` are
+  comments, that the file must be POSIX sh compatible, and that it carries no
+  shebang because it is sourced rather than executed.
+- A `Variables` section names every variable, what it decides, and whether it
+  is required. A file that also defines a function documents it under
+  `Functions`.
+- The variables a script requires are named in two places that must agree: the
+  `Variables` section of the configuration file, and the header of the script
+  that reads it.
+
+##### List Files
+- Read line by line rather than sourced, so the file is data and not shell
+  code: `etc/apache_ignore.list` and `cron/etc/clamscan.conf` are of this kind.
+- Its `Rules` section states that blank lines are ignored, that lines starting
+  with `#` are comments, that the file is read line by line rather than
+  sourced, and what one non-comment line means.
+- An `Examples` section shows the accepted line forms.
+
+#### Credentials and Secrets
+- A credential that authenticates against a remote service is read from a
+  configuration file or from the environment. It is never passed as a command
+  line argument, because a command line is readable by every user of the host.
+- A credential is never logged and never quoted in an error message.
+  Report it as present or absent.
+- No configuration file under `etc/` carries a credential. Those files are
+  committed with real values, so a setting that must stay secret does not
+  belong in them.
+- Exception: a secret that the script itself generates for local use, that
+  authenticates nothing remote, and that exists in order to be handed to the
+  operator, may be passed to a local command and printed. `send_files.sh`
+  generates an archive password this way; the password is stored locally and
+  is never sent together with the archive.
+
+#### Network Operations
+- Every outbound request carries an explicit timeout. An unattended run must
+  not hang until the next one starts.
+- Exception: a script whose primary use is manual, run in the foreground by a
+  person who can see it hang and interrupt it, may leave the timeout to the
+  caller.
+- Report an unreachable target as a failure, naming the target.
+
+### Safety and Side Effects
+
+#### Destructive Operations
+- The following are recommendations. A script that has a reason to skip a check
+  may skip it, but should say why in a comment.
+- Validate existence, type, and permissions before a destructive operation, and
+  validate a path before modifying it.
+- Offer `--dry-run` on a script that renames, moves, or deletes.
+- Do not widen the scope of a deletion in order to recover from unexpected
+  input.
+
+#### Idempotency and State Checks
+- A script that changes state is safe to run twice, whether a cron job runs it
+  or a person does. This covers the installers as much as the scheduled jobs: a
+  second run over the same input replaces or skips what the first one produced,
+  rather than duplicating it or refusing to start.
+- Check the current state before changing it. Appending a line, creating a
+  link, enabling a service, and installing a package each need to know whether
+  an earlier run already did it.
+
+### Documentation
+
+#### Executable Header Structure
 - Every executable must contain a structured header block, delimited above and
   below by a separator line of 20 or more `#` characters.
 - The header contains the following sections, in this order:
@@ -186,6 +278,95 @@ or additions to this common policy, in order to avoid redundancy.
 - "Test Cases" section must NOT be included in production scripts.
 - "Test Cases" must be defined only in dedicated test code (e.g., test/, spec/).
 - Documentation must be updated in sync with behavior changes.
+
+
+#### Document Format
+- The format of a document is decided by its name, its history, the paths
+  already published for it, the references that point at it, the
+  compatibility those references demand, and the role it plays in the
+  repository. It is not decided by whether its text happens to parse as
+  Markdown.
+- A document that carries `.md` is a Markdown document.
+- The extensionless documents here are plain text documents on purpose:
+  `POLICY`, `LICENSE`, `COPYING`, `COPYING.LESSER`, and `VERSIONS`. Several
+  of them use headings, bullets, emphasis, or links that a Markdown renderer
+  would accept, and that changes nothing. Readable structure is not a
+  declaration of format.
+- That a document would render as Markdown is therefore not a reason to
+  rename it. Neither is uniformity: making the extensions or the appearance
+  of the documents match each other is not on its own a reason to rename
+  anything.
+
+#### Document File Naming
+- A document written in Markdown takes a `.md` extension when it is newly
+  created. This holds for the documents under `doc/` as well: a repository
+  created from now on names its policy `doc/POLICY.md`.
+- The rule applies at creation. It is not applied backwards to documents that
+  already exist, and an existing document is not brought into line with it.
+- The licence files are the exception. `COPYING`, `COPYING.LESSER`, and
+  `LICENSE` keep the extensionless names by which they are recognised, whether
+  they are new or not.
+- A document that is not Markdown takes no extension, or `.txt`.
+- An existing document is never renamed to add or change an extension. A path
+  here is a public URL that the README, the other repositories, and pages
+  outside them link to. Renaming breaks those links, and the ones outside
+  cannot be found or repaired.
+- `doc/POLICY` and `doc/VERSIONS` therefore keep their names here. The same
+  document is `POLICY` in this repository and `POLICY.md` in one started later,
+  and that is the intended result. Naming that matches across repositories is
+  not a goal that outranks a published path staying where it is.
+- Rename only when the current name causes a failure that outweighs the links
+  it breaks, and only after examining the references to it. GitHub shows
+  `doc/POLICY` as plain text instead of rendering it, and that cost is accepted
+  here, because the references that live outside this repository can be neither
+  found nor repaired.
+
+#### Document File Attributes
+- `.gitattributes` gives `diff=markdown` to `*.md` and to the extensionless
+  Markdown documents, so that a diff hunk header names the section it falls in.
+- `diff=markdown` is a diff aid and nothing else. It teaches `git diff` to
+  recognise headings when it picks a hunk header. It does not change a file's
+  format, does not change its name, and does not change how GitHub displays
+  it.
+- Giving an extensionless document `diff=markdown` is therefore correct, and
+  is not evidence that the document should carry `.md`. Reading a diff
+  through the Markdown driver and maintaining a document as Markdown are
+  separate decisions.
+- A document created with `.md` is covered by the `*.md` line and needs no
+  entry of its own.
+- No file is given `linguist-language`. Nothing in `.gitattributes` makes GitHub
+  render a document that carries no extension, and setting that attribute
+  changed how `doc/POLICY` and `doc/LICENSE` are displayed on the web, for the
+  worse. How a document reads on GitHub is decided by its name, not by an
+  attribute.
+- `doc/VERSIONS` is excluded. It is underlined plain text, and `diff=markdown`
+  empties the hunk headers that otherwise name the version.
+- `doc/COPYING` and `doc/COPYING.LESSER` are excluded as the licence texts.
+- The extensionless documents are listed one path at a time. A glob over the
+  files that carry no extension would catch the `#` comment lines of the
+  scripts and the configuration files.
+
+#### Plain Text Document Line Length
+- A plain text document is meant to be read with nothing between the reader
+  and the file, on a fixed-width terminal of 80 columns included. Ordinary
+  prose is therefore wrapped near 80 columns wherever that is practical.
+- The figure is a guide for keeping the text readable, not a check to run
+  against the file. A line past 80 columns is not by itself a defect, and is
+  not by itself something to fix.
+- Lines that are not ordinary prose may exceed it: URLs, legal wording quoted
+  as it stands, commands, identifiers, tables, and any line that is clearer
+  left whole.
+- Where wrapping would cost more than it gains, do not wrap. It costs more
+  when it splits a unit of meaning, when it makes the diff harder to follow,
+  when it hides a phrase from a search, or when it makes a command awkward to
+  copy.
+- In `doc/LICENSE`, `doc/COPYING`, and `doc/COPYING.LESSER` the exact wording
+  and the references it carries come first. Those texts are reproduced as
+  they are issued and are not rewrapped.
+- `doc/VERSIONS` follows the rule stated under doc/VERSIONS Structure above.
+  There, one change per physical line comes before this guidance.
+
+### Versioning
 
 #### When to Bump an Executable Version
 - The following rules apply to the version history in each executable's
@@ -294,91 +475,6 @@ or additions to this common policy, in order to avoid redundancy.
 - Order within a version serves the reader, not the commit history. Do not
   preserve commit order at the cost of the entry reading as a whole.
 
-#### Document Format
-- The format of a document is decided by its name, its history, the paths
-  already published for it, the references that point at it, the
-  compatibility those references demand, and the role it plays in the
-  repository. It is not decided by whether its text happens to parse as
-  Markdown.
-- A document that carries `.md` is a Markdown document.
-- The extensionless documents here are plain text documents on purpose:
-  `POLICY`, `LICENSE`, `COPYING`, `COPYING.LESSER`, and `VERSIONS`. Several
-  of them use headings, bullets, emphasis, or links that a Markdown renderer
-  would accept, and that changes nothing. Readable structure is not a
-  declaration of format.
-- That a document would render as Markdown is therefore not a reason to
-  rename it. Neither is uniformity: making the extensions or the appearance
-  of the documents match each other is not on its own a reason to rename
-  anything.
-
-#### Document File Naming
-- A document written in Markdown takes a `.md` extension when it is newly
-  created. This holds for the documents under `doc/` as well: a repository
-  created from now on names its policy `doc/POLICY.md`.
-- The rule applies at creation. It is not applied backwards to documents that
-  already exist, and an existing document is not brought into line with it.
-- The licence files are the exception. `COPYING`, `COPYING.LESSER`, and
-  `LICENSE` keep the extensionless names by which they are recognised, whether
-  they are new or not.
-- A document that is not Markdown takes no extension, or `.txt`.
-- An existing document is never renamed to add or change an extension. A path
-  here is a public URL that the README, the other repositories, and pages
-  outside them link to. Renaming breaks those links, and the ones outside
-  cannot be found or repaired.
-- `doc/POLICY` and `doc/VERSIONS` therefore keep their names here. The same
-  document is `POLICY` in this repository and `POLICY.md` in one started later,
-  and that is the intended result. Naming that matches across repositories is
-  not a goal that outranks a published path staying where it is.
-- Rename only when the current name causes a failure that outweighs the links
-  it breaks, and only after examining the references to it. GitHub shows
-  `doc/POLICY` as plain text instead of rendering it, and that cost is accepted
-  here, because the references that live outside this repository can be neither
-  found nor repaired.
-
-#### Document File Attributes
-- `.gitattributes` gives `diff=markdown` to `*.md` and to the extensionless
-  Markdown documents, so that a diff hunk header names the section it falls in.
-- `diff=markdown` is a diff aid and nothing else. It teaches `git diff` to
-  recognise headings when it picks a hunk header. It does not change a file's
-  format, does not change its name, and does not change how GitHub displays
-  it.
-- Giving an extensionless document `diff=markdown` is therefore correct, and
-  is not evidence that the document should carry `.md`. Reading a diff
-  through the Markdown driver and maintaining a document as Markdown are
-  separate decisions.
-- A document created with `.md` is covered by the `*.md` line and needs no
-  entry of its own.
-- No file is given `linguist-language`. Nothing in `.gitattributes` makes GitHub
-  render a document that carries no extension, and setting that attribute
-  changed how `doc/POLICY` and `doc/LICENSE` are displayed on the web, for the
-  worse. How a document reads on GitHub is decided by its name, not by an
-  attribute.
-- `doc/VERSIONS` is excluded. It is underlined plain text, and `diff=markdown`
-  empties the hunk headers that otherwise name the version.
-- `doc/COPYING` and `doc/COPYING.LESSER` are excluded as the licence texts.
-- The extensionless documents are listed one path at a time. A glob over the
-  files that carry no extension would catch the `#` comment lines of the
-  scripts and the configuration files.
-
-#### Plain Text Document Line Length
-- A plain text document is meant to be read with nothing between the reader
-  and the file, on a fixed-width terminal of 80 columns included. Ordinary
-  prose is therefore wrapped near 80 columns wherever that is practical.
-- The figure is a guide for keeping the text readable, not a check to run
-  against the file. A line past 80 columns is not by itself a defect, and is
-  not by itself something to fix.
-- Lines that are not ordinary prose may exceed it: URLs, legal wording quoted
-  as it stands, commands, identifiers, tables, and any line that is clearer
-  left whole.
-- Where wrapping would cost more than it gains, do not wrap. It costs more
-  when it splits a unit of meaning, when it makes the diff harder to follow,
-  when it hides a phrase from a search, or when it makes a command awkward to
-  copy.
-- In `doc/LICENSE`, `doc/COPYING`, and `doc/COPYING.LESSER` the exact wording
-  and the references it carries come first. Those texts are reproduced as
-  they are issued and are not rewrapped.
-- `doc/VERSIONS` follows the rule stated under doc/VERSIONS Structure above.
-  There, one change per physical line comes before this guidance.
 
 ### License
 - The repository is dual licensed under the GPL version 3 or the LGPL version 3,
@@ -388,77 +484,6 @@ or additions to this common policy, in order to avoid redundancy.
   block, so that a file read on its own still states its terms:
   `License: The GPL version 3, or LGPL version 3 (Dual License).`
 - Add a dependency only when its license is compatible with that choice.
-
-### Comments and Language
-- Comments must be written in **English** only.
-- Comments must be imperative, concise, and action-oriented
-  (e.g. `# Validate input`, `# Initialize environment`).
-- A comment says why, not what. Where a decision looks arbitrary, such as a
-  portable substitute for a construct that some implementation gets wrong, a
-  retention period, or a hard-coded fallback, the comment gives the reason, so
-  that a later change does not quietly undo it.
-- Name a thing by what it is, not by a part of it. A shell script is a shell
-  script: the shell is the interpreter that runs it, and naming the script
-  after the interpreter is as loose as calling a USB memory stick a USB. The
-  same holds wherever a shorthand reaches for the interface, the format, or
-  the container instead of the thing itself. This applies to the headers, the
-  documents, and the commit messages as much as to the comments.
-
-### Configuration Files
-- A script that needs site-specific values reads them from a file under `etc/`,
-  named after the script (e.g. `etc/dashcam_sync.conf`), instead of carrying
-  them as constants.
-- A top-level script resolves the file relative to its own directory and falls
-  back to the parent's `etc/`, so that it works both inside the repository and
-  from a deployed location: `$SCRIPT_DIR/etc/NAME.conf`, then
-  `$SCRIPT_DIR/../etc/NAME.conf`. A `cron/bin/` job reads its deployed path
-  under `/etc/cron.config/` directly, since it only ever runs from
-  `/etc/cron.exec`.
-- A missing file, and a required value left unset, are both refused before any
-  work starts, each with its own exit status and an `[ERROR]` message naming
-  what is missing.
-- Every such file opens with the same header block used by scripts: a title
-  line naming the file, a sentence saying which script reads it and what it
-  decides, and a `Rules` section describing its format. It carries no shebang
-  and is not executable.
-- Two kinds exist, and the `Rules` section says which one the file is.
-
-#### Sourced Configuration Files
-- Sourced by the script, so the file must be POSIX sh compatible. Its `Rules`
-  section states that blank lines are allowed, that lines starting with `#` are
-  comments, that the file must be POSIX sh compatible, and that it carries no
-  shebang because it is sourced rather than executed.
-- A `Variables` section names every variable, what it decides, and whether it
-  is required. A file that also defines a function documents it under
-  `Functions`.
-- The variables a script requires are named in two places that must agree: the
-  `Variables` section of the configuration file, and the header of the script
-  that reads it.
-
-#### List Files
-- Read line by line rather than sourced, so the file is data and not shell
-  code: `etc/apache_ignore.list` and `cron/etc/clamscan.conf` are of this kind.
-- Its `Rules` section states that blank lines are ignored, that lines starting
-  with `#` are comments, that the file is read line by line rather than
-  sourced, and what one non-comment line means.
-- An `Examples` section shows the accepted line forms.
-
-### Network Operations
-- Every outbound request carries an explicit timeout. An unattended run must
-  not hang until the next one starts.
-- Exception: a script whose primary use is manual, run in the foreground by a
-  person who can see it hang and interrupt it, may leave the timeout to the
-  caller.
-- Report an unreachable target as a failure, naming the target.
-
-### Destructive Operations
-- The following are recommendations. A script that has a reason to skip a check
-  may skip it, but should say why in a comment.
-- Validate existence, type, and permissions before a destructive operation, and
-  validate a path before modifying it.
-- Offer `--dry-run` on a script that renames, moves, or deletes.
-- Do not widen the scope of a deletion in order to recover from unexpected
-  input.
 
 ### Testing and Operation
 - Test code must include a "Test Cases" section placed immediately before
@@ -486,13 +511,6 @@ or additions to this common policy, in order to avoid redundancy.
 - A test writes nothing outside a temporary directory, and needs no credential
   and no reachable host.
 - A fix for a defect arrives together with the test that fails without it.
-- A script that changes state is safe to run twice, whether a cron job runs it
-  or a person does. This covers the installers as much as the scheduled jobs: a
-  second run over the same input replaces or skips what the first one produced,
-  rather than duplicating it or refusing to start.
-- Check the current state before changing it. Appending a line, creating a
-  link, enabling a service, and installing a package each need to know whether
-  an earlier run already did it.
 
 ---
 
