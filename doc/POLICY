@@ -446,6 +446,12 @@ or additions to this common policy, in order to avoid redundancy.
   history needs. A bullet that is long because the change is long is correct.
 - Bullets written before this rule are left wrapped as they stand. The rule
   applies to what is written from now on.
+- `doc/VERSIONS` carries these guidelines again at its foot, and an entry
+  written into it follows the reasons recorded there.
+- Where the file has settled on a width of its own, a new bullet is wrapped to
+  that width and balanced against the lines already standing, so that the
+  version history stays of a piece. That consistency comes before the one
+  physical line asked for above.
 
 ##### Shortening a Long Entry
 - When a bullet runs long, the first move is to abstract it, never to break

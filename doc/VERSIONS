@@ -6,8 +6,8 @@ v2.0.1 (Release Date: TBD)
 - Large-scale documentation revision, recorded here as an exception.
 - Add .gitattributes, marking the Markdown documents for diff.
 - Expand doc/POLICY substantially across documents, portability,
-  dependencies, environments, repeated execution, and the scope and history
-  of a pull request.
+  dependencies, environments, repeated execution, the scope and history of
+  a pull request, and the width a version history entry keeps.
 - Remove etc/pathext.txt, an obsolete list of Windows PATHEXT values.
 - Wrap the lines of this file at 75 columns.
 - Add the shared version history description guidelines to the end of this
