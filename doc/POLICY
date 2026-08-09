@@ -429,7 +429,8 @@ or additions to this common policy, in order to avoid redundancy.
   - Use UTF-8 by default.
 
 ##### 1.7.4.1 One Change per Line
-- One coherent change is one bullet, written on one physical line. The entry
+- One coherent change is one bullet, written on one physical line. That is the
+  rule, and the one case standing outside it closes this section. The entry
   is a list meant to be scanned, and a wrapped bullet costs it that: the eye
   no longer finds the changes by counting lines, and a diff no longer shows
   one added line per added change.
@@ -447,10 +448,13 @@ or additions to this common policy, in order to avoid redundancy.
   applies to what is written from now on.
 - `doc/VERSIONS` carries these guidelines again at its foot, and an entry
   written into it follows the reasons recorded there.
-- Where the file has settled on a width of its own, a new bullet is wrapped to
+- The case standing outside the rule is a version history that has already
+  settled on a width and a layout of its own. There a new bullet is wrapped to
   that width and balanced against the lines already standing, so that the
-  version history stays of a piece. That consistency comes before the one
-  physical line asked for above.
+  version history stays of a piece, and that consistency comes before the one
+  physical line asked for above. Wrapping to hold an established form does not
+  overturn the rule; where a file has settled on no such form, one change is
+  still one physical line.
 
 ##### 1.7.4.2 Shortening a Long Entry
 - When a bullet runs long, the first move is to abstract it, never to break
