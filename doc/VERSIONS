@@ -13,6 +13,7 @@ v2.0.1 (Release Date: TBD)
 - Add the shared version history description guidelines to the end of this
   file.
 - Prune stale remote-tracking branches when git-all-pull.sh pulls repositories.
+- Describe each main directory in the README Directory Structure section.
 
 v2.0 (2026-07-31)
 -----------------
