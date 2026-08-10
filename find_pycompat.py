@@ -68,7 +68,7 @@
 #  v2.1 2024-01-28
 #       Added detection for shutil.which usage to enhance compatibility checks.
 #  v2.0 2024-01-21
-#       Ported script from shell to Python. Removed usage of Python 3.x specific features
+#       Ported script from Shell Script to Python. Removed usage of Python 3.x specific features
 #       for compatibility checks. Enhanced modularity for better testability.
 #  v1.4 2024-01-20
 #       Improved f-strings detection regular expression to accurately identify common patterns.
