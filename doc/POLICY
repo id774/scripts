@@ -5,6 +5,11 @@ Python, and Ruby, followed by language-specific rules. The goal is to minimize
 redundancy while making the design intent explicit and consistent for all
 contributors.
 
+This document stands on its own. It is the whole implementation policy of this
+repository, and no rule here is completed by a document kept somewhere else. A
+subject it does not cover is a gap in this document, to be filled here rather
+than looked up in another repository.
+
 The **Common Policy** section defines rules that apply to *all* languages.
 Each language section then specifies only what is unique to that language.
 
@@ -37,6 +42,28 @@ or additions to this common policy, in order to avoid redundancy.
 - `doc/`: this policy, the repository version history, and the license texts.
 - Placement says what a file is for, not which rules apply to it. Every
   executable in the repository follows the Common Policy.
+
+#### 1.1.3 Decision Priorities
+Where there are several ways to do something and this document does not settle
+which, these come in order:
+
+1. Do not destroy or overwrite what the run was not asked to touch.
+2. Do not put a credential where another user of the host can read it, and do
+   not commit one.
+3. Stay safe to run twice.
+4. Keep the existing options, exit status, output, and configuration file
+   format working, so that a cron entry or a recorded command keeps behaving
+   as before.
+5. Stay portable: POSIX for a Shell Script, and the stated minimum version for
+   Python and Ruby.
+6. Branch on what the environment provides, not on what it is called.
+7. Stay fit for unattended execution: report a condition the operator can act
+   on, and do not repeat one they cannot.
+8. Stay within the standard library.
+9. Add no option, no configuration value, and no script that is not needed.
+
+A decision this list does not settle is settled in the script that faces it,
+and recorded here once it has been.
 
 ### 1.2 Implementation Fundamentals
 
@@ -92,8 +119,10 @@ or additions to this common policy, in order to avoid redundancy.
   - `-v`, `--version` to display version information and exit with code `0`.
 - Help or version output represents a successful, user-requested termination.
 - Invalid or unsupported options must result in usage output.
-- Exit code may be `1` (error) or `0` (non-error usage display),
-- depending on the tool's design, but must be consistent and documented.
+- The exit code of that usage display is `0` as the standard here: the tool
+  answered the invocation by showing how it is driven. A tool that treats an
+  invalid option as an error and exits `1` is accepted as well. Whichever a
+  tool does must be consistent within it and documented in its header.
 
 ##### 1.3.1.1 Recommended Option Names
 - The following names are recommendations, not requirements. A script that has
@@ -207,6 +236,9 @@ or additions to this common policy, in order to avoid redundancy.
   line argument, because a command line is readable by every user of the host.
 - A credential is never logged and never quoted in an error message.
   Report it as present or absent.
+- Output added while a fault is being chased is removed before the change is
+  committed. A diagnostic that prints a configuration value, a command line, or
+  a response body is the one most likely to print a credential with it.
 - No configuration file under `etc/` carries a credential. Those files are
   committed with real values, so a setting that must stay secret does not
   belong in them.
@@ -235,6 +267,23 @@ or additions to this common policy, in order to avoid redundancy.
 - Do not widen the scope of a deletion in order to recover from unexpected
   input.
 
+The checks below are not among those recommendations. They hold whatever the
+language, because each of them is a way of operating on a target the run was
+never asked to touch.
+
+- Examine the value that names the target before it reaches the command. An
+  empty string, an unset or undefined variable, and a pattern that matched
+  nothing each turn a deletion or an overwrite into one over something else.
+  The Shell Script policy states how this is done there; the requirement is
+  not peculiar to that language.
+- Do not let `/`, a home directory, or an empty target become the thing
+  operated on. A path assembled from a value that turned out to be empty
+  resolves to one of them.
+- `--dry-run` and the real run resolve their targets by the same code, so that
+  what the report listed is what the run acts on.
+- These apply to a change made from now on. An existing script is brought into
+  line when it is next edited for another reason, not in bulk.
+
 #### 1.5.2 Idempotency and State Checks
 - A script that changes state is safe to run twice, whether a cron job runs it
   or a person does. This covers the installers as much as the scheduled jobs: a
@@ -243,6 +292,15 @@ or additions to this common policy, in order to avoid redundancy.
 - Check the current state before changing it. Appending a line, creating a
   link, enabling a service, and installing a package each need to know whether
   an earlier run already did it.
+
+#### 1.5.3 Least Privilege
+- A script runs with the privileges its work needs and no more. One that needs
+  a raised privilege for a step takes it for that step; it does not run its
+  whole body under it.
+- This holds whatever the language. `check_sudo` is how a Shell Script
+  establishes that the privilege is available, and is described under the
+  Shell Script policy; a Python or Ruby script that raises a privilege is
+  bound by the same rule.
 
 ### 1.6 Documentation
 
@@ -393,27 +451,25 @@ or additions to this common policy, in order to avoid redundancy.
   `v1.9` -> `v2.0`, `v2.9` -> `v3.0`).
 - Do not continue `minor` past `9` as in standard semantic versioning
   (e.g. do not use `v1.10`, `v1.11`, ...).
-- A change that is not backward compatible bumps `major` and resets `minor` to
-  `0`, whatever `minor` currently stands at (e.g. `v2.4` -> `v3.0`). Reaching
-  `10` is not the only reason to raise `major`.
+- Raising `major` for a reason other than the rollover is a decision the
+  maintainer makes, not one this document derives from the change.
 - Removing or renaming an option, changing what an existing argument means,
   changing a default so that an unchanged invocation does something else, and
   changing how a path or a configuration value is resolved are all
-  incompatible changes.
+  incompatible changes. Say so in the `Version History` entry, so that the
+  number the change is released under can be chosen knowing that.
 
 #### 1.7.3 Repository Versioning
 - Repository release versions are independent of individual executable versions.
 - Record repository release versions in `doc/VERSIONS` and use the same versions
   for Git tags.
 - Repository release versions may use a three-level `major.minor.patch` scheme.
-- A release that carries an incompatible change to any script takes the next
-  `major`, on the same reasoning as an executable version.
 - Work that is not released yet takes no version of its own: it belongs to the
   entry already standing at the top of `doc/VERSIONS`.
 - An unreleased entry carries `(Release Date: TBD)`, and its version number
   stays provisional until it ships. An entry opened as
-  `v1.7.3 (Release Date: TBD)` is released as `v2.0` when what accumulated in
-  it turns out to be incompatible.
+  `v1.7.3 (Release Date: TBD)` may be released under a different number once
+  what accumulated in it is known; which number it takes is decided then.
 - Replacing `TBD` with the actual release date is the release itself, not a
   change to record in the entry.
 - A documentation-only change takes no `doc/VERSIONS` entry, unless its scale
@@ -569,6 +625,26 @@ or additions to this common policy, in order to avoid redundancy.
 - A test writes nothing outside a temporary directory, and needs no credential
   and no reachable host.
 - A fix for a defect arrives together with the test that fails without it.
+
+### 1.11 Judging a Change
+Before a change is proposed, it answers these:
+
+- Does it widen what a run can delete, overwrite, or send?
+- Does it put a credential on a command line, into a file under `etc/`, or into
+  a log message?
+- Is the script still safe to run twice?
+- Does it change an existing option, exit status, output, or configuration key
+  that a cron entry or a deployed copy depends on?
+- Does it branch on the name of an environment rather than on what that
+  environment provides?
+- Does `check_commands` still name the commands the script actually runs, no
+  more and no fewer?
+- Does it still pass `test/check_scripts.sh`, `check_header_doc.py -a`, and
+  `find_pycompat.py`?
+- Is it the smallest change that serves its purpose?
+- Does a test fail without it?
+- Which documents change with it: the script header, its `Version History`
+  entry, the configuration file it reads, the README, `doc/VERSIONS`?
 
 ---
 
