@@ -67,7 +67,7 @@ v2.0 (2026-07-31)
 - Reorder the common policy so exit-code conventions follow the general CLI
   rules.
 - Align POLICY with actual practice for Ruby and Python minimum versions
-  and shell logging.
+  and Shell Script logging.
 
 v1.7.2 (2026-06-30)
 -------------------
