@@ -14,7 +14,7 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--github-only] [--git-only] [--www-only] [--all]
+#      ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--delete-remote-branches] [--github-only] [--git-only] [--www-only] [--all]
 #
 #  Default behavior is to show this help message. Use '--all' to pull from github, git, and www targets.
 #
@@ -24,11 +24,14 @@
 #      '--reset' can be used as an alias of '--hard'.
 #      Pulls prune remote-tracking branches deleted from remotes.
 #      Pruning does not delete local branches.
+#      '--delete-remote-branches' deletes origin branches except master and main.
 #
 #  WARNING: The '--hard' option performs 'git reset --hard' which can
 #  overwrite local changes. Use with caution.
 #
 #  Version History:
+#  v2.4 2026-08-15
+#       Add --delete-remote-branches to delete origin branches except master and main.
 #  v2.3 2026-08-07
 #       Prune stale remote-tracking branches during repository pulls.
 #  v2.2 2026-07-11
@@ -68,6 +71,7 @@
 HARD_MODE=false
 NO_SYMLINK=false
 DRY_RUN=false
+DELETE_REMOTE_BRANCHES=false
 GITHUB_ONLY=false
 GIT_ONLY=false
 ALL=false
@@ -106,12 +110,40 @@ parse_arguments() {
             --reset) HARD_MODE=true ;;
             --no-symlink) NO_SYMLINK=true ;;
             --dry-run) DRY_RUN=true ;;
+            --delete-remote-branches) DELETE_REMOTE_BRANCHES=true ;;
             --github-only) GITHUB_ONLY=true ;;
             --git-only) GIT_ONLY=true ;;
             --www-only) WWW_ONLY=true ;;
             --all) ALL=true ;;
             *) SHOW_HELP=true ;;
         esac
+    done
+}
+
+# Delete remote branches other than master and main from origin
+delete_remote_branches() {
+    repo="$1"
+
+    if ! remote_heads=$(git -C "$repo" ls-remote --heads origin); then
+        echo "[ERROR] Failed to list remote branches: origin ($repo)" >&2
+        return 1
+    fi
+
+    printf '%s\n' "$remote_heads" | awk '
+        $2 ~ /^refs\/heads\// {
+            branch = substr($2, 12)
+            if (branch != "master" && branch != "main") print branch
+        }
+    ' | while IFS= read -r branch; do
+        [ -n "$branch" ] || continue
+        if [ "$DRY_RUN" = true ]; then
+            echo "[INFO] DRY RUN: Delete remote branch: origin/$branch ($repo)"
+        else
+            echo "[INFO] Deleting remote branch: origin/$branch ($repo)"
+            if ! git -C "$repo" push origin --delete "$branch"; then
+                echo "[ERROR] Failed to delete remote branch: origin/$branch ($repo)" >&2
+            fi
+        fi
     done
 }
 
@@ -159,6 +191,10 @@ pull_repo() {
         git -C "$repo" pull --prune
     else
         echo "[INFO] DRY RUN: Pull repository: $repo"
+    fi
+
+    if [ "$DELETE_REMOTE_BRANCHES" = true ]; then
+        delete_remote_branches "$repo"
     fi
 }
 
