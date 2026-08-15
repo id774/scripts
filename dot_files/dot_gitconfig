@@ -23,7 +23,7 @@
   co = checkout
   l = log
   lp = log -p
-  u = pull --prune
+  u = pull
   p = push
   pu = push
   cl = config -l
@@ -41,5 +41,7 @@
   frag = white bold
   old = red
   new = cyan
+[fetch]
+  prune = true
 [pull]
   rebase = false
