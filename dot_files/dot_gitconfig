@@ -23,7 +23,7 @@
   co = checkout
   l = log
   lp = log -p
-  u = pull
+  u = pull --prune
   p = push
   pu = push
   cl = config -l
