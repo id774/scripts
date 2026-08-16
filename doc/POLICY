@@ -598,9 +598,12 @@ never asked to touch.
   the branch is shared.
 
 ### 1.9 License
-- The repository is dual licensed under the GPL version 3 or the LGPL version 3,
-  at the user's option. The full texts live in `doc/LICENSE`, `doc/COPYING`,
-  and `doc/COPYING.LESSER`.
+- The parts of the repository copyrighted by id774 are dual licensed under the
+  GPL version 3 or the LGPL version 3, at the user's option. The full texts live
+  in `doc/LICENSE`, `doc/COPYING`, and `doc/COPYING.LESSER`.
+- The Vim related files listed in `doc/LICENSE` contain third-party code and are
+  excluded from that dual license, following the license conditions of each
+  third-party software.
 - Every script header repeats the license line of the standard identifying
   block, so that a file read on its own still states its terms:
   `License: The GPL version 3, or LGPL version 3 (Dual License).`
