@@ -16,6 +16,7 @@ v2.0.1 (Release Date: TBD)
 - Describe each main directory in the README Directory Structure section.
 - Enable automatic pruning on Git fetch with fetch.prune.
 - Add git-all-pull.sh --delete-remote-branches for origin branch cleanup.
+- Clarify the license exclusions for the bundled third-party software.
 
 v2.0 (2026-07-31)
 -----------------
