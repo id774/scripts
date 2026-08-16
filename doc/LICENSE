@@ -1,12 +1,31 @@
 # License
 
-This software is distributed under a **dual license**:
+The parts of this software copyrighted by id774 are distributed under a
+**dual license**:
 You may choose either the [GNU General Public License v3](https://www.gnu.org/licenses/gpl-3.0.html)
 or the [GNU Lesser General Public License v3](https://www.gnu.org/licenses/lgpl-3.0.html), at your discretion.
 
 For the full legal text, please refer to the included files:
 - [`COPYING`](COPYING) (GPLv3)
 - [`COPYING.LESSER`](COPYING.LESSER) (LGPLv3)
+
+## Third-Party Software
+
+The following Vim related files consist of, or contain, code derived from
+third-party software, and are excluded from the dual license applied to the
+rest of this repository:
+
+- `dot_files/dot_vim/`
+- `dot_files/dot_vimrc`
+- `dot_files/dot_gvimrc`
+- `dot_files/win_vimrc6`
+- `dot_files/win_vimrc7`
+- `dot_files/win_gvimrc6`
+- `dot_files/win_gvimrc7`
+
+Each of those files and packages remains the property of its respective
+copyright holders and is covered by the original copyright notices, license
+conditions and other terms accompanying it.
 
 ---
 

@@ -164,7 +164,8 @@ See [doc/POLICY](doc/POLICY) for detailed design and development standards acros
 
 ## 7. License
 
-This repository is dual licensed under the [GPL version 3](https://www.gnu.org/licenses/gpl-3.0.html) or the [LGPL version 3](https://www.gnu.org/licenses/lgpl-3.0.html), at your option.
+The parts of this repository copyrighted by id774 are dual licensed under the [GPL version 3](https://www.gnu.org/licenses/gpl-3.0.html) or the [LGPL version 3](https://www.gnu.org/licenses/lgpl-3.0.html), at your option.
+The Vim related files `dot_files/dot_vim/`, `dot_files/dot_vimrc`, `dot_files/dot_gvimrc`, `dot_files/win_vimrc6`, `dot_files/win_vimrc7`, `dot_files/win_gvimrc6` and `dot_files/win_gvimrc7` contain third-party code, so they are excluded from this dual license and follow the original copyright notices and license conditions of each third-party software.
 For full details, please refer to the [LICENSE](doc/LICENSE) file.  See also [COPYING](doc/COPYING) and [COPYING.LESSER](doc/COPYING.LESSER) for the complete license texts.
 
 Thank you for using and contributing to this repository!
