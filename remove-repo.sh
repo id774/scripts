@@ -27,6 +27,8 @@
 #      ./remove-repo.sh -x repo1 repo2     # remove multiple repositories
 #
 #  Version History:
+#  v1.8 2026-08-18
+#       Reject repository names that could escape the configured directories.
 #  v1.7 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -61,6 +63,17 @@ usage() {
 # Check if a directory is a Git repository.
 is_git_repo() {
     [ -d "$1/.git" ]
+}
+
+# Reject names that could resolve outside the repository directories.
+validate_repo_name() {
+    case "$1" in
+        ""|.|..|*/*)
+            echo "[ERROR] Invalid repository name: $1" >&2
+            return 1
+            ;;
+    esac
+    return 0
 }
 
 # Remove the Git repository from the github directory if it exists.
@@ -106,6 +119,10 @@ remove_symlink() {
 remove_repo() {
     repo_name="$1"
 
+    if ! validate_repo_name "$repo_name"; then
+        return 1
+    fi
+
     remove_from_github
     remove_from_git
     remove_symlink
@@ -113,10 +130,14 @@ remove_repo() {
 
 # Iterate through arguments and remove each specified repository.
 remove_repos() {
+    status=0
     while [ $# -gt 0 ]; do
-        [ "$1" != "-x" ] && remove_repo "$1"
+        if [ "$1" != "-x" ] && ! remove_repo "$1"; then
+            status=1
+        fi
         shift
     done
+    return "$status"
 }
 
 # Main entry point of the script
@@ -136,7 +157,9 @@ main() {
     done
 
     if [ -n "$1" ]; then
-        remove_repos "$@"
+        if ! remove_repos "$@"; then
+            return 1
+        fi
     else
         usage
     fi
