@@ -19,6 +19,7 @@ v2.0.1 (Release Date: TBD)
 - Clarify the license exclusions for the bundled third-party software.
 - Prevent remove-repo.sh repository names from escaping the configured
   directories.
+- Reject invalid source directory paths in unzip_subdir.py.
 
 v2.0 (2026-07-31)
 -----------------

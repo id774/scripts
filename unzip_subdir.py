@@ -29,10 +29,13 @@
 #    files in the source directory.
 #  - The script does not overwrite existing directories.
 #  - Archive members containing unsafe paths are rejected before extraction.
+#  - The source path must name an existing directory.
 #  - Processing continues after a failed archive, and the exit status is 1
 #    when at least one archive failed to extract.
 #
 #  Version History:
+#  v2.1 2026-08-19
+#       Reject source paths that do not name an existing directory.
 #  v2.0 2026-07-26
 #       Return exit status 1 when any archive fails to extract.
 #  v1.8 2026-07-23
@@ -147,6 +150,10 @@ def main():
         parser.print_help()
         return 1
     else:
+        if not os.path.isdir(args[0]):
+            print("[ERROR] Source path is not a directory: {}".format(args[0]),
+                  file=sys.stderr)
+            return 1
         failures = unzip_files(args, options.dry_run)
         if failures > 0:
             print("[ERROR] Failed to extract {} archive(s).".format(failures), file=sys.stderr)
