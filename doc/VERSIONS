@@ -15,7 +15,8 @@ v2.0.1 (Release Date: TBD)
 - Prune stale remote-tracking branches when git-all-pull.sh pulls repositories.
 - Describe each main directory in the README Directory Structure section.
 - Enable automatic pruning on Git fetch with fetch.prune.
-- Add git-all-pull.sh --delete-remote-branches for origin branch cleanup.
+- Add separate listing and deletion options for origin branch cleanup to
+  git-all-pull.sh.
 - Clarify the license exclusions for the bundled third-party software.
 - Prevent remove-repo.sh repository names from escaping the configured
   directories.
