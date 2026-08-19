@@ -14,7 +14,9 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run] [--delete-remote-branches] [--github-only] [--git-only] [--www-only] [--all]
+#      ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run]
+#          [--list-remote] [--delete-remote-branches]
+#          [--github-only] [--git-only] [--www-only] [--all]
 #
 #  Default behavior is to show this help message. Use '--all' to pull from github, git, and www targets.
 #
@@ -24,14 +26,19 @@
 #      '--reset' can be used as an alias of '--hard'.
 #      Pulls prune remote-tracking branches deleted from remotes.
 #      Pruning does not delete local branches.
-#      '--delete-remote-branches' deletes origin branches except master and main.
+#      '--list-remote' lists origin branches except master and main.
+#      '--delete-remote-branches' deletes the branches shown by the list option.
+#      '--dry-run' previews all operations without changing local or remote state.
 #
 #  WARNING: The '--hard' option performs 'git reset --hard' which can
 #  overwrite local changes. Use with caution.
+#  WARNING: The '--delete-remote-branches' option deletes all origin branches
+#  except master and main. Review them with '--list-remote' first.
 #
 #  Version History:
 #  v2.4 2026-08-15
-#       Add --delete-remote-branches to delete origin branches except master and main.
+#       Add --list-remote to preview origin branches except master and main,
+#       and --delete-remote-branches to delete them after review.
 #  v2.3 2026-08-07
 #       Prune stale remote-tracking branches during repository pulls.
 #  v2.2 2026-07-11
@@ -71,6 +78,7 @@
 HARD_MODE=false
 NO_SYMLINK=false
 DRY_RUN=false
+LIST_REMOTE_BRANCHES=false
 DELETE_REMOTE_BRANCHES=false
 GITHUB_ONLY=false
 GIT_ONLY=false
@@ -110,6 +118,7 @@ parse_arguments() {
             --reset) HARD_MODE=true ;;
             --no-symlink) NO_SYMLINK=true ;;
             --dry-run) DRY_RUN=true ;;
+            --list-remote) LIST_REMOTE_BRANCHES=true ;;
             --delete-remote-branches) DELETE_REMOTE_BRANCHES=true ;;
             --github-only) GITHUB_ONLY=true ;;
             --git-only) GIT_ONLY=true ;;
@@ -138,6 +147,8 @@ delete_remote_branches() {
         [ -n "$branch" ] || continue
         if [ "$DRY_RUN" = true ]; then
             echo "[INFO] DRY RUN: Delete remote branch: origin/$branch ($repo)"
+        elif [ "$LIST_REMOTE_BRANCHES" = true ]; then
+            echo "[INFO] Remote branch: origin/$branch ($repo)"
         else
             echo "[INFO] Deleting remote branch: origin/$branch ($repo)"
             if ! git -C "$repo" push origin --delete "$branch"; then
@@ -193,7 +204,7 @@ pull_repo() {
         echo "[INFO] DRY RUN: Pull repository: $repo"
     fi
 
-    if [ "$DELETE_REMOTE_BRANCHES" = true ]; then
+    if [ "$LIST_REMOTE_BRANCHES" = true ] || [ "$DELETE_REMOTE_BRANCHES" = true ]; then
         delete_remote_branches "$repo"
     fi
 }
