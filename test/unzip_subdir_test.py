@@ -23,8 +23,11 @@
 #    - Extracts .zip files discovered in nested subdirectories using the discovered archive path.
 #    - Continues after a failed archive and reports the failure count.
 #    - Exits with status 1 from the CLI when an extraction fails.
+#    - Exits with status 1 when the source path is not a directory.
 #
 #  Version History:
+#  v1.5 2026-08-19
+#       Add coverage for rejecting invalid source directory paths.
 #  v1.4 2026-07-26
 #       Add coverage for failure counting and non-zero CLI exit status,
 #       and switch the help test to sys.executable.
@@ -174,6 +177,32 @@ class TestUnzipSubdir(unittest.TestCase):
 
             self.assertEqual(process.returncode, 0)
             self.assertTrue(os.path.isfile(os.path.join(tmpdir, 'good', 'good.txt')))
+
+    def test_cli_rejects_source_path_that_is_not_a_directory(self):
+        script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../unzip_subdir.py'))
+        from subprocess import PIPE, Popen
+        with tempfile.TemporaryDirectory() as tmpdir:
+            source_path = os.path.join(tmpdir, 'archive.zip')
+            with open(source_path, 'w') as f:
+                f.write('not a directory')
+
+            process = Popen([sys.executable, script_path, source_path], stdout=PIPE, stderr=PIPE)
+            _, stderr = process.communicate()
+
+            self.assertEqual(process.returncode, 1)
+            self.assertIn(source_path, stderr.decode('utf-8'))
+
+    def test_cli_rejects_missing_source_directory(self):
+        script_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../unzip_subdir.py'))
+        from subprocess import PIPE, Popen
+        with tempfile.TemporaryDirectory() as tmpdir:
+            source_path = os.path.join(tmpdir, 'missing')
+
+            process = Popen([sys.executable, script_path, source_path], stdout=PIPE, stderr=PIPE)
+            _, stderr = process.communicate()
+
+            self.assertEqual(process.returncode, 1)
+            self.assertIn(source_path, stderr.decode('utf-8'))
 
     def test_extracts_zip_files_from_nested_directories(self):
         with tempfile.TemporaryDirectory() as tmpdir:
