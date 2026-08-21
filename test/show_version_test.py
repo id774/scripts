@@ -54,7 +54,6 @@ import show_version
 
 class _FakePackageNotFoundError(Exception):
     """ Stand-in for importlib.metadata.PackageNotFoundError. """
-    pass
 
 
 def make_fake_metadata(versions=None):
@@ -327,16 +326,16 @@ class TestShowVersion(unittest.TestCase):
     def test_catalog_includes_expected_packages(self):
         names = [distribution_name for distribution_name, _ in show_version.PACKAGES]
         for expected in ('torch', 'tensorflow', 'keras', 'jax', 'transformers',
-                          'datasets', 'huggingface_hub', 'scikit-learn', 'xgboost',
-                          'lightgbm', 'catboost', 'numpy', 'scipy', 'pandas', 'polars',
-                          'pyarrow', 'Flask', 'Django', 'fastapi', 'requests', 'httpx',
-                          'spacy', 'mecab-python3'):
+                         'datasets', 'huggingface_hub', 'scikit-learn', 'xgboost',
+                         'lightgbm', 'catboost', 'numpy', 'scipy', 'pandas', 'polars',
+                         'pyarrow', 'Flask', 'Django', 'fastapi', 'requests', 'httpx',
+                         'spacy', 'mecab-python3'):
             self.assertIn(expected, names)
 
     def test_catalog_excludes_removed_packages(self):
         names = [distribution_name for distribution_name, _ in show_version.PACKAGES]
         for removed in ('chainer', 'docopt', 'simplejson', 'migrate', 'genshi',
-                         'pyper', 'awscli', 'zipline', 'CaboCha'):
+                        'pyper', 'awscli', 'zipline', 'CaboCha'):
             self.assertNotIn(removed, names)
 
 
