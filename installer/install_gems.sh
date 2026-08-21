@@ -34,6 +34,10 @@
 #  - Proxy support can be configured using the HTTP_PROXY environment variable.
 #
 #  Version History:
+#  v4.0 2026-08-22
+#       Remove obsolete and narrowly scoped gems from the bulk install list,
+#       narrowing it to commonly used modern Ruby development gems and leaving
+#       twelve direct install targets including Automatic and Rails.
 #  v3.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -118,104 +122,18 @@ install_gems() {
     echo "[INFO] Installing essential Ruby gems..."
     # Define the list of gems as a multi-line string
     gems="
-    rails
-    debugger
-    pry
-    pry-doc
-    pry-rails
-    pry-coolline
-    hirb
-    awesome_print
-    rake
+    automatic
     bundler
-    builder
-    sqlite3
-    sass
-    sass-rails
-    compass-rails
-    coffee-script
-    coffee-rails
-    jquery-rails
-    haml
-    haml-rails
-    dalli
-    backbone-rails
-    uglifier
-    shotgun
-    rails-clean-logs
-    devise
-    i18n_generators
-    jeweler
-    gemcutter
-    kaminari
-    kaminari-bootstrap
-    rinku
-    yaml_db
-    term-ansicolor
-    http_configuration
-    mechanize
-    nokogiri
-    anemone
-    cosmicrawler
-    sanitize
-    Selenium
-    bson
-    bson_ext
-    mongo
-    net-ssh
-    net-scp
-    net-sftp
-    net-ping
-    unicorn
-    capistrano
-    redgreen
-    minitest
+    rake
+    rails
+    debug
+    pry
+    rubocop
+    ruby-lsp
     rspec
-    rspec-rails
-    rspec-mocks
-    flexmock
-    simplecov
-    sequel
-    puppet
-    gherkin
-    cucumber
-    capybara
-    webtail
-    zipruby
-    diff-lcs
-    msgpack
-    log4r
-    foreman
-    sinatra
-    formkeeper-japanese
-    redis
-    sidekiq
-    rubytree
-    shoulda
-    request-log-analyzer
-    apache-loggen
-    tzinfo
-    rb-fsevent
-    iconv
-    i18n
-    feedbag
-    hashie
-    gcalapi
-    xml-simple
-    pocket-ruby
-    spreadsheet
-    prawn
-    pdfkit
-    wkhtmltopdf-binary-edge
-    gnuplot
-    screening
-    ctoD
-    count_by
-    poppler
-    gsl
-    woothee
-    daemons
-    eventmachine
+    brakeman
+    nokogiri
+    sqlite3
     "
 
     # Loop through each gem and install it
@@ -224,17 +142,6 @@ install_gems() {
         gem=$(echo "$gem" | sed 's/^[ \t]*//;s/[ \t]*$//')
         $GEM install $PROXY "$gem"
     done
-
-    # Special installation for tomz-liblinear-ruby-swig
-    echo "[INFO] Installing tomz-liblinear-ruby-swig from a specific source..."
-    $GEM install --source http://gems.github.com tomz-liblinear-ruby-swig $PROXY
-
-    # Conditional installation for rsruby based on Linux distribution
-    if [ -f /etc/debian_version ]; then
-        $GEM install rsruby $PROXY -- --with-R-include=/usr/include/R --with-R-dir=/usr/lib/R
-    elif [ -f /etc/redhat-release ]; then
-        $GEM install rsruby $PROXY -- --with-R-include=/usr/share/R/include --with-R-dir=/usr/lib/R
-    fi
 
     echo "[INFO] Listing installed gems..."
     $GEM list --local
