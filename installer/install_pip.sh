@@ -4,14 +4,12 @@
 # install_pip.sh: Bulk Python Library Install Script
 #
 #  Description:
-#  This script automates the installation of a wide range of Python
-#  libraries that are essential for data analysis, machine learning,
-#  scientific computing, and web development. It ensures that these
-#  libraries are updated to their latest versions for optimal
-#  performance and compatibility. Additionally, the script supports
-#  environments with or without proxy settings, making it suitable for
-#  various network configurations. Easy Install support is included
-#  where available for certain libraries.
+#  This script automates the installation of a compact set of Python
+#  libraries for scientific computing, data analysis, machine learning,
+#  and Hugging Face work. It ensures that these libraries are updated to
+#  their latest versions for optimal performance and compatibility.
+#  Additionally, the script supports environments with or without proxy
+#  settings, making it suitable for various network configurations.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -37,6 +35,11 @@
 #  - Proxy support can be configured using the HTTP_PROXY environment variable.
 #
 #  Version History:
+#  v2.0 2026-08-22
+#       Reduce the broad historical package set to the established
+#       libraries for scientific computing, machine learning, and Hugging
+#       Face, leaving twelve direct installation targets, and drop the
+#       additional packages installed through Easy Install.
 #  v1.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -84,24 +87,16 @@ check_commands() {
     done
 }
 
-# Set up the environment variables for pip and Easy Install
+# Set up the environment variables for pip
 setup_environment() {
     if [ -n "$1" ]; then
-        export EASY_INSTALL=$1/bin/easy_install
         export PIP=$1/bin/pip
     else
-        export EASY_INSTALL=easy_install
         export PIP=pip
     fi
 
     # Verify that pip is available
     check_commands "$PIP" sed
-
-    # Warn if Easy Install is not available
-    if ! command -v "$EASY_INSTALL" >/dev/null 2>&1; then
-        echo "[WARN] Easy Install (easy_install) is not found in PATH. Skipping Easy Install steps." >&2
-        EASY_INSTALL=""
-    fi
 
     # Set proxy if HTTP_PROXY is defined
     if [ -n "$HTTP_PROXY" ]; then
@@ -125,80 +120,18 @@ install_libs() {
     echo "[INFO] Installing essential Python libraries..."
     # Define the list of libraries as a multi-line string
     libs="
-    IPython
-    jupyter
-    notebook
-    pyflakes
-    flake8
-    pytest
-    pytest-flake8
-    autopep8
-    black
-    autoflake
-    isort
-    Cython
-    docutils
-    nose
-    docopt
-    simplejson
     numpy
     scipy
-    scikit-learn
-    pandas-datareader
-    chainer
-    joblib
-    dask
-    patsy
-    statsmodels
-    sympy
-    seaborn
-    bokeh
-    twisted
-    Flask
-    Flask-Assets
-    Flask-Bootstrap
-    Hamlish-Jinja
-    gunicorn
-    django
-    SQLAlchemy
-    lmdb
-    migrate
-    Pygments
-    Babel
-    Genshi
-    bottle
-    cherrypy
-    beautifulsoup4
-    lxml
-    requests
-    pysolr
-    html5lib
-    colorspacious
-    pillow
-    plotnine
-    pyper
-    jinja2
-    tornado
-    pyzmq
-    awscli
-    cchardet
-    openpyxl
-    xlrd
-    simpy
-    networkx
-    uwsgi
-    zipline
-    DocumentFeatureSelection
-    beaker
-    python-memcached
-    psycopg2-binary
-    mpi4py
-    keras
-    tensorflow
-    matplotlib
     pandas
-    pycodestyle
-    instaloader
+    scikit-learn
+    matplotlib
+    IPython
+    jupyterlab
+    torch
+    transformers
+    datasets
+    huggingface_hub
+    xgboost
     "
 
     # Loop through each library and install it
@@ -207,15 +140,6 @@ install_libs() {
         lib=$(echo "$lib" | sed 's/^[ \t]*//;s/[ \t]*$//')
         install_lib "$lib"
     done
-
-    # Install additional libraries using Easy Install if available
-    if [ -n "$EASY_INSTALL" ]; then
-        echo "[INFO] Installing additional libraries using Easy Install..."
-        $EASY_INSTALL -U TA-Lib
-        $EASY_INSTALL -U nltk
-    else
-        echo "[WARN] Skipping Easy Install steps as Easy Install is not available." >&2
-    fi
 }
 
 # Main entry point of the script
