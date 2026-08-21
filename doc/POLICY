@@ -39,7 +39,8 @@ or additions to this common policy, in order to avoid redundancy.
 - `etc/`: configuration files and data files read by the top-level scripts.
 - `dot_files/`: dot files deployed into a user's home directory.
 - `test/`: the test suite.
-- `doc/`: this policy, the repository version history, and the license texts.
+- `doc/`: the user-facing feature reference, this policy, the repository version
+  history, and the license texts.
 - Placement says what a file is for, not which rules apply to it. Every
   executable in the repository follows the Common Policy.
 
@@ -303,6 +304,13 @@ never asked to touch.
   bound by the same rule.
 
 ### 1.6 Documentation
+
+The user-facing feature index is [FEATURES.md](FEATURES.md). It summarizes the
+top-level utilities, `installer/`, `cron/bin/`, support configuration, and
+deployed dotfiles so users can discover the relevant component before reading
+its header documentation. It is descriptive rather than normative: this policy
+remains self-contained, and the implementation and each executable's header
+remain authoritative for exact behavior and interfaces.
 
 #### 1.6.1 Executable Header Structure
 - Every executable must contain a structured header block, delimited above and

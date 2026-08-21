@@ -71,6 +71,10 @@ Every executable carries a header block stating what it does, how it is invoked
 and what it expects, so the script itself is the reference. For where each kind
 of script lives, see [Directory Structure](#5-directory-structure).
 
+For a repository-wide user-facing index of the available utilities, installers,
+scheduled jobs, configuration files, and dotfiles, see
+[doc/FEATURES.md](doc/FEATURES.md).
+
 ---
 
 ## 4. Testing
@@ -118,6 +122,7 @@ up front are shown.
 ├── dot_files/                Dot files deployed into a user's home directory.
 ├── test/                     The test suite, plus check_scripts.sh for the shell scripts.
 └── doc/
+    ├── FEATURES.md           User-facing feature reference for scripts and installers.
     ├── POLICY                Design and development standards for all languages.
     ├── VERSIONS              Version history of the repository.
     ├── LICENSE               License notice.

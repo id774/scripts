@@ -14,6 +14,8 @@ v2.0.1 (Release Date: TBD)
   file.
 - Prune stale remote-tracking branches when git-all-pull.sh pulls repositories.
 - Describe each main directory in the README Directory Structure section.
+- Document repository features and installer capabilities in
+  doc/FEATURES.md, and link it from README and doc/POLICY.
 - Enable automatic pruning on Git fetch with fetch.prune.
 - Add separate listing and deletion options for origin branch cleanup to
   git-all-pull.sh.
