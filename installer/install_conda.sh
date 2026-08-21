@@ -5,9 +5,9 @@
 #
 #  Description:
 #  This script sets up a Python development environment by installing
-#  essential libraries and tools using Conda. It ensures that common
-#  dependencies for data analysis, machine learning, and web development
-#  are installed and ready for use.
+#  a compact set of libraries using Conda. It ensures that the common
+#  dependencies for scientific computing, data analysis, machine
+#  learning, and Hugging Face work are installed and ready for use.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -31,10 +31,16 @@
 #  Notes:
 #  - If no path is provided, the script assumes the default installation
 #    path for Anaconda (`$HOME/local/anaconda3`).
-#  - Includes a wide range of tools for data science, machine learning,
-#    and web development.
+#  - Includes a focused set of tools for scientific computing, data
+#    analysis, machine learning, and Hugging Face work.
 #
 #  Version History:
+#  v2.0 2026-08-22
+#       Reduce the broad historical package set to the established
+#       libraries for scientific computing, machine learning, and Hugging
+#       Face under their Conda names, leaving twelve direct installation
+#       targets, drop the additional packages installed through Easy
+#       Install, and let the package loop use install_lib().
 #  v1.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -80,24 +86,16 @@ check_commands() {
     done
 }
 
-# Set up the environment variables for Conda and Easy Install
+# Set up the environment variables for Conda
 setup_environment() {
     if [ -n "$1" ]; then
-        export EASY_INSTALL=$1/bin/easy_install
         export CONDA=$1/bin/conda
     else
-        export EASY_INSTALL=$HOME/local/anaconda3/bin/easy_install
         export CONDA=$HOME/local/anaconda3/bin/conda
     fi
 
     # Verify that Conda is available
     check_commands "$CONDA" sed
-
-    # Warn if Easy Install is not available
-    if [ ! -x "$EASY_INSTALL" ]; then
-        echo "[WARN] Easy Install (easy_install) is not found or not executable at $EASY_INSTALL. Skipping Easy Install steps." >&2
-        EASY_INSTALL=""
-    fi
 }
 
 # Install a single Python library using Conda
@@ -114,106 +112,26 @@ install_libs() {
     echo "[INFO] Installing essential libraries using Conda..."
     # Define the list of libraries as a multi-line string
     libs="
-    pip
-    IPython
-    jupyter
-    notebook
-    pyflakes
-    flake8
-    pytest
-    pytest-pep8
-    autopep8
-    autoflake
-    isort
-    Cython
-    docutils
-    nose
-    docopt
-    simplejson
-    msgpack-python
     numpy
     scipy
-    scikit-learn
-    japandas
-    pandas-datareader
-    chainer
-    joblib
-    dask
-    patsy
-    statsmodels
-    sympy
-    seaborn
-    bokeh
-    twisted
-    Flask
-    Flask-Assets
-    Flask-Bootstrap
-    Hamlish-Jinja
-    gunicorn
-    django
-    SQLAlchemy
-    lmdb
-    migrate
-    readline
-    Pygments
-    Babel
-    Genshi
-    bottle
-    cherrypy
-    beautifulsoup4
-    lxml
-    requests
-    pysolr
-    watson-developer-cloud
-    html5lib
-    husl
-    pillow
-    ggplot
-    pyper
-    jinja2
-    tornado
-    pyzmq
-    awscli
-    cchardet
-    openpyxl
-    xlrd
-    simpy
-    networkx
-    pdfminer3k
-    pybrain
-    uwsgi
-    pypandoc
-    zipline
-    DocumentFeatureSelection
-    python-tr
-    mod_wsgi
-    beaker
-    python-memcached
-    psycopg2-binary
-    mpi4py
-    keras
-    tensorflow
-    matplotlib
     pandas
-    pep8
-    instaloader
+    scikit-learn
+    matplotlib
+    ipython
+    jupyterlab
+    pytorch
+    transformers
+    datasets
+    huggingface_hub
+    xgboost
     "
 
     # Loop through each library and install it
     for lib in $libs; do
         # Remove leading and trailing spaces/tabs
         lib=$(echo "$lib" | sed 's/^[ \t]*//;s/[ \t]*$//')
-        $PIP install $PROXY -U "$lib"
+        install_lib "$lib"
     done
-
-    # Install additional libraries using Easy Install if available
-    if [ -n "$EASY_INSTALL" ]; then
-        echo "[INFO] Installing additional libraries using easy_install..."
-        $EASY_INSTALL TA-Lib
-        $EASY_INSTALL nltk
-    else
-        echo "[INFO] Skipping Easy Install steps as Easy Install is not available."
-    fi
 }
 
 # Main entry point of the script
