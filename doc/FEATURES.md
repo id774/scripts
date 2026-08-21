@@ -696,7 +696,9 @@ Applies the required executable permissions to executable scripts in the reposit
 
 ### show_version.py
 
-Displays the versions of major commands, languages, and tools available on the system.
+Diagnoses a broad catalog of representative Python packages, checking distribution version and actual importability for each, and reporting missing packages separately from packages whose import fails.
+
+`-i` also shows detailed help for each importable module, and `-p` additionally shows the Python version.
 
 
 ## 16. System Administration Utilities

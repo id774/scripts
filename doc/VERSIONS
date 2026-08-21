@@ -24,6 +24,7 @@ v2.0.1 (Release Date: TBD)
   directories.
 - Reject invalid source directory paths in unzip_subdir.py.
 - Slim down the bulk package installers.
+- Modernize Python environment diagnostics.
 
 v2.0 (2026-07-31)
 -----------------
