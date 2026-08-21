@@ -19,31 +19,16 @@ The implementation and the header documentation in each script are the ultimate 
 
 The user-facing features in `scripts` are broadly divided into the following layers.
 
-    repository root
-        Independent utilities intended to be run manually
-
-    installer/
-        Setup scripts that actually install and configure operating systems,
-        middleware, development environments, monitoring, security, and related components
-
-    cron/bin/
-        Operational jobs intended to run unattended from cron
-
-    cron/etc/
-        Configuration files, cron triggers, and logrotate definitions used by cron jobs
-
-    etc/
-        Configuration files, templates, and data files referenced or deployed by
-        top-level scripts and installers
-
-    dot_files/
-        Dotfiles deployed into user environments by install_dotfiles.sh and related tools
-
-    test/
-        Tests used to validate the repository itself
-
-    doc/
-        Implementation policies, version history, licenses, and feature references
+| Layer | Role | Typical use |
+| --- | --- | --- |
+| Repository root | Independent utilities intended to be run directly | Manual, task-oriented commands |
+| `installer/` | Setup scripts for operating systems, middleware, development environments, monitoring, and security | Explicit machine or environment setup |
+| `cron/bin/` | Operational jobs intended to run unattended | Scheduled execution |
+| `cron/etc/` | Configuration files, cron triggers, and logrotate definitions for scheduled jobs | Supports `cron/bin/` deployments |
+| `etc/` | Configuration files, templates, and data used by top-level scripts and installers | Site-specific or supporting configuration |
+| `dot_files/` | Dotfiles deployed into user environments | User environment setup |
+| `test/` | Tests used to validate the repository | Repository validation |
+| `doc/` | Policies, version history, licenses, and feature references | Documentation |
 
 
 ## 2. Top-Level Scripts
@@ -51,6 +36,26 @@ The user-facing features in `scripts` are broadly divided into the following lay
 Scripts located at the repository root are, in principle, independent commands intended to be invoked directly by users.
 
 The current repository contains 92 such scripts.
+
+### Top-level capability index
+
+| Area | Representative commands | Main purpose |
+| --- | --- | --- |
+| HTML, writing, and content transformation | `add_hr_h2.py`, `aozora_prepare.rb`, `fix_anchor.py`, `format_html.py`, `html2yaml.py` | Format, normalize, and transform text or HTML |
+| Japanese input and dictionaries | `anthy_create_aa_dic.sh`, `convert_msime2canna.rb` | Build and convert Japanese input dictionaries |
+| Apache, web servers, and WordPress | `apache_log_analysis.sh`, `apache_calculater.py`, `apache_blog_analysis.py`, `wp_cachectl.py` | Analyze web traffic and operate WordPress caches |
+| Package management | `apt-upgrade.sh`, `brew-upgrade.sh`, `dpkg-hold.sh` | Update packages and control package state |
+| Files, directories, and filesystems | `chmodtree.py`, `cleanup-junk-files.sh`, `dirsize.py`, `find_range.py`, `flatdirs.py` | Inspect, transform, clean, and normalize filesystems |
+| Zsh history | `erase_history.py`, `filter_history.sh` | Remove or filter shell history entries |
+| Shell environment maintenance | `fix_compinit.sh`, `unfix_compinit.sh`, `xmap.sh` | Maintain Zsh and X11 user configuration |
+| Block devices and encrypted volumes | `get-device.sh`, `get-mountpoint.sh`, `get-serial.sh`, `tcmount.py`, `sd_extract.sh` | Resolve storage devices and operate removable or encrypted storage |
+| Git repository management | `git-all-pull.sh`, `git-archive-repo.sh`, `git-create-repo.sh`, `git-symlink.sh`, `remove-repo.sh` | Update, archive, create, link, and remove repositories |
+| Networking and transfers | `pyping.py`, `wakeonlan.py`, `wget.py`, `wget.rb`, `send_files.sh` | Check connectivity, download data, wake hosts, and transfer files |
+| Dashcam, GPX, and Instagram | `dashcam_sync.sh`, `gpx_sync.sh`, `insta_downloader.py`, `insta_sync.sh` | Synchronize and organize personal media or location data |
+| Fastladder | `fav-pins-on-fastladder.sh`, `get-fastladder-db.sh`, `get-feeds-from-fastladder.sh`, `vacuum-fastladder-db.sh` | Maintain Fastladder data and databases |
+| Development and testing | `check_header_doc.py`, `find_pycompat.py`, `pyck.py`, `run_tests.sh`, `setup_scripts.sh` | Validate source code and repository conventions |
+| System administration | `check_reboot.sh`, `check_sshd_config.sh`, `get_resources.sh`, `server_alive_check.sh` | Inspect system state, services, and availability |
+| Other utilities | `namecalc.py`, `namecalc.rb`, `simple_passwd.py`, `simple_passwd.rb` | Small standalone utilities |
 
 
 ## 3. HTML, Writing, and Content Transformation
@@ -839,6 +844,19 @@ Many top-level utilities primarily process input and return output. Installer sc
 
 The current `installer/` directory contains 80 scripts.
 
+### Installer capability index
+
+| Area | Main entry points | Scope | Main effects |
+| --- | --- | --- | --- |
+| Debian full setup | `debian_init.sh`, `debian_env.sh`, `debian_apt.sh`, `debian_setup.sh` | Debian / Ubuntu based systems | Packages, shells, dotfiles, monitoring, security configuration, and sysctl |
+| Debian desktop setup | `debian_desktop_apt.sh`, `debian_desktop_setup.sh`, `debian_xfce_setup.sh`, `debian_gnome_flashback_setup.sh`, `debian_gnome_setup.sh` | Debian desktop environments | Desktop packages, workspaces, keybindings, appearance, and desktop services |
+| macOS full setup | `macos_setup.sh`, `create_emergencyadmin.sh`, `install_brews.sh`, `reinstall_brew.sh`, `macos_finder_settings.sh`, `set_ipv6_macos.sh` | macOS | Dotfiles, Homebrew, FileVault recovery user, Finder settings, and network configuration |
+| Dotfiles and editors | `install_dotfiles.sh`, `install_dotvim.sh`, `setup_dot_ipython.sh`, `setup_nvim.sh`, `setup_jupyter_themes.sh`, `setup_xdg_dirs_en.sh` | User environments | Deploys editor, shell, IPython, Jupyter, and desktop user configuration |
+| Languages and runtimes | `install_R_libs.sh`, `install_python.sh`, `install_pip.sh`, `install_conda.sh`, `install_ruby.sh`, `install_gems.sh`, `install_zsh.sh`, `install_mecab-stack.sh` | Primarily Unix-like systems | Downloads, builds, installs, and configures language runtimes and libraries |
+| Monitoring and scheduled operations | `install_apache_log_analysis.sh`, `install_chkrootkit.sh`, `install_clamscan.sh`, `install_get_resources.sh`, `install_munin.sh`, `install_rsync_backup.sh`, `install_run_tests.sh` | Primarily Linux / Debian | Deploys executables, configuration, cron jobs, logrotate, and monitoring services |
+| System and security configuration | `configure_sysctl.sh`, `setup_iptables.sh`, `setup_pamd.sh`, `setup_securetty.sh`, `setup_dos_guard.sh`, `setup_apache2_ssl.sh`, `setup_crontab.sh`, `purge_kernels.sh`, `remove-tracker.sh` | Primarily Linux / Debian | Changes `/etc`, kernel or security policy, systemd configuration, services, and installed packages |
+| Chrome and GDM | `install_google_chrome.sh`, `install_gdm_themes.sh`, `install_gdm_themes2.sh` | Debian / Linux desktop | Configures the Chrome APT source or installs display-manager themes |
+
 
 ## 19. Debian Full Setup
 
@@ -1613,6 +1631,20 @@ Downloads, extracts, and installs a separate GDM Themes 2 series.
 
 The current jobs include the following.
 
+| Job | Purpose | Operational role |
+| --- | --- | --- |
+| `cron/bin/apache_log_analysis` | Run Apache log analysis | Cron entry point |
+| `cron/bin/chkrootkit` | Run periodic rootkit scanning | Scheduled security check |
+| `cron/bin/clamscan` | Start the ClamAV scan workflow | Cron entry point |
+| `cron/bin/clamscan.sh` | Perform the main ClamAV scan logic | Main scan implementation |
+| `cron/bin/fix-permissions.sh` | Repair configured filesystem permissions | Periodic maintenance |
+| `cron/bin/get_resources` | Generate system-resource reports | Periodic reporting |
+| `cron/bin/munin-symlink.sh` | Monitor Munin-related symlink state | Monitoring |
+| `cron/bin/munin-sync.sh` | Synchronize Munin data or state | Synchronization |
+| `cron/bin/rsync_backup` | Start the rsync backup workflow | Cron trigger |
+| `cron/bin/rsync_backup.sh` | Perform removable-disk backup and synchronization | Main backup implementation |
+| `cron/bin/run_tests` | Run interpreter-matrix tests and repository-wide checks | Scheduled quality gate |
+
 
 ### cron/bin/apache_log_analysis
 
@@ -1835,6 +1867,14 @@ This directory also contains bundled third-party trees such as Vim plugins.
 This repository contains many commands that modify system state in addition to read-only utilities.
 
 The target and the script's own header documentation should be reviewed before running operations in the following categories.
+
+| Operation type | Representative examples | Main risk |
+| --- | --- | --- |
+| File deletion | `cleanup-junk-files.sh`, `cltmp.sh`, `remove-repo.sh`, `purge_apt_cache.sh`, `purge_kernels.sh` | Permanently removes files, repositories, package state, or old kernels |
+| Destructive Git operations | `git-all-pull.sh --hard`, `git-all-pull.sh --delete-remote-branches`, `git-create-repo.sh --delete`, `remove-repo.sh -x` | Discards local changes or deletes repositories or remote branches |
+| Permission and ownership changes | `chmodtree.py`, `fix_compinit.sh`, `install_dotfiles.sh`, `setup_sysadmin_scripts.sh` | Changes filesystem metadata and access behavior |
+| System configuration | `configure_sysctl.sh`, `setup_iptables.sh`, `setup_pamd.sh`, `setup_securetty.sh`, `setup_dos_guard.sh`, `setup_apache2_ssl.sh`, `setup_crontab.sh` | Changes kernel, network, authentication, web-server, or scheduled-job configuration |
+| Package installation or removal | `installer/debian_apt.sh`, `installer/install_*.sh`, `installer/purge_*.sh`, `installer/remove-tracker.sh` | Installs or removes system software and may alter services |
 
 
 ### File deletion
