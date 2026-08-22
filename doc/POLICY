@@ -478,6 +478,10 @@ remain authoritative for exact behavior and interfaces.
   - Documentation-only, comment-only, and formatting-only changes (help text,
     README/POLICY/VERSIONS wording, whitespace and layout, etc. with no effect
     on behavior) do not bump the version.
+  - A version-only change, such as updating a dependency version, language
+    runtime version, tool version, or other version number without changing
+    the surrounding behavior or design, does not by itself require an
+    additional executable version bump.
   - Any change that affects code behavior (bug fixes, new options, and
     refactors that change observable behavior) bumps the version.
   - Multiple updates on the same date must be consolidated into a single
@@ -525,6 +529,10 @@ remain authoritative for exact behavior and interfaces.
   of them, and its first entry is written when that release is made.
 - A documentation-only change takes no `doc/VERSIONS` entry, unless its scale
   makes it worth one line saying so.
+- A version-only change, such as updating a dependency version, language
+  runtime version, tool version, or other version number without changing
+  the surrounding behavior or design, does not require its own
+  `doc/VERSIONS` entry.
 
 #### 1.7.4 doc/VERSIONS Structure
 - `doc/VERSIONS` must read as a version-level summary of overall changes, not
