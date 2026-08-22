@@ -23,7 +23,9 @@ v2.0.1 (Release Date: TBD)
 - Prevent remove-repo.sh repository names from escaping the configured
   directories.
 - Reject invalid source directory paths in unzip_subdir.py.
-- Slim down the bulk package installers.
+- Slim down the bulk package installers, take their package names from shell
+  word splitting instead of a non-portable sed expression, and stop treating
+  a failed update or installation as success.
 - Modernize Python environment diagnostics.
 
 v2.0 (2026-07-31)
