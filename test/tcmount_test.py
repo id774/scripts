@@ -188,7 +188,8 @@ class TestTcMount(unittest.TestCase):
             mock_build_unmount.return_value = 'mocked unmount command'
 
             # Test mounting
-            def options(): return None
+            def options():
+                return None
             options.veracrypt = veracrypt
             options.tc_compat = tc_compat
             options.no_utf8 = False
@@ -226,7 +227,8 @@ class TestTcMount(unittest.TestCase):
             mock_build_mount.return_value = 'mocked mount command'
             mock_build_unmount.return_value = 'mocked unmount command'
 
-            def options(): return None
+            def options():
+                return None
             options.veracrypt = False
             options.tc_compat = False
             options.no_utf8 = False
@@ -251,7 +253,8 @@ class TestTcMount(unittest.TestCase):
     def test_process_mounting_readonly_no_utf8_with_truecrypt(self, mock_os_exec):
         self.check_truecrypt_installed()
 
-        def options(): return None
+        def options():
+            return None
         options.veracrypt = False
         options.tc_compat = False
         options.no_utf8 = True
@@ -266,7 +269,8 @@ class TestTcMount(unittest.TestCase):
     def test_process_mounting_readonly_with_veracrypt(self, mock_os_exec):
         self.check_veracrypt_installed()
 
-        def options(): return None
+        def options():
+            return None
         options.veracrypt = True
         options.tc_compat = False
         options.no_utf8 = False
@@ -281,7 +285,8 @@ class TestTcMount(unittest.TestCase):
     def test_process_mounting_no_utf8_with_tc_compat(self, mock_os_exec):
         self.check_veracrypt_installed()
 
-        def options(): return None
+        def options():
+            return None
         options.veracrypt = False
         options.tc_compat = True
         options.no_utf8 = True
@@ -297,7 +302,8 @@ class TestTcMount(unittest.TestCase):
     @patch('tcmount.is_veracrypt_installed', return_value=True)
     def test_process_mounting_with_explicit_target_veracrypt(self, mock_vc, mock_tc, mock_os_exec):
         # Mount with explicit target using veracrypt
-        def options(): return None
+        def options():
+            return None
         options.veracrypt = True
         options.tc_compat = False
         options.no_utf8 = False
@@ -313,7 +319,8 @@ class TestTcMount(unittest.TestCase):
     @patch('tcmount.is_veracrypt_installed', return_value=True)
     def test_process_mounting_with_explicit_target_tc_compat(self, mock_vc, mock_tc, mock_os_exec):
         # Mount with explicit target using veracrypt in TC-compat mode
-        def options(): return None
+        def options():
+            return None
         options.veracrypt = False
         options.tc_compat = True
         options.no_utf8 = False
@@ -337,7 +344,8 @@ class TestTcMount(unittest.TestCase):
         for device in ['sdb', 'sdc', 'sde', 'sdz']:
             with self.subTest(device=device):
                 # Test mounting
-                def options(): return None
+                def options():
+                    return None
                 options.veracrypt = False
                 options.tc_compat = False
                 options.no_utf8 = False
@@ -359,7 +367,8 @@ class TestTcMount(unittest.TestCase):
 
         for device in ['sdb', 'sdc', 'sde', 'sdz']:
             with self.subTest(device=device):
-                def options(): return None
+                def options():
+                    return None
                 options.veracrypt = False
                 options.tc_compat = False
                 options.no_utf8 = True
@@ -452,7 +461,8 @@ class TestTcMount(unittest.TestCase):
 
         for veracrypt, tc_compat, no_utf8, readonly, all_devices, external, expected_options in test_cases:
             with self.subTest(veracrypt=veracrypt, tc_compat=tc_compat, no_utf8=no_utf8, readonly=readonly, all_devices=all_devices, external=external):
-                def options(): return None
+                def options():
+                    return None
                 options.veracrypt = veracrypt
                 options.tc_compat = tc_compat
                 options.no_utf8 = no_utf8
@@ -507,7 +517,8 @@ class TestTcMount(unittest.TestCase):
         for options_dict in options_combinations:
             with self.subTest(**options_dict):
                 # Setup options based on the current combination
-                def options(): return None
+                def options():
+                    return None
                 options.veracrypt = options_dict['veracrypt']
                 options.tc_compat = options_dict['tc_compat']
                 options.no_utf8 = options_dict['no_utf8']
@@ -554,7 +565,8 @@ class TestTcMount(unittest.TestCase):
                 patch('tcmount.is_veracrypt_installed', return_value=False):
             mock_build_ext.return_value = 'mocked external mount command'
 
-            def options(): return None
+            def options():
+                return None
             options.veracrypt = False
             options.tc_compat = False
             options.no_utf8 = False
@@ -576,7 +588,8 @@ class TestTcMount(unittest.TestCase):
                 patch('tcmount.is_veracrypt_installed', return_value=False):
             mock_build_unmount_ext.return_value = 'mocked external unmount command'
 
-            def options(): return None
+            def options():
+                return None
             options.veracrypt = False
             options.tc_compat = False
             options.no_utf8 = False
@@ -597,7 +610,8 @@ class TestTcMount(unittest.TestCase):
                 patch('tcmount.is_veracrypt_installed', return_value=False):
             mock_build_unmount_ext.return_value = 'mocked external unmount command'
 
-            def options(): return None
+            def options():
+                return None
             options.veracrypt = False
             options.tc_compat = False
             options.no_utf8 = False

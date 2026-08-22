@@ -69,7 +69,7 @@ try:
     import requests
     import yaml
     from bs4 import BeautifulSoup
-except ImportError as e:
+except ImportError:
     libraries_installed = False
 else:
     libraries_installed = True

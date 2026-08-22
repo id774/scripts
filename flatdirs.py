@@ -147,7 +147,6 @@ def handle_directory(path, options):
             except FileNotFoundError:
                 pass
         else:
-            dir_empty = False
             new_filename = "{}_{}".format(path.replace('/', '_'), entry)
             new_path = os.path.join(path, new_filename)
 

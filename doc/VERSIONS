@@ -29,8 +29,8 @@ v2.0.1 (Release Date: TBD)
 - Fix selected Shell Script portability defects without changing existing
   workflows.
 - Modernize Python environment diagnostics.
-- Make pyck.py distinguish auto-fixable changes from lint findings and
-  report unresolved lint issues after auto-fix.
+- Strengthen Python linting by distinguishing auto-fixable changes from
+  unresolved findings and cleaning the existing codebase.
 
 v2.0 (2026-07-31)
 -----------------
