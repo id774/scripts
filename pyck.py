@@ -4,18 +4,32 @@
 # pyck.py: Comprehensive Python Code Formatter and Linter
 #
 #  Description:
-#  This script performs code style checks, auto-formatting, and removal
-#  of unused imports for Python files. It uses flake8 for linting,
-#  autopep8 for auto-formatting, autoflake for removing unused
-#  imports, and isort for organizing imports. The script can operate in
-#  dry-run mode to display potential changes without modifying files,
-#  and in auto-fix mode to apply changes. It supports multiple files and
-#  directories, including wildcard usage.
-#  In dry-run mode, "Would clean:", "Would format:", and "Would sort
-#  imports in:" are reported only when autoflake, autopep8, or isort
-#  respectively would actually change a file under auto-fix; flake8
-#  lint diagnostics are reported separately as "Lint issue:" and never
-#  affect those change reports.
+#  This script performs Python code auto-fixing and lint checking. It uses
+#  autoflake to remove unused imports, autopep8 to apply formatting fixes,
+#  isort to organize imports, and flake8 to detect lint issues.
+#
+#  pyck deliberately separates changes that its automatic fixers can apply
+#  from lint findings that may require human judgment. "Would clean:",
+#  "Would format:", and "Would sort imports in:" are reserved for changes
+#  that pyck -i directly applies through autoflake, autopep8, and isort.
+#  flake8 findings are reported separately because flake8 can detect real
+#  defects that the configured automatic fixers cannot safely rewrite.
+#
+#  Without -i, pyck performs a non-destructive dry run. flake8 findings are
+#  reported as "Lint issue (manual review candidate):". They are described
+#  as candidates at this stage because a later autoflake, autopep8, or isort
+#  change may indirectly eliminate the condition.
+#
+#  With -i, pyck first runs autoflake, autopep8, and isort for each file,
+#  then runs flake8 against the resulting file. Any lint findings that remain
+#  are reported as "Manual fix required:". This means the configured
+#  automatic fixers have completed and the remaining finding requires human
+#  review.
+#
+#  Remaining lint findings are advisory diagnostics, not pyck execution
+#  failures. A normally completed pyck run returns status 0 even when
+#  "Manual fix required:" findings remain. Existing non-zero statuses for
+#  actual execution failures are unchanged.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -27,16 +41,20 @@
 #      pyck.py [file(s) or directory(ies)]
 #  Example:
 #      pyck.py ./my_python_project *.py
-#  This mode shows which files would be formatted, cleaned, and have imports organized
-#  by -i, without making changes. flake8 lint diagnostics are shown separately and do
-#  not affect these change reports.
+#  This mode never modifies files. "Would clean:", "Would format:", and
+#  "Would sort imports in:" identify changes that -i would directly apply.
+#  flake8 findings are shown separately as
+#  "Lint issue (manual review candidate):" because they are not guaranteed
+#  to require manual correction until auto-fix has been applied.
 #
 #  With -i (Actual formatting mode):
 #      pyck.py -i [file(s) or directory(ies)]
 #  Example:
 #      pyck.py -i ./my_python_project *.py
-#  This mode actually formats, cleans, and organizes imports in the Python files
-#  in the specified files or directories.
+#  For each file, this mode runs autoflake, autopep8, and isort, then runs
+#  flake8 on the resulting file. Remaining lint findings are reported as
+#  "Manual fix required:". These findings require human review but do not
+#  change the normal exit status from 0.
 #
 #  Requirements:
 #  - Python Version: 3.2 or later
@@ -44,8 +62,8 @@
 #
 #  Version History:
 #  v2.8 2026-08-22
-#       Make dry-run report only changes that auto-fix would apply,
-#       separating flake8 lint diagnostics from formatting changes.
+#       Distinguish auto-fixable changes from lint findings and report
+#       unresolved lint issues after auto-fix.
 #  v2.7 2026-07-15
 #       Quote file and directory paths before interpolating them into
 #       shell commands, to support paths containing spaces.
@@ -170,8 +188,10 @@ def dry_run_formatting(paths, ignore_errors):
     """ Perform a dry run to show which files auto-fix would change, without making actual changes. """
     print("[INFO] DRY RUN: No files will be modified. Use -i to auto-fix.")
     for file_path in resolve_target_files(paths):
-        run_command("flake8 --ignore={} {}".format(ignore_errors,
-                    shlex.quote(file_path)), show_files="Lint issue:")
+        run_command(
+            "flake8 --ignore={} {}".format(
+                ignore_errors, shlex.quote(file_path)),
+            show_files="Lint issue (manual review candidate):")
         run_command("autoflake --imports=django,requests,urllib3 --check {}".format(shlex.quote(file_path)),
                     show_files="Would clean: {}".format(file_path), literal_message=True)
         run_command("autopep8 --ignore={} --diff --exit-code {}".format(ignore_errors, shlex.quote(file_path)),
@@ -180,9 +200,13 @@ def dry_run_formatting(paths, ignore_errors):
                     show_files="Would sort imports in: {}".format(file_path), literal_message=True)
 
 def execute_formatting(paths, ignore_errors):
-    """ Execute auto-formatting and cleaning on specified Python files or directories. """
+    """ Execute auto-formatting and report lint issues that remain afterward. """
     for file_path in resolve_target_files(paths):
         format_file(file_path, ignore_errors)
+        run_command(
+            "flake8 --ignore={} {}".format(
+                ignore_errors, shlex.quote(file_path)),
+            show_files="Manual fix required:")
 
 def format_file(file_path, ignore_errors):
     """ Format a single Python file by cleaning up imports, and applying 'autopep8' and 'isort'. """
