@@ -1202,12 +1202,12 @@ It also supports user-local installation through `--no-sudo`.
 
 ### install_pip.sh
 
-Uses pip to install a predefined set of Python libraries for data analysis, machine learning, scientific computing, web development, and related tasks.
+Uses pip to install a compact predefined set of Python libraries for scientific computing, data analysis, machine learning, and Hugging Face work, plus the Python code-quality tools that pyck.py requires.
 
 
 ### install_conda.sh
 
-Installs a broad set of libraries and tools into a Conda environment for data analysis, machine learning, web development, and related tasks.
+Installs a compact, focused set of libraries and tools into a Conda environment for scientific computing, data analysis, machine learning, and Hugging Face work.
 
 
 ### setup_python_symlink.sh
@@ -1226,7 +1226,7 @@ By default, it uses a directory under `/opt/ruby/x.y`.
 
 ### install_gems.sh
 
-Updates RubyGems and installs a predefined set of gems for web development, data processing, and related tasks.
+Updates RubyGems and installs a compact, focused set of commonly used modern Ruby development gems.
 
 
 ### create_ubygems.sh

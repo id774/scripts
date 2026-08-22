@@ -4,11 +4,11 @@
 # install_gems.sh: Bulk Ruby Gem Install Script
 #
 #  Description:
-#  This script automates the installation of a comprehensive set of Ruby
-#  gems required for web development, data processing, and other purposes.
-#  It updates the gem system to the latest version and installs frequently
-#  used gems. Proxy settings are supported via the HTTP_PROXY environment
-#  variable, ensuring compatibility with various network configurations.
+#  This script automates the installation of a compact, focused set of
+#  commonly used modern Ruby development gems. It updates the gem system
+#  to the latest version and installs these gems. Proxy settings are
+#  supported via the HTTP_PROXY environment variable, ensuring
+#  compatibility with various network configurations.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -27,7 +27,9 @@
 #
 #  Exit Status:
 #  0: Success - All gems were installed successfully.
-#  1: Error - A critical issue occurred (e.g., missing dependencies).
+#  1: Error - A general installation or update failure occurred.
+#  126: Error - A required command exists but is not executable.
+#  127: Error - A required command was not found.
 #
 #  Notes:
 #  - If no path is provided, the script assumes default tools in PATH.
@@ -35,9 +37,8 @@
 #
 #  Version History:
 #  v4.0 2026-08-22
-#       Narrow the bulk install list to twelve modern Ruby gems, drop the
-#       non-portable sed-based name trimming, and propagate RubyGems
-#       update/install/list failures instead of always exiting successfully.
+#       Slim the gem set and improve portability and RubyGems failure
+#       handling.
 #  v3.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.

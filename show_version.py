@@ -42,10 +42,11 @@
 #
 #  Version History:
 #  v3.0 2026-08-22
-#       Modernized the broad Python package catalog, added distribution
-#       metadata based version detection when available, retained actual
-#       module imports as an environment health check, and distinguished
-#       missing packages from import failures.
+#       Modernized the broad Python package catalog to track the current
+#       bulk installer targets, added distribution metadata based version
+#       detection when available, retained actual module imports as an
+#       environment health check, and distinguished missing packages from
+#       import failures.
 #  v2.7 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v2.6 2025-06-23
@@ -97,6 +98,7 @@ PACKAGES = [
     ('flake8', 'flake8'),
     ('pyflakes', 'pyflakes'),
     ('autopep8', 'autopep8'),
+    ('autoflake', 'autoflake'),
     ('isort', 'isort'),
     ('mypy', 'mypy'),
     ('Cython', 'Cython'),

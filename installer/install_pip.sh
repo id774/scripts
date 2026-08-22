@@ -6,10 +6,11 @@
 #  Description:
 #  This script automates the installation of a compact set of Python
 #  libraries for scientific computing, data analysis, machine learning,
-#  and Hugging Face work. It ensures that these libraries are updated to
-#  their latest versions for optimal performance and compatibility.
-#  Additionally, the script supports environments with or without proxy
-#  settings, making it suitable for various network configurations.
+#  and Hugging Face work, plus the Python code-quality tools that pyck.py
+#  requires. It ensures that these libraries are updated to their latest
+#  versions for optimal performance and compatibility. Additionally, the
+#  script supports environments with or without proxy settings, making it
+#  suitable for various network configurations.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -28,7 +29,9 @@
 #
 #  Exit Status:
 #  0: Success - All libraries were installed successfully.
-#  1: Error - A critical issue occurred (e.g., missing dependencies).
+#  1: Error - A general installation or update failure occurred.
+#  126: Error - A required command exists but is not executable.
+#  127: Error - A required command was not found.
 #
 #  Notes:
 #  - If no path is provided, the script assumes default tools in PATH.
@@ -36,11 +39,9 @@
 #
 #  Version History:
 #  v2.0 2026-08-22
-#       Reduce the broad historical package set to the established
-#       libraries for scientific computing, machine learning, and Hugging
-#       Face, add standard Python code quality tools, and drop the
-#       additional packages installed through Easy Install. Exit with an
-#       error when pip fails.
+#       Slim the package set, retain the Python code-quality tools
+#       required by pyck.py, remove Easy Install, and propagate pip
+#       failures.
 #  v1.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
