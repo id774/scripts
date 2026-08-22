@@ -27,6 +27,8 @@ v2.0.1 (Release Date: TBD)
   handling.
 - Replace non-portable find and sort options with POSIX equivalents across
   shell utilities and installers.
+- Fix selected Shell Script portability defects without changing existing
+  workflows.
 - Modernize Python environment diagnostics.
 
 v2.0 (2026-07-31)

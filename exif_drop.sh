@@ -22,6 +22,9 @@
 #  - Ensure that the exiftool and jhead utilities are installed before running this script.
 #
 #  Version History:
+#  v2.0 2026-08-22
+#       Replace read -d pathname processing with POSIX find -exec while
+#       preserving pathname safety.
 #  v1.9 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -94,15 +97,20 @@ process_images() {
         usage
     fi
 
-    $FIND "$dir" -type f -print0 | while IFS= read -r -d '' file
-    do
-        if [ -n "$($EXIFTOOL -gps:GPSLatitude "$file" 2>/dev/null)" ]; then
-            $JHEAD -purejpg "$file"
-            echo "[INFO] Processed: $file"
-        else
-            echo "[INFO] Skipped: $file"
-        fi
-    done
+    "$FIND" "$dir" -type f -exec sh -c '
+        exiftool=$1
+        jhead=$2
+        shift 2
+
+        for file do
+            if [ -n "$("$exiftool" -gps:GPSLatitude "$file" 2>/dev/null)" ]; then
+                "$jhead" -purejpg "$file"
+                echo "[INFO] Processed: $file"
+            else
+                echo "[INFO] Skipped: $file"
+            fi
+        done
+    ' sh "$EXIFTOOL" "$JHEAD" {} +
 }
 
 # Main entry point of the script
