@@ -38,7 +38,7 @@
 #  v2.0 2026-08-22
 #       Reduce the broad historical package set to the established
 #       libraries for scientific computing, machine learning, and Hugging
-#       Face, leaving twelve direct installation targets, and drop the
+#       Face, add standard Python code quality tools, and drop the
 #       additional packages installed through Easy Install.
 #  v1.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
@@ -132,6 +132,10 @@ install_libs() {
     datasets
     huggingface_hub
     xgboost
+    autopep8
+    flake8
+    autoflake
+    isort
     "
 
     # Loop through each library and install it
