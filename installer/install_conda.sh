@@ -41,6 +41,9 @@
 #       Face under their Conda names, leaving twelve direct installation
 #       targets, drop the additional packages installed through Easy
 #       Install, and let the package loop use install_lib().
+#       Take each package name from shell word splitting instead of a
+#       non-portable sed expression, and stop at the first failed Conda
+#       update or installation with a non-zero exit status.
 #  v1.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -95,19 +98,25 @@ setup_environment() {
     fi
 
     # Verify that Conda is available
-    check_commands "$CONDA" sed
+    check_commands "$CONDA"
 }
 
 # Install a single Python library using Conda
 install_lib() {
     echo "[INFO] Installing $1..."
-    $CONDA install -y "$1"
+    if ! $CONDA install -y "$1"; then
+        echo "[ERROR] Failed to install $1." >&2
+        return 1
+    fi
 }
 
 # Install the necessary libraries using Conda
 install_libs() {
     echo "[INFO] Updating Conda base environment..."
-    $CONDA update -n base -y conda
+    if ! $CONDA update -n base -y conda; then
+        echo "[ERROR] Failed to update Conda." >&2
+        return 1
+    fi
 
     echo "[INFO] Installing essential libraries using Conda..."
     # Define the list of libraries as a multi-line string
@@ -128,9 +137,7 @@ install_libs() {
 
     # Loop through each library and install it
     for lib in $libs; do
-        # Remove leading and trailing spaces/tabs
-        lib=$(echo "$lib" | sed 's/^[ \t]*//;s/[ \t]*$//')
-        install_lib "$lib"
+        install_lib "$lib" || return 1
     done
 }
 
@@ -142,7 +149,9 @@ main() {
 
     echo "[INFO] Starting Conda environment setup and library installation..."
     setup_environment "$1"
-    install_libs
+    if ! install_libs; then
+        return 1
+    fi
 
     echo "[INFO] All specified conda packages have been installed."
     return 0
