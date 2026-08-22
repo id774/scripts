@@ -38,6 +38,11 @@
 #      multiple directories.
 #    - Regression: a flake8-only lint issue (autoflake/autopep8/isort all report no changes)
 #      must not produce "Would format:".
+#    - Report dry-run flake8 findings as "Lint issue (manual review candidate):".
+#    - Run flake8 after autoflake, autopep8, and isort in auto-fix mode.
+#    - Report flake8 findings remaining after auto-fix as "Manual fix required:".
+#    - Keep exit status 0 when lint findings remain after a successful auto-fix run.
+#    - Quote paths containing spaces in the post-fix flake8 command.
 #    - Regression: an autopep8-only diff (autoflake/isort report no changes) must produce
 #      "Would format:" for the target file.
 #    - "Would clean:" is shown only when autoflake reports a change is needed.
@@ -62,9 +67,8 @@
 #
 #  Version History:
 #  v1.4 2026-08-22
-#       Add regression coverage for dry-run change detection: separate flake8 lint
-#       diagnostics from "Would format:", add the missing autopep8 diff check, and
-#       verify dry-run and auto-fix resolve the same target files.
+#       Cover auto-fix change detection, lint candidate reporting, and
+#       unresolved lint diagnostics after auto-fix.
 #  v1.3 2026-07-15
 #       Add test cases verifying that paths with spaces are quoted
 #       before being passed to format_file and dry_run_formatting.
@@ -396,7 +400,8 @@ class TestPyck(unittest.TestCase):
                               if 'Would format:' in str(c)]
         self.assertEqual(would_format_calls, [])
         mock_print.assert_any_call(
-            "Lint issue: path/to/file.py:1:1: F401 'os' imported but unused")
+            "Lint issue (manual review candidate): "
+            "path/to/file.py:1:1: F401 'os' imported but unused")
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
@@ -555,9 +560,13 @@ class TestPyck(unittest.TestCase):
         mock_popen.return_value = mock_process
 
         pyck.execute_formatting(['path/to/directory'], 'E302,E402,E501')
-        auto_fix_files = sorted(c.args[0] for c in mock_format_file.call_args_list)
+        auto_fix_files = sorted(
+            c.args[0] for c in mock_format_file.call_args_list)
 
-        pyck.dry_run_formatting(['path/to/directory'], 'E302,E402,E501')
+        mock_popen.reset_mock()
+
+        pyck.dry_run_formatting(
+            ['path/to/directory'], 'E302,E402,E501')
         dry_run_files = sorted(set(
             c.args[0].split()[-1] for c in mock_popen.call_args_list))
 
@@ -568,11 +577,14 @@ class TestPyck(unittest.TestCase):
         self.assertEqual(auto_fix_files, expected_files)
         self.assertEqual(dry_run_files, expected_files)
 
+    @patch('pyck.run_command')
     @patch('pyck.format_file')
     @patch('pyck.print')
     @patch('pyck.os.path')
     @patch('pyck.os.walk')
-    def test_execute_formatting_single_file(self, mock_walk, mock_path, mock_print, mock_format_file):
+    def test_execute_formatting_single_file(
+            self, mock_walk, mock_path, mock_print,
+            mock_format_file, mock_run_command):
         # Mocking file existence
         mock_path.isfile.return_value = True
         mock_path.isdir.return_value = False
@@ -584,14 +596,22 @@ class TestPyck(unittest.TestCase):
         mock_format_file.assert_called_once_with(
             'path/to/single_file.py', 'E302,E402,E501')
 
+        mock_run_command.assert_called_once_with(
+            "flake8 --ignore=E302,E402,E501 path/to/single_file.py",
+            show_files="Manual fix required:")
+
+    @patch('pyck.run_command')
     @patch('pyck.format_file')
     @patch('pyck.print')
     @patch('pyck.os.path')
     @patch('pyck.os.walk')
-    def test_execute_formatting_with_multiple_files(self, mock_walk, mock_path, mock_print, mock_format_file):
+    def test_execute_formatting_with_multiple_files(
+            self, mock_walk, mock_path, mock_print,
+            mock_format_file, mock_run_command):
         # Mocking file and directory existence
         mock_path.isfile.side_effect = lambda p: p == 'path/to/file.py'
         mock_path.isdir.side_effect = lambda p: p == 'path/to/directory'
+        mock_path.join.side_effect = lambda *parts: '/'.join(parts)
         mock_walk.return_value = [
             ('path/to/directory', [], ['file1.py', 'file2.py'])]
 
@@ -608,19 +628,33 @@ class TestPyck(unittest.TestCase):
         # Verify format_file call for a single file
         mock_format_file.assert_any_call('path/to/file.py', 'E302,E402,E501')
 
+        mock_run_command.assert_any_call(
+            "flake8 --ignore=E302,E402,E501 path/to/directory/file1.py",
+            show_files="Manual fix required:")
+        mock_run_command.assert_any_call(
+            "flake8 --ignore=E302,E402,E501 path/to/directory/file2.py",
+            show_files="Manual fix required:")
+        mock_run_command.assert_any_call(
+            "flake8 --ignore=E302,E402,E501 path/to/file.py",
+            show_files="Manual fix required:")
+
         # Test behavior when path is neither a file nor a directory
         pyck.execute_formatting(['invalid/path'], 'E302,E402,E501')
         mock_print.assert_called_with(
             "[ERROR] The specified path 'invalid/path' is neither a file nor a directory.", file=sys.stderr)
 
+    @patch('pyck.run_command')
     @patch('pyck.format_file')
     @patch('pyck.print')
     @patch('pyck.os.path')
     @patch('pyck.os.walk')
-    def test_execute_formatting_single_directory(self, mock_walk, mock_path, mock_print, mock_format_file):
+    def test_execute_formatting_single_directory(
+            self, mock_walk, mock_path, mock_print,
+            mock_format_file, mock_run_command):
         # Mocking directory existence
         mock_path.isfile.return_value = False
         mock_path.isdir.return_value = True
+        mock_path.join.side_effect = lambda *parts: '/'.join(parts)
         mock_walk.return_value = [
             ('path/to/directory', [], ['file1.py', 'file2.py'])]
 
@@ -633,15 +667,26 @@ class TestPyck(unittest.TestCase):
         mock_format_file.assert_any_call(expected_file1_path, 'E302,E402,E501')
         mock_format_file.assert_any_call(expected_file2_path, 'E302,E402,E501')
 
+        mock_run_command.assert_any_call(
+            "flake8 --ignore=E302,E402,E501 path/to/directory/file1.py",
+            show_files="Manual fix required:")
+        mock_run_command.assert_any_call(
+            "flake8 --ignore=E302,E402,E501 path/to/directory/file2.py",
+            show_files="Manual fix required:")
+
+    @patch('pyck.run_command')
     @patch('pyck.format_file')
     @patch('pyck.print')
     @patch('pyck.os.path')
     @patch('pyck.os.walk')
-    def test_execute_formatting_multiple_directories(self, mock_walk, mock_path, mock_print, mock_format_file):
+    def test_execute_formatting_multiple_directories(
+            self, mock_walk, mock_path, mock_print,
+            mock_format_file, mock_run_command):
         # Mocking multiple directories
         mock_path.isfile.return_value = False
         mock_path.isdir.side_effect = lambda p: p in [
             'path/to/dir1', 'path/to/dir2']
+        mock_path.join.side_effect = lambda *parts: '/'.join(parts)
         mock_walk.side_effect = [
             [('path/to/dir1', [], ['file1.py', 'file2.py'])],
             [('path/to/dir2', [], ['file3.py', 'file4.py'])]
@@ -659,6 +704,120 @@ class TestPyck(unittest.TestCase):
         ]
         for call in expected_calls:
             mock_format_file.assert_any_call(call, 'E302,E402,E501')
+
+        mock_run_command.assert_any_call(
+            "flake8 --ignore=E302,E402,E501 path/to/dir1/file1.py",
+            show_files="Manual fix required:")
+        mock_run_command.assert_any_call(
+            "flake8 --ignore=E302,E402,E501 path/to/dir1/file2.py",
+            show_files="Manual fix required:")
+        mock_run_command.assert_any_call(
+            "flake8 --ignore=E302,E402,E501 path/to/dir2/file3.py",
+            show_files="Manual fix required:")
+        mock_run_command.assert_any_call(
+            "flake8 --ignore=E302,E402,E501 path/to/dir2/file4.py",
+            show_files="Manual fix required:")
+
+    @patch('pyck.run_command')
+    @patch('pyck.format_file')
+    @patch('pyck.resolve_target_files')
+    def test_execute_formatting_runs_flake8_after_format_file(
+            self, mock_resolve_target_files,
+            mock_format_file, mock_run_command):
+        mock_resolve_target_files.return_value = ['path/to/file.py']
+
+        calls = MagicMock()
+        calls.attach_mock(mock_format_file, 'format_file')
+        calls.attach_mock(mock_run_command, 'run_command')
+
+        pyck.execute_formatting(
+            ['path/to/file.py'], 'E302,E402,E501')
+
+        self.assertEqual(calls.mock_calls, [
+            call.format_file(
+                'path/to/file.py', 'E302,E402,E501'),
+            call.run_command(
+                'flake8 --ignore=E302,E402,E501 path/to/file.py',
+                show_files='Manual fix required:'),
+        ])
+
+    @patch('pyck.subprocess.Popen')
+    @patch('pyck.print')
+    def test_run_command_reports_manual_fix_required(
+            self, mock_print, mock_popen):
+        mock_process = MagicMock()
+        mock_process.communicate.return_value = (
+            "path/to/file.py:10:5: F811 redefinition of unused 'test_case'",
+            '')
+        mock_process.returncode = 1
+        mock_popen.return_value = mock_process
+
+        pyck.run_command(
+            'flake8 --ignore=E302,E402,E501 path/to/file.py',
+            show_files='Manual fix required:')
+
+        mock_print.assert_called_once_with(
+            "Manual fix required: "
+            "path/to/file.py:10:5: F811 "
+            "redefinition of unused 'test_case'")
+
+    @patch('pyck.run_command')
+    @patch('pyck.format_file')
+    @patch('pyck.resolve_target_files')
+    def test_execute_formatting_quotes_path_for_post_fix_flake8(
+            self, mock_resolve_target_files,
+            mock_format_file, mock_run_command):
+        mock_resolve_target_files.return_value = [
+            'path/to/my file.py']
+
+        pyck.execute_formatting(
+            ['path/to/my file.py'], 'E302,E402,E501')
+
+        mock_run_command.assert_called_once_with(
+            "flake8 --ignore=E302,E402,E501 "
+            "'path/to/my file.py'",
+            show_files='Manual fix required:')
+
+    @patch('pyck.print')
+    @patch('pyck.subprocess.Popen')
+    @patch('pyck.format_file')
+    @patch('pyck.resolve_target_files')
+    @patch('pyck.check_command')
+    @patch('pyck.setup_argument_parser')
+    def test_main_returns_zero_when_lint_remains_after_auto_fix(
+            self, mock_setup_argument_parser, mock_check_command,
+            mock_resolve_target_files, mock_format_file,
+            mock_popen, mock_print):
+        mock_parser = MagicMock()
+        mock_args = MagicMock()
+        mock_args.paths = ['path/to/file.py']
+        mock_args.auto_fix = True
+        mock_parser.parse_args.return_value = mock_args
+        mock_setup_argument_parser.return_value = mock_parser
+
+        mock_resolve_target_files.return_value = ['path/to/file.py']
+
+        mock_process = MagicMock()
+        mock_process.communicate.return_value = (
+            "path/to/file.py:10:5: F811 redefinition of unused 'test_case'",
+            '')
+        mock_process.returncode = 1
+        mock_popen.return_value = mock_process
+
+        result = pyck.main()
+
+        self.assertEqual(result, 0)
+        mock_print.assert_any_call(
+            "Manual fix required: "
+            "path/to/file.py:10:5: F811 "
+            "redefinition of unused 'test_case'")
+
+        mock_check_command.assert_has_calls([
+            call('autopep8'),
+            call('flake8'),
+            call('autoflake'),
+            call('isort'),
+        ])
 
     @patch('pyck.os.path.isfile')
     @patch.dict('pyck.os.environ', {'PATH': '/usr/bin:/bin'})
