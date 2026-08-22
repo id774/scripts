@@ -25,7 +25,7 @@ v2.0.1 (Release Date: TBD)
 - Reject invalid source directory paths in unzip_subdir.py.
 - Slim down the bulk package installers, take their package names from shell
   word splitting instead of a non-portable sed expression, and stop treating
-  a failed update or installation as success.
+  a failed update, installation, or listing as success.
 - Modernize Python environment diagnostics.
 
 v2.0 (2026-07-31)

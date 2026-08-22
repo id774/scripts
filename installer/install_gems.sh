@@ -35,9 +35,9 @@
 #
 #  Version History:
 #  v4.0 2026-08-22
-#       Remove obsolete and narrowly scoped gems from the bulk install list,
-#       narrowing it to commonly used modern Ruby development gems and leaving
-#       twelve direct install targets including Automatic and Rails.
+#       Narrow the bulk install list to twelve modern Ruby gems, drop the
+#       non-portable sed-based name trimming, and propagate RubyGems
+#       update/install/list failures instead of always exiting successfully.
 #  v3.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -98,7 +98,7 @@ setup_environment() {
     fi
 
     # Verify that gem is available
-    check_commands "$GEM" sed
+    check_commands "$GEM"
 
     # Set proxy if HTTP_PROXY is defined
     if [ -n "$HTTP_PROXY" ]; then
@@ -111,13 +111,19 @@ setup_environment() {
 # Install a single Ruby gem
 install_gem() {
     echo "[INFO] Installing $1..."
-    $GEM install $PROXY "$1"
+    if ! $GEM install $PROXY "$1"; then
+        echo "[ERROR] Failed to install $1." >&2
+        return 1
+    fi
 }
 
 # Install the necessary Ruby gems
 install_gems() {
     echo "[INFO] Updating gem system to the latest version..."
-    $GEM update --system $PROXY
+    if ! $GEM update --system $PROXY; then
+        echo "[ERROR] Failed to update RubyGems." >&2
+        return 1
+    fi
 
     echo "[INFO] Installing essential Ruby gems..."
     # Define the list of gems as a multi-line string
@@ -138,13 +144,14 @@ install_gems() {
 
     # Loop through each gem and install it
     for gem in $gems; do
-        # Remove leading and trailing spaces/tabs
-        gem=$(echo "$gem" | sed 's/^[ \t]*//;s/[ \t]*$//')
-        $GEM install $PROXY "$gem"
+        install_gem "$gem" || return 1
     done
 
     echo "[INFO] Listing installed gems..."
-    $GEM list --local
+    if ! $GEM list --local; then
+        echo "[ERROR] Failed to list installed gems." >&2
+        return 1
+    fi
 }
 
 # Main entry point of the script
@@ -155,7 +162,10 @@ main() {
 
     echo "[INFO] Starting Ruby gem installation..."
     setup_environment "$1"
-    install_gems
+
+    if ! install_gems; then
+        return 1
+    fi
 
     echo "[INFO] All specified Ruby gem packages have been installed."
     return 0
