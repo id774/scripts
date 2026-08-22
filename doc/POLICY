@@ -669,14 +669,9 @@ Before a change is proposed, it answers these:
 ## 2. Shell Script Implementation Policy
 
 ### 2.1 Basic Principles
-- Comply strictly with POSIX (`#!/bin/sh`).
-- Prefer POSIX-defined utility options, regular expressions, and escape
-  sequences in portable code paths.
-- Do not remove required functionality merely to avoid a useful
-  platform-specific extension.
-- When a script relies on a non-POSIX utility feature, verify that the
-  required capability is available before using it, and use a fallback,
-  skip the optional operation, or fail explicitly as appropriate.
+- Comply strictly with POSIX (`#!/bin/sh`) for the Shell Script language
+  itself; see 2.1.1 for how POSIX compliance extends to the external
+  utilities a script invokes.
 - Avoid Bash-specific syntax and extensions.
 - Do not use `local`.
 - `/bin/sh` is dash on Debian and Ubuntu. A construct that works because
@@ -687,6 +682,88 @@ Before a change is proposed, it answers these:
   `.`, and a temporary file or a pipeline instead.
 - Modularize using small, single-purpose functions.
 - Follow the structured header requirements defined in the Common Policy.
+
+#### 2.1.1 POSIX Language and Utility Capabilities
+- POSIX compliance is unconditional for the Shell Script language itself.
+  Shell syntax, parameter expansion, built-ins, function definitions, and
+  sourced configuration/code must work with the supported `/bin/sh`
+  implementations.
+- POSIX conformance of a construct is necessary but is not by itself
+  sufficient for unconditional use. A feature newly standardized by POSIX may
+  still be unavailable in a supported shell or utility implementation. A
+  construct or utility feature may be used unconditionally only when it is
+  available in the supported implementations; otherwise use a compatible form
+  or establish the required capability before depending on it.
+- `/bin/sh` compatibility means compatibility with the actual supported shell
+  implementations, including dash on Debian and Ubuntu. Do not assume that a
+  feature is usable merely because a newer POSIX edition defines it.
+- For external utilities, prefer a POSIX-defined form whenever it preserves
+  the required behavior and observable output.
+- A `portable code path` means a path intended to run across more than one
+  supported Unix-like environment without depending on a capability
+  guaranteed only by one implementation. Such a path must not assume
+  implementation-specific utility behavior unless that capability is
+  explicitly established.
+- Do not replace a non-POSIX option with a weaker POSIX form when doing so
+  would remove required functionality, metadata preservation, diagnostics,
+  safety, or intentional output.
+- Intentional output produced by a delegated utility, including verbose
+  output, is part of existing behavior unless the script or its
+  documentation says otherwise. Do not remove that output solely to
+  eliminate a non-POSIX option.
+- Treat an option, subcommand, output format, or implementation-specific
+  behavior as a capability distinct from command existence.
+- `command -v` establishes only that a command can be invoked. It does not
+  establish that a particular option, subcommand, output format, or
+  behavior is available.
+- When a required capability is not guaranteed by the documented execution
+  environment, establish it before the first side effect that depends on it.
+- Prefer a harmless direct test of the exact capability when such a test is
+  practical.
+- If a required capability is unavailable and no behavior-preserving
+  fallback exists, refuse the run explicitly before performing dependent
+  side effects.
+- If a capability is optional, detect it where it is used. Use a
+  behavior-preserving fallback when available; otherwise skip only that
+  optional operation and report the skip once.
+- A platform check may define the supported scope of a script. For example,
+  a script may explicitly be Linux-only or macOS-only.
+- Do not infer the availability of an option, subcommand, or utility
+  behavior solely from an operating-system name, distribution name, or
+  release number.
+- Platform identity may answer whether a script should run there; capability
+  detection answers whether a specific implementation-dependent operation
+  can be performed there.
+- A non-POSIX utility is allowed when it is an explicit dependency or part
+  of the documented platform interface of the script.
+- The use of utilities such as Git, rsync, systemctl, findmnt, or lsblk is
+  not by itself a POSIX defect when the script intentionally depends on
+  them.
+- POSIX portability requirements apply to the Shell Script language and to
+  portable use of standard utilities; they do not require removing an
+  explicit external dependency merely because POSIX does not define that
+  utility.
+
+Evaluate a utility feature in this order:
+
+1. If a POSIX-defined form preserves the required behavior and observable
+   output, use it.
+2. If no single POSIX option is equivalent but a combination of
+   POSIX-defined shell or utility features preserves the behavior
+   completely, use that portable implementation.
+3. If removing the non-POSIX feature would change required functionality,
+   metadata preservation, diagnostics, safety, or intentional output, do not
+   remove it merely for POSIX purity. Treat the feature as a capability.
+4. If that capability is not guaranteed but a behavior-preserving fallback
+   exists, detect the capability and use the fallback when necessary.
+5. If the capability is optional and no equivalent fallback exists, skip
+   only the optional operation and report the decision once.
+6. If the capability is required and no behavior-preserving fallback
+   exists, fail explicitly before the first side effect that depends on it.
+
+This order does not override the Decision Priorities in 1.1.3: keeping the
+existing options, exit status, output, and configuration file format working
+still comes before portability.
 
 ### 2.2 Quoting and Word Splitting
 - Quote every variable expansion that is not deliberately being split. A path
