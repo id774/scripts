@@ -26,7 +26,9 @@
 #
 #  Exit Status:
 #  0: Success - All libraries were installed successfully.
-#  1: Error - A critical issue occurred (e.g., missing dependencies).
+#  1: Error - A general installation or update failure occurred.
+#  126: Error - A required command exists but is not executable.
+#  127: Error - A required command was not found.
 #
 #  Notes:
 #  - If no path is provided, the script assumes the default installation
@@ -36,14 +38,8 @@
 #
 #  Version History:
 #  v2.0 2026-08-22
-#       Reduce the broad historical package set to the established
-#       libraries for scientific computing, machine learning, and Hugging
-#       Face under their Conda names, leaving twelve direct installation
-#       targets, drop the additional packages installed through Easy
-#       Install, and let the package loop use install_lib().
-#       Take each package name from shell word splitting instead of a
-#       non-portable sed expression, and stop at the first failed Conda
-#       update or installation with a non-zero exit status.
+#       Slim the package set, remove Easy Install, and improve
+#       portability and Conda failure handling.
 #  v1.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.

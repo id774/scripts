@@ -30,7 +30,8 @@
 #  Version History:
 #  v1.1 2026-08-22
 #       Added test coverage for the v3.0 metadata/import classification
-#       logic and the distribution-name to import-name mapping catalog.
+#       logic, the distribution-name to import-name mapping catalog, and
+#       the Python code-quality tools required by pyck.py.
 #  v1.0 2025-07-07
 #       Initial release.
 #
@@ -329,7 +330,8 @@ class TestShowVersion(unittest.TestCase):
                          'datasets', 'huggingface_hub', 'scikit-learn', 'xgboost',
                          'lightgbm', 'catboost', 'numpy', 'scipy', 'pandas', 'polars',
                          'pyarrow', 'Flask', 'Django', 'fastapi', 'requests', 'httpx',
-                         'spacy', 'mecab-python3'):
+                         'spacy', 'mecab-python3', 'autopep8', 'flake8', 'autoflake',
+                         'isort'):
             self.assertIn(expected, names)
 
     def test_catalog_excludes_removed_packages(self):
