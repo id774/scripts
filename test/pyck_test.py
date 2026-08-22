@@ -220,7 +220,7 @@ class TestPyck(unittest.TestCase):
         mock_popen.return_value = mock_process
 
         pyck.run_command('autopep8 --diff --exit-code test.py',
-                          show_files="Would format: test.py", literal_message=True)
+                         show_files="Would format: test.py", literal_message=True)
         mock_print.assert_called_once_with("Would format: test.py")
 
     @patch('pyck.subprocess.Popen')
@@ -361,7 +361,7 @@ class TestPyck(unittest.TestCase):
 
         expected_calls = []
         for root, name in (('path/to/dir1', 'file1.py'), ('path/to/dir1', 'file2.py'),
-                            ('path/to/dir2', 'file3.py'), ('path/to/dir2', 'file4.py')):
+                           ('path/to/dir2', 'file3.py'), ('path/to/dir2', 'file4.py')):
             target = os.path.join(root, name)
             expected_calls.extend([
                 call("flake8 --ignore=E302,E402,E501 {}".format(target),
