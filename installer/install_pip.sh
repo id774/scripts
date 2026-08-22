@@ -39,7 +39,8 @@
 #       Reduce the broad historical package set to the established
 #       libraries for scientific computing, machine learning, and Hugging
 #       Face, add standard Python code quality tools, and drop the
-#       additional packages installed through Easy Install.
+#       additional packages installed through Easy Install. Exit with an
+#       error when pip fails.
 #  v1.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -96,7 +97,7 @@ setup_environment() {
     fi
 
     # Verify that pip is available
-    check_commands "$PIP" sed
+    check_commands "$PIP"
 
     # Set proxy if HTTP_PROXY is defined
     if [ -n "$HTTP_PROXY" ]; then
@@ -109,13 +110,19 @@ setup_environment() {
 # Install a single Python library
 install_lib() {
     echo "[INFO] Installing $1..."
-    $PIP install $PROXY -U "$1"
+    if ! $PIP install $PROXY -U "$1"; then
+        echo "[ERROR] Failed to install $1." >&2
+        return 1
+    fi
 }
 
 # Install the necessary Python libraries using pip
 install_libs() {
     echo "[INFO] Updating pip to the latest version..."
-    $PIP install $PROXY -U pip
+    if ! $PIP install $PROXY -U pip; then
+        echo "[ERROR] Failed to update pip." >&2
+        return 1
+    fi
 
     echo "[INFO] Installing essential Python libraries..."
     # Define the list of libraries as a multi-line string
@@ -140,9 +147,7 @@ install_libs() {
 
     # Loop through each library and install it
     for lib in $libs; do
-        # Remove leading and trailing spaces/tabs
-        lib=$(echo "$lib" | sed 's/^[ \t]*//;s/[ \t]*$//')
-        install_lib "$lib"
+        install_lib "$lib" || return 1
     done
 }
 
@@ -154,7 +159,9 @@ main() {
 
     echo "[INFO] Starting Python library installation..."
     setup_environment "$1"
-    install_libs
+    if ! install_libs; then
+        return 1
+    fi
 
     echo "[INFO] All specified python packages have been installed."
     return 0
