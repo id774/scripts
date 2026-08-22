@@ -66,7 +66,7 @@
 #  - Dependencies: autopep8, flake8, autoflake, isort
 #
 #  Version History:
-#  v2.8 2026-08-22
+#  v3.0 2026-08-23
 #       Distinguish auto-fixable changes from lint findings, report
 #       unresolved lint issues after auto-fix, and use isolated formatter
 #       and linter configuration.
