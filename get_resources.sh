@@ -26,6 +26,8 @@
 #      - Security-related logs and fail2ban status
 #
 #  Version History:
+#  v2.6 2026-08-22
+#       Use POSIX head -n syntax without changing resource report output.
 #  v2.5 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -196,7 +198,7 @@ gather_os_specific_info() {
         execute_command df -H
         execute_command top -l 1
         execute_command ps aux
-        execute_command ps -axo pid,rss,%mem,etime,comm -r | head -20
+        execute_command ps -axo pid,rss,%mem,etime,comm -r | head -n 20
         execute_command pmset -g batt
     else
         execute_command sh -c "grep -m1 'model name' /proc/cpuinfo | cut -d: -f2"
@@ -205,7 +207,7 @@ gather_os_specific_info() {
         execute_command df -P -T
         execute_command top -b -n 1
         execute_command ps aux
-        execute_command ps aux --sort=-rss | head -20
+        execute_command ps aux --sort=-rss | head -n 20
         display_power_summary
     fi
 }

@@ -21,6 +21,8 @@
 #      ./create_emergencyadmin.sh
 #
 #  Version History:
+#  v1.3 2026-08-22
+#       Use POSIX tail -n syntax when selecting the highest existing UID.
 #  v1.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -113,7 +115,7 @@ prompt_passwords() {
 
 # Create a new admin user with a unique UID
 create_admin_user() {
-    MAX_UID=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -n | tail -1)
+    MAX_UID=$(dscl . -list /Users UniqueID | awk '{print $2}' | sort -n | tail -n 1)
     NEW_UID=$((MAX_UID + 1))
 
     echo "[INFO] Creating admin user '$USERNAME'..."
