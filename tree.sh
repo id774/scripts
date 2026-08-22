@@ -22,6 +22,8 @@
 #  or with '-a' option to include hidden directories.
 #
 #  Version History:
+#  v2.0 2026-08-22
+#       Use POSIX find negation when excluding hidden paths.
 #  v1.9 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -104,7 +106,7 @@ display_tree() {
     if [ "$show_hidden" = true ]; then
         find . -print | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'
     else
-        find . -not -path '*/\.*' -print | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'
+        find . ! -path '*/\.*' -print | sort | sed '1d;s/^\.//;s/\/\([^/]*\)$/|--\1/;s/\/[^/|]*/|  /g'
     fi
 }
 

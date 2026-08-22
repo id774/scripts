@@ -36,6 +36,8 @@
 #    for a `x.y.z` version directory under `lib/ruby/`.
 #
 #  Version History:
+#  v1.7 2026-08-22
+#       Select custom Ruby versions with POSIX find and awk.
 #  v1.6 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -90,8 +92,29 @@ get_custom_ruby_path() {
         exit 1
     fi
 
-    # Find the latest x.y.z format directory under lib/ruby
-    RUBY_VERSION=$(find "$BASE_DIR/lib/ruby" -maxdepth 1 -type d | grep -E '/[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1)
+    # Find the highest x.y.z format directory directly under lib/ruby
+    RUBY_VERSION=$(find "$BASE_DIR/lib/ruby" \
+        ! -path "$BASE_DIR/lib/ruby" -prune -type d -print |
+        awk -F/ '
+            {
+                name = $NF
+                if (name !~ /^[0-9]+\.[0-9]+\.[0-9]+$/) next
+                split(name, v, ".")
+                major = v[1] + 0
+                minor = v[2] + 0
+                patch = v[3] + 0
+                if (!found || major > bmajor ||
+                    (major == bmajor && minor > bminor) ||
+                    (major == bmajor && minor == bminor && patch > bpatch)) {
+                    found = 1
+                    bmajor = major
+                    bminor = minor
+                    bpatch = patch
+                    best = name
+                }
+            }
+            END { if (found) print best }
+        ')
 
     # Ensure a valid directory was found
     if [ -z "$RUBY_VERSION" ]; then
@@ -99,8 +122,6 @@ get_custom_ruby_path() {
         exit 1
     fi
 
-    # Extract only the x.y.z part and set target directory
-    RUBY_VERSION=$(basename "$RUBY_VERSION")
     TARGET_DIR="$BASE_DIR/lib/ruby/$RUBY_VERSION"
 }
 
@@ -156,7 +177,7 @@ main() {
     esac
 
     # Ensure required commands are available before proceeding
-    check_commands find grep sort tail basename ls cat
+    check_commands find awk ls cat
 
     # Determine target directory
     if [ -n "$1" ]; then

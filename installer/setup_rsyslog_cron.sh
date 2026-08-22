@@ -42,6 +42,8 @@
 #  - Commands: sudo, awk, find, grep, cmp, chown, chmod, cp, mktemp, rsyslogd, uname
 #
 #  Version History:
+#  v1.2 2026-08-22
+#       Use POSIX find for rsyslog drop-in discovery.
 #  v1.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -122,7 +124,21 @@ check_target_dir() {
 # Detect existing split logging (cron.none) in main or drop-in configs
 has_cron_none() {
     # Collect candidate config files from common include dirs
-    files=$(find /etc/rsyslog.conf.d "$TARGET_DIR" -maxdepth 1 -type f -name '*.conf' 2>/dev/null)
+    files=$(
+        {
+            if [ -d /etc/rsyslog.conf.d ]; then
+                find /etc/rsyslog.conf.d \
+                    ! -path /etc/rsyslog.conf.d \
+                    -prune -type f -name '*.conf' -print
+            fi
+
+            if [ -d "$TARGET_DIR" ]; then
+                find "$TARGET_DIR" \
+                    ! -path "$TARGET_DIR" \
+                    -prune -type f -name '*.conf' -print
+            fi
+        } 2>/dev/null
+    )
     # Match only non-comment lines that actually contain cron.none in a selector
     grep -hE '^[[:space:]]*[^#].*cron\.none' /etc/rsyslog.conf $files 2>/dev/null | grep -q .
 }
