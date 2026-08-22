@@ -29,6 +29,8 @@ v2.0.1 (Release Date: TBD)
 - Fix selected Shell Script portability defects without changing existing
   workflows.
 - Modernize Python environment diagnostics.
+- Make pyck.py dry-run report only changes that auto-fix would apply,
+  separating lint diagnostics.
 
 v2.0 (2026-07-31)
 -----------------
