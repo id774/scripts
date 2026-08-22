@@ -52,9 +52,11 @@ which, these come in order:
 2. Do not put a credential where another user of the host can read it, and do
    not commit one.
 3. Stay safe to run twice.
-4. Keep the existing options, exit status, output, and configuration file
-   format working, so that a cron entry or a recorded command keeps behaving
-   as before.
+4. Preserve existing observable behavior, including control flow,
+   processing order, which later operations are attempted after a
+   failure, side effects, options, exit status, output, and
+   configuration file format, so that an unchanged invocation keeps
+   behaving as before.
 5. Stay portable: POSIX for a Shell Script, and the stated minimum version for
    Python and Ruby.
 6. Branch on what the environment provides, not on what it is called.
@@ -74,6 +76,15 @@ and recorded here once it has been.
 - Normal execution paths must return normally and propagate status explicitly.
 - Do not rely on implicit termination or language-specific shortcuts
   (e.g. `set -e` in a shell script, bare `except` in Python).
+- A change whose stated purpose is portability, diagnostics, error
+  handling, cleanup, refactoring, modernization, or standards
+  conformance must preserve existing observable behavior unless a
+  behavior change is explicitly part of the task.
+- Detecting or reporting a failure must not by itself change whether
+  later independent operations are attempted.
+- Changing continue-on-failure into fail-fast, or fail-fast into
+  continue-on-failure, is an observable behavior change. Do not
+  introduce either as an incidental error-handling improvement.
 
 #### 1.2.2 Optional Dependencies
 - `check_commands` declares what a script requires. A capability the script can
@@ -302,6 +313,31 @@ never asked to touch.
   establishes that the privilege is available, and is described under the
   Shell Script policy; a Python or Ruby script that raises a privilege is
   bound by the same rule.
+
+#### 1.5.4 Installer Execution Model
+- Scripts under `installer/` are batch-oriented by default. Normal
+  installation and setup work should be able to run without an
+  interactive operator.
+- Do not add interactive confirmation to ordinary installation,
+  package update, configuration, or other routine and repeatable setup
+  steps.
+- An interactive confirmation is reserved for a destructive, irreversible,
+  or otherwise high-impact operation for which proceeding without explicit
+  operator approval would create a material safety risk.
+- Do not use that exception for precautionary prompts that merely ask
+  whether an ordinary batch operation should continue.
+- When an installer performs multiple independent operations, failure of
+  one operation does not by itself prevent later independent operations
+  from being attempted. Report the failure and continue with work that can
+  still be performed safely.
+- A required prerequisite whose absence makes the requested work
+  impossible, or a condition that makes further execution unsafe, may
+  still terminate the installer before dependent work is performed.
+- Distinguish that prerequisite or safety failure from fail-fast handling
+  of an otherwise independent operation.
+- Preserve an installer's established continuation, ordering, interaction,
+  and side-effect behavior unless changing that behavior is explicitly
+  part of the requested work.
 
 ### 1.6 Documentation
 
@@ -573,8 +609,8 @@ remain authoritative for exact behavior and interfaces.
   reviewer came to read.
 - Work that cannot stand without the change is not a second purpose. Its
   `doc/VERSIONS` entry, the `Version History` entry in the header of the script
-  it changes, and the test that fails without it belong to the change that
-  requires them.
+  it changes, and an existing or explicitly approved test that fails without
+  it belong to the change that requires them.
 - Where the separation is genuinely artificial, because neither part is correct
   or reviewable without the other, they are proposed together and the request
   says why.
@@ -642,7 +678,16 @@ remain authoritative for exact behavior and interfaces.
   feed the code fixed input instead.
 - A test writes nothing outside a temporary directory, and needs no credential
   and no reachable host.
-- A fix for a defect arrives together with the test that fails without it.
+- A defect fix uses the existing test infrastructure when that
+  infrastructure can directly cover the defect.
+- Do not create a new test file, test harness, mock/stub infrastructure,
+  or another test execution path solely because a changed component has
+  no dedicated automated test.
+- Creating new test infrastructure is a separate scope decision and
+  requires explicit maintainer approval.
+- For a Shell Script without an existing dedicated automated test, use
+  the repository's existing Shell Script validation unless creation of
+  a dedicated test has been explicitly approved.
 
 ### 1.11 Judging a Change
 Before a change is proposed, it answers these:
@@ -653,6 +698,10 @@ Before a change is proposed, it answers these:
 - Is the script still safe to run twice?
 - Does it change an existing option, exit status, output, or configuration key
   that a cron entry or a deployed copy depends on?
+- Does it change control flow, processing order, side effects, or
+  whether later operations still run after an earlier operation fails?
+- For a script under `installer/`, does it introduce fail-fast or
+  interactive behavior that was not explicitly required?
 - Does it branch on the name of an environment rather than on what that
   environment provides?
 - Does `check_commands` still name the commands the script actually runs, no
@@ -743,6 +792,9 @@ Before a change is proposed, it answers these:
   portable use of standard utilities; they do not require removing an
   explicit external dependency merely because POSIX does not define that
   utility.
+- A portability change is behavior-preserving work. Do not change
+  control flow, failure-continuation semantics, processing order, or
+  side effects merely to make an implementation more portable.
 
 Evaluate a utility feature in this order:
 

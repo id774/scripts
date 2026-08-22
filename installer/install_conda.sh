@@ -34,6 +34,11 @@
 #    path for Anaconda (`$HOME/local/anaconda3`).
 #  - Includes a focused set of tools for scientific computing, data
 #    analysis, machine learning, and Hugging Face work.
+#  - This is a batch installer. A failure to update Conda or install one
+#    library is reported, but does not prevent later libraries from being
+#    attempted.
+#  - Normal installation is non-interactive and does not ask for
+#    confirmation.
 #
 #  Version History:
 #  v2.0 2026-08-22

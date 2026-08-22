@@ -33,6 +33,11 @@
 #  Notes:
 #  - If no path is provided, the script assumes default tools in PATH.
 #  - Proxy support can be configured using the HTTP_PROXY environment variable.
+#  - This is a batch installer. A failure to update RubyGems or install
+#    one gem is reported, but does not prevent later gems from being
+#    attempted.
+#  - Normal installation is non-interactive and does not ask for
+#    confirmation.
 #
 #  Version History:
 #  v4.0 2026-08-22
