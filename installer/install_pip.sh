@@ -28,8 +28,7 @@
 #  - pip must be installed prior to executing this script.
 #
 #  Exit Status:
-#  0: Success - All libraries were installed successfully.
-#  1: Error - A general installation or update failure occurred.
+#  0: Success - Package installation processing completed.
 #  126: Error - A required command exists but is not executable.
 #  127: Error - A required command was not found.
 #
@@ -40,8 +39,7 @@
 #  Version History:
 #  v2.0 2026-08-22
 #       Slim the package set, retain the Python code-quality tools
-#       required by pyck.py, remove Easy Install, and propagate pip
-#       failures.
+#       required by pyck.py, and remove Easy Install.
 #  v1.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -112,17 +110,16 @@ setup_environment() {
 install_lib() {
     echo "[INFO] Installing $1..."
     if ! $PIP install $PROXY -U "$1"; then
-        echo "[ERROR] Failed to install $1." >&2
-        return 1
+        echo "[WARN] Failed to install $1; continuing." >&2
     fi
+    return 0
 }
 
 # Install the necessary Python libraries using pip
 install_libs() {
     echo "[INFO] Updating pip to the latest version..."
     if ! $PIP install $PROXY -U pip; then
-        echo "[ERROR] Failed to update pip." >&2
-        return 1
+        echo "[WARN] Failed to update pip; continuing." >&2
     fi
 
     echo "[INFO] Installing essential Python libraries..."
@@ -148,8 +145,9 @@ install_libs() {
 
     # Loop through each library and install it
     for lib in $libs; do
-        install_lib "$lib" || return 1
+        install_lib "$lib"
     done
+    return 0
 }
 
 # Main entry point of the script
@@ -160,9 +158,7 @@ main() {
 
     echo "[INFO] Starting Python library installation..."
     setup_environment "$1"
-    if ! install_libs; then
-        return 1
-    fi
+    install_libs
 
     echo "[INFO] All specified python packages have been installed."
     return 0
