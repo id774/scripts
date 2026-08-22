@@ -30,7 +30,8 @@ v2.0.1 (Release Date: TBD)
   workflows.
 - Modernize Python environment diagnostics.
 - Strengthen Python linting by distinguishing auto-fixable changes from
-  unresolved findings and cleaning the existing codebase.
+  unresolved findings, isolating tool configuration, and cleaning the
+  existing codebase.
 
 v2.0 (2026-07-31)
 -----------------
