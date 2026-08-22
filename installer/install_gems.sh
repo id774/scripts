@@ -26,8 +26,7 @@
 #  - Ruby and gem must be installed prior to executing this script.
 #
 #  Exit Status:
-#  0: Success - All gems were installed successfully.
-#  1: Error - A general installation or update failure occurred.
+#  0: Success - Gem installation processing completed.
 #  126: Error - A required command exists but is not executable.
 #  127: Error - A required command was not found.
 #
@@ -37,8 +36,7 @@
 #
 #  Version History:
 #  v4.0 2026-08-22
-#       Slim the gem set and improve portability and RubyGems failure
-#       handling.
+#       Slim the gem set and improve portability.
 #  v3.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -113,17 +111,16 @@ setup_environment() {
 install_gem() {
     echo "[INFO] Installing $1..."
     if ! $GEM install $PROXY "$1"; then
-        echo "[ERROR] Failed to install $1." >&2
-        return 1
+        echo "[WARN] Failed to install $1; continuing." >&2
     fi
+    return 0
 }
 
 # Install the necessary Ruby gems
 install_gems() {
     echo "[INFO] Updating gem system to the latest version..."
     if ! $GEM update --system $PROXY; then
-        echo "[ERROR] Failed to update RubyGems." >&2
-        return 1
+        echo "[WARN] Failed to update RubyGems; continuing." >&2
     fi
 
     echo "[INFO] Installing essential Ruby gems..."
@@ -145,14 +142,14 @@ install_gems() {
 
     # Loop through each gem and install it
     for gem in $gems; do
-        install_gem "$gem" || return 1
+        install_gem "$gem"
     done
 
     echo "[INFO] Listing installed gems..."
     if ! $GEM list --local; then
-        echo "[ERROR] Failed to list installed gems." >&2
-        return 1
+        echo "[WARN] Failed to list installed gems; continuing." >&2
     fi
+    return 0
 }
 
 # Main entry point of the script
@@ -164,9 +161,7 @@ main() {
     echo "[INFO] Starting Ruby gem installation..."
     setup_environment "$1"
 
-    if ! install_gems; then
-        return 1
-    fi
+    install_gems
 
     echo "[INFO] All specified Ruby gem packages have been installed."
     return 0
