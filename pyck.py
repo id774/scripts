@@ -11,6 +11,11 @@
 #  dry-run mode to display potential changes without modifying files,
 #  and in auto-fix mode to apply changes. It supports multiple files and
 #  directories, including wildcard usage.
+#  In dry-run mode, "Would clean:", "Would format:", and "Would sort
+#  imports in:" are reported only when autoflake, autopep8, or isort
+#  respectively would actually change a file under auto-fix; flake8
+#  lint diagnostics are reported separately as "Lint issue:" and never
+#  affect those change reports.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -22,8 +27,9 @@
 #      pyck.py [file(s) or directory(ies)]
 #  Example:
 #      pyck.py ./my_python_project *.py
-#  This mode shows which files would be formatted, cleaned, and have imports organized,
-#  without making changes.
+#  This mode shows which files would be formatted, cleaned, and have imports organized
+#  by -i, without making changes. flake8 lint diagnostics are shown separately and do
+#  not affect these change reports.
 #
 #  With -i (Actual formatting mode):
 #      pyck.py -i [file(s) or directory(ies)]
@@ -37,6 +43,9 @@
 #  - Dependencies: autopep8, flake8, autoflake, isort
 #
 #  Version History:
+#  v2.8 2026-08-22
+#       Make dry-run report only changes that auto-fix would apply,
+#       separating flake8 lint diagnostics from formatting changes.
 #  v2.7 2026-07-15
 #       Quote file and directory paths before interpolating them into
 #       shell commands, to support paths containing spaces.
@@ -139,20 +148,9 @@ def format_imports(file_path):
     command = "isort {}".format(shlex.quote(file_path))
     subprocess.Popen(command, shell=True).wait()
 
-def dry_run_formatting(paths, ignore_errors):
-    """ Perform a dry run to show which files would be formatted and cleaned without making actual changes. """
-    for path in paths:
-        print(
-            "[INFO] DRY RUN: No files will be modified for '{}'. Use -i to auto-fix.".format(path))
-        run_command("flake8 --ignore={} {}".format(ignore_errors,
-                    shlex.quote(path)), show_files="Would format:")
-        run_command("autoflake --imports=django,requests,urllib3 --check {}".format(shlex.quote(path)),
-                    show_files="Would clean:")
-        run_command("isort --check-only {}".format(shlex.quote(path)),
-                    show_files="Would sort imports in:")
-
-def execute_formatting(paths, ignore_errors):
-    """ Execute auto-formatting and cleaning on specified Python files or directories. """
+def resolve_target_files(paths):
+    """ Resolve the given files/directories into the concrete list of .py files to process. """
+    target_files = []
     for path in paths:
         actual_path = path[0] if isinstance(path, list) else path
 
@@ -160,13 +158,31 @@ def execute_formatting(paths, ignore_errors):
             for root, dirs, files in os.walk(actual_path):
                 for name in files:
                     if name.endswith('.py'):
-                        file_path = os.path.join(root, name)
-                        format_file(file_path, ignore_errors)
+                        target_files.append(os.path.join(root, name))
         elif os.path.isfile(actual_path):
-            format_file(actual_path, ignore_errors)
+            target_files.append(actual_path)
         else:
             print("[ERROR] The specified path '{}' is neither a file nor a directory.".format(
                 actual_path), file=sys.stderr)
+    return target_files
+
+def dry_run_formatting(paths, ignore_errors):
+    """ Perform a dry run to show which files auto-fix would change, without making actual changes. """
+    print("[INFO] DRY RUN: No files will be modified. Use -i to auto-fix.")
+    for file_path in resolve_target_files(paths):
+        run_command("flake8 --ignore={} {}".format(ignore_errors,
+                    shlex.quote(file_path)), show_files="Lint issue:")
+        run_command("autoflake --imports=django,requests,urllib3 --check {}".format(shlex.quote(file_path)),
+                    show_files="Would clean: {}".format(file_path), literal_message=True)
+        run_command("autopep8 --ignore={} --diff --exit-code {}".format(ignore_errors, shlex.quote(file_path)),
+                    show_files="Would format: {}".format(file_path), literal_message=True)
+        run_command("isort --check-only {}".format(shlex.quote(file_path)),
+                    show_files="Would sort imports in: {}".format(file_path), literal_message=True)
+
+def execute_formatting(paths, ignore_errors):
+    """ Execute auto-formatting and cleaning on specified Python files or directories. """
+    for file_path in resolve_target_files(paths):
+        format_file(file_path, ignore_errors)
 
 def format_file(file_path, ignore_errors):
     """ Format a single Python file by cleaning up imports, and applying 'autopep8' and 'isort'. """
@@ -177,16 +193,19 @@ def format_file(file_path, ignore_errors):
     subprocess.Popen(command, shell=True).wait()
     format_imports(file_path)
 
-def run_command(command, show_files=None):
-    """ Execute a shell command and optionally display formatted files. """
+def run_command(command, show_files=None, literal_message=False):
+    """ Execute a shell command and optionally display a message when it reports a non-zero exit status. """
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
     stdout, _ = process.communicate()
     if isinstance(stdout, bytes):
         stdout = stdout.decode('utf-8')
     if process.returncode != 0 and show_files:
-        for line in stdout.split('\n'):
-            if line:
-                print("{} {}".format(show_files, line))
+        if literal_message:
+            print(show_files)
+        else:
+            for line in stdout.split('\n'):
+                if line:
+                    print("{} {}".format(show_files, line))
 
 def main():
     """ Parse command-line arguments and perform formatting or dry-run based on the input. """
