@@ -37,7 +37,7 @@ from unittest.mock import MagicMock, patch
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
-    from PIL import Image
+    __import__('PIL.Image')
     pil_installed = True
 except ImportError:
     pil_installed = False

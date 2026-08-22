@@ -63,7 +63,7 @@ class TestInstagramPhotoDownloader(unittest.TestCase):
             self.skipTest("insta_downloader module is not available")
 
         try:
-            import instaloader
+            __import__('instaloader')
         except ModuleNotFoundError:
             self.skipTest("instaloader module is not installed")
 

@@ -45,7 +45,7 @@ import sys
 # Importing PIL library and handling errors if not installed
 try:
     from PIL import Image
-except ImportError as e:
+except ImportError:
     libraries_installed = False
 else:
     libraries_installed = True
