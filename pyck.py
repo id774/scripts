@@ -31,6 +31,11 @@
 #  "Manual fix required:" findings remain. Existing non-zero statuses for
 #  actual execution failures are unchanged.
 #
+#  pyck uses its own formatter and linter settings and ignores user-level and
+#  project-local configuration files. The same file is therefore checked and
+#  formatted with the same pyck policy regardless of the current working
+#  directory or configuration files surrounding the target.
+#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
@@ -62,8 +67,9 @@
 #
 #  Version History:
 #  v2.8 2026-08-22
-#       Distinguish auto-fixable changes from lint findings and report
-#       unresolved lint issues after auto-fix.
+#       Distinguish auto-fixable changes from lint findings, report
+#       unresolved lint issues after auto-fix, and use isolated formatter
+#       and linter configuration.
 #  v2.7 2026-07-15
 #       Quote file and directory paths before interpolating them into
 #       shell commands, to support paths containing spaces.
@@ -106,6 +112,7 @@ import os
 import shlex
 import subprocess
 import sys
+import tempfile
 
 
 def usage():
@@ -161,9 +168,23 @@ def check_command(cmd):
         print("[ERROR] Command '{}' is not executable. Please check the permissions.".format(cmd), file=sys.stderr)
         sys.exit(126)
 
-def format_imports(file_path):
+def create_isolated_config(directory):
+    """ Create an isolated shared configuration for formatter and linter tools. """
+    config_path = os.path.join(directory, 'pyck.cfg')
+    with open(config_path, 'w', encoding='utf-8') as f:
+        f.write(
+            "[autoflake]\n"
+            "quiet = false\n\n"
+            "[pycodestyle]\n\n"
+            "[isort]\n"
+            "lines_between_sections = 1\n"
+        )
+    return config_path
+
+def format_imports(file_path, config_path):
     """ Format and organize imports in a Python file using 'isort'. """
-    command = "isort {}".format(shlex.quote(file_path))
+    command = "isort --settings-path={} {}".format(
+        shlex.quote(config_path), shlex.quote(file_path))
     subprocess.Popen(command, shell=True).wait()
 
 def resolve_target_files(paths):
@@ -184,38 +205,42 @@ def resolve_target_files(paths):
                 actual_path), file=sys.stderr)
     return target_files
 
-def dry_run_formatting(paths, ignore_errors):
+def dry_run_formatting(paths, ignore_errors, config_path):
     """ Perform a dry run to show which files auto-fix would change, without making actual changes. """
     print("[INFO] DRY RUN: No files will be modified. Use -i to auto-fix.")
     for file_path in resolve_target_files(paths):
         run_command(
-            "flake8 --ignore={} {}".format(
+            "flake8 --isolated --ignore={} {}".format(
                 ignore_errors, shlex.quote(file_path)),
             show_files="Lint issue (manual review candidate):")
-        run_command("autoflake --imports=django,requests,urllib3 --check {}".format(shlex.quote(file_path)),
+        run_command("autoflake --config={} --imports=django,requests,urllib3 --check {}".format(
+                    shlex.quote(config_path), shlex.quote(file_path)),
                     show_files="Would clean: {}".format(file_path), literal_message=True)
-        run_command("autopep8 --ignore={} --diff --exit-code {}".format(ignore_errors, shlex.quote(file_path)),
+        run_command("autopep8 --global-config={} --ignore-local-config --ignore={} --diff --exit-code {}".format(
+                    shlex.quote(config_path), ignore_errors, shlex.quote(file_path)),
                     show_files="Would format: {}".format(file_path), literal_message=True)
-        run_command("isort --check-only {}".format(shlex.quote(file_path)),
+        run_command("isort --settings-path={} --check-only {}".format(
+                    shlex.quote(config_path), shlex.quote(file_path)),
                     show_files="Would sort imports in: {}".format(file_path), literal_message=True)
 
-def execute_formatting(paths, ignore_errors):
+def execute_formatting(paths, ignore_errors, config_path):
     """ Execute auto-formatting and report lint issues that remain afterward. """
     for file_path in resolve_target_files(paths):
-        format_file(file_path, ignore_errors)
+        format_file(file_path, ignore_errors, config_path)
         run_command(
-            "flake8 --ignore={} {}".format(
+            "flake8 --isolated --ignore={} {}".format(
                 ignore_errors, shlex.quote(file_path)),
             show_files="Manual fix required:")
 
-def format_file(file_path, ignore_errors):
+def format_file(file_path, ignore_errors, config_path):
     """ Format a single Python file by cleaning up imports, and applying 'autopep8' and 'isort'. """
-    command = "autoflake --imports=django,requests,urllib3 -i {}".format(
-        shlex.quote(file_path))
+    command = "autoflake --config={} --imports=django,requests,urllib3 -i {}".format(
+        shlex.quote(config_path), shlex.quote(file_path))
     subprocess.Popen(command, shell=True).wait()
-    command = "autopep8 --ignore={} -v -i {}".format(ignore_errors, shlex.quote(file_path))
+    command = "autopep8 --global-config={} --ignore-local-config --ignore={} -v -i {}".format(
+        shlex.quote(config_path), ignore_errors, shlex.quote(file_path))
     subprocess.Popen(command, shell=True).wait()
-    format_imports(file_path)
+    format_imports(file_path, config_path)
 
 def run_command(command, show_files=None, literal_message=False):
     """ Execute a shell command and optionally display a message when it reports a non-zero exit status. """
@@ -246,10 +271,12 @@ def main():
     check_command("autoflake")
     check_command("isort")
 
-    if args.auto_fix:
-        execute_formatting(expanded_paths, ignore_errors)
-    else:
-        dry_run_formatting(expanded_paths, ignore_errors)
+    with tempfile.TemporaryDirectory() as temp_dir:
+        config_path = create_isolated_config(temp_dir)
+        if args.auto_fix:
+            execute_formatting(expanded_paths, ignore_errors, config_path)
+        else:
+            dry_run_formatting(expanded_paths, ignore_errors, config_path)
 
     return 0
 
