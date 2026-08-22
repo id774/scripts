@@ -37,7 +37,8 @@
 #
 #  Version History:
 #  v1.7 2026-08-22
-#       Select custom Ruby versions with POSIX find and awk.
+#       Select custom Ruby versions with POSIX find and awk while
+#       preserving version-sort selection semantics.
 #  v1.6 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -96,20 +97,49 @@ get_custom_ruby_path() {
     RUBY_VERSION=$(find "$BASE_DIR/lib/ruby" \
         ! -path "$BASE_DIR/lib/ruby" -prune -type d -print |
         awk -F/ '
+            function normalize_number(s, t) {
+                t = s
+                sub(/^0+/, "", t)
+                if (t == "") {
+                    return "0"
+                }
+                return t
+            }
+            function compare_number_strings(first, second,
+                                            a, b, i, digit_a, digit_b) {
+                a = normalize_number(first)
+                b = normalize_number(second)
+
+                if (length(a) < length(b)) return -1
+                if (length(a) > length(b)) return 1
+
+                for (i = 1; i <= length(a); i++) {
+                    digit_a = substr(a, i, 1) + 0
+                    digit_b = substr(b, i, 1) + 0
+
+                    if (digit_a < digit_b) return -1
+                    if (digit_a > digit_b) return 1
+                }
+
+                return 0
+            }
             {
                 name = $NF
                 if (name !~ /^[0-9]+\.[0-9]+\.[0-9]+$/) next
                 split(name, v, ".")
-                major = v[1] + 0
-                minor = v[2] + 0
-                patch = v[3] + 0
-                if (!found || major > bmajor ||
-                    (major == bmajor && minor > bminor) ||
-                    (major == bmajor && minor == bminor && patch > bpatch)) {
+                major_cmp = compare_number_strings(v[1], best_major)
+                minor_cmp = compare_number_strings(v[2], best_minor)
+                patch_cmp = compare_number_strings(v[3], best_patch)
+                if (!found ||
+                    major_cmp > 0 ||
+                    (major_cmp == 0 && minor_cmp > 0) ||
+                    (major_cmp == 0 && minor_cmp == 0 && patch_cmp > 0) ||
+                    (major_cmp == 0 && minor_cmp == 0 &&
+                     patch_cmp == 0 && name > best)) {
                     found = 1
-                    bmajor = major
-                    bminor = minor
-                    bpatch = patch
+                    best_major = v[1]
+                    best_minor = v[2]
+                    best_patch = v[3]
                     best = name
                 }
             }
