@@ -26,6 +26,8 @@ v2.0.1 (Release Date: TBD)
 - Slim down the bulk package installers, take their package names from shell
   word splitting instead of a non-portable sed expression, and stop treating
   a failed update, installation, or listing as success.
+- Replace non-portable find and sort options with POSIX equivalents across
+  shell utilities and installers.
 - Modernize Python environment diagnostics.
 
 v2.0 (2026-07-31)

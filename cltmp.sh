@@ -59,6 +59,7 @@
 #  - Linux/macOS POSIX sh
 #
 #  Version History:
+#  20260822 - Use POSIX find for direct Trash entries.
 #  20260711 - Replace the awk {n,} interval expression in usage() with a portable
 #             equivalent, since mawk on some systems matches it incorrectly.
 #  20260508 - Normalize cleanup retention periods to 0, 1, 7, and 30 days.
@@ -202,7 +203,9 @@ perform_cleanup() {
     rm -vf "$HOME/.xsession-errors"
 
     if [ -d "$HOME/.local/share/Trash" ]; then
-        find "$HOME/.local/share/Trash" -mindepth 1 -exec rm -rf {} +
+        find "$HOME/.local/share/Trash" \
+            ! -path "$HOME/.local/share/Trash" \
+            -prune -exec rm -rf {} +
     fi
 
     rm -vf "$HOME"/.ssh/known_hosts.old

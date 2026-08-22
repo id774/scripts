@@ -46,6 +46,8 @@
 #  - Commands: sudo, awk, find, grep, cmp, chown, chmod, cp, mktemp, mv, rsyslogd, uname, test
 #
 #  Version History:
+#  v1.3 2026-08-22
+#       Use POSIX find for rsyslog drop-in discovery.
 #  v1.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -130,7 +132,21 @@ check_target_dir() {
 has_postfix_split() {
     # Consider both main file and common include directories
     files_main="/etc/rsyslog.conf"
-    files_dropin=$(find /etc/rsyslog.conf.d "$TARGET_DIR" -maxdepth 1 -type f -name '*.conf' 2>/dev/null)
+    files_dropin=$(
+        {
+            if [ -d /etc/rsyslog.conf.d ]; then
+                find /etc/rsyslog.conf.d \
+                    ! -path /etc/rsyslog.conf.d \
+                    -prune -type f -name '*.conf' -print
+            fi
+
+            if [ -d "$TARGET_DIR" ]; then
+                find "$TARGET_DIR" \
+                    ! -path "$TARGET_DIR" \
+                    -prune -type f -name '*.conf' -print
+            fi
+        } 2>/dev/null
+    )
 
     # Heuristics:
     #  - Any rule that routes postfix to a dedicated file (e.g., /var/log/postfix.log)

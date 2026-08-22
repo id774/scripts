@@ -30,6 +30,8 @@
 #  - Run with appropriate permissions if modifying system-wide settings.
 #
 #  Version History:
+#  v3.4 2026-08-22
+#       Use POSIX find for first-level home directory operations.
 #  v3.3 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -242,7 +244,7 @@ deploy_dotfiles_to_mac() {
             copy_ssh_file_if_exists "$user_home" "$user" config
             copy_ssh_file_if_exists "$user_home" "$user" known_hosts
             sudo chown "$user:$(id -gn "$user")" "$user_home"
-            sudo find "$user_home" -maxdepth 1 -mindepth 1 -exec chown "$user:$(id -gn "$user")" {} +
+            sudo find "$user_home" ! -path "$user_home" -prune -exec chown "$user:$(id -gn "$user")" {} +
         fi
         shift
     done
@@ -258,7 +260,7 @@ deploy_dotfiles_to_linux() {
             copy_ssh_file_if_exists "/home/$1" "$1" config
             copy_ssh_file_if_exists "/home/$1" "$1" known_hosts
             sudo chown "$1:$(id -gn "$1")" "/home/$1"
-            sudo find "/home/$1" -maxdepth 1 -mindepth 1 -exec chown "$1:$(id -gn "$1")" {} +
+            sudo find "/home/$1" ! -path "/home/$1" -prune -exec chown "$1:$(id -gn "$1")" {} +
         fi
         shift
     done
@@ -266,7 +268,7 @@ deploy_dotfiles_to_linux() {
 
 # Deploy dotfiles to multiple users across different OS environments
 bulk_deploy() {
-    test -d "/home" && test -d "/home/$USER" && find /home -mindepth 1 -maxdepth 1 -type d -exec sudo chmod 0750 {} +
+    test -d "/home" && test -d "/home/$USER" && find /home ! -path /home -prune -type d -exec sudo chmod 0750 {} +
     test -d /home/opt && sudo chmod 0755 /home/opt
 
     # Harden local SSH source permissions if present

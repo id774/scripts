@@ -670,6 +670,10 @@ Before a change is proposed, it answers these:
 
 ### 2.1 Basic Principles
 - Comply strictly with POSIX (`#!/bin/sh`).
+- POSIX compliance also covers the options, regular expressions, and escape
+  sequences of the standard utilities a script invokes, not just shell
+  grammar. Do not rely on a GNU or BSD extension in a portable code path
+  (e.g. `find -maxdepth`, `sort -V`, non-standard `sed` escapes).
 - Avoid Bash-specific syntax and extensions.
 - Do not use `local`.
 - `/bin/sh` is dash on Debian and Ubuntu. A construct that works because

@@ -31,6 +31,8 @@
 #      - To all files under scripts/cron/bin (no extension filter)
 #
 #  Version History:
+#  v2.5 2026-08-22
+#       Use POSIX find for current-directory script selection.
 #  v2.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -114,7 +116,7 @@ set_permissions() {
 
     echo "[INFO] Granting execute permissions to script files (*.sh, *.py, *.rb) including current directory."
     find "$SCRIPTS" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
-    find . -maxdepth 1 -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+    find . ! -path . -prune -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
     RC2=$?
 
     echo "[INFO] Granting execute permissions to installer scripts (*.sh, *.py, *.rb)."

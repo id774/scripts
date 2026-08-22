@@ -43,6 +43,8 @@
 #      -u, --uninstall Remove matching symlinks in $HOME (do not recreate).
 #
 #  Version History:
+#  v1.2 2026-08-22
+#       Use POSIX find for first-level repository and symlink discovery.
 #  v1.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -170,7 +172,7 @@ recreate_links_for_bases() {
             continue
         fi
         # List only first-level directories
-        find "$base" -mindepth 1 -maxdepth 1 -type d -print | while IFS= read -r d; do
+        find "$base" ! -path "$base" -prune -type d -print | while IFS= read -r d; do
             create_or_replace_link "$d"
         done
     done
@@ -181,7 +183,7 @@ purge_broken_symlinks_in_home() {
     # Finds symlinks in $HOME whose targets no longer exist and removes them
     echo "[INFO] Purging broken symlinks in $HOME"
     # Only depth=1 (directly under $HOME) to avoid unintended recursion
-    find "$HOME" -mindepth 1 -maxdepth 1 -type l -print | while IFS= read -r l; do
+    find "$HOME" ! -path "$HOME" -prune -type l -print | while IFS= read -r l; do
         if [ ! -e "$l" ]; then
             if [ "$DRY_RUN" = true ]; then
                 echo "[INFO] DRY RUN: rm -f \"$l\""
@@ -202,7 +204,7 @@ uninstall_matching_symlinks() {
             echo "[WARN] Base not found: $base" >&2
             continue
         fi
-        find "$base" -mindepth 1 -maxdepth 1 -type d -print | while IFS= read -r d; do
+        find "$base" ! -path "$base" -prune -type d -print | while IFS= read -r d; do
             name=$(basename "$d")
             path="$HOME/$name"
             if [ -L "$path" ]; then

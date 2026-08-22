@@ -53,6 +53,8 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v3.1 2026-08-22
+#       Use POSIX find for first-level GPX file operations.
 #  v3.0 2026-07-12
 #       Create the destination yearly directory before copying files so that
 #       the first run of a new year no longer fails with a missing directory.
@@ -138,7 +140,7 @@ check_commands() {
 # Check if GPX files exist in a directory
 check_gpx_files() {
     dir="$1"
-    if ! find "$dir" -maxdepth 1 -name '*.gpx' -type f | grep -q .; then
+    if ! find "$dir" ! -path "$dir" -prune -name '*.gpx' -type f | grep -q .; then
         echo "[ERROR] No GPX files found in $dir. Exiting." >&2
         return 1
     fi
@@ -208,7 +210,8 @@ copy_files_to_user_storage() {
         fi
     fi
     echo "[INFO] Copying files from $source_dir to user storage: $destination"
-    find "$source_dir" -maxdepth 1 -name '*.gpx' -type f -exec cp {} "$destination" \;
+    find "$source_dir" ! -path "$source_dir" -prune \
+        -name '*.gpx' -type f -exec cp {} "$destination" \;
 }
 
 # Set permissions for copied GPX files
@@ -220,7 +223,8 @@ set_file_permissions() {
         return 2
     fi
     echo "[INFO] Setting GPX file permissions in $destination to $permissions"
-    find "$destination" -maxdepth 1 -name '*.gpx' -type f -exec chmod "$permissions" {} \;
+    find "$destination" ! -path "$destination" -prune \
+        -name '*.gpx' -type f -exec chmod "$permissions" {} \;
 }
 
 # Sync to all configured hosts
