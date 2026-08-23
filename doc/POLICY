@@ -6,9 +6,8 @@ redundancy while making the design intent explicit and consistent for all
 contributors.
 
 This document stands on its own. It is the whole implementation policy of this
-repository, and no rule here is completed by a document kept somewhere else. A
-subject it does not cover is a gap in this document, to be filled here rather
-than looked up in another repository.
+repository, and the repository-wide rules it needs are stated here. A subject
+it does not cover is a gap in this document, to be filled here.
 
 The **Common Policy** section defines rules that apply to *all* languages.
 Each language section then specifies only what is unique to that language.
@@ -82,8 +81,7 @@ which, weigh competing concerns in this order:
 3. Efficiency: avoid unnecessary processing, unnecessary process creation,
    unnecessary I/O, unnecessary network access, and unnecessary resource
    cost; meet the required behavior at the smallest reasonable runtime and
-   operational cost. This includes preferring the smaller, simpler, less
-   dependent implementation. Efficiency matters, but not at the cost of
+   operational cost. Efficiency matters, but not at the cost of
    Compatibility or Safety.
 
 The items below are the concrete decision material that gives those three
@@ -107,6 +105,8 @@ above, not as a second, separate priority order:
 - Prefer the standard library when it provides the required behavior without
   unreasonable implementation or operational cost.
 - Add no option, no configuration value, and no script that is not needed.
+- Prefer the smaller, simpler, less dependent implementation when it
+  preserves required behavior, Compatibility, and Safety.
 
 These priorities are decision guidance, not mechanical goals that justify
 breaking required functionality or established observable behavior.
@@ -450,11 +450,8 @@ level of detail into every document merely to keep them uniform.
   implementation. If the implementation is correct, fix the documentation.
   Do not make documentation follow accidental behavior merely because that
   behavior exists in the current code.
-- The roles defined above are roles within this `scripts` repository. A
-  document of the same name in another repository is not assumed to carry
-  the same role, structure, or level of detail, and this repository's
-  documents are not reshaped to match another repository's merely because
-  the names match.
+- The roles defined above are the documentation structure of this `scripts`
+  repository itself.
 
 #### 1.6.2 Executable Header Purpose and Structure
 - The header contains the information a user or caller needs to operate the
