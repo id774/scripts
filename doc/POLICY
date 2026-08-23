@@ -19,6 +19,15 @@ general guideline would prevent required functionality or create an
 unreasonable operational cost, preserve the purpose of the rule and the
 intended behavior rather than applying its wording mechanically.
 
+This document's own wording is held to the same standard. `must`, `always`,
+and `never` are reserved for an invariant that admits no reasonable
+exception; an ordinary design preference, recommendation, or situational
+judgment is written with `prefer`, `should`, `when appropriate`, or similar
+language that shows its actual weight. A rule is not written so that a
+contributor, an AI, or a checker applying its wording literally is driven to
+an unreasonable result, and where a rule's wording and its purpose conflict,
+the purpose and the intended behavior defined above govern.
+
 For repository-specific choices left open by this policy, an explicit
 maintainer decision is final. General guidance informs those decisions but
 does not override a maintainer decision on a choice that this policy leaves
@@ -62,7 +71,20 @@ or additions to this common policy, in order to avoid redundancy.
 
 #### 1.1.3 Decision Priorities and Maintainer Judgment
 Where there are several ways to do something and this document does not settle
-which, use these priorities as guidance:
+which, weigh competing concerns in this order:
+
+1. Compatibility: keep intended and valid existing observable behavior
+   working, and keep the documented supported execution environment, the
+   Shell Script portability target, and the Python and Ruby supported
+   versions working.
+2. Safety: do not destroy, overwrite, or expose what the run was not asked to
+   touch, and prefer state changes that remain safe when repeated.
+3. Efficiency: prefer the smaller, simpler, less dependent implementation.
+   Efficiency matters, but not at the cost of Compatibility or Safety.
+
+The nine items below are the concrete decision material that gives those
+three concerns substance in this repository. They stand alongside the
+ordering above, not apart from it:
 
 1. Do not destroy or overwrite what the run was not asked to touch.
 2. Do not put a credential where another user of the host can read it, and do
@@ -84,6 +106,13 @@ which, use these priorities as guidance:
 
 These priorities are decision guidance, not mechanical goals that justify
 breaking required functionality or established observable behavior.
+
+Item 4 preserves behavior that is intended and valid. A clear defect,
+regression, unintended side effect, or otherwise broken behavior is not
+preserved merely because it is what the code currently does, and correcting
+it is not treated as an incidental compatibility break. When the intended
+behavior is unclear, weigh the implementation, the documented interface, the
+history, and the maintenance intent together, as described in 1.6.1.
 
 A decision that remains specific to one script is recorded with that script.
 Add it to this policy only when it becomes a reusable repository-wide
@@ -404,6 +433,11 @@ level of detail into every document merely to keep them uniform.
   implementation. If the implementation is correct, fix the documentation.
   Do not make documentation follow accidental behavior merely because that
   behavior exists in the current code.
+- The roles defined above are roles within this `scripts` repository. A
+  document of the same name in another repository is not assumed to carry
+  the same role, structure, or level of detail, and this repository's
+  documents are not reshaped to match another repository's merely because
+  the names match.
 
 #### 1.6.2 Executable Header Purpose and Structure
 - The header contains the information a user or caller needs to operate the
@@ -513,7 +547,8 @@ document changed.
 
 #### 1.6.6 Document File Attributes
 - `.gitattributes` gives `diff=markdown` to `*.md` and to the extensionless
-  Markdown documents, so that a diff hunk header names the section it falls in.
+  documents that use the Markdown diff driver, so that a diff hunk header
+  names the section it falls in.
 - `diff=markdown` is a diff aid and nothing else. It teaches `git diff` to
   recognise headings when it picks a hunk header. It does not change a file's
   format, does not change its name, and does not change how GitHub displays
@@ -758,15 +793,32 @@ document changed.
 - Add a dependency only when its license is compatible with that choice.
 
 ### 1.10 Testing and Operation
+- `test/check_scripts.sh`, `check_header_doc.py`, `find_pycompat.py`, the
+  Python tests, and the Ruby specs are means of checking this policy and
+  intended behavior; passing them is not itself what defines correct
+  specification, policy, or intended behavior. When a checker and this
+  policy or the intended behavior disagree, the checker's implementation may
+  be the one that is wrong. Do not distort correct behavior or policy intent
+  merely to make an automated check pass.
 - Test code must include a "Test Cases" section placed immediately before
   "Version History".
 - `Test Cases` must make clear to a third party what behavior the test
   exercises and what result constitutes success.
 - `Test Cases` has no fixed field schema. Its detail exists to explain the
   guarantee made by that test, not to satisfy a form.
-- Assume cron execution by default; define `PATH` and required environment
-  variables explicitly.
-- Validation must include syntax checks and exit-code verification.
+- A script whose intended use is unattended execution, such as a `cron/bin/`
+  job, assumes a cron-like minimal environment and defines `PATH` and
+  required environment variables explicitly. A top-level script meant for a
+  user to run as a manual foreground command is not held to that assumption;
+  its execution environment follows its role and intended invocation model,
+  as distinguished in 1.1.2.
+- Choose validation to match what changed. A change to executable
+  implementation includes the applicable syntax check and exit-status
+  verification for that implementation. A change to behavior is checked with
+  an existing test or check that directly observes that behavior. A
+  documentation-only change is not held to a runtime verification unrelated
+  to it. A repository-wide checker is applied to the changes it is meant to
+  cover.
 - In plugin-based systems, loaders must collect and propagate plugin return
   codes.
 - `run_tests.sh` is the entry point of the suite. It runs the Python tests and
@@ -1031,6 +1083,11 @@ log_info_time() {
   Python version in the supported range is executed in every test run.
   Compatibility is maintained through language-feature constraints,
   compatibility checks, and the runtime tests that are available.
+- The `+` in "Python 3.6+" and in "Python 3.1 or later" includes a
+  maintenance policy of continuing to follow new Python releases as they
+  appear; it does not claim that every future release is verified today.
+- When the fully supported minimum or the best-effort minimum should change
+  is a maintainer decision.
 - If compatible with general Python 3.x, documentation must state:
   `Python Version: 3.1 or later`
 - When a required feature raises the minimum, state that version instead,
@@ -1109,6 +1166,11 @@ log_info_time() {
   version in the supported range is executed in every test run. Compatibility
   is maintained through language-feature constraints and the runtime tests
   that are available.
+- The `+` in "Ruby 2.4+" and in "Ruby 2.0 or later" includes a maintenance
+  policy of continuing to follow new Ruby releases as they appear; it does
+  not claim that every future release is verified today.
+- When the fully supported minimum or the best-effort minimum should change
+  is a maintainer decision.
 - If compatible with Ruby 2.0, documentation must state:
   `Ruby Version: 2.0 or later`
 - Only when strictly required, state:
