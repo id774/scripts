@@ -4,10 +4,10 @@
 # check_header_doc.py: Header Documentation Consistency Checker
 #
 #  Description:
-#  This tool enforces a repository-wide header documentation policy.
+#  This tool checks repository-wide header documentation conventions.
 #  It scans files under a specified root directory without relying on
 #  any VCS metadata, and reports violations in a grep-friendly format
-#  suitable for CI and cron-based quality gates.
+#  suitable for CI and cron-based automated checks.
 #
 #  This script scans files under a target directory and checks the header
 #  documentation block bounded by separator lines (e.g., "########...").
@@ -38,8 +38,8 @@
 #  Notes:
 #  - This script does not depend on Git and works in non-repository directories.
 #  - When violations are found in readable files, diagnostic lines are printed.
-#  - Intended to be used as a mandatory quality gate in automated test pipelines.
-#  - This gate is wired into the nightly cron job cron/bin/run_tests, which
+#  - Intended to be used as one automated documentation check in test pipelines.
+#  - This check is wired into the nightly cron job cron/bin/run_tests, which
 #    invokes it once as 'check_header_doc.py -a --root $SCRIPTS' after the
 #    per-interpreter test runs. It is deliberately not called from
 #    run_tests.sh: the header documentation of a file does not depend on the
