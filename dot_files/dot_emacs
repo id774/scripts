@@ -6,7 +6,6 @@
 ;; Contact: idnanashi@gmail.com
 ;;
 ;; Support : Emacs 23.4+
-;; Extended: Emacs 30+
 ;; Policy  : Preserve supported behavior and maintain backward compatibility.
 ;; Package : DOT_EMACS
 
