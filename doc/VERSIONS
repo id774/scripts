@@ -5,11 +5,12 @@ v2.0.1 (Release Date: TBD)
 --------------------------
 - Large-scale documentation revision, recorded here as an exception.
 - Add .gitattributes, marking the Markdown documents for diff.
-- Expand and clarify doc/POLICY across decision priorities, the Efficiency
-  definition, rule wording strength, control-flow and entry-point exit
-  rules, CLI exit status conventions, documentation roles, portability,
-  compatibility, execution behavior, testing, pull request scope, and
-  version history conventions.
+- Expand and clarify doc/POLICY across decision priorities, change
+  discipline for established infrastructure, the Efficiency definition,
+  rule wording strength, control-flow and entry-point exit rules, CLI exit
+  status conventions, documentation roles, portability, compatibility,
+  execution behavior, testing, pull request scope, and version history
+  conventions.
 - Remove etc/pathext.txt, an obsolete list of Windows PATHEXT values.
 - Add the shared version history description guidelines to the end of this
   file.

@@ -123,6 +123,35 @@ A decision that remains specific to one script is recorded with that script.
 Add it to this policy only when it becomes a reusable repository-wide
 principle.
 
+#### 1.1.4 Change Discipline for Established Infrastructure
+
+Finding a possible safety, portability, maintainability, cleanup, or
+refactoring improvement does not by itself authorize an implementation
+change.
+
+Documentation work, policy work, review, diagnostics, cleanup, or another
+task whose stated scope does not include an implementation change must not
+expand into one merely because an improvement opportunity is discovered.
+
+A safety-motivated change is not automatically justified by Safety having
+priority over Efficiency. Added complexity can itself create new failure
+modes, compatibility risk, operational risk, and maintenance cost. Evaluate
+the proposed change as a whole.
+
+Before changing established behavior, weigh the probability and impact of the
+failure being prevented against the added complexity, new failure modes,
+compatibility risk, operational cost, maintenance cost, and rollback cost.
+
+Behavior that has operated reliably over time is evidence and has value of
+its own. Do not refactor established infrastructure merely because another
+design appears cleaner, more modern, or more defensive.
+
+An implementation change is made only when that change has been explicitly
+chosen as part of the work being performed. Before deployment, validate it in
+the supported and representative environments affected by the change. A
+successful check in one convenient environment is not sufficient evidence for
+a change whose compatibility risk extends to other supported environments.
+
 ### 1.2 Implementation Fundamentals
 
 #### 1.2.1 Control Flow Rules
