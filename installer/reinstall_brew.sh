@@ -131,7 +131,7 @@ main() {
     esac
 
     check_system
-    check_commands curl sudo rm bash
+    check_commands curl sudo rm bash uname
     check_scripts
     check_required_scripts
     check_sudo

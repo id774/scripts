@@ -107,7 +107,7 @@ check_sudo() {
 # Initial checks and setup
 perform_initial_checks() {
     check_system
-    check_commands systemctl dpkg pgrep pkill apt
+    check_commands systemctl dpkg pgrep pkill apt uname grep apt-mark
     check_sudo
 }
 

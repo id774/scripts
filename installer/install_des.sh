@@ -98,7 +98,7 @@ setup_environment() {
     check_system
 
     echo "[INFO] Checking system requirements..."
-    check_commands dmsetup curl wget md5sum tar make sudo rm mkdir cp chown
+    check_commands wget md5sum tar make rm mkdir cp chown uname
     check_sudo
     OWNER=root:root
 }

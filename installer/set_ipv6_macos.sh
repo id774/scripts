@@ -59,6 +59,20 @@ check_system() {
     fi
 }
 
+# Check if required commands are available and executable
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
@@ -69,6 +83,8 @@ main() {
     if [ "$#" -ne 1 ]; then
         usage
     fi
+
+    check_commands uname networksetup head tail
 
     # Parse arguments
     if [ "$1" = "--enable" ]; then

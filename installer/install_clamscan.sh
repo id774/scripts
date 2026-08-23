@@ -123,7 +123,7 @@ create_cron_dirs() {
 # Deploy ClamAV setup files
 install() {
     check_system
-    check_commands sudo cp rm chmod chown mkdir touch
+    check_commands cp chmod chown mkdir touch uname cat tee
     check_scripts
     check_sudo
 
@@ -203,7 +203,7 @@ EOF
 
 # Uninstall ClamAV AutoScan components
 uninstall() {
-    check_commands sudo rm
+    check_commands rm
     check_sudo
 
     echo "[INFO] Removing ClamAV AutoScan components..."

@@ -118,7 +118,7 @@ main() {
     esac
 
     setup_environment "$@"
-    check_commands "$PIP" "$JUPYTER" "$JT"
+    check_commands "$PIP" "$JT"
     install_jupyter_theme
     echo "[INFO] Jupyter theme setup completed successfully."
     return 0

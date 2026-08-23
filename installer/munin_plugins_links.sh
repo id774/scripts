@@ -111,7 +111,7 @@ configure_munin_plugins() {
     check_system
     check_sudo
     check_directories
-    check_commands sudo munin-node-configure chmod rm systemctl
+    check_commands sudo munin-node-configure chmod rm systemctl uname
 
     TMP_SCRIPT_DIR=${TMP:-/tmp}
     SCRIPT_NAME=$TMP_SCRIPT_DIR/create-munin-plugins-links.sh

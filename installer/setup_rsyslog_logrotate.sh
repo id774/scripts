@@ -440,7 +440,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo awk cp cmp grep cat rm chown chmod mkdir systemctl
+    check_commands awk cp cmp grep cat rm chown chmod mkdir systemctl uname
     check_sudo
     check_target
     ensure_journald_dir

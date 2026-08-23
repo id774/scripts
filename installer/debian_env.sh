@@ -162,7 +162,7 @@ main() {
 
     check_environment
     setup_environment
-    check_commands sudo tee locale locale-gen update-locale
+    check_commands tee locale locale-gen update-locale grep groupadd
     check_sudo
 
     set_locale_jp

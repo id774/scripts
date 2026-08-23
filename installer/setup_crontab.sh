@@ -131,7 +131,7 @@ main() {
     esac
 
     check_system
-    check_commands grep uname sudo mkdir tee cut
+    check_commands grep uname mkdir tee cut
     check_sudo
     create_directories
     add_entry "$WEEKDAY_ENTRY"

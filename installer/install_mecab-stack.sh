@@ -435,7 +435,7 @@ cleanup() {
 # Main entry point of the script
 main() {
     parse_args "$@"
-    check_commands curl git make gcc g++ gzip tar wget awk
+    check_commands git make gcc g++ gzip tar wget awk
     check_sudo
 
     echo "[INFO] Starting installation of MeCab stack..."

@@ -316,7 +316,7 @@ main() {
 
     # Check prerequisites
     check_system
-    check_commands sudo sysctl uname tee cat ip grep tr
+    check_commands sysctl uname tee cat ip grep tr
     check_sudo
 
     # Define configuration paths

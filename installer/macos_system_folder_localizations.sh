@@ -70,6 +70,20 @@ check_sudo() {
     fi
 }
 
+# Check if required commands are available and executable
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
 # Enable localization by creating .localized files
 enable_localization() {
     echo "[INFO] Enabling folder localization..."
@@ -126,6 +140,7 @@ main() {
             ;;
         enable|disable)
             check_system
+            check_commands uname touch rm
             check_sudo
             if [ "$1" = "enable" ]; then
                 enable_localization

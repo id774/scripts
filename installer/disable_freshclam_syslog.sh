@@ -125,7 +125,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo mkdir tee systemctl
+    check_commands mkdir tee systemctl uname
     check_sudo
     create_override
     reload_systemd

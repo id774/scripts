@@ -170,7 +170,7 @@ main() {
 
     # Perform initial checks
     check_system
-    check_commands curl wget make sudo unzip tar chown mkdir cp rm
+    check_commands wget make unzip chown mkdir cp rm uname
     check_sudo
 
     # Run the installation process

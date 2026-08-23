@@ -249,7 +249,7 @@ main() {
 
     check_system
     check_scripts
-    check_commands awk find grep cmp chown chmod cp mktemp mv rsyslogd uname
+    check_commands awk find grep cmp chown chmod cp mktemp mv rsyslogd uname rm
     check_sudo
     check_source_file
     check_target_dir

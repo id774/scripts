@@ -220,7 +220,7 @@ setup_log_rotation() {
 # Perform installation steps
 install() {
     check_system
-    check_commands sudo sh cp chmod chown mkdir touch
+    check_commands sh cp chmod chown mkdir touch uname
     check_scripts
     check_sudo
     check_ssl_logs
@@ -237,7 +237,7 @@ install() {
 
 # Remove apache log analysis components except log files
 uninstall() {
-    check_commands sudo rm
+    check_commands rm
     check_sudo
 
     echo "[INFO] Starting Apache log analysis uninstallation..."

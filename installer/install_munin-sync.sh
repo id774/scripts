@@ -207,7 +207,7 @@ EOF
 install() {
     check_system
     check_munin_dir
-    check_commands sudo cp chmod chown mkdir touch tee rsync hostname grep
+    check_commands cp chmod chown mkdir tee hostname uname
     check_scripts
     check_sudo
 

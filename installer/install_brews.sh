@@ -75,6 +75,20 @@ check_system() {
     fi
 }
 
+# Check if required commands are available and executable
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
 # Check if Homebrew is installed
 check_homebrew() {
     if ! command -v brew >/dev/null 2>&1; then
@@ -90,6 +104,7 @@ main() {
     esac
 
     check_system
+    check_commands uname
     check_homebrew
 
     # Check Homebrew environment

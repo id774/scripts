@@ -221,7 +221,7 @@ main() {
     esac
 
     check_system
-    check_commands vmware-modconfig modinfo modprobe depmod lsmod grep
+    check_commands vmware-modconfig modinfo modprobe depmod lsmod grep uname
     check_sudo
 
     # Ask for confirmation before proceeding

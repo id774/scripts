@@ -229,7 +229,7 @@ main() {
     esac
 
     # Perform initial checks
-    check_commands curl wget make sudo tar awk mkdir cp chown uname
+    check_commands wget make sudo tar awk mkdir cp chown uname rm
 
     USER_SPECIFIED_VERSION=0
     if [ -n "$1" ]; then

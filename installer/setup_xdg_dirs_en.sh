@@ -130,13 +130,13 @@ main() {
     check_system
 
     if [ "$SUDO_MODE" = "1" ]; then
-        check_commands apt dpkg grep
+        check_commands apt dpkg grep uname xdg-user-dirs-gtk-update
         check_sudo
 
         # Install xdg-user-dirs-gtk if necessary
         install_xdg_user_dirs_gtk
     else
-        check_commands xdg-user-dirs-gtk-update
+        check_commands xdg-user-dirs-gtk-update uname
     fi
 
     # Update user directories

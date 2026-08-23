@@ -202,7 +202,7 @@ main() {
     esac
 
     # Perform initial checks
-    check_commands curl wget make sudo tar awk mkdir cp uname
+    check_commands wget make sudo tar awk mkdir cp uname rm
 
     # Run the installation process
     setup_environment "$@"

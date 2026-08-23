@@ -143,7 +143,7 @@ initialize_baseline() {
 install() {
     # Perform initial checks
     check_system
-    check_commands sudo cp chmod chown mkdir touch
+    check_commands cp chmod chown mkdir touch uname grep
     check_scripts
     check_sudo
 
@@ -192,7 +192,7 @@ install() {
 # Uninstall chkrootkit components
 uninstall() {
     # Perform initial checks
-    check_commands sudo rm
+    check_commands rm
     check_sudo
 
     echo "[INFO] Removing chkrootkit cron job and logrotate configuration."

@@ -186,7 +186,7 @@ main() {
 
     # Perform initial checks
     check_system
-    check_commands curl make sudo tar
+    check_commands curl make tar uname mkdir cp chown rm
     check_sudo
 
     # Run the installation process

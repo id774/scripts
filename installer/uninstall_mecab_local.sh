@@ -163,7 +163,7 @@ main() {
     fi
 
     check_system
-    check_commands rm
+    check_commands rm uname
     check_sudo
 
     echo "[INFO] Starting uninstallation process from /usr/local."

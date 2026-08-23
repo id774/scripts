@@ -154,7 +154,7 @@ main() {
 
     echo "[INFO] Starting tune2fs configuration..."
     check_system
-    check_commands sudo tune2fs hostname
+    check_commands tune2fs hostname uname seq
     check_sudo
     HOSTNAME_S=$(hostname -s)
     echo "[INFO] Detected hostname: $HOSTNAME_S"

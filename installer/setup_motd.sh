@@ -104,7 +104,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo awk sh
+    check_commands awk sh uname
     check_sudo
     clear_motd
     return 0

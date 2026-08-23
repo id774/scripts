@@ -218,7 +218,7 @@ main() {
     esac
 
     # Perform initial checks
-    check_commands curl sudo make tar awk mkdir cp chown uname
+    check_commands curl sudo make tar awk mkdir cp chown uname rm
 
     # Run the installation process
     setup_environment "$@"

@@ -217,7 +217,7 @@ main() {
     # Check if the system is Debian-based before proceeding
     check_system
     setup_environment
-    check_commands awk tr
+    check_commands awk tr uname
     check_debian_based
 
     # Ask for confirmation before proceeding

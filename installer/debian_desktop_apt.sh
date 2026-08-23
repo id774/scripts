@@ -229,7 +229,7 @@ main() {
 
     check_system
     check_desktop_installed
-    check_commands sudo apt-get dpkg-query grep tasksel
+    check_commands apt-get dpkg-query grep uname ls
     check_sudo
     apt_upgrade
     desktop_environment
