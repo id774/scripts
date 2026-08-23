@@ -152,6 +152,15 @@ the supported and representative environments affected by the change. A
 successful check in one convenient environment is not sufficient evidence for
 a change whose compatibility risk extends to other supported environments.
 
+Scope discipline does not mean leaving documentation inconsistent with an
+implementation change that is already authorized by the stated work. When an
+implementation change alters an interface or behavior described by a header,
+configuration document, feature reference, README, or release history, update
+the directly affected documentation as part of that same change unless the
+stated scope explicitly excludes documentation changes. This does not
+authorize unrelated cleanup or correction merely because the same file or
+repository is already being edited.
+
 ### 1.2 Implementation Fundamentals
 
 #### 1.2.1 Control Flow Rules
@@ -405,8 +414,12 @@ never asked to touch.
   resolves to one of them.
 - `--dry-run` and the real run resolve their targets by the same code, so that
   what the report listed is what the run acts on.
-- These apply to a change made from now on. An existing script is brought into
-  line when it is next edited for another reason, not in bulk.
+- These rules apply to implementation changes whose stated scope includes the
+  affected destructive behavior. Editing the same script for an unrelated
+  reason does not by itself authorize changing established destructive
+  behavior. When an authorized implementation change affects that behavior,
+  keep the directly related implementation and documentation consistent with
+  these rules.
 
 #### 1.5.2 Idempotency and State Checks
 - Prefer state-changing operations to remain safe when repeated over the same
@@ -574,19 +587,18 @@ document changed.
   `LICENSE` keep the extensionless names by which they are recognised, whether
   they are new or not.
 - A document that is not Markdown takes no extension, or `.txt`.
-- An existing document is never renamed to add or change an extension. A path
-  here is a public URL that the README, the other repositories, and pages
-  outside them link to. Renaming breaks those links, and the ones outside
-  cannot be found or repaired.
-- `doc/POLICY` and `doc/VERSIONS` therefore keep their names here. The same
-  document is `POLICY` in this repository and `POLICY.md` in one started later,
-  and that is the intended result. Naming that matches across repositories is
-  not a goal that outranks a published path staying where it is.
-- Rename only when the current name causes a failure that outweighs the links
-  it breaks, and only after examining the references to it. GitHub shows
-  `doc/POLICY` as plain text instead of rendering it, and that cost is accepted
-  here, because the references that live outside this repository can be neither
-  found nor repaired.
+- An existing document is not renamed merely to add or change an extension.
+  Its current path is a published interface referenced by the README and by
+  external pages, and changing that path can break references that cannot all
+  be discovered or repaired.
+- `doc/POLICY` and `doc/VERSIONS` therefore keep their current names. Naming
+  uniformity does not outweigh compatibility with their established published
+  paths.
+- Rename an existing document only when a concrete problem caused by its
+  current name outweighs the compatibility cost of changing its published
+  path, and only after examining the references that can be identified.
+  GitHub displaying `doc/POLICY` as plain text is an accepted consequence of
+  preserving that path.
 
 #### 1.6.6 Document File Attributes
 - `.gitattributes` gives `diff=markdown` to `*.md` and to the extensionless
@@ -1177,8 +1189,10 @@ log_info_time() {
 - A one-line docstring stays on one line, with a space inside each pair of
   quotes: `""" Return True when the path is inside the target directory. """`.
 - A longer docstring opens on the line after the quotes.
-- Modules that still use the tight form (`"""Do the thing."""`) are normalized
-  when they are next edited for another reason, not in bulk.
+- Do not normalize an unrelated existing docstring merely because its module
+  is being edited. Normalize the tight form when the docstring itself is being
+  changed or when docstring normalization is explicitly part of the stated
+  work.
 
 ### 3.6 Testing
 - Store tests in `test/` as `FILENAME_test.py`.
