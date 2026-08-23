@@ -5,9 +5,9 @@ v2.0.1 (Release Date: TBD)
 --------------------------
 - Large-scale documentation revision, recorded here as an exception.
 - Add .gitattributes, marking the Markdown documents for diff.
-- Expand doc/POLICY across documentation, portability, compatibility,
-  execution behavior, testing, pull request scope, and version history
-  conventions.
+- Expand and clarify doc/POLICY across decision priorities, rule wording
+  strength, documentation roles, portability, compatibility, execution
+  behavior, testing, pull request scope, and version history conventions.
 - Remove etc/pathext.txt, an obsolete list of Windows PATHEXT values.
 - Add the shared version history description guidelines to the end of this
   file.
