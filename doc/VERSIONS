@@ -12,8 +12,7 @@ v2.0.1 (Release Date: TBD)
   execution behavior, testing, pull request scope, and version history
   conventions.
 - Remove etc/pathext.txt, an obsolete list of Windows PATHEXT values.
-- Add the shared version history description guidelines to the end of this
-  file.
+- Add the version history description guidelines to the end of this file.
 - Prune stale remote-tracking branches when git-all-pull.sh pulls repositories.
 - Describe each main directory in the README Directory Structure section.
 - Document repository features and installer capabilities in
