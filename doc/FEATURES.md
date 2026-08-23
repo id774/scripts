@@ -1150,6 +1150,8 @@ Targets include:
 
 It accounts for platform differences such as macOS and Linux and also normalizes required directories and permissions.
 
+For each target home directory, `install_dotfiles.sh` creates `.tmp` when it is missing and sets its mode to `0700`. This directory is the private per-user temporary area preferred by the companion `dot_zsh` configuration. The restrictive permission is intentional and is part of that temporary-directory security policy.
+
 
 ### install_dotvim.sh
 
