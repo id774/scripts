@@ -109,7 +109,7 @@ check_sudo() {
 # Perform installation steps
 install() {
     check_system
-    check_commands sudo cp chmod chown mkdir touch
+    check_commands cp chmod chown mkdir touch uname
     check_scripts
     check_sudo
 
@@ -184,7 +184,7 @@ install() {
 
 # Remove all installed components for get_resources
 uninstall() {
-    check_commands sudo rm
+    check_commands rm
     check_sudo
 
     echo "[INFO] Starting get_resources uninstallation..."

@@ -158,7 +158,7 @@ main() {
 
     check_system
     check_scripts
-    check_commands dpkg apt-get debconf-set-selections iptables-restore iptables-save sudo chmod mkdir cp systemctl
+    check_commands dpkg apt-get debconf-set-selections iptables-restore chmod mkdir cp systemctl uname dirname sh
     check_sudo
 
     TEMPLATE_PATH="$SCRIPTS/etc/iptables/rules.v4"

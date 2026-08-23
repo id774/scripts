@@ -170,7 +170,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo apt-get chmod chown systemctl apache2
+    check_commands apt-get chmod chown uname find
     check_sudo
 
     install_awstats

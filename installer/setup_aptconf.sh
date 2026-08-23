@@ -108,7 +108,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo cp chmod chown
+    check_commands cp chmod chown uname
     check_scripts
     check_sudo
 

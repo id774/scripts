@@ -371,7 +371,7 @@ main() {
     check_session_bus
 
     # Verify required commands for this script
-    check_commands gsettings dconf mkdir cp awk uname wc tr grep systemctl
+    check_commands gsettings dconf mkdir cp awk uname grep systemctl
 
     confirm_apply_settings
 

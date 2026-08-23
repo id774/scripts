@@ -204,7 +204,7 @@ main() {
 
     check_system
     setup_environment
-    check_commands sudo zsh git ln rm chown
+    check_commands zsh git ln rm chown uname mkdir
     check_sudo
     install_dot_files
     install_dot_zsh

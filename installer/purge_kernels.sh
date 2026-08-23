@@ -130,7 +130,7 @@ main() {
 
     check_system
     check_ubuntu
-    check_commands apt dpkg awk grep sed sudo uname
+    check_commands apt dpkg awk grep sed uname
     check_sudo
     get_current_kernel
     list_old_kernels

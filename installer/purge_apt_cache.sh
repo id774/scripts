@@ -124,7 +124,7 @@ main() {
 
     check_system
     check_debian
-    check_commands aptitude awk sed chmod cat rm
+    check_commands aptitude awk sed chmod rm uname grep
     check_sudo
     set_temp_file
     trap 'rm -f "$SCRIPT_NAME"' EXIT

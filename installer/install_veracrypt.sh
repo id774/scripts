@@ -118,7 +118,7 @@ setup_environment() {
     check_system
 
     echo "[INFO] Checking system requirements..."
-    check_commands dmsetup curl wget tar sudo rm mkdir cp chown file
+    check_commands wget rm mkdir cp chown file uname chmod
     check_sudo
 
     if [ ! -d /usr/local/src/crypt/veracrypt ]; then

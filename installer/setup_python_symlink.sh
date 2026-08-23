@@ -116,11 +116,11 @@ main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
         -u|--uninstall)
-            check_environment apt-get dpkg
+            check_environment apt-get dpkg uname grep
             uninstall_python_symlink
             ;;
         *)
-            check_environment apt-get
+            check_environment apt-get uname
             install_python_symlink
             ;;
     esac

@@ -223,7 +223,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo systemctl apache2 make-ssl-cert a2enmod a2ensite a2dissite hostname
+    check_commands make-ssl-cert a2enmod a2ensite a2dissite hostname uname mkdir cp chmod chown
     check_scripts
     check_sudo
     detect_host_fqdn

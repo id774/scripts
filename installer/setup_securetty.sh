@@ -108,7 +108,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo sh
+    check_commands sh uname
     check_sudo
     clear_securetty
     return 0

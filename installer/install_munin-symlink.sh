@@ -182,7 +182,7 @@ EOF
 # Perform installation steps
 install() {
     check_system
-    check_commands sudo chmod chown tee mkdir cp
+    check_commands chmod chown tee mkdir cp uname
     check_scripts
     check_sudo
 
@@ -195,7 +195,7 @@ install() {
 
 # Uninstall all installed components
 uninstall() {
-    check_commands sudo rm
+    check_commands rm
     check_sudo
 
     echo "[INFO] Uninstalling munin-symlink..."

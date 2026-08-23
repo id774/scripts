@@ -54,6 +54,20 @@ check_system() {
     fi
 }
 
+# Check if required commands are available and executable
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
 # Check if the user has sudo privileges
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
@@ -153,6 +167,7 @@ main() {
     esac
 
     check_system
+    check_commands uname id chmod ls logname dscl stty sort tail sysadminctl fdesetup defaults
     check_sudo
     check_user_exists
 

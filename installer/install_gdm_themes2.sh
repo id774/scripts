@@ -128,7 +128,7 @@ main() {
     esac
 
     check_system
-    check_commands curl wget sudo tar chown rm
+    check_commands wget tar chown rm uname
     check_sudo
     install_gdm_themes2
 

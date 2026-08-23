@@ -454,7 +454,7 @@ main() {
     check_scripts
     check_session_bus
     check_desktop_installed
-    check_commands xfconf-query mkdir cp awk chmod uname grep ls wc tr
+    check_commands xfconf-query mkdir cp awk chmod uname grep ls
 
     confirm_apply_settings
 

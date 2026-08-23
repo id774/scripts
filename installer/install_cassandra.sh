@@ -177,7 +177,7 @@ main() {
     esac
 
     check_system
-    check_commands curl wget sudo tar mkdir mv rm
+    check_commands wget tar mkdir mv rm uname chown ln
     check_sudo
     install_cassandra "$@"
 

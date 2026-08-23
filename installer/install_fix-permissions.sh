@@ -120,7 +120,7 @@ check_sudo() {
 install() {
     # Perform initial checks
     check_system
-    check_commands sudo cp chmod chown mkdir touch logrotate
+    check_commands cp chmod chown mkdir touch logrotate uname
     check_scripts
     check_sudo
 
@@ -207,7 +207,7 @@ install() {
 
 # Remove fix-permissions components except logs
 uninstall() {
-    check_commands sudo rm
+    check_commands rm
     check_sudo
 
     echo "[INFO] Starting fix-permissions uninstallation..."

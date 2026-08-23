@@ -122,7 +122,7 @@ check_sudo() {
 install() {
     # Perform initial checks
     check_system
-    check_commands sudo rsync cp chmod chown mkdir touch
+    check_commands cp chmod chown mkdir touch uname
     check_scripts
     check_sudo
 
@@ -198,7 +198,7 @@ install() {
 # Remove installed rsync backup components except logs
 uninstall() {
     # Perform initial checks
-    check_commands sudo rm
+    check_commands rm
     check_sudo
 
     echo "[INFO] Starting rsync backup uninstallation."

@@ -130,7 +130,7 @@ main() {
     esac
 
     check_system
-    check_commands grep mv awk
+    check_commands mv awk uname
     check_sudo
     check_conf_file
 

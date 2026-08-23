@@ -151,7 +151,7 @@ main() {
     # Perform initial checks
     check_system
     check_scripts
-    check_commands sudo systemctl apt-get htpasswd cp chown chmod
+    check_commands sudo systemctl apt-get htpasswd cp chown chmod uname rm ln
 
     # Run the installation process
     install_munin

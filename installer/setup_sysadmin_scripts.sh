@@ -261,7 +261,7 @@ main() {
     esac
 
     check_scripts
-    check_commands sudo cp chmod chown rm uname
+    check_commands cp chmod chown rm uname
     check_sudo
     setup_environment "$@"
     if [ "$1" = "uninstall" ]; then

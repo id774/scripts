@@ -134,7 +134,7 @@ setup_environment() {
     check_system
 
     echo "[INFO] Checking system requirements..."
-    check_commands dmsetup curl wget tar sudo rm mkdir cp chown file uname
+    check_commands wget tar rm mkdir cp chown uname chmod
     check_sudo
 
     if [ ! -d /usr/local/src/crypt/truecrypt ]; then

@@ -230,7 +230,7 @@ final_message() {
 install() {
     check_system
     check_scripts
-    check_commands sudo cp chmod chown touch mkdir tee
+    check_commands cp chmod chown touch mkdir tee uname
     check_sudo
     setup_log_directory
     setup_log_file

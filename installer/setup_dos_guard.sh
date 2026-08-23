@@ -235,7 +235,7 @@ main() {
 
     check_system
     check_scripts
-    check_commands cmp cp chmod chown mkdir a2enmod apachectl systemctl fail2ban-client
+    check_commands cmp cp chmod chown mkdir a2enmod apachectl systemctl fail2ban-client uname cat rm sed
     check_sudo
     resolve_sources
 

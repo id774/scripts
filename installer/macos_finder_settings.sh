@@ -61,6 +61,20 @@ check_system() {
     fi
 }
 
+# Check if required commands are available and executable
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
+}
+
 # Apply Finder and screenshot settings
 configure_finder_settings() {
     echo "[INFO] Applying macOS Finder and screenshot settings..."
@@ -100,6 +114,7 @@ main() {
     esac
 
     check_system
+    check_commands uname defaults killall
     configure_finder_settings
     return 0
 }
