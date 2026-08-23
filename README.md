@@ -24,7 +24,7 @@ Supported languages:
 - Python
 - Ruby
 
-The scripts are fully supported on Python 3.6+ and Ruby 2.4+, with partial compatibility extending back to Python 3.1 and Ruby 2.0. The repository is also tested against current stable versions of both languages.
+The scripts are fully supported on Python 3.6+ and Ruby 2.4+, with partial compatibility extending back to Python 3.1 and Ruby 2.0. The repository is also tested against current stable versions of both languages. Support describes the compatibility target; it does not mean that every version in each supported range is executed in every test run.
 
 ---
 
@@ -68,8 +68,10 @@ $SCRIPTS/example_script.sh
 ```
 
 Every executable carries a header block stating what it does, how it is invoked
-and what it expects, so the script itself is the reference. For where each kind
-of script lives, see [Directory Structure](#5-directory-structure).
+and what it expects. That header is the user-facing interface reference for
+using the executable as a black box, while the implementation establishes the
+behavior that currently occurs. For where each kind of script lives, see
+[Directory Structure](#5-directory-structure).
 
 For a repository-wide user-facing index of the available utilities, installers,
 scheduled jobs, configuration files, and dotfiles, see
@@ -94,7 +96,7 @@ It exits with a non-zero status when any test fails.
 
 A second layer runs nightly from `cron/bin/run_tests`, which drives
 `run_tests.sh` once per configured Python and Ruby version and then applies the
-repository-wide gates: the shell script validation (`test/check_scripts.sh`),
+repository-wide checks: the shell script validation (`test/check_scripts.sh`),
 the header documentation check (`check_header_doc.py -a`), and the
 compatibility check (`find_pycompat.py`). Checks that belong to the repository
 as a whole, rather than to one interpreter version, are wired there instead of
@@ -105,9 +107,9 @@ into `run_tests.sh`.
 ## 5. Directory Structure
 
 This section describes the main directories of the repository and what each one
-is for. It is not a complete file listing: the top level alone holds roughly a
-hundred scripts, and only the directories and the few files worth knowing about
-up front are shown.
+is for. It is not a complete file listing: the top level alone holds many
+scripts, and only the directories and the few files worth knowing about up
+front are shown.
 
 ```
 .

@@ -40,8 +40,8 @@
 #  Notes:
 #  - The script is designed to be run in environments where Python and Ruby
 #    are used for development and testing.
-#  - In addition to language-specific tests, the script enforces repository-wide
-#    quality gates by running shell script validation and header documentation checks.
+#  - In addition to language-specific tests, the script runs repository-wide
+#    checks for shell scripts, header documentation, and Python compatibility.
 #  - Ensure the specified Python and Ruby versions are installed and accessible.
 #  - This script is typically deployed to /etc/cron.exec/run_tests and run by cron.
 #

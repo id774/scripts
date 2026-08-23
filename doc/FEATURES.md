@@ -12,7 +12,7 @@ Its purpose is to make it possible to answer the following question without open
 
 "What exists in this repository, and which script should I use to do a particular task?"
 
-The implementation and the header documentation in each script are the ultimate source of truth. This document is a user-facing index for discovering those capabilities.
+The implementation establishes the behavior that currently occurs. The executable header documents the user-facing interface, and this document is the user-facing index for discovering those capabilities. If implementation and documentation disagree, the discrepancy must be resolved against the intended behavior rather than treating either the current code or the text as automatically correct.
 
 
 ## 1. Repository Feature Structure
@@ -35,7 +35,7 @@ The user-facing features in `scripts` are broadly divided into the following lay
 
 Scripts located at the repository root are, in principle, independent commands intended to be invoked directly by users.
 
-The current repository contains 92 such scripts.
+The repository contains many such scripts.
 
 ### Top-level capability index
 
@@ -844,7 +844,7 @@ Many top-level utilities primarily process input and return output. Installer sc
 - Modifying desktop environments
 - Downloading, building, and installing software from source
 
-The current `installer/` directory contains 80 scripts.
+The `installer/` directory contains many setup and installation scripts.
 
 ### Installer capability index
 
@@ -1709,7 +1709,7 @@ Backup data is separated into capacity tiers:
 
 ### cron/bin/run_tests
 
-Runs tests across Python and Ruby versions and performs repository-wide quality gates.
+Runs tests across Python and Ruby versions and performs repository-wide checks.
 
 
 ## 28. Cron Configuration
@@ -2194,9 +2194,11 @@ It does not duplicate:
 - Internal APIs of bundled third-party source
 - General manuals for standard commands
 
-The final source of truth for the interface of each file is the file's own header documentation and implementation.
+The implementation establishes the behavior that currently occurs, and each executable header documents the user-facing interface. When those disagree, resolve the discrepancy against the intended behavior instead of assuming that either the current implementation or the current documentation is automatically correct.
 
-The purpose of this document is to let users understand, before opening roughly one hundred top-level scripts and many installers one by one:
+New user-facing capabilities belong in this index. Internal helper code and test-only code stay out of this index unless users need to discover them directly. Entries do not have to share a fixed schema or identical detail level; this document remains an index rather than a duplicate of each executable's full documentation.
+
+The purpose of this document is to let users understand, before opening the many top-level scripts and installers one by one:
 
 "What already exists?"
 "Which command should I inspect?"

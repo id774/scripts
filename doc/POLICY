@@ -13,6 +13,22 @@ than looked up in another repository.
 The **Common Policy** section defines rules that apply to *all* languages.
 Each language section then specifies only what is unique to that language.
 
+These policies are means to produce correct, safe, portable, maintainable, and
+useful software; compliance with a rule is not an end in itself. When a
+general guideline would prevent required functionality or create an
+unreasonable operational cost, preserve the purpose of the rule and the
+intended behavior rather than applying its wording mechanically.
+
+For repository-specific choices left open by this policy, an explicit
+maintainer decision is final. General guidance informs those decisions but
+does not override a maintainer decision on a choice that this policy leaves
+open. Release version numbers are always selected by the maintainer.
+
+A decision belongs in this policy when it is reusable across scripts or future
+changes. A decision caused only by one script's interface, environment, or
+implementation stays with that script in its header, comments, or
+configuration documentation.
+
 ---
 
 ## 1. Common Policy (All Languages)
@@ -44,14 +60,14 @@ or additions to this common policy, in order to avoid redundancy.
 - Placement says what a file is for, not which rules apply to it. Every
   executable in the repository follows the Common Policy.
 
-#### 1.1.3 Decision Priorities
+#### 1.1.3 Decision Priorities and Maintainer Judgment
 Where there are several ways to do something and this document does not settle
-which, these come in order:
+which, use these priorities as guidance:
 
 1. Do not destroy or overwrite what the run was not asked to touch.
 2. Do not put a credential where another user of the host can read it, and do
    not commit one.
-3. Stay safe to run twice.
+3. Prefer state changes that remain safe when the same operation is repeated.
 4. Preserve existing observable behavior, including control flow,
    processing order, which later operations are attempted after a
    failure, side effects, options, exit status, output, and
@@ -62,11 +78,16 @@ which, these come in order:
 6. Branch on what the environment provides, not on what it is called.
 7. Stay fit for unattended execution: report a condition the operator can act
    on, and do not repeat one they cannot.
-8. Stay within the standard library.
+8. Prefer the standard library when it provides the required behavior without
+   unreasonable implementation or operational cost.
 9. Add no option, no configuration value, and no script that is not needed.
 
-A decision this list does not settle is settled in the script that faces it,
-and recorded here once it has been.
+These priorities are decision guidance, not mechanical goals that justify
+breaking required functionality or established observable behavior.
+
+A decision that remains specific to one script is recorded with that script.
+Add it to this policy only when it becomes a reusable repository-wide
+principle.
 
 ### 1.2 Implementation Fundamentals
 
@@ -86,19 +107,21 @@ and recorded here once it has been.
   continue-on-failure, is an observable behavior change. Do not
   introduce either as an incidental error-handling improvement.
 
-#### 1.2.2 Optional Dependencies
-- `check_commands` declares what a script requires. A capability the script can
-  work without is not declared there; it is detected where it is used.
-- Detection asks whether the capability is usable, not only whether the command
-  exists. A command may be present while the subcommand or the option the
-  script needs is not.
-- Decide in advance what an absent optional capability leads to: use the
-  alternative, skip the step and say so once, or refuse the run. Which one is
-  right depends on where the script runs.
-- An unattended script in an environment that will never supply what it needs
-  says so once and ends with a documented status, rather than reporting an
-  error on every scheduled run. A failure the operator can act on is still
-  reported as one.
+#### 1.2.2 Dependencies and Optional Capabilities
+- Minimize dependencies when doing so does not compromise required
+  functionality or make the implementation unreasonable. Dependency
+  reduction is a design preference, not an end in itself.
+- `check_commands` declares what a script requires for its normal main
+  execution. A capability the script can work without is not declared there;
+  it is detected where it is used.
+- Detection asks whether the capability is usable, not only whether the
+  command exists. A command may be present while the subcommand or the option
+  the script needs is not.
+- Decide before using an optional capability whether its absence selects an
+  alternative, skips that operation, or refuses the run.
+- An unattended script in an environment that will never supply an optional
+  capability should avoid repeatedly reporting a condition that the operator
+  cannot act on. A failure the operator can act on is still reported.
 
 #### 1.2.3 Environment Differences
 - Branch on what the environment provides, not on what it is called. A
@@ -110,12 +133,14 @@ and recorded here once it has been.
 
 #### 1.2.4 Comments and Language
 - Comments must be written in **English** only.
-- Comments must be imperative, concise, and action-oriented
-  (e.g. `# Validate input`, `# Initialize environment`).
-- A comment says why, not what. Where a decision looks arbitrary, such as a
-  portable substitute for a construct that some implementation gets wrong, a
-  retention period, or a hard-coded fallback, the comment gives the reason, so
-  that a later change does not quietly undo it.
+- Use concise imperative phrasing as the normal English comment style. The
+  grammatical form is not itself the purpose of a comment.
+- Do not restate code whose operation is already obvious. Use comments to
+  preserve reasons, constraints, non-obvious intent, and decisions that a
+  later change could accidentally undo.
+- Where a decision looks arbitrary, such as a portable substitute for a
+  construct that some implementation gets wrong, a retention period, or a
+  hard-coded fallback, state the reason.
 - Name a thing by what it is, not by a part of it. A shell script is a shell
   script: the shell is the interpreter that runs it, and naming the script
   after the interpreter is as loose as calling a USB memory stick a USB. The
@@ -126,15 +151,22 @@ and recorded here once it has been.
 ### 1.3 Command-Line Interface and Output
 
 #### 1.3.1 CLI Conventions
-- All command-line tools must provide consistent options:
-  - `-h`, `--help` to display usage information and exit with code `0`.
-  - `-v`, `--version` to display version information and exit with code `0`.
+- Every command-line tool must let the user display help and query version
+  information.
+- Provide `-h` and `--help` as the standard help options. A command-line tool
+  without a help interface is not accepted.
+- Provide `-v` and `--version` as the standard version options when those
+  names do not conflict with parser-defined or established option semantics.
+  When a short option conflicts, preserve the version-query capability under
+  the non-conflicting form and document the actual interface.
 - Help or version output represents a successful, user-requested termination.
 - Invalid or unsupported options must result in usage output.
-- The exit code of that usage display is `0` as the standard here: the tool
-  answered the invocation by showing how it is driven. A tool that treats an
-  invalid option as an error and exits `1` is accepted as well. Whichever a
-  tool does must be consistent within it and documented in its header.
+- Returning `0` after successfully displaying usage is the repository
+  standard, including when an invalid option triggered that display. A tool
+  that returns `1` for an invalid option is accepted as well. Keep the chosen
+  behavior consistent within the tool and document it in the header.
+- Do not change an existing tool between these accepted behaviors merely to
+  make its exit status match another tool.
 
 ##### 1.3.1.1 Recommended Option Names
 - The following names are recommendations, not requirements. A script that has
@@ -261,12 +293,17 @@ and recorded here once it has been.
   is never sent together with the archive.
 
 #### 1.4.3 Network Operations
-- Every outbound request carries an explicit timeout. An unattended run must
-  not hang until the next one starts.
-- Exception: a script whose primary use is manual, run in the foreground by a
-  person who can see it hang and interrupt it, may leave the timeout to the
-  caller.
-- Report an unreachable target as a failure, naming the target.
+- Judge reachability from the network operation the script actually needs to
+  perform. Do not require a separate ping, curl, or similar preflight probe
+  when that probe tests a different path or protocol from the requested
+  operation.
+- Design unattended network operations so that they do not wait indefinitely.
+  Use an explicit timeout when the command or API provides a suitable timeout
+  mechanism and doing so preserves the intended operation.
+- A foreground manual script may rely on caller interruption when that is its
+  established interface.
+- Report failure of the requested network operation and name the affected
+  target.
 
 ### 1.5 Safety and Side Effects
 
@@ -297,13 +334,16 @@ never asked to touch.
   line when it is next edited for another reason, not in bulk.
 
 #### 1.5.2 Idempotency and State Checks
-- A script that changes state is safe to run twice, whether a cron job runs it
-  or a person does. This covers the installers as much as the scheduled jobs: a
-  second run over the same input replaces or skips what the first one produced,
-  rather than duplicating it or refusing to start.
-- Check the current state before changing it. Appending a line, creating a
-  link, enabling a service, and installing a package each need to know whether
-  an earlier run already did it.
+- Prefer state-changing operations to remain safe when repeated over the same
+  input. This is especially useful for installers and scheduled jobs.
+- Check current state before changing it when that prevents duplicate,
+  conflicting, or corrupted persistent state. Appending a line, creating a
+  link, enabling a service, and installing a package commonly benefit from
+  such checks.
+- Do not distort required behavior solely to make every side effect strictly
+  idempotent. An operation whose purpose is to produce a new event, message,
+  report, transfer, or similar effect may legitimately produce a new result
+  each time it runs.
 
 #### 1.5.3 Least Privilege
 - A script runs with the privileges its work needs and no more. One that needs
@@ -316,72 +356,121 @@ never asked to touch.
 
 #### 1.5.4 Installer Execution Model
 - Scripts under `installer/` are batch-oriented by default. Normal
-  installation and setup work should be able to run without an
-  interactive operator.
-- Do not add interactive confirmation to ordinary installation,
-  package update, configuration, or other routine and repeatable setup
-  steps.
-- An interactive confirmation is reserved for a destructive, irreversible,
-  or otherwise high-impact operation for which proceeding without explicit
-  operator approval would create a material safety risk.
-- Do not use that exception for precautionary prompts that merely ask
-  whether an ordinary batch operation should continue.
-- When an installer performs multiple independent operations, failure of
-  one operation does not by itself prevent later independent operations
-  from being attempted. Report the failure and continue with work that can
-  still be performed safely.
-- A required prerequisite whose absence makes the requested work
-  impossible, or a condition that makes further execution unsafe, may
-  still terminate the installer before dependent work is performed.
-- Distinguish that prerequisite or safety failure from fail-fast handling
-  of an otherwise independent operation.
+  installation and setup work should be able to run without an interactive
+  operator.
+- Do not add interactive confirmation to an established ordinary installation,
+  package update, configuration, or repeatable setup workflow merely as a
+  precaution.
+- Interactive confirmation is a safety tool for destructive, irreversible, or
+  high-impact operations. It is not mandatory for every operation in those
+  categories.
+- Changing an installer's interaction model is an observable behavior change
+  and must not be introduced as an incidental safety improvement.
+- When an installer performs multiple independent operations, failure of one
+  operation does not by itself prevent later independent operations from being
+  attempted. Report the failure and continue with work that can still be
+  performed safely.
+- A required prerequisite whose absence makes the requested work impossible,
+  or a condition that makes further execution unsafe, may still terminate the
+  installer before dependent work is performed.
+- Distinguish that prerequisite or safety failure from fail-fast handling of
+  an otherwise independent operation.
 - Preserve an installer's established continuation, ordering, interaction,
-  and side-effect behavior unless changing that behavior is explicitly
-  part of the requested work.
+  and side-effect behavior unless changing that behavior is explicitly part
+  of the requested work.
 
 ### 1.6 Documentation
 
-The user-facing feature index is [FEATURES.md](FEATURES.md). It summarizes the
-top-level utilities, `installer/`, `cron/bin/`, support configuration, and
-deployed dotfiles so users can discover the relevant component before reading
-its header documentation. It is descriptive rather than normative: this policy
-remains self-contained, and the implementation and each executable's header
-remain authoritative for exact behavior and interfaces.
+Documentation in this repository has distinct roles. Do not copy the same
+level of detail into every document merely to keep them uniform.
 
-#### 1.6.1 Executable Header Structure
+#### 1.6.1 Documentation Roles and Sources of Truth
+- The implementation establishes what the executable currently does. It is
+  factual evidence of current behavior, not automatic proof that the behavior
+  is the intended specification.
+- The structured header of an executable is the user-facing interface
+  documentation for using that executable as a black box.
+- `FEATURES.md` is the user-facing index for discovering what capabilities
+  exist and which executable to inspect.
+- The README explains the repository's purpose, installation, initial usage,
+  and layout.
+- This policy records design and development principles that are reusable
+  across the repository.
+- `doc/VERSIONS` records release-level changes rather than implementation
+  history.
+- When implementation and documentation disagree, first establish the current
+  behavior from the implementation, then compare it with the intended
+  interface and history. If the implementation is wrong, fix the
+  implementation. If the implementation is correct, fix the documentation.
+  Do not make documentation follow accidental behavior merely because that
+  behavior exists in the current code.
+
+#### 1.6.2 Executable Header Purpose and Structure
+- The header contains the information a user or caller needs to operate the
+  executable without reading its implementation. Do not use it as a catalogue
+  of internal implementation details.
 - Every executable must contain a structured header block, delimited above and
   below by a separator line of 20 or more `#` characters.
 - The header contains the following sections, in this order:
   `Description`, the standard `Author`, `Source Code`, `License`, `Contact`
   block, `Usage`, `Options` (scripts that take options only), `Requirements`,
-  `Exit Status` (scripts that can end with more than one status),
-  `Version History`.
+  `Exit Status` (scripts that expose more than one process exit status to the
+  user or caller), `Version History`.
 - `Description` says what the script is, and the identifying block follows it
   because it says whose it is. `Usage`, `Options`, and `Exit Status` say how
   the script is driven, and come after both.
-- Optional sections such as `Notes`, `Example`, `Features`, `Design Notes`, and
-  the configuration file requirements of a script that reads one, are placed
-  where they read best between `Usage` and `Version History`.
-- `Requirements` names the language version first (`Python Version: 3.1 or
-  later`, `Ruby Version: 2.0 or later`), then what the script needs beyond it.
-  A shell script may omit the section: the commands it needs are already
-  declared by its `check_commands` call, and repeating them in the header only
-  creates a second list to keep in sync.
-- Name the section that lists exit codes `Exit Status`. Do not use
-  `Error Conditions`, `Exit Codes`, or any other synonym.
+- Optional sections such as `Notes`, `Example`, `Features`, `Design Notes`,
+  and configuration-file information are placed where they read best between
+  `Usage` and `Version History`.
+- `Requirements` lists conditions the user must satisfy before execution.
+  Do not list resources the script creates for itself, purely internal
+  implementation details, or optional capabilities that the normal run does
+  not require.
+- For Python and Ruby, `Requirements` names the minimum language version that
+  the executable itself technically requires. That minimum is separate from
+  the repository-wide fully supported version range.
+- A shell script may omit `Requirements` when its external command
+  prerequisites are already declared by `check_commands` and no user-facing
+  prerequisite remains to be documented.
+- `Exit Status` documents process exit codes whose meanings are part of the
+  user-facing or caller-facing interface. It does not document return values
+  used only inside the implementation.
+- Name the section that lists process exit codes `Exit Status`. Do not use
+  `Error Conditions`, `Exit Codes`, or another synonym for new or corrected
+  header documentation.
 - Every line inside the header block is a comment line. A line that would be
   blank is written as a bare `#`, never as an empty line and never as `##`.
-  `check_header_doc.py` enforces this.
+  `check_header_doc.py` checks this formatting rule.
 - Header indentation:
   - Title line: 1 space after `#`
   - Other lines: 2 spaces after `#`
 - `Version History` entries are written as `vX.Y YYYY-MM-DD`, newest first,
   each followed by an indented description of what changed.
-- "Test Cases" section must NOT be included in production scripts.
-- "Test Cases" must be defined only in dedicated test code (e.g., test/, spec/).
-- Documentation must be updated in sync with behavior changes.
+- "Test Cases" must not be included in production scripts.
+- "Test Cases" is used only in dedicated test code.
+- Documentation must remain consistent with the intended behavior.
 
-#### 1.6.2 Document Format
+#### 1.6.3 Documentation Update Guidance
+Use each document according to its role when deciding whether a change affects
+documentation:
+
+- An observable executable-interface change calls for reviewing the executable
+  header because that header describes the black-box interface.
+- A new or changed user-facing capability calls for reviewing `FEATURES.md`
+  because that file is the discovery index.
+- A repository-wide reusable design principle calls for reviewing this policy.
+- A change to repository purpose, installation, initial usage, or layout calls
+  for reviewing the README.
+- A release-level change calls for considering `doc/VERSIONS`.
+- A configuration-format or configuration-semantics change calls for reviewing
+  the configuration documentation and the executable header that exposes that
+  configuration to the user.
+
+This is guidance for choosing the document whose role is affected. It is not a
+mechanical update matrix. Do not modify a document merely because another
+document changed.
+
+#### 1.6.4 Document Format
 - The format of a document is decided by its name, its history, the paths
   already published for it, the references that point at it, the
   compatibility those references demand, and the role it plays in the
@@ -398,7 +487,7 @@ remain authoritative for exact behavior and interfaces.
   of the documents match each other is not on its own a reason to rename
   anything.
 
-#### 1.6.3 Document File Naming
+#### 1.6.5 Document File Naming
 - A document written in Markdown takes a `.md` extension when it is newly
   created. This holds for the documents under `doc/` as well: a repository
   created from now on names its policy `doc/POLICY.md`.
@@ -422,7 +511,7 @@ remain authoritative for exact behavior and interfaces.
   here, because the references that live outside this repository can be neither
   found nor repaired.
 
-#### 1.6.4 Document File Attributes
+#### 1.6.6 Document File Attributes
 - `.gitattributes` gives `diff=markdown` to `*.md` and to the extensionless
   Markdown documents, so that a diff hunk header names the section it falls in.
 - `diff=markdown` is a diff aid and nothing else. It teaches `git diff` to
@@ -447,7 +536,7 @@ remain authoritative for exact behavior and interfaces.
   files that carry no extension would catch the `#` comment lines of the
   scripts and the configuration files.
 
-#### 1.6.5 Plain Text Document Line Length
+#### 1.6.7 Plain Text Document Line Length
 - A plain text document is meant to be read with nothing between the reader
   and the file, on a fixed-width terminal of 80 columns included. Ordinary
   prose is therefore wrapped near 80 columns wherever that is practical.
@@ -509,6 +598,9 @@ remain authoritative for exact behavior and interfaces.
 
 #### 1.7.3 Repository Versioning
 - Repository release versions are independent of individual executable versions.
+- The maintainer has final authority over the repository release version.
+  Change classification and the conventions below inform that decision but do
+  not mechanically determine the final version number.
 - Record repository release versions in `doc/VERSIONS` and use the same versions
   for Git tags.
 - Repository release versions may use a three-level `major.minor.patch` scheme.
@@ -527,8 +619,9 @@ remain authoritative for exact behavior and interfaces.
   release are not accumulated in `doc/VERSIONS` one by one: the file is the
   record of released versions, not of the construction that precedes the first
   of them, and its first entry is written when that release is made.
-- A documentation-only change takes no `doc/VERSIONS` entry, unless its scale
-  makes it worth one line saying so.
+- A documentation-only change normally takes no `doc/VERSIONS` entry. The
+  maintainer decides whether a documentation change is significant enough to
+  be recorded at release level.
 - A version-only change, such as updating a dependency version, language
   runtime version, tool version, or other version number without changing
   the surrounding behavior or design, does not require its own
@@ -585,6 +678,9 @@ remain authoritative for exact behavior and interfaces.
   count.
 
 ##### 1.7.4.3 Grouping and Order
+- Coherence is a judgment about shared purpose and reviewability. Do not reduce
+  it to a mechanical test based on file count, commit chronology, or whether
+  individual pieces can be reverted separately.
 - When multiple changes to the same file within one version are really one
   coherent change, merge them into a single bullet instead of listing them
   separately. Changes that serve one purpose are described together even when
@@ -664,7 +760,10 @@ remain authoritative for exact behavior and interfaces.
 ### 1.10 Testing and Operation
 - Test code must include a "Test Cases" section placed immediately before
   "Version History".
-- Test Cases must describe executable scenarios and expected behavior.
+- `Test Cases` must make clear to a third party what behavior the test
+  exercises and what result constitutes success.
+- `Test Cases` has no fixed field schema. Its detail exists to explain the
+  guarantee made by that test, not to satisfy a form.
 - Assume cron execution by default; define `PATH` and required environment
   variables explicitly.
 - Validation must include syntax checks and exit-code verification.
@@ -678,7 +777,7 @@ remain authoritative for exact behavior and interfaces.
   `test/check_scripts.sh` (which exercises every shell script through `-h`),
   `check_header_doc.py -a`, and the `find_pycompat.py` compatibility check
   across the repository, and mails the result to the administrator.
-- A gate that belongs to the repository as a whole, rather than to one
+- A check that belongs to the repository as a whole, rather than to one
   interpreter version, is wired into the cron job rather than into
   `run_tests.sh`, so that it runs once per night instead of once per
   interpreter.
@@ -698,41 +797,48 @@ remain authoritative for exact behavior and interfaces.
   a dedicated test has been explicitly approved.
 
 ### 1.11 Judging a Change
-Before a change is proposed, it answers these:
+Before a change is proposed, consider these questions:
 
 - Does it widen what a run can delete, overwrite, or send?
 - Does it put a credential on a command line, into a file under `etc/`, or into
   a log message?
-- Is the script still safe to run twice?
+- For state-changing work, has repeat execution been considered, and would a
+  second run create unintended duplication or corruption?
 - Does it change an existing option, exit status, output, or configuration key
   that a cron entry or a deployed copy depends on?
-- Does it change control flow, processing order, side effects, or
-  whether later operations still run after an earlier operation fails?
-- For a script under `installer/`, does it introduce fail-fast or
-  interactive behavior that was not explicitly required?
+- Does it change control flow, processing order, side effects, or whether later
+  operations still run after an earlier operation fails?
+- For a script under `installer/`, does it introduce fail-fast or interactive
+  behavior that was not explicitly required?
 - Does it branch on the name of an environment rather than on what that
   environment provides?
-- Does `check_commands` still name the commands the script actually runs, no
-  more and no fewer?
-- Does it still pass `test/check_scripts.sh`, `check_header_doc.py -a`, and
-  `find_pycompat.py`?
+- For a Shell Script, does `check_commands` cover the external commands needed
+  by normal main execution without duplicating checks owned by `usage()` or
+  `check_sudo`?
+- What do the existing repository checks report for the changed files:
+  `test/check_scripts.sh`, `check_header_doc.py -a`, and `find_pycompat.py`?
 - Is it the smallest change that serves its purpose?
-- Does a test fail without it?
-- Which documents change with it: the script header, its `Version History`
-  entry, the configuration file it reads, the README, `doc/VERSIONS`?
+- What existing test or check covers the changed behavior?
+- Which documentation roles are affected: the executable header, configuration
+  documentation, `FEATURES.md`, the README, this policy, or `doc/VERSIONS`?
 
 ---
 
 ## 2. Shell Script Implementation Policy
 
 ### 2.1 Basic Principles
-- Comply strictly with POSIX (`#!/bin/sh`) for the Shell Script language
-  itself; see 2.1.1 for how POSIX compliance extends to the external
-  utilities a script invokes.
+- The basic Shell Script portability target is POSIX-conforming `/bin/sh`
+  implementations in general, not one named shell implementation.
+- Shell Script language syntax, parameter expansion, built-ins, functions, and
+  sourced shell code must remain portable across POSIX-conforming `/bin/sh`
+  implementations even when different operating systems provide different
+  implementations as `/bin/sh`.
 - Avoid Bash-specific syntax and extensions.
 - Do not use `local`.
-- `/bin/sh` is dash on Debian and Ubuntu. A construct that works because
-  `/bin/sh` links to bash elsewhere is still a defect here.
+- dash on Debian and Ubuntu is an important implementation for detecting
+  portability defects, but it does not define the complete portability target.
+- A construct that works only because one system links `/bin/sh` to a shell
+  with additional extensions is still a portability defect.
 - The constructs most often mistaken for portable are `[[ ... ]]`, arrays, the
   `function` keyword, `source`, and process substitution. Use `[ ... ]`,
   positional parameters or a delimited string, a plain `name()` definition,
@@ -743,17 +849,17 @@ Before a change is proposed, it answers these:
 #### 2.1.1 POSIX Language and Utility Capabilities
 - POSIX compliance is unconditional for the Shell Script language itself.
   Shell syntax, parameter expansion, built-ins, function definitions, and
-  sourced configuration/code must work with the supported `/bin/sh`
-  implementations.
-- POSIX conformance of a construct is necessary but is not by itself
-  sufficient for unconditional use. A feature newly standardized by POSIX may
-  still be unavailable in a supported shell or utility implementation. A
-  construct or utility feature may be used unconditionally only when it is
-  available in the supported implementations; otherwise use a compatible form
-  or establish the required capability before depending on it.
-- `/bin/sh` compatibility means compatibility with the actual supported shell
-  implementations, including dash on Debian and Ubuntu. Do not assume that a
-  feature is usable merely because a newer POSIX edition defines it.
+  sourced configuration/code must work across the POSIX-conforming `/bin/sh`
+  implementations that the script may encounter.
+- The repository does not define `/bin/sh` compatibility by one operating
+  system or one shell implementation. A platform-specific script may limit
+  where it runs, but its Shell Script language should not acquire an unrelated
+  dependency on that platform's particular `/bin/sh` extensions.
+- POSIX conformance of a construct is necessary but does not make every newly
+  standardized feature part of the repository's portable baseline
+  immediately. When availability differs across real `/bin/sh` or utility
+  implementations, use a compatible form or establish the required capability
+  before depending on it.
 - For external utilities, prefer a POSIX-defined form whenever it preserves
   the required behavior and observable output.
 - A `portable code path` means a path intended to run across more than one
@@ -836,10 +942,20 @@ still comes before portability.
   the command operates on.
 
 ### 2.3 Dependency and Environment Checks
-- Validate required commands and environment variables at startup.
-- Declare the commands a script needs with the following POSIX-compliant
-  helper, which maps a missing command to `127` and a present but
-  non-executable one to `126`:
+- Validate required external commands before the work that depends on them
+  begins.
+- Use `check_commands` once near startup for external commands required by the
+  script's normal main execution.
+- Do not list shell built-ins in `check_commands`.
+- Do not list `awk` in `check_commands` when `awk` is used only by `usage()` to
+  display the header.
+- Do not list `sudo` in `check_commands` when `check_sudo` establishes `sudo`
+  availability with `sudo -v`.
+- Detect an external command used only by an optional or conditional operation
+  at the point where that operation is selected.
+- Use the following POSIX-compliant helper for commands checked through
+  `check_commands`; it maps a missing command to `127` and a present but
+  non-executable command to `126`:
 
 ```sh
 check_commands() {
@@ -856,16 +972,13 @@ check_commands() {
 }
 ```
 
-- Call it once, before any work begins, listing the commands the script
-  actually runs.
 - A script that requires elevated privileges checks them with `check_sudo`,
   which runs `sudo -v` and refuses the run when it fails.
-- A script that has `check_sudo` does not also list `sudo` in `check_commands`:
-  `sudo -v` already establishes that `sudo` is present and usable, so the
-  second check adds nothing.
-- Elevated privileges cover the operations that need them and no more. A script
-  that needs root for one step does not run its whole body under it.
-- For network operations, verify connectivity before execution.
+- Elevated privileges cover the operations that need them and no more. A
+  script that needs root for one step does not run its whole body under it.
+- Do not perform a generic network-connectivity preflight merely because a
+  later operation uses the network. Apply the Network Operations policy in
+  1.4.3.
 
 ### 2.4 Logging Style
 - Shell scripts must keep normal log output based on `[INFO]`, `[WARN]`, and
@@ -914,6 +1027,10 @@ log_info_time() {
 - Code must fully support Python 3.6+.
 - Backward compatibility down to Python 3.1 is maintained on a best-effort basis
   and must not break existing behavior intentionally.
+- Support describes the compatibility target; it does not mean that every
+  Python version in the supported range is executed in every test run.
+  Compatibility is maintained through language-feature constraints,
+  compatibility checks, and the runtime tests that are available.
 - If compatible with general Python 3.x, documentation must state:
   `Python Version: 3.1 or later`
 - When a required feature raises the minimum, state that version instead,
@@ -934,12 +1051,22 @@ log_info_time() {
   # -*- coding: utf-8 -*-
 
 ### 3.3 Program Structure
-- Define `main() -> int` as the entry point.
+- Define `main()` as the entry point.
+- `main()` returns an integer process status.
 - Terminate execution with `sys.exit(main())`.
+- Do not require a return type annotation on `main()`; the supported
+  compatibility range includes Python versions that do not support function
+  annotations.
 - Use early returns to simplify control flow.
 
 ### 3.4 Dependencies and I/O
-- Depend only on the standard library.
+- Prefer the standard library when it can implement the required behavior
+  without unreasonable complexity or operational cost.
+- An external runtime library may be used when required functionality cannot
+  reasonably be provided by the standard library.
+- A required external runtime dependency is part of the executable's
+  user-facing prerequisites and must be documented in its `Requirements`
+  section.
 - Implement manual PATH search if command lookup is required, and exit `127`
   when the command is not found, matching the shell script helper.
 - Always use `encoding="utf-8"` for file operations.
@@ -955,16 +1082,20 @@ log_info_time() {
 
 ### 3.6 Testing
 - Store tests in `test/` as `FILENAME_test.py`.
-- Use only standard libraries for testing.
-- Any compatibility issue detected by `find_pycompat.py` is a failure.
+- Prefer the standard library for Python tests. An external test dependency is
+  allowed when it is required to test the intended behavior; do not treat a
+  test-only dependency as a production runtime dependency.
+- Any compatibility issue detected by `find_pycompat.py` is a failure of that
+  compatibility check.
 
 ### 3.7 Command-Line Option Handling
-- When using `optparse.OptionParser`, supporting `-v` as a shorthand for
-  `--version` is not mandatory.
-- Scripts may choose to support only long options (e.g. `--version`) to avoid
-  ambiguity with future `verbose` semantics.
-- In such cases, behavior and documentation must be consistent, and unsupported
-  short options should fail explicitly.
+- The version-query capability required by the Common Policy must be present.
+- When `optparse.OptionParser` or an established interface makes `-v`
+  unsuitable as the version shorthand, supporting `-v` is not mandatory.
+- `--version` alone is accepted when it provides the version-query capability
+  without conflicting with the established interface.
+- Behavior and documentation must agree on the option set that the script
+  actually exposes.
 
 ---
 
@@ -974,6 +1105,10 @@ log_info_time() {
 - Code must fully support Ruby 2.4+.
 - Backward compatibility down to Ruby 2.0 is maintained on a best-effort basis
   and must not break existing behavior intentionally.
+- Support describes the compatibility target; it does not mean that every Ruby
+  version in the supported range is executed in every test run. Compatibility
+  is maintained through language-feature constraints and the runtime tests
+  that are available.
 - If compatible with Ruby 2.0, documentation must state:
   `Ruby Version: 2.0 or later`
 - Only when strictly required, state:
@@ -989,7 +1124,13 @@ log_info_time() {
   the common CLI conventions defined above.
 
 ### 4.4 Dependencies and I/O
-- Depend only on standard libraries.
+- Prefer the standard library when it can implement the required behavior
+  without unreasonable complexity or operational cost.
+- An external runtime gem may be used when required functionality cannot
+  reasonably be provided by the standard library.
+- A required external runtime dependency is part of the executable's
+  user-facing prerequisites and must be documented in its `Requirements`
+  section.
 - Use `Open3.capture3` for external command execution when stdout, stderr, or
   exit status must be inspected.
 - `system` may be used only when command output is intentionally ignored and
@@ -999,4 +1140,7 @@ log_info_time() {
 
 ### 4.5 Testing
 - Store tests in `test/` using RSpec as `FILENAME_test.rb`.
+- RSpec is an external gem but is treated as the established de facto standard
+  test dependency for Ruby code in this repository. It is separate from the
+  production runtime dependency preference in 4.4.
 - Ensure all tests pass before release.
