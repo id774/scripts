@@ -540,7 +540,7 @@ class TestPyck(unittest.TestCase):
             ['path/to/file.py'], 'E302,E402,E501', CONFIG_PATH)
 
         for command_call in mock_popen.call_args_list:
-            command = command_call.args[0]
+            command = command_call[0][0]
             self.assertNotIn('autoflake --config=/tmp/pyck.cfg --imports=django,requests,urllib3 -i', command)
             self.assertNotIn('autopep8 --global-config=/tmp/pyck.cfg --ignore-local-config --ignore=E302,E402,E501 -v -i', command)
             self.assertNotRegex(command, r'^isort --settings-path=/tmp/pyck\.cfg (?!--check-only)')
@@ -610,14 +610,14 @@ class TestPyck(unittest.TestCase):
         pyck.execute_formatting(
             ['path/to/directory'], 'E302,E402,E501', CONFIG_PATH)
         auto_fix_files = sorted(
-            c.args[0] for c in mock_format_file.call_args_list)
+            c[0][0] for c in mock_format_file.call_args_list)
 
         mock_popen.reset_mock()
 
         pyck.dry_run_formatting(
             ['path/to/directory'], 'E302,E402,E501', CONFIG_PATH)
         dry_run_files = sorted(set(
-            c.args[0].split()[-1] for c in mock_popen.call_args_list))
+            c[0][0].split()[-1] for c in mock_popen.call_args_list))
 
         expected_files = sorted([
             os.path.join('path/to/directory', 'file1.py'),
