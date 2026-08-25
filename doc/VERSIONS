@@ -34,6 +34,7 @@ v2.0.1 (Release Date: TBD)
 - Strengthen Python linting by distinguishing auto-fixable changes from
   unresolved findings, isolating tool configuration, and cleaning the
   existing codebase.
+- Standardize prerequisite command checks across multiple installers.
 
 v2.0 (2026-07-31)
 -----------------
