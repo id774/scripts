@@ -104,7 +104,8 @@
 #       external command failure status to the script's exit status. Unmount
 #       now aborts without running the detach command when get-device or
 #       get-mountpoint resolution fails. Replaced 'command -v' based lookup
-#       with a manual PATH search in command_exists().
+#       with a manual PATH search in command_exists(). Preserve the legacy
+#       ~/mnt/<target> namespace when an explicit target starts with '/'.
 #  v5.1 2025-09-01
 #       Fix external mount to honor explicit target and preserve legacy container path.
 #       Change unmount logic to always resolve real mountpoint via get-device/get-mountpoint.
@@ -292,6 +293,10 @@ def is_block_device(path):
     except OSError:
         return False
 
+def build_mountpoint_path(target):
+    """ Return the legacy ~/mnt/<target> path with home expansion. """
+    return os.path.expanduser('~/mnt/' + target)
+
 def build_mount_argv(tool_argv, device, mount_options, target=None):
     """
     Build the argument list to mount /dev/<device> to ~/mnt/<target or device>.
@@ -301,7 +306,7 @@ def build_mount_argv(tool_argv, device, mount_options, target=None):
     if not target:
         target = device
     source = '/dev/' + device
-    mount_point = os.path.expanduser(os.path.join('~', 'mnt', target))
+    mount_point = build_mountpoint_path(target)
     return (['sudo'] + tool_argv +
             ['-t', '-k', '', '--protect-hidden=no', '--fs-options=%s' % mount_options,
              source, mount_point])
@@ -312,7 +317,7 @@ def build_mount_external_argv(tool_argv, mount_options, target):
     ~/mnt/<target>.
     """
     external_file = os.path.expanduser(os.path.join('~', 'mnt', 'external', 'container.tc'))
-    mount_point = os.path.expanduser(os.path.join('~', 'mnt', target))
+    mount_point = build_mountpoint_path(target)
     return (['sudo'] + tool_argv +
             ['-t', '-k', '', '--protect-hidden=no', '--fs-options=%s' % mount_options,
              external_file, mount_point])
@@ -342,7 +347,7 @@ def resolve_real_mountpoint(target):
     get-mountpoint. Return the mountpoint, or None when resolution fails.
     Neither helper is invoked past the first failure.
     """
-    mount_point = os.path.expanduser(os.path.join('~', 'mnt', target))
+    mount_point = build_mountpoint_path(target)
     try:
         device = subprocess.check_output(['get-device', mount_point]).decode('utf-8').strip()
     except (subprocess.CalledProcessError, OSError):

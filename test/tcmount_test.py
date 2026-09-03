@@ -26,11 +26,19 @@
 #    - Build a mount argument list with read-only filesystem option.
 #    - Build a mount argument list without UTF-8 filesystem option.
 #    - Build a mount argument list with an explicit target mount directory.
+#    - Build a mount argument list with an absolute-looking explicit target, staying
+#      under the ~/mnt/<target> namespace instead of escaping to the absolute path.
 #    - Build a mount argument list for VeraCrypt TC-compat mode with the correct tool tokens.
 #    - Build a detach argument list for a resolved mountpoint.
 #    - Build an external container mount argument list using the default mount target (device name).
 #    - Build an external container mount argument list honoring an explicit target mount directory.
+#    - Build an external container mount argument list with an absolute-looking explicit
+#      target, staying under the ~/mnt/<target> namespace.
 #    - Build an external container unmount argument list by its fixed file path.
+#    - build_mountpoint_path() expands a normal target under ~/mnt/.
+#    - build_mountpoint_path() keeps an absolute-looking target under ~/mnt/, never
+#      escaping to the absolute path itself.
+#    - build_mountpoint_path() preserves a '..' traversal token without normalization.
 #    - list_all_devices() includes the first (sdc) and last (sdz) devices.
 #    - Detect TrueCrypt installation when the truecrypt command is available.
 #    - Detect VeraCrypt installation when the veracrypt command is available.
@@ -42,6 +50,8 @@
 #    - os_exec() returns 1 and prints a diagnostic when the command cannot be executed.
 #    - is_block_device() returns True only for a path whose mode is a block device.
 #    - resolve_real_mountpoint() returns the resolved path when get-device and get-mountpoint both succeed.
+#    - resolve_real_mountpoint() calls get-device with an absolute-looking target kept
+#      under the ~/mnt/<target> namespace.
 #    - resolve_real_mountpoint() returns None and does not call get-mountpoint when get-device fails.
 #    - resolve_real_mountpoint() returns None when get-mountpoint fails after get-device succeeds.
 #    - run_single_mount() rejects a non-block-device source without executing a command.
@@ -76,7 +86,10 @@
 #       shell=True anywhere, command failures propagate to process_mounting()'s
 #       return value, --all continues past failures and aggregates status, and
 #       get-device/get-mountpoint failures block the detach command. Added
-#       tests for the manual PATH search in find_command().
+#       tests for the manual PATH search in find_command(). Added coverage
+#       for build_mountpoint_path() and for absolute-looking explicit
+#       targets staying under the ~/mnt/<target> namespace across mount,
+#       external mount, and unmount resolution.
 #  v1.3 2025-08-31
 #       Add 5 tests for external container (-e): mount default/explicit target,
 #       process_mounting explicit target, and unmount default/explicit target.
@@ -151,6 +164,24 @@ class TestTcMount(unittest.TestCase):
 
     # -- argument-list builders -----------------------------------------
 
+    def test_build_mountpoint_path(self):
+        self.assertEqual(
+            tcmount.build_mountpoint_path('disk1'),
+            os.path.expanduser('~/mnt/disk1'))
+
+    def test_build_mountpoint_path_absolute_looking_target(self):
+        # A leading '/' in target must not escape the ~/mnt/ namespace.
+        expected = os.path.expanduser('~/mnt//tmp/foo')
+        result = tcmount.build_mountpoint_path('/tmp/foo')
+        self.assertEqual(result, expected)
+        self.assertNotEqual(result, '/tmp/foo')
+
+    def test_build_mountpoint_path_preserves_traversal_token(self):
+        # No normalization or rejection of '..' tokens in target.
+        self.assertEqual(
+            tcmount.build_mountpoint_path('../disk1'),
+            os.path.expanduser('~/mnt/../disk1'))
+
     def test_build_mount_argv(self):
         expected = ['sudo', 'truecrypt', '-t', '-k', '', '--protect-hidden=no',
                     '--fs-options=utf8', '/dev/sdb', os.path.expanduser('~/mnt/sdb')]
@@ -174,6 +205,15 @@ class TestTcMount(unittest.TestCase):
                     '--fs-options=utf8', '/dev/sdb', os.path.expanduser('~/mnt/disk1')]
         result = tcmount.build_mount_argv(['truecrypt'], 'sdb', 'utf8', 'disk1')
         self.assertEqual(result, expected)
+
+    def test_build_mount_argv_with_absolute_looking_explicit_target(self):
+        # A leading '/' in the explicit target must stay under ~/mnt/, not
+        # escape to the absolute path itself.
+        expected = ['sudo', 'truecrypt', '-t', '-k', '', '--protect-hidden=no',
+                    '--fs-options=utf8', '/dev/sdb', os.path.expanduser('~/mnt//tmp/foo')]
+        result = tcmount.build_mount_argv(['truecrypt'], 'sdb', 'utf8', '/tmp/foo')
+        self.assertEqual(result, expected)
+        self.assertNotEqual(result[-1], '/tmp/foo')
 
     def test_build_mount_argv_tc_compat_tool_tokens(self):
         # tc-compat mounts as two argv words: 'veracrypt', '-tc'.
@@ -208,6 +248,17 @@ class TestTcMount(unittest.TestCase):
                     os.path.expanduser('~/mnt/disk3')]
         result = tcmount.build_mount_external_argv(['truecrypt'], 'utf8', 'disk3')
         self.assertEqual(result, expected)
+
+    def test_build_mount_external_argv_absolute_looking_target(self):
+        # Explicit target namespace is preserved under ~/mnt/, while the
+        # fixed legacy container path is unaffected.
+        expected = ['sudo', 'truecrypt', '-t', '-k', '', '--protect-hidden=no',
+                    '--fs-options=utf8',
+                    os.path.expanduser('~/mnt/external/container.tc'),
+                    os.path.expanduser('~/mnt//tmp/foo')]
+        result = tcmount.build_mount_external_argv(['truecrypt'], 'utf8', '/tmp/foo')
+        self.assertEqual(result, expected)
+        self.assertNotEqual(result[-1], '/tmp/foo')
 
     def test_build_unmount_external_argv(self):
         expected = ['sudo', 'truecrypt', '-d', os.path.expanduser('~/mnt/external/container.tc')]
@@ -316,6 +367,18 @@ class TestTcMount(unittest.TestCase):
         self.assertEqual(result, '/mnt/real')
         self.assertEqual(mock_check_output.call_args_list[0],
                          call(['get-device', os.path.expanduser('~/mnt/disk1')]))
+        self.assertEqual(mock_check_output.call_args_list[1],
+                         call(['get-mountpoint', '/dev/sdb1']))
+
+    @patch('tcmount.subprocess.check_output')
+    def test_resolve_real_mountpoint_absolute_looking_target(self, mock_check_output):
+        # get-device must be called with the ~/mnt/ namespaced path, not the
+        # bare absolute-looking target.
+        mock_check_output.side_effect = [b'/dev/sdb1\n', b'/mnt/real\n']
+        result = tcmount.resolve_real_mountpoint('/tmp/foo')
+        self.assertEqual(result, '/mnt/real')
+        self.assertEqual(mock_check_output.call_args_list[0],
+                         call(['get-device', os.path.expanduser('~/mnt//tmp/foo')]))
         self.assertEqual(mock_check_output.call_args_list[1],
                          call(['get-mountpoint', '/dev/sdb1']))
 
