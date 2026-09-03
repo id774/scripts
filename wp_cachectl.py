@@ -90,6 +90,11 @@
 #  - 9: Unsupported Python version
 #
 #  Version History:
+#  v1.1 2026-09-03
+#       Replaced 'command -v' based lookup with a manual PATH search in
+#       command_exists(), matching the shell script helper's PATH lookup and
+#       exit semantics. A WP_BIN containing a path separator is checked
+#       directly instead of being searched on PATH.
 #  v1.0 2026-01-29
 #       Initial release. Event-driven cache operations with W3TC support.
 #
@@ -164,15 +169,25 @@ def get_script_version():
     return "unknown"
 
 
+def find_command(command):
+    """
+    Search PATH for command's executable path, using a manual PATH search.
+    When command contains a path separator, it is checked directly instead
+    of being searched on PATH. Return the full path when found, or None
+    when not found.
+    """
+    if os.sep in command or (os.altsep and os.altsep in command):
+        return command if os.path.isfile(command) and os.access(command, os.X_OK) else None
+    for directory in os.environ.get("PATH", "").split(os.pathsep):
+        candidate = os.path.join(directory if directory else ".", command)
+        if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+            return candidate
+    return None
+
+
 def command_exists(command):
-    """Check whether a command exists in PATH using 'command -v'."""
-    with open(os.devnull, "w") as devnull:
-        return subprocess.call(
-            "command -v %s" % command,
-            shell=True,
-            stdout=devnull,
-            stderr=devnull,
-        ) == 0
+    """Check whether a command exists, using a manual PATH search."""
+    return find_command(command) is not None
 
 
 def log_info(msg):

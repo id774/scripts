@@ -60,7 +60,9 @@
 #
 #  Version History:
 #  v1.0 2026-09-03
-#       Initial release.
+#       Initial release. Suppress sudo -v output while keeping the interactive
+#       password prompt, and fix find_command() to search the current directory
+#       for an empty PATH component instead of skipping it.
 #
 ########################################################################
 
@@ -125,9 +127,7 @@ def find_command(command):
     """
     found_non_executable = False
     for directory in os.environ.get("PATH", "").split(os.pathsep):
-        if not directory:
-            continue
-        candidate = os.path.join(directory, command)
+        candidate = os.path.join(directory if directory else ".", command)
         if not os.path.isfile(candidate):
             continue
         if os.access(candidate, os.X_OK):
@@ -217,9 +217,15 @@ def confirm(source, serial, mapper, target):
 def check_sudo():
     """ Return True when the user has sudo privileges (password may be required). """
     try:
-        return subprocess.call(["sudo", "-v"]) == 0
-    except OSError:
+        with open(os.devnull, 'w') as devnull:
+            status = subprocess.call(["sudo", "-v"], stdout=devnull, stderr=devnull)
+    except OSError as e:
+        print("[ERROR] Failed to execute sudo: %s" % e, file=sys.stderr)
         return False
+    if status != 0:
+        print("[ERROR] This script requires sudo privileges. Please run as a user with sudo access.", file=sys.stderr)
+        return False
+    return True
 
 
 def build_open_command(source, name):
@@ -259,7 +265,6 @@ def process_mount(device, name):
         return 0
 
     if not check_sudo():
-        print("[ERROR] This script requires sudo privileges. Please run as a user with sudo access.", file=sys.stderr)
         return 1
 
     print("[INFO] Opening %s as %s." % (source, name))

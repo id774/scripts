@@ -70,6 +70,10 @@
 #
 #  Requirements:
 #  - Python Version: 3.1 or later
+#  - TrueCrypt or VeraCrypt
+#  - sudo
+#  - get-device
+#  - get-mountpoint
 #
 #  Notes on Unmounting:
 #  From v5.1 onward, unmount operations always resolve the *real mountpoint*
@@ -94,6 +98,13 @@
 #  on mount options and device specifications.
 #
 #  Version History:
+#  v5.2 2026-09-03
+#       Eliminated shell=True and shell-string command construction from mount
+#       and unmount execution; commands now run as argument lists. Propagated
+#       external command failure status to the script's exit status. Unmount
+#       now aborts without running the detach command when get-device or
+#       get-mountpoint resolution fails. Replaced 'command -v' based lookup
+#       with a manual PATH search in command_exists().
 #  v5.1 2025-09-01
 #       Fix external mount to honor explicit target and preserve legacy container path.
 #       Change unmount logic to always resolve real mountpoint via get-device/get-mountpoint.
@@ -136,6 +147,7 @@
 
 import os
 import re
+import stat
 import subprocess
 import sys
 from optparse import OptionParser
@@ -211,18 +223,33 @@ def check_sudo():
         print("[ERROR] Failed to check sudo privileges: {}".format(e), file=sys.stderr)
         sys.exit(1)
 
-def os_exec(cmd):
+def os_exec(argv):
     """
-    Executes a system command using subprocess.
+    Executes an argument list without a shell and returns its exit status.
+    Returns 1 when the command cannot be executed.
     """
-    subprocess.call(cmd, shell=True)
+    try:
+        return subprocess.call(argv)
+    except OSError as e:
+        print("[ERROR] Failed to execute %s: %s" % (argv[0], e), file=sys.stderr)
+        return 1
+
+def find_command(command):
+    """
+    Search PATH for command's executable path, using a manual PATH search.
+    Return the full path when found, or None when not found.
+    """
+    for directory in os.environ.get("PATH", "").split(os.pathsep):
+        candidate = os.path.join(directory if directory else ".", command)
+        if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+            return candidate
+    return None
 
 def command_exists(command):
     """
-    Checks if a given command exists in the system path using 'command -v'.
+    Checks if a given command exists in the system path using a manual PATH search.
     """
-    with open(os.devnull, 'w') as devnull:
-        return subprocess.call('command -v {}'.format(command), shell=True, stdout=devnull, stderr=devnull) == 0
+    return find_command(command) is not None
 
 def is_truecrypt_installed():
     """
@@ -258,60 +285,124 @@ def get_veracrypt_version():
     except subprocess.CalledProcessError:
         return "Unknown"
 
-def build_mount_command(device, mount_options, target=None):
+def is_block_device(path):
+    """ Return True when the path refers to a block device. """
+    try:
+        return stat.S_ISBLK(os.stat(path).st_mode)
+    except OSError:
+        return False
+
+def build_mount_argv(tool_argv, device, mount_options, target=None):
     """
-    Build command to mount /dev/<device> to ~/mnt/<target or device>
+    Build the argument list to mount /dev/<device> to ~/mnt/<target or device>.
+    tool_argv is the encryption tool invocation, e.g. ['truecrypt'] or
+    ['veracrypt', '-tc'].
     """
     if not target:
         target = device
-    return 'test -b /dev/{0} && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={1} /dev/{0} ~/mnt/{2}'.format(device, mount_options, target)
+    source = '/dev/' + device
+    mount_point = os.path.expanduser(os.path.join('~', 'mnt', target))
+    return (['sudo'] + tool_argv +
+            ['-t', '-k', '', '--protect-hidden=no', '--fs-options=%s' % mount_options,
+             source, mount_point])
 
-def build_unmount_command(target):
+def build_mount_external_argv(tool_argv, mount_options, target):
     """
-    Build command to unmount by resolving the real mountpoint
-    using get-device and get-mountpoint.
-    This replaces the legacy behavior (sudo truecrypt -d ~/mnt/<target>).
+    Build the argument list to mount the legacy external container file to
+    ~/mnt/<target>.
     """
-    return (
-        'dev=$(get-device ~/mnt/{0}) && '
-        'mp=$(get-mountpoint "$dev") && '
-        'sudo truecrypt -d "$mp"'
-    ).format(target)
+    external_file = os.path.expanduser(os.path.join('~', 'mnt', 'external', 'container.tc'))
+    mount_point = os.path.expanduser(os.path.join('~', 'mnt', target))
+    return (['sudo'] + tool_argv +
+            ['-t', '-k', '', '--protect-hidden=no', '--fs-options=%s' % mount_options,
+             external_file, mount_point])
 
-def build_unmount_external_command():
+def build_detach_argv(tool_argv, mountpoint):
     """
-    Build command to unmount the legacy external container by its file path.
+    Build the argument list to detach the given mountpoint.
+    tool_argv is the encryption tool invocation used for unmounting.
     """
-    return 'sudo truecrypt -d ~/mnt/external/container.tc'
+    return ['sudo'] + tool_argv + ['-d', mountpoint]
 
-def build_mount_all_command(mount_options):
+def build_unmount_external_argv(tool_argv):
     """
-    Build commands to mount all devices from sdc to sdz
+    Build the argument list to unmount the legacy external container by its
+    file path.
     """
-    commands = []
-    for device_suffix in range(ord('c'), ord('z') + 1):
-        commands.append(build_mount_command('sd' + chr(device_suffix), mount_options))
-    return commands
+    external_file = os.path.expanduser(os.path.join('~', 'mnt', 'external', 'container.tc'))
+    return build_detach_argv(tool_argv, external_file)
 
-def build_mount_external_command(external_device, mount_options, target=None):
+def list_all_devices():
+    """ Return the device names covered by --all (sdc..sdz). """
+    return ['sd' + chr(c) for c in range(ord('c'), ord('z') + 1)]
+
+def resolve_real_mountpoint(target):
     """
-    Build command to mount legacy external container file to ~/mnt/<target or external_device>.
-    - external_device: device name given to -e (e.g., 'sde')
-    - target: explicit mountpoint name under ~/mnt (e.g., 'disk3')
+    Resolve the real mountpoint of ~/mnt/<target> via get-device and
+    get-mountpoint. Return the mountpoint, or None when resolution fails.
+    Neither helper is invoked past the first failure.
     """
-    # Default mountpoint to the external device name if not specified
+    mount_point = os.path.expanduser(os.path.join('~', 'mnt', target))
+    try:
+        device = subprocess.check_output(['get-device', mount_point]).decode('utf-8').strip()
+    except (subprocess.CalledProcessError, OSError):
+        return None
+    try:
+        real_mountpoint = subprocess.check_output(['get-mountpoint', device]).decode('utf-8').strip()
+    except (subprocess.CalledProcessError, OSError):
+        return None
+    return real_mountpoint
+
+def run_single_mount(device, mount_options, tool_argv, target=None):
+    """ Mount /dev/<device> after verifying it is a block device. """
+    source = '/dev/' + device
+    if not is_block_device(source):
+        print("[ERROR] Not a block device: %s" % source, file=sys.stderr)
+        return 1
+    return os_exec(build_mount_argv(tool_argv, device, mount_options, target))
+
+def run_single_unmount(target, unmount_tool_argv):
+    """
+    Unmount by resolving the real mountpoint via get-device/get-mountpoint.
+    Does not run the detach command when resolution fails.
+    """
+    mountpoint = resolve_real_mountpoint(target)
+    if mountpoint is None:
+        print("[ERROR] Failed to resolve the real mountpoint for %s." % target, file=sys.stderr)
+        return 1
+    return os_exec(build_detach_argv(unmount_tool_argv, mountpoint))
+
+def run_external_mount(external_device, mount_options, tool_argv, target=None):
+    """
+    Mount the legacy external container file to ~/mnt/<target or external_device>.
+    """
     if target is None or str(target).strip() == "":
         target = external_device
-    # Legacy fixed path expected by existing tests and prior behavior
-    external_file = os.path.join('~', 'mnt', 'external', 'container.tc')
-    mount_point = os.path.join('~', 'mnt', target)
-    return 'test -f {0} && sudo truecrypt -t -k "" --protect-hidden=no --fs-options={1} {0} {2}'.format(
-        external_file, mount_options, mount_point
-    )
+    external_file = os.path.expanduser(os.path.join('~', 'mnt', 'external', 'container.tc'))
+    if not os.path.isfile(external_file):
+        print("[ERROR] External container file not found: %s" % external_file, file=sys.stderr)
+        return 1
+    return os_exec(build_mount_external_argv(tool_argv, mount_options, target))
+
+def run_external_unmount(unmount_tool_argv):
+    """ Unmount the legacy external container by its file path. """
+    return os_exec(build_unmount_external_argv(unmount_tool_argv))
+
+def run_mount_all(mount_options, tool_argv):
+    """
+    Mount every device from sdc to sdz, continuing past individual failures.
+    Returns 1 if any device failed, 0 only when all succeeded.
+    """
+    any_failed = False
+    for device in list_all_devices():
+        if run_single_mount(device, mount_options, tool_argv) != 0:
+            any_failed = True
+    return 1 if any_failed else 0
 
 def process_mounting(options, args):
     """
-    Process mounting and unmounting based on CLI options and arguments
+    Process mounting and unmounting based on CLI options and arguments.
+    Returns the resulting exit status.
     """
     mount_options = []
     if not options.no_utf8:
@@ -321,7 +412,26 @@ def process_mounting(options, args):
 
     mount_options_str = ','.join(mount_options)
 
-    commands = []
+    # Select encryption tool according to options.
+    if options.tc_compat:
+        if not is_veracrypt_installed():
+            print("[ERROR] VeraCrypt is not installed, but '-t' option was specified. Please use TrueCrypt or install VeraCrypt and try again.", file=sys.stderr)
+            sys.exit(13)
+        mount_tool_argv = ['veracrypt', '-tc']
+        unmount_tool_argv = ['veracrypt']
+    elif options.veracrypt:
+        if not is_veracrypt_installed():
+            print("[ERROR] VeraCrypt is not installed, but '-v' option was specified. Please use TrueCrypt or install VeraCrypt and try again.", file=sys.stderr)
+            sys.exit(12)
+        mount_tool_argv = ['veracrypt']
+        unmount_tool_argv = ['veracrypt']
+    else:
+        if not is_truecrypt_installed():
+            print("[ERROR] TrueCrypt is not installed. Please use VeraCrypt or install TrueCrypt and try again.", file=sys.stderr)
+            sys.exit(11)
+        mount_tool_argv = ['truecrypt']
+        unmount_tool_argv = ['truecrypt']
+
     if options.external:
         # Syntax:
         #   Mount   : -e <external_device> [<target>]
@@ -335,74 +445,40 @@ def process_mounting(options, args):
         #       unless it looks like a device name 'sd[a-z]'; otherwise default to <external_device>.
         is_unmount = any(t in ['unmount', 'umount'] for t in args)
         if is_unmount:
-            commands.append(build_unmount_external_command())
+            return run_external_unmount(unmount_tool_argv)
+        tokens = [t for t in args if t not in ['unmount', 'umount']]
+        if len(tokens) >= 2:
+            explicit_target = tokens[-1]
+        elif len(tokens) == 1:
+            explicit_target = tokens[0] if not re.match(r'^sd[a-z]$', tokens[0]) else None
         else:
-            tokens = [t for t in args if t not in ['unmount', 'umount']]
-            if len(tokens) >= 2:
-                explicit_target = tokens[-1]
-            elif len(tokens) == 1:
-                explicit_target = tokens[0] if not re.match(r'^sd[a-z]$', tokens[0]) else None
-            else:
-                explicit_target = None  # builder will fallback to external_device
-            commands.append(
-                build_mount_external_command(options.external, mount_options_str, explicit_target)
-            )
-    else:
-        if args:
-            device = args[0]
-            if len(args) > 1 and args[1] in ['unmount', 'umount']:
-                # Unmount: second token is action, target defaults to device
-                commands.append(build_unmount_command(device))
-            elif len(args) > 2 and args[2] in ['unmount', 'umount']:
-                # Explicit target unmount: third token is action, second token is target
-                target = args[1]
-                commands.append(build_unmount_command(target))
-            else:
-                # Mount: optional explicit target as second token
-                target = args[1] if len(args) > 1 else None
-                if target is None:
-                    commands.append(build_mount_command(device, mount_options_str))
-                else:
-                    commands.append(build_mount_command(device, mount_options_str, target))
-        else:
-            # No positional args: keep --all behavior; otherwise show version and exit
-            if options.all:
-                commands.extend(build_mount_all_command(mount_options_str))
-            else:
-                # Ensure version_message is available (e.g., when called with only flags like -v)
-                global version_message
-                if not version_message:
-                    version_message = build_version_message()
-                print(version_message)
-                sys.exit(0)
+            explicit_target = None  # falls back to external_device
+        return run_external_mount(options.external, mount_options_str, mount_tool_argv, explicit_target)
 
-    # Select encryption tool according to options
-    if options.tc_compat:
-        if not is_veracrypt_installed():
-            print("[ERROR] VeraCrypt is not installed, but '-t' option was specified. Please use TrueCrypt or install VeraCrypt and try again.", file=sys.stderr)
-            sys.exit(13)
-        encryption_tool = "veracrypt -tc"
-        unmount_cmd = "veracrypt"
-    elif options.veracrypt:
-        if not is_veracrypt_installed():
-            print("[ERROR] VeraCrypt is not installed, but '-v' option was specified. Please use TrueCrypt or install VeraCrypt and try again.", file=sys.stderr)
-            sys.exit(12)
-        encryption_tool = "veracrypt"
-        unmount_cmd = "veracrypt"
-    else:
-        if not is_truecrypt_installed():
-            print("[ERROR] TrueCrypt is not installed. Please use VeraCrypt or install TrueCrypt and try again.", file=sys.stderr)
-            sys.exit(11)
-        encryption_tool = "truecrypt"
-        unmount_cmd = "truecrypt"
-
-    # Execute built commands after replacing the encryption tool
-    for cmd in commands:
-        if ' -d ' in cmd:
-            cmd = cmd.replace('truecrypt', unmount_cmd)
+    if args:
+        device = args[0]
+        if len(args) > 1 and args[1] in ['unmount', 'umount']:
+            # Unmount: second token is action, target defaults to device
+            return run_single_unmount(device, unmount_tool_argv)
+        elif len(args) > 2 and args[2] in ['unmount', 'umount']:
+            # Explicit target unmount: third token is action, second token is target
+            target = args[1]
+            return run_single_unmount(target, unmount_tool_argv)
         else:
-            cmd = cmd.replace('truecrypt', encryption_tool)
-        os_exec(cmd)
+            # Mount: optional explicit target as second token
+            target = args[1] if len(args) > 1 else None
+            return run_single_mount(device, mount_options_str, mount_tool_argv, target)
+
+    # No positional args: keep --all behavior; otherwise show version and return.
+    if options.all:
+        return run_mount_all(mount_options_str, mount_tool_argv)
+
+    # Ensure version_message is available (e.g., when called with only flags like -v)
+    global version_message
+    if not version_message:
+        version_message = build_version_message()
+    print(version_message)
+    return 0
 
 def main():
     """
@@ -455,9 +531,7 @@ def main():
 
     check_sudo()
 
-    process_mounting(options, args)
-
-    return 0
+    return process_mounting(options, args)
 
 
 if __name__ == "__main__":

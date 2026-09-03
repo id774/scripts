@@ -31,6 +31,10 @@
 #  directory as the total.
 #
 #  Version History:
+#  v1.8 2026-09-03
+#       Replaced 'command -v' based lookup with a manual PATH search in
+#       command_exists(), matching the shell script helper's PATH lookup and
+#       exit semantics.
 #  v1.7 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.6 2025-06-23
@@ -84,12 +88,22 @@ def usage():
         sys.exit(1)
     sys.exit(0)
 
+def locate_command(command):
+    """
+    Search PATH for command's executable path, using a manual PATH search.
+    Return the full path when found, or None when not found.
+    """
+    for directory in os.environ.get("PATH", "").split(os.pathsep):
+        candidate = os.path.join(directory if directory else ".", command)
+        if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+            return candidate
+    return None
+
 def command_exists(command):
     """
-    Checks if a given command exists in the system path using 'command -v'.
+    Checks if a given command exists in the system path using a manual PATH search.
     """
-    with open(os.devnull, 'w') as devnull:
-        return subprocess.call('command -v {}'.format(command), shell=True, stdout=devnull, stderr=devnull) == 0
+    return locate_command(command) is not None
 
 def error_message(message, exit_code=1):
     """
