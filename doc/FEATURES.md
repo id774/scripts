@@ -48,7 +48,7 @@ The repository contains many such scripts.
 | Files, directories, and filesystems | `chmodtree.py`, `cleanup-junk-files.sh`, `dirsize.py`, `find_range.py`, `flatdirs.py` | Inspect, transform, clean, and normalize filesystems |
 | Zsh history | `erase_history.py`, `filter_history.sh` | Remove or filter shell history entries |
 | Shell environment maintenance | `fix_compinit.sh`, `unfix_compinit.sh`, `xmap.sh` | Maintain Zsh and X11 user configuration |
-| Block devices and encrypted volumes | `get-device.sh`, `get-mountpoint.sh`, `get-serial.sh`, `tcmount.py`, `sd_extract.sh` | Resolve storage devices and operate removable or encrypted storage |
+| Block devices and encrypted volumes | `get-device.sh`, `get-mountpoint.sh`, `get-serial.sh`, `luksmount.py`, `tcmount.py`, `sd_extract.sh` | Resolve storage devices and operate removable or encrypted storage |
 | Git repository management | `git-all-pull.sh`, `git-archive-repo.sh`, `git-create-repo.sh`, `git-symlink.sh`, `remove-repo.sh` | Update, archive, create, link, and remove repositories |
 | Networking and transfers | `pyping.py`, `wakeonlan.py`, `wget.py`, `wget.rb`, `send_files.sh` | Check connectivity, download data, wake hosts, and transfer files |
 | Dashcam, GPX, and Instagram | `dashcam_sync.sh`, `gpx_sync.sh`, `insta_downloader.py`, `insta_sync.sh` | Synchronize and organize personal media or location data |
@@ -429,6 +429,15 @@ When needed, it can be composed with:
 
     get-device.sh
     get-serial.sh
+
+
+### luksmount.py
+
+Assists with opening and mounting a LUKS encrypted block device after the user has selected the device.
+
+Given a device name and mapper name, it retrieves and displays the disk serial number through `get-serial`, asks the user to confirm the selected physical device, opens the device with `cryptsetup open`, and mounts `/dev/mapper/<name>` on `/mnt/user/<name>`.
+
+It does not select devices, create mountpoint directories, unmount volumes, close mappings, or install itself as a system command.
 
 
 ### tcmount.py
