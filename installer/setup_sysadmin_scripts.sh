@@ -33,6 +33,8 @@
 #  - Running the script with 'uninstall' will remove all installed administration scripts.
 #
 #  Version History:
+#  v2.2 2026-09-03
+#       Add luksmount command to Debian install and uninstall targets.
 #  v2.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -179,6 +181,7 @@ uninstall_sysadmin_scripts() {
         get-device \
         dpkg-hold \
         gpg-import \
+        luksmount \
         tcmount \
         veramount \
         platex2pdf \
@@ -241,6 +244,7 @@ setup_debian_scripts() {
     install_scripts 755 get-device.sh get-device
     install_scripts 755 dpkg-hold.sh dpkg-hold
     install_scripts 755 gpg-import.sh gpg-import
+    install_scripts 755 luksmount.py luksmount
     install_scripts 755 tcmount.py tcmount
     if command -v xmodmap >/dev/null 2>&1; then
         install_scripts 755 xmap.sh xmap
