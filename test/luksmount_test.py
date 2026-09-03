@@ -35,6 +35,11 @@
 #    - A missing mount point is rejected before serial, sudo, cryptsetup, and mount.
 #    - A missing required command returns 127 before main processing.
 #    - A non-executable required command returns 126 before main processing.
+#    - check_sudo() returns True and suppresses sudo output on success.
+#    - check_sudo() returns False and prints one diagnostic on a non-zero exit.
+#    - check_sudo() returns False and prints one diagnostic when sudo cannot be executed.
+#    - A sudo failure inside process_mount() prints exactly one [ERROR] line.
+#    - find_command() resolves an empty PATH component to the current directory.
 #
 #  Version History:
 #  v1.0 2026-09-03
@@ -238,6 +243,62 @@ class TestLuksMount(unittest.TestCase):
             with patch.object(sys, 'argv', ['luksmount.py', 'sdb', 'disk3']):
                 self.assertEqual(luksmount.main(), 126)
         mock_process.assert_not_called()
+
+    @patch('luksmount.subprocess.call', return_value=0)
+    def test_check_sudo_success(self, mock_call):
+        self.assertTrue(luksmount.check_sudo())
+        args, kwargs = mock_call.call_args
+        self.assertEqual(args[0], ['sudo', '-v'])
+
+    @patch('luksmount.subprocess.call', return_value=0)
+    def test_check_sudo_suppresses_command_output(self, mock_call):
+        luksmount.check_sudo()
+        args, kwargs = mock_call.call_args
+        self.assertIn('stdout', kwargs)
+        self.assertIn('stderr', kwargs)
+        self.assertIsNotNone(kwargs['stdout'])
+        self.assertIsNotNone(kwargs['stderr'])
+
+    @patch('luksmount.subprocess.call', return_value=1)
+    def test_check_sudo_failure_nonzero_prints_one_error(self, mock_call):
+        self.assertFalse(luksmount.check_sudo())
+        error_lines = [line for line in sys.stderr.getvalue().splitlines() if '[ERROR]' in line]
+        self.assertEqual(len(error_lines), 1)
+
+    @patch('luksmount.subprocess.call', side_effect=OSError('sudo not found'))
+    def test_check_sudo_failure_exec_error_prints_one_error(self, mock_call):
+        self.assertFalse(luksmount.check_sudo())
+        error_lines = [line for line in sys.stderr.getvalue().splitlines() if '[ERROR]' in line]
+        self.assertEqual(len(error_lines), 1)
+        self.assertIn('Failed to execute sudo', sys.stderr.getvalue())
+
+    @patch('luksmount.run_command')
+    @patch('luksmount.subprocess.call', return_value=1)
+    @patch('luksmount.confirm', return_value=True)
+    @patch('luksmount.get_serial', return_value='SERIAL123')
+    @patch('luksmount.validate_paths', return_value=0)
+    def test_process_mount_sudo_failure_prints_single_error_line(self, mock_validate, mock_serial,
+                                                                  mock_confirm, mock_call, mock_run):
+        self.assertEqual(luksmount.process_mount('sdb', 'disk3'), 1)
+        mock_run.assert_not_called()
+        error_lines = [line for line in sys.stderr.getvalue().splitlines() if '[ERROR]' in line]
+        self.assertEqual(len(error_lines), 1)
+
+    def test_find_command_empty_path_component_is_cwd(self):
+        directory = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, directory)
+        command_name = 'fake_command_for_cwd_test'
+        path = os.path.join(directory, command_name)
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write('#!/bin/sh\n')
+        os.chmod(path, 0o755)
+        original_cwd = os.getcwd()
+        self.addCleanup(os.chdir, original_cwd)
+        os.chdir(directory)
+        with patch.dict(os.environ, {'PATH': ''}):
+            found_path, status = luksmount.find_command(command_name)
+        self.assertEqual(status, 0)
+        self.assertEqual(os.path.realpath(found_path), os.path.realpath(path))
 
 
 if __name__ == '__main__':

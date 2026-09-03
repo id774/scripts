@@ -17,8 +17,15 @@
 #    - Shows usage and exits with code 0 when invoked with -h option
 #    - Falls back to Python calendar module if 'cal' does not exist
 #    - Invokes system cal with arguments if available
+#    - find_command() resolves an executable command found on PATH
+#    - find_command() returns None when the command is not found on PATH
+#    - find_command() resolves an empty PATH component to the current directory
+#    - command_exists() and get_command_path() are consistent with find_command()
 #
 #  Version History:
+#  v1.1 2026-09-03
+#       Add tests for the manual PATH search in find_command(), replacing the
+#       previous 'command -v' based lookup.
 #  v1.0 2025-07-07
 #       Initial release.
 #
@@ -26,8 +33,10 @@
 
 import io
 import os
+import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from contextlib import redirect_stdout
 from unittest.mock import patch
@@ -79,6 +88,51 @@ class TestCal(unittest.TestCase):
         with patch.object(sys, 'argv', ['cal.py', '3', '2024']):
             cal.main()
         mock_call.assert_called_with(['cal', '3', '2024'])
+
+    def make_fake_path(self, commands, non_executable):
+        """ Create a temporary PATH directory containing the given commands; return its path. """
+        directory = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, directory)
+        for command in commands:
+            path = os.path.join(directory, command)
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write('#!/bin/sh\n')
+            if command not in non_executable:
+                os.chmod(path, 0o755)
+            else:
+                os.chmod(path, 0o644)
+        return directory
+
+    def test_find_command_resolves_executable_on_path(self):
+        directory = self.make_fake_path(['fake_cal'], [])
+        with patch.dict(os.environ, {'PATH': directory}):
+            found = cal.find_command('fake_cal')
+            self.assertTrue(cal.command_exists('fake_cal'))
+            self.assertEqual(cal.get_command_path('fake_cal'), found)
+        self.assertEqual(os.path.realpath(found),
+                         os.path.realpath(os.path.join(directory, 'fake_cal')))
+
+    def test_find_command_missing_returns_none(self):
+        directory = self.make_fake_path([], [])
+        with patch.dict(os.environ, {'PATH': directory}):
+            self.assertIsNone(cal.find_command('nonexistent_command'))
+            self.assertFalse(cal.command_exists('nonexistent_command'))
+            self.assertIsNone(cal.get_command_path('nonexistent_command'))
+
+    def test_find_command_empty_path_component_is_cwd(self):
+        directory = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, directory)
+        command_name = 'fake_command_for_cwd_test'
+        path = os.path.join(directory, command_name)
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write('#!/bin/sh\n')
+        os.chmod(path, 0o755)
+        original_cwd = os.getcwd()
+        self.addCleanup(os.chdir, original_cwd)
+        os.chdir(directory)
+        with patch.dict(os.environ, {'PATH': ''}):
+            found = cal.find_command(command_name)
+        self.assertEqual(os.path.realpath(found), os.path.realpath(path))
 
 
 if __name__ == '__main__':

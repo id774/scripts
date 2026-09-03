@@ -54,15 +54,30 @@
 #        Confirms that L3 W3TC flush is skipped when W3TC is not active.
 #    - test_w3tc_used_when_active:
 #        Confirms that L3 W3TC flush is attempted when W3TC is active.
+#    - test_find_command_resolves_executable_on_path:
+#        Confirms find_command() resolves a bare command name found on PATH.
+#    - test_find_command_missing_returns_none:
+#        Confirms find_command() returns None when the command is not found on PATH.
+#    - test_find_command_empty_path_component_is_cwd:
+#        Confirms find_command() resolves an empty PATH component to the current directory.
+#    - test_find_command_absolute_path_checked_directly:
+#        Confirms find_command() checks a path-separator-containing command directly,
+#        without searching PATH, matching WP_BIN set to an absolute path.
 #
 #  Version History:
+#  v1.1 2026-09-03
+#       Add tests for the manual PATH search in find_command(), replacing the
+#       previous 'command -v' based lookup, including the WP_BIN absolute
+#       path case.
 #  v1.0 2026-01-29
 #       Initial test implementation for wp_cachectl.py.
 #
 ########################################################################
 
 import os
+import shutil
 import sys
+import tempfile
 
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -281,6 +296,58 @@ class TestWpCachectl(unittest.TestCase):
         )
         self.assertEqual(rc, 0)
         self.assertIn("w3-total-cache flush all", out)
+
+    def make_fake_path(self, commands, non_executable):
+        """ Create a temporary PATH directory containing the given commands; return its path. """
+        directory = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, directory)
+        for command in commands:
+            path = os.path.join(directory, command)
+            with open(path, "w", encoding="utf-8") as f:
+                f.write("#!/bin/sh\n")
+            if command not in non_executable:
+                os.chmod(path, 0o755)
+            else:
+                os.chmod(path, 0o644)
+        return directory
+
+    def test_find_command_resolves_executable_on_path(self):
+        directory = self.make_fake_path(["wp"], [])
+        with mock.patch.dict(os.environ, {"PATH": directory}):
+            found = wp_cachectl.find_command("wp")
+            self.assertTrue(wp_cachectl.command_exists("wp"))
+        self.assertEqual(os.path.realpath(found),
+                         os.path.realpath(os.path.join(directory, "wp")))
+
+    def test_find_command_missing_returns_none(self):
+        directory = self.make_fake_path([], [])
+        with mock.patch.dict(os.environ, {"PATH": directory}):
+            self.assertIsNone(wp_cachectl.find_command("nonexistent_command"))
+            self.assertFalse(wp_cachectl.command_exists("nonexistent_command"))
+
+    def test_find_command_empty_path_component_is_cwd(self):
+        directory = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, directory)
+        command_name = "fake_command_for_cwd_test"
+        path = os.path.join(directory, command_name)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write("#!/bin/sh\n")
+        os.chmod(path, 0o755)
+        original_cwd = os.getcwd()
+        self.addCleanup(os.chdir, original_cwd)
+        os.chdir(directory)
+        with mock.patch.dict(os.environ, {"PATH": ""}):
+            found = wp_cachectl.find_command(command_name)
+        self.assertEqual(os.path.realpath(found), os.path.realpath(path))
+
+    def test_find_command_absolute_path_checked_directly(self):
+        directory = self.make_fake_path(["wp-custom"], [])
+        absolute_path = os.path.join(directory, "wp-custom")
+        with mock.patch.dict(os.environ, {"PATH": ""}):
+            self.assertEqual(wp_cachectl.find_command(absolute_path), absolute_path)
+            self.assertTrue(wp_cachectl.command_exists(absolute_path))
+        missing_absolute_path = os.path.join(directory, "does-not-exist")
+        self.assertIsNone(wp_cachectl.find_command(missing_absolute_path))
 
 
 if __name__ == "__main__":

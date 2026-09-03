@@ -20,8 +20,16 @@
 #    - Parse du output and return the size for the requested directory path.
 #    - run_custom_du includes hidden directories when include_hidden is True.
 #    - run_custom_du excludes hidden directories when include_hidden is False.
+#    - locate_command() resolves an executable command found on PATH.
+#    - locate_command() returns None when the command is not found on PATH.
+#    - locate_command() resolves an empty PATH component to the current directory.
+#    - command_exists() is consistent with locate_command().
 #
 #  Version History:
+#  v1.1 2026-09-03
+#       Add tests for the manual PATH search in locate_command(), replacing
+#       the previous 'command -v' based lookup. These run on any platform,
+#       unlike the macOS-only disk usage tests above.
 #  v1.0 2025-06-24
 #      Initial release.
 #
@@ -29,6 +37,7 @@
 
 import os
 import platform
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -39,7 +48,7 @@ from unittest.mock import patch
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from du import check_directory, parse_du_output, run_custom_du
+from du import check_directory, command_exists, locate_command, parse_du_output, run_custom_du
 
 
 class TestDuScript(unittest.TestCase):
@@ -111,6 +120,53 @@ class TestDuScript(unittest.TestCase):
             output = "".join(call.args[0] for call in mock_print.call_args_list)
             self.assertNotIn('.hidden', output)
             self.assertIn('visible', output)
+
+
+class TestDuCommandLookup(unittest.TestCase):
+    """ Tests for the manual PATH search; these are not macOS-specific. """
+
+    def make_fake_path(self, commands, non_executable):
+        """ Create a temporary PATH directory containing the given commands; return its path. """
+        directory = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, directory)
+        for command in commands:
+            path = os.path.join(directory, command)
+            with open(path, 'w', encoding='utf-8') as f:
+                f.write('#!/bin/sh\n')
+            if command not in non_executable:
+                os.chmod(path, 0o755)
+            else:
+                os.chmod(path, 0o644)
+        return directory
+
+    def test_locate_command_resolves_executable_on_path(self):
+        directory = self.make_fake_path(['fake_du'], [])
+        with patch.dict(os.environ, {'PATH': directory}):
+            found = locate_command('fake_du')
+            self.assertTrue(command_exists('fake_du'))
+        self.assertEqual(os.path.realpath(found),
+                         os.path.realpath(os.path.join(directory, 'fake_du')))
+
+    def test_locate_command_missing_returns_none(self):
+        directory = self.make_fake_path([], [])
+        with patch.dict(os.environ, {'PATH': directory}):
+            self.assertIsNone(locate_command('nonexistent_command'))
+            self.assertFalse(command_exists('nonexistent_command'))
+
+    def test_locate_command_empty_path_component_is_cwd(self):
+        directory = tempfile.mkdtemp()
+        self.addCleanup(shutil.rmtree, directory)
+        command_name = 'fake_command_for_cwd_test'
+        path = os.path.join(directory, command_name)
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write('#!/bin/sh\n')
+        os.chmod(path, 0o755)
+        original_cwd = os.getcwd()
+        self.addCleanup(os.chdir, original_cwd)
+        os.chdir(directory)
+        with patch.dict(os.environ, {'PATH': ''}):
+            found = locate_command(command_name)
+        self.assertEqual(os.path.realpath(found), os.path.realpath(path))
 
 
 if __name__ == '__main__':

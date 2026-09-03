@@ -3,8 +3,9 @@ scripts Repository Version History
 
 v2.0.2 (Release Date: TBD)
 --------------------------
-- Add luksmount.py to open and mount a LUKS device after confirmation, and
-  install it as luksmount with the system administration scripts.
+- Add luksmount.py to open and mount a LUKS device after confirmation, and fix its sudo check and PATH lookup.
+- Fix tcmount.py to run mount and unmount without a shell, propagating command failures to the exit status.
+- Replace shell-based command lookup with a manual PATH search in tcmount.py, cal.py, du.py, and wp_cachectl.py.
 
 v2.0.1 (2026-08-26)
 -------------------

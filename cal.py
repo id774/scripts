@@ -27,6 +27,10 @@
 #  - Python Version: 3.1 or later
 #
 #  Version History:
+#  v1.6 2026-09-03
+#       Replaced 'command -v' based lookup with a manual PATH search in
+#       command_exists() and get_command_path(), matching the shell script
+#       helper's PATH lookup and exit semantics.
 #  v1.5 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.4 2025-06-23
@@ -99,23 +103,28 @@ def print_cal_month(year, month):
     """
     subprocess.call(['cal', str(month), str(year)])
 
+def find_command(command):
+    """
+    Search PATH for command's executable path, using a manual PATH search.
+    Return the full path when found, or None when not found.
+    """
+    for directory in os.environ.get("PATH", "").split(os.pathsep):
+        candidate = os.path.join(directory if directory else ".", command)
+        if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+            return candidate
+    return None
+
 def command_exists(command):
     """
-    Checks if a given command exists in the system path using 'command -v'.
+    Checks if a given command exists in the system path using a manual PATH search.
     """
-    with open(os.devnull, 'w') as devnull:
-        return subprocess.call('command -v {}'.format(command), shell=True, stdout=devnull, stderr=devnull) == 0
+    return find_command(command) is not None
 
 def get_command_path(command):
     """
-    Gets the full path of a command using 'command -v'.
+    Gets the full path of a command using a manual PATH search.
     """
-    try:
-        with open(os.devnull, 'w') as devnull:
-            output = subprocess.check_output('command -v {}'.format(command), shell=True, stderr=devnull)
-        return output.decode().strip()
-    except subprocess.CalledProcessError:
-        return None
+    return find_command(command)
 
 def run_system_cal(args):
     """
