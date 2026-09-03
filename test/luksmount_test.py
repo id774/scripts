@@ -42,6 +42,7 @@
 #
 ########################################################################
 
+import io
 import os
 import shutil
 import subprocess
@@ -57,6 +58,13 @@ import luksmount
 
 class TestLuksMount(unittest.TestCase):
     """ Test cases for luksmount.py. """
+
+    def setUp(self):
+        """ Silence script output so the test run shows only unittest progress. """
+        for stream in ('sys.stdout', 'sys.stderr'):
+            patcher = patch(stream, new_callable=io.StringIO)
+            patcher.start()
+            self.addCleanup(patcher.stop)
 
     def script_path(self):
         """ Return the absolute path of luksmount.py. """
