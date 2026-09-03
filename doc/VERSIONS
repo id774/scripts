@@ -1,6 +1,10 @@
 scripts Repository Version History
 ==================================
 
+v2.0.2 (Release Date: TBD)
+--------------------------
+- Add `luksmount.py` for confirmed LUKS device opening and mounting, and install it as `luksmount` with the Debian system administration scripts.
+
 v2.0.1 (2026-08-26)
 -------------------
 - Large-scale documentation revision, recorded here as an exception.

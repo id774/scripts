@@ -437,7 +437,7 @@ Assists with opening and mounting a LUKS encrypted block device after the user h
 
 Given a device name and mapper name, it retrieves and displays the disk serial number through `get-serial`, asks the user to confirm the selected physical device, opens the device with `cryptsetup open`, and mounts `/dev/mapper/<name>` on `/mnt/user/<name>`.
 
-It does not select devices, create mountpoint directories, unmount volumes, close mappings, or install itself as a system command.
+It does not select devices, create mountpoint directories, unmount volumes, or close mappings.
 
 
 ### tcmount.py
