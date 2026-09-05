@@ -60,9 +60,7 @@
 #
 #  Version History:
 #  v1.0 2026-09-03
-#       Initial release. Suppress sudo -v output while keeping the interactive
-#       password prompt, and fix find_command() to search the current directory
-#       for an empty PATH component instead of skipping it.
+#       Initial release.
 #
 ########################################################################
 
