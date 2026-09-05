@@ -65,7 +65,17 @@
 #  - Python Version: 3.2 or later
 #  - Dependencies: autopep8, flake8, autoflake, isort
 #
+#  pyck uses separate ignore policies for autopep8 and Flake8. autopep8
+#  ignores E302, E402, and E501. Flake8 ignores E302, E402, E501, W503, and
+#  W504. W503 and W504 are mutually exclusive operator line-break
+#  conventions, so pyck excludes both from Flake8 rather than enforcing
+#  either one. Other Flake8 rules are not added to the explicit ignore
+#  list and remain enforced.
+#
 #  Version History:
+#  v3.1 2026-09-05
+#       Separate autopep8 and Flake8 ignore policies, keeping E302/E402/E501
+#       for autopep8 and additionally ignoring W503/W504 in Flake8.
 #  v3.0 2026-08-23
 #       Distinguish auto-fixable changes from lint findings, report
 #       unresolved lint issues after auto-fix, and use isolated formatter
@@ -113,6 +123,9 @@ import shlex
 import subprocess
 import sys
 import tempfile
+
+AUTOPEP8_IGNORE_ERRORS = "E302,E402,E501"
+FLAKE8_IGNORE_ERRORS = "E302,E402,E501,W503,W504"
 
 
 def usage():
@@ -205,40 +218,40 @@ def resolve_target_files(paths):
                 actual_path), file=sys.stderr)
     return target_files
 
-def dry_run_formatting(paths, ignore_errors, config_path):
+def dry_run_formatting(paths, autopep8_ignore_errors, config_path):
     """ Perform a dry run to show which files auto-fix would change, without making actual changes. """
     print("[INFO] DRY RUN: No files will be modified. Use -i to auto-fix.")
     for file_path in resolve_target_files(paths):
         run_command(
             "flake8 --isolated --ignore={} {}".format(
-                ignore_errors, shlex.quote(file_path)),
+                FLAKE8_IGNORE_ERRORS, shlex.quote(file_path)),
             show_files="Lint issue (manual review candidate):")
         run_command("autoflake --config={} --imports=django,requests,urllib3 --check {}".format(
                     shlex.quote(config_path), shlex.quote(file_path)),
                     show_files="Would clean: {}".format(file_path), literal_message=True)
         run_command("autopep8 --global-config={} --ignore-local-config --ignore={} --diff --exit-code {}".format(
-                    shlex.quote(config_path), ignore_errors, shlex.quote(file_path)),
+                    shlex.quote(config_path), autopep8_ignore_errors, shlex.quote(file_path)),
                     show_files="Would format: {}".format(file_path), literal_message=True)
         run_command("isort --settings-path={} --check-only {}".format(
                     shlex.quote(config_path), shlex.quote(file_path)),
                     show_files="Would sort imports in: {}".format(file_path), literal_message=True)
 
-def execute_formatting(paths, ignore_errors, config_path):
+def execute_formatting(paths, autopep8_ignore_errors, config_path):
     """ Execute auto-formatting and report lint issues that remain afterward. """
     for file_path in resolve_target_files(paths):
-        format_file(file_path, ignore_errors, config_path)
+        format_file(file_path, autopep8_ignore_errors, config_path)
         run_command(
             "flake8 --isolated --ignore={} {}".format(
-                ignore_errors, shlex.quote(file_path)),
+                FLAKE8_IGNORE_ERRORS, shlex.quote(file_path)),
             show_files="Manual fix required:")
 
-def format_file(file_path, ignore_errors, config_path):
+def format_file(file_path, autopep8_ignore_errors, config_path):
     """ Format a single Python file by cleaning up imports, and applying 'autopep8' and 'isort'. """
     command = "autoflake --config={} --imports=django,requests,urllib3 -i {}".format(
         shlex.quote(config_path), shlex.quote(file_path))
     subprocess.Popen(command, shell=True).wait()
     command = "autopep8 --global-config={} --ignore-local-config --ignore={} -v -i {}".format(
-        shlex.quote(config_path), ignore_errors, shlex.quote(file_path))
+        shlex.quote(config_path), autopep8_ignore_errors, shlex.quote(file_path))
     subprocess.Popen(command, shell=True).wait()
     format_imports(file_path, config_path)
 
@@ -265,7 +278,6 @@ def main():
     for path in args.paths:
         expanded_paths.extend(glob.glob(path) or [path])
 
-    ignore_errors = "E302,E402,E501"
     check_command("autopep8")
     check_command("flake8")
     check_command("autoflake")
@@ -274,9 +286,9 @@ def main():
     with tempfile.TemporaryDirectory() as temp_dir:
         config_path = create_isolated_config(temp_dir)
         if args.auto_fix:
-            execute_formatting(expanded_paths, ignore_errors, config_path)
+            execute_formatting(expanded_paths, AUTOPEP8_IGNORE_ERRORS, config_path)
         else:
-            dry_run_formatting(expanded_paths, ignore_errors, config_path)
+            dry_run_formatting(expanded_paths, AUTOPEP8_IGNORE_ERRORS, config_path)
 
     return 0
 
