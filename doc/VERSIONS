@@ -11,6 +11,8 @@ v2.0.2 (Release Date: TBD)
   wp_cachectl.py with Python-native PATH lookup.
 - Fix the nightly quality gate so its exit status reflects the current
   run's actual check results.
+- Separate pyck.py formatter and linter ignore policies, excluding W503 and
+  W504 from Flake8 while retaining the existing checks for other rules.
 
 v2.0.1 (2026-08-26)
 -------------------

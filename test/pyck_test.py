@@ -65,8 +65,13 @@
 #    - Verify create_isolated_config() writes the formatter/linter configuration used by pyck.
 #    - Verify format_imports() passes the isolated configuration to isort.
 #    - Verify main() creates one isolated temporary configuration and passes it to dry-run and auto-fix processing.
+#    - Verify that pyck keeps autopep8 on E302/E402/E501 while Flake8 additionally ignores
+#      W503/W504, without restoring the rest of Flake8's default ignore set.
 #
 #  Version History:
+#  v1.5 2026-09-05
+#       Cover separate autopep8 and Flake8 ignore policies, verifying that
+#       W503/W504 are ignored only by Flake8 while autopep8 remains unchanged.
 #  v1.4 2026-08-22
 #       Cover auto-fix change detection, lint candidate reporting, and
 #       unresolved lint diagnostics after auto-fix.
@@ -284,7 +289,7 @@ class TestPyck(unittest.TestCase):
 
         # Verify subprocess.Popen calls for the single file
         mock_popen.assert_any_call(
-            "flake8 --isolated --ignore=E302,E402,E501 path/to/single_file.py", shell=True, stdout=-1)
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/single_file.py", shell=True, stdout=-1)
         mock_popen.assert_any_call(
             "autoflake --config=/tmp/pyck.cfg --imports=django,requests,urllib3 --check path/to/single_file.py", shell=True, stdout=-1)
         mock_popen.assert_any_call(
@@ -308,7 +313,7 @@ class TestPyck(unittest.TestCase):
             ['path/to/file1.py', 'path/to/file2.py'], 'E302,E402,E501', CONFIG_PATH)
 
         expected_calls = [
-            call("flake8 --isolated --ignore=E302,E402,E501 path/to/file1.py",
+            call("flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/file1.py",
                  shell=True, stdout=-1),
             call("autoflake --config=/tmp/pyck.cfg --imports=django,requests,urllib3 --check path/to/file1.py",
                  shell=True, stdout=-1),
@@ -316,7 +321,7 @@ class TestPyck(unittest.TestCase):
                  shell=True, stdout=-1),
             call("isort --settings-path=/tmp/pyck.cfg --check-only path/to/file1.py",
                  shell=True, stdout=-1),
-            call("flake8 --isolated --ignore=E302,E402,E501 path/to/file2.py",
+            call("flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/file2.py",
                  shell=True, stdout=-1),
             call("autoflake --config=/tmp/pyck.cfg --imports=django,requests,urllib3 --check path/to/file2.py",
                  shell=True, stdout=-1),
@@ -344,7 +349,7 @@ class TestPyck(unittest.TestCase):
             ['path/to/my file.py'], 'E302,E402,E501', CONFIG_PATH_WITH_SPACES)
 
         mock_popen.assert_any_call(
-            "flake8 --isolated --ignore=E302,E402,E501 'path/to/my file.py'", shell=True, stdout=-1)
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 'path/to/my file.py'", shell=True, stdout=-1)
         mock_popen.assert_any_call(
             "autoflake --config='/tmp/pyck config/pyck.cfg' --imports=django,requests,urllib3 --check 'path/to/my file.py'", shell=True, stdout=-1)
         mock_popen.assert_any_call(
@@ -374,7 +379,7 @@ class TestPyck(unittest.TestCase):
         for name in ('file1.py', 'file2.py'):
             target = os.path.join('path/to/directory', name)
             expected_calls.extend([
-                call("flake8 --isolated --ignore=E302,E402,E501 {}".format(target),
+                call("flake8 --isolated --ignore=E302,E402,E501,W503,W504 {}".format(target),
                      shell=True, stdout=-1),
                 call("autoflake --config=/tmp/pyck.cfg --imports=django,requests,urllib3 --check {}".format(target),
                      shell=True, stdout=-1),
@@ -410,7 +415,7 @@ class TestPyck(unittest.TestCase):
                            ('path/to/dir2', 'file3.py'), ('path/to/dir2', 'file4.py')):
             target = os.path.join(root, name)
             expected_calls.extend([
-                call("flake8 --isolated --ignore=E302,E402,E501 {}".format(target),
+                call("flake8 --isolated --ignore=E302,E402,E501,W503,W504 {}".format(target),
                      shell=True, stdout=-1),
                 call("autoflake --config=/tmp/pyck.cfg --imports=django,requests,urllib3 --check {}".format(target),
                      shell=True, stdout=-1),
@@ -647,7 +652,7 @@ class TestPyck(unittest.TestCase):
             'path/to/single_file.py', 'E302,E402,E501', CONFIG_PATH)
 
         mock_run_command.assert_called_once_with(
-            "flake8 --isolated --ignore=E302,E402,E501 path/to/single_file.py",
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/single_file.py",
             show_files="Manual fix required:")
 
     @patch('pyck.run_command')
@@ -679,13 +684,13 @@ class TestPyck(unittest.TestCase):
         mock_format_file.assert_any_call('path/to/file.py', 'E302,E402,E501', CONFIG_PATH)
 
         mock_run_command.assert_any_call(
-            "flake8 --isolated --ignore=E302,E402,E501 path/to/directory/file1.py",
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/directory/file1.py",
             show_files="Manual fix required:")
         mock_run_command.assert_any_call(
-            "flake8 --isolated --ignore=E302,E402,E501 path/to/directory/file2.py",
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/directory/file2.py",
             show_files="Manual fix required:")
         mock_run_command.assert_any_call(
-            "flake8 --isolated --ignore=E302,E402,E501 path/to/file.py",
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/file.py",
             show_files="Manual fix required:")
 
         # Test behavior when path is neither a file nor a directory
@@ -719,10 +724,10 @@ class TestPyck(unittest.TestCase):
         mock_format_file.assert_any_call(expected_file2_path, 'E302,E402,E501', CONFIG_PATH)
 
         mock_run_command.assert_any_call(
-            "flake8 --isolated --ignore=E302,E402,E501 path/to/directory/file1.py",
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/directory/file1.py",
             show_files="Manual fix required:")
         mock_run_command.assert_any_call(
-            "flake8 --isolated --ignore=E302,E402,E501 path/to/directory/file2.py",
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/directory/file2.py",
             show_files="Manual fix required:")
 
     @patch('pyck.run_command')
@@ -758,16 +763,16 @@ class TestPyck(unittest.TestCase):
             mock_format_file.assert_any_call(file_path, 'E302,E402,E501', CONFIG_PATH)
 
         mock_run_command.assert_any_call(
-            "flake8 --isolated --ignore=E302,E402,E501 path/to/dir1/file1.py",
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/dir1/file1.py",
             show_files="Manual fix required:")
         mock_run_command.assert_any_call(
-            "flake8 --isolated --ignore=E302,E402,E501 path/to/dir1/file2.py",
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/dir1/file2.py",
             show_files="Manual fix required:")
         mock_run_command.assert_any_call(
-            "flake8 --isolated --ignore=E302,E402,E501 path/to/dir2/file3.py",
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/dir2/file3.py",
             show_files="Manual fix required:")
         mock_run_command.assert_any_call(
-            "flake8 --isolated --ignore=E302,E402,E501 path/to/dir2/file4.py",
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/dir2/file4.py",
             show_files="Manual fix required:")
 
     @patch('pyck.run_command')
@@ -789,7 +794,7 @@ class TestPyck(unittest.TestCase):
             call.format_file(
                 'path/to/file.py', 'E302,E402,E501', CONFIG_PATH),
             call.run_command(
-                'flake8 --isolated --ignore=E302,E402,E501 path/to/file.py',
+                'flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/file.py',
                 show_files='Manual fix required:'),
         ])
 
@@ -826,7 +831,7 @@ class TestPyck(unittest.TestCase):
             ['path/to/my file.py'], 'E302,E402,E501', CONFIG_PATH_WITH_SPACES)
 
         mock_run_command.assert_called_once_with(
-            "flake8 --isolated --ignore=E302,E402,E501 "
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 "
             "'path/to/my file.py'",
             show_files='Manual fix required:')
 
