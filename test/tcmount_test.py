@@ -103,6 +103,7 @@
 #
 ########################################################################
 
+import io
 import os
 import shutil
 import stat
@@ -342,7 +343,11 @@ class TestTcMount(unittest.TestCase):
 
     @patch('tcmount.subprocess.call', side_effect=OSError('not found'))
     def test_os_exec_exec_failure_returns_1(self, mock_call):
-        self.assertEqual(tcmount.os_exec(['nonexistent-binary']), 1)
+        with patch('tcmount.sys.stderr', new_callable=io.StringIO) as stderr:
+            self.assertEqual(tcmount.os_exec(['nonexistent-binary']), 1)
+        self.assertEqual(
+            stderr.getvalue(),
+            '[ERROR] Failed to execute nonexistent-binary: not found\n')
 
     def test_is_block_device_true_for_block_device(self):
         fake_stat = type('FakeStat', (), {'st_mode': stat.S_IFBLK | 0o600})()
@@ -401,8 +406,12 @@ class TestTcMount(unittest.TestCase):
     @patch('tcmount.os_exec')
     @patch('tcmount.is_block_device', return_value=False)
     def test_run_single_mount_rejects_non_block_device(self, mock_is_blk, mock_os_exec):
-        status = tcmount.run_single_mount('sdb', 'utf8', ['truecrypt'])
+        with patch('tcmount.sys.stderr', new_callable=io.StringIO) as stderr:
+            status = tcmount.run_single_mount('sdb', 'utf8', ['truecrypt'])
         self.assertEqual(status, 1)
+        self.assertEqual(
+            stderr.getvalue(),
+            '[ERROR] Not a block device: /dev/sdb\n')
         mock_os_exec.assert_not_called()
 
     @patch('tcmount.os_exec', return_value=0)
@@ -418,8 +427,12 @@ class TestTcMount(unittest.TestCase):
     @patch('tcmount.os_exec')
     @patch('tcmount.resolve_real_mountpoint', return_value=None)
     def test_run_single_unmount_resolution_failure_skips_detach(self, mock_resolve, mock_os_exec):
-        status = tcmount.run_single_unmount('disk1', ['truecrypt'])
+        with patch('tcmount.sys.stderr', new_callable=io.StringIO) as stderr:
+            status = tcmount.run_single_unmount('disk1', ['truecrypt'])
         self.assertEqual(status, 1)
+        self.assertEqual(
+            stderr.getvalue(),
+            '[ERROR] Failed to resolve the real mountpoint for disk1.\n')
         mock_os_exec.assert_not_called()
 
     @patch('tcmount.os_exec', return_value=0)
@@ -433,8 +446,13 @@ class TestTcMount(unittest.TestCase):
     @patch('tcmount.os_exec')
     @patch('tcmount.os.path.isfile', return_value=False)
     def test_run_external_mount_missing_container_rejected(self, mock_isfile, mock_os_exec):
-        status = tcmount.run_external_mount('sde', 'utf8', ['truecrypt'])
+        with patch('tcmount.sys.stderr', new_callable=io.StringIO) as stderr:
+            status = tcmount.run_external_mount('sde', 'utf8', ['truecrypt'])
         self.assertEqual(status, 1)
+        self.assertEqual(
+            stderr.getvalue(),
+            '[ERROR] External container file not found: %s\n' %
+            os.path.expanduser('~/mnt/external/container.tc'))
         mock_os_exec.assert_not_called()
 
     @patch('tcmount.os_exec', return_value=0)
@@ -537,23 +555,37 @@ class TestTcMount(unittest.TestCase):
     @patch('tcmount.is_truecrypt_installed', return_value=False)
     def test_process_mounting_exit_11_when_truecrypt_missing(self, mock_tc):
         options = make_options()
-        with self.assertRaises(SystemExit) as cm:
-            tcmount.process_mounting(options, ['sdb'])
+        with patch('tcmount.sys.stderr', new_callable=io.StringIO) as stderr:
+            with self.assertRaises(SystemExit) as cm:
+                tcmount.process_mounting(options, ['sdb'])
         self.assertEqual(cm.exception.code, 11)
+        self.assertEqual(
+            stderr.getvalue(),
+            '[ERROR] TrueCrypt is not installed. Please use VeraCrypt or install TrueCrypt and try again.\n')
 
     @patch('tcmount.is_veracrypt_installed', return_value=False)
     def test_process_mounting_exit_12_when_veracrypt_missing(self, mock_vc):
         options = make_options(veracrypt=True)
-        with self.assertRaises(SystemExit) as cm:
-            tcmount.process_mounting(options, ['sdb'])
+        with patch('tcmount.sys.stderr', new_callable=io.StringIO) as stderr:
+            with self.assertRaises(SystemExit) as cm:
+                tcmount.process_mounting(options, ['sdb'])
         self.assertEqual(cm.exception.code, 12)
+        self.assertEqual(
+            stderr.getvalue(),
+            "[ERROR] VeraCrypt is not installed, but '-v' option was specified. "
+            "Please use TrueCrypt or install VeraCrypt and try again.\n")
 
     @patch('tcmount.is_veracrypt_installed', return_value=False)
     def test_process_mounting_exit_13_when_veracrypt_missing_for_tc_compat(self, mock_vc):
         options = make_options(tc_compat=True)
-        with self.assertRaises(SystemExit) as cm:
-            tcmount.process_mounting(options, ['sdb'])
+        with patch('tcmount.sys.stderr', new_callable=io.StringIO) as stderr:
+            with self.assertRaises(SystemExit) as cm:
+                tcmount.process_mounting(options, ['sdb'])
         self.assertEqual(cm.exception.code, 13)
+        self.assertEqual(
+            stderr.getvalue(),
+            "[ERROR] VeraCrypt is not installed, but '-t' option was specified. "
+            "Please use TrueCrypt or install VeraCrypt and try again.\n")
 
     @patch('tcmount.os.path.isfile', return_value=True)
     @patch('tcmount.is_block_device', return_value=True)
