@@ -8,7 +8,10 @@
 #  within a specified directory. It identifies usage of features introduced in Python 3.x,
 #  including f-strings, subprocess.run, subprocess.DEVNULL, async/await keywords,
 #  type hints, nonlocal statements, matrix multiplication operators, asyncio library,
-#  yield from, extended unpacking, pathlib module, and notably, the shutil.which function.
+#  yield from, pathlib module, and notably, the shutil.which function.
+#  Detection also covers the corresponding import forms of these features (e.g.,
+#  "import pathlib", "from asyncio import ..."), so importing a restricted feature
+#  directly does not bypass the check.
 #  The script helps in identifying code segments that may not be compatible with earlier
 #  versions of Python, facilitating easier code migration and compatibility assessments.
 #  It now also tracks the detected issues and provides feedback on whether the issues
@@ -41,6 +44,10 @@
 #  contain patterns resembling Python 3.x features but are unrelated to code functionality.
 #
 #  Version History:
+#  v3.7 2026-09-05
+#       Also detect the import forms of pathlib, asyncio, subprocess.run,
+#       subprocess.DEVNULL, and shutil.which; drop the stale "extended
+#       unpacking" claim from the Description.
 #  v3.6 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v3.5 2025-06-23
@@ -157,15 +164,15 @@ def main():
     # Define patterns for each feature
     features = {
         "f-strings": r"f['\"][^'\"]*\{[^}]*\}[^'\"]*['\"]",
-        "subprocess.run and subprocess.DEVNULL": r"subprocess\.run|subprocess\.DEVNULL",
+        "subprocess.run and subprocess.DEVNULL": r"subprocess\.run|subprocess\.DEVNULL|\bfrom\s+subprocess\s+import\b.*\b(?:run|DEVNULL)\b",
         "async/await keywords": r"\basync\b|\bawait\b",
         "nonlocal keyword": r"\bnonlocal\b",
-        "asyncio usage": r"\basyncio\.",
+        "asyncio usage": r"\basyncio\.|\bimport\s+asyncio\b|\bfrom\s+asyncio\s+import\b",
         "yield from usage": r"\byield from\b",
         "matrix multiplication operator": r"\b[a-zA-Z_][a-zA-Z0-9_]*\s+@\s+[a-zA-Z_][a-zA-Z0-9_]*\b",
-        "pathlib usage": r"\bpathlib\.",
+        "pathlib usage": r"\bpathlib\.|\bimport\s+pathlib\b|\bfrom\s+pathlib\s+import\b",
         "type hints": r"\bdef\b.*->",
-        "shutil.which usage": r"\bshutil\.which\b"
+        "shutil.which usage": r"\bshutil\.which\b|\bfrom\s+shutil\s+import\b.*\bwhich\b"
     }
 
     # Perform search for each feature

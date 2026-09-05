@@ -9,6 +9,8 @@ v2.0.2 (Release Date: TBD)
   ~/mnt/<target> namespace, and return mount and unmount failures.
 - Replace shell-based command lookup in cal.py, du.py, tcmount.py, and
   wp_cachectl.py with Python-native PATH lookup.
+- Fix the nightly quality gate so its exit status reflects the current
+  run's actual check results.
 
 v2.0.1 (2026-08-26)
 -------------------

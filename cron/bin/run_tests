@@ -52,6 +52,9 @@
 #  4. Configuration variables not set.
 #
 #  Version History:
+#  v2.8 2026-09-05
+#       Return the current run's actual failure status instead of always 0,
+#       and stop deriving failure state from historical JOBLOG content.
 #  v2.7 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -118,6 +121,11 @@ record_failure() {
     echo "[WARN] Some tests failed. Check logs for details." >> "$JOBLOG" 2>&1
 }
 
+# Mark the current run as failed, independent of JOBLOG content
+mark_failure() {
+    OVERALL_STATUS=1
+}
+
 # Determine the script's directory and load configuration
 initialize() {
     if ! is_running_from_cron; then
@@ -165,6 +173,7 @@ run_tests() {
 
     if [ "$result" -ge 1 ]; then
         record_failure
+        mark_failure
     fi
 }
 
@@ -178,6 +187,7 @@ run_check_scripts() {
 
         if [ "$result" -ge 1 ]; then
             echo "[WARN] Some tests failed in shell script tests. Check logs for details." >> "$JOBLOG" 2>&1
+            mark_failure
         else
             echo "[INFO] All shell script tests completed successfully." >> "$JOBLOG" 2>&1
         fi
@@ -200,6 +210,7 @@ run_check_header_doc() {
 
         if [ "$result" -ge 1 ]; then
             echo "[WARN] Some tests failed in Header documentation inspection. Check logs for details." >> "$JOBLOG" 2>&1
+            mark_failure
         else
             echo "[INFO] Header documentation inspection completed successfully." >> "$JOBLOG" 2>&1
         fi
@@ -216,6 +227,7 @@ run_compatibility_check() {
 
     if [ ! -f "$SCRIPTS/find_pycompat.py" ]; then
         record_failure
+        mark_failure
         return 1
     fi
 
@@ -225,8 +237,7 @@ run_compatibility_check() {
 
     if [ "$result" -ge 1 ]; then
         echo "[WARN] Some tests failed in Python compatibility inspection. Check logs for details." >> "$JOBLOG" 2>&1
-    elif grep -q "Some tests failed" "$JOBLOG"; then
-        record_failure
+        mark_failure
     else
         echo "[INFO] All tests completed successfully for all versions." >> "$JOBLOG" 2>&1
     fi
@@ -255,6 +266,7 @@ main() {
 
     initialize
 
+    OVERALL_STATUS=0
     first_python_version=""
 
     py_list=$(echo "$python_versions")
@@ -288,7 +300,7 @@ main() {
         send_mail_to_admin
     fi
 
-    return 0
+    return "$OVERALL_STATUS"
 }
 
 # Execute main function
