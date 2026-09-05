@@ -278,7 +278,7 @@ class TestLuksMount(unittest.TestCase):
     @patch('luksmount.get_serial', return_value='SERIAL123')
     @patch('luksmount.validate_paths', return_value=0)
     def test_process_mount_sudo_failure_prints_single_error_line(self, mock_validate, mock_serial,
-                                                                  mock_confirm, mock_call, mock_run):
+                                                                 mock_confirm, mock_call, mock_run):
         self.assertEqual(luksmount.process_mount('sdb', 'disk3'), 1)
         mock_run.assert_not_called()
         error_lines = [line for line in sys.stderr.getvalue().splitlines() if '[ERROR]' in line]
