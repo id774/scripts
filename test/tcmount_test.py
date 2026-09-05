@@ -555,9 +555,14 @@ class TestTcMount(unittest.TestCase):
             tcmount.process_mounting(options, ['sdb'])
         self.assertEqual(cm.exception.code, 13)
 
+    @patch('tcmount.os.path.isfile', return_value=True)
+    @patch('tcmount.is_block_device', return_value=True)
+    @patch('tcmount.is_veracrypt_installed', return_value=True)
+    @patch('tcmount.is_truecrypt_installed', return_value=True)
     @patch('tcmount.os_exec')
-    def test_process_mounting_combinations(self, mock_os_exec):
-        self.check_both_installed()
+    def test_process_mounting_combinations(
+            self, mock_os_exec, mock_truecrypt, mock_veracrypt,
+            mock_is_block_device, mock_isfile):
         mock_os_exec.return_value = 0
 
         test_cases = [
