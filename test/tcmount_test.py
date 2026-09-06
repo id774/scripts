@@ -82,14 +82,8 @@
 #
 #  Version History:
 #  v1.4 2026-09-03
-#       Rewrote the suite for the argv-based mount/unmount execution: no
-#       shell=True anywhere, command failures propagate to process_mounting()'s
-#       return value, --all continues past failures and aggregates status, and
-#       get-device/get-mountpoint failures block the detach command. Added
-#       tests for the manual PATH search in find_command(). Added coverage
-#       for build_mountpoint_path() and for absolute-looking explicit
-#       targets staying under the ~/mnt/<target> namespace across mount,
-#       external mount, and unmount resolution.
+#       Rewrite the suite for argv-based mount/unmount execution, adding
+#       coverage for find_command()'s PATH search and namespace resolution.
 #  v1.3 2025-08-31
 #       Add 5 tests for external container (-e): mount default/explicit target,
 #       process_mounting explicit target, and unmount default/explicit target.

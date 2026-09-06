@@ -43,24 +43,21 @@
 #
 #  Version History:
 #  v2.2 2026-07-06
-#       Add test cases for the -r option: non-recursive default behavior,
-#       iter_target_files direct coverage, and CLI-level recursive vs non-recursive checks.
-#       Update existing swap_extensions calls for the new recursive argument.
+#       Add test cases for the -r option: non-recursive default behavior, iter_target_files direct coverage, and CLI-level
+#       recursive vs non-recursive checks. Update existing swap_extensions calls for the new recursive argument.
 #  v2.1 2025-06-30
 #       Added unit tests for argument validation in swapext.validate_args.
 #       Covers same extension, missing dot, unreadable/unwritable or missing directory.
 #  v2.0 2025-04-15
-#       Replaced sys.argv parsing with OptionParser.
-#       Added -x option to enable execution (default is dry-run).
-#       Added confirmation prompt before executing changes.
+#       Replaced sys.argv parsing with OptionParser. Added -x option to enable execution
+#       (default is dry-run). Added confirmation prompt before executing changes.
 #  v1.2 2024-03-23
-#       Significantly expanded test cases to improve coverage and ensure
-#       the script correctly handles case-sensitive extensions, empty directories,
-#       subdirectories, files with special characters, and read-only files.
+#       Significantly expanded test cases to improve coverage and ensure the script correctly handles case-sensitive
+#       extensions, empty directories, subdirectories, files with special characters, and read-only files.
 #  v1.1 2024-01-11
 #       Added '-q' option for quiet mode.
 #  v1.0 2024-01-10
-#       Initial release of test script.
+#       Initial release.
 #
 ########################################################################
 

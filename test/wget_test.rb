@@ -29,7 +29,7 @@
 #
 #  Version History:
 #  v1.0 2025-06-24
-#      Initial release. Covers usage error and mocked download test.
+#      Initial release.
 #
 ########################################################################
 

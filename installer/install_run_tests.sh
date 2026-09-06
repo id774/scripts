@@ -43,9 +43,8 @@
 #  v2.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.0 2025-04-29
-#       Add error handling for critical copy and cron setup steps.
-#       Use sudo when checking existence of files and directories
-#       to handle permission-restricted environments safely.
+#       Add error handling for critical copy and cron setup steps. Use sudo when checking
+#       existence of files and directories to handle permission-restricted environments safely.
 #  v1.9 2025-04-21
 #       Added detailed [INFO] log messages to each step for improved visibility during execution.
 #  v1.8 2025-04-13

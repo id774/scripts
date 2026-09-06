@@ -65,7 +65,7 @@
 #  v1.1 2026-01-10
 #       Detect typo blank-comment lines like "##" inside header doc block.
 #  v1.0 2026-01-02
-#       Initial release. Detect missing "#" for blank lines inside header doc block.
+#       Initial release.
 #
 ########################################################################
 

@@ -89,9 +89,8 @@
 #       Separate autopep8 and Flake8 ignore policies, keeping E302/E402/E501
 #       for autopep8 and additionally ignoring W503/W504 in Flake8.
 #  v3.0 2026-08-23
-#       Distinguish auto-fixable changes from lint findings, report
-#       unresolved lint issues after auto-fix, and use isolated formatter
-#       and linter configuration.
+#       Distinguish auto-fixable changes from lint findings, report unresolved lint
+#       issues after auto-fix, and use isolated formatter and linter configuration.
 #  v2.7 2026-07-15
 #       Quote file and directory paths before interpolating them into
 #       shell commands, to support paths containing spaces.
@@ -110,10 +109,8 @@
 #       Added isort integration for organizing imports.
 #       Fixed TypeError in run_command function by decoding stdout to string.
 #  v2.0 2024-01-13
-#       Ported from shell script (pyck.sh) to Python (pyck.py) for enhanced
-#       portability and functionality.
-#       Integrated functionality of autopyck.sh, including dry-run mode.
-#       Added support for multiple files and directories, including wildcard usage.
+#       Ported from shell script (pyck.sh) to Python (pyck.py) for enhanced portability and functionality. Integrated functionality
+#       of autopyck.sh, including dry-run mode. Added support for multiple files and directories, including wildcard usage.
 #  v1.4 2024-01-07
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.

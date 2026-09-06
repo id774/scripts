@@ -51,9 +51,8 @@
 #  v1.2 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.1 2025-03-19
-#       Added support for custom Ruby installation paths.
-#       Improved error handling for missing Ruby directories.
-#       Enhanced script documentation and comments.
+#       Added support for custom Ruby installation paths. Improved error handling
+#       for missing Ruby directories. Enhanced script documentation and comments.
 #  v1.0 2025-01-27
 #       Initial release.
 #

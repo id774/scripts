@@ -29,9 +29,8 @@
 #
 #  Version History:
 #  v1.1 2026-08-22
-#       Added test coverage for the v3.0 metadata/import classification
-#       logic, the distribution-name to import-name mapping catalog, and
-#       the Python code-quality tools required by pyck.py.
+#       Added test coverage for the v3.0 metadata/import classification logic, the distribution-name
+#       to import-name mapping catalog, and the Python code-quality tools required by pyck.py.
 #  v1.0 2025-07-07
 #       Initial release.
 #

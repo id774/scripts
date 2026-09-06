@@ -42,7 +42,7 @@
 #  v1.1 2023-11-30
 #       Added check to ensure /etc/securetty is a file before clearing it.
 #  v1.0 2012-05-21
-#       Initial release. Script to clear /etc/securetty for unrestricted root access.
+#       Initial release.
 #
 ########################################################################
 

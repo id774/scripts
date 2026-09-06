@@ -29,9 +29,8 @@
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
 #  v1.8 2025-08-03
-#       Improve file safety with null-terminated find output.
-#       Suppress exiftool stderr output on missing tags.
-#       Add validation for single argument constraint.
+#       Improve file safety with null-terminated find output. Suppress exiftool stderr
+#       output on missing tags. Add validation for single argument constraint.
 #  v1.7 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.6 2025-04-13

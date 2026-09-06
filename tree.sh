@@ -38,17 +38,14 @@
 #  v1.4 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.3 2024-01-07
-#       Added an option to include hidden directories in the tree display.
-#       Updated command existence and execution permission checks
-#       using a common function for enhanced reliability and maintainability.
+#       Added an option to include hidden directories in the tree display. Updated command existence and
+#       execution permission checks using a common function for enhanced reliability and maintainability.
 #  v1.2 2024-01-04
-#       Added functionality to accept a directory as an argument. If no
-#       argument is provided, the script displays the tree of the current
-#       directory. Added error handling for non-existent directories.
+#       Added functionality to accept a directory as an argument. If no argument is provided, the script
+#       displays the tree of the current directory. Added error handling for non-existent directories.
 #  v1.1 2023-12-23
-#       Refactored for POSIX compliance. Replaced Bash-specific syntax
-#       with POSIX standard commands and structures. Enhanced portability
-#       and compatibility across different UNIX-like systems.
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax with POSIX standard commands
+#       and structures. Enhanced portability and compatibility across different UNIX-like systems.
 #  v1.0 2014-10-22
 #       Initial release.
 #

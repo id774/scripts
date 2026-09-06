@@ -109,26 +109,14 @@
 #
 #  Version History:
 #  v3.2 2026-07-10
-#       Change owner/group normalization to exclude symbolic links by default,
-#       since chown without -h dereferences the link and unexpectedly changes
-#       the ownership of its target instead of the link itself. Add
-#       --chown-symlinks to opt in to normalizing symbolic link ownership with
-#       chown -h. chown is now always invoked with -h, including when symbolic
-#       links are excluded, as a defense against a matched path being replaced
-#       by a symbolic link between the find scan and the chown call.
+#       Exclude symlinks from owner/group normalization by default, add
+#       --chown-symlinks to opt in, and always invoke chown -h for safety.
 #  v3.1 2026-06-14
-#       Added owner and group normalization support with --user and --group.
-#       Changed the default behavior to update only entries whose current
-#       permissions, owner, or group differ from the requested values.
-#       Added --force to reapply chmod/chown to all matched entries.
-#       Expanded documentation for batching, default skip behavior, symbolic
-#       mode limitations, and command safety.
+#       Add --user/--group normalization, default to updating only mismatched
+#       entries, and add --force to reapply chmod/chown unconditionally.
 #  v3.0 2026-06-13
-#       Improved performance for large directory trees by batching chmod execution
-#       with find -exec ... {} + instead of invoking chmod once per path.
-#       Replaced shell command execution with argument-list execution to avoid shell
-#       interpretation and propagate command failures to the script exit status.
-#       Fixed Linux platform detection for chmod -c on Python 3.
+#       Batch chmod via find -exec ... {} +, use argument-list execution instead
+#       of shell strings, and fix Linux chmod -c detection.
 #  v2.8 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v2.7 2025-06-23

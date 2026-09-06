@@ -39,8 +39,7 @@
 #       Improved script to support macOS by using 'dscacheutil' for user information retrieval.
 #       Maintained compatibility with Linux and other Unix-like systems.
 #  v1.0 2014-11-16
-#       Initial release. Detects system type and displays user accounts with
-#       UIDs above the system-specific threshold.
+#       Initial release.
 #
 ########################################################################
 

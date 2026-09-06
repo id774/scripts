@@ -52,10 +52,8 @@
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
 #  v2.0 2025-10-11
-#       Emit only sysctl keys that exist on the running kernel (/proc/sys probe).
-#       Remove/avoid legacy or conflicting keys (e.g., tcp_frto, tcp_fack,
-#       IPv6 use_tempaddr/max_addresses when disabling IPv6, dhcpv6_autoconf).
-#       Keep TCP timestamps enabled by default; expand verification summary.
+#       Emit only sysctl keys present on the running kernel, drop legacy or
+#       conflicting keys, and keep TCP timestamps enabled by default.
 #  v1.9 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.8 2025-04-28
@@ -76,11 +74,10 @@
 #       Enabled ICMP echo requests (ping) while enforcing rate limits.
 #       Adjusted ICMP rate limiting for improved security.
 #  v1.1 2025-02-20
-#       Added IPv4 security hardening and separated configuration into two files:
-#         - 98-disable-ipv6.conf for IPv6 settings.
-#         - 97-secure-ipv4.conf for IPv4 security settings.
+#       Added IPv4 security hardening and separated configuration into two files: -
+#       98-disable-ipv6.conf for IPv6 settings. - 97-secure-ipv4.conf for IPv4 security settings.
 #  v1.0 2025-02-19
-#       Initial release with IPv6 disabling functionality.
+#       Initial release.
 #
 ########################################################################
 

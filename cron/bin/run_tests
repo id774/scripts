@@ -80,10 +80,8 @@
 #  v2.1 2025-05-10
 #       Add cron execution check and usage support with unified structure.
 #  v2.0 2025-04-29
-#       Add execution of test/check_scripts.sh after Python and Ruby tests if available.
-#       Fully refactor run_tests into function-based structure.
-#       Modify test iteration logic to pair each Python version with the corresponding Ruby version.
-#       Use the first defined Python version for compatibility check instead of the last tested version.
+#       Run test/check_scripts.sh after the language tests, refactor into
+#       functions, and pair each Python version with its Ruby counterpart.
 #  v1.3 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.2 2025-03-19
@@ -92,8 +90,7 @@
 #  v1.1 2024-04-08
 #       Made ADMIN_MAIL_ADDRESS optional for email notifications.
 #  v1.0 2024-03-13
-#       Initial release. Features include dynamic version testing for Python
-#       and Ruby, external configuration loading, and compatibility checking.
+#       Initial release.
 #
 ########################################################################
 

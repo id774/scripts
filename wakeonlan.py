@@ -33,7 +33,7 @@
 #  v1.1 2023-12-08
 #       Removed Python version check
 #  v1.0 2022-08-03
-#       Initial release. Basic functionality for sending Wake-on-LAN magic packets.
+#       Initial release.
 #
 ########################################################################
 

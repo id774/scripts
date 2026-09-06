@@ -42,11 +42,8 @@
 #
 #  Version History:
 #  v3.0 2026-08-22
-#       Modernized the broad Python package catalog to track the current
-#       bulk installer targets, added distribution metadata based version
-#       detection when available, retained actual module imports as an
-#       environment health check, and distinguished missing packages from
-#       import failures.
+#       Modernize the package catalog, add distribution-metadata version
+#       detection, and distinguish missing packages from import failures.
 #  v2.7 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v2.6 2025-06-23

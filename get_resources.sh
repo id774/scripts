@@ -64,7 +64,7 @@
 #  v1.1 2023-12-05
 #       Refactored for macOS compatibility and command availability checks.
 #  v1.0 2008-08-22
-#       Initial release. Gathers system resources and log information.
+#       Initial release.
 #
 ########################################################################
 

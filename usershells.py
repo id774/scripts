@@ -46,7 +46,7 @@
 #       Improved shell filtering to exclude non-interactive system accounts such as 'sync',
 #       'shutdown', and 'halt'.
 #  v1.0 2017-02-14
-#       Initial release. Lists user accounts and their shells, excluding 'false' and 'nologin'.
+#       Initial release.
 #
 ########################################################################
 

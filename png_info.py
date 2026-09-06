@@ -25,10 +25,8 @@
 #
 #  Version History:
 #  v2.0 2026-07-11
-#       Fix a bug where only the first matched file was processed; all
-#       glob-matched files across all arguments are now processed. Add a
-#       main() entry point so the script returns status instead of exiting
-#       from within the processing loop.
+#       Fix a bug where only the first matched file was processed; all glob-matched files across all arguments are now
+#       processed. Add a main() entry point so the script returns status instead of exiting from within the processing loop.
 #  v1.5 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.4 2025-06-23
@@ -41,8 +39,7 @@
 #  v1.1 2023-12-06
 #       Refactored for clarity and improved error handling.
 #  v1.0 2023-11-25
-#       Initial release. Reads width, height, bit depth, and color type
-#       information from PNG files.
+#       Initial release.
 #
 ########################################################################
 

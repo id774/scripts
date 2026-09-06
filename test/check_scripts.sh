@@ -56,7 +56,7 @@
 #  v1.1 2025-05-10
 #       Test all scripts in $SCRIPTS/cron/bin regardless of file extension.
 #  v1.0 2025-04-28
-#       Initial release. Implements sequential help-option testing with POSIX-compliant structure.
+#       Initial release.
 #
 ########################################################################
 

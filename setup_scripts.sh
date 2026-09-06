@@ -52,9 +52,8 @@
 #       Replace chmod -R with find-based permission control for finer safety.
 #       Grant execute permissions to all files under scripts/cron/bin regardless of extension.
 #  v1.8 2025-04-25
-#       Add INFO log before each permission operation to improve clarity.
-#       Verify all return codes to ensure successful completion before final message.
-#       Output [ERROR] message if any permission operation fails.
+#       Add INFO log before each permission operation to improve clarity. Verify all return codes to ensure
+#       successful completion before final message. Output [ERROR] message if any permission operation fails.
 #  v1.7 2025-04-12
 #       Revoke execute permissions from scripts/cron/bin to avoid
 #       accidental manual execution of cron job scripts.
@@ -68,9 +67,8 @@
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.
 #  v1.2 2023-12-23
-#       Refactored for POSIX compliance. Replaced Bash-specific syntax
-#       with POSIX standard commands and structures. Enhanced portability
-#       and compatibility across different UNIX-like systems.
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax with POSIX standard commands
+#       and structures. Enhanced portability and compatibility across different UNIX-like systems.
 #  v1.1 2023-12-08
 #       Added documentation and environment variable check for SCRIPTS.
 #  v1.0 2008-08-22

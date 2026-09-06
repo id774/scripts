@@ -33,11 +33,8 @@
 #
 #  Version History:
 #  v3.1 2026-07-26
-#       Remove the "Blog Entry Access" section: it duplicated logic now
-#       owned by the independently deployed apache_blog_analysis.py
-#       script, which reports that same candidate page-view count plus
-#       asset-confirmed page views and estimated sessions. Drop the
-#       now-unused BLOG_BOT_UA_RE constant.
+#       Remove the Blog Entry Access section, now owned by the independent
+#       apache_blog_analysis.py, and drop the unused BLOG_BOT_UA_RE constant.
 #  v3.0 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -75,14 +72,11 @@
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.
 #  v1.4 2023-12-23
-#       Refactored for POSIX compliance. Replaced Bash-specific syntax
-#       with POSIX standard commands and structures. Enhanced portability
-#       and compatibility across different UNIX-like systems.
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax with POSIX standard commands
+#       and structures. Enhanced portability and compatibility across different UNIX-like systems.
 #  v1.3 2023-12-17
-#       Enhanced the logic for loading the ignore list by adding a
-#       fallback to check in the script's relative parent directory
-#       if not found in the current directory.
-#       Modified argument handling to accept a single log file path.
+#       Enhanced the logic for loading the ignore list by adding a fallback to check in the script's relative parent
+#       directory if not found in the current directory. Modified argument handling to accept a single log file path.
 #  v1.2 2023-12-14
 #       Added checks for log file existence and grep/zgrep/awk availability.
 #       Implemented the functionality to ignore IPs listed in apache_ignore.list.

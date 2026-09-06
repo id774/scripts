@@ -34,7 +34,7 @@
 #  v1.1 2024-01-11
 #      Added error handling for PIL library not installed.
 #  v1.0 2023-12-24
-#      Initial release. Basic functionality for resizing images.
+#      Initial release.
 #
 ########################################################################
 

@@ -58,9 +58,8 @@
 #       Expanded header documentation to enumerate all applied configuration
 #       steps and system tuning tasks for consistency and transparency.
 #  v2.0 2025-08-12
-#       Replace previous LightDM oriented setup with GNOME settings only.
-#       Keep POSIX compliance and robust logging and verification.
-#       Add GNOME settings hook with safe guards and logging.
+#       Replace previous LightDM oriented setup with GNOME settings only. Keep POSIX compliance
+#       and robust logging and verification. Add GNOME settings hook with safe guards and logging.
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2025-04-13

@@ -46,7 +46,7 @@
 #  v1.1 2023-12-05
 #       Refactored script with additional comments and error checking.
 #  v1.0 2018-04-20
-#       Initial release. Removes Git repositories and their symbolic links.
+#       Initial release.
 #
 ########################################################################
 

@@ -52,9 +52,8 @@
 #  v1.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-13
-#       Enhanced documentation and comments for better maintainability.
-#       Ensured strict POSIX compliance.
-#       Redirected error messages to stderr for better logging and debugging.
+#       Enhanced documentation and comments for better maintainability. Ensured strict POSIX
+#       compliance. Redirected error messages to stderr for better logging and debugging.
 #  [Further version history truncated for brevity]
 #  v0.1 2011-09-28
 #       First version.

@@ -54,9 +54,8 @@
 #  v1.4 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.3 2025-03-15
-#       Refactored script with improved checks and error handling.
-#       Added functions for modular execution.
-#       Ensured idempotent directory and file setup.
+#       Refactored script with improved checks and error handling. Added functions
+#       for modular execution. Ensured idempotent directory and file setup.
 #  v1.2 2023-12-25
 #       Add apache_calculater.
 #  v1.1 2023-12-16

@@ -49,18 +49,14 @@
 #
 #  Version History:
 #  v1.5 2026-07-10
-#       Expand tests for chmodtree.py v3.2 default exclusion of symbolic
-#       links from owner/group normalization, the --chown-symlinks opt-in,
-#       and the always-on chown -h dereference-safe invocation.
+#       Expand tests for chmodtree.py v3.2 default exclusion of symbolic links from owner/group
+#       normalization, the --chown-symlinks opt-in, and the always-on chown -h dereference-safe invocation.
 #  v1.4 2026-06-14
-#       Expanded tests for chmodtree.py v3.1 owner/group normalization,
-#       default mismatch-only behavior, --force, symbolic chmod modes, octal
-#       mode detection, chown command construction, conditional command checks,
-#       and combined chmod/chown execution.
+#       Expanded tests for chmodtree.py v3.1 owner/group normalization, default mismatch-only behavior, --force, symbolic chmod
+#       modes, octal mode detection, chown command construction, conditional command checks, and combined chmod/chown execution.
 #  v1.3 2026-06-13
-#       Updated expected chmodtree command construction for argument-list execution,
-#       batched find -exec ... {} + usage, chmod -- mode separation, and command
-#       failure propagation.
+#       Updated expected chmodtree command construction for argument-list execution, batched
+#       find -exec ... {} + usage, chmod -- mode separation, and command failure propagation.
 #  v1.2 2025-04-14
 #       Unify error and info message formatting with stderr and prefix tags.
 #  v1.1 2024-01-28

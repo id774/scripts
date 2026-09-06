@@ -33,7 +33,7 @@
 #  v1.0 2025-05-10
 #       Refactor into POSIX-compliant, function-based structure with cron check and mail support.
 #  v0.1 2012-03-15
-#       Initial release. Basic chkrootkit execution and logging.
+#       Initial release.
 #
 ########################################################################
 

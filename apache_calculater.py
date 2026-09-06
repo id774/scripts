@@ -36,11 +36,8 @@
 #
 #  Version History:
 #  v3.0 2026-07-26
-#       Resolve the ignore list's local etc/ candidates relative to this
-#       script's own directory instead of the current working directory,
-#       matching apache_log_analysis.sh's dirname "$0"-based resolution
-#       so both tools agree on which apache_ignore.list to use regardless
-#       of where the script is invoked from.
+#       Resolve the ignore list's etc/ candidates relative to this script's own
+#       directory, matching apache_log_analysis.sh's resolution.
 #  v2.3 2026-07-08
 #       Specify UTF-8 encoding when reading the ignore list file.
 #  v2.2 2026-01-09
@@ -65,9 +62,8 @@
 #       Added error handling for non-existent log files.
 #       Added log format validation and refactored file opening logic.
 #  v1.3 2023-12-17
-#       Enhanced the logic for loading the ignore list by searching
-#       in both the current directory's etc folder and the script's
-#       relative parent directory's etc folder.
+#       Enhanced the logic for loading the ignore list by searching in both the current
+#       directory's etc folder and the script's relative parent directory's etc folder.
 #  v1.2 2023-12-14
 #       Added support for .gz log files and implemented IP ignore list.
 #  v1.1 2023-12-06

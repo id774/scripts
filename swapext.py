@@ -37,9 +37,8 @@
 #  v2.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v2.0 2025-04-15
-#       Replaced sys.argv parsing with OptionParser.
-#       Added -x option to enable execution (default is dry-run).
-#       Added confirmation prompt before executing changes.
+#       Replaced sys.argv parsing with OptionParser. Added -x option to enable execution
+#       (default is dry-run). Added confirmation prompt before executing changes.
 #  v1.3 2024-01-11
 #       Added '-q' option for quiet mode.
 #  v1.2 2024-01-10

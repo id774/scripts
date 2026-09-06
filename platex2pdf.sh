@@ -41,7 +41,7 @@
 #  v1.1 2023-12-05
 #       Refactored for improved readability, added environment checks.
 #  v1.0 2014-05-21
-#       Initial release. Converts LaTeX files to PDF.
+#       Initial release.
 #
 ########################################################################
 

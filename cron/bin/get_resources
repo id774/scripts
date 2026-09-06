@@ -42,7 +42,7 @@
 #  v1.0 2025-05-10
 #       Refactor into POSIX-compliant, function-based structure with unified logging.
 #  v0.1 2008-08-22
-#       Initial release. Simple wrapper for get_resources.sh with logging.
+#       Initial release.
 #
 ########################################################################
 

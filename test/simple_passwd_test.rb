@@ -35,7 +35,7 @@
 #  v1.1 2025-07-01
 #      Updated for function-based execution and explicit exit codes.
 #  v1.0 2025-06-24
-#      Initial release. Focused tests on input handling and password generation.
+#      Initial release.
 #
 ########################################################################
 

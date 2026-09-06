@@ -32,9 +32,8 @@
 #
 #  Version History:
 #  v1.8 2026-09-03
-#       Replaced 'command -v' based lookup with a manual PATH search in
-#       command_exists(), matching the shell script helper's PATH lookup and
-#       exit semantics.
+#       Replaced 'command -v' based lookup with a manual PATH search in command_exists(),
+#       matching the shell script helper's PATH lookup and exit semantics.
 #  v1.7 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.6 2025-06-23
@@ -47,14 +46,13 @@
 #      Added error handling for non-existent or non-directory paths.
 #      Added option to include or exclude hidden directories in the report.
 #  v1.2 2023-12-30
-#      Fixed the issue with incorrect total disk usage calculation.
-#      The script now correctly identifies and reports the size of the top directory.
-#      Simplified total size calculation by using the size string directly.
+#      Fixed the issue with incorrect total disk usage calculation. The script now correctly identifies and
+#      reports the size of the top directory. Simplified total size calculation by using the size string directly.
 #  v1.1 2023-12-25
 #      Added total disk usage calculation.
 #      Added note regarding total usage variation based on depth.
 #  v1.0 2023-12-18
-#      Initial release. Simplifies 'du' command usage.
+#      Initial release.
 #
 ########################################################################
 

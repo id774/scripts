@@ -38,7 +38,7 @@
 #       Replaced f-strings with format() method for compatibility with older Python versions.
 #       Enhanced code comments for better readability and maintainability.
 #  v1.0 2025-02-15
-#       Initial release: Separate script for video downloading.
+#       Initial release.
 #
 ########################################################################
 

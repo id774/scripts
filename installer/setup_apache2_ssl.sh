@@ -71,9 +71,8 @@
 #  v1.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-15
-#       Added command, script, and sudo checks.
-#       Improved error handling and permission settings.
-#       Ensured idempotent execution.
+#       Added command, script, and sudo checks. Improved error handling and
+#       permission settings. Ensured idempotent execution.
 #  v0.1 2011-04-14
 #       Initial version.
 #

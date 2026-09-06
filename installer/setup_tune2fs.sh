@@ -41,12 +41,8 @@
 #  v1.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-13
-#       Improved POSIX compliance and modularization.
-#       Enhanced loop structures and variable handling.
-#       Added progress output for better visibility.
-#       Added system compatibility check for Linux.
-#       Ensured tune2fs is installed before execution.
-#       Redirected error messages to stderr for better logging and debugging.
+#       Improve POSIX compliance and modularity, add progress output and a
+#       Linux/tune2fs availability check, and log errors to stderr.
 #  [Further version history truncated for brevity]
 #  v0.1 2011-09-26
 #       First version.

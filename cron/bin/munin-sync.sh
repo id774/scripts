@@ -62,7 +62,7 @@
 #  v1.1 2025-04-11
 #       Added usage() function and --help option. Added Munin directory existence check.
 #  v1.0 2025-04-07
-#       Initial release. Implements rsync-based data transfer and logging sync with heartbeat file generation.
+#       Initial release.
 #
 ########################################################################
 

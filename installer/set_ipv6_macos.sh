@@ -37,7 +37,7 @@
 #  v1.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-02-19
-#       Initial release with full macOS IPv6 disabling support.
+#       Initial release.
 #
 ########################################################################
 

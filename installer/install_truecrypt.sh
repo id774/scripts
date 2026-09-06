@@ -38,13 +38,8 @@
 #  v1.1 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.0 2025-03-07
-#       Updated to be POSIX compliant.
-#       Replaced non-POSIX `which` with `command -v`.
-#       Added error handling for directory changes.
-#       Integrated command existence and sudo privilege checks.
-#       Improved logging with `echo` for status updates.
-#       Standardized environment setup and permission handling.
-#       Automatically detect system architecture.
+#       Make POSIX compliant: replace which with command -v, add sudo and
+#       command checks, and detect the system architecture automatically.
 #  [Intermediate versions omitted for brevity]
 #  v0.1 2010-08-07
 #       Stable release.

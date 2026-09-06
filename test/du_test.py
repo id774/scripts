@@ -27,9 +27,8 @@
 #
 #  Version History:
 #  v1.1 2026-09-03
-#       Add tests for the manual PATH search in locate_command(), replacing
-#       the previous 'command -v' based lookup. These run on any platform,
-#       unlike the macOS-only disk usage tests above.
+#       Add tests for the manual PATH search in locate_command(), replacing the previous 'command
+#       -v' based lookup. These run on any platform, unlike the macOS-only disk usage tests above.
 #  v1.0 2025-06-24
 #      Initial release.
 #

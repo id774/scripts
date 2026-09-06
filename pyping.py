@@ -47,7 +47,7 @@
 #       Suppressed standard error output from ping command.
 #       Improved command line argument interface using argparse.
 #  v1.0 2024-01-12
-#       Initial release. Python version of the rubyping.rb script.
+#       Initial release.
 #
 ########################################################################
 

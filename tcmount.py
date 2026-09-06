@@ -99,17 +99,11 @@
 #
 #  Version History:
 #  v5.2 2026-09-03
-#       Eliminated shell=True and shell-string command construction from mount
-#       and unmount execution; commands now run as argument lists. Propagated
-#       external command failure status to the script's exit status. Unmount
-#       now aborts without running the detach command when get-device or
-#       get-mountpoint resolution fails. Replaced 'command -v' based lookup
-#       with a manual PATH search in command_exists(). Preserve the legacy
-#       ~/mnt/<target> namespace when an explicit target starts with '/'.
+#       Drop shell=True for argv-based execution, propagate command failures to
+#       exit status, and preserve the legacy ~/mnt/<target> namespace.
 #  v5.1 2025-09-01
-#       Fix external mount to honor explicit target and preserve legacy container path.
-#       Change unmount logic to always resolve real mountpoint via get-device/get-mountpoint.
-#       Requires these helper commands to be available in $PATH.
+#       Fix external mount to honor explicit target and preserve legacy container path. Change unmount logic to always
+#       resolve real mountpoint via get-device/get-mountpoint. Requires these helper commands to be available in $PATH.
 #  v5.0 2025-08-29
 #       Added support for explicit target argument: tcmount.py sdb disk1 mounts /dev/sdb to ~/mnt/disk1.
 #       Also supports unmount with explicit target: tcmount.py sdb disk1 unmount.
@@ -132,14 +126,8 @@
 #       Modified is_truecrypt_installed and is_veracrypt_installed functions for compatibility
 #       with Python versions below 3.3, replacing DEVNULL with os.devnull.
 #  v4.0 2023-12-15
-#       Added support for VeraCrypt with the -v (--veracrypt) and -t (--tc-compat) options.
-#       Improved error handling for systems where only TrueCrypt or VeraCrypt is installed.
-#       Reversed the behavior of the -u (--utf8) option. Now, by default,
-#       the filesystem is mounted with UTF-8 encoding, and the -u option
-#       is used to disable this setting.
-#       Refactored command construction to improve testability.
-#       Renamed the -e (--expansion) option to -e (--external) and updated the path to
-#       the container file to '~/mnt/external/container.tc' for generalizing external HDD support.
+#       Add VeraCrypt support (-v/-t), invert -u to default UTF-8 mounting, and
+#       rename -e/--expansion to -e/--external for generalized HDD support.
 #  [Further version history truncated for brevity]
 #  v1.0 2010-08-06
 #       First release.

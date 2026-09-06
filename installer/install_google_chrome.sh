@@ -57,7 +57,7 @@
 #  v1.1 2026-02-05
 #       Remove preflight network connectivity check.
 #  v1.0 2025-09-04
-#       Initial release for Debian 13.
+#       Initial release.
 #
 ########################################################################
 

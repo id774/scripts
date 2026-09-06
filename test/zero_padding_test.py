@@ -30,11 +30,10 @@
 #
 #  Version History:
 #  v1.1 2024-03-27
-#       Expanded test cases to cover a wider range of scenarios, including files
-#       with already correct padding, files without numeric parts, and files with
-#       special characters and spaces in their names.
+#       Expanded test cases to cover a wider range of scenarios, including files with already correct
+#       padding, files without numeric parts, and files with special characters and spaces in their names.
 #  v1.0 2024-01-11
-#       Initial release of test script.
+#       Initial release.
 #
 ########################################################################
 

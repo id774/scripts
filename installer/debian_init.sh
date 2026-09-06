@@ -62,9 +62,8 @@
 #       Replace --with-desktop with --xfce or --gnome-flashback and pass through
 #       the selected option to debian_desktop_setup.sh.
 #  v6.0 2025-08-20
-#       Add --with-desktop option to trigger desktop setup steps.
-#       Expanded header documentation to enumerate orchestrated phases and clarify
-#       optional desktop provisioning entry points for consistency and transparency.
+#       Add --with-desktop option to trigger desktop setup steps. Expanded header documentation to enumerate
+#       orchestrated phases and clarify optional desktop provisioning entry points for consistency and transparency.
 #  v5.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v5.2 2025-04-13
@@ -72,11 +71,8 @@
 #  v5.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v5.0 2025-03-21
-#       Improved system detection for Debian and Ubuntu.
-#       Enhanced documentation and comments for better maintainability.
-#       Ensured strict POSIX compliance.
-#       Redirected error messages to stderr for better logging and debugging.
-#       Added confirmation prompt before execution.
+#       Improve Debian/Ubuntu detection, enforce POSIX compliance, log errors to
+#       stderr, and add a confirmation prompt before execution.
 #  [Further version history truncated for brevity]
 #  v0.1 2007-08-27
 #       First version.

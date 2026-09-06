@@ -38,15 +38,8 @@
 #  v1.1 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.0 2025-03-07
-#       Updated to be POSIX compliant.
-#       Replaced non-POSIX `which` with `command -v`.
-#       Added error handling for directory changes.
-#       Integrated command existence and sudo privilege checks.
-#       Improved logging with `echo` for status updates.
-#       Standardized environment setup and permission handling.
-#       Automatically detect system architecture.
-#       Fixed VeraCrypt version to 1.25.9 (no longer user-specified).
-#       Simplified script by removing version argument.
+#       Make POSIX compliant like install_truecrypt.sh, and pin VeraCrypt to
+#       version 1.25.9, removing the now-unused version argument.
 #  v0.1 2023-01-18
 #       Forked from TrueCrypt Installer.
 #

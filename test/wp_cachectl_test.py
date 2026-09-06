@@ -67,8 +67,7 @@
 #  Version History:
 #  v1.1 2026-09-03
 #       Add tests for the manual PATH search in find_command(), replacing the
-#       previous 'command -v' based lookup, including the WP_BIN absolute
-#       path case.
+#       previous 'command -v' based lookup, including the WP_BIN absolute path case.
 #  v1.0 2026-01-29
 #       Initial test implementation for wp_cachectl.py.
 #
