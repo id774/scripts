@@ -36,6 +36,7 @@
 #    it will not be overwritten.
 #  - The `fix-permissions` script is deployed to `/etc/cron.daily` with
 #    appropriate permissions.
+#  - Log files are preserved when --uninstall is used.
 #
 #  Version History:
 #  v2.2 2026-09-06

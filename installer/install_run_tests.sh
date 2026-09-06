@@ -26,6 +26,7 @@
 #    the run_tests script and its configuration file before running this script.
 #  - After deployment, review and potentially edit /etc/cron.config/run_tests.conf
 #    and /etc/cron.d/run_tests to finalize the configuration.
+#  - Log files are preserved when --uninstall is used.
 #
 #  Version History:
 #  v2.5 2026-09-06
@@ -35,7 +36,7 @@
 #       equivalent, since mawk on some systems matches it incorrectly.
 #  v2.3 2025-08-19
 #       Add --uninstall option to remove deployed script, config, cron job,
-#       logrotate entry, and the run_tests log file.
+#       and logrotate entry while preserving the run_tests log file.
 #  v2.2 2025-07-30
 #       Move script to /etc/cron.exec and config to /etc/cron.config.
 #  v2.1 2025-06-23

@@ -27,6 +27,9 @@
 #  - The user must have `sudo` installed.
 #  - This script is intended for Linux systems only.
 #
+#  Notes:
+#  - Log files are preserved when --uninstall is used.
+#
 #  Version History:
 #  v3.2 2026-09-06
 #       Show usage for unsupported arguments instead of starting installation.

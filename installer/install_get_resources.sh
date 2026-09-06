@@ -21,6 +21,7 @@
 #  Notes:
 #  - Ensure the SCRIPTS environment variable is set to the directory containing
 #    the get_resources script and its related files before running this script.
+#  - Log files are preserved when --uninstall is used.
 #
 #  Version History:
 #  v3.2 2026-09-06

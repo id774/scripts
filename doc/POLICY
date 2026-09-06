@@ -466,6 +466,7 @@ never asked to touch.
 - Preserve an installer's established continuation, ordering, interaction,
   and side-effect behavior unless changing that behavior is explicitly part
   of the requested work.
+- An installer must preserve log files during uninstallation.
 
 ### 1.6 Documentation
 
