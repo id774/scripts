@@ -24,6 +24,8 @@
 #  in some systems like macOS.
 #
 #  Version History:
+#  v1.8 2026-09-06
+#       Check uname before using it for system detection.
 #  v1.7 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -107,8 +109,9 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
+    check_commands uname
     check_system
-    check_commands sh uname
+    check_commands sh
     check_sudo
     clear_securetty
     return 0

@@ -31,6 +31,7 @@
 #  Version History:
 #  v2.5 2026-09-06
 #       Show usage for unsupported arguments instead of starting installation.
+#       Check uname before using it for system detection.
 #  v2.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -231,9 +232,10 @@ final_message() {
 
 # Perform installation steps
 install() {
+    check_commands uname
     check_system
     check_scripts
-    check_commands cp chmod chown touch mkdir tee uname
+    check_commands cp chmod chown touch mkdir tee
     check_sudo
     setup_log_directory
     setup_log_file

@@ -52,6 +52,8 @@
 #  - Exits if sudo privileges are not granted.
 #
 #  Version History:
+#  v2.2 2026-09-06
+#       Check uname before using it for system detection.
 #  v2.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -202,9 +204,10 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
+    check_commands uname
     check_system
     setup_environment
-    check_commands zsh git ln rm chown uname mkdir
+    check_commands zsh git ln rm chown mkdir
     check_sudo
     install_dot_files
     install_dot_zsh

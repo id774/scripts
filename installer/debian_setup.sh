@@ -66,6 +66,8 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v2.3 2026-09-06
+#       Check uname before using it for system detection.
 #  v2.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -320,9 +322,10 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
+    check_commands uname
     check_system
     setup_environment
-    check_commands zsh git cut getent ln rm chown chsh mkdir uname
+    check_commands zsh git cut getent ln rm chown chsh mkdir
     check_sudo
     set_zsh_to_default
     install_dot_files
