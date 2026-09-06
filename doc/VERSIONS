@@ -13,6 +13,7 @@ v2.0.2 (Release Date: TBD)
   run's actual check results.
 - Separate pyck.py formatter and linter ignore policies, excluding W503 and
   W504 from Flake8 while retaining the existing checks for other rules.
+- Run pyck.py in dry-run mode as a nightly repository-wide Python code-quality check using the configured Python environment.
 
 v2.0.1 (2026-08-26)
 -------------------

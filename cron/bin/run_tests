@@ -7,10 +7,12 @@
 #  This script automates the process of running tests for projects developed
 #  in Python and Ruby. It loads configuration settings from an external
 #  configuration file, iterates through specified versions of Python and Ruby
-#  to run tests, runs repository-wide script and header validation checks,
-#  and performs a compatibility check using the first Python
-#  version in the loop. It is intended to be executed automatically via cron
-#  jobs and sends a summary email to an administrator upon completion.
+#  to run tests, runs a repository-wide shell script validation check, a
+#  repository-wide header documentation check, a pyck.py dry-run Python
+#  code-quality check, and a find_pycompat.py compatibility check, with the
+#  pyck.py and compatibility checks using the first Python version in the
+#  loop. It is intended to be executed automatically via cron jobs and sends
+#  a summary email to an administrator upon completion.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -41,7 +43,10 @@
 #  - The script is designed to be run in environments where Python and Ruby
 #    are used for development and testing.
 #  - In addition to language-specific tests, the script runs repository-wide
-#    checks for shell scripts, header documentation, and Python compatibility.
+#    checks for shell scripts, header documentation, Python code quality, and
+#    Python compatibility.
+#  - The pyck.py dry-run requires autopep8, flake8, autoflake, and isort to be
+#    installed in the first configured Python environment's bin directory.
 #  - Ensure the specified Python and Ruby versions are installed and accessible.
 #  - This script is typically deployed to /etc/cron.exec/run_tests and run by cron.
 #
@@ -52,6 +57,9 @@
 #  4. Configuration variables not set.
 #
 #  Version History:
+#  v3.0 2026-09-06
+#       Add pyck.py dry-run to nightly repository checks and use the first
+#       configured Python environment for its formatter and linter commands.
 #  v2.8 2026-09-05
 #       Return the current run's actual failure status instead of always 0,
 #       and stop deriving failure state from historical JOBLOG content.
@@ -218,6 +226,37 @@ run_check_header_doc() {
     fi
 }
 
+# Run Python code quality inspection
+run_pyck() {
+    if [ -z "$first_python_version" ]; then
+        return 0
+    fi
+
+    if [ ! -f "$SCRIPTS/pyck.py" ]; then
+        record_failure
+        mark_failure
+        return 1
+    fi
+
+    echo >> "$JOBLOG" 2>&1
+    echo "=== Running pyck.py for Python code quality inspection. ===" >> "$JOBLOG" 2>&1
+
+    PATH="/opt/python/$first_python_version/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
+        "/opt/python/$first_python_version/bin/python" \
+        "$SCRIPTS/pyck.py" \
+        "$SCRIPTS"/*.py \
+        "$SCRIPTS"/test/*.py >> "$JOBLOG" 2>&1
+    result=$?
+
+    if [ "$result" -ge 1 ]; then
+        echo "[WARN] Python code quality inspection failed. Check logs for details." >> "$JOBLOG" 2>&1
+        mark_failure
+    else
+        echo "[INFO] Python code quality inspection completed successfully." >> "$JOBLOG" 2>&1
+    fi
+    echo >> "$JOBLOG" 2>&1
+}
+
 # Perform Python compatibility check
 run_compatibility_check() {
     # Require a Python interpreter path (reuse first_python_version from the test loop)
@@ -292,6 +331,7 @@ main() {
 
     run_check_scripts
     run_check_header_doc
+    run_pyck
     run_compatibility_check
 
     finalize
