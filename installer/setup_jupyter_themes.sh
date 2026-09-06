@@ -39,7 +39,7 @@
 #       Added sudo validation, environment checks, and improved error handling.
 #       Replaced direct vim execution with an instructional message.
 #  v0.1 2021-08-06
-#       First version.
+#       Initial release.
 #
 ########################################################################
 

@@ -29,7 +29,7 @@
 #  v1.1 2024-01-30
 #       Updated test cases to handle multiple reads with mock_open.
 #  v1.0 2024-01-11
-#       Initial test script for png_info.py
+#       Initial release.
 #
 ########################################################################
 

@@ -101,7 +101,7 @@
 #  v0.2 2011-09-28
 #       Cut off desktop suite.
 #  v0.1 2011-06-16
-#       Forked from Initial Setup Script.
+#       Initial release.
 #
 ########################################################################
 

@@ -49,7 +49,7 @@
 #  v1.1 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.0 2025-04-10
-#       First version.
+#       Initial release.
 #
 ########################################################################
 

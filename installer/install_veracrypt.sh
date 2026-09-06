@@ -41,7 +41,7 @@
 #       Make POSIX compliant like install_truecrypt.sh, and pin VeraCrypt to
 #       version 1.25.9, removing the now-unused version argument.
 #  v0.1 2023-01-18
-#       Forked from TrueCrypt Installer.
+#       Initial release.
 #
 ########################################################################
 

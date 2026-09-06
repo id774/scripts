@@ -63,7 +63,7 @@
 #       Added individual test cases for check_command function to verify
 #       behavior with existing, nonexistent, and non-executable commands.
 #  v1.0 2023-12-15
-#       First release of the test suite for chmodtree.py.
+#       Initial release.
 #
 ########################################################################
 

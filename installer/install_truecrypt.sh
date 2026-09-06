@@ -38,8 +38,7 @@
 #  v1.1 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.0 2025-03-07
-#       Make POSIX compliant: replace which with command -v, add sudo and
-#       command checks, and detect the system architecture automatically.
+#       Initial release.
 #  [Intermediate versions omitted for brevity]
 #  v0.1 2010-08-07
 #       Stable release.

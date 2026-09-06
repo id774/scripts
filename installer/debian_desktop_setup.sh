@@ -42,7 +42,7 @@
 #  v1.1 2026-02-26
 #       Add --gnome option to dispatch GNOME Shell setup.
 #  v1.0 2025-09-06
-#       Rewritten from scratch as a new release.
+#       Initial release.
 #
 ########################################################################
 

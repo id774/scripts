@@ -23,7 +23,7 @@
 #
 #  Version History:
 #  v1.0 2024-01-11
-#       Initial test script for image_resize.py
+#       Initial release.
 #
 ########################################################################
 

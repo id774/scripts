@@ -44,7 +44,7 @@
 #       Replaced 'which' with 'command -v' for command existence check.
 #       Updated script header for consistency.
 #  v0.1 2011-11-07
-#       First release.
+#       Initial release.
 #
 ########################################################################
 

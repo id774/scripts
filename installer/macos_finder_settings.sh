@@ -39,7 +39,7 @@
 #  v1.0 2025-03-16
 #       Stable version with key Finder and screenshot settings.
 #  v0.1 2025-02-04
-#       Initial version.
+#       Initial release.
 #
 ########################################################################
 

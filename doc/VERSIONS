@@ -671,8 +671,7 @@ v1.0 (2023-11-25)
 
 v0.1 (2008-10-31)
 -----------------
-- The very first initial version of the project, marking the start of
-  public releases.
+- Initial release.
 
 First Commit (2008-08-22)
 -------------------------
@@ -699,3 +698,5 @@ Version History Guidelines
   same file or feature.
 - Place closely related entries near each other.
 - Append an independent new change to the end of the current version entry.
+- The first entry, at the lowest version this file reaches, reads only
+  "Initial release." and nothing else.

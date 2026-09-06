@@ -39,7 +39,7 @@
 #  v1.1 2025-12-27
 #       Split client cache percentage into static vs non-static by excluding static assets from page-like metrics.
 #  v1.0 2025-06-24
-#       Initial test implementation.
+#       Initial release.
 #
 ########################################################################
 

@@ -95,7 +95,7 @@
 #       Added individual test cases for check_command function to verify
 #       behavior with existing, nonexistent, and non-executable commands.
 #  v1.0 2024-01-13
-#       Initial test script for pyck.py
+#       Initial release.
 #
 ########################################################################
 

@@ -539,6 +539,8 @@ level of detail into every document merely to keep them uniform.
   each followed by an indented description of what changed.
 - Each description is at most two lines, and a single line at or under 80
   columns is preferred whenever practical.
+- The first entry, at the lowest version the file's own history reaches,
+  reads only `Initial release.` and nothing else.
 - "Test Cases" must not be included in production scripts.
 - "Test Cases" is used only in dedicated test code.
 - Documentation must remain consistent with the intended behavior.
@@ -730,6 +732,8 @@ document changed.
   characters, followed by one `-` bullet per change.
 - Encoding rules:
   - Use UTF-8 by default.
+- The first entry, at the lowest version `doc/VERSIONS` reaches, reads only
+  `Initial release.` and nothing else.
 
 ##### 1.7.4.1 One Change per Line
 - One coherent change is one bullet. A bullet is at most two physical lines,

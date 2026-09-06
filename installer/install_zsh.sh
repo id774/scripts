@@ -61,8 +61,7 @@
 #  v1.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-20
-#       Added network connection check, system validation, command validation, and improved argument handling. Default zsh version 5.9
-#       installs in '/opt/zsh/5.9' directory. Improved directory navigation safety. Set default installation path to /opt/zsh/x.x.
+#       Initial release.
 #  [Further version history truncated for brevity]
 #  v0.1 2010-09-14
 #       First version.

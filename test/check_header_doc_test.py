@@ -42,7 +42,7 @@
 #  v1.1 2026-01-10
 #       Add test for detecting typo blank-comment lines like "##" inside header doc block.
 #  v1.0 2026-01-02
-#       Initial test implementation for check_header_doc.py.
+#       Initial release.
 #
 ########################################################################
 

@@ -51,7 +51,7 @@
 #  v0.2 2025-03-14
 #       Added network connection check and improved argument handling.
 #  v0.1 2011-04-26
-#       First version.
+#       Initial release.
 #
 ########################################################################
 

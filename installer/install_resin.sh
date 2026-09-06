@@ -51,7 +51,7 @@
 #  v0.2 2011-06-22
 #       Version added to installation target.
 #  v0.1 2011-06-16
-#       First version.
+#       Initial release.
 #
 ########################################################################
 

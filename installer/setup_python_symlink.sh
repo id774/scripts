@@ -34,7 +34,7 @@
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
 #  v1.0 2025-07-16
-#       Initial version.
+#       Initial release.
 #
 ########################################################################
 

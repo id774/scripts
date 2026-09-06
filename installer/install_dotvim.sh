@@ -56,7 +56,7 @@
 #  v1.1 2025-03-14
 #       Added command existence check and environment variable validation.
 #  v1.0 2010-03-07
-#       First version.
+#       Initial release.
 #
 ########################################################################
 

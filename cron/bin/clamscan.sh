@@ -50,7 +50,7 @@
 #  v0.2 2007-11-10
 #       Added clamscan, preserved source and object code.
 #  v0.1 2007-10-16
-#       Initial version.
+#       Initial release.
 #
 ########################################################################
 

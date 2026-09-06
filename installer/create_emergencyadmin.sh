@@ -29,7 +29,7 @@
 #  v1.1 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.0 2025-06-16
-#       First version.
+#       Initial release.
 #
 ########################################################################
 

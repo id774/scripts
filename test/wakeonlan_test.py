@@ -23,7 +23,7 @@
 #  v1.1 2024-02-26
 #       Modified test cases to suppress message output during tests.
 #  v1.0 2024-02-10
-#       Initial test script for wakeonlan.py
+#       Initial release.
 #
 ########################################################################
 

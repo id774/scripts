@@ -40,7 +40,7 @@
 #  v1.0 2025-03-16
 #       Initial stable release with full reinstall process.
 #  v0.1 2022-09-22
-#       First version.
+#       Initial release.
 #
 ########################################################################
 

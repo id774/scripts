@@ -66,7 +66,7 @@
 #  v1.1 2025-04-10
 #       Do not overwrite existing configuration file.
 #  v1.0 2025-04-07
-#       First version.
+#       Initial release.
 #
 ########################################################################
 

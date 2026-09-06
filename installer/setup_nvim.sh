@@ -37,7 +37,7 @@
 #  v1.1 2025-07-19
 #       Replace symbolic link with copy of .vimrc and delete full config on uninstall.
 #  v1.0 2025-07-15
-#       Initial version.
+#       Initial release.
 #
 ########################################################################
 

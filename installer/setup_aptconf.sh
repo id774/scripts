@@ -33,7 +33,7 @@
 #       Added system, command, and script checks. Improved error handling and
 #       user prompts. Ensured idempotent execution.
 #  v0.1 2008-11-06
-#       Initial version.
+#       Initial release.
 #
 ########################################################################
 

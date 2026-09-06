@@ -39,7 +39,7 @@
 #       Added support for enabling/disabling localization via arguments.
 #       Improved error handling and environment checks.
 #  v0.1 2025-02-04
-#       Initial version.
+#       Initial release.
 #
 ########################################################################
 

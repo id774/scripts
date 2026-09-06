@@ -64,7 +64,7 @@
 #  v1.1 2024-03-17
 #       Added log file creation in /var/log/sysadmin and deployed log rotation configuration.
 #  v1.0 2024-03-13
-#       Initial deployment script for automated testing setup.
+#       Initial release.
 #
 ########################################################################
 
