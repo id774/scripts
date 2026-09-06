@@ -7,6 +7,7 @@ v2.0.2 (Release Date: TBD)
   as luksmount with the Debian system administration scripts.
 - Harden tcmount.py against shell interpretation, preserve the legacy
   ~/mnt/<target> namespace, and return mount and unmount failures.
+- Align block-device helper prerequisite checks with their runtime dependencies.
 - Replace shell-based command lookup in cal.py, du.py, tcmount.py, and
   wp_cachectl.py with Python-native PATH lookup.
 - Fix the nightly quality gate so its exit status reflects the current
