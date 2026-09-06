@@ -40,7 +40,7 @@
 #      => /            # when the deepest descendant mounts "/"
 #
 #  Requirements:
-#    - Linux, findmnt(8), lsblk(8), awk(1), mktemp(1)
+#    - Linux, uname(1), findmnt(8), lsblk(8), readlink(1), awk(1), mktemp(1), rm(1)
 #
 #  Exit Status:
 #  0. Success.
@@ -51,6 +51,8 @@
 #  127. Required command is not installed.
 #
 #  Version History:
+#  v1.4 2026-09-06
+#       Check system and temporary-file dependencies before use.
 #  v1.3 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -76,6 +78,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -336,7 +340,7 @@ main() {
     esac
 
     check_system
-    check_commands lsblk findmnt readlink awk
+    check_commands lsblk findmnt readlink awk mktemp rm
     validate_args "$@"
     resolve_and_print "$DEVICE"
     return $?
