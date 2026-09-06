@@ -67,8 +67,19 @@
 #    - Verify main() creates one isolated temporary configuration and passes it to dry-run and auto-fix processing.
 #    - Verify that pyck keeps autopep8 on E302/E402/E501 while Flake8 additionally ignores
 #      W503/W504, without restoring the rest of Flake8's default ignore set.
+#    - Verify that expected dry-run finding statuses remain success, including a combination
+#      where flake8, autoflake, autopep8, and isort each report a finding.
+#    - Verify that an unexpected dry-run tool status returns failure without being reported
+#      as a change candidate, while later tools still run.
+#    - Verify that an auto-fix formatter non-zero status returns failure, and that formatter
+#      failure does not prevent later formatter stages or post-fix flake8.
+#    - Verify that post-fix flake8 lint status 1 remains advisory even when a formatter fails.
+#    - Verify that main() returns 1 for a dry-run or auto-fix execution failure.
 #
 #  Version History:
+#  v1.6 2026-09-06
+#       Cover formatter and linter execution-failure propagation while
+#       preserving advisory finding exit semantics.
 #  v1.5 2026-09-05
 #       Cover separate autopep8 and Flake8 ignore policies, verifying that
 #       W503/W504 are ignored only by Flake8 while autopep8 remains unchanged.
@@ -113,9 +124,11 @@ def _popen_side_effect(rules):
             if key in command:
                 mock_process.communicate.return_value = (out, '')
                 mock_process.returncode = returncode
+                mock_process.wait.return_value = returncode
                 return mock_process
         mock_process.communicate.return_value = ('', '')
         mock_process.returncode = 0
+        mock_process.wait.return_value = 0
         return mock_process
     return side_effect
 
@@ -173,7 +186,8 @@ class TestPyck(unittest.TestCase):
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
     def test_format_file(self, mock_print, mock_popen):
-        pyck.format_file(
+        mock_popen.return_value.wait.return_value = 0
+        result = pyck.format_file(
             'path/to/file.py', 'E302,E402,E501', CONFIG_PATH)
 
         expected_calls = [
@@ -186,11 +200,13 @@ class TestPyck(unittest.TestCase):
             call().wait()
         ]
         mock_popen.assert_has_calls(expected_calls, any_order=True)
+        self.assertEqual(result, 0)
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
     def test_format_file_quotes_path_with_spaces(self, mock_print, mock_popen):
-        pyck.format_file(
+        mock_popen.return_value.wait.return_value = 0
+        result = pyck.format_file(
             'path/to/my file.py',
             'E302,E402,E501',
             CONFIG_PATH_WITH_SPACES)
@@ -205,6 +221,22 @@ class TestPyck(unittest.TestCase):
             call().wait()
         ]
         mock_popen.assert_has_calls(expected_calls, any_order=True)
+        self.assertEqual(result, 0)
+
+    @patch('pyck.subprocess.Popen')
+    @patch('pyck.print')
+    def test_format_file_reports_mutating_formatter_failure(self, mock_print, mock_popen):
+        # A mutating formatter failure is aggregated, but all three formatters still run.
+        mock_popen.return_value.wait.side_effect = [1, 0, 0]
+
+        result = pyck.format_file(
+            'path/to/file.py', 'E302,E402,E501', CONFIG_PATH)
+
+        self.assertEqual(result, 1)
+        self.assertEqual(mock_popen.call_count, 3)
+        mock_print.assert_any_call(
+            "[ERROR] autoflake failed for path/to/file.py with exit status 1.",
+            file=sys.stderr)
 
     def test_create_isolated_config(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -225,7 +257,8 @@ class TestPyck(unittest.TestCase):
 
     @patch('pyck.subprocess.Popen')
     def test_format_imports_uses_isolated_config(self, mock_popen):
-        pyck.format_imports('path/to/file.py', CONFIG_PATH)
+        mock_popen.return_value.wait.return_value = 0
+        result = pyck.format_imports('path/to/file.py', CONFIG_PATH)
 
         mock_popen.assert_has_calls([
             call(
@@ -233,6 +266,7 @@ class TestPyck(unittest.TestCase):
                 shell=True),
             call().wait(),
         ])
+        self.assertEqual(result, 0)
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
@@ -243,20 +277,23 @@ class TestPyck(unittest.TestCase):
         mock_process.returncode = 0
         mock_popen.return_value = mock_process
 
-        pyck.run_command('echo test', show_files=None)
+        result = pyck.run_command('echo test', show_files=None)
         mock_print.assert_not_called()
+        self.assertEqual(result, 0)
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
     def test_run_command_error(self, mock_print, mock_popen):
-        # Test scenario for command execution with an error
+        # An expected non-zero status is reported as a finding, not a failure.
         mock_process = MagicMock()
         mock_process.communicate.return_value = ('error output', '')
         mock_process.returncode = 1
         mock_popen.return_value = mock_process
 
-        pyck.run_command('echo test', show_files="Error occurred")
+        result = pyck.run_command(
+            'echo test', show_files="Error occurred", expected_nonzero=(1,))
         mock_print.assert_called_with("Error occurred error output")
+        self.assertEqual(result, 0)
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
@@ -267,9 +304,30 @@ class TestPyck(unittest.TestCase):
         mock_process.returncode = 2
         mock_popen.return_value = mock_process
 
-        pyck.run_command('autopep8 --diff --exit-code test.py',
-                         show_files="Would format: test.py", literal_message=True)
+        result = pyck.run_command('autopep8 --diff --exit-code test.py',
+                                  show_files="Would format: test.py", literal_message=True,
+                                  expected_nonzero=(2,))
         mock_print.assert_called_once_with("Would format: test.py")
+        self.assertEqual(result, 0)
+
+    @patch('pyck.subprocess.Popen')
+    @patch('pyck.print')
+    def test_run_command_unexpected_status_is_execution_failure(self, mock_print, mock_popen):
+        # A status outside expected_nonzero is an execution failure, not a finding.
+        mock_process = MagicMock()
+        mock_process.communicate.return_value = ('--- a\n+++ b\n', '')
+        mock_process.returncode = 2
+        mock_popen.return_value = mock_process
+
+        result = pyck.run_command('autopep8 --diff --exit-code test.py',
+                                  show_files="Would format: test.py", literal_message=True,
+                                  expected_nonzero=(1,))
+
+        self.assertEqual(result, 1)
+        mock_print.assert_called_once_with(
+            "[ERROR] Command failed with exit status 2: "
+            "autopep8 --diff --exit-code test.py",
+            file=sys.stderr)
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
@@ -513,6 +571,59 @@ class TestPyck(unittest.TestCase):
     @patch('pyck.print')
     @patch('pyck.os.path.isdir')
     @patch('pyck.os.path.isfile')
+    def test_dry_run_formatting_all_findings_remain_success(self, mock_isfile, mock_isdir, mock_print, mock_popen):
+        # Expected dry-run finding statuses on every tool remain advisory, not failures.
+        mock_isdir.return_value = False
+        mock_isfile.return_value = True
+        mock_popen.side_effect = _popen_side_effect({
+            'flake8': (1, "path/to/file.py:1:1: F401 'os' imported but unused"),
+            'autoflake': (1, ''),
+            'autopep8': (2, '--- original\n+++ fixed\n'),
+            'isort': (1, ''),
+        })
+
+        result = pyck.dry_run_formatting(
+            ['path/to/file.py'], 'E302,E402,E501', CONFIG_PATH)
+
+        self.assertEqual(result, 0)
+
+    @patch('pyck.subprocess.Popen')
+    @patch('pyck.print')
+    @patch('pyck.os.path.isdir')
+    @patch('pyck.os.path.isfile')
+    def test_dry_run_formatting_unexpected_tool_status_returns_failure(self, mock_isfile, mock_isdir, mock_print, mock_popen):
+        # An unexpected tool status is a failure, and is not reported as a change candidate,
+        # but later tools and files still run.
+        mock_isdir.return_value = False
+        mock_isfile.return_value = True
+        mock_popen.side_effect = _popen_side_effect({
+            'flake8': (3, 'unexpected flake8 failure'),
+            'autoflake': (0, ''),
+            'autopep8': (0, ''),
+            'isort': (0, ''),
+        })
+
+        result = pyck.dry_run_formatting(
+            ['path/to/file.py'], 'E302,E402,E501', CONFIG_PATH)
+
+        self.assertEqual(result, 1)
+        lint_calls = [c for c in mock_print.call_args_list
+                     if 'Lint issue (manual review candidate):' in str(c)]
+        self.assertEqual(lint_calls, [])
+        mock_popen.assert_any_call(
+            "autoflake --config=/tmp/pyck.cfg --imports=django,requests,urllib3 --check path/to/file.py",
+            shell=True, stdout=-1)
+        mock_popen.assert_any_call(
+            "autopep8 --global-config=/tmp/pyck.cfg --ignore-local-config --ignore=E302,E402,E501 --diff --exit-code path/to/file.py",
+            shell=True, stdout=-1)
+        mock_popen.assert_any_call(
+            "isort --settings-path=/tmp/pyck.cfg --check-only path/to/file.py",
+            shell=True, stdout=-1)
+
+    @patch('pyck.subprocess.Popen')
+    @patch('pyck.print')
+    @patch('pyck.os.path.isdir')
+    @patch('pyck.os.path.isfile')
     def test_dry_run_formatting_no_change_reports_nothing(self, mock_isfile, mock_isdir, mock_print, mock_popen):
         mock_isdir.return_value = False
         mock_isfile.return_value = True
@@ -653,7 +764,7 @@ class TestPyck(unittest.TestCase):
 
         mock_run_command.assert_called_once_with(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/single_file.py",
-            show_files="Manual fix required:")
+            show_files="Manual fix required:", expected_nonzero=(1,))
 
     @patch('pyck.run_command')
     @patch('pyck.format_file')
@@ -685,13 +796,13 @@ class TestPyck(unittest.TestCase):
 
         mock_run_command.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/directory/file1.py",
-            show_files="Manual fix required:")
+            show_files="Manual fix required:", expected_nonzero=(1,))
         mock_run_command.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/directory/file2.py",
-            show_files="Manual fix required:")
+            show_files="Manual fix required:", expected_nonzero=(1,))
         mock_run_command.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/file.py",
-            show_files="Manual fix required:")
+            show_files="Manual fix required:", expected_nonzero=(1,))
 
         # Test behavior when path is neither a file nor a directory
         pyck.execute_formatting(['invalid/path'], 'E302,E402,E501', CONFIG_PATH)
@@ -725,10 +836,10 @@ class TestPyck(unittest.TestCase):
 
         mock_run_command.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/directory/file1.py",
-            show_files="Manual fix required:")
+            show_files="Manual fix required:", expected_nonzero=(1,))
         mock_run_command.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/directory/file2.py",
-            show_files="Manual fix required:")
+            show_files="Manual fix required:", expected_nonzero=(1,))
 
     @patch('pyck.run_command')
     @patch('pyck.format_file')
@@ -764,16 +875,16 @@ class TestPyck(unittest.TestCase):
 
         mock_run_command.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/dir1/file1.py",
-            show_files="Manual fix required:")
+            show_files="Manual fix required:", expected_nonzero=(1,))
         mock_run_command.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/dir1/file2.py",
-            show_files="Manual fix required:")
+            show_files="Manual fix required:", expected_nonzero=(1,))
         mock_run_command.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/dir2/file3.py",
-            show_files="Manual fix required:")
+            show_files="Manual fix required:", expected_nonzero=(1,))
         mock_run_command.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/dir2/file4.py",
-            show_files="Manual fix required:")
+            show_files="Manual fix required:", expected_nonzero=(1,))
 
     @patch('pyck.run_command')
     @patch('pyck.format_file')
@@ -782,6 +893,8 @@ class TestPyck(unittest.TestCase):
             self, mock_resolve_target_files,
             mock_format_file, mock_run_command):
         mock_resolve_target_files.return_value = ['path/to/file.py']
+        mock_format_file.return_value = 0
+        mock_run_command.return_value = 0
 
         calls = MagicMock()
         calls.attach_mock(mock_format_file, 'format_file')
@@ -795,7 +908,7 @@ class TestPyck(unittest.TestCase):
                 'path/to/file.py', 'E302,E402,E501', CONFIG_PATH),
             call.run_command(
                 'flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/file.py',
-                show_files='Manual fix required:'),
+                show_files='Manual fix required:', expected_nonzero=(1,)),
         ])
 
     @patch('pyck.subprocess.Popen')
@@ -809,14 +922,15 @@ class TestPyck(unittest.TestCase):
         mock_process.returncode = 1
         mock_popen.return_value = mock_process
 
-        pyck.run_command(
+        result = pyck.run_command(
             'flake8 --ignore=E302,E402,E501 path/to/file.py',
-            show_files='Manual fix required:')
+            show_files='Manual fix required:', expected_nonzero=(1,))
 
         mock_print.assert_called_once_with(
             "Manual fix required: "
             "path/to/file.py:10:5: F811 "
             "redefinition of unused 'test_case'")
+        self.assertEqual(result, 0)
 
     @patch('pyck.run_command')
     @patch('pyck.format_file')
@@ -833,7 +947,33 @@ class TestPyck(unittest.TestCase):
         mock_run_command.assert_called_once_with(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 "
             "'path/to/my file.py'",
-            show_files='Manual fix required:')
+            show_files='Manual fix required:', expected_nonzero=(1,))
+
+    @patch('pyck.subprocess.Popen')
+    @patch('pyck.print')
+    @patch('pyck.resolve_target_files')
+    def test_execute_formatting_aggregates_formatter_and_lint_failure(
+            self, mock_resolve_target_files, mock_print, mock_popen):
+        # A formatter execution failure plus an advisory post-fix lint finding
+        # still runs post-fix flake8, and the aggregate result is a failure.
+        mock_resolve_target_files.return_value = ['path/to/file.py']
+        mock_popen.side_effect = _popen_side_effect({
+            'autoflake': (1, ''),
+            'autopep8': (0, ''),
+            'isort': (0, ''),
+            'flake8': (1, "path/to/file.py:1:1: F401 'os' imported but unused"),
+        })
+
+        result = pyck.execute_formatting(
+            ['path/to/file.py'], 'E302,E402,E501', CONFIG_PATH)
+
+        self.assertEqual(result, 1)
+        mock_print.assert_any_call(
+            "Manual fix required: "
+            "path/to/file.py:1:1: F401 'os' imported but unused")
+        mock_print.assert_any_call(
+            "[ERROR] autoflake failed for path/to/file.py with exit status 1.",
+            file=sys.stderr)
 
     @patch('pyck.create_isolated_config')
     @patch('pyck.tempfile.TemporaryDirectory')
@@ -856,6 +996,7 @@ class TestPyck(unittest.TestCase):
         mock_setup_argument_parser.return_value = mock_parser
 
         mock_resolve_target_files.return_value = ['path/to/file.py']
+        mock_format_file.return_value = 0
 
         mock_temporary_directory.return_value.__enter__.return_value = '/tmp/pyck-test'
         mock_create_isolated_config.return_value = CONFIG_PATH
@@ -908,6 +1049,7 @@ class TestPyck(unittest.TestCase):
 
         mock_temporary_directory.return_value.__enter__.return_value = '/tmp/pyck-test'
         mock_create_isolated_config.return_value = CONFIG_PATH
+        mock_dry_run_formatting.return_value = 0
 
         result = pyck.main()
 
@@ -918,6 +1060,54 @@ class TestPyck(unittest.TestCase):
             ['path/to/file.py'],
             'E302,E402,E501',
             CONFIG_PATH)
+
+    @patch('pyck.dry_run_formatting')
+    @patch('pyck.create_isolated_config')
+    @patch('pyck.tempfile.TemporaryDirectory')
+    @patch('pyck.check_command')
+    @patch('pyck.setup_argument_parser')
+    def test_main_returns_one_for_dry_run_execution_failure(
+            self, mock_setup_argument_parser, mock_check_command,
+            mock_temporary_directory, mock_create_isolated_config,
+            mock_dry_run_formatting):
+        mock_parser = MagicMock()
+        mock_args = MagicMock()
+        mock_args.paths = ['path/to/file.py']
+        mock_args.auto_fix = False
+        mock_parser.parse_args.return_value = mock_args
+        mock_setup_argument_parser.return_value = mock_parser
+
+        mock_temporary_directory.return_value.__enter__.return_value = '/tmp/pyck-test'
+        mock_create_isolated_config.return_value = CONFIG_PATH
+        mock_dry_run_formatting.return_value = 1
+
+        result = pyck.main()
+
+        self.assertEqual(result, 1)
+
+    @patch('pyck.execute_formatting')
+    @patch('pyck.create_isolated_config')
+    @patch('pyck.tempfile.TemporaryDirectory')
+    @patch('pyck.check_command')
+    @patch('pyck.setup_argument_parser')
+    def test_main_returns_one_for_auto_fix_execution_failure(
+            self, mock_setup_argument_parser, mock_check_command,
+            mock_temporary_directory, mock_create_isolated_config,
+            mock_execute_formatting):
+        mock_parser = MagicMock()
+        mock_args = MagicMock()
+        mock_args.paths = ['path/to/file.py']
+        mock_args.auto_fix = True
+        mock_parser.parse_args.return_value = mock_args
+        mock_setup_argument_parser.return_value = mock_parser
+
+        mock_temporary_directory.return_value.__enter__.return_value = '/tmp/pyck-test'
+        mock_create_isolated_config.return_value = CONFIG_PATH
+        mock_execute_formatting.return_value = 1
+
+        result = pyck.main()
+
+        self.assertEqual(result, 1)
 
     @patch('pyck.os.path.isfile')
     @patch.dict('pyck.os.environ', {'PATH': '/usr/bin:/bin'})
