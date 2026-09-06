@@ -608,7 +608,7 @@ class TestPyck(unittest.TestCase):
 
         self.assertEqual(result, 1)
         lint_calls = [c for c in mock_print.call_args_list
-                     if 'Lint issue (manual review candidate):' in str(c)]
+                      if 'Lint issue (manual review candidate):' in str(c)]
         self.assertEqual(lint_calls, [])
         mock_popen.assert_any_call(
             "autoflake --config=/tmp/pyck.cfg --imports=django,requests,urllib3 --check path/to/file.py",

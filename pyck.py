@@ -242,19 +242,19 @@ def dry_run_formatting(paths, autopep8_ignore_errors, config_path):
                 expected_nonzero=(1,)) != 0:
             overall_status = 1
         if run_command("autoflake --config={} --imports=django,requests,urllib3 --check {}".format(
-                    shlex.quote(config_path), shlex.quote(file_path)),
-                    show_files="Would clean: {}".format(file_path), literal_message=True,
-                    expected_nonzero=(1,)) != 0:
+                shlex.quote(config_path), shlex.quote(file_path)),
+                show_files="Would clean: {}".format(file_path), literal_message=True,
+                expected_nonzero=(1,)) != 0:
             overall_status = 1
         if run_command("autopep8 --global-config={} --ignore-local-config --ignore={} --diff --exit-code {}".format(
-                    shlex.quote(config_path), autopep8_ignore_errors, shlex.quote(file_path)),
-                    show_files="Would format: {}".format(file_path), literal_message=True,
-                    expected_nonzero=(2,)) != 0:
+                shlex.quote(config_path), autopep8_ignore_errors, shlex.quote(file_path)),
+                show_files="Would format: {}".format(file_path), literal_message=True,
+                expected_nonzero=(2,)) != 0:
             overall_status = 1
         if run_command("isort --settings-path={} --check-only {}".format(
-                    shlex.quote(config_path), shlex.quote(file_path)),
-                    show_files="Would sort imports in: {}".format(file_path), literal_message=True,
-                    expected_nonzero=(1,)) != 0:
+                shlex.quote(config_path), shlex.quote(file_path)),
+                show_files="Would sort imports in: {}".format(file_path), literal_message=True,
+                expected_nonzero=(1,)) != 0:
             overall_status = 1
     return overall_status
 
