@@ -28,6 +28,8 @@
 #  - This script is intended for Linux systems only.
 #
 #  Version History:
+#  v3.2 2026-09-06
+#       Show usage for unsupported arguments instead of starting installation.
 #  v3.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -244,8 +246,11 @@ main() {
         -u|--uninstall)
             uninstall
             ;;
-        ""|*)
+        "")
             install
+            ;;
+        *)
+            usage
             ;;
     esac
 

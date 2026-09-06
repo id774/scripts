@@ -28,6 +28,8 @@
 #  - The 'apt' command must be available on the system.
 #
 #  Version History:
+#  v1.2 2026-09-06
+#       Show usage for unsupported arguments instead of starting installation.
 #  v1.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -119,9 +121,12 @@ main() {
             check_environment apt-get dpkg uname grep
             uninstall_python_symlink
             ;;
-        *)
+        "")
             check_environment apt-get uname
             install_python_symlink
+            ;;
+        *)
+            usage
             ;;
     esac
     return 0

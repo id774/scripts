@@ -25,6 +25,8 @@
 #  - SSL Apache logs (ssl_*) must exist under /var/log/apache2.
 #
 #  Version History:
+#  v2.4 2026-09-06
+#       Show usage for unsupported arguments instead of starting installation.
 #  v2.3 2026-07-26
 #       Deploy and uninstall apache_blog_analysis.py alongside the existing
 #       apache_log_analysis.sh and apache_calculater.py scripts.
@@ -272,8 +274,11 @@ main() {
         -u|--uninstall)
             uninstall
             ;;
-        ""|*)
+        "")
             install "$@"
+            ;;
+        *)
+            usage
             ;;
     esac
 

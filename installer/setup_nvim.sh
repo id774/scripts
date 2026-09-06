@@ -29,6 +29,8 @@
 #  - NeoVim must be installed and available in PATH.
 #
 #  Version History:
+#  v1.3 2026-09-06
+#       Show usage for unsupported arguments instead of starting installation.
 #  v1.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -175,11 +177,14 @@ main() {
         -h|--help|-v|--version)
             usage
             ;;
-        -u|--uninstall|--uninstall)
+        -u|--uninstall)
             uninstall
             ;;
-        ""|*)
+        "")
             install
+            ;;
+        *)
+            usage
             ;;
     esac
 
