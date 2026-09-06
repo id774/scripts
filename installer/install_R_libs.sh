@@ -34,7 +34,7 @@
 #  v1.0 2025-03-16
 #       Stable version, installs R libraries from config file.
 #  v0.1 2014-08-09
-#       Initial version.
+#       Initial release.
 #
 ########################################################################
 

@@ -72,7 +72,7 @@
 #  v1.1 2024-01-28
 #       Added detection for shutil.which usage to enhance compatibility checks.
 #  v1.0 2024-01-21
-#        Initial test script for find_pycompat.py
+#        Initial release.
 #
 ########################################################################
 

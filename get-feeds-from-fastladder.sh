@@ -35,7 +35,7 @@
 #  v1.0 2025-03-16
 #       Added system validation, command checks, and database validation.
 #  v0.1 2016-03-23
-#       Initial version.
+#       Initial release.
 #
 ########################################################################
 

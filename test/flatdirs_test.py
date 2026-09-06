@@ -47,7 +47,7 @@
 #       Updated for script name change to flatdirs.py.
 #       Enhanced test cases to cover all major functionalities.
 #  v1.0 2024-01-11
-#       Initial test script for flatdirs.py
+#       Initial release.
 #
 ########################################################################
 

@@ -88,8 +88,7 @@
 #  v1.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-13
-#       Enforce POSIX compliance, add a Linux compatibility check, log errors to
-#       stderr, and streamline zsh and crypto-tool installation.
+#       Initial release.
 #  [Further version history truncated for brevity]
 #  v0.1 2011-09-28
 #       First version.

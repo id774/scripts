@@ -63,7 +63,7 @@
 #  v1.1 2025-04-10
 #       Externalized configuration to munin-symlink.conf and added dynamic server list.
 #  v1.0 2025-04-08
-#       Initial version implementing symlink control for multiple servers.
+#       Initial release.
 #
 ########################################################################
 

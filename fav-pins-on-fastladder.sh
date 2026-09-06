@@ -36,7 +36,7 @@
 #  v1.0 2025-03-16
 #       Added system and command checks, improved database handling.
 #  v0.1 2016-03-30
-#       Initial version.
+#       Initial release.
 #
 ########################################################################
 

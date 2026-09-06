@@ -46,7 +46,7 @@
 #       Cover subdirectory WordPress installs, whose assets are served below the
 #       WP_SITEURL prefix, and align the fixture log with that layout.
 #  v1.0 2026-07-26
-#       Initial test implementation.
+#       Initial release.
 #
 ########################################################################
 

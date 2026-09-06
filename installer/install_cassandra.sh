@@ -46,7 +46,7 @@
 #  v1.0 2025-03-15
 #       Unified structure, added system checks, improved error handling.
 #  v0.1 2013-06-13
-#       First.
+#       Initial release.
 #
 ########################################################################
 

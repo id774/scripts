@@ -42,7 +42,7 @@
 #       Added system, command, and sudo checks. Improved error handling and
 #       permission settings. Ensured idempotent execution.
 #  v0.1 2011-09-07
-#       Initial version.
+#       Initial release.
 #
 ########################################################################
 

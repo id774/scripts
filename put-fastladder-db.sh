@@ -35,7 +35,7 @@
 #       Added system validation, command checks, and database validation.
 #       Improved error handling and argument parsing.
 #  v0.1 2016-04-09
-#       Initial version.
+#       Initial release.
 #
 ########################################################################
 

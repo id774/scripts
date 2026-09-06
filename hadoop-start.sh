@@ -36,7 +36,7 @@
 #       Improved POSIX compatibility by replacing `test -n` with `[ -n ]`.
 #       Added error handling for missing arguments.
 #  v0.1 2012-07-24
-#       First release.
+#       Initial release.
 #
 ########################################################################
 

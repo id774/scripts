@@ -41,8 +41,7 @@
 #  v1.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-13
-#       Improve POSIX compliance and modularity, add progress output and a
-#       Linux/tune2fs availability check, and log errors to stderr.
+#       Initial release.
 #  [Further version history truncated for brevity]
 #  v0.1 2011-09-26
 #       First version.

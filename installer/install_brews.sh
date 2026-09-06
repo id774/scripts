@@ -53,7 +53,7 @@
 #       Initial stable release. Added support for installing essential tools like
 #       OpenSSL, Coreutils, Vim, and MeCab via Homebrew.
 #  v0.1 2016-04-18
-#       First release.
+#       Initial release.
 #
 ########################################################################
 

@@ -36,7 +36,7 @@
 #  v1.0 2025-03-16
 #       Added environment validation, file existence check, and backup handling.
 #  v0.1 2017-01-02
-#       Initial version.
+#       Initial release.
 #
 ########################################################################
 

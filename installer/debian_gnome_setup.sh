@@ -47,7 +47,7 @@
 #  v1.1 2026-02-26
 #       Prompt for confirmation before applying settings.
 #  v1.0 2026-02-14
-#       Initial GNOME Shell version based on debian_gnome_flashback_setup.sh.
+#       Initial release.
 #
 ########################################################################
 

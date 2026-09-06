@@ -28,7 +28,7 @@
 #  v1.1 2025-07-03
 #       Update tests to reflect new rule: symbols are always included if enabled.
 #  v1.0 2025-06-24
-#       Initial test implementation for generate_passwd.
+#       Initial release.
 #
 ########################################################################
 

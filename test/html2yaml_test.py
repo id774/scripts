@@ -35,7 +35,7 @@
 #
 #  Version History:
 #  v1.0 2024-01-11
-#       Initial test script for html2yaml.py
+#       Initial release.
 #
 ########################################################################
 

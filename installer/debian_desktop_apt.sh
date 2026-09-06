@@ -83,7 +83,7 @@
 #  v1.0 2024-03-23
 #       Refactored for improved structure and POSIX compliance.
 #  v0.1 2011-09-28
-#       Forked from Initial Setup Script.
+#       Initial release.
 #
 ########################################################################
 
