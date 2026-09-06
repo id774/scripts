@@ -59,6 +59,8 @@
 #  These should be resolved based on the output of the apt-get command.
 #
 #  Version History:
+#  v2.3 2026-09-06
+#       Check uname before using it for system detection.
 #  v2.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -227,9 +229,10 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
+    check_commands uname
     check_system
     check_desktop_installed
-    check_commands apt-get dpkg-query grep uname ls
+    check_commands apt-get dpkg-query grep ls
     check_sudo
     apt_upgrade
     desktop_environment

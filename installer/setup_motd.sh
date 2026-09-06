@@ -30,6 +30,8 @@
 #  - Commands: sudo, awk, sh, test
 #
 #  Version History:
+#  v1.2 2026-09-06
+#       Check uname before using it for system detection.
 #  v1.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -103,8 +105,9 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
+    check_commands uname
     check_system
-    check_commands awk sh uname
+    check_commands awk sh
     check_sudo
     clear_motd
     return 0

@@ -21,6 +21,7 @@ v2.0.2 (Release Date: TBD)
   instead of starting installation.
 - Make setup_scripts.sh preserve failures from both configured-collection
   and current-directory execute-permission passes.
+- Check uname before system detection in affected installer scripts.
 
 v2.0.1 (2026-08-26)
 -------------------
