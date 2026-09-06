@@ -31,6 +31,9 @@
 #      - To all files under scripts/cron/bin (no extension filter)
 #
 #  Version History:
+#  v2.6 2026-09-06
+#       Preserve failures from both collection and current-directory execute
+#       permission passes without changing either documented target.
 #  v2.5 2026-08-22
 #       Use POSIX find for current-directory script selection.
 #  v2.4 2026-07-11
@@ -115,9 +118,23 @@ set_permissions() {
     RC1=$?
 
     echo "[INFO] Granting execute permissions to script files (*.sh, *.py, *.rb) including current directory."
+
+    # These scans are intentionally separate. SCRIPTS covers the configured
+    # collection tree, while "." covers the invocation directory as a distinct
+    # documented target. Do not remove either scan as redundant.
     find "$SCRIPTS" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+    RC2_SCRIPTS=$?
+
     find . ! -path . -prune -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
-    RC2=$?
+    RC2_CURRENT=$?
+
+    # Preserve both results so a successful later scan cannot mask an earlier
+    # permission failure.
+    if [ "$RC2_SCRIPTS" -eq 0 ] && [ "$RC2_CURRENT" -eq 0 ]; then
+        RC2=0
+    else
+        RC2=1
+    fi
 
     echo "[INFO] Granting execute permissions to installer scripts (*.sh, *.py, *.rb)."
     RC3=0

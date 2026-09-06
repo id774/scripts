@@ -19,6 +19,8 @@ v2.0.2 (Release Date: TBD)
   while keeping lint findings and dry-run change candidates advisory.
 - Make default-install installers show usage for unsupported arguments
   instead of starting installation.
+- Make setup_scripts.sh preserve failures from both configured-collection
+  and current-directory execute-permission passes.
 
 v2.0.1 (2026-08-26)
 -------------------
