@@ -81,6 +81,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -232,7 +234,6 @@ final_message() {
 
 # Perform installation steps
 install() {
-    check_commands uname
     check_system
     check_scripts
     check_commands cp chmod chown touch mkdir tee

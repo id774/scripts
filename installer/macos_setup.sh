@@ -81,6 +81,8 @@ usage() {
 
 # Check if the system is macOS
 check_system() {
+    check_commands uname
+
     if [ "$(uname)" != "Darwin" ]; then
         echo "[ERROR] This script is intended for macOS only." >&2
         exit 1
@@ -204,7 +206,6 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
-    check_commands uname
     check_system
     setup_environment
     check_commands zsh git ln rm chown mkdir
