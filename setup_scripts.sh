@@ -22,15 +22,16 @@
 #  your script collection before running this script.
 #
 #  Notes:
-#  - This script should be run from the root directory of the script collection.
 #  - Make sure to back up your scripts before running this script as a precaution.
 #  - SCRIPTS environment variable must be set to the path of the script collection.
 #  - Execute permissions will be added:
 #      - To all *.sh, *.py, *.rb files under the SCRIPTS path
-#      - To all *.sh, *.py, *.rb files in the current directory
 #      - To all files under scripts/cron/bin (no extension filter)
 #
 #  Version History:
+#  v2.6 2026-09-06
+#       Stop modifying unrelated current-directory scripts and preserve the
+#       SCRIPTS execute-permission operation status.
 #  v2.5 2026-08-22
 #       Use POSIX find for current-directory script selection.
 #  v2.4 2026-07-11
@@ -114,9 +115,8 @@ set_permissions() {
     find "$SCRIPTS" -type f -exec chmod u+rw,g+r,g-w,o+r,o-w {} \;
     RC1=$?
 
-    echo "[INFO] Granting execute permissions to script files (*.sh, *.py, *.rb) including current directory."
+    echo "[INFO] Granting execute permissions to script files (*.sh, *.py, *.rb) under the SCRIPTS path."
     find "$SCRIPTS" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
-    find . ! -path . -prune -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
     RC2=$?
 
     echo "[INFO] Granting execute permissions to installer scripts (*.sh, *.py, *.rb)."
