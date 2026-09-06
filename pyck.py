@@ -28,8 +28,10 @@
 #
 #  Remaining lint findings are advisory diagnostics, not pyck execution
 #  failures. A normally completed pyck run returns status 0 even when
-#  "Manual fix required:" findings remain. Existing non-zero statuses for
-#  actual execution failures are unchanged.
+#  "Manual fix required:" findings remain. When a formatter or linter
+#  process exits with a status other than the success or finding status
+#  expected for that invocation, pyck treats it as an execution failure and
+#  returns status 1, while still processing the remaining stages and files.
 #
 #  pyck uses its own formatter and linter settings and ignores user-level and
 #  project-local configuration files. The same file is therefore checked and
@@ -65,6 +67,13 @@
 #  - Python Version: 3.2 or later
 #  - Dependencies: autopep8, flake8, autoflake, isort
 #
+#  Exit Status:
+#  0. Processing completed; lint findings or dry-run change candidates may remain.
+#  1. A formatter or linter command failed during processing.
+#  9. The Python interpreter is older than the supported minimum version.
+#  126. A required command exists but is not executable.
+#  127. A required command is not found.
+#
 #  pyck uses separate ignore policies for autopep8 and Flake8. autopep8
 #  ignores E302, E402, and E501. Flake8 ignores E302, E402, E501, W503, and
 #  W504. W503 and W504 are mutually exclusive operator line-break
@@ -73,6 +82,9 @@
 #  list and remain enforced.
 #
 #  Version History:
+#  v3.2 2026-09-06
+#       Return failure for formatter or linter execution errors while keeping
+#       lint findings and dry-run change candidates advisory.
 #  v3.1 2026-09-05
 #       Separate autopep8 and Flake8 ignore policies, keeping E302/E402/E501
 #       for autopep8 and additionally ignoring W503/W504 in Flake8.
@@ -198,7 +210,7 @@ def format_imports(file_path, config_path):
     """ Format and organize imports in a Python file using 'isort'. """
     command = "isort --settings-path={} {}".format(
         shlex.quote(config_path), shlex.quote(file_path))
-    subprocess.Popen(command, shell=True).wait()
+    return subprocess.Popen(command, shell=True).wait()
 
 def resolve_target_files(paths):
     """ Resolve the given files/directories into the concrete list of .py files to process. """
@@ -221,53 +233,93 @@ def resolve_target_files(paths):
 def dry_run_formatting(paths, autopep8_ignore_errors, config_path):
     """ Perform a dry run to show which files auto-fix would change, without making actual changes. """
     print("[INFO] DRY RUN: No files will be modified. Use -i to auto-fix.")
+    overall_status = 0
     for file_path in resolve_target_files(paths):
-        run_command(
-            "flake8 --isolated --ignore={} {}".format(
-                FLAKE8_IGNORE_ERRORS, shlex.quote(file_path)),
-            show_files="Lint issue (manual review candidate):")
-        run_command("autoflake --config={} --imports=django,requests,urllib3 --check {}".format(
+        if run_command(
+                "flake8 --isolated --ignore={} {}".format(
+                    FLAKE8_IGNORE_ERRORS, shlex.quote(file_path)),
+                show_files="Lint issue (manual review candidate):",
+                expected_nonzero=(1,)) != 0:
+            overall_status = 1
+        if run_command("autoflake --config={} --imports=django,requests,urllib3 --check {}".format(
                     shlex.quote(config_path), shlex.quote(file_path)),
-                    show_files="Would clean: {}".format(file_path), literal_message=True)
-        run_command("autopep8 --global-config={} --ignore-local-config --ignore={} --diff --exit-code {}".format(
+                    show_files="Would clean: {}".format(file_path), literal_message=True,
+                    expected_nonzero=(1,)) != 0:
+            overall_status = 1
+        if run_command("autopep8 --global-config={} --ignore-local-config --ignore={} --diff --exit-code {}".format(
                     shlex.quote(config_path), autopep8_ignore_errors, shlex.quote(file_path)),
-                    show_files="Would format: {}".format(file_path), literal_message=True)
-        run_command("isort --settings-path={} --check-only {}".format(
+                    show_files="Would format: {}".format(file_path), literal_message=True,
+                    expected_nonzero=(2,)) != 0:
+            overall_status = 1
+        if run_command("isort --settings-path={} --check-only {}".format(
                     shlex.quote(config_path), shlex.quote(file_path)),
-                    show_files="Would sort imports in: {}".format(file_path), literal_message=True)
+                    show_files="Would sort imports in: {}".format(file_path), literal_message=True,
+                    expected_nonzero=(1,)) != 0:
+            overall_status = 1
+    return overall_status
 
 def execute_formatting(paths, autopep8_ignore_errors, config_path):
     """ Execute auto-formatting and report lint issues that remain afterward. """
+    overall_status = 0
     for file_path in resolve_target_files(paths):
-        format_file(file_path, autopep8_ignore_errors, config_path)
-        run_command(
-            "flake8 --isolated --ignore={} {}".format(
-                FLAKE8_IGNORE_ERRORS, shlex.quote(file_path)),
-            show_files="Manual fix required:")
+        if format_file(file_path, autopep8_ignore_errors, config_path) != 0:
+            overall_status = 1
+        if run_command(
+                "flake8 --isolated --ignore={} {}".format(
+                    FLAKE8_IGNORE_ERRORS, shlex.quote(file_path)),
+                show_files="Manual fix required:",
+                expected_nonzero=(1,)) != 0:
+            overall_status = 1
+    return overall_status
 
 def format_file(file_path, autopep8_ignore_errors, config_path):
     """ Format a single Python file by cleaning up imports, and applying 'autopep8' and 'isort'. """
+    overall_status = 0
+
     command = "autoflake --config={} --imports=django,requests,urllib3 -i {}".format(
         shlex.quote(config_path), shlex.quote(file_path))
-    subprocess.Popen(command, shell=True).wait()
+    status = subprocess.Popen(command, shell=True).wait()
+    if status != 0:
+        print("[ERROR] autoflake failed for {} with exit status {}.".format(
+            file_path, status), file=sys.stderr)
+        overall_status = 1
+
     command = "autopep8 --global-config={} --ignore-local-config --ignore={} -v -i {}".format(
         shlex.quote(config_path), autopep8_ignore_errors, shlex.quote(file_path))
-    subprocess.Popen(command, shell=True).wait()
-    format_imports(file_path, config_path)
+    status = subprocess.Popen(command, shell=True).wait()
+    if status != 0:
+        print("[ERROR] autopep8 failed for {} with exit status {}.".format(
+            file_path, status), file=sys.stderr)
+        overall_status = 1
 
-def run_command(command, show_files=None, literal_message=False):
-    """ Execute a shell command and optionally display a message when it reports a non-zero exit status. """
+    status = format_imports(file_path, config_path)
+    if status != 0:
+        print("[ERROR] isort failed for {} with exit status {}.".format(
+            file_path, status), file=sys.stderr)
+        overall_status = 1
+
+    return overall_status
+
+def run_command(command, show_files=None, literal_message=False, expected_nonzero=()):
+    """ Execute a shell command, reporting expected non-zero statuses as findings and any other non-zero status as an execution failure. """
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
     stdout, _ = process.communicate()
     if isinstance(stdout, bytes):
         stdout = stdout.decode('utf-8')
-    if process.returncode != 0 and show_files:
-        if literal_message:
-            print(show_files)
-        else:
-            for line in stdout.split('\n'):
-                if line:
-                    print("{} {}".format(show_files, line))
+    if process.returncode == 0:
+        return 0
+    if process.returncode in expected_nonzero:
+        if show_files:
+            if literal_message:
+                print(show_files)
+            else:
+                for line in stdout.split('\n'):
+                    if line:
+                        print("{} {}".format(show_files, line))
+        return 0
+    print("[ERROR] Command failed with exit status {}: {}".format(
+        process.returncode, command), file=sys.stderr)
+    return 1
 
 def main():
     """ Parse command-line arguments and perform formatting or dry-run based on the input. """
@@ -286,11 +338,11 @@ def main():
     with tempfile.TemporaryDirectory() as temp_dir:
         config_path = create_isolated_config(temp_dir)
         if args.auto_fix:
-            execute_formatting(expanded_paths, AUTOPEP8_IGNORE_ERRORS, config_path)
+            status = execute_formatting(expanded_paths, AUTOPEP8_IGNORE_ERRORS, config_path)
         else:
-            dry_run_formatting(expanded_paths, AUTOPEP8_IGNORE_ERRORS, config_path)
+            status = dry_run_formatting(expanded_paths, AUTOPEP8_IGNORE_ERRORS, config_path)
 
-    return 0
+    return status
 
 
 if __name__ == "__main__":
