@@ -5,7 +5,7 @@
 #
 #  Description:
 #  This script automates the setup for ClamAV scans by:
-#  - Deploying the clamscan.sh script.
+#  - Deploying the clamscan wrapper and clamscan.sh worker.
 #  - Configuring clamscan exclusions.
 #  - Installing /etc/cron.d/clamscan unless it already exists.
 #  - Managing log rotation for ClamAV logs.
@@ -32,8 +32,7 @@
 #
 #  Version History:
 #  v3.2 2026-09-06
-#       Show usage for unsupported arguments instead of starting installation.
-#       Check uname before using it for system detection.
+#       Fix CLI handling, system detection, and ClamAV deployment consistency.
 #  v3.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -131,7 +130,7 @@ create_cron_dirs() {
 # Deploy ClamAV setup files
 install() {
     check_system
-    check_commands cp chmod chown mkdir touch cat tee
+    check_commands cp chmod chown mkdir touch
     check_scripts
     check_sudo
 
@@ -171,15 +170,10 @@ install() {
         echo "[INFO] Skipping cron job installation: /etc/cron.d/clamscan already exists."
     else
         echo "[INFO] Installing cron job to /etc/cron.d/clamscan"
-        cat <<'EOF' | sudo tee /etc/cron.d/clamscan >/dev/null
-# Scheduled execution of clamscan.sh
-# Logs will be sent to the root user via cron MAILTO
-
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-MAILTO=root
-
-01 01 * * 0 root test -x /etc/cron.exec/clamscan && /etc/cron.exec/clamscan
-EOF
+        if ! sudo cp "$SCRIPTS/cron/etc/cron.d/clamscan" /etc/cron.d/clamscan; then
+            echo "[ERROR] Failed to copy cron configuration." >&2
+            exit 1
+        fi
     fi
     sudo chmod 0640 /etc/cron.d/clamscan
     sudo chown root:adm /etc/cron.d/clamscan
@@ -220,6 +214,12 @@ uninstall() {
         sudo rm -v /etc/cron.exec/clamscan.sh
     else
         echo "[INFO] /etc/cron.exec/clamscan.sh not found. Skipping."
+    fi
+
+    if [ -f /etc/cron.exec/clamscan ]; then
+        sudo rm -v /etc/cron.exec/clamscan
+    else
+        echo "[INFO] /etc/cron.exec/clamscan not found. Skipping."
     fi
 
     if [ -f /etc/cron.config/clamscan.conf ]; then
