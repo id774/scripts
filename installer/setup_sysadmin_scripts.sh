@@ -23,16 +23,25 @@
 #      $2 = optional install path (default: /usr/local/sbin)
 #
 #  path as arguments. For example:
-#      ./install_sysadmin_scripts.sh install
-#      ./install_sysadmin_scripts.sh install /usr/local/sbin
-#      ./install_sysadmin_scripts.sh uninstall
+#      ./setup_sysadmin_scripts.sh install
+#      ./setup_sysadmin_scripts.sh install /usr/local/sbin
+#      ./setup_sysadmin_scripts.sh uninstall
 #
 #  Notes:
 #  - Ensure that the 'SCRIPTS' environment variable is set to the path containing
 #    the administration scripts.
 #  - Running the script with 'uninstall' will remove all installed administration scripts.
 #
+#  Exit Status:
+#  0. Success, or usage was displayed.
+#  1. A general setup, install, uninstall, or prerequisite failure occurred.
+#  2. An internal install_scripts call received an invalid argument count.
+#  126. A required command exists but is not executable.
+#  127. A required command is not found.
+#
 #  Version History:
+#  v2.3 2026-09-06
+#       Fix usage examples and send prerequisite errors to standard error.
 #  v2.2 2026-09-03
 #       Add luksmount command to Debian install and uninstall targets.
 #  v2.1 2026-07-11
@@ -96,7 +105,7 @@ usage() {
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
     if ! sudo -v 2>/dev/null; then
-        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access."
+        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
     fi
 }
@@ -118,8 +127,8 @@ check_commands() {
 # Check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
-        echo "[ERROR] SCRIPTS environment variable is not set."
-        echo "Please set the SCRIPTS variable to the path of your system administration scripts."
+        echo "[ERROR] SCRIPTS environment variable is not set." >&2
+        echo "Please set the SCRIPTS variable to the path of your system administration scripts." >&2
         exit 1
     fi
 }
