@@ -35,12 +35,10 @@
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2023-12-14
-#       Refactored namecalc.rb for improved code readability and maintainability,
-#       adapting the structure and style from the Python version while keeping
-#       the original functionality and output intact.
+#       Refactored namecalc.rb for improved code readability and maintainability, adapting the structure
+#       and style from the Python version while keeping the original functionality and output intact.
 #  v1.0 2013-04-12
-#       Initial release. Implemented basic numerology calculation and
-#       graphical representation.
+#       Initial release.
 #
 ########################################################################
 

@@ -77,29 +77,22 @@
 #  v2.0 2025-03-17
 #       Encapsulated all logic into functions and introduced main function.
 #  v1.9 2025-03-14
-#       Redirected error messages to stderr for better logging and debugging.
-#       Refactored for POSIX compliance. Replaced Bash-specific syntax
-#       with POSIX standard commands and structures. Enhanced portability
-#       and compatibility across different UNIX-like systems.
+#       Redirected error messages to stderr for better logging and debugging. Refactored for POSIX compliance. Replaced Bash-specific
+#       syntax with POSIX standard commands and structures. Enhanced portability and compatibility across different UNIX-like systems.
 #  v1.8 2024-08-23
-#       Added validation to ensure that the permissions argument is a 3-digit octal number.
-#       Updated error handling with a new return code (6) for invalid permissions input.
-#       Added a note to restrict permissions argument to a 3-digit octal number.
+#       Added validation to ensure that the permissions argument is a 3-digit octal number. Updated error handling with a new
+#       return code (6) for invalid permissions input. Added a note to restrict permissions argument to a 3-digit octal number.
 #  v1.7 2024-02-24
 #       Added check_commands function to ensure all required system commands
 #       are installed and executable before proceeding with file operations.
 #  v1.6 2024-02-14
-#       Added functionality to set file permissions for GPX files before
-#       copying them to the destination directories. Permissions can be
-#       specified via a command-line argument or through the configuration
-#       file. Improved error handling for missing configuration settings.
+#       Add a file-permission option (CLI or config) applied to GPX files before
+#       copying, and improve missing-config error handling.
 #  v1.5 2024-02-08
 #       Added checks for necessary configuration variables and improved error handling.
 #  v1.4 2023-12-23
-#       Updated to load configuration from an external file.
-#       Refactored for POSIX compliance. Replaced Bash-specific syntax
-#       with POSIX standard commands and structures. Enhanced portability
-#       and compatibility across different UNIX-like systems.
+#       Updated to load configuration from an external file. Refactored for POSIX compliance. Replaced Bash-specific syntax with
+#       POSIX standard commands and structures. Enhanced portability and compatibility across different UNIX-like systems.
 #  v1.3 2023-12-19
 #       Modified copy_files function to return an error if the destination
 #       directory does not exist.

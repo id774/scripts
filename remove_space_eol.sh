@@ -39,7 +39,7 @@
 #  v1.1 2023-12-05
 #       Refactored for better error handling and added comments.
 #  v1.0 2008-08-22
-#       Initial release. Removes trailing whitespace from files.
+#       Initial release.
 #
 ########################################################################
 

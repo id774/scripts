@@ -35,7 +35,7 @@
 #  v1.0 2025-05-10
 #       Refactor into POSIX-compliant, function-based structure with trigger check and mail support.
 #  v0.1 2008-08-22
-#       Initial release. Trigger-based wrapper for rsync_backup.sh.
+#       Initial release.
 #
 ########################################################################
 

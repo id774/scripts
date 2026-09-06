@@ -35,7 +35,7 @@
 #  v1.0 2025-05-10
 #       Refactor into POSIX-compliant, function-based structure with cron check and mail support.
 #  v0.1 2011-06-15
-#       Initial release. Basic wrapper for clamscan.sh with logging and mail.
+#       Initial release.
 #
 ########################################################################
 

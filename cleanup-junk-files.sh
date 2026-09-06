@@ -46,9 +46,8 @@
 #       Updated command existence and execution permission checks
 #       using a common function for enhanced reliability and maintainability.
 #  v1.3 2023-12-23
-#       Refactored for POSIX compliance. Replaced Bash-specific syntax
-#       with POSIX standard commands and structures. Enhanced portability
-#       and compatibility across different UNIX-like systems.
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax with POSIX standard commands
+#       and structures. Enhanced portability and compatibility across different UNIX-like systems.
 #  v1.2 2023-12-20
 #       Added feature to remove __pycache__ directories.
 #  v1.1 2023-12-06

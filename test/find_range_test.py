@@ -68,26 +68,18 @@
 #  v1.5 2024-03-19
 #       Replaced deprecated datetime.utcnow() with datetime.now(timezone.utc) in tests.
 #  v1.4 2024-03-16
-#       Added test cases for local timezone handling.
-#       Added more specific tests for ensuring hidden directories and their files
-#       are properly excluded by default and included when using the '-a' option.
+#       Added test cases for local timezone handling. Added more specific tests for ensuring hidden
+#       directories and their files are properly excluded by default and included when using the '-a' option.
 #  v1.3 2024-03-14
-#       Updated test cases to expect output in ISO 8601 format, indicating UTC dates and times.
-#       Added tests for the '-l' option to ensure correct handling of local timezone.
-#       Updated existing tests to use ISO 8601 format for UTC dates and times.
+#       Updated test cases to expect output in ISO 8601 format, indicating UTC dates and times. Added tests for the '-l' option
+#       to ensure correct handling of local timezone. Updated existing tests to use ISO 8601 format for UTC dates and times.
 #  v1.2 2024-03-09
-#       Updated existing test cases for enhanced coverage and clarity.
-#       Added new test cases to cover various patterns including:
-#       - Specifying end date/time only.
-#       - Combining end date/time with hidden file option.
-#       - Combining start and end date/time with filenames only option.
-#       Renamed script to find_range_test.py to better reflect its functionality
-#       of searching files within a specified datetime range.
+#       Expand test coverage for date/time range combinations, and rename the
+#       file to find_range_test.py to match its actual purpose.
 #  v1.1 2024-03-03
 #       Added test case for '-f' option to ensure filenames are listed correctly.
 #  v1.0 2024-02-25
-#       Initial release of test script. Focused on basic functionality tests including
-#       listing files after a specified date/time and handling hidden directories.
+#       Initial release.
 #
 ########################################################################
 

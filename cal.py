@@ -28,9 +28,8 @@
 #
 #  Version History:
 #  v1.6 2026-09-03
-#       Replaced 'command -v' based lookup with a manual PATH search in
-#       command_exists() and get_command_path(), matching the shell script
-#       helper's PATH lookup and exit semantics.
+#       Replaced 'command -v' based lookup with a manual PATH search in command_exists() and
+#       get_command_path(), matching the shell script helper's PATH lookup and exit semantics.
 #  v1.5 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.4 2025-06-23
@@ -43,8 +42,7 @@
 #  v1.1 2023-11-29
 #       Updated to pass arguments to system's 'cal' command if provided.
 #  v1.0 2023-11-25
-#       Initial release. Functionality to print calendars for the current,
-#       previous, and next month.
+#       Initial release.
 #
 ########################################################################
 

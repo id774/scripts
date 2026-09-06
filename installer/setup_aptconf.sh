@@ -30,9 +30,8 @@
 #  v1.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v1.0 2025-03-15
-#       Added system, command, and script checks.
-#       Improved error handling and user prompts.
-#       Ensured idempotent execution.
+#       Added system, command, and script checks. Improved error handling and
+#       user prompts. Ensured idempotent execution.
 #  v0.1 2008-11-06
 #       Initial version.
 #

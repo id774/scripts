@@ -30,7 +30,7 @@
 #
 #  Version History:
 #  v1.0 2025-02-15
-#       Initial release. Test suite for insta_video_downloader.py script.
+#       Initial release.
 #
 ########################################################################
 

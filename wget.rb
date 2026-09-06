@@ -21,11 +21,8 @@
 #
 #  Version History:
 #  v1.3 2026-07-11
-#       Use $0 instead of $PROGRAM_NAME for the main-script check, matching
-#       the convention used by the other Ruby scripts in this repository.
-#       Also specify UTF-8 encoding when usage() reads the script's own
-#       source, to avoid an Encoding::CompatibilityError under a non-UTF-8
-#       locale.
+#       Use $0 instead of $PROGRAM_NAME for the main-script check, and read
+#       usage() source as UTF-8 to avoid an encoding error.
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2023-12-06

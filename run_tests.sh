@@ -55,20 +55,17 @@
 #       Added functionality to display total number of test scripts
 #       and test cases executed for each language.
 #  v1.4 2024-03-06
-#       Added checks to ensure specified Python and RSpec paths are not only
-#       non-empty but also point to executable files. This enhancement
-#       prevents the execution of tests with invalid paths.
+#       Added checks to ensure specified Python and RSpec paths are not only non-empty but also point
+#       to executable files. This enhancement prevents the execution of tests with invalid paths.
 #  v1.3 2024-01-14
 #       Added the ability to specify custom Python and RSpec paths
 #       as command-line arguments.
 #  v1.2 2023-12-23
-#       Refactored for POSIX compliance. Replaced Bash-specific syntax
-#       with POSIX standard commands and structures. Enhanced portability
-#       and compatibility across different UNIX-like systems.
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax with POSIX standard commands
+#       and structures. Enhanced portability and compatibility across different UNIX-like systems.
 #  v1.1 2023-12-20
-#       Added environment variable to prevent the creation of __pycache__
-#       directories during Python tests.
-#       Replaced 'which' with 'command -v' for command existence check.
+#       Added environment variable to prevent the creation of __pycache__ directories during
+#       Python tests. Replaced 'which' with 'command -v' for command existence check.
 #  v1.0 2023-12-15
 #       First release of the test script.
 #

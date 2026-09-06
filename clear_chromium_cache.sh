@@ -26,10 +26,8 @@
 #
 #  Version History:
 #  v1.7 2026-07-11
-#       Replace the awk {n,} interval expression in usage() with a portable
-#       equivalent, since mawk on some systems matches it incorrectly. Also
-#       recognize --help and --version explicitly before getopts parsing,
-#       instead of relying on getopts to flag them as illegal options.
+#       Replace the non-portable awk {n,} interval in usage() and recognize
+#       --help/--version explicitly before getopts parsing.
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-04-13

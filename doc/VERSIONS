@@ -30,12 +30,8 @@ v2.0.1 (2026-08-26)
 -------------------
 - Large-scale documentation revision, recorded here as an exception.
 - Add .gitattributes, marking the Markdown documents for diff.
-- Expand and clarify doc/POLICY across decision priorities, change
-  discipline for established infrastructure, the Efficiency definition,
-  rule wording strength, control-flow and entry-point exit rules, CLI exit
-  status conventions, documentation roles, portability, compatibility,
-  execution behavior, testing, pull request scope, and version history
-  conventions.
+- Expand and clarify doc/POLICY across decision priorities, change discipline,
+  exit rules, documentation roles, portability, testing, and version history.
 - Remove etc/pathext.txt, an obsolete list of Windows PATHEXT values.
 - Add the version history description guidelines to the end of this file.
 - Prune stale remote-tracking branches when git-all-pull.sh pulls repositories.
@@ -56,9 +52,8 @@ v2.0.1 (2026-08-26)
 - Fix selected Shell Script portability defects without changing existing
   workflows.
 - Modernize Python environment diagnostics.
-- Strengthen Python linting by distinguishing auto-fixable changes from
-  unresolved findings, isolating tool configuration, and cleaning the
-  existing codebase.
+- Strengthen Python linting by distinguishing auto-fixable changes from unresolved
+  findings, isolating tool configuration, and cleaning the existing codebase.
 - Standardize prerequisite command checks across multiple installers.
 
 v2.0 (2026-07-31)
@@ -223,16 +218,14 @@ v1.6.3 (2026-01-30)
   in cron execution.
 - Add blog entry access aggregation and reorganize apache_log_analysis.sh
   reporting into dedicated output functions.
-- Fix apache_log_analysis.sh filtering and parsing to prevent skewed
-  summaries (remove https-only input, safer ignore matching, robust referer
-  extraction).
+- Fix apache_log_analysis.sh filtering and parsing to prevent skewed summaries
+  (remove https-only input, safer ignore matching, robust referer extraction).
 - Fix apache_calculater.py ignore list parsing and combined-log field
   extraction to keep IP hits and cache rates accurate.
 - Document test cases explicitly in all test scripts for consistent header
   documentation.
 - Refine implementation POLICY by centralizing common rules (logging, exit
-  codes, CLI, documentation) and clarifying language-specific
-  responsibilities.
+  codes, CLI, documentation) and clarifying language-specific responsibilities.
 
 v1.6.2 (2025-12-31)
 -------------------
@@ -320,9 +313,8 @@ v1.5.2 (2025-09-11)
   --gnome-flashback and pass the option through to desktop setup.
 - Refine debian_desktop_setup.sh to dispatch to per desktop setup scripts
   based on --xfce or --gnome-flashback.
-- Add install_google_chrome.sh for Debian to add the Google repository and
-  install google-chrome-stable with keyring verification and idempotent
-  behavior.
+- Add install_google_chrome.sh for Debian to add the Google repository and install
+  google-chrome-stable with keyring verification and idempotent behavior.
 - Add confirmation prompt before deploying DoS guard configurations.
 - Add xmap command to run xmodmap internally and integrate into system
   scripts.

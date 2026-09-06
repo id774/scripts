@@ -53,8 +53,7 @@
 #  v1.1 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
 #  v1.0 2025-01-17
-#       Initial release. Ensures secure ownership and permissions for
-#       Zsh-related directories used by Homebrew.
+#       Initial release.
 #
 ########################################################################
 

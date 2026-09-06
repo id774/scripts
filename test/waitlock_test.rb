@@ -28,7 +28,7 @@
 #
 #  Version History:
 #  v1.0 2025-06-24
-#      Initial release. Covers argument validation and lock-waiting logic.
+#      Initial release.
 #
 ########################################################################
 

@@ -22,9 +22,8 @@
 #
 #  Version History:
 #  v1.3 2026-07-12
-#       Use sys.executable instead of a hardcoded 'python' when launching
-#       png_info.py as a subprocess, for portability to systems without a
-#       'python' executable on PATH.
+#       Use sys.executable instead of a hardcoded 'python' when launching png_info.py as
+#       a subprocess, for portability to systems without a 'python' executable on PATH.
 #  v1.2 2026-07-11
 #       Add tests covering multi-file processing and partial-failure exit status.
 #  v1.1 2024-01-30

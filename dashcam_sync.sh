@@ -57,13 +57,10 @@
 #       Enhanced documentation, added configuration variable checks, and
 #       improved error handling and script structure.
 #  v1.1 2023-12-23
-#       Updated to load source and destination directories from an external
-#       configuration file located in 'etc' or '../etc'.
-#       Added file existence check in move_files function to prevent errors
-#       when no files are available to move.
+#       Updated to load source and destination directories from an external configuration file located in 'etc' or
+#       '../etc'. Added file existence check in move_files function to prevent errors when no files are available to move.
 #  v1.0 2023-12-05
-#       Initial release. Adds directory checks, error handling, and
-#       improves script reusability.
+#       Initial release.
 #
 ########################################################################
 

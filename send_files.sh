@@ -71,24 +71,16 @@
 #       Show generated password after archive creation.
 #       Display download URL when storing archive locally using DOWNLOAD_BASE_URL.
 #  v1.3 2025-05-09
-#       Add support for -z|--7z option to create 7z archive instead of ZIP.
-#       Uses AES-256 encryption and full-directory protection via 7z.
-#       Maintains full backward compatibility with default ZIP behavior.
-#       Added safety confirmation when both -s and -z options are specified.
-#       Prevents accidental Gmail rejection of .7z attachments unless explicitly approved.
-#       Add -d|--dir option to override SOURCE_DIR at runtime.
-#       Enables flexible archive input without modifying config file.
-#       Ensures option validation and proper integration with existing modes.
+#       Add -z/--7z to create AES-256 encrypted 7z archives (with a safety
+#       confirmation) and -d/--dir to override SOURCE_DIR at runtime.
 #  v1.2 2025-05-08
-#       Add support for ARCHIVE_OUTPUT_DIR from external config.
-#       Introduced -s|--send option to enable legacy email behavior.
-#       Default behavior is now to save the archive to a configured directory.
+#       Add support for ARCHIVE_OUTPUT_DIR from external config. Introduced -s|--send option to enable
+#       legacy email behavior. Default behavior is now to save the archive to a configured directory.
 #  v1.1 2025-05-07
 #       Add ARCHIVE_FILE_NAME support to load archive filename base from external config.
 #       This allows custom naming of output ZIP files using timestamp suffix.
 #  v1.0 2025-05-05
-#       Initial release. Implemented archive, password generation,
-#       and email delivery using external configuration.
+#       Initial release.
 #
 ########################################################################
 

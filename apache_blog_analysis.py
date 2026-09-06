@@ -99,18 +99,10 @@
 #
 #  Version History:
 #  v1.1 2026-07-31
-#       Recognize WordPress assets served from a subdirectory install.
-#       The asset path patterns were anchored at the document root, so a
-#       site with WP_SITEURL under a prefix (for example /entry) never
-#       matched any asset and [Blog Entry Access (Asset Confirmed)] was
-#       always empty, even though article paths were already matched with
-#       an arbitrary leading path.
+#       Recognize WordPress assets served from a WP_SITEURL subdirectory prefix,
+#       which the anchored asset patterns previously never matched.
 #  v1.0 2026-07-26
-#       Initial release. A standalone companion to apache_log_analysis.sh
-#       (deployed and invoked independently, not called by it) that
-#       correlates article requests with WordPress asset requests by IP,
-#       User-Agent, Referer and timestamp to report candidate page views,
-#       asset-confirmed page views, and estimated sessions.
+#       Initial release.
 #
 ########################################################################
 

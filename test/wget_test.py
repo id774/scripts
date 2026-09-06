@@ -28,7 +28,7 @@
 #
 #  Version History:
 #  v1.0 2025-01-10
-#       Initial release. Test suite for wget.py script.
+#       Initial release.
 #
 ########################################################################
 

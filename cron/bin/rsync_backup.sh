@@ -152,9 +152,8 @@
 #                     with POSIX standard commands and structures. Enhanced portability
 #                     and compatibility across different UNIX-like systems.
 #  v2.1  2023-12-17 - Refactored script to separate logic and operations.
-#                     Operations are now defined in an external file
-#                     'etc/rsync_backup.conf' for enhanced modularity and maintainability.
-#                     Integrated github-arc.sh and cleanup-junk-files.sh scripts.
+#                     Operations are now defined in an external file 'etc/rsync_backup.conf' for enhanced
+#                     modularity and maintainability. Integrated github-arc.sh and cleanup-junk-files.sh scripts.
 #  v2.0  2023-07-04 - Major version upgrade with no functional changes.
 #  v1.27 2023-07-02 - Convert script to POSIX-compatible syntax. Show return
 #                     code 1 if required directory does not exist.

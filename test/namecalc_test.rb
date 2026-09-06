@@ -31,7 +31,7 @@
 #
 #  Version History:
 #  v1.0 2023-12-13
-#      Initial release. Test suite for namecalc.rb script.
+#      Initial release.
 #
 ########################################################################
 

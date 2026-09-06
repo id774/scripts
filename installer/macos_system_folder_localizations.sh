@@ -29,9 +29,8 @@
 #  v1.4 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.3 2025-04-28
-#       Add strict error checking for folder localization file operations.
-#       Allow -h/--help usage on non-macOS environments by checking arguments
-#       before invoking macOS-specific checks.
+#       Add strict error checking for folder localization file operations. Allow -h/--help usage
+#       on non-macOS environments by checking arguments before invoking macOS-specific checks.
 #  v1.2 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.1 2025-03-22

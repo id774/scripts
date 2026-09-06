@@ -46,7 +46,7 @@
 #       Added environment check for Debian-based systems.
 #       Refactored for improved readability and added usage information.
 #  v1.0 2008-08-22
-#       Initial release. Imports GPG keys for APT from a keyserver.
+#       Initial release.
 #
 ########################################################################
 

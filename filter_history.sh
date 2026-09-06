@@ -43,15 +43,14 @@
 #  v1.4 2025-04-13
 #       Unify log level formatting using [INFO], [WARN], and [ERROR] tags.
 #  v1.3 2025-03-22
-#       Unify usage information by extracting help text from header comments.
-#       Removed set -e and added explicit error handling.
-#       Refactored main logic into separate functions.
+#       Unify usage information by extracting help text from header comments. Removed set -e
+#       and added explicit error handling. Refactored main logic into separate functions.
 #  v1.2 2025-03-16
 #       Encapsulated all logic in functions and introduced main function.
 #  v1.1 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.0 2025-02-25
-#       Initial release with backup creation and error handling.
+#       Initial release.
 #
 ########################################################################
 

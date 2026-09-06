@@ -62,9 +62,8 @@
 #       Redirected error messages to stderr for better logging and debugging.
 #       Refactored for POSIX compliance by removing non-standard syntax.
 #  v1.5 2024-08-26
-#       Added validation to ensure that the permissions argument is a 3-digit octal number.
-#       Updated error handling with a new return code (6) for invalid permissions input.
-#       Added a note to restrict permissions argument to a 3-digit octal number.
+#       Added validation to ensure that the permissions argument is a 3-digit octal number. Updated error handling with a new
+#       return code (6) for invalid permissions input. Added a note to restrict permissions argument to a 3-digit octal number.
 #  v1.4 2024-05-17
 #       Modified to skip files that cannot be copied due to read errors,
 #       report them at the end, and exit with a non-zero status if there were any errors.
@@ -75,15 +74,10 @@
 #       Updated to use a default permissions setting from the configuration file.
 #       Users can still override this setting via command-line argument.
 #  v1.1 2024-01-30
-#       Fixed an issue where the loop processing file lists did not function correctly
-#       due to subshell execution in the 'find ... | while read' pipeline.
-#       This caused variables set within the loop to not be accessible outside of it.
-#       Introduced a flag file method to accurately detect successful file copy operations.
-#       This change was made to overcome the limitation of variable scope within subshell execution,
-#       ensuring that the script accurately reflects the outcome of file synchronization processes.
+#       Fix subshell variable scope breaking find | while read loops; detect
+#       successful copies with a flag file instead.
 #  v1.0 2024-01-29
-#       Initial release. Supports synchronization of specified file types from
-#       multiple source directories to a local destination directory, only if they exist.
+#       Initial release.
 #
 ########################################################################
 

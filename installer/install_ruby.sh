@@ -56,9 +56,8 @@
 #  v3.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v3.0 2025-03-19
-#       Added network connection check, system validation, command validation, and improved argument handling.
-#       Improved directory navigation safety.
-#       Set default installation path to /opt/ruby/x.x.
+#       Added network connection check, system validation, command validation, and improved argument
+#       handling. Improved directory navigation safety. Set default installation path to /opt/ruby/x.x.
 #  [Further version history truncated for brevity]
 #  v1.0 2008-06-23
 #       First stable release.

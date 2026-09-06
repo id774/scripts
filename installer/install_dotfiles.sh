@@ -62,9 +62,8 @@
 #  v2.1 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
 #  v2.0 2025-03-04
-#       Improved POSIX compliance by quoting variables and using safer constructs.
-#       Ensured robust directory creation and permission handling.
-#       Streamlined deployment logic for better maintainability.
+#       Improved POSIX compliance by quoting variables and using safer constructs. Ensured robust directory
+#       creation and permission handling. Streamlined deployment logic for better maintainability.
 #  [Further version history truncated for brevity]
 #  v1.0 2010-03-02
 #       Initial release.

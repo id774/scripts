@@ -85,10 +85,8 @@
 #       Improved the "Running:" message to display the full absolute path
 #       of the target subdirectory for better clarity.
 #  v2.0 2024-10-23
-#       Improved removal of trailing slashes and backslashes for
-#       the --account option in insta_update.sh.
-#       Added 'sed' to the list of required commands in the check_commands function
-#       to ensure the script checks for its availability before execution.
+#       Improved removal of trailing slashes and backslashes for the --account option in insta_update.sh. Added 'sed' to the list
+#       of required commands in the check_commands function to ensure the script checks for its availability before execution.
 #  v1.9 2024-08-19
 #       Fixed issue where --account option was not working when include_accounts.txt was present.
 #       Added logic to prioritize --account option when specified.

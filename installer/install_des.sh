@@ -40,12 +40,8 @@
 #  v2.1 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v2.0 2025-03-06
-#       Updated to be POSIX compliant.
-#       Replaced non-POSIX `which` with `command -v`.
-#       Added error handling for directory changes.
-#       Integrated command existence and sudo privilege checks.
-#       Replaced `md5.sh` with POSIX-compliant `md5sum`.
-#       Improved logging with `echo` for status updates.
+#       Make POSIX compliant: replace which with command -v, add sudo and
+#       command checks, and replace md5.sh with POSIX md5sum.
 #  [Intermediate versions omitted for brevity]
 #  v1.0 2009-05-21
 #       Derived from install_crypt.sh.

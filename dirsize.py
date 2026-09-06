@@ -44,8 +44,7 @@
 #  v1.1 2024-08-07
 #       Added -h option to display help. Modified script to show help when no directory is specified.
 #  v1.0 2023-12-19
-#       Initial release. Displays directory contents and calculates total size
-#       using binary prefixes.
+#       Initial release.
 #
 ########################################################################
 

@@ -45,8 +45,7 @@
 #  v1.1 2023-12-07
 #       Added check for Git installation.
 #  v1.0 2016-01-26
-#       Initial release. Implements functionality to checkout a remote branch in Git,
-#       creating a corresponding local branch that tracks it.
+#       Initial release.
 #
 ########################################################################
 

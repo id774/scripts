@@ -70,9 +70,8 @@
 #  v1.1 2024-12-09
 #       Added support for apt-upgrade script in installation and uninstallation processes.
 #  v1.0 2023-12-23
-#       Refactored for POSIX compliance. Replaced Bash-specific syntax
-#       with POSIX standard commands and structures. Enhanced portability
-#       and compatibility across different UNIX-like systems.
+#       Refactored for POSIX compliance. Replaced Bash-specific syntax with POSIX standard commands
+#       and structures. Enhanced portability and compatibility across different UNIX-like systems.
 #  v0.8 2023-11-14
 #       Add veramount.
 #  v0.7 2023-06-23

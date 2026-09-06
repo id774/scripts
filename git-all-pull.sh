@@ -48,14 +48,11 @@
 #       Fix symlink creation logic, directory scan condition, and show help for unknown options.
 #       Improves robustness without changing functional behavior.
 #  v2.0 2025-09-06
-#       Add --www-only option to pull /var/www/wordpress and /var/www/html/current when present.
-#       Ensure --all also runs www-only processing. Existing options like --dry-run and --hard apply.
-#       Add --reset option as an alias of --hard.
-#       Add write permission check for repositories and skip.
+#       Add --www-only (also run under --all) and --reset as an alias of --hard,
+#       plus a repository write-permission check that skips on failure.
 #  v1.7 2025-08-03
-#       Add directory existence check before processing git directories.
-#       Improve symlink handling by checking for conflicting existing files.
-#       Remove redundant argument parsing from main().
+#       Add directory existence check before processing git directories. Improve symlink handling
+#       by checking for conflicting existing files. Remove redundant argument parsing from main().
 #  v1.6 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.5 2025-04-13

@@ -45,9 +45,8 @@
 #
 #  Version History:
 #  v3.7 2026-09-05
-#       Also detect the import forms of pathlib, asyncio, subprocess.run,
-#       subprocess.DEVNULL, and shutil.which; drop the stale "extended
-#       unpacking" claim from the Description.
+#       Also detect the import forms of pathlib, asyncio, subprocess.run, subprocess.DEVNULL,
+#       and shutil.which; drop the stale "extended unpacking" claim from the Description.
 #  v3.6 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v3.5 2025-06-23
@@ -57,16 +56,13 @@
 #  v3.3 2024-08-07
 #       Added -h option to display help. Modified script to show help when no directory is specified.
 #  v3.2 2024-03-12
-#       Modified the detection pattern for the matrix multiplication operator
-#       to require spaces around it.
-#       Updated the script to exit with a return code of 1 if compatibility issues
-#       are detected in scripts other than dummy.py.
+#       Modified the detection pattern for the matrix multiplication operator to require spaces around it. Updated the
+#       script to exit with a return code of 1 if compatibility issues are detected in scripts other than dummy.py.
 #  v3.1 2024-02-27
 #       Enhanced issue tracking to differentiate between issues found in dummy.py and other scripts.
 #  v3.0 2024-02-11
-#       Fixed an issue where valid search results were not being displayed.
-#       The script and its associated test file are now excluded from search results.
-#       Updated comments to English for better clarity.
+#       Fixed an issue where valid search results were not being displayed. The script and its associated
+#       test file are now excluded from search results. Updated comments to English for better clarity.
 #  v2.3 2024-01-31
 #       Renamed script from 'check_py_compat.py' to 'find_pycompat.py'
 #       to improve clarity and ease of use.
@@ -80,16 +76,14 @@
 #  v1.4 2024-01-20
 #       Improved f-strings detection regular expression to accurately identify common patterns.
 #  v1.3 2024-01-14
-#       Added search for Python 3.x features like type hints, nonlocal statements,
-#       matrix multiplication operators, asyncio library, yield from, extended unpacking,
-#       pathlib module, and subprocess.run usage.
-#       Added check for the existence of 'grep' command before execution.
+#       Add detection of type hints, nonlocal, matrix multiplication, asyncio,
+#       yield from, pathlib and subprocess.run; check grep exists first.
 #  v1.2 2023-12-23
 #       Added search for async/await keyword usage and subprocess.DEVNULL usage.
 #  v1.1 2023-12-17
 #       Enhanced script to support POSIX compliance and cross-system compatibility.
 #  v1.0 2023-12-08
-#       Initial release. Search for f-strings in Python files.
+#       Initial release.
 #
 ########################################################################
 

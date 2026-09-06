@@ -58,7 +58,7 @@
 #  v1.1 2025-03-19
 #       Improved POSIX compliance, standardized redirections, and enhanced readability.
 #  v1.0 2024-12-09
-#       Initial release with logging, permission adjustments, and email reporting.
+#       Initial release.
 #
 ########################################################################
 

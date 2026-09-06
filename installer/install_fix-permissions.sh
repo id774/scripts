@@ -66,7 +66,7 @@
 #  v1.1 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
 #  v1.0 2024-12-09
-#       Initial release with support for logging setup, log rotation, and cron job installation.
+#       Initial release.
 #
 ########################################################################
 

@@ -56,9 +56,8 @@
 #  v2.1 2025-03-22
 #       Unify usage information by extracting help text from header comments.
 #  v2.0 2025-03-19
-#       Added network connection check, system validation, command validation, and improved argument handling.
-#       Improved directory navigation safety.
-#       Set default installation path to /opt/python/x.x.
+#       Added network connection check, system validation, command validation, and improved argument
+#       handling. Improved directory navigation safety. Set default installation path to /opt/python/x.x.
 #  [Further version history truncated for brevity]
 #  v1.0 2009-01-07
 #       First stable release.

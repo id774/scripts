@@ -38,9 +38,8 @@
 #  v2.6 2025-04-14
 #       Unify error and info message formatting with stderr and prefix tags.
 #  v2.5 2024-11-03
-#       Added --sleep command-line argument to allow customizable sleep time between downloads.
-#       Set default sleep time to 10 seconds to reduce request rate.
-#       Updated remaining time calculation to include sleep time.
+#       Added --sleep command-line argument to allow customizable sleep time between downloads. Set default sleep
+#       time to 10 seconds to reduce request rate. Updated remaining time calculation to include sleep time.
 #  v2.4 2024-05-29
 #       Added error handling for HTTP 401 Unauthorized and other HTTP errors.
 #  v2.3 2024-02-18
@@ -49,9 +48,8 @@
 #       Added functionality to set custom file permissions for downloaded photos
 #       using the --permissions command-line argument.
 #  v2.1 2024-02-15
-#       Added chronological download feature with support for pinned posts.
-#       Adjusted the download strategy to include post IDs in filenames,
-#       supporting incremental updates.
+#       Added chronological download feature with support for pinned posts. Adjusted the
+#       download strategy to include post IDs in filenames, supporting incremental updates.
 #  v2.0 2024-02-10
 #       Renamed script to insta_downloader.py for expanded functionality.
 #       Comprehensive refactoring for improved testability and maintainability.

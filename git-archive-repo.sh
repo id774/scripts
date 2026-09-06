@@ -44,9 +44,8 @@
 #
 #  Version History:
 #  v1.2 2026-07-12
-#       Require the configuration file and all its variables, and stop
-#       creating missing source or archive directories, treating them as
-#       errors instead.
+#       Require the configuration file and all its variables, and stop creating
+#       missing source or archive directories, treating them as errors instead.
 #  v1.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.

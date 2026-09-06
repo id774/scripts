@@ -38,23 +38,19 @@
 #
 #  Version History:
 #  v1.5 2026-07-11
-#       Use $0 instead of $PROGRAM_NAME for the main-script check, matching
-#       the convention used by the other Ruby scripts in this repository.
-#       Also specify UTF-8 encoding when usage() reads the script's own
-#       source, to avoid an Encoding::CompatibilityError under a non-UTF-8
-#       locale.
+#       Use $0 instead of $PROGRAM_NAME for the main-script check, and read
+#       usage() source as UTF-8 to avoid an encoding error.
 #  v1.4 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.2 2023-11-29
-#       Refactored the script for improved readability and maintainability.
-#       Removed unnecessary class structure and streamlined command-line argument processing.
-#       Added clear usage instructions and feedback messages.
+#       Refactored the script for improved readability and maintainability. Removed unnecessary class structure
+#       and streamlined command-line argument processing. Added clear usage instructions and feedback messages.
 #  v1.1 2014-08-14
 #       Minor formatting and style revisions.
 #  v1.0 2010-12-01
-#       Initial release. Basic functionality for file locking with check intervals.
+#       Initial release.
 #
 ########################################################################
 

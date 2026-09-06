@@ -91,12 +91,10 @@
 #
 #  Version History:
 #  v1.1 2026-09-03
-#       Replaced 'command -v' based lookup with a manual PATH search in
-#       command_exists(), matching the shell script helper's PATH lookup and
-#       exit semantics. A WP_BIN containing a path separator is checked
-#       directly instead of being searched on PATH.
+#       Replaced 'command -v' based lookup with a manual PATH search in command_exists(), matching the shell script helper's PATH
+#       lookup and exit semantics. A WP_BIN containing a path separator is checked directly instead of being searched on PATH.
 #  v1.0 2026-01-29
-#       Initial release. Event-driven cache operations with W3TC support.
+#       Initial release.
 #
 ########################################################################
 

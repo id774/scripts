@@ -23,10 +23,8 @@
 #
 #  Version History:
 #  v1.9 2026-07-11
-#       Replace the awk {n,} interval expression in usage() with a portable
-#       equivalent, since mawk on some systems matches it incorrectly. Also
-#       recognize --help and --version explicitly before getopts parsing,
-#       instead of relying on getopts to flag them as illegal options.
+#       Replace the non-portable awk {n,} interval in usage() and recognize
+#       --help/--version explicitly before getopts parsing.
 #  v1.8 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.7 2025-04-13
@@ -40,9 +38,8 @@
 #  v1.3 2025-03-05
 #       Added sudo privilege check when --sudo option is specified.
 #  v1.2 2024-08-11
-#       Added checks for required directories and write permissions.
-#       Added input validation to ensure directory is provided as an argument.
-#       Display help message if no arguments are provided.
+#       Added checks for required directories and write permissions. Added input validation to ensure
+#       directory is provided as an argument. Display help message if no arguments are provided.
 #  v1.1 2023-12-06
 #       Added check for Munin installation.
 #  v1.0 2019-08-16

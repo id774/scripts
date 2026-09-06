@@ -31,7 +31,7 @@
 #  v1.1 2025-01-06
 #       Added test case for the --ordered option to verify sorted output.
 #  v1.0 2024-01-12
-#       Initial release. Test suite for pyping.py script.
+#       Initial release.
 #
 ########################################################################
 

@@ -37,7 +37,7 @@
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
 #  v1.0 2025-08-05
-#       Initial release. Add missing aliases for interactive users and run newaliases.
+#       Initial release.
 #
 ########################################################################
 

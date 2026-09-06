@@ -82,15 +82,12 @@
 #       Modified the output format to ISO 8601, indicating UTC dates and times.
 #       Added '-l' option to use local timezone for input and output times.
 #  v1.2 2024-03-08
-#       Added '-s' and '-e' options for specifying start and end datetime in UTC.
-#       Maintained '-d' option for backward compatibility.
-#       Renamed script to find_range.py to better reflect its functionality
-#       of searching files within a specified datetime range in UTC.
+#       Added '-s' and '-e' options for specifying start and end datetime in UTC. Maintained '-d' option for backward compatibility.
+#       Renamed script to find_range.py to better reflect its functionality of searching files within a specified datetime range in UTC.
 #  v1.1 2024-03-03
 #       Added '-f' option to list filenames only.
 #  v1.0 2024-02-25
-#       Initial release. Added functionality to list files based on modification date,
-#       displaying their modification time in UTC, and ignoring hidden directories by default.
+#       Initial release.
 #
 ########################################################################
 

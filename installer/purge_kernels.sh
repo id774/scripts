@@ -43,9 +43,8 @@
 #       Added system and command check functions for improved security.
 #       Structured script into functions for better modularity and error handling.
 #  v1.2 2025-02-04
-#       Switched from aptitude to apt for broader compatibility.
-#       Improved kernel identification using dpkg --list.
-#       Added a check to ensure old kernels exist before attempting removal.
+#       Switched from aptitude to apt for broader compatibility. Improved kernel identification
+#       using dpkg --list. Added a check to ensure old kernels exist before attempting removal.
 #  v1.1 2023-12-06
 #       Refactored for improved readability, naming, and system checking.
 #  v1.0 2013-11-29

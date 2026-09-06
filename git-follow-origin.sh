@@ -48,8 +48,7 @@
 #  v1.1 2023-12-07
 #       Added check for Git installation.
 #  v1.0 2013-02-05
-#       Initial release. Implements functionality to merge a specified
-#       GitHub repository's changes into the local master branch.
+#       Initial release.
 #
 ########################################################################
 

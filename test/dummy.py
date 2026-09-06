@@ -29,7 +29,7 @@
 #
 #  Version History:
 #  v1.0 2024-02-26
-#       Initial release. Incorporates various Python 3.x features for compatibility testing.
+#       Initial release.
 #
 ########################################################################
 

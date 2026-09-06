@@ -54,7 +54,7 @@
 #  v1.1 2023-12-20
 #       Refactored script for readability and added documentation.
 #  v1.0 2014-08-16
-#       Initial release for automating IPython setup.
+#       Initial release.
 #
 ########################################################################
 

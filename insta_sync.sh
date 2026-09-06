@@ -66,24 +66,20 @@
 #  v1.6 2025-03-13
 #       Redirected error messages to stderr for better logging and debugging.
 #  v1.5 2024-10-23
-#       Fixed issue with removing trailing backslash from the Instagram account name argument.
-#       Added 'sed' to the list of required commands in the check_commands function
-#       to ensure the script checks for its availability before execution.
+#       Fixed issue with removing trailing backslash from the Instagram account name argument. Added 'sed' to the list of
+#       required commands in the check_commands function to ensure the script checks for its availability before execution.
 #  v1.4 2024-06-18
 #       Added --help and -h options to display help message.
 #  v1.3 2024-05-05
 #       Modified to remove trailing backslash from the Instagram account name argument.
 #  v1.2 2024-03-07
-#       Added configuration options for customizable file and directory
-#       permissions in 'insta_sync.conf'. Updated script to apply these
-#       permissions to Instagram account data directories and files.
+#       Added configuration options for customizable file and directory permissions in 'insta_sync.conf'.
+#       Updated script to apply these permissions to Instagram account data directories and files.
 #  v1.1 2024-02-23
 #       Added check_commands function to verify the presence and executability
 #       of required system commands before proceeding with the main script.
 #  v1.0 2024-02-08
-#       Initial release. Added support for per-account directory handling,
-#       local and conditional remote synchronization. Added checks for necessary
-#       configuration variables.
+#       Initial release.
 #
 ########################################################################
 

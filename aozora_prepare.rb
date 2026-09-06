@@ -21,12 +21,8 @@
 #
 #  Version History:
 #  v1.4 2026-07-11
-#       Specify UTF-8 encoding explicitly when opening the output file, matching
-#       the explicit encoding already used for the input file. Also specify it
-#       when usage() reads the script's own source, to avoid an
-#       Encoding::CompatibilityError under a non-UTF-8 locale. Wrap the entry
-#       point in a main() function terminated by exit(main), matching the
-#       structure used by every other Ruby script in this repository.
+#       Specify UTF-8 encoding for the output file and for usage()'s own source,
+#       and wrap the entry point in main() terminated by exit(main).
 #  v1.3 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.2 2025-06-23

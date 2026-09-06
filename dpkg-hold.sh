@@ -68,7 +68,7 @@
 #  v1.1 2011-03-25
 #       Modified to operate without requiring sudo privileges.
 #  v1.0 2008-08-22
-#       Initial release. Provides basic dpkg package management functionality.
+#       Initial release.
 #
 ########################################################################
 

@@ -84,10 +84,8 @@
 #       Cover separate autopep8 and Flake8 ignore policies, verifying that
 #       W503/W504 are ignored only by Flake8 while autopep8 remains unchanged.
 #  v1.4 2026-08-22
-#       Cover auto-fix change detection, lint candidate reporting, and
-#       unresolved lint diagnostics after auto-fix.
-#       Remove duplicate check_command tests so strict error-message assertions run,
-#       and cover isolated formatter and linter configuration.
+#       Cover auto-fix change detection, lint candidate reporting, and unresolved lint diagnostics after auto-fix. Remove duplicate
+#       check_command tests so strict error-message assertions run, and cover isolated formatter and linter configuration.
 #  v1.3 2026-07-15
 #       Add test cases verifying that paths with spaces are quoted
 #       before being passed to format_file and dry_run_formatting.
