@@ -30,6 +30,7 @@
 #  - Creating log.expected trusts the current log.today as baseline. Review
 #    the first run output before accepting it as expected in security critical
 #    environments.
+#  - Log files are preserved when --uninstall is used.
 #
 #  Version History:
 #  v2.3 2026-09-06

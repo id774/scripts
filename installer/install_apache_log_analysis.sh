@@ -24,6 +24,9 @@
 #  - The `$SCRIPTS` environment variable must be set.
 #  - SSL Apache logs (ssl_*) must exist under /var/log/apache2.
 #
+#  Notes:
+#  - Log files are preserved when --uninstall is used.
+#
 #  Version History:
 #  v2.4 2026-09-06
 #       Show usage for unsupported arguments instead of starting installation.
