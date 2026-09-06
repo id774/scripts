@@ -689,14 +689,16 @@ First Commit (2008-08-22)
 
 Version History Guidelines
 ==========================
-- Write one coherent change per physical line, as a rule.
-- Keep entries near 100 columns where practical. Necessary file names,
-  command names, option names, and configuration names may extend an entry
-  to approximately 120 columns.
+- Write one coherent change per bullet, at most two physical lines.
+- A single line at or under 80 columns is preferred whenever practical.
+  Necessary file names, command names, option names, and configuration
+  names may pass 80 columns on the bullet's one or two lines when they
+  cannot be shortened without losing meaning.
 - When a version history already exists, balance a new entry against the
   length of the existing lines, so that the whole file stays consistent.
-  Holding to the form this file has settled on comes before the one physical
-  line above, and leaves that rule standing wherever no such form exists.
+  Holding to the form this file has settled on comes before the two-line,
+  80-column limit above, and leaves that limit standing wherever no such
+  form exists.
 - When an entry becomes substantially longer, omit or abstract implementation
   details, examples, reasons, and secondary effects where possible.
 - Preserve the changed target, externally observable behavior, compatibility
