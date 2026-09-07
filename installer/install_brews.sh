@@ -20,11 +20,13 @@
 #     ./install_brews.sh
 #
 #  Requirements:
-#  - Homebrew must be installed prior to executing this script.
+#  - macOS with Homebrew installed and available in PATH.
 #
 #  Exit Status:
-#  0: Success - All packages were installed successfully.
-#  1: Error - Homebrew is not installed or a critical issue occurred.
+#  0: Success - The batch workflow completed.
+#  1: Error - macOS or Homebrew prerequisite validation failed.
+#  126: Error - A required command exists but is not executable.
+#  127: Error - A required command is not found.
 #
 #  Notes:
 #  - This script ensures the use of GNU Coreutils on macOS for consistent
@@ -34,6 +36,8 @@
 #  - `trash` is installed for safer file deletions, replacing `rm`.
 #
 #  Version History:
+#  v1.8 2026-09-07
+#       Check uname before system detection and clarify batch completion.
 #  v1.7 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -69,6 +73,8 @@ usage() {
 
 # Check if the system is macOS
 check_system() {
+    check_commands uname
+
     if [ "$(uname)" != "Darwin" ]; then
         echo "[ERROR] This script is intended for macOS only." >&2
         exit 1
@@ -104,7 +110,6 @@ main() {
     esac
 
     check_system
-    check_commands uname
     check_homebrew
 
     # Check Homebrew environment

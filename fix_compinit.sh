@@ -7,14 +7,15 @@
 #  This script is designed to address the "compinit: insecure directories"
 #  warning that may occur when initializing Zsh completions. It adjusts
 #  the ownership and permissions of Zsh-related directories used by Homebrew
-#  to meet the security requirements of `compinit`. Specifically, the script
-#  changes the ownership of the following directories to `root:wheel`:
-#  - /usr/local/Homebrew/completions/zsh/
-#  - /usr/local/share/zsh/
-#  Additionally, it modifies the permissions of these directories to
-#  prevent insecure write access, which can cause warnings during Zsh
-#  initialization. The script is designed to run exclusively on macOS
-#  (Darwin) and will exit with an error code on other operating systems.
+#  to meet the security requirements of `compinit`. The target directories
+#  are resolved from the running Homebrew installation:
+#  - `completions/zsh` under the Homebrew repository (`brew --repository`)
+#  - `share/zsh` under the Homebrew prefix (`brew --prefix`)
+#  Only existing targets are processed. Each is changed to `root:wheel`
+#  ownership and recursive 0755 permissions to prevent insecure write
+#  access, which can cause warnings during Zsh initialization. The script
+#  is designed to run exclusively on macOS (Darwin) and will exit with an
+#  error code on other operating systems.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -24,15 +25,29 @@
 #  Usage:
 #      ./fix_compinit.sh
 #
+#  Requirements:
+#  - macOS with Homebrew installed and available in PATH.
+#  - The invoking user must have sudo privileges.
+#
 #  Notes:
-#  - This script requires root privileges to execute. Run it with `sudo`.
+#  - Invoke it as the Homebrew user; the script uses sudo only for required
+#    ownership and permission changes.
 #  - This script is specifically tailored for macOS and will not function
 #    on other operating systems.
 #  - It is recommended to verify the ownership and permissions of the
 #    affected directories after execution to ensure they meet the desired
 #    security standards.
 #
+#  Exit Status:
+#  0: Success.
+#  1: Unsupported system, Homebrew path resolution failure, sudo failure,
+#     or permission update failure.
+#  126: Required command exists but is not executable.
+#  127: Required command is not found.
+#
 #  Version History:
+#  v2.0 2026-09-07
+#       Resolve Homebrew paths and validate system prerequisites.
 #  v1.9 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -69,6 +84,8 @@ usage() {
 
 # Check if the system is macOS
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Darwin" ]; then
         echo "[ERROR] This script is intended for macOS only." >&2
         exit 1
@@ -97,15 +114,49 @@ check_sudo() {
     fi
 }
 
+# Resolve and validate the Homebrew prefix and repository paths
+resolve_homebrew_paths() {
+    homebrew_prefix=$(brew --prefix 2>/dev/null)
+    if [ $? -ne 0 ] || [ -z "$homebrew_prefix" ]; then
+        echo "[ERROR] Failed to resolve Homebrew prefix." >&2
+        exit 1
+    fi
+
+    homebrew_repository=$(brew --repository 2>/dev/null)
+    if [ $? -ne 0 ] || [ -z "$homebrew_repository" ]; then
+        echo "[ERROR] Failed to resolve Homebrew repository." >&2
+        exit 1
+    fi
+
+    case "$homebrew_prefix" in
+        /?*) ;;
+        *)
+            echo "[ERROR] Unsafe Homebrew prefix: $homebrew_prefix" >&2
+            exit 1
+            ;;
+    esac
+
+    case "$homebrew_repository" in
+        /|/usr|/usr/local|/opt)
+            echo "[ERROR] Unsafe Homebrew repository: $homebrew_repository" >&2
+            exit 1
+            ;;
+        "$homebrew_prefix"|"$homebrew_prefix"/?*) ;;
+        *)
+            echo "[ERROR] Unsafe Homebrew repository: $homebrew_repository" >&2
+            exit 1
+            ;;
+    esac
+}
+
 # Fix ownership and permissions for Zsh directories
 fix_permissions() {
     echo "[INFO] Fixing ownership and permissions for Zsh directories on macOS..."
 
-    # Detect Homebrew prefix dynamically; fallback to /usr/local
-    prefix=$(brew --prefix 2>/dev/null || echo /usr/local)
+    resolve_homebrew_paths
     targets="
-${prefix}/Homebrew/completions/zsh/
-${prefix}/share/zsh/
+${homebrew_repository}/completions/zsh/
+${homebrew_prefix}/share/zsh/
 "
 
     changed=0
@@ -127,7 +178,7 @@ ${prefix}/share/zsh/
         fi
     done
     if [ "$changed" -eq 0 ]; then
-        echo "[INFO] No target directories under prefix: $prefix; nothing to do."
+        echo "[INFO] No target directories under prefix: $homebrew_prefix; nothing to do."
         return 0
     fi
 }
@@ -139,7 +190,7 @@ main() {
     esac
 
     check_system
-    check_commands uname brew chown chmod ls
+    check_commands brew chown chmod ls
     check_sudo
 
     fix_permissions
