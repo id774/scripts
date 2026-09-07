@@ -27,6 +27,7 @@ v2.0.2 (Release Date: TBD)
   wrapper on uninstall.
 - Fix setup_sysadmin_scripts.sh usage examples and prerequisite error output.
 - Fix Homebrew paths, user ownership, and post-reinstall environment.
+- Preserve the user's GPG keyring context when installing APT signing keys.
 
 v2.0.1 (2026-08-26)
 -------------------
