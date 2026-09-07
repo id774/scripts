@@ -4,9 +4,11 @@
 # gpg-import.sh: GPG Key Import Script for APT
 #
 #  Description:
-#  This script imports a GPG public key from a specified keyserver and
-#  adds it to the APT keyring. It's useful for adding external repository
-#  keys securely. Only works on Debian-based systems.
+#  This script imports a GPG public key from a specified keyserver into the
+#  invoking user's GPG keyring, then exports and dearmors it from that same
+#  keyring. The resulting binary keyring is installed to
+#  /usr/share/keyrings/PUBKEY.gpg with mode 0644, for use with APT's
+#  signed-by= option. Only works on Debian-based Linux systems.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,10 +19,23 @@
 #      ./gpg-import.sh KEYSERVER PUBKEY
 #
 #  Requirements:
-#  - Debian-based Linux system with gpg, sudo, tee available.
-#  - Recommended: use with APT signed-by= pointing to /usr/share/keyrings/*.gpg
+#  - Debian-based Linux system.
+#  - Run as a regular non-root user with sudo privileges.
+#
+#  Exit Status:
+#  0: Success.
+#  1: System, privilege, network, export, conversion, or installation failure.
+#  2: Invalid arguments.
+#  126: Required command exists but is not executable.
+#  127: Required command is not found.
+#
+#  Notes:
+#  - Key receive, export, and dearmor run in the invoking user's GPG context.
+#  - Use the generated /usr/share/keyrings/*.gpg file with APT signed-by=.
 #
 #  Version History:
+#  v2.2 2026-09-07
+#       Export from the user keyring and reject unsafe keyring paths.
 #  v2.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -50,6 +65,10 @@
 #
 ########################################################################
 
+# Temporary files for the exported and dearmored key, populated by import_gpg_key
+export_file=""
+dearmored_file=""
+
 # Display full script header information extracted from the top comment block
 usage() {
     awk '
@@ -62,10 +81,26 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
     fi
+}
+
+# Check that the script is invoked by a regular non-root user
+check_user() {
+    invoking_uid=$(id -u 2>/dev/null)
+    if [ -z "$invoking_uid" ]; then
+        echo "[ERROR] Failed to determine the invoking user." >&2
+        exit 1
+    fi
+    if [ "$invoking_uid" -eq 0 ]; then
+        echo "[ERROR] Run this script as a regular user with sudo access, not as root." >&2
+        exit 1
+    fi
+    return 0
 }
 
 # Check if the user has sudo privileges (password may be required)
@@ -96,13 +131,32 @@ validate_args() {
         echo "[ERROR] Exactly two arguments required: KEYSERVER PUBKEY" >&2
         exit 2
     fi
+
+    case "$2" in
+        '' | */*)
+            echo "[ERROR] PUBKEY must be a non-empty key identifier without '/' characters." >&2
+            exit 2
+            ;;
+    esac
+
     return 0
+}
+
+# Remove staged temporary key files, guarding against empty or missing paths
+cleanup_temp_files() {
+    if [ -n "$export_file" ] && [ -f "$export_file" ]; then
+        rm -f "$export_file"
+    fi
+    if [ -n "$dearmored_file" ] && [ -f "$dearmored_file" ]; then
+        rm -f "$dearmored_file"
+    fi
 }
 
 # Import a GPG key from the specified keyserver
 import_gpg_key() {
     keyserver="$1"
     pubkey="$2"
+    target="/usr/share/keyrings/${pubkey}.gpg"
 
     echo "[INFO] Importing GPG key from $keyserver..."
     if ! gpg --keyserver "$keyserver" --recv-keys "$pubkey"; then
@@ -110,14 +164,32 @@ import_gpg_key() {
         exit 1
     fi
 
-    target="/usr/share/keyrings/${pubkey}.gpg"
+    if ! export_file=$(mktemp); then
+        echo "[ERROR] Failed to create temporary file for GPG key export." >&2
+        exit 1
+    fi
+    trap cleanup_temp_files EXIT
+
+    if ! dearmored_file=$(mktemp); then
+        echo "[ERROR] Failed to create temporary file for dearmored GPG key." >&2
+        exit 1
+    fi
+
+    if ! gpg --export "$pubkey" > "$export_file"; then
+        echo "[ERROR] Failed to export key: $pubkey" >&2
+        exit 1
+    fi
+
+    if ! gpg --dearmor < "$export_file" > "$dearmored_file"; then
+        echo "[ERROR] Failed to dearmor key: $pubkey" >&2
+        exit 1
+    fi
+
     echo "[INFO] Exporting dearmored key to $target ..."
-    if ! sudo sh -c "gpg --export '$pubkey' | gpg --dearmor > '$target'"; then
+    if ! sudo install -m 0644 "$dearmored_file" "$target"; then
         echo "[ERROR] Failed to write dearmored key to $target" >&2
         exit 1
     fi
-    # Ensure permissions are sane (0644) respecting umask
-    sudo chmod 0644 "$target" 2>/dev/null || true
     echo "[INFO] Done. Use it in sources.list as: signed-by=$target"
 }
 
@@ -129,7 +201,8 @@ main() {
 
     validate_args "$@"
     check_system
-    check_commands gpg sudo tee
+    check_commands gpg id mktemp rm install
+    check_user
     check_sudo
     import_gpg_key "$1" "$2"
     return 0
