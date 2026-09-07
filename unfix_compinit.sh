@@ -6,16 +6,17 @@
 #  Description:
 #  This script temporarily adjusts the ownership and permissions of
 #  Homebrew-related directories to align with Homebrew's recommended
-#  configuration. Specifically, it changes the ownership of the following
-#  directories to the current user and their primary group, and ensures
-#  that the user has write permissions:
-#  - /usr/local/Homebrew
-#  - /usr/local/share/zsh/
-#  - /usr/local/share/zsh/site-functions
-#  These changes are intended to resolve issues with `brew update`
-#  and warnings from `brew doctor` about insecure directories. After
-#  finishing Homebrew-related tasks, you can revert these changes using
-#  `fix_compinit.sh` to restore the secure configuration.
+#  configuration. The target directories are resolved from the running
+#  Homebrew installation:
+#  - the Homebrew repository (`brew --repository`)
+#  - `share/zsh` under the Homebrew prefix (`brew --prefix`)
+#  - `share/zsh/site-functions` under the Homebrew prefix
+#  Each existing target is changed to the ownership of the invoking regular
+#  non-root Homebrew user and that user's primary group, and the user is
+#  given write permission on it. These changes are intended to resolve
+#  issues with `brew update` and warnings from `brew doctor` about insecure
+#  directories. After finishing Homebrew-related tasks, you can revert these
+#  changes using `fix_compinit.sh` to restore the secure configuration.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -25,13 +26,27 @@
 #  Usage:
 #      ./unfix_compinit.sh
 #
+#  Requirements:
+#  - macOS with Homebrew installed and available in PATH.
+#  - Run as a regular non-root user with sudo privileges.
+#
 #  Notes:
-#  - This script requires root privileges to execute. Run it with `sudo`.
+#  - Do not invoke the whole script as root or through sudo; privileged
+#    ownership and permission changes are performed internally with sudo.
 #  - This script is specifically tailored for macOS and will not function
 #    on other operating systems.
 #  - After using Homebrew, execute `fix_compinit.sh` to restore secure settings.
 #
+#  Exit Status:
+#  0: Success.
+#  1: Unsupported system, root execution, user/path resolution failure,
+#     sudo failure, or ownership update failure.
+#  126: Required command exists but is not executable.
+#  127: Required command is not found.
+#
 #  Version History:
+#  v2.0 2026-09-07
+#       Resolve Homebrew paths and preserve non-root user ownership.
 #  v1.9 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -68,6 +83,8 @@ usage() {
 
 # Check if the system is macOS
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Darwin" ]; then
         echo "[ERROR] This script is intended for macOS only." >&2
         exit 1
@@ -96,20 +113,75 @@ check_sudo() {
     fi
 }
 
+# Resolve the invoking regular user and primary group, refusing root
+resolve_current_user() {
+    current_uid=$(id -u 2>/dev/null)
+    if [ $? -ne 0 ] || [ -z "$current_uid" ]; then
+        echo "[ERROR] Failed to determine the invoking user." >&2
+        exit 1
+    fi
+    if [ "$current_uid" -eq 0 ]; then
+        echo "[ERROR] Run this script as a regular user with sudo access, not as root." >&2
+        exit 1
+    fi
+
+    current_user=$(id -un 2>/dev/null)
+    if [ $? -ne 0 ] || [ -z "$current_user" ]; then
+        echo "[ERROR] Failed to determine the invoking user." >&2
+        exit 1
+    fi
+
+    current_group=$(id -gn "$current_user" 2>/dev/null)
+    if [ $? -ne 0 ] || [ -z "$current_group" ]; then
+        echo "[ERROR] Failed to determine the primary group for '$current_user'." >&2
+        exit 1
+    fi
+}
+
+# Resolve and validate the Homebrew prefix and repository paths
+resolve_homebrew_paths() {
+    homebrew_prefix=$(brew --prefix 2>/dev/null)
+    if [ $? -ne 0 ] || [ -z "$homebrew_prefix" ]; then
+        echo "[ERROR] Failed to resolve Homebrew prefix." >&2
+        exit 1
+    fi
+
+    homebrew_repository=$(brew --repository 2>/dev/null)
+    if [ $? -ne 0 ] || [ -z "$homebrew_repository" ]; then
+        echo "[ERROR] Failed to resolve Homebrew repository." >&2
+        exit 1
+    fi
+
+    case "$homebrew_prefix" in
+        /?*) ;;
+        *)
+            echo "[ERROR] Unsafe Homebrew prefix: $homebrew_prefix" >&2
+            exit 1
+            ;;
+    esac
+
+    case "$homebrew_repository" in
+        /|/usr|/usr/local|/opt)
+            echo "[ERROR] Unsafe Homebrew repository: $homebrew_repository" >&2
+            exit 1
+            ;;
+        "$homebrew_prefix"|"$homebrew_prefix"/?*) ;;
+        *)
+            echo "[ERROR] Unsafe Homebrew repository: $homebrew_repository" >&2
+            exit 1
+            ;;
+    esac
+}
+
 # Adjust ownership and permissions for Homebrew directories
 adjust_homebrew_permissions() {
     echo "[INFO] Setting ownership and permissions for Homebrew directories on macOS..."
 
-    # Get the current user and their primary group
-    current_user=$(whoami)
-    current_group=$(id -gn "$current_user")
-
-    # Detect Homebrew prefix dynamically; fallback to /usr/local
-    prefix=$(brew --prefix 2>/dev/null || echo /usr/local)
+    resolve_homebrew_paths
     targets="
-${prefix}/Homebrew
-${prefix}/share/zsh/
-${prefix}/share/zsh/site-functions
+${homebrew_repository}
+${homebrew_prefix}/share/zsh/
+${homebrew_prefix}/share/zsh/site-functions
 "
 
     changed=0
@@ -130,7 +202,7 @@ ${prefix}/share/zsh/site-functions
         fi
     done
     if [ "$changed" -eq 0 ]; then
-        echo "[INFO] No target directories under prefix: $prefix; nothing to do."
+        echo "[INFO] No target directories under prefix: $homebrew_prefix; nothing to do."
         return 0
     fi
 }
@@ -142,7 +214,8 @@ main() {
     esac
 
     check_system
-    check_commands uname brew chown chmod ls
+    check_commands brew chown chmod ls id
+    resolve_current_user
     check_sudo
 
     adjust_homebrew_permissions
