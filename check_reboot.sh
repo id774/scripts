@@ -58,6 +58,7 @@
 
 # Display full script header information extracted from the top comment block
 usage() {
+    check_commands awk
     awk '
         BEGIN { in_header = 0 }
         /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
@@ -172,7 +173,7 @@ main() {
     esac
 
     check_system
-    check_commands awk sed id
+    check_commands sed id
 
     # Track whether any method indicates a reboot requirement.
     reboot_required=0

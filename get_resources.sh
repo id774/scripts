@@ -72,12 +72,27 @@ OS_NAME=$(uname)
 
 # Display full script header information extracted from the top comment block
 usage() {
+    check_commands awk
     awk '
         BEGIN { in_header = 0 }
         /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0
+}
+
+# Check if required commands are available and executable
+check_commands() {
+    for cmd in "$@"; do
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
+            exit 127
+        elif [ ! -x "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
+            exit 126
+        fi
+    done
 }
 
 # Check if a command exists

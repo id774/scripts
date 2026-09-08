@@ -45,6 +45,7 @@ HOST="${2:-harpuia}"
 
 # Display full script header information extracted from the top comment block
 usage() {
+    check_commands awk
     awk '
         BEGIN { in_header = 0 }
         /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
