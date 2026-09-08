@@ -135,6 +135,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -440,7 +442,7 @@ main() {
     esac
 
     check_system
-    check_commands awk cp cmp grep cat rm chown chmod mkdir systemctl uname
+    check_commands awk cp cmp grep cat rm chown chmod mkdir systemctl
     check_sudo
     check_target
     ensure_journald_dir

@@ -18,12 +18,27 @@
 #      ./setup_securetty.sh
 #
 #  Warning:
-#  Using this script can decrease system security by allowing root access from any
-#  terminal. It should only be used when absolutely necessary and in secure environments.
-#  This script does nothing if /etc/securetty is a directory, which might be the case
-#  in some systems like macOS.
+#  - Using this script can decrease system security by allowing root access
+#    from any terminal. It should only be used when absolutely necessary and
+#    in secure environments.
+#  - This script does nothing if /etc/securetty is a directory, which might
+#    be the case in some systems like macOS.
+#  - An absent /etc/securetty is a successful no-op.
+#  - An already empty regular /etc/securetty is a successful no-op.
+#
+#  Requirements:
+#  - Linux system.
+#  - The invoking user must have sudo privileges.
+#
+#  Exit Status:
+#  0: Success, including absent, directory, or already empty no-op states, or help/version output.
+#  1: Unsupported system, sudo failure, or clear failure.
+#  126: A required command exists but is not executable.
+#  127: A required command is not found.
 #
 #  Version History:
+#  v1.9 2026-09-08
+#       Treat non-actionable or already empty /etc/securetty states as successful no-ops.
 #  v1.8 2026-09-06
 #       Check uname before using it for system detection.
 #  v1.7 2026-07-11
@@ -91,17 +106,16 @@ check_sudo() {
 # Check the type of /etc/securetty and take action
 clear_securetty() {
     if [ -f /etc/securetty ]; then
+        if [ ! -s /etc/securetty ]; then
+            return 0
+        fi
         if ! sudo sh -c ": > /etc/securetty"; then
             echo "[ERROR] Failed to clear /etc/securetty." >&2
             exit 1
         fi
         echo "[INFO] Setup completed."
-    elif [ -d /etc/securetty ]; then
-        echo "[ERROR] /etc/securetty is a directory, no changes were made." >&2
-        exit 1
     else
-        echo "[ERROR] /etc/securetty does not exist as a file or directory." >&2
-        exit 1
+        return 0
     fi
 }
 

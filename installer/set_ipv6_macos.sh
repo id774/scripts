@@ -53,6 +53,8 @@ usage() {
 
 # Check if the system is macOS
 check_system() {
+    check_commands uname
+
     if [ "$(uname)" != "Darwin" ]; then
         echo "[ERROR] This script is intended for macOS only." >&2
         exit 1
@@ -84,7 +86,7 @@ main() {
         usage
     fi
 
-    check_commands uname networksetup head tail
+    check_commands networksetup head tail
 
     # Parse arguments
     if [ "$1" = "--enable" ]; then

@@ -57,6 +57,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -235,7 +237,7 @@ main() {
 
     check_system
     check_scripts
-    check_commands cmp cp chmod chown mkdir a2enmod apachectl systemctl fail2ban-client uname cat rm sed
+    check_commands cmp cp chmod chown mkdir a2enmod apachectl systemctl fail2ban-client cat rm sed
     check_sudo
     resolve_sources
 

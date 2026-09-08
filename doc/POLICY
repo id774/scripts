@@ -271,8 +271,8 @@ repository is already being edited.
 
 - **1: General failure**
   The default failure code.
-  Use for invalid arguments, missing resources, processing errors, or any
-  failure that does not require explicit classification. For an invalid or
+  Use for invalid arguments, missing required resources, processing errors, or
+  any failure that does not require explicit classification. For an invalid or
   unsupported CLI option specifically, the exit status follows the
   established usage behavior defined in Section 1.3.1 instead: both the
   repository-standard `0` and the existing accepted `1` are valid, and this
@@ -294,6 +294,11 @@ repository is already being edited.
 
 #### 1.3.3 Logging and Output
 - Use unified log prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
+- Do not label a successful no-op as `[ERROR]`. Use no output, `[INFO]`, or
+  `[WARN]` according to the operation's user-facing and operational contract.
+- Log level and process status are separate signals. `[WARN]` may accompany
+  exit status `0` when a condition is noteworthy but the requested operation
+  still satisfies its contract.
 - Informational messages go to standard output.
 - Error messages always go to standard error.
 - Log messages must be human-readable and suitable for cron execution.
@@ -421,9 +426,47 @@ never asked to touch.
   keep the directly related implementation and documentation consistent with
   these rules.
 
-#### 1.5.2 Idempotency and State Checks
+#### 1.5.2 Idempotency, State Checks, and No-op Results
 - Prefer state-changing operations to remain safe when repeated over the same
-  input. This is especially useful for installers and scheduled jobs.
+  input. This is especially useful for installers, setup tools, cleanup tools,
+  uninstallers, and scheduled jobs.
+- Judge success against the operation's contract and required postcondition,
+  not merely by whether the run changed something.
+- For a state-converging operation whose purpose is to ensure, clear, remove,
+  disable, configure, or uninstall a state, treat the run as a successful
+  no-op when the required postcondition already holds and the invocation's
+  required prerequisites have been satisfied. Do not report failure merely
+  because no mutation was necessary.
+- Idempotency does not mean that every run with zero work is successful. A
+  batch, synchronization, extraction, monitoring, transfer, conversion, or
+  other input-driven operation may legitimately treat zero matching inputs as
+  failure when its contract requires work or input to be present.
+- Distinguish required resources from optional or state-owned targets.
+  Absence of a required input, configuration, source, or other prerequisite
+  is a failure. Absence of a target may be success when the operation's
+  required postcondition is precisely that the target be absent or require
+  no change.
+- A successful no-op may be silent, informational, or warning-level according
+  to its operational significance. A warning does not by itself make the
+  operation fail. Do not label the no-op itself as an error.
+- A successful no-op does not waive invocation prerequisites. A supported
+  environment, required configuration, required privilege, and other
+  prerequisites that belong to a valid invocation are still checked according
+  to the tool's contract even when the state-changing branch turns out to be
+  unnecessary.
+- In a Shell Script whose contract requires sudo privileges, `check_sudo`
+  remains part of normal invocation even when the requested state already
+  holds. Do not move, skip, or conditionalize `check_sudo` merely to make a
+  no-op path avoid the privilege check.
+- This no-op policy does not by itself authorize moving, deleting, or
+  weakening `check_commands`, system checks, configuration checks, or other
+  established startup prerequisites. Change such prerequisite semantics only
+  when that is explicitly part of the work.
+- After required invocation prerequisites have been validated, a successful
+  no-op should not create temporary files, rewrite unchanged files, restart
+  or reload services, prompt for confirmation that exists only to authorize
+  the unnecessary state change, or perform another state-changing side
+  effect merely to report that no change was needed.
 - Check current state before changing it when that prevents duplicate,
   conflicting, or corrupted persistent state. Appending a line, creating a
   link, enabling a service, and installing a package commonly benefit from
@@ -919,6 +962,10 @@ Before a change is proposed, consider these questions:
   a log message?
 - For state-changing work, has repeat execution been considered, and would a
   second run create unintended duplication or corruption?
+- For a state-converging operation, does the requested postcondition already
+  hold, and if so does the valid invocation complete as a successful no-op
+  without confusing that case with missing required input or zero-work batch
+  semantics?
 - Does it change an existing option, exit status, output, or configuration key
   that a cron entry or a deployed copy depends on?
 - Does it change control flow, processing order, side effects, or whether later
@@ -1091,6 +1138,16 @@ check_commands() {
   which runs `sudo -v` and refuses the run when it fails.
 - Elevated privileges cover the operations that need them and no more. A
   script that needs root for one step does not run its whole body under it.
+- A validation helper owns the external-command prerequisites that it directly
+  uses to make its validation decision. In particular, a `check_system`
+  function that invokes `uname` calls `check_commands uname` before its first
+  use of `uname`; callers do not carry `uname` solely on behalf of that
+  `check_system` call.
+- Moving an existing `uname` prerequisite check into `check_system` and
+  removing the now-redundant caller-side `uname` check is a prerequisite
+  ownership normalization. By maintainer decision, that normalization alone
+  does not bump the executable version. If the same executable has another
+  behavior change, apply the normal versioning rules to that other change.
 - Do not perform a generic network-connectivity preflight merely because a
   later operation uses the network. Apply the Network Operations policy in
   1.4.3.

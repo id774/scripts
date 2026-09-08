@@ -64,6 +64,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -130,13 +132,13 @@ main() {
     check_system
 
     if [ "$SUDO_MODE" = "1" ]; then
-        check_commands apt dpkg grep uname xdg-user-dirs-gtk-update
+        check_commands apt dpkg grep xdg-user-dirs-gtk-update
         check_sudo
 
         # Install xdg-user-dirs-gtk if necessary
         install_xdg_user_dirs_gtk
     else
-        check_commands xdg-user-dirs-gtk-update uname
+        check_commands xdg-user-dirs-gtk-update
     fi
 
     # Update user directories

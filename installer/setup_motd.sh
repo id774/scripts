@@ -21,15 +21,24 @@
 #
 #  Notes:
 #  - No backups are created; the script edits /etc/motd directly if present.
-#  - The script is no-op when /etc/motd does not exist.
+#  - An absent /etc/motd is a successful no-op.
+#  - An already empty regular /etc/motd is a successful no-op.
+#  - A directory at /etc/motd is an error.
 #  - Designed for Debian-family Linux systems, but works on general Linux.
 #
 #  Requirements:
-#  - Linux operating system
-#  - sudo privileges for modifying /etc/motd
-#  - Commands: sudo, awk, sh, test
+#  - Linux system.
+#  - The invoking user must have sudo privileges.
+#
+#  Exit Status:
+#  0: Success, including an absent or already empty /etc/motd, or help/version output.
+#  1: Unsupported system, sudo failure, directory target, or clear failure.
+#  126: A required command exists but is not executable.
+#  127: A required command is not found.
 #
 #  Version History:
+#  v1.3 2026-09-08
+#       Treat an absent or already empty /etc/motd as a successful no-op.
 #  v1.2 2026-09-06
 #       Check uname before using it for system detection.
 #  v1.1 2026-07-11
@@ -87,6 +96,9 @@ check_sudo() {
 # Clear /etc/motd with file type validation
 clear_motd() {
     if [ -f "$MOTD_FILE" ]; then
+        if [ ! -s "$MOTD_FILE" ]; then
+            return 0
+        fi
         if ! sudo sh -c ": > \"$MOTD_FILE\""; then
             echo "[ERROR] Failed to clear $MOTD_FILE." >&2
             exit 1
@@ -96,8 +108,7 @@ clear_motd() {
         echo "[ERROR] $MOTD_FILE is a directory, no changes were made." >&2
         exit 1
     else
-        echo "[ERROR] $MOTD_FILE does not exist as a file or directory." >&2
-        exit 1
+        return 0
     fi
 }
 
@@ -108,7 +119,7 @@ main() {
     esac
 
     check_system
-    check_commands awk sh
+    check_commands sh
     check_sudo
     clear_motd
     return 0

@@ -58,6 +58,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -158,7 +160,7 @@ main() {
 
     check_system
     check_scripts
-    check_commands dpkg apt-get debconf-set-selections iptables-restore chmod mkdir cp systemctl uname dirname sh
+    check_commands dpkg apt-get debconf-set-selections iptables-restore chmod mkdir cp systemctl dirname sh
     check_sudo
 
     TEMPLATE_PATH="$SCRIPTS/etc/iptables/rules.v4"

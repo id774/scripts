@@ -50,6 +50,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -118,11 +120,11 @@ main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
         -u|--uninstall)
-            check_environment apt-get dpkg uname grep
+            check_environment apt-get dpkg grep
             uninstall_python_symlink
             ;;
         "")
-            check_environment apt-get uname
+            check_environment apt-get
             install_python_symlink
             ;;
         *)

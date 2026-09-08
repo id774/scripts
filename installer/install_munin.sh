@@ -64,6 +64,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -149,7 +151,7 @@ main() {
     # Perform initial checks
     check_system
     check_scripts
-    check_commands sudo systemctl apt-get htpasswd cp chown chmod uname rm ln
+    check_commands sudo systemctl apt-get htpasswd cp chown chmod rm ln
 
     # Run the installation process
     install_munin

@@ -68,6 +68,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     os="$(uname -s 2>/dev/null)"
     if [ "$os" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
@@ -454,7 +456,7 @@ main() {
     check_scripts
     check_session_bus
     check_desktop_installed
-    check_commands xfconf-query mkdir cp awk chmod uname grep ls
+    check_commands xfconf-query mkdir cp awk chmod grep ls
 
     confirm_apply_settings
 

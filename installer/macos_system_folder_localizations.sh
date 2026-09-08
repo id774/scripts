@@ -55,6 +55,8 @@ usage() {
 
 # Check if the system is macOS
 check_system() {
+    check_commands uname
+
     if [ "$(uname)" != "Darwin" ]; then
         echo "[ERROR] This script is intended for macOS only." >&2
         exit 1
@@ -139,7 +141,7 @@ main() {
             ;;
         enable|disable)
             check_system
-            check_commands uname touch rm
+            check_commands touch rm
             check_sudo
             if [ "$1" = "enable" ]; then
                 enable_localization

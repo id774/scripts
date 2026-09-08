@@ -59,6 +59,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -108,7 +110,7 @@ configure_munin_plugins() {
     check_system
     check_sudo
     check_directories
-    check_commands sudo munin-node-configure chmod rm systemctl uname
+    check_commands sudo munin-node-configure chmod rm systemctl
 
     TMP_SCRIPT_DIR=${TMP:-/tmp}
     SCRIPT_NAME=$TMP_SCRIPT_DIR/create-munin-plugins-links.sh

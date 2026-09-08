@@ -53,6 +53,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -163,7 +165,7 @@ main() {
     fi
 
     check_system
-    check_commands rm uname
+    check_commands rm
     check_sudo
 
     echo "[INFO] Starting uninstallation process from /usr/local."
