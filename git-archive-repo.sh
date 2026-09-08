@@ -56,6 +56,7 @@
 
 # Display full script header information extracted from the top comment block
 usage() {
+    check_commands awk
     awk '
         BEGIN { in_header = 0 }
         /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
@@ -150,7 +151,7 @@ main() {
 
     SCRIPT_DIR=$(dirname "$0")
 
-    check_commands awk basename dirname rm tar
+    check_commands basename dirname rm tar
     load_configuration
 
     create_archive "$GITHUB_SRC" "$GITHUB_ARCHIVE" || exit $?

@@ -64,6 +64,7 @@ RENAME_DONE=0
 
 # Display full script header information extracted from the top comment block
 usage() {
+    check_commands awk
     awk '
         BEGIN { in_header = 0 }
         /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
@@ -251,7 +252,7 @@ main() {
 
     check_system
     check_scripts
-    check_commands awk find grep cmp chown chmod cp mktemp mv rsyslogd rm
+    check_commands find grep cmp chown chmod cp mktemp mv rsyslogd rm
     check_sudo
     check_source_file
     check_target_dir

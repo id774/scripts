@@ -91,6 +91,7 @@
 
 # Display full script header information extracted from the top comment block
 usage() {
+    check_commands awk
     awk '
         BEGIN { in_header = 0 }
         /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
@@ -241,7 +242,7 @@ parse_arguments() {
 main() {
     parse_arguments "$@"
 
-    check_commands awk git
+    check_commands git
 
     if [ "$use_sudo" = "sudo" ]; then
         check_sudo

@@ -30,6 +30,7 @@ v2.0.2 (Release Date: TBD)
 - Preserve the user's GPG keyring context when installing APT signing keys.
 - Align munin-sync installer prerequisites and Linux-only uninstall behavior.
 - Align state-converging no-op results with repository-wide idempotency rules.
+- Make usage own awk prerequisite checks across Shell Scripts.
 
 v2.0.1 (2026-08-26)
 -------------------
