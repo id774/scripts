@@ -9,9 +9,6 @@
 #  configurations, and configuring or removing cron jobs for periodic execution.
 #  It ensures the correct permissions are set and removed cleanly.
 #
-#  This script is designed to run on Linux systems and requires sudo
-#  privileges to modify system directories and files.
-#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
@@ -31,18 +28,30 @@
 #    to the appropriate location and ensures correct permissions.
 #  - setup_cron_jobs: Configures cron jobs to periodically execute the
 #    munin-sync.sh script.
-#  - uninstall_munin_sync: Removes all files and directories created by
-#    this script including cron job, scripts, configs, and sending data.
+#  - uninstall: Removes the files and directories owned by this installer,
+#    including the cron job, scripts, configs, and sending data.
+#
+#  Requirements:
+#  - Linux system.
+#  - The invoking user must have sudo privileges.
+#  - Install mode requires SCRIPTS to point to the repository source files.
+#  - Install mode requires an existing Munin installation providing
+#    /var/lib/munin and the munin user/group used for deployed files.
+#
+#  Exit Status:
+#  0: Success or usage/help/version display.
+#  1: System, prerequisite, sudo, installation, or uninstallation failure.
+#  126: Required command exists but is not executable.
+#  127: Required command is not found.
 #
 #  Notes:
-#  - This script must be executed on a Linux system with sudo privileges.
-#  - The SCRIPTS environment variable must be set to the directory containing the munin-sync source files (install only).
-#  - The script assumes that the Munin service is installed and that /var/lib/munin exists.
 #  - The configuration file (/var/lib/munin/etc/munin-sync.conf) will not be overwritten if it already exists.
 #    Please edit it manually if changes are needed after initial deployment.
 #  - The munin-sync.sh script is installed under /var/lib/munin/bin and owned by the 'munin' user.
 #  - Cron jobs are configured under /etc/cron.d/ and run every 5 minutes as the 'munin' user.
 #  - Log and configuration directories are created with restricted permissions for security.
+#  - /var/lib/munin/bin, /var/lib/munin/etc, and /var/lib/munin/sending
+#    are dedicated to this installer and are removed in full by --uninstall.
 #  - The --uninstall option will remove the following:
 #       /var/lib/munin/bin/
 #       /var/lib/munin/etc/
@@ -50,6 +59,8 @@
 #       /etc/cron.d/munin-sync
 #
 #  Version History:
+#  v2.4 2026-09-08
+#       Align prerequisite checks and restrict uninstall to Linux.
 #  v2.3 2026-09-06
 #       Show usage for unsupported arguments instead of starting installation.
 #  v2.2 2026-07-11
@@ -82,6 +93,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -209,7 +222,7 @@ EOF
 install() {
     check_system
     check_munin_dir
-    check_commands cp chmod chown mkdir tee hostname uname
+    check_commands cp chmod chown mkdir tee hostname
     check_scripts
     check_sudo
 
@@ -223,11 +236,13 @@ install() {
 
 # Uninstall munin-sync components
 uninstall() {
+    check_system
     check_commands rm
     check_sudo
 
     echo "[INFO] Uninstalling munin-sync..."
 
+    # These directories are dedicated to munin-sync and are removed in full.
     for path in \
         /var/lib/munin/bin \
         /var/lib/munin/etc \
