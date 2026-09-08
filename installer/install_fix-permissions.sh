@@ -21,22 +21,26 @@
 #      ./install_fix-permissions.sh --uninstall
 #
 #  Requirements:
-#  - The `SCRIPTS` environment variable must be set to the directory
-#    containing the `fix-permissions` script and its configurations.
-#  - Must be executed with sufficient permissions to modify system
-#    directories (typically as root or with sudo).
-#  - Requires `logrotate` to be installed for log rotation setup.
-#  - The script will not overwrite an existing fix-permissions cron job
-#    if it already exists.
+#  - Linux system.
+#  - The invoking user must have sudo privileges.
+#  - Install mode requires `SCRIPTS` to point to the repository source files.
+#  - Install mode requires `logrotate` to be available.
+#
+#  Exit Status:
+#  0: The selected workflow completed, or usage/help/version was displayed.
+#  1: System, environment, sudo, or critical installation failure.
+#  126: A required command exists but is not executable.
+#  127: A required command is not found.
 #
 #  Notes:
-#  - The script ensures that `/var/log/sysadmin` is created if it does
-#    not exist and configures it securely.
-#  - If a log rotation configuration for `fix-permissions` already exists,
-#    it will not be overwritten.
-#  - The `fix-permissions` script is deployed to `/etc/cron.daily` with
-#    appropriate permissions.
-#  - Log files are preserved when --uninstall is used.
+#  - `/etc/cron.daily/fix-permissions` is refreshed from the repository on
+#    every install.
+#  - Existing `/etc/logrotate.d/fix-permissions` is not overwritten.
+#  - Existing `/etc/cron.config/fix-permissions.conf` is not overwritten.
+#  - `/var/log/sysadmin/fix-permissions.log` is preserved by uninstall.
+#  - `--uninstall` attempts all configured removal targets; an individual
+#    removal failure is reported with `[WARN]` and does not stop later
+#    removals.
 #
 #  Version History:
 #  v2.2 2026-09-06
@@ -82,6 +86,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -123,7 +129,7 @@ check_sudo() {
 install() {
     # Perform initial checks
     check_system
-    check_commands cp chmod chown mkdir touch logrotate uname
+    check_commands cp chmod chown mkdir touch logrotate
     check_scripts
     check_sudo
 
