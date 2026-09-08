@@ -73,6 +73,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -115,7 +117,7 @@ setup_environment() {
 
     echo "[INFO] Checking required commands..."
     # Verify that all external tools required by the script are available.
-    check_commands awk uname cp rm chmod mktemp curl gpg tee apt grep mkdir dpkg
+    check_commands awk cp rm chmod mktemp curl gpg tee apt grep mkdir dpkg
 
     # Verify the current user has sudo privileges for system modifications.
     check_sudo

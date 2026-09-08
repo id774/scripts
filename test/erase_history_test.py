@@ -37,8 +37,12 @@
 #    - Detect self invocation via PATH lookup and keep it
 #    - Detect self invocation via alias names in environment and keep it
 #    - Delete the last line normally when the last entry is not self invocation
+#    - Report a missing history file as status 1.
+#    - Return success without prompting or rewriting when no removable lines exist.
 #
 #  Version History:
+#  v1.3 2026-09-08
+#       Cover missing-file failure and no-removable-line no-op behavior.
 #  v1.2 2026-02-25
 #       Update self invocation tests for path-based detection and add symlink coverage.
 #       Support alias-based self invocation via ERASE_HISTORY_SELF_NAMES.
@@ -481,6 +485,99 @@ class EraseHistoryTest(unittest.TestCase):
 
             # Remove the last line normally
             self.assertEqual("cmd1\ncmd2\n", _read_file(history_path))
+        finally:
+            try:
+                for fn in os.listdir(tmpdir):
+                    os.unlink(os.path.join(tmpdir, fn))
+            except Exception:
+                pass
+            try:
+                os.rmdir(tmpdir)
+            except Exception:
+                pass
+
+    def test_missing_history_file_reports_status_1(self):
+        tmpdir = tempfile.mkdtemp()
+        try:
+            history_path = os.path.join(tmpdir, ".zsh_history")
+
+            with _StdCapture() as cap:
+                try:
+                    erase_history.erase_tail_lines(history_path, 1, False)
+                    self.fail("Expected SystemExit")
+                except SystemExit as e:
+                    self.assertEqual(1, e.code)
+
+            self.assertIn("History file does not exist", cap.err.getvalue())
+        finally:
+            try:
+                os.rmdir(tmpdir)
+            except Exception:
+                pass
+
+    def test_erase_nonquiet_no_removable_lines_skips_prompt_and_rewrite(self):
+        tmpdir = tempfile.mkdtemp()
+        try:
+            history_path = os.path.join(tmpdir, ".zsh_history")
+            _write_file(history_path, [])
+
+            def _fail_input(prompt=""):
+                self.fail("input() must not be called when there are no removable lines")
+
+            def _fail_mkstemp(*args, **kwargs):
+                self.fail("tempfile.mkstemp() must not be called when there are no removable lines")
+
+            old_input = getattr(builtins, "input")
+            old_mkstemp = tempfile.mkstemp
+            setattr(builtins, "input", _fail_input)
+            tempfile.mkstemp = _fail_mkstemp
+            try:
+                with _StdCapture() as cap:
+                    erase_history.erase_tail_lines(history_path, 1, False)
+            finally:
+                setattr(builtins, "input", old_input)
+                tempfile.mkstemp = old_mkstemp
+
+            self.assertIn("[INFO] No history lines to remove.", cap.out.getvalue())
+            self.assertEqual("", cap.err.getvalue())
+            self.assertEqual("", _read_file(history_path))
+        finally:
+            try:
+                for fn in os.listdir(tmpdir):
+                    os.unlink(os.path.join(tmpdir, fn))
+            except Exception:
+                pass
+            try:
+                os.rmdir(tmpdir)
+            except Exception:
+                pass
+
+    def test_erase_quiet_no_removable_lines_is_silent(self):
+        tmpdir = tempfile.mkdtemp()
+        try:
+            history_path = os.path.join(tmpdir, ".zsh_history")
+            _write_file(history_path, [])
+
+            def _fail_input(prompt=""):
+                self.fail("input() must not be called when there are no removable lines")
+
+            def _fail_mkstemp(*args, **kwargs):
+                self.fail("tempfile.mkstemp() must not be called when there are no removable lines")
+
+            old_input = getattr(builtins, "input")
+            old_mkstemp = tempfile.mkstemp
+            setattr(builtins, "input", _fail_input)
+            tempfile.mkstemp = _fail_mkstemp
+            try:
+                with _StdCapture() as cap:
+                    erase_history.erase_tail_lines(history_path, 1, True)
+            finally:
+                setattr(builtins, "input", old_input)
+                tempfile.mkstemp = old_mkstemp
+
+            self.assertEqual("", cap.out.getvalue())
+            self.assertEqual("", cap.err.getvalue())
+            self.assertEqual("", _read_file(history_path))
         finally:
             try:
                 for fn in os.listdir(tmpdir):

@@ -22,13 +22,14 @@ v2.0.2 (Release Date: TBD)
   starting installation.
 - Make setup_scripts.sh preserve failures from both configured-collection and
   current-directory execute-permission passes.
-- Check uname before system detection in affected installer scripts.
+- Make check_system own uname prerequisite checks across Shell Scripts.
 - Align ClamAV cron deployment with its tracked definition and remove the deployed
   wrapper on uninstall.
 - Fix setup_sysadmin_scripts.sh usage examples and prerequisite error output.
 - Fix Homebrew paths, user ownership, and post-reinstall environment.
 - Preserve the user's GPG keyring context when installing APT signing keys.
 - Align munin-sync installer prerequisites and Linux-only uninstall behavior.
+- Align state-converging no-op results with repository-wide idempotency rules.
 
 v2.0.1 (2026-08-26)
 -------------------

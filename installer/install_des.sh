@@ -60,6 +60,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -94,7 +96,7 @@ setup_environment() {
     check_system
 
     echo "[INFO] Checking system requirements..."
-    check_commands wget md5sum tar make rm mkdir cp chown uname
+    check_commands wget md5sum tar make rm mkdir cp chown
     check_sudo
     OWNER=root:root
 }

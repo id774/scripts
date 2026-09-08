@@ -55,6 +55,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -124,7 +126,7 @@ main() {
 
     check_system
     check_debian
-    check_commands aptitude awk sed chmod rm uname grep
+    check_commands aptitude awk sed chmod rm grep
     check_sudo
     set_temp_file
     trap 'rm -f "$SCRIPT_NAME"' EXIT

@@ -23,8 +23,11 @@
 #  - This script no longer forcefully terminates Chromium processes.
 #  - Ensure that Chromium is closed before running with the -c option
 #    to avoid potential data corruption.
+#  - If the Web Data path is already absent, clearing is a successful no-op.
 #
 #  Version History:
+#  v1.8 2026-09-08
+#       Treat an already absent Chromium Web Data path as a successful no-op.
 #  v1.7 2026-07-11
 #       Replace the non-portable awk {n,} interval in usage() and recognize
 #       --help/--version explicitly before getopts parsing.
@@ -65,8 +68,7 @@ clear_cache() {
         echo "[INFO] Cleared: $cache_dir"
         exit 0
     else
-        echo "[ERROR] Not found: $cache_dir" >&2
-        exit 1
+        exit 0
     fi
 }
 

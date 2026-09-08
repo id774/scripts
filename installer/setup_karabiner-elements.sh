@@ -52,6 +52,8 @@ usage() {
 
 # Check if the system is macOS
 check_system() {
+    check_commands uname
+
     if [ "$(uname)" != "Darwin" ]; then
         echo "[ERROR] This script is intended for macOS only." >&2
         exit 1
@@ -123,7 +125,7 @@ main() {
     esac
 
     check_system
-    check_commands uname mkdir date mv cp
+    check_commands mkdir date mv cp
     check_scripts
     setup_karabiner
     return 0

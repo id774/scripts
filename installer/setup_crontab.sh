@@ -66,6 +66,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -131,7 +133,7 @@ main() {
     esac
 
     check_system
-    check_commands grep uname mkdir tee cut
+    check_commands grep mkdir tee cut
     check_sudo
     create_directories
     add_entry "$WEEKDAY_ENTRY"

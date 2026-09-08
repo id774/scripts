@@ -89,11 +89,21 @@
 #    to a comma-separated list of command names (e.g. "eh,hh").
 #    When the first token in the history entry matches one of these names,
 #    it is considered self invocation.
+#  - When no removable history lines exist, the script returns success
+#    without prompting or rewriting the history file.
 #
 #  Requirements:
 #  - Python Version: 3.3 or later
 #
+#  Exit Status:
+#  0: Success, including no removable history lines, or help/version output.
+#  1: Missing history file, read/write failure, or user abort.
+#  2: Invalid arguments or invalid line-count request.
+#
 #  Version History:
+#  v1.3 2026-09-08
+#       Use status 1 for a missing history file and return success without
+#       rewriting when no history lines are available to remove.
 #  v1.2 2026-02-25
 #       Detect self invocation by script path instead of command name.
 #       Support alias-based self invocation via ERASE_HISTORY_SELF_NAMES.
@@ -319,13 +329,12 @@ def erase_tail_lines(history_path, n, quiet):
         n (int): Number of lines to remove.
 
     Exits:
-        1: On read/write failure.
-        2: If the history file does not exist.
+        1: On read/write failure, or if the history file does not exist.
     """
 
     if not os.path.exists(history_path):
         print("[ERROR] History file does not exist - %s" % history_path, file=sys.stderr)
-        sys.exit(2)
+        sys.exit(1)
 
     try:
         with open(history_path, 'r', encoding='utf-8', errors='replace') as f:
@@ -355,6 +364,11 @@ def erase_tail_lines(history_path, n, quiet):
 
         removed_lines = lines[start:end]
         keep_lines = lines[:start] + lines[end:]
+
+    if not removed_lines:
+        if not quiet:
+            print("[INFO] No history lines to remove.")
+        return
 
     if not quiet:
         for line in removed_lines:

@@ -93,6 +93,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -313,7 +315,7 @@ main() {
 
     # Check prerequisites
     check_system
-    check_commands sysctl uname tee cat ip grep tr
+    check_commands sysctl tee cat ip grep tr
     check_sudo
 
     # Define configuration paths

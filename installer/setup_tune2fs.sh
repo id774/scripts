@@ -60,6 +60,8 @@ usage() {
 
 # Check if the system is Linux
 check_system() {
+    check_commands uname
+
     if [ "$(uname -s 2>/dev/null)" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2
         exit 1
@@ -149,7 +151,7 @@ main() {
 
     echo "[INFO] Starting tune2fs configuration..."
     check_system
-    check_commands tune2fs hostname uname seq
+    check_commands tune2fs hostname seq
     check_sudo
     HOSTNAME_S=$(hostname -s)
     echo "[INFO] Detected hostname: $HOSTNAME_S"
