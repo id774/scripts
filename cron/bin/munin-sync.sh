@@ -12,6 +12,12 @@
 #  directories. Temporary log directories are created if not present, and existing logs are
 #  overwritten by each run to maintain up-to-date monitoring.
 #
+#  The deployed script runs as the munin user from
+#  /var/lib/munin/bin/munin-sync.sh under cron.
+#  After startup prerequisites are validated, normal synchronization is fully
+#  silent and exits 0 even when individual operational steps fail.
+#  Startup prerequisite failures remain diagnostic and non-zero.
+#
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
@@ -40,7 +46,15 @@
 #  - Ensure proper SSH access and permissions are configured for the target.
 #  - When run on the target server, sync operations are skipped to prevent redundant transfers.
 #
+#  Exit Status:
+#  0: Help/version/unsupported-argument display, or a normal cron run after
+#     startup prerequisites have been validated.
+#  1: Startup prerequisite failure before normal synchronization begins.
+#
 #  Version History:
+#  v2.2 2026-09-09
+#       Keep normal cron operation silent and successful after startup checks,
+#       and show usage for unsupported arguments.
 #  v2.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -124,13 +138,16 @@ load_config() {
     esac
 }
 
-# Sync Munin data to remote server
-sync_munin_data() {
+# Check if the Munin data directory exists
+check_munin_dir() {
     if [ ! -d "$MUNIN_DIR" ]; then
         echo "[ERROR] Munin directory not found: $MUNIN_DIR" >&2
         exit 1
     fi
+}
 
+# Sync Munin data to remote server
+sync_munin_data() {
     for th in $TARGET_HOSTS; do
         if is_self_host "$th"; then
             #echo "[WARN] Running on target host $th. Skipping munin data sync to itself." >&2
@@ -240,6 +257,8 @@ sync_logs_to_remote() {
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
+        "") ;;
+        *) usage ;;
     esac
 
     if ! is_running_from_cron; then
@@ -248,11 +267,15 @@ main() {
     fi
 
     load_config
-    sync_munin_data
-    ensure_log_dir
-    sync_local_logs
-    create_heartbeat
-    sync_logs_to_remote
+    check_munin_dir
+
+    {
+        sync_munin_data
+        ensure_log_dir
+        sync_local_logs
+        create_heartbeat
+        sync_logs_to_remote
+    } >/dev/null 2>&1
 
     return 0
 }

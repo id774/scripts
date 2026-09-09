@@ -31,6 +31,8 @@ v2.0.2 (Release Date: TBD)
 - Align munin-sync installer prerequisites and Linux-only uninstall behavior.
 - Align state-converging no-op results with repository-wide idempotency rules.
 - Make usage own awk prerequisite checks across Shell Scripts.
+- Align munin-sync runtime and installer contracts for silent cron operation,
+  unsupported arguments, and deployment permission failures.
 
 v2.0.1 (2026-08-26)
 -------------------
