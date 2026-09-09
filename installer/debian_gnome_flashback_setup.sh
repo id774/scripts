@@ -73,6 +73,7 @@
 
 # Display full script header information extracted from the top comment block
 usage() {
+    check_commands awk
     awk '
         BEGIN { in_header = 0 }
         /^#+$/ && length($0) >= 10 { if (!in_header) { in_header = 1; next } else exit }
@@ -84,7 +85,6 @@ usage() {
 # Check if the system is Linux
 check_system() {
     check_commands uname
-
     os="$(uname -s 2>/dev/null)"
     if [ "$os" != "Linux" ]; then
         echo "[ERROR] This script is intended for Linux systems only." >&2

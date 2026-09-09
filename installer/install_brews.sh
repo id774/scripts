@@ -75,7 +75,6 @@ usage() {
 # Check if the system is macOS
 check_system() {
     check_commands uname
-
     if [ "$(uname)" != "Darwin" ]; then
         echo "[ERROR] This script is intended for macOS only." >&2
         exit 1

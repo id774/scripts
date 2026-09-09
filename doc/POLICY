@@ -1113,8 +1113,9 @@ still comes before portability.
   `awk` is used only by `usage()` to display the header. In the standard
   header-extracting `usage()` function, `usage()` owns that dependency and
   calls `check_commands awk` immediately before invoking `awk`.
-- Do not list `sudo` in `check_commands` when `check_sudo` establishes `sudo`
-  availability with `sudo -v`.
+- Do not list `sudo` in the normal main-execution `check_commands` call when
+  `check_sudo` owns that dependency. `check_sudo` calls `check_commands sudo`
+  immediately before invoking `sudo -v`.
 - Detect an external command used only by an optional or conditional operation
   at the point where that operation is selected.
 - Use the following POSIX-compliant helper for commands checked through
@@ -1155,6 +1156,9 @@ check_commands() {
   `check_commands` helper solely so that `usage()` can own that prerequisite
   is a prerequisite ownership normalization. By maintainer decision, that
   normalization alone does not bump the executable version.
+- Adding `check_commands sudo` at the start of `check_sudo` is a prerequisite
+  ownership normalization. By maintainer decision, that normalization alone
+  does not bump the executable version.
 - Do not perform a generic network-connectivity preflight merely because a
   later operation uses the network. Apply the Network Operations policy in
   1.4.3.
