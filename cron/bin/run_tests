@@ -12,7 +12,7 @@
 #  code-quality check, and a find_pycompat.py compatibility check, with the
 #  pyck.py and compatibility checks using the first Python version in the
 #  loop. It is intended to be executed automatically via cron jobs and sends
-#  a summary email to an administrator upon completion.
+#  a summary email only when ADMIN_MAIL_ADDRESS is configured.
 #
 #  Author: id774 (More info: http://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -22,22 +22,23 @@
 #  Usage:
 #  This script is designed to be run automatically through a cron job. Ensure
 #  that '/etc/cron.config/run_tests.conf' is properly configured with the
-#  SCRIPTS, JOBLOG, python_versions, ruby_versions, and ADMIN_MAIL_ADDRESS
-#  variables. For manual execution, run the script:
+#  required SCRIPTS, JOBLOG, python_versions, and ruby_versions variables.
+#  ADMIN_MAIL_ADDRESS is optional. For manual execution, run the script:
 #      /etc/cron.exec/run_tests
 #
 #  The script iterates through the specified versions, runs tests for each
 #  combination of Python and Ruby versions, concludes with a compatibility
-#  check using the first Python version tested, and sends a summary email to
-#  the administrator.
+#  check using the first Python version tested, and optionally sends a summary
+#  email when ADMIN_MAIL_ADDRESS is configured.
 #
-#  Configuration file ('/etc/cron.config/run_tests.conf') requirements:
+#  Configuration file ('/etc/cron.config/run_tests.conf'):
+#  Required variables:
 #  - SCRIPTS: Path to the scripts directory.
 #  - JOBLOG: Path to the job log file.
 #  - python_versions: Space-separated list of Python versions to test.
 #  - ruby_versions: Space-separated list of Ruby versions to test.
-#  - ADMIN_MAIL_ADDRESS: Email address of the administrator to notify.
-#  Ensure these variables are set in '/etc/cron.config/run_tests.conf'.
+#  Optional variables:
+#  - ADMIN_MAIL_ADDRESS: Email address to notify; unset or empty disables email.
 #
 #  Notes:
 #  - The script is designed to be run in environments where Python and Ruby
