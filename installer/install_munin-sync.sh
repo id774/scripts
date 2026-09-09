@@ -59,6 +59,8 @@
 #       /etc/cron.d/munin-sync
 #
 #  Version History:
+#  v2.5 2026-09-09
+#       Fail installation when required permission or ownership updates fail.
 #  v2.4 2026-09-08
 #       Align prerequisite checks and restrict uninstall to Linux.
 #  v2.3 2026-09-06
@@ -147,25 +149,49 @@ setup_directories() {
         echo "[ERROR] Failed to create /var/lib/munin/bin." >&2
         exit 1
     fi
-    sudo chmod 0750 /var/lib/munin/bin
-    sudo chown munin:munin /var/lib/munin/bin
+    if ! sudo chmod 0750 /var/lib/munin/bin; then
+        echo "[ERROR] Failed to set permissions on /var/lib/munin/bin." >&2
+        exit 1
+    fi
+    if ! sudo chown munin:munin /var/lib/munin/bin; then
+        echo "[ERROR] Failed to set ownership on /var/lib/munin/bin." >&2
+        exit 1
+    fi
 
     if ! sudo mkdir -p /var/lib/munin/etc; then
         echo "[ERROR] Failed to create /var/lib/munin/etc." >&2
         exit 1
     fi
-    sudo chmod 0750 /var/lib/munin/etc
-    sudo chown munin:munin /var/lib/munin/etc
+    if ! sudo chmod 0750 /var/lib/munin/etc; then
+        echo "[ERROR] Failed to set permissions on /var/lib/munin/etc." >&2
+        exit 1
+    fi
+    if ! sudo chown munin:munin /var/lib/munin/etc; then
+        echo "[ERROR] Failed to set ownership on /var/lib/munin/etc." >&2
+        exit 1
+    fi
 
     SENDING_DIR="/var/lib/munin/sending/$(hostname -f)"
     if ! sudo mkdir -p "$SENDING_DIR"; then
         echo "[ERROR] Failed to create $SENDING_DIR." >&2
         exit 1
     fi
-    sudo chmod 0750 /var/lib/munin/sending
-    sudo chmod 0750 "$SENDING_DIR"
-    sudo chown munin:munin /var/lib/munin/sending
-    sudo chown munin:munin "$SENDING_DIR"
+    if ! sudo chmod 0750 /var/lib/munin/sending; then
+        echo "[ERROR] Failed to set permissions on /var/lib/munin/sending." >&2
+        exit 1
+    fi
+    if ! sudo chmod 0750 "$SENDING_DIR"; then
+        echo "[ERROR] Failed to set permissions on $SENDING_DIR." >&2
+        exit 1
+    fi
+    if ! sudo chown munin:munin /var/lib/munin/sending; then
+        echo "[ERROR] Failed to set ownership on /var/lib/munin/sending." >&2
+        exit 1
+    fi
+    if ! sudo chown munin:munin "$SENDING_DIR"; then
+        echo "[ERROR] Failed to set ownership on $SENDING_DIR." >&2
+        exit 1
+    fi
 }
 
 # Deploy the munin-sync script
@@ -175,8 +201,14 @@ deploy_scripts() {
         echo "[ERROR] Failed to copy munin-sync.sh." >&2
         exit 1
     fi
-    sudo chmod 0750 /var/lib/munin/bin/munin-sync.sh
-    sudo chown munin:munin /var/lib/munin/bin/munin-sync.sh
+    if ! sudo chmod 0750 /var/lib/munin/bin/munin-sync.sh; then
+        echo "[ERROR] Failed to set permissions on /var/lib/munin/bin/munin-sync.sh." >&2
+        exit 1
+    fi
+    if ! sudo chown munin:munin /var/lib/munin/bin/munin-sync.sh; then
+        echo "[ERROR] Failed to set ownership on /var/lib/munin/bin/munin-sync.sh." >&2
+        exit 1
+    fi
 }
 
 # Deploy the configuration file
@@ -194,8 +226,14 @@ deploy_configurations() {
         echo "[INFO] Skipping copy to preserve existing configuration."
     fi
 
-    sudo chmod 0640 "$CONFIG_FILE"
-    sudo chown munin:munin "$CONFIG_FILE"
+    if ! sudo chmod 0640 "$CONFIG_FILE"; then
+        echo "[ERROR] Failed to set permissions on $CONFIG_FILE." >&2
+        exit 1
+    fi
+    if ! sudo chown munin:munin "$CONFIG_FILE"; then
+        echo "[ERROR] Failed to set ownership on $CONFIG_FILE." >&2
+        exit 1
+    fi
 }
 
 # Setup cron jobs for munin-sync
@@ -215,8 +253,14 @@ EOF
         echo "[INFO] Cron job already exists: $CRON_FILE"
         echo "[INFO] Skipping creation to preserve existing configuration."
     fi
-    sudo chmod 0640 "$CRON_FILE"
-    sudo chown root:adm "$CRON_FILE"
+    if ! sudo chmod 0640 "$CRON_FILE"; then
+        echo "[ERROR] Failed to set permissions on $CRON_FILE." >&2
+        exit 1
+    fi
+    if ! sudo chown root:adm "$CRON_FILE"; then
+        echo "[ERROR] Failed to set ownership on $CRON_FILE." >&2
+        exit 1
+    fi
 }
 
 # Perform installation steps
