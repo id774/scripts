@@ -83,7 +83,6 @@ usage() {
 # Check if the system is macOS
 check_system() {
     check_commands uname
-
     if [ "$(uname)" != "Darwin" ]; then
         echo "[ERROR] This script is intended for macOS only." >&2
         exit 1
@@ -115,6 +114,7 @@ setup_environment() {
 
 # Check if the user has sudo privileges
 check_sudo() {
+    check_commands sudo
     if ! sudo -v 2>/dev/null; then
         echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
         exit 1
