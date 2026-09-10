@@ -18,7 +18,7 @@
 #  which is removed after installation unless errors occur. Sources can optionally
 #  be preserved under /usr/local/src/mecab-stack unless the '-n' flag is given.
 #
-#  Author: id774 (More info: http://id774.net)
+#  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com

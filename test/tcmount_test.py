@@ -11,7 +11,7 @@
 #  of options, including TrueCrypt and VeraCrypt compatibility modes, and
 #  verifies that command failures propagate to the script's exit status.
 #
-#  Author: id774 (More info: http://id774.net)
+#  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com

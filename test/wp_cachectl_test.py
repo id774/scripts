@@ -22,7 +22,7 @@
 #  - The tool uses OptionParser, so tests call main() after patching sys.argv.
 #  - Tests focus on behavior and call intent, not on WP-CLI output formatting.
 #
-#  Author: id774 (More info: http://id774.net)
+#  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com

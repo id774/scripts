@@ -9,7 +9,7 @@
 #  quiet mode. Tests focus on argument parsing, safety limits, confirmation
 #  handling, output formatting, and atomic file updates.
 #
-#  Author: id774 (More info: http://id774.net)
+#  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com

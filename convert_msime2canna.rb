@@ -8,7 +8,7 @@
 #  compatible with the Canna Japanese input method system. It specifically
 #  targets entries labeled as "顔文字" (emoji) and formats them accordingly.
 #
-#  Author: id774 (More info: http://id774.net)
+#  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
