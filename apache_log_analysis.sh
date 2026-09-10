@@ -14,7 +14,7 @@
 #  deployed apache_blog_analysis.py script; this script does not compute
 #  them, to avoid two scripts implementing the same aggregation.
 #
-#  Author: id774 (More info: http://id774.net)
+#  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com

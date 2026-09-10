@@ -26,7 +26,7 @@
 #        B) Tie breaker 1: prefer root mountpoint "/".
 #        C) Tie breaker 2: prefer non-removable-like FS over vfat/msdos/exfat/iso9660/squashfs.
 #
-#  Author: id774 (More info: http://id774.net)
+#  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com

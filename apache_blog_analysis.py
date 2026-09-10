@@ -34,7 +34,7 @@
 #  to /etc/cron.exec by installer/install_apache_log_analysis.sh and
 #  invoked independently by cron/bin/apache_log_analysis.
 #
-#  Author: id774 (More info: http://id774.net)
+#  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com

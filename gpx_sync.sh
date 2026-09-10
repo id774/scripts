@@ -15,7 +15,7 @@
 #  - Set RSYNC_HOSTS as a space-separated list (e.g., "harpuia wyvern") to rsync
 #    to multiple hosts. If RSYNC_HOSTS is unset, the legacy RSYNC_HOST is used.
 #
-#  Author: id774 (More info: http://id774.net)
+#  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
 #  License: The GPL version 3, or LGPL version 3 (Dual License).
 #  Contact: idnanashi@gmail.com
