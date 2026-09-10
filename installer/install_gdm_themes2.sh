@@ -24,6 +24,8 @@
 #  - This script is intended for Linux systems only.
 #
 #  Version History:
+#  v2.8 2026-09-10
+#       Use HTTPS for the id774.net GDM Themes 2 archive download.
 #  v2.7 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -100,7 +102,7 @@ install_gdm_themes2() {
     fi
 
     echo "[INFO] Downloading GDM themes archive..."
-    if ! wget http://id774.net/archive/gdmthemes2.tar.gz; then
+    if ! wget https://id774.net/archive/gdmthemes2.tar.gz; then
         echo "[ERROR] Failed to download gdmthemes2.tar.gz." >&2
         exit 1
     fi

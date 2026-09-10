@@ -22,6 +22,8 @@
 #  -n   Do not save source files after installation.
 #
 #  Version History:
+#  v2.9 2026-09-10
+#       Use HTTPS for the id774.net DES archive download.
 #  v2.8 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -134,7 +136,7 @@ install_des() {
     cd install_des || exit 1
 
     echo "[INFO] Downloading software archive..."
-    if ! wget http://id774.net/archive/kmdes.tar.gz; then
+    if ! wget https://id774.net/archive/kmdes.tar.gz; then
         echo "[ERROR] Failed to download kmdes.tar.gz." >&2
         exit 1
     fi
