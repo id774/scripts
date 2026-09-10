@@ -27,6 +27,9 @@
 #    -n, --no-sudo    Skip any sudo/apt operations and only update user dirs
 #
 #  Version History:
+#  v1.9 2026-09-10
+#       Allow normal setup to install xdg-user-dirs-gtk before checking
+#       xdg-user-dirs-gtk-update.
 #  v1.8 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -133,11 +136,13 @@ main() {
     check_system
 
     if [ "$SUDO_MODE" = "1" ]; then
-        check_commands apt dpkg grep xdg-user-dirs-gtk-update
+        check_commands apt dpkg grep
         check_sudo
 
         # Install xdg-user-dirs-gtk if necessary
         install_xdg_user_dirs_gtk
+
+        check_commands xdg-user-dirs-gtk-update
     else
         check_commands xdg-user-dirs-gtk-update
     fi
