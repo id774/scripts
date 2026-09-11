@@ -35,6 +35,8 @@ v2.0.2 (Release Date: TBD)
   unsupported arguments, and deployment permission failures.
 - Fix setup_xdg_dirs_en.sh to install xdg-user-dirs-gtk before checking
   xdg-user-dirs-gtk-update in normal setup mode.
+- Avoid redundant checks of guaranteed postconditions and let setup_iptables.sh
+  provision iptables-restore before first use.
 
 v2.0.1 (2026-08-26)
 -------------------

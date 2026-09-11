@@ -30,6 +30,9 @@
 #  - Exits if not running on Linux.
 #
 #  Version History:
+#  v1.6 2026-09-11
+#       Allow iptables-persistent installation to provide iptables-restore
+#       before its first use.
 #  v1.5 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -161,7 +164,7 @@ main() {
 
     check_system
     check_scripts
-    check_commands dpkg apt-get debconf-set-selections iptables-restore chmod mkdir cp systemctl dirname sh
+    check_commands dpkg apt-get debconf-set-selections chmod mkdir cp systemctl dirname sh
     check_sudo
 
     TEMPLATE_PATH="$SCRIPTS/etc/iptables/rules.v4"
