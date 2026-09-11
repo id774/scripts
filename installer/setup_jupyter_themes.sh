@@ -20,10 +20,13 @@
 #
 #  Requirements:
 #  - Must be executed on macOS/Linux.
-#  - Requires `pip`, `jupyter`, and `jt` installed.
+#  - Requires `pip` at the configured Python prefix.
+#  - Installs `jupyterthemes` (providing `jt`) automatically if missing.
 #  - Requires sudo privileges unless a second argument is provided.
 #
 #  Version History:
+#  v1.6 2026-09-11
+#       Install jupyterthemes when missing instead of requiring jt before setup.
 #  v1.5 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -94,9 +97,14 @@ setup_environment() {
 # Install Jupyter theme
 install_jupyter_theme() {
     if ! "$PIP" show jupyterthemes >/dev/null 2>&1; then
-        echo "[ERROR] jupyterthemes is not installed. Install it manually before running this script." >&2
-        exit 1
+        echo "[INFO] Installing jupyterthemes..."
+        if ! $SUDO "$PIP" install jupyterthemes; then
+            echo "[ERROR] Failed to install jupyterthemes." >&2
+            exit 1
+        fi
     fi
+    # The installed jupyterthemes package provides jt at this Python prefix.
+    # Do not add a separate post-install jt existence check.
 
     echo "[INFO] Applying Jupyter theme settings..."
     if ! "$JT" -t monokai -f inconsolata -N -T -fs 10 -nfs 10 -ofs 10 -cellw 90% -lineh 140; then
@@ -120,7 +128,7 @@ main() {
     esac
 
     setup_environment "$@"
-    check_commands "$PIP" "$JT"
+    check_commands "$PIP"
     install_jupyter_theme
     echo "[INFO] Jupyter theme setup completed successfully."
     return 0

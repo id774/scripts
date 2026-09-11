@@ -40,6 +40,8 @@
 #  - Must be executed in a shell environment with internet access.
 #
 #  Version History:
+#  v3.8 2026-09-11
+#       Require sudo only on execution paths that select sudo mode.
 #  v3.7 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -91,8 +93,10 @@ check_commands() {
 
 # Check if the user has sudo privileges (password may be required)
 check_sudo() {
+    # No-sudo mode must not depend on sudo; validate sudo only after sudo mode is selected.
+    [ "$SUDO" = "sudo" ] || return 0
     check_commands sudo
-    if [ "$SUDO" = "sudo" ] && ! sudo -v 2>/dev/null; then
+    if ! sudo -v 2>/dev/null; then
         echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access or specify 'no-sudo'." >&2
         exit 1
     fi
@@ -219,7 +223,11 @@ main() {
     esac
 
     # Perform initial checks
-    check_commands curl sudo make tar awk mkdir cp chown uname rm
+    # cp and chown are used only by the optional source-saving path, but they
+    # are near-universal coreutils; check them eagerly here so a missing
+    # command fails fast instead of only after a full build and install
+    # have already completed.
+    check_commands curl make tar awk mkdir uname rm cp chown
 
     # Run the installation process
     setup_environment "$@"

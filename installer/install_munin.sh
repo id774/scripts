@@ -6,7 +6,9 @@
 #  Description:
 #  This script installs and configures Munin and Munin-node,
 #  ensuring necessary permissions and configurations are applied
-#  automatically without requiring manual edits.
+#  automatically without requiring manual edits. Apache, this script's
+#  required and managed web server, is installed together with Munin so
+#  the Apache service and htpasswd it provides are ready for configuration.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -23,6 +25,7 @@
 #  - The script is designed for Debian-based systems.
 #  - Internet connectivity is required for package installation.
 #  - Ensure that $SCRIPTS is set correctly before execution.
+#  - Apache is installed and managed by this script as a required service.
 #
 #  Exit Status:
 #  - If the system is not Linux, the script exits with an error.
@@ -30,6 +33,10 @@
 #  - Errors from underlying commands should be resolved based on their output.
 #
 #  Version History:
+#  v1.7 2026-09-11
+#       Provision Apache with Munin so htpasswd and the restarted Apache
+#       service are established by package installation instead of startup
+#       checks.
 #  v1.6 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -95,13 +102,25 @@ check_commands() {
     done
 }
 
+# Check if the user has sudo privileges
+check_sudo() {
+    check_commands sudo
+    if ! sudo -v 2>/dev/null; then
+        echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
+        exit 1
+    fi
+}
+
 # Install Munin and dependencies
 install_munin() {
     echo "[INFO] Installing Munin and dependencies..."
-    if ! sudo apt-get -y install munin munin-node; then
+    if ! sudo apt-get -y install munin munin-node apache2; then
         echo "[ERROR] Failed to install Munin packages." >&2
         exit 1
     fi
+    # The installed apache2 package establishes the Apache service and pulls in
+    # apache2-utils, which provides htpasswd. Do not recheck those package
+    # postconditions here.
 }
 
 # Configure Munin
@@ -151,7 +170,8 @@ main() {
     # Perform initial checks
     check_system
     check_scripts
-    check_commands sudo systemctl apt-get htpasswd cp chown chmod rm ln
+    check_commands systemctl apt-get cp chown chmod rm ln
+    check_sudo
 
     # Run the installation process
     install_munin

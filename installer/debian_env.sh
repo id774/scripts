@@ -39,6 +39,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v2.2 2026-09-11
+#       Let locales package provisioning establish locale-gen and update-locale
+#       instead of requiring them before setup begins.
 #  v2.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -112,11 +115,12 @@ check_sudo() {
 
 # Set locale ja_JP.UTF-8
 set_locale_jp() {
-    # Install `locales` package if `/etc/locale.gen` does not exist
-    if [ ! -f /etc/locale.gen ]; then
+    # Install `locales` package if not already installed
+    if ! dpkg -s locales >/dev/null 2>&1; then
         sudo apt-get install -y locales
-        echo "ja_JP.UTF-8 UTF-8" | sudo tee -a /etc/locale.gen
     fi
+    # The installed locales package guarantees locale-gen and update-locale.
+    # Do not recheck those commands after package provisioning.
 
     # Append `ja_JP.UTF-8 UTF-8` to `/etc/locale.gen` if not already present
     if ! grep -q '^ja_JP.UTF-8' /etc/locale.gen; then
@@ -162,7 +166,7 @@ main() {
 
     check_environment
     setup_environment
-    check_commands tee locale locale-gen update-locale grep groupadd
+    check_commands dpkg tee locale grep groupadd
     check_sudo
 
     set_locale_jp

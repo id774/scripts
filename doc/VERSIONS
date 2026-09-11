@@ -33,10 +33,8 @@ v2.0.2 (Release Date: TBD)
 - Align state-converging no-op results with repository-wide idempotency rules.
 - Align munin-sync runtime and installer contracts for silent cron operation,
   unsupported arguments, and deployment permission failures.
-- Fix setup_xdg_dirs_en.sh to install xdg-user-dirs-gtk before checking
-  xdg-user-dirs-gtk-update in normal setup mode.
-- Avoid redundant checks of guaranteed postconditions and let setup_iptables.sh
-  provision iptables-restore before first use.
+- Align prerequisite checks with actual execution paths and remove redundant
+  or contradictory checks.
 
 v2.0.1 (2026-08-26)
 -------------------
