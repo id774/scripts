@@ -59,6 +59,9 @@
 #  home directory. This behavior can be overridden with the --sudo or --no-sudo options.
 #
 #  Version History:
+#  v2.2 2026-09-11
+#       Honor explicit --no-sudo regardless of repository path and parse
+#       documented options after positional arguments.
 #  v2.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -201,42 +204,93 @@ delete_git_repo() {
 parse_arguments() {
     dry_run=false
     delete_repo=false
-    explicit_sudo=""
+    explicit_sudo=auto
     user="git"
     group="git"
+    positional_only=false
+    positional_count=0
+    repo_name=""
+    repo_base_path=""
 
     while [ $# -gt 0 ]; do
-        case "$1" in
-            --dry-run) dry_run=true ;;
-            --delete) delete_repo=true ;;
-            --sudo) explicit_sudo="sudo" ;;
-            --no-sudo) explicit_sudo="" ;;
-            --user) user="$2"; shift ;;
-            --group) group="$2"; shift ;;
-            -h|--help) usage ;;
-            --) shift; break ;;
-            -*) usage ;;
-            *) break ;;
+        if [ "$positional_only" = false ]; then
+            case "$1" in
+                --dry-run)
+                    dry_run=true
+                    shift
+                    continue
+                    ;;
+                --delete)
+                    delete_repo=true
+                    shift
+                    continue
+                    ;;
+                --sudo)
+                    explicit_sudo=sudo
+                    shift
+                    continue
+                    ;;
+                --no-sudo)
+                    explicit_sudo=no-sudo
+                    shift
+                    continue
+                    ;;
+                --user)
+                    user="$2"
+                    shift 2
+                    continue
+                    ;;
+                --group)
+                    group="$2"
+                    shift 2
+                    continue
+                    ;;
+                -h|--help)
+                    usage
+                    ;;
+                --)
+                    positional_only=true
+                    shift
+                    continue
+                    ;;
+                -*)
+                    usage
+                    ;;
+            esac
+        fi
+
+        positional_count=$((positional_count + 1))
+        case "$positional_count" in
+            1) repo_name="$1" ;;
+            2) repo_base_path="$1" ;;
+            *) usage ;;
         esac
         shift
     done
 
-    if [ "$#" -lt 1 ]; then
+    if [ -z "$repo_name" ]; then
         usage
     fi
 
-    repo_name=$1
-    repo_base_path=${2:-"/var/lib/git"}
+    repo_base_path="${repo_base_path:-/var/lib/git}"
     repo_full_path="${repo_base_path}/${repo_name}.git"
 
-    if [ -z "$explicit_sudo" ]; then
-        case "$repo_base_path" in
-            $HOME*) use_sudo="" ;;
-            *) use_sudo="sudo" ;;
-        esac
-    else
-        use_sudo="$explicit_sudo"
-    fi
+    # Keep explicit no-sudo distinct from automatic path-based sudo selection;
+    # otherwise a system path would silently override the user's no-sudo choice.
+    case "$explicit_sudo" in
+        sudo)
+            use_sudo="sudo"
+            ;;
+        no-sudo)
+            use_sudo=""
+            ;;
+        *)
+            case "$repo_base_path" in
+                $HOME*) use_sudo="" ;;
+                *) use_sudo="sudo" ;;
+            esac
+            ;;
+    esac
 }
 
 # Main entry point of the script

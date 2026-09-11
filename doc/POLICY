@@ -214,6 +214,11 @@ repository is already being edited.
   command before its first use, do not immediately check that command again.
   Use it when needed; an unexpected inconsistency is handled by the consuming
   operation's existing failure path.
+- When omitting a check is non-obvious because an earlier operation or package
+  contract establishes the required state, leave a concise adjacent code
+  comment if a future maintainer could otherwise reasonably reintroduce the
+  redundant check. The comment explains the invariant that makes the extra
+  check unnecessary; it does not merely restate the code.
 
 #### 1.2.3 Environment Differences
 - Branch on what the environment provides, not on what it is called. A
@@ -1132,6 +1137,13 @@ still comes before portability.
   immediately before invoking `sudo -v`.
 - Detect an external command used only by an optional or conditional operation
   at the point where that operation is selected.
+- A command used only by a conditional execution path may still be validated
+  before side effects begin when it is a normal prerequisite of the supported
+  environment and delaying the check would only move a predictable failure
+  until after earlier work has already been performed.
+- A mode that explicitly disables a facility, such as a no-sudo mode, must not
+  require that facility's command or privilege validation. Select the mode
+  first, then validate only the prerequisites of that mode.
 - Use the following POSIX-compliant helper for commands checked through
   `check_commands`; it maps a missing command to `127` and a present but
   non-executable command to `126`:

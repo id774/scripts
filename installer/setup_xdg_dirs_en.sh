@@ -27,6 +27,9 @@
 #    -n, --no-sudo    Skip any sudo/apt operations and only update user dirs
 #
 #  Version History:
+#  v2.0 2026-09-11
+#       Avoid rechecking xdg-user-dirs-gtk-update after normal-mode package
+#       provisioning while retaining the prerequisite check in no-sudo mode.
 #  v1.9 2026-09-10
 #       Allow normal setup to install xdg-user-dirs-gtk before checking
 #       xdg-user-dirs-gtk-update.
@@ -110,6 +113,8 @@ install_xdg_user_dirs_gtk() {
     else
         echo "xdg-user-dirs-gtk is already installed."
     fi
+    # The xdg-user-dirs-gtk package state established here guarantees
+    # xdg-user-dirs-gtk-update. Do not add a redundant post-install check.
 }
 
 # Update user directories and check for success
@@ -141,9 +146,9 @@ main() {
 
         # Install xdg-user-dirs-gtk if necessary
         install_xdg_user_dirs_gtk
-
-        check_commands xdg-user-dirs-gtk-update
     else
+        # No-sudo mode performs no provisioning, so xdg-user-dirs-gtk-update
+        # remains an external prerequisite in this mode.
         check_commands xdg-user-dirs-gtk-update
     fi
 

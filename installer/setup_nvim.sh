@@ -29,6 +29,8 @@
 #  - NeoVim must be installed and available in PATH.
 #
 #  Version History:
+#  v1.4 2026-09-11
+#       Remove the redundant post-check_commands nvim existence branch.
 #  v1.3 2026-09-06
 #       Show usage for unsupported arguments instead of starting installation.
 #  v1.2 2026-07-11
@@ -129,11 +131,9 @@ create_vim_symlink() {
 install() {
     check_commands mkdir cp ln nvim
 
+    # nvim was validated above; command -v here retrieves its path for the
+    # symlink and is not a second existence check.
     nvim_path=$(find_nvim_path)
-    if [ -z "$nvim_path" ]; then
-        echo "[ERROR] nvim not found in PATH." >&2
-        exit 1
-    fi
 
     create_config_dir
     copy_vimrc

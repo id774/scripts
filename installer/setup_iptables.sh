@@ -111,6 +111,8 @@ install_persistent() {
     else
         echo "[INFO] iptables-persistent already installed."
     fi
+    # The iptables-persistent package state established above guarantees
+    # iptables-restore before load_rules(). Do not add a redundant command check.
 }
 
 # Apply template if needed
