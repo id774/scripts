@@ -202,6 +202,18 @@ repository is already being edited.
 - An unattended script in an environment that will never supply an optional
   capability should avoid repeatedly reporting a condition that the operator
   cannot act on. A failure the operator can act on is still reported.
+- Do not add a check whose only purpose is to reconfirm a state already
+  guaranteed by an invariant established earlier in the same run or by the
+  contract of a preceding operation that completed successfully. Such a check
+  adds a branch without distinguishing a supported runtime state.
+- Add a separate check only when the condition can vary independently in a
+  supported environment and its result changes safe control flow, diagnostics,
+  fallback behavior, or another observable choice. This applies to commands,
+  files, directories, services, configuration state, and other capabilities.
+- For example, when a successful package installation contractually provides a
+  command before its first use, do not immediately check that command again.
+  Use it when needed; an unexpected inconsistency is handled by the consuming
+  operation's existing failure path.
 
 #### 1.2.3 Environment Differences
 - Branch on what the environment provides, not on what it is called. A
@@ -1106,8 +1118,10 @@ still comes before portability.
 ### 2.3 Dependency and Environment Checks
 - Validate required external commands before the work that depends on them
   begins.
-- Use `check_commands` once near startup for external commands required by the
-  script's normal main execution.
+- Use `check_commands` once near startup for external commands that must already
+  be available for the script's normal main execution. A command that the
+  script itself guarantees to provide before its first use is not a startup
+  prerequisite and is not added to a redundant post-provision check.
 - Do not list shell built-ins in `check_commands`.
 - Do not list `awk` in the normal main-execution `check_commands` call when
   `awk` is used only by `usage()` to display the header. In the standard
