@@ -35,6 +35,8 @@ v2.0.2 (Release Date: TBD)
   unsupported arguments, and deployment permission failures.
 - Align prerequisite checks with actual execution paths and remove redundant
   or contradictory checks.
+- Accept tree.sh -a before or after its optional directory and show usage for
+  unsupported options or extra directory arguments.
 
 v2.0.1 (2026-08-26)
 -------------------

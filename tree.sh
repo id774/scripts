@@ -16,12 +16,20 @@
 #
 #  Usage:
 #      ./tree.sh [directory] [-a]
+#      ./tree.sh [-a] [directory]
 #
 #  Run the script without arguments to display the tree of the current
-#  directory, with a directory path to display the tree of that directory,
-#  or with '-a' option to include hidden directories.
+#  directory, with one directory path to display that directory, or with
+#  '-a' before or after the directory to include hidden entries.
+#
+#  Options:
+#  -a              Include hidden entries.
+#  -h, --help      Display this help information.
+#  -v, --version   Display version information.
 #
 #  Version History:
+#  v2.1 2026-09-12
+#       Accept -a before or after the directory and reject extra arguments.
 #  v2.0 2026-08-22
 #       Use POSIX find negation when excluding hidden paths.
 #  v1.9 2026-07-11
@@ -79,20 +87,38 @@ check_commands() {
 # Determine the directory and option for hidden files
 parse_arguments() {
     show_hidden=false
+    directory=""
+    directory_set=false
 
-    if [ "$#" -gt 0 ] && [ "$1" = "-a" ]; then
-        show_hidden=true
+    while [ "$#" -gt 0 ]; do
+        case "$1" in
+            -a)
+                show_hidden=true
+                ;;
+            -h|--help|-v|--version)
+                usage
+                ;;
+            -*)
+                usage
+                ;;
+            *)
+                if [ "$directory_set" = true ]; then
+                    usage
+                fi
+                directory="$1"
+                directory_set=true
+                ;;
+        esac
         shift
+    done
+
+    if [ "$directory_set" = false ]; then
+        directory="."
     fi
 
-    if [ $# -eq 0 ]; then
-        directory="."
-    else
-        directory="$1"
-        if [ ! -d "$directory" ]; then
-            echo "[ERROR] Directory '$directory' does not exist." >&2
-            exit 1
-        fi
+    if [ ! -d "$directory" ]; then
+        echo "[ERROR] Directory '$directory' does not exist." >&2
+        exit 1
     fi
 }
 
