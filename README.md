@@ -96,12 +96,13 @@ It exits with a non-zero status when any test fails.
 
 A second layer runs nightly from `cron/bin/run_tests`, which drives
 `run_tests.sh` once per configured Python and Ruby version and then applies the
-repository-wide checks: the shell script validation (`test/check_scripts.sh`),
-the header documentation check (`check_header_doc.py -a`), a Python
-code-quality dry run (`pyck.py`) against the top-level `*.py` files and
-`test/*.py`, and the compatibility check (`find_pycompat.py`). Checks that
-belong to the repository as a whole, rather than to one interpreter version,
-are wired there instead of into `run_tests.sh`.
+repository-wide shell script validation (`test/check_scripts.sh`) and header
+documentation check (`check_header_doc.py -a`). When their checker scripts are
+available, it also runs the Python code-quality dry run (`pyck.py`) against the
+top-level `*.py` files and `test/*.py`, and the compatibility check
+(`find_pycompat.py`). Checks that belong to the repository as a whole, rather
+than to one interpreter version, are wired there instead of into
+`run_tests.sh`.
 
 ---
 

@@ -947,11 +947,12 @@ document changed.
   and exits non-zero when any of them fails.
 - The nightly `cron/bin/run_tests` job is the second layer. It drives
   `run_tests.sh` once per configured Python and Ruby version, then runs
-  `test/check_scripts.sh` (which exercises every shell script through `-h`),
-  `check_header_doc.py -a`, a `pyck.py` dry-run against the top-level Python
-  files and the Python files directly under `test/`, using the first
-  configured Python environment, and the `find_pycompat.py` compatibility
-  check across the repository, and mails the result to the administrator.
+  `test/check_scripts.sh` (which exercises every shell script through `-h`)
+  and `check_header_doc.py -a`. When their checker scripts are available, it
+  also runs a `pyck.py` dry-run against the top-level Python files and the
+  Python files directly under `test/`, using the first configured Python
+  environment, and the `find_pycompat.py` compatibility check across the
+  repository. It mails the result to the administrator.
 - A check that belongs to the repository as a whole, rather than to one
   interpreter version, is wired into the cron job rather than into
   `run_tests.sh`, so that it runs once per night instead of once per
