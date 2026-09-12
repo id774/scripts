@@ -14,8 +14,8 @@ v2.0.2 (Release Date: TBD)
   actual check results.
 - Separate pyck.py formatter and linter ignore policies, excluding W503 and W504
   from Flake8 while retaining the existing checks for other rules.
-- Run pyck.py in dry-run mode as a nightly repository-wide Python code-quality
-  check using the configured Python environment.
+- Run pyck.py and find_pycompat.py as optional nightly repository-wide Python
+  checks when their checker scripts are available.
 - Make pyck.py return non-zero for formatter or linter execution failures while
   keeping lint findings and dry-run change candidates advisory.
 - Make default-install installers show usage for unsupported arguments instead of

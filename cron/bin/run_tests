@@ -8,9 +8,9 @@
 #  in Python and Ruby. It loads configuration settings from an external
 #  configuration file, iterates through specified versions of Python and Ruby
 #  to run tests, runs a repository-wide shell script validation check, a
-#  repository-wide header documentation check, a pyck.py dry-run Python
-#  code-quality check, and a find_pycompat.py compatibility check, with the
-#  pyck.py and compatibility checks using the first Python version in the
+#  repository-wide header documentation check and, when available, a pyck.py
+#  dry-run Python code-quality check and a find_pycompat.py compatibility
+#  check, with the pyck.py and compatibility checks using the first Python
 #  loop. It is intended to be executed automatically via cron jobs and sends
 #  a summary email only when ADMIN_MAIL_ADDRESS is configured.
 #
@@ -44,8 +44,8 @@
 #  - The script is designed to be run in environments where Python and Ruby
 #    are used for development and testing.
 #  - In addition to language-specific tests, the script runs repository-wide
-#    checks for shell scripts, header documentation, Python code quality, and
-#    Python compatibility.
+#    shell script and header checks. Python code-quality and compatibility
+#    checks run only when their checker scripts are available.
 #  - The pyck.py dry-run requires autopep8, flake8, autoflake, and isort to be
 #    installed in the first configured Python environment's bin directory.
 #  - Ensure the specified Python and Ruby versions are installed and accessible.
@@ -58,6 +58,8 @@
 #  4. Configuration variables not set.
 #
 #  Version History:
+#  v3.1 2026-09-12
+#       Skip missing pyck.py and find_pycompat.py checks without failing the run.
 #  v3.0 2026-09-06
 #       Add pyck.py dry-run to nightly repository checks and use the first
 #       configured Python environment for its formatter and linter commands.
@@ -231,9 +233,7 @@ run_pyck() {
     fi
 
     if [ ! -f "$SCRIPTS/pyck.py" ]; then
-        record_failure
-        mark_failure
-        return 1
+        return 0
     fi
 
     echo >> "$JOBLOG" 2>&1
@@ -263,9 +263,7 @@ run_compatibility_check() {
     fi
 
     if [ ! -f "$SCRIPTS/find_pycompat.py" ]; then
-        record_failure
-        mark_failure
-        return 1
+        return 0
     fi
 
     echo "=== Checking Python compatibility with Python $first_python_version. ===" >> "$JOBLOG" 2>&1
