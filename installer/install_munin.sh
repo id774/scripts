@@ -130,7 +130,7 @@ configure_munin() {
         echo "[ERROR] Failed to copy apache.conf for Munin." >&2
         exit 1
     fi
-    test -f /home/backup/etc/munin/apache24.conf && sudo cp /home/backup/etc/munin/apache24.conf /etc/munin/apache.conf
+    test -f /home/backup/etc/munin/apache.conf && sudo cp /home/backup/etc/munin/apache.conf /etc/munin/apache.conf
     sudo chown root:root /etc/munin/apache.conf
     test -f /etc/munin/apache24.conf && sudo rm -vf /etc/munin/apache24.conf && sudo ln -snf /etc/munin/apache.conf /etc/munin/apache24.conf
 }
