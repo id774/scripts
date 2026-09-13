@@ -748,11 +748,21 @@ document changed.
     runtime version, tool version, or other version number without changing
     the surrounding behavior or design, does not by itself require an
     additional executable version bump.
-  - Any change that affects code behavior (bug fixes, new options, and
-    refactors that change observable behavior) bumps the version.
-  - Multiple updates on the same date must be consolidated into a single
-    version entry; do not increment version numbers multiple times on the
-    same date.
+  - An executable version represents one coherent behavior or specification
+    change unit, not an edit, commit, pull request, or calendar day. Start a
+    new version only when the new change is independently meaningful from
+    the change described by the newest entry.
+  - Follow-up work that completes, corrects, or hardens the same newest
+    change unit stays in that version even when it is made on a later date
+    or in another commit or pull request. Update the entry date to the date
+    the completed unit reached its current form and rewrite the description
+    to summarize the whole change.
+  - An internal cleanup or refactor that preserves observable behavior does
+    not by itself bump the version.
+  - Do not merge independent change units merely because they were made on
+    the same day or close together. If an independent version has
+    intervened, a later fix to an older change is a new change unit rather
+    than a retroactive rewrite across that intervening version.
   - Finalizing only the release date of an already-added `Version History`
     entry (e.g. changing `TBD` to the actual release date) is not by itself
     a new change. Classify that entry as version-only or as containing real

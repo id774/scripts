@@ -27,12 +27,9 @@
 #    -n, --no-sudo    Skip any sudo/apt operations and only update user dirs
 #
 #  Version History:
-#  v2.0 2026-09-11
-#       Avoid rechecking xdg-user-dirs-gtk-update after normal-mode package
-#       provisioning while retaining the prerequisite check in no-sudo mode.
-#  v1.9 2026-09-10
-#       Allow normal setup to install xdg-user-dirs-gtk before checking
-#       xdg-user-dirs-gtk-update.
+#  v1.9 2026-09-11
+#       Let normal setup provision xdg-user-dirs-gtk before use while keeping
+#       the xdg-user-dirs-gtk-update prerequisite in no-sudo mode.
 #  v1.8 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
