@@ -25,9 +25,9 @@
 #
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
-#    - Verify check_command does nothing (no output, no exit) when the command exists and is executable.
-#    - Verify check_command prints an error and exits with code 127 when the command does not exist.
-#    - Verify check_command prints an error and exits with code 126 when the command exists but is not executable.
+#    - Verify check_filesystem_tool does nothing (no output, no exit) when the command exists and is executable.
+#    - Verify check_filesystem_tool prints an error and exits with code 127 when the command does not exist.
+#    - Verify check_filesystem_tool prints an error and exits with code 126 when the command exists but is not executable.
 #    - Verify octal permission mode detection for numeric and symbolic modes.
 #    - Verify base find command construction with and without name patterns.
 #    - Apply chmod to files only with numeric mode and mismatch-only filtering.
@@ -115,37 +115,37 @@ class TestChmodTree(unittest.TestCase):
         self.assertIn('--force', out.decode('utf-8'))
 
     @patch('chmodtree.os.access')
-    @patch('chmodtree.find_command')
+    @patch('chmodtree.find_filesystem_tool_candidate')
     @patch('chmodtree.sys.exit')
     @patch('chmodtree.print')
-    def test_check_command_with_existing_executable_command(self, mock_print, mock_exit, mock_find_command, mock_access):
-        """ Test check_command with a command that exists and is executable. """
-        mock_find_command.return_value = '/usr/bin/command'
+    def test_check_filesystem_tool_with_existing_executable_command(self, mock_print, mock_exit, mock_find_filesystem_tool_candidate, mock_access):
+        """ Test check_filesystem_tool with a command that exists and is executable. """
+        mock_find_filesystem_tool_candidate.return_value = '/usr/bin/command'
         mock_access.return_value = True
-        chmodtree.check_command('command')
+        chmodtree.check_filesystem_tool('command')
         mock_exit.assert_not_called()
         mock_print.assert_not_called()
 
     @patch('chmodtree.os.access')
-    @patch('chmodtree.find_command')
+    @patch('chmodtree.find_filesystem_tool_candidate')
     @patch('chmodtree.sys.exit')
     @patch('chmodtree.print')
-    def test_check_command_with_nonexistent_command(self, mock_print, mock_exit, mock_find_command, mock_access):
-        """ Test check_command with a command that does not exist. """
-        mock_find_command.return_value = None
-        chmodtree.check_command('nonexistent')
+    def test_check_filesystem_tool_with_nonexistent_command(self, mock_print, mock_exit, mock_find_filesystem_tool_candidate, mock_access):
+        """ Test check_filesystem_tool with a command that does not exist. """
+        mock_find_filesystem_tool_candidate.return_value = None
+        chmodtree.check_filesystem_tool('nonexistent')
         mock_print.assert_called_with("[ERROR] Command 'nonexistent' is not installed. Please install nonexistent and try again.", file=sys.stderr)
         mock_exit.assert_called_with(127)
 
     @patch('chmodtree.os.access')
-    @patch('chmodtree.find_command')
+    @patch('chmodtree.find_filesystem_tool_candidate')
     @patch('chmodtree.sys.exit')
     @patch('chmodtree.print')
-    def test_check_command_with_nonexecutable_command(self, mock_print, mock_exit, mock_find_command, mock_access):
-        """ Test check_command with a command that exists but is not executable. """
-        mock_find_command.return_value = '/usr/bin/nonexecutable'
+    def test_check_filesystem_tool_with_nonexecutable_command(self, mock_print, mock_exit, mock_find_filesystem_tool_candidate, mock_access):
+        """ Test check_filesystem_tool with a command that exists but is not executable. """
+        mock_find_filesystem_tool_candidate.return_value = '/usr/bin/nonexecutable'
         mock_access.return_value = False
-        chmodtree.check_command('nonexecutable')
+        chmodtree.check_filesystem_tool('nonexecutable')
         mock_print.assert_called_with("[ERROR] Command 'nonexecutable' is not executable. Please check the permissions.", file=sys.stderr)
         mock_exit.assert_called_with(126)
 
@@ -618,9 +618,9 @@ class TestChmodTree(unittest.TestCase):
 
     @patch('chmodtree.check_sudo')
     @patch('chmodtree.chmodtree')
-    @patch('chmodtree.check_command')
+    @patch('chmodtree.check_filesystem_tool')
     @patch('chmodtree.setup_option_parser')
-    def test_main_checks_chmod_only_when_chmod_options_are_used(self, mock_parser_setup, mock_check_command, mock_chmodtree, mock_check_sudo):
+    def test_main_checks_chmod_only_when_chmod_options_are_used(self, mock_parser_setup, mock_check_filesystem_tool, mock_chmodtree, mock_check_sudo):
         """ Test main checks chmod when file or directory modes are requested. """
         parser = MagicMock()
         options = self.make_options(files='0644', dirs=None, user=None, group=None, sudo=False)
@@ -631,16 +631,16 @@ class TestChmodTree(unittest.TestCase):
         status = chmodtree.main()
 
         self.assertEqual(status, 0)
-        mock_check_command.assert_has_calls([call('find'), call('chmod')])
-        self.assertNotIn(call('chown'), mock_check_command.call_args_list)
+        mock_check_filesystem_tool.assert_has_calls([call('find'), call('chmod')])
+        self.assertNotIn(call('chown'), mock_check_filesystem_tool.call_args_list)
         mock_check_sudo.assert_not_called()
         mock_chmodtree.assert_called_once_with(options, 'target')
 
     @patch('chmodtree.check_sudo')
     @patch('chmodtree.chmodtree')
-    @patch('chmodtree.check_command')
+    @patch('chmodtree.check_filesystem_tool')
     @patch('chmodtree.setup_option_parser')
-    def test_main_checks_chown_only_when_owner_or_group_options_are_used(self, mock_parser_setup, mock_check_command, mock_chmodtree, mock_check_sudo):
+    def test_main_checks_chown_only_when_owner_or_group_options_are_used(self, mock_parser_setup, mock_check_filesystem_tool, mock_chmodtree, mock_check_sudo):
         """ Test main checks chown when owner or group normalization is requested. """
         parser = MagicMock()
         options = self.make_options(files=None, dirs=None, user='root', group='root', sudo=True)
@@ -651,15 +651,15 @@ class TestChmodTree(unittest.TestCase):
         status = chmodtree.main()
 
         self.assertEqual(status, 0)
-        mock_check_command.assert_has_calls([call('find'), call('chown')])
-        self.assertNotIn(call('chmod'), mock_check_command.call_args_list)
+        mock_check_filesystem_tool.assert_has_calls([call('find'), call('chown')])
+        self.assertNotIn(call('chmod'), mock_check_filesystem_tool.call_args_list)
         mock_check_sudo.assert_called_once()
         mock_chmodtree.assert_called_once_with(options, 'target')
 
     @patch('chmodtree.chmodtree')
-    @patch('chmodtree.check_command')
+    @patch('chmodtree.check_filesystem_tool')
     @patch('chmodtree.setup_option_parser')
-    def test_main_returns_one_when_argument_count_is_invalid(self, mock_parser_setup, mock_check_command, mock_chmodtree):
+    def test_main_returns_one_when_argument_count_is_invalid(self, mock_parser_setup, mock_check_filesystem_tool, mock_chmodtree):
         """ Test main returns 1 and prints help when the directory argument is missing. """
         parser = MagicMock()
         options = self.make_options()
@@ -670,7 +670,7 @@ class TestChmodTree(unittest.TestCase):
 
         self.assertEqual(status, 1)
         parser.print_help.assert_called_once()
-        mock_check_command.assert_not_called()
+        mock_check_filesystem_tool.assert_not_called()
         mock_chmodtree.assert_not_called()
 
 

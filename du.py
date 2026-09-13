@@ -86,7 +86,7 @@ def usage():
         sys.exit(1)
     sys.exit(0)
 
-def locate_command(command):
+def find_command(command):
     """
     Search PATH for command's executable path, using a manual PATH search.
     Return the full path when found, or None when not found.
@@ -101,7 +101,7 @@ def command_exists(command):
     """
     Checks if a given command exists in the system path using a manual PATH search.
     """
-    return locate_command(command) is not None
+    return find_command(command) is not None
 
 def error_message(message, exit_code=1):
     """

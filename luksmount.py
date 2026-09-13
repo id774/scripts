@@ -115,7 +115,7 @@ def get_script_version():
     return "unknown"
 
 
-def find_command(command):
+def find_command_with_status(command):
     """
     Search PATH for the given command.
 
@@ -139,7 +139,7 @@ def find_command(command):
 def check_required_commands(commands):
     """ Verify that every required command is available and return the process status. """
     for command in commands:
-        path, status = find_command(command)
+        path, status = find_command_with_status(command)
         if status == 126:
             print("[ERROR] Command '%s' is not executable. Please check the permissions." % command, file=sys.stderr)
             return 126
@@ -212,7 +212,7 @@ def confirm(source, serial, mapper, target):
     return answer.strip().lower() == 'y'
 
 
-def check_sudo():
+def has_sudo_privileges():
     """ Return True when the user has sudo privileges (password may be required). """
     try:
         with open(os.devnull, 'w') as devnull:
@@ -262,7 +262,7 @@ def process_mount(device, name):
         print("[INFO] Operation cancelled.")
         return 0
 
-    if not check_sudo():
+    if not has_sudo_privileges():
         return 1
 
     print("[INFO] Opening %s as %s." % (source, name))

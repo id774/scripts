@@ -35,11 +35,11 @@
 #    - A missing mount point is rejected before serial, sudo, cryptsetup, and mount.
 #    - A missing required command returns 127 before main processing.
 #    - A non-executable required command returns 126 before main processing.
-#    - check_sudo() returns True and suppresses sudo output on success.
-#    - check_sudo() returns False and prints one diagnostic on a non-zero exit.
-#    - check_sudo() returns False and prints one diagnostic when sudo cannot be executed.
+#    - has_sudo_privileges() returns True and suppresses sudo output on success.
+#    - has_sudo_privileges() returns False and prints one diagnostic on a non-zero exit.
+#    - has_sudo_privileges() returns False and prints one diagnostic when sudo cannot be executed.
 #    - A sudo failure inside process_mount() prints exactly one [ERROR] line.
-#    - find_command() resolves an empty PATH component to the current directory.
+#    - find_command_with_status() resolves an empty PATH component to the current directory.
 #
 #  Version History:
 #  v1.0 2026-09-03
@@ -121,7 +121,7 @@ class TestLuksMount(unittest.TestCase):
         mock_run.assert_not_called()
 
     @patch('luksmount.run_command')
-    @patch('luksmount.check_sudo')
+    @patch('luksmount.has_sudo_privileges')
     @patch('luksmount.confirm')
     @patch('luksmount.get_serial', return_value=None)
     @patch('luksmount.validate_paths', return_value=0)
@@ -133,7 +133,7 @@ class TestLuksMount(unittest.TestCase):
         mock_run.assert_not_called()
 
     @patch('luksmount.run_command')
-    @patch('luksmount.check_sudo')
+    @patch('luksmount.has_sudo_privileges')
     @patch('luksmount.confirm', return_value=False)
     @patch('luksmount.get_serial', return_value='SERIAL123')
     @patch('luksmount.validate_paths', return_value=0)
@@ -144,7 +144,7 @@ class TestLuksMount(unittest.TestCase):
         mock_run.assert_not_called()
 
     @patch('luksmount.run_command', return_value=2)
-    @patch('luksmount.check_sudo', return_value=True)
+    @patch('luksmount.has_sudo_privileges', return_value=True)
     @patch('luksmount.confirm', return_value=True)
     @patch('luksmount.get_serial', return_value='SERIAL123')
     @patch('luksmount.validate_paths', return_value=0)
@@ -155,7 +155,7 @@ class TestLuksMount(unittest.TestCase):
         mock_run.assert_called_once_with(['sudo', 'cryptsetup', 'open', '/dev/sdb', 'disk3'])
 
     @patch('luksmount.run_command', side_effect=[0, 32])
-    @patch('luksmount.check_sudo', return_value=True)
+    @patch('luksmount.has_sudo_privileges', return_value=True)
     @patch('luksmount.confirm', return_value=True)
     @patch('luksmount.get_serial', return_value='SERIAL123')
     @patch('luksmount.validate_paths', return_value=0)
@@ -172,7 +172,7 @@ class TestLuksMount(unittest.TestCase):
             self.assertNotIn('dmsetup', command)
 
     @patch('luksmount.run_command', return_value=0)
-    @patch('luksmount.check_sudo', return_value=True)
+    @patch('luksmount.has_sudo_privileges', return_value=True)
     @patch('luksmount.confirm', return_value=True)
     @patch('luksmount.get_serial', return_value='SERIAL123')
     @patch('luksmount.validate_paths', return_value=0)
@@ -186,7 +186,7 @@ class TestLuksMount(unittest.TestCase):
         ])
 
     @patch('luksmount.run_command')
-    @patch('luksmount.check_sudo')
+    @patch('luksmount.has_sudo_privileges')
     @patch('luksmount.get_serial')
     @patch('luksmount.os.path.isdir', return_value=True)
     @patch('luksmount.os.path.exists', return_value=True)
@@ -199,7 +199,7 @@ class TestLuksMount(unittest.TestCase):
         mock_run.assert_not_called()
 
     @patch('luksmount.run_command')
-    @patch('luksmount.check_sudo')
+    @patch('luksmount.has_sudo_privileges')
     @patch('luksmount.get_serial')
     @patch('luksmount.os.path.isdir', return_value=False)
     @patch('luksmount.is_block_device', return_value=True)
@@ -245,14 +245,14 @@ class TestLuksMount(unittest.TestCase):
         mock_process.assert_not_called()
 
     @patch('luksmount.subprocess.call', return_value=0)
-    def test_check_sudo_success(self, mock_call):
-        self.assertTrue(luksmount.check_sudo())
+    def test_has_sudo_privileges_success(self, mock_call):
+        self.assertTrue(luksmount.has_sudo_privileges())
         args, kwargs = mock_call.call_args
         self.assertEqual(args[0], ['sudo', '-v'])
 
     @patch('luksmount.subprocess.call', return_value=0)
-    def test_check_sudo_suppresses_command_output(self, mock_call):
-        luksmount.check_sudo()
+    def test_has_sudo_privileges_suppresses_command_output(self, mock_call):
+        luksmount.has_sudo_privileges()
         args, kwargs = mock_call.call_args
         self.assertIn('stdout', kwargs)
         self.assertIn('stderr', kwargs)
@@ -260,14 +260,14 @@ class TestLuksMount(unittest.TestCase):
         self.assertIsNotNone(kwargs['stderr'])
 
     @patch('luksmount.subprocess.call', return_value=1)
-    def test_check_sudo_failure_nonzero_prints_one_error(self, mock_call):
-        self.assertFalse(luksmount.check_sudo())
+    def test_has_sudo_privileges_failure_nonzero_prints_one_error(self, mock_call):
+        self.assertFalse(luksmount.has_sudo_privileges())
         error_lines = [line for line in sys.stderr.getvalue().splitlines() if '[ERROR]' in line]
         self.assertEqual(len(error_lines), 1)
 
     @patch('luksmount.subprocess.call', side_effect=OSError('sudo not found'))
-    def test_check_sudo_failure_exec_error_prints_one_error(self, mock_call):
-        self.assertFalse(luksmount.check_sudo())
+    def test_has_sudo_privileges_failure_exec_error_prints_one_error(self, mock_call):
+        self.assertFalse(luksmount.has_sudo_privileges())
         error_lines = [line for line in sys.stderr.getvalue().splitlines() if '[ERROR]' in line]
         self.assertEqual(len(error_lines), 1)
         self.assertIn('Failed to execute sudo', sys.stderr.getvalue())
@@ -284,7 +284,7 @@ class TestLuksMount(unittest.TestCase):
         error_lines = [line for line in sys.stderr.getvalue().splitlines() if '[ERROR]' in line]
         self.assertEqual(len(error_lines), 1)
 
-    def test_find_command_empty_path_component_is_cwd(self):
+    def test_find_command_with_status_empty_path_component_is_cwd(self):
         directory = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, directory)
         command_name = 'fake_command_for_cwd_test'
@@ -296,7 +296,7 @@ class TestLuksMount(unittest.TestCase):
         self.addCleanup(os.chdir, original_cwd)
         os.chdir(directory)
         with patch.dict(os.environ, {'PATH': ''}):
-            found_path, status = luksmount.find_command(command_name)
+            found_path, status = luksmount.find_command_with_status(command_name)
         self.assertEqual(status, 0)
         self.assertEqual(os.path.realpath(found_path), os.path.realpath(path))
 

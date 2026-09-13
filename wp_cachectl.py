@@ -123,7 +123,7 @@ EX_PYVER = 9
 DEFAULT_WP_PATH = "/var/www/wordpress"
 
 
-def usage():
+def show_wp_usage():
     """Display the script header as usage information and exit."""
     script_path = os.path.abspath(__file__)
     in_header = False
@@ -167,7 +167,7 @@ def get_script_version():
     return "unknown"
 
 
-def find_command(command):
+def resolve_wp_cli_executable(command):
     """
     Search PATH for command's executable path, using a manual PATH search.
     When command contains a path separator, it is checked directly instead
@@ -183,9 +183,9 @@ def find_command(command):
     return None
 
 
-def command_exists(command):
+def wp_cli_available(command):
     """Check whether a command exists, using a manual PATH search."""
-    return find_command(command) is not None
+    return resolve_wp_cli_executable(command) is not None
 
 
 def log_info(msg):
@@ -244,7 +244,7 @@ def wp_try(wp_bin, wp_path, args):
 
 def ensure_wpcli(wp_bin):
     """Ensure WP-CLI is available."""
-    if not command_exists(wp_bin):
+    if not wp_cli_available(wp_bin):
         die(EX_NOWPCLI, "WP-CLI not found: %s" % wp_bin)
 
 
@@ -504,7 +504,7 @@ def main():
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] in ("-h", "--help"):
-        usage()
+        show_wp_usage()
 
     if sys.version_info < (3, 1):
         log_error("This script requires Python 3.1 or later.")

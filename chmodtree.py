@@ -210,7 +210,7 @@ def setup_option_parser():
     return parser
 
 
-def find_command(cmd):
+def find_filesystem_tool_candidate(cmd):
     """ Check if a given command exists in the system's PATH. """
     for path in os.environ.get("PATH", "").split(os.pathsep):
         full_path = os.path.join(path, cmd)
@@ -219,9 +219,9 @@ def find_command(cmd):
     return None
 
 
-def check_command(cmd):
+def check_filesystem_tool(cmd):
     """ Verify if a command is available and executable in the system's PATH. """
-    cmd_path = find_command(cmd)
+    cmd_path = find_filesystem_tool_candidate(cmd)
     if not cmd_path:
         # If the command is not found
         print("[ERROR] Command '{}' is not installed. Please install {} and try again.".format(cmd, cmd), file=sys.stderr)
@@ -382,13 +382,13 @@ def main():
         parser.print_help()
         return 1
 
-    check_command('find')
+    check_filesystem_tool('find')
 
     if options.files or options.dirs:
-        check_command('chmod')
+        check_filesystem_tool('chmod')
 
     if options.user or options.group:
-        check_command('chown')
+        check_filesystem_tool('chown')
 
     if options.sudo:
         check_sudo()
