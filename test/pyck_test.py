@@ -303,8 +303,8 @@ class TestPyck(unittest.TestCase):
         mock_popen.return_value = mock_process
 
         result = pyck.run_quality_check('autopep8 --diff --exit-code test.py',
-                                  show_files="Would format: test.py", literal_message=True,
-                                  expected_nonzero=(2,))
+                                        show_files="Would format: test.py", literal_message=True,
+                                        expected_nonzero=(2,))
         mock_print.assert_called_once_with("Would format: test.py")
         self.assertEqual(result, 0)
 
@@ -318,8 +318,8 @@ class TestPyck(unittest.TestCase):
         mock_popen.return_value = mock_process
 
         result = pyck.run_quality_check('autopep8 --diff --exit-code test.py',
-                                  show_files="Would format: test.py", literal_message=True,
-                                  expected_nonzero=(1,))
+                                        show_files="Would format: test.py", literal_message=True,
+                                        expected_nonzero=(1,))
 
         self.assertEqual(result, 1)
         mock_print.assert_called_once_with(

@@ -47,8 +47,8 @@ from unittest.mock import patch
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from du import (check_directory, command_exists, find_command,
-                parse_du_output, run_custom_du)
+from du import (check_directory, command_exists, find_command, parse_du_output,
+                run_custom_du)
 
 
 class TestDuScript(unittest.TestCase):
