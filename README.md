@@ -10,7 +10,8 @@ Welcome to the `scripts` repository! This is a curated collection of scripts in 
 4. [Testing](#4-testing)
 5. [Directory Structure](#5-directory-structure)
 6. [Contribution](#6-contribution)
-7. [License](#7-license)
+7. [Branch Naming](#7-branch-naming)
+8. [License](#8-license)
 
 ---
 
@@ -171,7 +172,15 @@ See [doc/POLICY](doc/POLICY) for detailed design and development standards acros
 
 ---
 
-## 7. License
+## 7. Branch Naming
+
+This repository uses `master` as its primary branch name.
+
+The name is used solely as a technical identifier, following the long-standing convention historically used by Git. It does not express or imply any association with racism, slavery, discrimination, or any political or social ideology.
+
+---
+
+## 8. License
 
 The parts of this repository copyrighted by id774 are dual licensed under the [GPL version 3](https://www.gnu.org/licenses/gpl-3.0.html) or the [LGPL version 3](https://www.gnu.org/licenses/lgpl-3.0.html), at your option.
 For exclusions and full license details, please refer to the [LICENSE](doc/LICENSE) file.
@@ -179,7 +188,3 @@ See also [COPYING](doc/COPYING) and [COPYING.LESSER](doc/COPYING.LESSER) for the
 complete license texts.
 
 Thank you for using and contributing to this repository!
-
-This repository uses `master` as its primary branch name.
-
-The name is used solely as a technical identifier, following the long-standing convention historically used by Git. It does not express or imply any association with racism, slavery, discrimination, or any political or social ideology.
