@@ -26,6 +26,10 @@ Supported languages:
 
 The scripts are fully supported on Python 3.6+ and Ruby 2.4+, with partial compatibility extending back to Python 3.1 and Ruby 2.0. The repository is also tested against current stable versions of both languages. Support describes the compatibility target; it does not mean that every version in each supported range is executed in every test run.
 
+This repository uses `master` as its primary branch name.
+
+The name is used solely as a technical identifier, following the long-standing convention historically used by Git. It does not express or imply any association with racism, slavery, discrimination, or any political or social ideology.
+
 ---
 
 ## 2. Installation
@@ -179,7 +183,3 @@ See also [COPYING](doc/COPYING) and [COPYING.LESSER](doc/COPYING.LESSER) for the
 complete license texts.
 
 Thank you for using and contributing to this repository!
-
-This repository uses `master` as its primary branch name.
-
-The name is used solely as a technical identifier, following the long-standing convention historically used by Git. It does not express or imply any association with racism, slavery, discrimination, or any political or social ideology.
