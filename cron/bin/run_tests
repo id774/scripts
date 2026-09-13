@@ -58,11 +58,9 @@
 #  4. Configuration variables not set.
 #
 #  Version History:
-#  v3.1 2026-09-12
-#       Skip missing pyck.py and find_pycompat.py checks without failing the run.
-#  v3.0 2026-09-06
-#       Add pyck.py dry-run to nightly repository checks and use the first
-#       configured Python environment for its formatter and linter commands.
+#  v3.0 2026-09-12
+#       Add pyck.py to nightly checks using the first Python environment and
+#       skip optional pyck.py or find_pycompat.py checks when unavailable.
 #  v2.8 2026-09-05
 #       Return the current run's actual failure status instead of always 0,
 #       and stop deriving failure state from historical JOBLOG content.

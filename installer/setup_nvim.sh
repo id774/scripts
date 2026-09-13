@@ -29,8 +29,6 @@
 #  - NeoVim must be installed and available in PATH.
 #
 #  Version History:
-#  v1.4 2026-09-11
-#       Remove the redundant post-check_commands nvim existence branch.
 #  v1.3 2026-09-06
 #       Show usage for unsupported arguments instead of starting installation.
 #  v1.2 2026-07-11
