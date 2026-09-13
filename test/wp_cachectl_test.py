@@ -54,14 +54,14 @@
 #        Confirms that L3 W3TC flush is skipped when W3TC is not active.
 #    - test_w3tc_used_when_active:
 #        Confirms that L3 W3TC flush is attempted when W3TC is active.
-#    - test_find_command_resolves_executable_on_path:
-#        Confirms find_command() resolves a bare command name found on PATH.
-#    - test_find_command_missing_returns_none:
-#        Confirms find_command() returns None when the command is not found on PATH.
-#    - test_find_command_empty_path_component_is_cwd:
-#        Confirms find_command() resolves an empty PATH component to the current directory.
-#    - test_find_command_absolute_path_checked_directly:
-#        Confirms find_command() checks a path-separator-containing command directly,
+#    - test_resolve_wp_cli_executable_resolves_executable_on_path:
+#        Confirms resolve_wp_cli_executable() resolves a bare command name found on PATH.
+#    - test_resolve_wp_cli_executable_missing_returns_none:
+#        Confirms resolve_wp_cli_executable() returns None when the command is not found on PATH.
+#    - test_resolve_wp_cli_executable_empty_path_component_is_cwd:
+#        Confirms resolve_wp_cli_executable() resolves an empty PATH component to the current directory.
+#    - test_resolve_wp_cli_executable_absolute_path_checked_directly:
+#        Confirms resolve_wp_cli_executable() checks a path-separator-containing command directly,
 #        without searching PATH, matching WP_BIN set to an absolute path.
 #
 #  Version History:
@@ -92,7 +92,7 @@ import wp_cachectl
 class FakeWPEnv(object):
     """
     Provide a controlled fake environment for wp_cachectl:
-    - Pretend 'wp' exists in PATH (command_exists -> True).
+    - Pretend 'wp' exists in PATH (wp_cli_available -> True).
     - Pretend WordPress is installed (wp_try core is-installed -> True).
     - Control W3TC detection (help w3-total-cache + plugin is-active w3-total-cache).
     - Capture subprocess.call and subprocess.check_output calls.
@@ -103,7 +103,7 @@ class FakeWPEnv(object):
         self.calls = []
         self.check_outputs = []
 
-    def _fake_command_exists(self, command):
+    def _fake_wp_cli_available(self, command):
         return True
 
     def _fake_subprocess_call(self, argv, **kwargs):
@@ -145,7 +145,7 @@ class TestWpCachectl(unittest.TestCase):
             argv_old = sys.argv[:]
             try:
                 sys.argv = argv[:]  # e.g. ["wp_cachectl.py", "status", ...]
-                with mock.patch.object(wp_cachectl, "command_exists", fake._fake_command_exists), \
+                with mock.patch.object(wp_cachectl, "wp_cli_available", fake._fake_wp_cli_available), \
                         mock.patch.object(wp_cachectl.subprocess, "call", fake._fake_subprocess_call), \
                         mock.patch.object(wp_cachectl.subprocess, "check_output", fake._fake_check_output):
 
@@ -173,12 +173,12 @@ class TestWpCachectl(unittest.TestCase):
         return rc, buf_out.getvalue(), buf_err.getvalue(), fake
 
     def test_usage_shows_help(self):
-        # Usage is printed by usage() when invoked via __main__ with -h.
-        # Here we test usage() directly to keep the test simple and stable.
+        # Usage is printed by show_wp_usage() when invoked via __main__ with -h.
+        # Here we test show_wp_usage() directly to keep the test simple and stable.
         buf_out = io.StringIO()
         with contextlib.redirect_stdout(buf_out):
             with self.assertRaises(SystemExit) as cm:
-                wp_cachectl.usage()
+                wp_cachectl.show_wp_usage()
         self.assertEqual(cm.exception.code, 0)
         self.assertIn("Usage:", buf_out.getvalue())
 
@@ -310,21 +310,21 @@ class TestWpCachectl(unittest.TestCase):
                 os.chmod(path, 0o644)
         return directory
 
-    def test_find_command_resolves_executable_on_path(self):
+    def test_resolve_wp_cli_executable_resolves_executable_on_path(self):
         directory = self.make_fake_path(["wp"], [])
         with mock.patch.dict(os.environ, {"PATH": directory}):
-            found = wp_cachectl.find_command("wp")
-            self.assertTrue(wp_cachectl.command_exists("wp"))
+            found = wp_cachectl.resolve_wp_cli_executable("wp")
+            self.assertTrue(wp_cachectl.wp_cli_available("wp"))
         self.assertEqual(os.path.realpath(found),
                          os.path.realpath(os.path.join(directory, "wp")))
 
-    def test_find_command_missing_returns_none(self):
+    def test_resolve_wp_cli_executable_missing_returns_none(self):
         directory = self.make_fake_path([], [])
         with mock.patch.dict(os.environ, {"PATH": directory}):
-            self.assertIsNone(wp_cachectl.find_command("nonexistent_command"))
-            self.assertFalse(wp_cachectl.command_exists("nonexistent_command"))
+            self.assertIsNone(wp_cachectl.resolve_wp_cli_executable("nonexistent_command"))
+            self.assertFalse(wp_cachectl.wp_cli_available("nonexistent_command"))
 
-    def test_find_command_empty_path_component_is_cwd(self):
+    def test_resolve_wp_cli_executable_empty_path_component_is_cwd(self):
         directory = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, directory)
         command_name = "fake_command_for_cwd_test"
@@ -336,17 +336,17 @@ class TestWpCachectl(unittest.TestCase):
         self.addCleanup(os.chdir, original_cwd)
         os.chdir(directory)
         with mock.patch.dict(os.environ, {"PATH": ""}):
-            found = wp_cachectl.find_command(command_name)
+            found = wp_cachectl.resolve_wp_cli_executable(command_name)
         self.assertEqual(os.path.realpath(found), os.path.realpath(path))
 
-    def test_find_command_absolute_path_checked_directly(self):
+    def test_resolve_wp_cli_executable_absolute_path_checked_directly(self):
         directory = self.make_fake_path(["wp-custom"], [])
         absolute_path = os.path.join(directory, "wp-custom")
         with mock.patch.dict(os.environ, {"PATH": ""}):
-            self.assertEqual(wp_cachectl.find_command(absolute_path), absolute_path)
-            self.assertTrue(wp_cachectl.command_exists(absolute_path))
+            self.assertEqual(wp_cachectl.resolve_wp_cli_executable(absolute_path), absolute_path)
+            self.assertTrue(wp_cachectl.wp_cli_available(absolute_path))
         missing_absolute_path = os.path.join(directory, "does-not-exist")
-        self.assertIsNone(wp_cachectl.find_command(missing_absolute_path))
+        self.assertIsNone(wp_cachectl.resolve_wp_cli_executable(missing_absolute_path))
 
 
 if __name__ == "__main__":

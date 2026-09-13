@@ -92,7 +92,7 @@ check_commands() {
 }
 
 # Check if the user has sudo privileges (password may be required)
-check_sudo() {
+check_sudo_mode() {
     # No-sudo mode must not depend on sudo; validate sudo only after sudo mode is selected.
     [ "$SUDO" = "sudo" ] || return 0
     check_commands sudo
@@ -112,7 +112,7 @@ setup_environment() {
     else
         SUDO=""
     fi
-    check_sudo
+    check_sudo_mode
     DOWNLOAD_SOURCE="${4:-auto}"
 
     case "$(uname -s)" in

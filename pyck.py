@@ -170,7 +170,7 @@ def setup_argument_parser():
                         action="store_true", help="Auto-fix code issues")
     return parser
 
-def find_command(cmd):
+def find_quality_tool_candidate(cmd):
     """ Check if a given command exists in the system's PATH. """
     for path in os.environ["PATH"].split(os.pathsep):
         full_path = os.path.join(path, cmd)
@@ -178,9 +178,9 @@ def find_command(cmd):
             return full_path
     return None
 
-def check_command(cmd):
+def check_quality_tool(cmd):
     """ Verify if a command is available and executable in the system's PATH. """
-    cmd_path = find_command(cmd)
+    cmd_path = find_quality_tool_candidate(cmd)
     if not cmd_path:
         # If the command is not found
         print("[ERROR] Command '{}' is not installed. Please install {} and try again.".format(cmd, cmd), file=sys.stderr)
@@ -232,23 +232,23 @@ def dry_run_formatting(paths, autopep8_ignore_errors, config_path):
     print("[INFO] DRY RUN: No files will be modified. Use -i to auto-fix.")
     overall_status = 0
     for file_path in resolve_target_files(paths):
-        if run_command(
+        if run_quality_check(
                 "flake8 --isolated --ignore={} {}".format(
                     FLAKE8_IGNORE_ERRORS, shlex.quote(file_path)),
                 show_files="Lint issue (manual review candidate):",
                 expected_nonzero=(1,)) != 0:
             overall_status = 1
-        if run_command("autoflake --config={} --imports=django,requests,urllib3 --check {}".format(
+        if run_quality_check("autoflake --config={} --imports=django,requests,urllib3 --check {}".format(
                 shlex.quote(config_path), shlex.quote(file_path)),
                 show_files="Would clean: {}".format(file_path), literal_message=True,
                 expected_nonzero=(1,)) != 0:
             overall_status = 1
-        if run_command("autopep8 --global-config={} --ignore-local-config --ignore={} --diff --exit-code {}".format(
+        if run_quality_check("autopep8 --global-config={} --ignore-local-config --ignore={} --diff --exit-code {}".format(
                 shlex.quote(config_path), autopep8_ignore_errors, shlex.quote(file_path)),
                 show_files="Would format: {}".format(file_path), literal_message=True,
                 expected_nonzero=(2,)) != 0:
             overall_status = 1
-        if run_command("isort --settings-path={} --check-only {}".format(
+        if run_quality_check("isort --settings-path={} --check-only {}".format(
                 shlex.quote(config_path), shlex.quote(file_path)),
                 show_files="Would sort imports in: {}".format(file_path), literal_message=True,
                 expected_nonzero=(1,)) != 0:
@@ -261,7 +261,7 @@ def execute_formatting(paths, autopep8_ignore_errors, config_path):
     for file_path in resolve_target_files(paths):
         if format_file(file_path, autopep8_ignore_errors, config_path) != 0:
             overall_status = 1
-        if run_command(
+        if run_quality_check(
                 "flake8 --isolated --ignore={} {}".format(
                     FLAKE8_IGNORE_ERRORS, shlex.quote(file_path)),
                 show_files="Manual fix required:",
@@ -297,7 +297,7 @@ def format_file(file_path, autopep8_ignore_errors, config_path):
 
     return overall_status
 
-def run_command(command, show_files=None, literal_message=False, expected_nonzero=()):
+def run_quality_check(command, show_files=None, literal_message=False, expected_nonzero=()):
     """ Execute a shell command, reporting expected non-zero statuses as findings and any other non-zero status as an execution failure. """
     process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
     stdout, _ = process.communicate()
@@ -327,10 +327,10 @@ def main():
     for path in args.paths:
         expanded_paths.extend(glob.glob(path) or [path])
 
-    check_command("autopep8")
-    check_command("flake8")
-    check_command("autoflake")
-    check_command("isort")
+    check_quality_tool("autopep8")
+    check_quality_tool("flake8")
+    check_quality_tool("autoflake")
+    check_quality_tool("isort")
 
     with tempfile.TemporaryDirectory() as temp_dir:
         config_path = create_isolated_config(temp_dir)

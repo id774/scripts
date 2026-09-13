@@ -266,6 +266,25 @@ repository is already being edited.
   the container instead of the thing itself. This applies to the headers, the
   documents, and the commit messages as much as to the comments.
 
+#### 1.2.5 Shared Helper Names
+- A helper name reused across scripts, or copied between id774 repositories as
+  the same helper, is a shared interface. Within the same language and helper
+  family, the same name means the same responsibility, arguments, return or
+  exit semantics, side effects, and implementation contract.
+- Do not specialize a shared helper in place for one script. Keep the common
+  helper contract unchanged and put caller-specific handling at the call site,
+  or give the specialized helper a different name that describes its narrower
+  contract.
+- When two existing helpers intentionally require different behavior, preserve
+  both behaviors and rename the non-common helper instead of forcing their
+  implementations to match.
+- A rename under this rule must not change control flow, processing order,
+  output, exit status, side effects, supported environments, dependencies, or
+  configuration semantics.
+- Conventional entry points, class or protocol methods, and domain-local APIs
+  are not shared helpers merely because the same structural name appears in
+  more than one program.
+
 ### 1.3 Command-Line Interface and Output
 
 #### 1.3.1 CLI Conventions

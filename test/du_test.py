@@ -20,10 +20,10 @@
 #    - Parse du output and return the size for the requested directory path.
 #    - run_custom_du includes hidden directories when include_hidden is True.
 #    - run_custom_du excludes hidden directories when include_hidden is False.
-#    - locate_command() resolves an executable command found on PATH.
-#    - locate_command() returns None when the command is not found on PATH.
-#    - locate_command() resolves an empty PATH component to the current directory.
-#    - command_exists() is consistent with locate_command().
+#    - find_command() resolves an executable command found on PATH.
+#    - find_command() returns None when the command is not found on PATH.
+#    - find_command() resolves an empty PATH component to the current directory.
+#    - command_exists() is consistent with find_command().
 #
 #  Version History:
 #  v1.1 2026-09-03
@@ -47,7 +47,7 @@ from unittest.mock import patch
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from du import (check_directory, command_exists, locate_command,
+from du import (check_directory, command_exists, find_command,
                 parse_du_output, run_custom_du)
 
 
@@ -139,21 +139,21 @@ class TestDuCommandLookup(unittest.TestCase):
                 os.chmod(path, 0o644)
         return directory
 
-    def test_locate_command_resolves_executable_on_path(self):
+    def test_find_command_resolves_executable_on_path(self):
         directory = self.make_fake_path(['fake_du'], [])
         with patch.dict(os.environ, {'PATH': directory}):
-            found = locate_command('fake_du')
+            found = find_command('fake_du')
             self.assertTrue(command_exists('fake_du'))
         self.assertEqual(os.path.realpath(found),
                          os.path.realpath(os.path.join(directory, 'fake_du')))
 
-    def test_locate_command_missing_returns_none(self):
+    def test_find_command_missing_returns_none(self):
         directory = self.make_fake_path([], [])
         with patch.dict(os.environ, {'PATH': directory}):
-            self.assertIsNone(locate_command('nonexistent_command'))
+            self.assertIsNone(find_command('nonexistent_command'))
             self.assertFalse(command_exists('nonexistent_command'))
 
-    def test_locate_command_empty_path_component_is_cwd(self):
+    def test_find_command_empty_path_component_is_cwd(self):
         directory = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, directory)
         command_name = 'fake_command_for_cwd_test'
@@ -165,7 +165,7 @@ class TestDuCommandLookup(unittest.TestCase):
         self.addCleanup(os.chdir, original_cwd)
         os.chdir(directory)
         with patch.dict(os.environ, {'PATH': ''}):
-            found = locate_command(command_name)
+            found = find_command(command_name)
         self.assertEqual(os.path.realpath(found), os.path.realpath(path))
 
 

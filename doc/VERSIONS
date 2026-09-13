@@ -37,6 +37,8 @@ v2.0.2 (Release Date: TBD)
   or contradictory checks.
 - Accept tree.sh -a before or after its optional directory and show usage for
   unsupported options or extra directory arguments.
+- Separate helper names for intentionally different command, sudo, usage, and
+  quality-check contracts while preserving their established runtime behavior.
 
 v2.0.1 (2026-08-26)
 -------------------

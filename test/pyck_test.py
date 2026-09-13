@@ -20,14 +20,14 @@
 #
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
-#    - Verify check_command does nothing (no output, no exit) when the command exists and is executable.
-#    - Verify check_command prints an error and exits with code 127 when the command does not exist.
-#    - Verify check_command prints an error and exits with code 126 when the command exists but is not executable.
+#    - Verify check_quality_tool does nothing (no output, no exit) when the command exists and is executable.
+#    - Verify check_quality_tool prints an error and exits with code 127 when the command does not exist.
+#    - Verify check_quality_tool prints an error and exits with code 126 when the command exists but is not executable.
 #    - Run format_file() to invoke autoflake, autopep8, and isort with expected arguments.
 #    - Verify format_file() quotes a file path containing spaces before passing it to the shell.
-#    - Suppress output on successful run_command() execution.
-#    - Print the provided error prefix and command output when run_command() returns a non-zero status.
-#    - Print a single literal message when run_command() is called with literal_message=True.
+#    - Suppress output on successful run_quality_check() execution.
+#    - Print the provided error prefix and command output when run_quality_check() returns a non-zero status.
+#    - Print a single literal message when run_quality_check() is called with literal_message=True.
 #    - In dry-run mode, run flake8/autoflake/autopep8/isort checks for a single Python file.
 #    - In dry-run mode, verify a path containing spaces is quoted before being passed to flake8,
 #      autoflake, autopep8, and isort, including the new autopep8 --diff --exit-code command.
@@ -59,9 +59,9 @@
 #    - In execute (auto-fix) mode, format a mix of directory and file paths and report an error for invalid paths.
 #    - In execute (auto-fix) mode, format a single directory by formatting each .py file under it.
 #    - In execute (auto-fix) mode, format multiple directories by formatting each .py file under them.
-#    - Detect an existing command path with find_command() when the command is present in PATH.
-#    - Return None from find_command() when the command is not present in PATH.
-#    - Verify check_command behavior via alternate patching for existing executable commands.
+#    - Detect an existing command path with find_quality_tool_candidate() when the command is present in PATH.
+#    - Return None from find_quality_tool_candidate() when the command is not present in PATH.
+#    - Verify check_quality_tool behavior via alternate patching for existing executable commands.
 #    - Verify create_isolated_config() writes the formatter/linter configuration used by pyck.
 #    - Verify format_imports() passes the isolated configuration to isort.
 #    - Verify main() creates one isolated temporary configuration and passes it to dry-run and auto-fix processing.
@@ -147,37 +147,37 @@ class TestPyck(unittest.TestCase):
         self.assertIn('Usage:', out.decode('utf-8'))
 
     @patch('pyck.os.access')
-    @patch('pyck.find_command')
+    @patch('pyck.find_quality_tool_candidate')
     @patch('pyck.sys.exit')
     @patch('pyck.print')
-    def test_check_command_with_existing_executable_command(self, mock_print, mock_exit, mock_find_command, mock_access):
-        """ Test check_command with a command that exists and is executable. """
-        mock_find_command.return_value = '/usr/bin/command'
+    def test_check_quality_tool_with_existing_executable_command(self, mock_print, mock_exit, mock_find_quality_tool_candidate, mock_access):
+        """ Test check_quality_tool with a command that exists and is executable. """
+        mock_find_quality_tool_candidate.return_value = '/usr/bin/command'
         mock_access.return_value = True
-        pyck.check_command('command')
+        pyck.check_quality_tool('command')
         mock_exit.assert_not_called()
         mock_print.assert_not_called()
 
     @patch('pyck.os.access')
-    @patch('pyck.find_command')
+    @patch('pyck.find_quality_tool_candidate')
     @patch('pyck.sys.exit')
     @patch('pyck.print')
-    def test_check_command_with_nonexistent_command(self, mock_print, mock_exit, mock_find_command, mock_access):
-        """ Test check_command with a command that does not exist. """
-        mock_find_command.return_value = None
-        pyck.check_command('nonexistent')
+    def test_check_quality_tool_with_nonexistent_command(self, mock_print, mock_exit, mock_find_quality_tool_candidate, mock_access):
+        """ Test check_quality_tool with a command that does not exist. """
+        mock_find_quality_tool_candidate.return_value = None
+        pyck.check_quality_tool('nonexistent')
         mock_print.assert_called_with("[ERROR] Command 'nonexistent' is not installed. Please install nonexistent and try again.", file=sys.stderr)
         mock_exit.assert_called_with(127)
 
     @patch('pyck.os.access')
-    @patch('pyck.find_command')
+    @patch('pyck.find_quality_tool_candidate')
     @patch('pyck.sys.exit')
     @patch('pyck.print')
-    def test_check_command_with_nonexecutable_command(self, mock_print, mock_exit, mock_find_command, mock_access):
-        """ Test check_command with a command that exists but is not executable. """
-        mock_find_command.return_value = '/usr/bin/nonexecutable'
+    def test_check_quality_tool_with_nonexecutable_command(self, mock_print, mock_exit, mock_find_quality_tool_candidate, mock_access):
+        """ Test check_quality_tool with a command that exists but is not executable. """
+        mock_find_quality_tool_candidate.return_value = '/usr/bin/nonexecutable'
         mock_access.return_value = False
-        pyck.check_command('nonexecutable')
+        pyck.check_quality_tool('nonexecutable')
         mock_print.assert_called_with("[ERROR] Command 'nonexecutable' is not executable. Please check the permissions.", file=sys.stderr)
         mock_exit.assert_called_with(126)
 
@@ -268,41 +268,41 @@ class TestPyck(unittest.TestCase):
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
-    def test_run_command_success(self, mock_print, mock_popen):
+    def test_run_quality_check_success(self, mock_print, mock_popen):
         # Test scenario for successful command execution
         mock_process = MagicMock()
         mock_process.communicate.return_value = ('output', '')
         mock_process.returncode = 0
         mock_popen.return_value = mock_process
 
-        result = pyck.run_command('echo test', show_files=None)
+        result = pyck.run_quality_check('echo test', show_files=None)
         mock_print.assert_not_called()
         self.assertEqual(result, 0)
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
-    def test_run_command_error(self, mock_print, mock_popen):
+    def test_run_quality_check_error(self, mock_print, mock_popen):
         # An expected non-zero status is reported as a finding, not a failure.
         mock_process = MagicMock()
         mock_process.communicate.return_value = ('error output', '')
         mock_process.returncode = 1
         mock_popen.return_value = mock_process
 
-        result = pyck.run_command(
+        result = pyck.run_quality_check(
             'echo test', show_files="Error occurred", expected_nonzero=(1,))
         mock_print.assert_called_with("Error occurred error output")
         self.assertEqual(result, 0)
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
-    def test_run_command_literal_message(self, mock_print, mock_popen):
+    def test_run_quality_check_literal_message(self, mock_print, mock_popen):
         # literal_message=True prints show_files verbatim, ignoring command output
         mock_process = MagicMock()
         mock_process.communicate.return_value = ('--- a\n+++ b\n', '')
         mock_process.returncode = 2
         mock_popen.return_value = mock_process
 
-        result = pyck.run_command('autopep8 --diff --exit-code test.py',
+        result = pyck.run_quality_check('autopep8 --diff --exit-code test.py',
                                   show_files="Would format: test.py", literal_message=True,
                                   expected_nonzero=(2,))
         mock_print.assert_called_once_with("Would format: test.py")
@@ -310,14 +310,14 @@ class TestPyck(unittest.TestCase):
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
-    def test_run_command_unexpected_status_is_execution_failure(self, mock_print, mock_popen):
+    def test_run_quality_check_unexpected_status_is_execution_failure(self, mock_print, mock_popen):
         # A status outside expected_nonzero is an execution failure, not a finding.
         mock_process = MagicMock()
         mock_process.communicate.return_value = ('--- a\n+++ b\n', '')
         mock_process.returncode = 2
         mock_popen.return_value = mock_process
 
-        result = pyck.run_command('autopep8 --diff --exit-code test.py',
+        result = pyck.run_quality_check('autopep8 --diff --exit-code test.py',
                                   show_files="Would format: test.py", literal_message=True,
                                   expected_nonzero=(1,))
 
@@ -740,14 +740,14 @@ class TestPyck(unittest.TestCase):
         self.assertEqual(auto_fix_files, expected_files)
         self.assertEqual(dry_run_files, expected_files)
 
-    @patch('pyck.run_command')
+    @patch('pyck.run_quality_check')
     @patch('pyck.format_file')
     @patch('pyck.print')
     @patch('pyck.os.path')
     @patch('pyck.os.walk')
     def test_execute_formatting_single_file(
             self, mock_walk, mock_path, mock_print,
-            mock_format_file, mock_run_command):
+            mock_format_file, mock_run_quality_check):
         # Mocking file existence
         mock_path.isfile.return_value = True
         mock_path.isdir.return_value = False
@@ -760,18 +760,18 @@ class TestPyck(unittest.TestCase):
         mock_format_file.assert_called_once_with(
             'path/to/single_file.py', 'E302,E402,E501', CONFIG_PATH)
 
-        mock_run_command.assert_called_once_with(
+        mock_run_quality_check.assert_called_once_with(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/single_file.py",
             show_files="Manual fix required:", expected_nonzero=(1,))
 
-    @patch('pyck.run_command')
+    @patch('pyck.run_quality_check')
     @patch('pyck.format_file')
     @patch('pyck.print')
     @patch('pyck.os.path')
     @patch('pyck.os.walk')
     def test_execute_formatting_with_multiple_files(
             self, mock_walk, mock_path, mock_print,
-            mock_format_file, mock_run_command):
+            mock_format_file, mock_run_quality_check):
         # Mocking file and directory existence
         mock_path.isfile.side_effect = lambda p: p == 'path/to/file.py'
         mock_path.isdir.side_effect = lambda p: p == 'path/to/directory'
@@ -792,13 +792,13 @@ class TestPyck(unittest.TestCase):
         # Verify format_file call for a single file
         mock_format_file.assert_any_call('path/to/file.py', 'E302,E402,E501', CONFIG_PATH)
 
-        mock_run_command.assert_any_call(
+        mock_run_quality_check.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/directory/file1.py",
             show_files="Manual fix required:", expected_nonzero=(1,))
-        mock_run_command.assert_any_call(
+        mock_run_quality_check.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/directory/file2.py",
             show_files="Manual fix required:", expected_nonzero=(1,))
-        mock_run_command.assert_any_call(
+        mock_run_quality_check.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/file.py",
             show_files="Manual fix required:", expected_nonzero=(1,))
 
@@ -807,14 +807,14 @@ class TestPyck(unittest.TestCase):
         mock_print.assert_called_with(
             "[ERROR] The specified path 'invalid/path' is neither a file nor a directory.", file=sys.stderr)
 
-    @patch('pyck.run_command')
+    @patch('pyck.run_quality_check')
     @patch('pyck.format_file')
     @patch('pyck.print')
     @patch('pyck.os.path')
     @patch('pyck.os.walk')
     def test_execute_formatting_single_directory(
             self, mock_walk, mock_path, mock_print,
-            mock_format_file, mock_run_command):
+            mock_format_file, mock_run_quality_check):
         # Mocking directory existence
         mock_path.isfile.return_value = False
         mock_path.isdir.return_value = True
@@ -832,21 +832,21 @@ class TestPyck(unittest.TestCase):
         mock_format_file.assert_any_call(expected_file1_path, 'E302,E402,E501', CONFIG_PATH)
         mock_format_file.assert_any_call(expected_file2_path, 'E302,E402,E501', CONFIG_PATH)
 
-        mock_run_command.assert_any_call(
+        mock_run_quality_check.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/directory/file1.py",
             show_files="Manual fix required:", expected_nonzero=(1,))
-        mock_run_command.assert_any_call(
+        mock_run_quality_check.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/directory/file2.py",
             show_files="Manual fix required:", expected_nonzero=(1,))
 
-    @patch('pyck.run_command')
+    @patch('pyck.run_quality_check')
     @patch('pyck.format_file')
     @patch('pyck.print')
     @patch('pyck.os.path')
     @patch('pyck.os.walk')
     def test_execute_formatting_multiple_directories(
             self, mock_walk, mock_path, mock_print,
-            mock_format_file, mock_run_command):
+            mock_format_file, mock_run_quality_check):
         # Mocking multiple directories
         mock_path.isfile.return_value = False
         mock_path.isdir.side_effect = lambda p: p in [
@@ -871,32 +871,32 @@ class TestPyck(unittest.TestCase):
         for file_path in expected_calls:
             mock_format_file.assert_any_call(file_path, 'E302,E402,E501', CONFIG_PATH)
 
-        mock_run_command.assert_any_call(
+        mock_run_quality_check.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/dir1/file1.py",
             show_files="Manual fix required:", expected_nonzero=(1,))
-        mock_run_command.assert_any_call(
+        mock_run_quality_check.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/dir1/file2.py",
             show_files="Manual fix required:", expected_nonzero=(1,))
-        mock_run_command.assert_any_call(
+        mock_run_quality_check.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/dir2/file3.py",
             show_files="Manual fix required:", expected_nonzero=(1,))
-        mock_run_command.assert_any_call(
+        mock_run_quality_check.assert_any_call(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/dir2/file4.py",
             show_files="Manual fix required:", expected_nonzero=(1,))
 
-    @patch('pyck.run_command')
+    @patch('pyck.run_quality_check')
     @patch('pyck.format_file')
     @patch('pyck.resolve_target_files')
     def test_execute_formatting_runs_flake8_after_format_file(
             self, mock_resolve_target_files,
-            mock_format_file, mock_run_command):
+            mock_format_file, mock_run_quality_check):
         mock_resolve_target_files.return_value = ['path/to/file.py']
         mock_format_file.return_value = 0
-        mock_run_command.return_value = 0
+        mock_run_quality_check.return_value = 0
 
         calls = MagicMock()
         calls.attach_mock(mock_format_file, 'format_file')
-        calls.attach_mock(mock_run_command, 'run_command')
+        calls.attach_mock(mock_run_quality_check, 'run_quality_check')
 
         pyck.execute_formatting(
             ['path/to/file.py'], 'E302,E402,E501', CONFIG_PATH)
@@ -904,14 +904,14 @@ class TestPyck(unittest.TestCase):
         self.assertEqual(calls.mock_calls, [
             call.format_file(
                 'path/to/file.py', 'E302,E402,E501', CONFIG_PATH),
-            call.run_command(
+            call.run_quality_check(
                 'flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/file.py',
                 show_files='Manual fix required:', expected_nonzero=(1,)),
         ])
 
     @patch('pyck.subprocess.Popen')
     @patch('pyck.print')
-    def test_run_command_reports_manual_fix_required(
+    def test_run_quality_check_reports_manual_fix_required(
             self, mock_print, mock_popen):
         mock_process = MagicMock()
         mock_process.communicate.return_value = (
@@ -920,7 +920,7 @@ class TestPyck(unittest.TestCase):
         mock_process.returncode = 1
         mock_popen.return_value = mock_process
 
-        result = pyck.run_command(
+        result = pyck.run_quality_check(
             'flake8 --ignore=E302,E402,E501 path/to/file.py',
             show_files='Manual fix required:', expected_nonzero=(1,))
 
@@ -930,19 +930,19 @@ class TestPyck(unittest.TestCase):
             "redefinition of unused 'test_case'")
         self.assertEqual(result, 0)
 
-    @patch('pyck.run_command')
+    @patch('pyck.run_quality_check')
     @patch('pyck.format_file')
     @patch('pyck.resolve_target_files')
     def test_execute_formatting_quotes_path_for_post_fix_flake8(
             self, mock_resolve_target_files,
-            mock_format_file, mock_run_command):
+            mock_format_file, mock_run_quality_check):
         mock_resolve_target_files.return_value = [
             'path/to/my file.py']
 
         pyck.execute_formatting(
             ['path/to/my file.py'], 'E302,E402,E501', CONFIG_PATH_WITH_SPACES)
 
-        mock_run_command.assert_called_once_with(
+        mock_run_quality_check.assert_called_once_with(
             "flake8 --isolated --ignore=E302,E402,E501,W503,W504 "
             "'path/to/my file.py'",
             show_files='Manual fix required:', expected_nonzero=(1,))
@@ -979,10 +979,10 @@ class TestPyck(unittest.TestCase):
     @patch('pyck.subprocess.Popen')
     @patch('pyck.format_file')
     @patch('pyck.resolve_target_files')
-    @patch('pyck.check_command')
+    @patch('pyck.check_quality_tool')
     @patch('pyck.setup_argument_parser')
     def test_main_returns_zero_when_lint_remains_after_auto_fix(
-            self, mock_setup_argument_parser, mock_check_command,
+            self, mock_setup_argument_parser, mock_check_quality_tool,
             mock_resolve_target_files, mock_format_file,
             mock_popen, mock_print, mock_temporary_directory,
             mock_create_isolated_config):
@@ -1014,7 +1014,7 @@ class TestPyck(unittest.TestCase):
             "path/to/file.py:10:5: F811 "
             "redefinition of unused 'test_case'")
 
-        mock_check_command.assert_has_calls([
+        mock_check_quality_tool.assert_has_calls([
             call('autopep8'),
             call('flake8'),
             call('autoflake'),
@@ -1032,10 +1032,10 @@ class TestPyck(unittest.TestCase):
     @patch('pyck.dry_run_formatting')
     @patch('pyck.create_isolated_config')
     @patch('pyck.tempfile.TemporaryDirectory')
-    @patch('pyck.check_command')
+    @patch('pyck.check_quality_tool')
     @patch('pyck.setup_argument_parser')
     def test_main_passes_isolated_config_to_dry_run(
-            self, mock_setup_argument_parser, mock_check_command,
+            self, mock_setup_argument_parser, mock_check_quality_tool,
             mock_temporary_directory, mock_create_isolated_config,
             mock_dry_run_formatting):
         mock_parser = MagicMock()
@@ -1062,10 +1062,10 @@ class TestPyck(unittest.TestCase):
     @patch('pyck.dry_run_formatting')
     @patch('pyck.create_isolated_config')
     @patch('pyck.tempfile.TemporaryDirectory')
-    @patch('pyck.check_command')
+    @patch('pyck.check_quality_tool')
     @patch('pyck.setup_argument_parser')
     def test_main_returns_one_for_dry_run_execution_failure(
-            self, mock_setup_argument_parser, mock_check_command,
+            self, mock_setup_argument_parser, mock_check_quality_tool,
             mock_temporary_directory, mock_create_isolated_config,
             mock_dry_run_formatting):
         mock_parser = MagicMock()
@@ -1086,10 +1086,10 @@ class TestPyck(unittest.TestCase):
     @patch('pyck.execute_formatting')
     @patch('pyck.create_isolated_config')
     @patch('pyck.tempfile.TemporaryDirectory')
-    @patch('pyck.check_command')
+    @patch('pyck.check_quality_tool')
     @patch('pyck.setup_argument_parser')
     def test_main_returns_one_for_auto_fix_execution_failure(
-            self, mock_setup_argument_parser, mock_check_command,
+            self, mock_setup_argument_parser, mock_check_quality_tool,
             mock_temporary_directory, mock_create_isolated_config,
             mock_execute_formatting):
         mock_parser = MagicMock()
@@ -1109,29 +1109,29 @@ class TestPyck(unittest.TestCase):
 
     @patch('pyck.os.path.isfile')
     @patch.dict('pyck.os.environ', {'PATH': '/usr/bin:/bin'})
-    def test_find_command_with_existing_command(self, mock_isfile):
+    def test_find_quality_tool_candidate_with_existing_command(self, mock_isfile):
         # Test the case where the command exists
         mock_isfile.return_value = True
-        result = pyck.find_command('python')
+        result = pyck.find_quality_tool_candidate('python')
         self.assertTrue(result.endswith('/python'))
 
     @patch('pyck.os.path.isfile')
     @patch.dict('pyck.os.environ', {'PATH': '/usr/bin:/bin'})
-    def test_find_command_with_nonexistent_command(self, mock_isfile):
+    def test_find_quality_tool_candidate_with_nonexistent_command(self, mock_isfile):
         # Test the case where the command does not exist
         mock_isfile.return_value = False
-        result = pyck.find_command('nonexistent')
+        result = pyck.find_quality_tool_candidate('nonexistent')
         self.assertIsNone(result)
 
     @patch('pyck.sys.exit')
     @patch('pyck.print')
-    @patch('pyck.find_command')
+    @patch('pyck.find_quality_tool_candidate')
     @patch('pyck.os.access')
-    def test_check_command_with_existing_executable(self, mock_access, mock_find_command, mock_print, mock_exit):
+    def test_check_quality_tool_with_existing_executable(self, mock_access, mock_find_quality_tool_candidate, mock_print, mock_exit):
         # Test with an existing and executable command
-        mock_find_command.return_value = '/usr/bin/python'
+        mock_find_quality_tool_candidate.return_value = '/usr/bin/python'
         mock_access.return_value = True
-        pyck.check_command('python')
+        pyck.check_quality_tool('python')
         mock_exit.assert_not_called()
         mock_print.assert_not_called()
 
