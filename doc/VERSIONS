@@ -10,14 +10,16 @@ v2.0.2 (Release Date: TBD)
 - Align block-device helper prerequisite checks with their runtime dependencies.
 - Replace shell-based command lookup in cal.py, du.py, tcmount.py, and
   wp_cachectl.py with Python-native PATH lookup.
+- Continue Python command lookup past non-executable PATH candidates when a
+  later executable exists, while preserving missing-command status semantics.
 - Fix the nightly quality gate so its exit status reflects the current run's
   actual check results.
 - Separate pyck.py formatter and linter ignore policies, excluding W503 and W504
   from Flake8 while retaining the existing checks for other rules.
 - Run pyck.py and find_pycompat.py as optional nightly repository-wide Python
   checks when their checker scripts are available.
-- Make pyck.py return non-zero for formatter or linter execution failures while
-  keeping lint findings and dry-run change candidates advisory.
+- Make pyck.py return non-zero for invalid input paths and formatter or linter
+  execution failures while keeping valid targets and advisory findings processing.
 - Make default-install installers show usage for unsupported arguments instead of
   starting installation.
 - Make setup_scripts.sh preserve failures from both configured-collection and

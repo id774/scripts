@@ -28,6 +28,9 @@
 #    - Verify check_filesystem_tool does nothing (no output, no exit) when the command exists and is executable.
 #    - Verify check_filesystem_tool prints an error and exits with code 127 when the command does not exist.
 #    - Verify check_filesystem_tool prints an error and exits with code 126 when the command exists but is not executable.
+#    - Verify find_filesystem_tool_candidate skips a non-executable PATH candidate and returns a later executable one.
+#    - Verify find_filesystem_tool_candidate returns the non-executable candidate when no PATH entry is executable.
+#    - Verify find_filesystem_tool_candidate returns None when no PATH entry contains the command.
 #    - Verify octal permission mode detection for numeric and symbolic modes.
 #    - Verify base find command construction with and without name patterns.
 #    - Apply chmod to files only with numeric mode and mismatch-only filtering.
@@ -48,6 +51,9 @@
 #    - Verify main checks chown only when owner/group options are used.
 #
 #  Version History:
+#  v1.6 2026-09-17
+#       Add regression coverage for find_filesystem_tool_candidate() continuing
+#       past non-executable PATH candidates to a later executable one.
 #  v1.5 2026-07-10
 #       Expand tests for chmodtree.py v3.2 default exclusion of symbolic links from owner/group
 #       normalization, the --chown-symlinks opt-in, and the always-on chown -h dereference-safe invocation.
@@ -148,6 +154,36 @@ class TestChmodTree(unittest.TestCase):
         chmodtree.check_filesystem_tool('nonexecutable')
         mock_print.assert_called_with("[ERROR] Command 'nonexecutable' is not executable. Please check the permissions.", file=sys.stderr)
         mock_exit.assert_called_with(126)
+
+    @patch('chmodtree.os.access')
+    @patch('chmodtree.os.path.isfile')
+    @patch.dict('chmodtree.os.environ', {'PATH': '/first/bin:/second/bin'})
+    def test_find_filesystem_tool_candidate_skips_non_executable_to_later_executable(self, mock_isfile, mock_access):
+        """ Test find_filesystem_tool_candidate returns a later executable candidate when an earlier one is not executable. """
+        mock_isfile.return_value = True
+        mock_access.side_effect = lambda path, mode: path == '/second/bin/cmd'
+        result = chmodtree.find_filesystem_tool_candidate('cmd')
+        self.assertEqual(result, '/second/bin/cmd')
+
+    @patch('chmodtree.os.access')
+    @patch('chmodtree.os.path.isfile')
+    @patch.dict('chmodtree.os.environ', {'PATH': '/first/bin:/second/bin'})
+    def test_find_filesystem_tool_candidate_returns_non_executable_when_no_executable_found(self, mock_isfile, mock_access):
+        """ Test find_filesystem_tool_candidate returns the non-executable candidate when no PATH entry is executable. """
+        mock_isfile.return_value = True
+        mock_access.return_value = False
+        result = chmodtree.find_filesystem_tool_candidate('cmd')
+        self.assertEqual(result, '/first/bin/cmd')
+
+    @patch('chmodtree.os.access')
+    @patch('chmodtree.os.path.isfile')
+    @patch.dict('chmodtree.os.environ', {'PATH': '/first/bin:/second/bin'})
+    def test_find_filesystem_tool_candidate_returns_none_when_no_candidate_found(self, mock_isfile, mock_access):
+        """ Test find_filesystem_tool_candidate returns None when no PATH entry contains the command. """
+        mock_isfile.return_value = False
+        result = chmodtree.find_filesystem_tool_candidate('cmd')
+        self.assertIsNone(result)
+        mock_access.assert_not_called()
 
     def test_is_octal_mode_accepts_numeric_modes(self):
         """ Test octal mode detection for supported numeric permission forms. """

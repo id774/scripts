@@ -108,6 +108,9 @@
 #    but is provided by GNU coreutils, macOS/BSD chown, and current BusyBox.
 #
 #  Version History:
+#  v3.3 2026-09-17
+#       Continue command lookup past non-executable PATH candidates to a
+#       later executable candidate.
 #  v3.2 2026-07-10
 #       Exclude symlinks from owner/group normalization by default, add
 #       --chown-symlinks to opt in, and always invoke chown -h for safety.
@@ -212,11 +215,16 @@ def setup_option_parser():
 
 def find_filesystem_tool_candidate(cmd):
     """ Check if a given command exists in the system's PATH. """
+    non_executable_candidate = None
     for path in os.environ.get("PATH", "").split(os.pathsep):
         full_path = os.path.join(path, cmd)
-        if os.path.isfile(full_path):
+        if not os.path.isfile(full_path):
+            continue
+        if os.access(full_path, os.X_OK):
             return full_path
-    return None
+        if non_executable_candidate is None:
+            non_executable_candidate = full_path
+    return non_executable_candidate
 
 
 def check_filesystem_tool(cmd):

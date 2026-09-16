@@ -33,6 +33,10 @@
 #  expected for that invocation, pyck treats it as an execution failure and
 #  returns status 1, while still processing the remaining stages and files.
 #
+#  If an input path is neither a file nor a directory, pyck reports it as an
+#  error and treats the run as a failure (status 1), while still processing
+#  the remaining valid files or directories given in the same invocation.
+#
 #  pyck uses its own formatter and linter settings and ignores user-level and
 #  project-local configuration files. The same file is therefore checked and
 #  formatted with the same pyck policy regardless of the current working
@@ -69,7 +73,7 @@
 #
 #  Exit Status:
 #  0. Processing completed; lint findings or dry-run change candidates may remain.
-#  1. A formatter or linter command failed during processing.
+#  1. An input path is invalid, or a formatter or linter command failed during processing.
 #  9. The Python interpreter is older than the supported minimum version.
 #  126. A required command exists but is not executable.
 #  127. A required command is not found.
@@ -82,6 +86,9 @@
 #  list and remain enforced.
 #
 #  Version History:
+#  v3.3 2026-09-17
+#       Propagate invalid input paths as failures while continuing valid
+#       targets, and skip non-executable PATH candidates for later ones.
 #  v3.2 2026-09-06
 #       Return failure for formatter or linter execution errors while keeping
 #       lint findings and dry-run change candidates advisory.
@@ -172,11 +179,16 @@ def setup_argument_parser():
 
 def find_quality_tool_candidate(cmd):
     """ Check if a given command exists in the system's PATH. """
+    non_executable_candidate = None
     for path in os.environ["PATH"].split(os.pathsep):
         full_path = os.path.join(path, cmd)
-        if os.path.isfile(full_path):
+        if not os.path.isfile(full_path):
+            continue
+        if os.access(full_path, os.X_OK):
             return full_path
-    return None
+        if non_executable_candidate is None:
+            non_executable_candidate = full_path
+    return non_executable_candidate
 
 def check_quality_tool(cmd):
     """ Verify if a command is available and executable in the system's PATH. """
@@ -212,6 +224,7 @@ def format_imports(file_path, config_path):
 def resolve_target_files(paths):
     """ Resolve the given files/directories into the concrete list of .py files to process. """
     target_files = []
+    resolution_status = 0
     for path in paths:
         actual_path = path[0] if isinstance(path, list) else path
 
@@ -225,13 +238,14 @@ def resolve_target_files(paths):
         else:
             print("[ERROR] The specified path '{}' is neither a file nor a directory.".format(
                 actual_path), file=sys.stderr)
-    return target_files
+            resolution_status = 1
+    return target_files, resolution_status
 
 def dry_run_formatting(paths, autopep8_ignore_errors, config_path):
     """ Perform a dry run to show which files auto-fix would change, without making actual changes. """
     print("[INFO] DRY RUN: No files will be modified. Use -i to auto-fix.")
-    overall_status = 0
-    for file_path in resolve_target_files(paths):
+    target_files, overall_status = resolve_target_files(paths)
+    for file_path in target_files:
         if run_quality_check(
                 "flake8 --isolated --ignore={} {}".format(
                     FLAKE8_IGNORE_ERRORS, shlex.quote(file_path)),
@@ -257,8 +271,8 @@ def dry_run_formatting(paths, autopep8_ignore_errors, config_path):
 
 def execute_formatting(paths, autopep8_ignore_errors, config_path):
     """ Execute auto-formatting and report lint issues that remain afterward. """
-    overall_status = 0
-    for file_path in resolve_target_files(paths):
+    target_files, overall_status = resolve_target_files(paths)
+    for file_path in target_files:
         if format_file(file_path, autopep8_ignore_errors, config_path) != 0:
             overall_status = 1
         if run_quality_check(
