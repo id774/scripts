@@ -31,6 +31,9 @@
 #  - The system must have a compatible MTA (e.g., Postfix or Sendmail).
 #
 #  Version History:
+#  v1.3 2026-09-16
+#       Stage the self-alias removal temporary file with mktemp instead of
+#       a predictable /tmp path.
 #  v1.2 2026-07-12
 #       Replace GNU sed -i with a portable root-owned aliases update.
 #  v1.1 2026-07-11
@@ -117,7 +120,11 @@ remove_self_alias() {
 
     if grep -q "^${username}: root$" "$ALIASES_FILE"; then
         echo "[INFO] Removing self alias: $username: root"
-        tmp="/tmp/setup_aliases.$$"
+        tmp=$(mktemp /tmp/setup_aliases.XXXXXX 2>/dev/null)
+        if [ -z "$tmp" ] || [ ! -f "$tmp" ]; then
+            echo "[ERROR] Failed to create a temporary file for $ALIASES_FILE." >&2
+            exit 1
+        fi
 
         if sed "/^${username}: root$/d" "$ALIASES_FILE" > "$tmp" &&
             sudo chown root:root "$tmp" &&
@@ -183,7 +190,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo grep tee newaliases sed mv id truncate touch chown chmod rm
+    check_commands sudo grep tee newaliases sed mv id truncate touch chown chmod rm mktemp
     check_scripts
 
     SCRIPT_PATH="$SCRIPTS/usershells.py"

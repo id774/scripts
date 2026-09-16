@@ -9,8 +9,9 @@
 #  active 'auth sufficient pam_wheel.so trust' line to prevent passwordless
 #  root access for wheel group members. All changes preserve existing
 #  indentation and affect only those targeted lines. If both lines are already
-#  in the desired state or absent, no edits are made. The script is
-#  idempotent and uses only POSIX-compliant utilities without creating backups.
+#  in the desired state or absent, no edits are made. The script is idempotent,
+#  keeps POSIX-compliant /bin/sh syntax, stages updates with mktemp, and
+#  creates no backups.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -34,9 +35,12 @@
 #  Requirements:
 #  - Linux operating system (Debian/Ubuntu family recommended)
 #  - sudo privileges for modifying /etc/pam.d/su
-#  - Commands: sudo, awk, grep, mv, sh
+#  - Commands: sudo, awk, grep, mv, cp, rm, mktemp, sh
 #
 #  Version History:
+#  v1.2 2026-09-16
+#       Stage /etc/pam.d/su updates with mktemp, preserve target ownership
+#       and mode, and stop reporting success when a staged update fails.
 #  v1.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -111,11 +115,60 @@ has_active_trust() {
         "$PAM_FILE"
 }
 
+# Stage a transformed copy of $PAM_FILE and replace it atomically while
+# keeping the file's existing owner, group, and mode. $1 is the awk program
+# that produces the transformed content; $2 is a label for diagnostics.
+apply_pam_update() {
+    awk_program=$1
+    label=$2
+
+    user_tmp=$(mktemp /tmp/setup_pamd.XXXXXX 2>/dev/null)
+    if [ -z "$user_tmp" ] || [ ! -f "$user_tmp" ]; then
+        echo "[ERROR] Failed to create a temporary file for $label." >&2
+        exit 1
+    fi
+
+    if ! sudo awk "$awk_program" "$PAM_FILE" > "$user_tmp"; then
+        rm -f "$user_tmp"
+        echo "[ERROR] Failed to transform $PAM_FILE for $label." >&2
+        exit 1
+    fi
+
+    root_tmp=$(sudo mktemp "$(dirname "$PAM_FILE")/.setup_pamd.XXXXXX" 2>/dev/null)
+    if [ -z "$root_tmp" ]; then
+        rm -f "$user_tmp"
+        echo "[ERROR] Failed to create a root staging file for $label." >&2
+        exit 1
+    fi
+
+    if ! sudo cp -p "$PAM_FILE" "$root_tmp"; then
+        rm -f "$user_tmp"
+        sudo rm -f "$root_tmp"
+        echo "[ERROR] Failed to preserve $PAM_FILE metadata for $label." >&2
+        exit 1
+    fi
+
+    if ! sudo cp "$user_tmp" "$root_tmp"; then
+        rm -f "$user_tmp"
+        sudo rm -f "$root_tmp"
+        echo "[ERROR] Failed to stage updated content for $label." >&2
+        exit 1
+    fi
+
+    if ! sudo mv "$root_tmp" "$PAM_FILE"; then
+        rm -f "$user_tmp"
+        sudo rm -f "$root_tmp"
+        echo "[ERROR] Failed to apply $label to $PAM_FILE." >&2
+        exit 1
+    fi
+
+    rm -f "$user_tmp"
+}
+
 # Enable 'auth required pam_wheel.so' if commented
 enable_pam_wheel_required() {
     if has_commented_required; then
-        tmp="/tmp/setup_pamd.required.$$"
-        sudo awk '
+        apply_pam_update '
 /^[[:space:]]*#[[:space:]]*auth[[:space:]]+required[[:space:]]+pam_wheel\.so[[:space:]]*$/ {
     m = match($0, /^[[:space:]]*/); indent = substr($0, 1, RLENGTH)
     rest = substr($0, RLENGTH + 1)
@@ -127,7 +180,7 @@ enable_pam_wheel_required() {
     next
 }
 { print }
-' "$PAM_FILE" > "$tmp" && sudo mv "$tmp" "$PAM_FILE"
+' "enabling auth required pam_wheel.so"
         echo "[INFO] Enabled auth required pam_wheel.so"
     else
         echo "[INFO] auth required pam_wheel.so already enabled."
@@ -137,8 +190,7 @@ enable_pam_wheel_required() {
 # Disable 'auth sufficient pam_wheel.so trust' if active
 disable_pam_wheel_trust() {
     if has_active_trust; then
-        tmp="/tmp/setup_pamd.trust.$$"
-        sudo awk '
+        apply_pam_update '
 /^[[:space:]]*auth[[:space:]]+sufficient[[:space:]]+pam_wheel\.so[[:space:]]+trust([[:space:]]|$)/ {
     m = match($0, /^[[:space:]]*/); indent = substr($0, 1, RLENGTH)
     authpos = match($0, /auth[[:space:]]+sufficient[[:space:]]+pam_wheel\.so[[:space:]]+trust/)
@@ -147,7 +199,7 @@ disable_pam_wheel_trust() {
     next
 }
 { print }
-' "$PAM_FILE" > "$tmp" && sudo mv "$tmp" "$PAM_FILE"
+' "disabling auth sufficient pam_wheel.so trust"
         echo "[INFO] Disabled auth sufficient pam_wheel.so trust"
     else
         echo "[INFO] pam_wheel.so trust already disabled."
@@ -161,7 +213,7 @@ main() {
     esac
 
     check_system
-    check_commands grep mv awk
+    check_commands grep mv awk mktemp cp rm
     check_sudo
     check_pam_file
 
