@@ -30,7 +30,16 @@
 #  - usershells.py must exist and be executable via $SCRIPTS environment variable.
 #  - The system must have a compatible MTA (e.g., Postfix or Sendmail).
 #
+#  Exit Status:
+#  0. Alias and mail-spool setup completed successfully.
+#  1. Required setup state or an alias/mail operation failed.
+#  126. A required command exists but is not executable.
+#  127. A required command is not found.
+#
 #  Version History:
+#  v1.4 2026-09-16
+#       Stop dependent alias and mail-spool processing when user enumeration
+#       or alias append fails.
 #  v1.3 2026-09-16
 #       Stage the self-alias removal temporary file with mktemp instead of
 #       a predictable /tmp path.
@@ -107,11 +116,28 @@ check_sudo() {
 
 # Add missing alias entries to /etc/aliases
 add_missing_aliases() {
-    "$SCRIPT_PATH" --name-only | while read -r user; do
+    if ! users=$("$SCRIPT_PATH" --name-only); then
+        echo "[ERROR] Failed to list interactive users with $SCRIPT_PATH." >&2
+        return 1
+    fi
+
+    if [ -z "$users" ]; then
+        return 0
+    fi
+
+    while IFS= read -r user; do
         grep -q "^${user}:" "$ALIASES_FILE" && continue
         echo "[INFO] Adding alias: $user: root"
-        echo "${user}: root" | sudo tee -a "$ALIASES_FILE" >/dev/null
-    done
+        if ! printf '%s\n' "${user}: root" |
+            sudo tee -a "$ALIASES_FILE" >/dev/null; then
+            echo "[ERROR] Failed to add alias for '$user' to $ALIASES_FILE." >&2
+            return 1
+        fi
+    done <<EOF
+$users
+EOF
+
+    return 0
 }
 
 # Remove self alias like "username: root" from /etc/aliases
@@ -197,7 +223,10 @@ main() {
     check_script
     check_sudo
 
-    add_missing_aliases
+    if ! add_missing_aliases; then
+        return 1
+    fi
+
     remove_self_alias
     apply_changes
     ensure_mail_spool
