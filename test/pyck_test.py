@@ -52,15 +52,22 @@
 #    - Dry-run never invokes autoflake -i, autopep8 -i, or a plain (non-check) isort command,
 #      and only runs check/diff commands against the target file.
 #    - resolve_target_files() resolves a single file, a directory (recursively, .py files
-#      only), and reports the existing invalid-path error.
+#      only), and reports the existing invalid-path error, returning status 0 for valid
+#      input and status 1 for an invalid path.
 #    - dry_run_formatting() and execute_formatting() resolve and operate on the same set of
 #      .py files for the same input paths.
+#    - dry_run_formatting() and execute_formatting() continue checking or formatting a valid
+#      target and return status 1 when given a mix of valid and invalid paths.
 #    - In execute (auto-fix) mode, format a single Python file via format_file().
 #    - In execute (auto-fix) mode, format a mix of directory and file paths and report an error for invalid paths.
 #    - In execute (auto-fix) mode, format a single directory by formatting each .py file under it.
 #    - In execute (auto-fix) mode, format multiple directories by formatting each .py file under them.
 #    - Detect an existing command path with find_quality_tool_candidate() when the command is present in PATH.
 #    - Return None from find_quality_tool_candidate() when the command is not present in PATH.
+#    - find_quality_tool_candidate() skips a non-executable PATH candidate and returns a later
+#      executable one.
+#    - find_quality_tool_candidate() returns the non-executable candidate when no PATH entry
+#      is executable, preserving check_quality_tool's 126 semantics.
 #    - Verify check_quality_tool behavior via alternate patching for existing executable commands.
 #    - Verify create_isolated_config() writes the formatter/linter configuration used by pyck.
 #    - Verify format_imports() passes the isolated configuration to isort.
@@ -77,6 +84,9 @@
 #    - Verify that main() returns 1 for a dry-run or auto-fix execution failure.
 #
 #  Version History:
+#  v1.7 2026-09-17
+#       Cover resolve_target_files() invalid-path failure status, valid-target
+#       continuation on mixed input, and PATH executable fallback.
 #  v1.6 2026-09-06
 #       Cover formatter and linter execution-failure propagation while
 #       preserving advisory finding exit semantics.
@@ -671,9 +681,10 @@ class TestPyck(unittest.TestCase):
         mock_isdir.return_value = False
         mock_isfile.return_value = True
 
-        result = pyck.resolve_target_files(['path/to/file.py'])
+        target_files, status = pyck.resolve_target_files(['path/to/file.py'])
 
-        self.assertEqual(result, ['path/to/file.py'])
+        self.assertEqual(target_files, ['path/to/file.py'])
+        self.assertEqual(status, 0)
 
     @patch('pyck.os.walk')
     @patch('pyck.os.path.isdir')
@@ -684,12 +695,13 @@ class TestPyck(unittest.TestCase):
         mock_walk.return_value = [
             ('path/to/directory', [], ['file1.py', 'file2.py', 'notes.txt'])]
 
-        result = pyck.resolve_target_files(['path/to/directory'])
+        target_files, status = pyck.resolve_target_files(['path/to/directory'])
 
-        self.assertEqual(result, [
+        self.assertEqual(target_files, [
             os.path.join('path/to/directory', 'file1.py'),
             os.path.join('path/to/directory', 'file2.py'),
         ])
+        self.assertEqual(status, 0)
 
     @patch('pyck.print')
     @patch('pyck.os.path.isdir')
@@ -698,10 +710,67 @@ class TestPyck(unittest.TestCase):
         mock_isdir.return_value = False
         mock_isfile.return_value = False
 
-        result = pyck.resolve_target_files(['invalid/path'])
+        target_files, status = pyck.resolve_target_files(['invalid/path'])
 
-        self.assertEqual(result, [])
+        self.assertEqual(target_files, [])
+        self.assertEqual(status, 1)
         mock_print.assert_called_with(
+            "[ERROR] The specified path 'invalid/path' is neither a file nor a directory.", file=sys.stderr)
+
+    @patch('pyck.subprocess.Popen')
+    @patch('pyck.print')
+    @patch('pyck.os.path.isdir')
+    @patch('pyck.os.path.isfile')
+    def test_dry_run_formatting_with_mixed_valid_and_invalid_paths(self, mock_isfile, mock_isdir, mock_print, mock_popen):
+        # A dry run given both a valid file and an invalid path must still check the
+        # valid target while reporting overall failure for the invalid path.
+        mock_isdir.return_value = False
+        mock_isfile.side_effect = lambda p: p == 'path/to/valid.py'
+        mock_process = MagicMock()
+        mock_process.communicate.return_value = ('output', 'error')
+        mock_process.returncode = 0
+        mock_popen.return_value = mock_process
+
+        status = pyck.dry_run_formatting(
+            ['path/to/valid.py', 'invalid/path'], 'E302,E402,E501', CONFIG_PATH)
+
+        self.assertEqual(status, 1)
+        mock_popen.assert_any_call(
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/valid.py", shell=True, stdout=-1)
+        mock_popen.assert_any_call(
+            "autoflake --config=/tmp/pyck.cfg --imports=django,requests,urllib3 --check path/to/valid.py", shell=True, stdout=-1)
+        mock_popen.assert_any_call(
+            "autopep8 --global-config=/tmp/pyck.cfg --ignore-local-config --ignore=E302,E402,E501 --diff --exit-code path/to/valid.py", shell=True, stdout=-1)
+        mock_popen.assert_any_call(
+            "isort --settings-path=/tmp/pyck.cfg --check-only path/to/valid.py", shell=True, stdout=-1)
+        mock_print.assert_any_call(
+            "[ERROR] The specified path 'invalid/path' is neither a file nor a directory.", file=sys.stderr)
+
+    @patch('pyck.run_quality_check')
+    @patch('pyck.format_file')
+    @patch('pyck.print')
+    @patch('pyck.os.path')
+    @patch('pyck.os.walk')
+    def test_execute_formatting_with_mixed_valid_and_invalid_paths(
+            self, mock_walk, mock_path, mock_print,
+            mock_format_file, mock_run_quality_check):
+        # Auto-fix given both a valid file and an invalid path must still format the
+        # valid target and run post-fix flake8 while reporting overall failure.
+        mock_path.isfile.side_effect = lambda p: p == 'path/to/valid.py'
+        mock_path.isdir.return_value = False
+        mock_format_file.return_value = 0
+        mock_run_quality_check.return_value = 0
+
+        status = pyck.execute_formatting(
+            ['path/to/valid.py', 'invalid/path'], 'E302,E402,E501', CONFIG_PATH)
+
+        self.assertEqual(status, 1)
+        mock_format_file.assert_called_once_with(
+            'path/to/valid.py', 'E302,E402,E501', CONFIG_PATH)
+        mock_run_quality_check.assert_called_once_with(
+            "flake8 --isolated --ignore=E302,E402,E501,W503,W504 path/to/valid.py",
+            show_files="Manual fix required:", expected_nonzero=(1,))
+        mock_print.assert_any_call(
             "[ERROR] The specified path 'invalid/path' is neither a file nor a directory.", file=sys.stderr)
 
     @patch('pyck.subprocess.Popen')
@@ -890,7 +959,7 @@ class TestPyck(unittest.TestCase):
     def test_execute_formatting_runs_flake8_after_format_file(
             self, mock_resolve_target_files,
             mock_format_file, mock_run_quality_check):
-        mock_resolve_target_files.return_value = ['path/to/file.py']
+        mock_resolve_target_files.return_value = (['path/to/file.py'], 0)
         mock_format_file.return_value = 0
         mock_run_quality_check.return_value = 0
 
@@ -936,8 +1005,8 @@ class TestPyck(unittest.TestCase):
     def test_execute_formatting_quotes_path_for_post_fix_flake8(
             self, mock_resolve_target_files,
             mock_format_file, mock_run_quality_check):
-        mock_resolve_target_files.return_value = [
-            'path/to/my file.py']
+        mock_resolve_target_files.return_value = (
+            ['path/to/my file.py'], 0)
 
         pyck.execute_formatting(
             ['path/to/my file.py'], 'E302,E402,E501', CONFIG_PATH_WITH_SPACES)
@@ -954,7 +1023,7 @@ class TestPyck(unittest.TestCase):
             self, mock_resolve_target_files, mock_print, mock_popen):
         # A formatter execution failure plus an advisory post-fix lint finding
         # still runs post-fix flake8, and the aggregate result is a failure.
-        mock_resolve_target_files.return_value = ['path/to/file.py']
+        mock_resolve_target_files.return_value = (['path/to/file.py'], 0)
         mock_popen.side_effect = _popen_side_effect({
             'autoflake': (1, ''),
             'autopep8': (0, ''),
@@ -993,7 +1062,7 @@ class TestPyck(unittest.TestCase):
         mock_parser.parse_args.return_value = mock_args
         mock_setup_argument_parser.return_value = mock_parser
 
-        mock_resolve_target_files.return_value = ['path/to/file.py']
+        mock_resolve_target_files.return_value = (['path/to/file.py'], 0)
         mock_format_file.return_value = 0
 
         mock_temporary_directory.return_value.__enter__.return_value = '/tmp/pyck-test'
@@ -1107,11 +1176,13 @@ class TestPyck(unittest.TestCase):
 
         self.assertEqual(result, 1)
 
+    @patch('pyck.os.access')
     @patch('pyck.os.path.isfile')
     @patch.dict('pyck.os.environ', {'PATH': '/usr/bin:/bin'})
-    def test_find_quality_tool_candidate_with_existing_command(self, mock_isfile):
+    def test_find_quality_tool_candidate_with_existing_command(self, mock_isfile, mock_access):
         # Test the case where the command exists
         mock_isfile.return_value = True
+        mock_access.return_value = True
         result = pyck.find_quality_tool_candidate('python')
         self.assertTrue(result.endswith('/python'))
 
@@ -1122,6 +1193,27 @@ class TestPyck(unittest.TestCase):
         mock_isfile.return_value = False
         result = pyck.find_quality_tool_candidate('nonexistent')
         self.assertIsNone(result)
+
+    @patch('pyck.os.access')
+    @patch('pyck.os.path.isfile')
+    @patch.dict('pyck.os.environ', {'PATH': '/first/bin:/second/bin'})
+    def test_find_quality_tool_candidate_skips_non_executable_to_later_executable(self, mock_isfile, mock_access):
+        # A non-executable candidate earlier in PATH must not shadow a later executable one.
+        mock_isfile.return_value = True
+        mock_access.side_effect = lambda path, mode: path == '/second/bin/python'
+        result = pyck.find_quality_tool_candidate('python')
+        self.assertEqual(result, '/second/bin/python')
+
+    @patch('pyck.os.access')
+    @patch('pyck.os.path.isfile')
+    @patch.dict('pyck.os.environ', {'PATH': '/first/bin:/second/bin'})
+    def test_find_quality_tool_candidate_returns_non_executable_when_no_executable_found(self, mock_isfile, mock_access):
+        # With no executable candidate in PATH, the first non-executable one is
+        # returned so that check_quality_tool's 126 semantics still apply.
+        mock_isfile.return_value = True
+        mock_access.return_value = False
+        result = pyck.find_quality_tool_candidate('python')
+        self.assertEqual(result, '/first/bin/python')
 
     @patch('pyck.sys.exit')
     @patch('pyck.print')
