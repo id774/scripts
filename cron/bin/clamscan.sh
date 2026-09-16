@@ -19,7 +19,18 @@
 #      ./clamscan.sh
 #  This script is intended to be executed periodically by cron.
 #
+#  Exit Status:
+#  0. No virus was found.
+#  1. Virus was found, or the script was refused because it was not run
+#     from cron.
+#  2. ClamAV reported a scan error.
+#  126. A scan command could not be executed.
+#  127. A scan command was not found.
+#  Other non-zero. Operational scan command failure.
+#
 #  Version History:
+#  v2.2 2026-09-16
+#       Return ClamAV scan results while continuing all configured targets.
 #  v2.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -135,11 +146,23 @@ load_exclude_options() {
 
 # Run clamscan
 run_clamscan() {
+    overall_status=0
     for dir in $TARGETDIRS; do
         echo "[INFO] Scanning: $dir"
         clamscan $OPTS -r -i -l "$LOGFILE" "$dir"
+        scan_status=$?
+        if [ "$scan_status" -eq 1 ]; then
+            if [ "$overall_status" -eq 0 ]; then
+                overall_status=1
+            fi
+        elif [ "$scan_status" -ne 0 ]; then
+            if [ "$overall_status" -eq 0 ] || [ "$overall_status" -eq 1 ]; then
+                overall_status=$scan_status
+            fi
+        fi
     done
     echo "[INFO] ClamAV scan completed. Logs available at: $LOGFILE"
+    return "$overall_status"
 }
 
 # Main entry point of the script
@@ -153,7 +176,7 @@ main() {
     load_exclude_options
     run_clamscan
 
-    return 0
+    return $?
 }
 
 # Execute main function

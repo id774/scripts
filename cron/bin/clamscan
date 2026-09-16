@@ -22,7 +22,19 @@
 #      Or create a specific cron entry like the following:
 #      30 4 * * 7 root /path/to/clamscan
 #
+#  Exit Status:
+#  0. The delegated scan completed with no virus reported.
+#  1. Virus was reported by the delegated scan, or wrapper initialization
+#     failed.
+#  2. The delegated ClamAV scan reported an error.
+#  126. The delegated scan script is not executable.
+#  127. The delegated scan script is not found.
+#  Other non-zero. Status propagated from the delegated scan script.
+#
 #  Version History:
+#  v1.5 2026-09-16
+#       Propagate delegated scan status and fail when the scan script
+#       is missing or not executable.
 #  v1.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -87,12 +99,19 @@ initialize() {
 
 # Run the ClamAV scan script
 call_main_script() {
-    if [ -x "$SCRIPT" ]; then
-        echo "[INFO] Executing: $SCRIPT" >> "$JOBLOG" 2>&1
-        "$SCRIPT" >> "$JOBLOG" 2>&1
-    else
-        echo "[WARN] ClamAV scan script not found or not executable: $SCRIPT" >> "$JOBLOG" 2>&1
+    if [ ! -e "$SCRIPT" ]; then
+        echo "[ERROR] ClamAV scan script not found: $SCRIPT" >> "$JOBLOG" 2>&1
+        return 127
     fi
+
+    if [ ! -x "$SCRIPT" ]; then
+        echo "[ERROR] ClamAV scan script is not executable: $SCRIPT" >> "$JOBLOG" 2>&1
+        return 126
+    fi
+
+    echo "[INFO] Executing: $SCRIPT" >> "$JOBLOG" 2>&1
+    "$SCRIPT" >> "$JOBLOG" 2>&1
+    return $?
 }
 
 # Send scan log via email if address is defined
@@ -119,11 +138,12 @@ main() {
 
     initialize
     call_main_script
+    scan_status=$?
     finalize
 
     send_mail_to_admin
 
-    return 0
+    return "$scan_status"
 }
 
 # Execute main function
