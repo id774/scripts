@@ -39,6 +39,8 @@ v2.0.2 (Release Date: TBD)
   unsupported options or extra directory arguments.
 - Separate helper names for intentionally different command, sudo, usage, and
   quality-check contracts while preserving their established runtime behavior.
+- Harden privileged installer temporary-file staging and preserve managed
+  system-file metadata during configuration updates.
 
 v2.0.1 (2026-08-26)
 -------------------

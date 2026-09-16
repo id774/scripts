@@ -1278,6 +1278,17 @@ log_info_time() {
   particular, avoid destructive overwrites and validate paths before
   modification.
 - Align log writing and rotation with system log policy.
+- When creating a writable temporary file in a shared directory such as
+  `/tmp`, use atomic, collision-resistant temporary-file creation (e.g.
+  `mktemp`). Do not build a writable staging path for a privileged update
+  from `$$` alone and open it directly.
+- When updating a privileged managed file, do not let a user-owned staging
+  file's owner, group, or mode transfer to the target; preserve the
+  metadata the target is required to keep.
+- Confirm that temporary-file creation and transformed-content generation
+  succeeded before a privileged target update. On failure, report
+  `[ERROR]`, remove any staging file already created, and do not report
+  that update as successful.
 
 ---
 

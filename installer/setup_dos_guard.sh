@@ -32,9 +32,12 @@
 #   - Linux (Debian-family assumed)
 #   - sudo privileges (script invokes sudo)
 #   - Commands: sudo, cmp, cp, chmod, chown, mkdir, a2enmod, apachectl,
-#               systemctl, fail2ban-client
+#               systemctl, fail2ban-client, mktemp
 #
 #  Version History:
+#  v1.3 2026-09-16
+#       Stage the fallback apache-evasive filter with mktemp instead of a
+#       predictable /tmp path.
 #  v1.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -140,13 +143,22 @@ deploy_fail2ban() {
         install_if_changed "$FILTER_SRC" "$dest" 644 "root:root"
     elif [ ! -f "$dest" ]; then
         echo "[INFO] Creating default apache-evasive filter: $dest"
-        tmp="/tmp/apache-evasive.$$"
+        tmp=$(mktemp /tmp/apache-evasive.XXXXXX 2>/dev/null)
+        if [ -z "$tmp" ] || [ ! -f "$tmp" ]; then
+            echo "[ERROR] Failed to create a temporary file for $dest." >&2
+            exit 1
+        fi
         # Simple filter matching mod_evasive error lines with <HOST> placeholder.
-        cat >"$tmp" <<'EOF'
+        if ! cat >"$tmp" <<'EOF'
 [Definition]
 failregex = \[evasive20:error\] \[pid .*?\] \[client <HOST>.*\] client denied by server configuration
 ignoreregex =
 EOF
+        then
+            rm -f "$tmp"
+            echo "[ERROR] Failed to generate default filter content for $dest." >&2
+            exit 1
+        fi
         sudo cp "$tmp" "$dest" && sudo chown root:root "$dest" && sudo chmod 0644 "$dest" || {
             echo "[ERROR] Failed to create $dest" >&2; rm -f "$tmp"; exit 1;
         }
@@ -238,7 +250,7 @@ main() {
 
     check_system
     check_scripts
-    check_commands cmp cp chmod chown mkdir a2enmod apachectl systemctl fail2ban-client cat rm sed
+    check_commands cmp cp chmod chown mkdir a2enmod apachectl systemctl fail2ban-client cat rm sed mktemp
     check_sudo
     resolve_sources
 

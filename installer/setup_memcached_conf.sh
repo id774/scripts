@@ -9,8 +9,9 @@
 #  replaced with "# -l ::1" to comment it out. This prevents memcached from
 #  binding to IPv6 localhost. The change preserves file permissions and affects
 #  only the targeted line. If no matching line is found or it is already
-#  commented, no edits are made. The operation is idempotent and uses only
-#  POSIX-compliant utilities without creating backups.
+#  commented, no edits are made. The operation is idempotent, keeps
+#  POSIX-compliant /bin/sh syntax, stages updates with mktemp, and creates no
+#  backups.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -31,9 +32,12 @@
 #  Requirements:
 #  - Linux operating system
 #  - sudo privileges for modifying /etc/memcached.conf
-#  - Commands: sudo, awk, grep, mv, sh
+#  - Commands: sudo, awk, grep, mv, cp, rm, mktemp, sh
 #
 #  Version History:
+#  v1.2 2026-09-16
+#       Stage /etc/memcached.conf updates with mktemp, preserve target
+#       ownership and mode, and skip success on staged update failure.
 #  v1.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -107,8 +111,13 @@ has_ipv6_bind() {
 # Comment out the "-l ::1" line
 comment_ipv6_bind() {
     if has_ipv6_bind; then
-        tmp="/tmp/setup_memcached_conf.$$"
-        sudo awk '
+        user_tmp=$(mktemp /tmp/setup_memcached_conf.XXXXXX 2>/dev/null)
+        if [ -z "$user_tmp" ] || [ ! -f "$user_tmp" ]; then
+            echo "[ERROR] Failed to create a temporary file for $CONF_FILE." >&2
+            exit 1
+        fi
+
+        if ! sudo awk '
             # Leave already commented lines as is
             /^[[:space:]]*#/ { print; next }
             # Comment any line that starts with "-l ::1" while keeping indentation and the rest of the line
@@ -119,7 +128,41 @@ comment_ipv6_bind() {
                 next
             }
             { print }
-        ' "$CONF_FILE" > "$tmp" && sudo mv "$tmp" "$CONF_FILE"
+        ' "$CONF_FILE" > "$user_tmp"; then
+            rm -f "$user_tmp"
+            echo "[ERROR] Failed to transform $CONF_FILE." >&2
+            exit 1
+        fi
+
+        root_tmp=$(sudo mktemp "$(dirname "$CONF_FILE")/.setup_memcached_conf.XXXXXX" 2>/dev/null)
+        if [ -z "$root_tmp" ]; then
+            rm -f "$user_tmp"
+            echo "[ERROR] Failed to create a root staging file for $CONF_FILE." >&2
+            exit 1
+        fi
+
+        if ! sudo cp -p "$CONF_FILE" "$root_tmp"; then
+            rm -f "$user_tmp"
+            sudo rm -f "$root_tmp"
+            echo "[ERROR] Failed to preserve $CONF_FILE metadata." >&2
+            exit 1
+        fi
+
+        if ! sudo cp "$user_tmp" "$root_tmp"; then
+            rm -f "$user_tmp"
+            sudo rm -f "$root_tmp"
+            echo "[ERROR] Failed to stage updated content for $CONF_FILE." >&2
+            exit 1
+        fi
+
+        if ! sudo mv "$root_tmp" "$CONF_FILE"; then
+            rm -f "$user_tmp"
+            sudo rm -f "$root_tmp"
+            echo "[ERROR] Failed to apply update to $CONF_FILE." >&2
+            exit 1
+        fi
+
+        rm -f "$user_tmp"
         echo "[INFO] Commented out \"-l ::1\" in $CONF_FILE"
     else
         echo "[INFO] No active \"-l ::1\" line found. No changes made."
@@ -133,7 +176,7 @@ main() {
     esac
 
     check_system
-    check_commands mv awk
+    check_commands mv awk mktemp cp rm
     check_sudo
     check_conf_file
 

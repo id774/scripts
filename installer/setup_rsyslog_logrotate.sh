@@ -36,8 +36,10 @@
 #  Why this approach:
 #    * Idempotent: running the script multiple times does not keep
 #      changing files once they are in the desired state.
-#    * Safe metadata handling: updated content is copied back with cp -p
-#      for rsyslog logrotate config to preserve mode/owner/timestamps.
+#    * Safe metadata handling: updated content is copied into the existing
+#      rsyslog logrotate config file without transferring the temporary
+#      file's owner or mode; the required root:adm 0640 policy is then
+#      reasserted explicitly.
 #    * Minimal edits: only the target directives are touched; everything
 #      else (delaycompress, postrotate, comments, ordering) is preserved.
 #    * Separate journald policy: a dedicated drop-in file is managed so
@@ -58,7 +60,8 @@
 #      /run/log/journal may use while the system is running.
 #    * We first normalize tabs to four spaces so indentation looks
 #      consistent across editors and diffs. Then we fix each block.
-#    * Temporary files are written under /tmp and removed via a trap.
+#    * Temporary files are created under /tmp with mktemp and removed via
+#      a trap.
 #
 #  Ownership and mode policy:
 #    * Owner and group: root:adm
@@ -97,7 +100,7 @@
 #    - Linux
 #    - sudo privileges (script uses sudo for reading/writing targets)
 #    - Commands: sudo, awk, cp, cmp, grep, cat, rm, chown, chmod,
-#      mkdir, systemctl, uname
+#      mkdir, systemctl, uname, mktemp
 #
 #  Exit Status:
 #  0. Success.
@@ -106,6 +109,9 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v1.4 2026-09-16
+#       Stage updates with mktemp instead of predictable /tmp paths, and
+#       stop copying temporary-file metadata onto managed system files.
 #  v1.3 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -175,12 +181,10 @@ check_target() {
 }
 
 # Remove temp files on normal exit or interruption
+# Each variable below holds the actual mktemp-generated path created by the
+# corresponding function, if any; unset/empty values are ignored by rm -f.
 cleanup() {
-    rm -f /tmp/rsyslog_tabs.$$ \
-          /tmp/rsyslog_daily.$$ \
-          /tmp/rsyslog_rotate.$$ \
-          /tmp/rsyslog_maxsize.$$ \
-          /tmp/journald_limits.$$
+    rm -f "$TABS_TMP" "$DAILY_TMP" "$ROTATE_TMP" "$MAXSIZE_TMP" "$JOURNALD_TMP"
 }
 trap cleanup EXIT INT TERM
 
@@ -190,21 +194,25 @@ trap cleanup EXIT INT TERM
 #     actually changes. This avoids pointless churn and keeps timestamps.
 convert_tabs() {
     if sudo grep -q "$(printf '\t')" "$TARGET" 2>/dev/null; then
-        tmp="/tmp/rsyslog_tabs.$$"
-        if ! sudo awk '{ gsub(/\t/, "    "); print }' "$TARGET" > "$tmp"; then
-            rm -f "$tmp"
+        TABS_TMP=$(mktemp /tmp/rsyslog_tabs.XXXXXX 2>/dev/null)
+        if [ -z "$TABS_TMP" ] || [ ! -f "$TABS_TMP" ]; then
+            echo "[ERROR] Failed to create a temporary file for $TARGET." >&2
+            exit 1
+        fi
+        if ! sudo awk '{ gsub(/\t/, "    "); print }' "$TARGET" > "$TABS_TMP"; then
+            rm -f "$TABS_TMP"
             echo "[ERROR] Failed to convert tabs." >&2
             exit 1
         fi
-        if sudo cmp -s "$tmp" "$TARGET"; then
-            rm -f "$tmp"                               # nothing to apply
+        if sudo cmp -s "$TABS_TMP" "$TARGET"; then
+            rm -f "$TABS_TMP"                          # nothing to apply
         else
-            if ! sudo cp -p "$tmp" "$TARGET"; then
-                rm -f "$tmp"
+            if ! sudo cp "$TABS_TMP" "$TARGET"; then
+                rm -f "$TABS_TMP"
                 echo "[ERROR] Failed to write converted file." >&2
                 exit 1
             fi
-            rm -f "$tmp"
+            rm -f "$TABS_TMP"
             echo "[INFO] Converted tabs to four spaces in $TARGET"
         fi
     fi
@@ -256,7 +264,11 @@ ensure_journald_dir() {
 #     right before the closing brace.
 #   - Trailing carriage returns are stripped to safely handle CRLF.
 ensure_daily() {
-    tmp="/tmp/rsyslog_daily.$$"
+    DAILY_TMP=$(mktemp /tmp/rsyslog_daily.XXXXXX 2>/dev/null)
+    if [ -z "$DAILY_TMP" ] || [ ! -f "$DAILY_TMP" ]; then
+        echo "[ERROR] Failed to create a temporary file for $TARGET." >&2
+        exit 1
+    fi
     if ! sudo awk '
         BEGIN { inblk=0; seen=0 }
         { sub(/\r$/, "") }                                  # strip CR if any
@@ -272,22 +284,22 @@ ensure_daily() {
             print; inblk=0; seen=0; next
         }
         { print }                                           # passthrough
-    ' "$TARGET" > "$tmp"; then
-        rm -f "$tmp"
+    ' "$TARGET" > "$DAILY_TMP"; then
+        rm -f "$DAILY_TMP"
         echo "[ERROR] Failed to process daily." >&2
         exit 1
     fi
 
-    if sudo cmp -s "$tmp" "$TARGET"; then
-        rm -f "$tmp"
+    if sudo cmp -s "$DAILY_TMP" "$TARGET"; then
+        rm -f "$DAILY_TMP"
         echo "[INFO] daily already set for all stanzas"
     else
-        if ! sudo cp -p "$tmp" "$TARGET"; then
-            rm -f "$tmp"
+        if ! sudo cp "$DAILY_TMP" "$TARGET"; then
+            rm -f "$DAILY_TMP"
             echo "[ERROR] Failed to apply daily changes." >&2
             exit 1
         fi
-        rm -f "$tmp"
+        rm -f "$DAILY_TMP"
         echo "[INFO] Set daily in one or more stanzas"
     fi
 
@@ -309,7 +321,11 @@ ensure_daily() {
 #   - If a rotate line exists, we replace it with "    rotate 90".
 #   - If missing when "}" is reached, we insert "    rotate 90" before it.
 ensure_rotate90() {
-    tmp="/tmp/rsyslog_rotate.$$"
+    ROTATE_TMP=$(mktemp /tmp/rsyslog_rotate.XXXXXX 2>/dev/null)
+    if [ -z "$ROTATE_TMP" ] || [ ! -f "$ROTATE_TMP" ]; then
+        echo "[ERROR] Failed to create a temporary file for $TARGET." >&2
+        exit 1
+    fi
     if ! sudo awk '
         BEGIN { inblk=0; seen=0 }
         { sub(/\r$/, "") }                                  # strip CR if any
@@ -325,22 +341,22 @@ ensure_rotate90() {
             print; inblk=0; seen=0; next
         }
         { print }                                           # passthrough
-    ' "$TARGET" > "$tmp"; then
-        rm -f "$tmp"
+    ' "$TARGET" > "$ROTATE_TMP"; then
+        rm -f "$ROTATE_TMP"
         echo "[ERROR] Failed to process rotate." >&2
         exit 1
     fi
 
-    if sudo cmp -s "$tmp" "$TARGET"; then
-        rm -f "$tmp"
+    if sudo cmp -s "$ROTATE_TMP" "$TARGET"; then
+        rm -f "$ROTATE_TMP"
         echo "[INFO] rotate 90 already set for all stanzas"
     else
-        if ! sudo cp -p "$tmp" "$TARGET"; then
-            rm -f "$tmp"
+        if ! sudo cp "$ROTATE_TMP" "$TARGET"; then
+            rm -f "$ROTATE_TMP"
             echo "[ERROR] Failed to apply rotate changes." >&2
             exit 1
         fi
-        rm -f "$tmp"
+        rm -f "$ROTATE_TMP"
         echo "[INFO] Set rotate 90 in one or more stanzas"
     fi
 
@@ -357,7 +373,11 @@ ensure_rotate90() {
 
 # Ensure a size limit line "    maxsize 100M" exists (and is normalized) in each block
 ensure_maxsize() {
-    tmp="/tmp/rsyslog_maxsize.$$"
+    MAXSIZE_TMP=$(mktemp /tmp/rsyslog_maxsize.XXXXXX 2>/dev/null)
+    if [ -z "$MAXSIZE_TMP" ] || [ ! -f "$MAXSIZE_TMP" ]; then
+        echo "[ERROR] Failed to create a temporary file for $TARGET." >&2
+        exit 1
+    fi
     if ! sudo awk '
         BEGIN { inblk=0; seen=0 }
         { sub(/\r$/, "") }
@@ -373,22 +393,22 @@ ensure_maxsize() {
             print; inblk=0; seen=0; next
         }
         { print }
-    ' "$TARGET" > "$tmp"; then
-        rm -f "$tmp"
+    ' "$TARGET" > "$MAXSIZE_TMP"; then
+        rm -f "$MAXSIZE_TMP"
         echo "[ERROR] Failed to process maxsize." >&2
         exit 1
     fi
 
-    if sudo cmp -s "$tmp" "$TARGET"; then
-        rm -f "$tmp"
+    if sudo cmp -s "$MAXSIZE_TMP" "$TARGET"; then
+        rm -f "$MAXSIZE_TMP"
         echo "[INFO] maxsize already set for all stanzas"
     else
-        if ! sudo cp -p "$tmp" "$TARGET"; then
-            rm -f "$tmp"
+        if ! sudo cp "$MAXSIZE_TMP" "$TARGET"; then
+            rm -f "$MAXSIZE_TMP"
             echo "[ERROR] Failed to apply maxsize changes." >&2
             exit 1
         fi
-        rm -f "$tmp"
+        rm -f "$MAXSIZE_TMP"
         echo "[INFO] Set maxsize 100M in one or more stanzas"
     fi
 
@@ -400,27 +420,31 @@ ensure_maxsize() {
 #   0: content updated
 #   1: already in desired state
 ensure_journald_limits() {
-    tmp="/tmp/journald_limits.$$"
+    JOURNALD_TMP=$(mktemp /tmp/journald_limits.XXXXXX 2>/dev/null)
+    if [ -z "$JOURNALD_TMP" ] || [ ! -f "$JOURNALD_TMP" ]; then
+        echo "[ERROR] Failed to create a temporary file for $JOURNALD_DROPIN." >&2
+        exit 1
+    fi
 
     # Build the desired drop-in content in a temporary file first
-    cat > "$tmp" <<'EOF'
+    cat > "$JOURNALD_TMP" <<'EOF'
 [Journal]
 SystemMaxUse=500M
 RuntimeMaxUse=200M
 EOF
 
-    if sudo test -f "$JOURNALD_DROPIN" && sudo cmp -s "$tmp" "$JOURNALD_DROPIN"; then
-        rm -f "$tmp"
+    if sudo test -f "$JOURNALD_DROPIN" && sudo cmp -s "$JOURNALD_TMP" "$JOURNALD_DROPIN"; then
+        rm -f "$JOURNALD_TMP"
         echo "[INFO] journald limits already configured"
         return 1
     fi
 
-    if ! sudo cp "$tmp" "$JOURNALD_DROPIN"; then
-        rm -f "$tmp"
+    if ! sudo cp "$JOURNALD_TMP" "$JOURNALD_DROPIN"; then
+        rm -f "$JOURNALD_TMP"
         echo "[ERROR] Failed to write $JOURNALD_DROPIN" >&2
         exit 1
     fi
-    rm -f "$tmp"
+    rm -f "$JOURNALD_TMP"
 
     enforce_owner_mode "$JOURNALD_DROPIN" root root 0644
     echo "[INFO] Updated $JOURNALD_DROPIN"
@@ -443,7 +467,7 @@ main() {
     esac
 
     check_system
-    check_commands awk cp cmp grep cat rm chown chmod mkdir systemctl
+    check_commands awk cp cmp grep cat rm chown chmod mkdir systemctl mktemp
     check_sudo
     check_target
     ensure_journald_dir
