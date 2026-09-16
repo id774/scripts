@@ -39,6 +39,7 @@ v2.0.2 (Release Date: TBD)
   unsupported options or extra directory arguments.
 - Separate helper names for intentionally different command, sudo, usage, and
   quality-check contracts while preserving their established runtime behavior.
+- Secure purge_apt_cache.sh temporary staging and propagate purge failures.
 
 v2.0.1 (2026-08-26)
 -------------------

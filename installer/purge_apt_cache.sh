@@ -21,7 +21,18 @@
 #  Run the script directly without any arguments:
 #      ./purge_apt_cache.sh
 #
+#  Exit Status:
+#  0. Success, no residual configuration files, or purge declined.
+#  1. General failure preparing the temporary cleanup script.
+#  126. Required command or script exists but is not executable.
+#  127. Required command or script is not found.
+#  Other non-zero. Status propagated from the cleanup script when a package
+#  purge fails.
+#
 #  Version History:
+#  v1.8 2026-09-16
+#       Use secure temporary script creation and propagate purge failures
+#       while continuing remaining package purges.
 #  v1.7 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -94,29 +105,49 @@ check_sudo() {
     fi
 }
 
-# Set temporary file location
+# Create a secure temporary file for the cleanup script
 set_temp_file() {
-    SCRIPT_NAME="${TMP:-/tmp}/purge_apt_cache.sh"
+    SCRIPT_NAME=$(mktemp "${TMP:-/tmp}/purge_apt_cache.XXXXXX") || {
+        echo "[ERROR] Failed to create temporary cleanup script." >&2
+        return 1
+    }
+    return 0
 }
 
 # Generate and execute the cleanup script
 perform_cleanup() {
-    echo "#!/bin/sh" > "$SCRIPT_NAME"
     CONFIGS_TO_PURGE=$(aptitude search . | grep '^c' | awk '{print $2}')
     if [ -z "$CONFIGS_TO_PURGE" ]; then
         echo "[INFO] No residual config files to purge."
         exit 0
     fi
-    echo "$CONFIGS_TO_PURGE" | sed 's/^/sudo apt purge -y /g' >> "$SCRIPT_NAME"
-    chmod +x "$SCRIPT_NAME"
+    if ! {
+        printf '#!/bin/sh\nstatus=0\n' > "$SCRIPT_NAME" &&
+        echo "$CONFIGS_TO_PURGE" | sed 's/^/sudo apt purge -y /; s/$/ || { rc=$?; [ "$status" -eq 0 ] \&\& status=$rc; }/' >> "$SCRIPT_NAME" &&
+        printf 'exit "$status"\n' >> "$SCRIPT_NAME" &&
+        chmod +x "$SCRIPT_NAME"
+    }; then
+        echo "[ERROR] Failed to prepare temporary cleanup script." >&2
+        rm -f "$SCRIPT_NAME"
+        return 1
+    fi
     echo "[INFO] The following packages will be purged:"
     echo "$CONFIGS_TO_PURGE"
     echo "[INFO] Do you want to continue? (y/n): "
     read REPLY
     if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ]; then
         "$SCRIPT_NAME"
+        status=$?
+        rm -f "$SCRIPT_NAME"
+        if [ "$status" -ne 0 ]; then
+            echo "[ERROR] Cleanup script failed with exit status $status." >&2
+            return "$status"
+        fi
+    else
+        rm -f "$SCRIPT_NAME"
     fi
-    rm "$SCRIPT_NAME"
+    echo "[INFO] Cleanup completed."
+    return 0
 }
 
 # Main entry point of the script
@@ -127,14 +158,11 @@ main() {
 
     check_system
     check_debian
-    check_commands aptitude awk sed chmod rm grep
+    check_commands aptitude awk sed chmod rm grep mktemp
     check_sudo
-    set_temp_file
+    set_temp_file || exit $?
     trap 'rm -f "$SCRIPT_NAME"' EXIT
     perform_cleanup
-
-    echo "[INFO] Cleanup completed."
-    return 0
 }
 
 # Execute main function
