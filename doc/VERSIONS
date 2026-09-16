@@ -44,7 +44,8 @@ v2.0.2 (Release Date: TBD)
 - Secure purge_apt_cache.sh temporary staging and propagate purge failures.
 - Make remove_space_eol.sh replace files only after successful transformation
   and return file-processing failures.
-- Stop setup_aliases.sh mail-spool cleanup when alias enumeration or append fails.
+- Keep setup_aliases.sh alias database updates consistent after alias setup
+  failures while skipping dependent mail-spool operations.
 - Stop setup_dos_guard.sh when mandatory Apache or fail2ban enablement fails.
 
 v2.0.1 (2026-08-26)

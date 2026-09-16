@@ -38,8 +38,8 @@
 #
 #  Version History:
 #  v1.4 2026-09-16
-#       Stop dependent alias and mail-spool processing when user enumeration
-#       or alias append fails.
+#       Continue safe alias processing after enumeration or append failures,
+#       then skip mail-spool operations when alias setup is incomplete.
 #  v1.3 2026-09-16
 #       Stage the self-alias removal temporary file with mktemp instead of
 #       a predictable /tmp path.
@@ -125,19 +125,20 @@ add_missing_aliases() {
         return 0
     fi
 
+    status=0
     while IFS= read -r user; do
         grep -q "^${user}:" "$ALIASES_FILE" && continue
         echo "[INFO] Adding alias: $user: root"
         if ! printf '%s\n' "${user}: root" |
             sudo tee -a "$ALIASES_FILE" >/dev/null; then
             echo "[ERROR] Failed to add alias for '$user' to $ALIASES_FILE." >&2
-            return 1
+            status=1
         fi
     done <<EOF
 $users
 EOF
 
-    return 0
+    return "$status"
 }
 
 # Remove self alias like "username: root" from /etc/aliases
@@ -223,12 +224,18 @@ main() {
     check_script
     check_sudo
 
+    alias_status=0
     if ! add_missing_aliases; then
-        return 1
+        alias_status=1
     fi
 
     remove_self_alias
     apply_changes
+
+    if [ "$alias_status" -ne 0 ]; then
+        return 1
+    fi
+
     ensure_mail_spool
     set_mail_permissions
     clear_all_mail_spools
