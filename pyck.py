@@ -64,7 +64,7 @@
 #  change the normal exit status from 0.
 #
 #  Requirements:
-#  - Python Version: 3.2 or later
+#  - Python Version: 3.3 or later
 #  - Dependencies: autopep8, flake8, autoflake, isort
 #
 #  Exit Status:
@@ -346,8 +346,8 @@ if __name__ == "__main__":
     if len(sys.argv) < 2 or sys.argv[1] in ('-h', '--help', '-v', '--version'):
         usage()
 
-    if sys.version_info < (3, 2):
-        print("[ERROR] This script requires Python 3.2 or later.", file=sys.stderr)
+    if sys.version_info < (3, 3):
+        print("[ERROR] This script requires Python 3.3 or later.", file=sys.stderr)
         sys.exit(9)
 
     sys.exit(main())
