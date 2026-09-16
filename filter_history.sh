@@ -28,6 +28,8 @@
 #  <pattern>: The string to remove from the history file (partial match).
 #
 #  Version History:
+#  v2.1 2026-09-16
+#       Treat fixed-string patterns beginning with '-' as grep pattern data.
 #  v2.0 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -113,7 +115,7 @@ create_backup() {
 # Count matching lines in the history file
 count_matches() {
     # Count matching lines (fixed string)
-    MATCH_COUNT=$(grep -F -c "$PATTERN" "$HISTORY_FILE" 2>/dev/null)
+    MATCH_COUNT=$(grep -F -c -e "$PATTERN" "$HISTORY_FILE" 2>/dev/null)
     status=$?
 
     # grep returns 1 when there are no matches, which is not an error.
@@ -128,7 +130,7 @@ count_matches() {
 filter_history() {
     # Remove matching lines (fixed string) and replace the original history file
     tmp="$HISTORY_FILE.tmp.$$"
-    grep -F -v "$PATTERN" "$HISTORY_FILE" > "$tmp"
+    grep -F -v -e "$PATTERN" "$HISTORY_FILE" > "$tmp"
     status=$?
 
     # grep returns 1 when all lines match (empty output), which is not an error.

@@ -35,7 +35,8 @@
 #  - The permissions argument must be a 3-digit octal number. Any other format will result in an error.
 #
 #  Exit Status:
-#  1. No matching files found to copy.
+#  1. No files were copied, or temporary processing state could not be
+#     prepared.
 #  2. Destination directory does not exist.
 #  5. Configuration file not found.
 #  6. Configuration variables not set.
@@ -45,6 +46,8 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v2.3 2026-09-16
+#       Secure temporary state and preserve spaces in failed file names.
 #  v2.2 2026-07-13
 #       Persist failed file names across the subshell used by the find pipeline.
 #  v2.1 2026-07-11
@@ -144,18 +147,17 @@ validate_config() {
     fi
 }
 
-# A temporary flag file is used instead of a variable to detect if any files have been copied.
-# This approach is necessary because the 'find ... | while read' loop runs in a subshell due to the pipeline.
-# Variables set in a subshell are not visible in the parent shell, so changes to variables inside the loop do not persist outside of it.
-# By using a flag file, we can create a persistent indicator that can be checked outside of the subshell.
+# A flag file and an error file, both under a run-wide temporary state
+# directory, are used instead of variables to detect copied and failed
+# files. This approach is necessary because the 'find ... | while read' loop
+# runs in a subshell due to the pipeline. Variables set in a subshell are not
+# visible in the parent shell, so changes to variables inside the loop do not
+# persist outside of it. $flag_file and $error_file are set once in main().
 sync_files() {
     source_dir=$1
     file_pattern=$2
     dest_dir=$3
     permissions=$4
-    # Create a temporary flag file to detect if any files have been copied
-    flag_file="/tmp/files_copied_$$"
-    error_file="/tmp/error_files_$$"
 
     # Check if the source directory exists
     if [ ! -d "$source_dir" ]; then
@@ -171,7 +173,7 @@ sync_files() {
             # Set permissions for the copied file
             chmod "$permissions" "$dest_dir/$(basename "$file")"
             if [ $? -eq 0 ]; then
-                # If the file is successfully copied, create a flag file
+                # If the file is successfully copied, mark the flag file
                 touch "$flag_file"
             else
                 echo "[ERROR] Failed to set permissions for $dest_dir/$(basename "$file")."
@@ -182,20 +184,6 @@ sync_files() {
             echo "$file" >> "$error_file"
         fi
     done
-
-    # Check for the flag file to determine if files_copied should be set to true.
-    if [ -f "$flag_file" ]; then
-        files_copied=true
-        # Remove the flag file after setting the flag
-        rm "$flag_file"
-    fi
-
-    if [ -f "$error_file" ]; then
-        while IFS= read -r failed_file; do
-            error_files="$error_files $failed_file"
-        done < "$error_file"
-        rm "$error_file"
-    fi
 }
 
 # Main entry point of the script
@@ -204,15 +192,24 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
-    check_commands rsync find chmod grep
+    check_commands rsync find chmod grep mktemp
     load_config
 
     # Set default permissions from configuration file or use the first argument if provided
     permissions=${1:-$DEFAULT_PERMISSIONS}
     validate_config
 
-    files_copied=false
-    error_files=""
+    # Create a run-wide temporary state directory to hold the flag and error
+    # files used to communicate results out of the find | while subshell.
+    STATE_DIR=$(mktemp -d /tmp/sd_extract.XXXXXX 2>/dev/null)
+    if [ -z "$STATE_DIR" ] || [ ! -d "$STATE_DIR" ]; then
+        echo "[ERROR] Failed to create temporary state directory." >&2
+        exit 1
+    fi
+    trap 'rm -rf "$STATE_DIR"' EXIT
+
+    flag_file="$STATE_DIR/files_copied"
+    error_file="$STATE_DIR/error_files"
 
     # Loop through each source directory and file pattern defined in the configuration
     # Temporarily change IFS (Internal Field Separator) to space to treat the space-separated
@@ -230,17 +227,17 @@ main() {
     IFS="$OLD_IFS"
 
     # Check if any files were copied
-    if ! $files_copied; then
+    if [ ! -f "$flag_file" ]; then
         echo "[ERROR] No matching files found to copy." >&2
         exit 1
     fi
 
     # If there are error files, print them and exit with a non-zero status
-    if [ -n "$error_files" ]; then
+    if [ -f "$error_file" ]; then
         echo "[ERROR] The following files failed to sync:" >&2
-        for error_file in $error_files; do
-            echo "$error_file" >&2
-        done
+        while IFS= read -r failed_file; do
+            echo "$failed_file" >&2
+        done < "$error_file"
         exit 7
     else
         echo "[INFO] Operation completed successfully."
