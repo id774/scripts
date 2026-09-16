@@ -35,6 +35,9 @@
 #               systemctl, fail2ban-client, mktemp
 #
 #  Version History:
+#  v1.4 2026-09-16
+#       Stop deployment when Apache module enablement or fail2ban
+#       enable/start fails.
 #  v1.3 2026-09-16
 #       Stage the fallback apache-evasive filter with mktemp instead of a
 #       predictable /tmp path.
@@ -186,7 +189,10 @@ deploy_evasive() {
 enable_and_reload_apache() {
     # Enables mod_evasive (idempotent) and reloads Apache if config is valid.
     echo "[INFO] Enabling Apache module: evasive"
-    sudo a2enmod evasive >/dev/null 2>&1 || true
+    if ! sudo a2enmod evasive >/dev/null 2>&1; then
+        echo "[ERROR] Failed to enable Apache module: evasive" >&2
+        exit 1
+    fi
 
     echo "[INFO] Validating Apache configuration"
     if ! sudo apachectl -t; then
@@ -207,7 +213,10 @@ enable_and_reload_apache() {
 enable_and_reload_fail2ban() {
     # Ensures fail2ban service is enabled and picks up new configs.
     echo "[INFO] Enabling and starting fail2ban"
-    sudo systemctl enable --now fail2ban >/dev/null 2>&1 || true
+    if ! sudo systemctl enable --now fail2ban >/dev/null 2>&1; then
+        echo "[ERROR] Failed to enable or start fail2ban" >&2
+        exit 1
+    fi
 
     echo "[INFO] Reloading fail2ban"
     if ! sudo fail2ban-client reload; then

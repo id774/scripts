@@ -45,6 +45,7 @@ v2.0.2 (Release Date: TBD)
 - Make remove_space_eol.sh replace files only after successful transformation
   and return file-processing failures.
 - Stop setup_aliases.sh mail-spool cleanup when alias enumeration or append fails.
+- Stop setup_dos_guard.sh when mandatory Apache or fail2ban enablement fails.
 
 v2.0.1 (2026-08-26)
 -------------------
