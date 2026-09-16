@@ -21,7 +21,16 @@
 #  To apply recursively with find:
 #      find /path/to/dir -type f -name "*" -exec ./remove_space_eol.sh {} \;
 #
+#  Exit Status:
+#  0. All specified files were processed successfully, or no files were specified.
+#  1. One or more files could not be prepared, transformed, or replaced.
+#  126. A required command exists but is not executable.
+#  127. A required command is not found.
+#
 #  Version History:
+#  v1.8 2026-09-16
+#       Stage transformed content before replacement and return file-processing
+#       failures while preserving file metadata.
 #  v1.7 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -72,16 +81,32 @@ check_commands() {
 process_file() {
     file="$1"
 
-    if mv "$file" "$file.tmp"; then
-        if sed -e 's/[[:blank:]]*$//' "$file.tmp" > "$file"; then
-            echo "[INFO] Removed trailing whitespace from '$file'."
-        else
-            echo "[ERROR] Error processing '$file'." >&2
-        fi
-        rm "$file.tmp"
-    else
-        echo "[ERROR] Error moving '$file' to temporary file." >&2
+    tmp_file=$(mktemp "${file}.remove_space_eol.XXXXXX" 2>/dev/null)
+    if [ -z "$tmp_file" ] || [ ! -f "$tmp_file" ]; then
+        echo "[ERROR] Error preparing temporary file for '$file'." >&2
+        return 1
     fi
+
+    if ! cp -p "$file" "$tmp_file"; then
+        rm -f "$tmp_file"
+        echo "[ERROR] Error preparing temporary file for '$file'." >&2
+        return 1
+    fi
+
+    if ! sed -e 's/[[:blank:]]*$//' "$file" > "$tmp_file"; then
+        rm -f "$tmp_file"
+        echo "[ERROR] Error processing '$file'." >&2
+        return 1
+    fi
+
+    if ! mv "$tmp_file" "$file"; then
+        rm -f "$tmp_file"
+        echo "[ERROR] Error replacing '$file'." >&2
+        return 1
+    fi
+
+    echo "[INFO] Removed trailing whitespace from '$file'."
+    return 0
 }
 
 # Main entry point of the script
@@ -90,13 +115,16 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
-    check_commands sed mv
+    check_commands sed mv mktemp cp rm
 
+    status=0
     while [ $# -gt 0 ]; do
-        process_file "$1"
+        if ! process_file "$1"; then
+            status=1
+        fi
         shift
     done
-    return 0
+    return $status
 }
 
 # Execute main function

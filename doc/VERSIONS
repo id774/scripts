@@ -42,6 +42,8 @@ v2.0.2 (Release Date: TBD)
 - Harden privileged installer temporary-file staging and preserve managed
   system-file metadata during configuration updates.
 - Secure purge_apt_cache.sh temporary staging and propagate purge failures.
+- Make remove_space_eol.sh replace files only after successful transformation
+  and return file-processing failures.
 
 v2.0.1 (2026-08-26)
 -------------------
