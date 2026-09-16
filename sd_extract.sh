@@ -176,11 +176,11 @@ sync_files() {
                 # If the file is successfully copied, mark the flag file
                 touch "$flag_file"
             else
-                echo "[ERROR] Failed to set permissions for $dest_dir/$(basename "$file")."
+                echo "[ERROR] Failed to set permissions for $dest_dir/$(basename "$file")." >&2
                 echo "$file" >> "$error_file"
             fi
         else
-            echo "[ERROR] Rsync failed for $file. Skipping."
+            echo "[ERROR] Rsync failed for $file. Skipping." >&2
             echo "$file" >> "$error_file"
         fi
     done
