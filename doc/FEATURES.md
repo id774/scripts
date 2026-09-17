@@ -864,7 +864,7 @@ The `installer/` directory contains many setup and installation scripts.
 | macOS full setup | `macos_setup.sh`, `create_emergencyadmin.sh`, `install_brews.sh`, `reinstall_brew.sh`, `macos_finder_settings.sh`, `set_ipv6_macos.sh` | macOS | Dotfiles, Homebrew, FileVault recovery user, Finder settings, and network configuration |
 | Dotfiles and editors | `install_dotfiles.sh`, `install_dotvim.sh`, `setup_dot_ipython.sh`, `setup_nvim.sh`, `setup_jupyter_themes.sh`, `setup_xdg_dirs_en.sh` | User environments | Deploys editor, shell, IPython, Jupyter, and desktop user configuration |
 | Languages and runtimes | `install_R_libs.sh`, `install_python.sh`, `install_pip.sh`, `install_conda.sh`, `install_ruby.sh`, `install_gems.sh`, `install_zsh.sh`, `install_mecab-stack.sh` | Primarily Unix-like systems | Downloads, builds, installs, and configures language runtimes and libraries |
-| Monitoring and scheduled operations | `install_apache_log_analysis.sh`, `install_chkrootkit.sh`, `install_clamscan.sh`, `install_get_resources.sh`, `install_munin.sh`, `install_rsync_backup.sh`, `install_run_tests.sh` | Primarily Linux / Debian | Deploys executables, configuration, cron jobs, logrotate, and monitoring services |
+| Monitoring and scheduled operations | `install_apache_log_analysis.sh`, `install_chkrootkit.sh`, `install_clamscan.sh`, `install_get_resources.sh`, `install_git-pull.sh`, `install_munin.sh`, `install_rsync_backup.sh`, `install_run_tests.sh` | Primarily Linux / Debian | Deploys executables, configuration, cron jobs, logrotate, and monitoring services |
 | System and security configuration | `configure_sysctl.sh`, `setup_iptables.sh`, `setup_pamd.sh`, `setup_securetty.sh`, `setup_dos_guard.sh`, `setup_apache2_ssl.sh`, `setup_crontab.sh`, `purge_kernels.sh`, `remove-tracker.sh` | Primarily Linux / Debian | Changes `/etc`, kernel or security policy, systemd configuration, services, and installed packages |
 | Chrome and GDM | `install_google_chrome.sh`, `install_gdm_themes.sh`, `install_gdm_themes2.sh` | Debian / Linux desktop | Configures the Chrome APT source or installs display-manager themes |
 
@@ -1399,6 +1399,20 @@ It configures the cron job, log directory, and logrotate.
 Deploys `get_resources.sh` as an automated server-resource reporting job.
 
 It also configures cron and log rotation.
+
+
+### install_git-pull.sh
+
+Deploys `/etc/cron.d/git-pull` for scheduled execution of the repository's
+top-level `git-all-pull.sh`.
+
+The default sample runs daily at 08:00 as `debian`, discards standard output,
+and leaves standard error available for cron mail delivery to `debian`.
+
+After installation, review the deployed cron file and adjust the schedule,
+user, `MAILTO`, `SCRIPTS` path, and options for the host.
+
+Uninstall mode removes only `/etc/cron.d/git-pull`.
 
 
 ### install_munin.sh
