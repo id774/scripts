@@ -51,6 +51,8 @@ v2.0.2 (Release Date: TBD)
 - Stop setup_dos_guard.sh when mandatory Apache or fail2ban enablement fails.
 - Allow filter_history.sh patterns beginning with '-' to be treated as fixed strings.
 - Secure sd_extract.sh temporary state and preserve spaces in failed file reports.
+- Add an installer-managed cron definition for scheduled git-all-pull.sh execution,
+  with editable host-specific settings and uninstall support.
 
 v2.0.1 (2026-08-26)
 -------------------

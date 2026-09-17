@@ -1,0 +1,5 @@
+MAILTO=debian
+SCRIPTS=/home/debian/scripts
+PATH=/usr/local/bin:/usr/bin:/bin
+
+0 8 * * * debian "$SCRIPTS/git-all-pull.sh" --github-only --www-only >/dev/null
