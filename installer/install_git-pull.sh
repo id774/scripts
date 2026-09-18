@@ -40,6 +40,12 @@
 #    '--github-only --www-only'.
 #  - Standard output is discarded; standard error is left for cron's mail
 #    delivery.
+#  - The default cron job intentionally has no dedicated job log. It runs as
+#    the repository-owning non-root user, while /var/log/sysadmin is reserved
+#    for administrator-readable logs written by system-managed processes.
+#  - Do not create a user-writable git-pull log under /var/log/sysadmin or grant
+#    the cron user write access there. Discarding stdout and leaving stderr for
+#    cron mail is intentional.
 #  - '--uninstall' removes only /etc/cron.d/git-pull.
 #
 #  Version History:
