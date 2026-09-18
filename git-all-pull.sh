@@ -37,6 +37,9 @@
 #  except master and main. Review them with '--list-remote' first.
 #
 #  Version History:
+#  v2.6 2026-09-19
+#       Warn when repository writability checks fail but continue with Git
+#       operations instead of skipping the repository.
 #  v2.5 2026-09-18
 #       Add --gitlab-only and include ~/local/gitlab in --all processing.
 #  v2.4 2026-08-15
@@ -179,15 +182,12 @@ is_repo_writable() {
 pull_repo() {
     repo="$1"
 
-    # Guard: ensure repository is writable before any operation
     if ! is_repo_writable "$repo"; then
         if [ "$DRY_RUN" = true ]; then
-            echo "[INFO] DRY RUN: Would skip repository due to no write permission: $repo"
+            echo "[WARN] DRY RUN: Repository may not be writable: $repo" >&2
         else
-            echo "[WARN] Skipping: $repo (write permission denied)" >&2
-
+            echo "[WARN] Repository may not be writable; continuing with Git operations: $repo" >&2
         fi
-        return 2
     fi
 
     if [ "$HARD_MODE" = true ]; then

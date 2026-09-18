@@ -57,6 +57,8 @@ v2.0.2 (Release Date: TBD)
   --all.
 - Add ~/local/gitlab support to git-all-pull.sh, git-symlink.sh, and
   remove-repo.sh while keeping git-archive-repo.sh GitLab-excluded.
+- Keep git-all-pull.sh repository write checks advisory so Git operations still
+  run when the precheck reports a possible permission problem.
 
 v2.0.1 (2026-08-26)
 -------------------
