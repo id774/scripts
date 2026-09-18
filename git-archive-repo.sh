@@ -32,6 +32,8 @@
 #    automatically.
 #  - Each archive stores the source directory by its basename, not by its
 #    absolute path.
+#  - GitLab repositories under $HOME/local/gitlab are intentionally outside
+#    the scope of this script and are not archived.
 #
 #  Exit Status:
 #  1. Source directory not found.
