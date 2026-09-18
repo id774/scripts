@@ -16,13 +16,14 @@
 #  Usage:
 #      ./git-all-pull.sh [--hard] [--no-symlink] [--dry-run]
 #          [--list-remote] [--delete-remote-branches]
-#          [--github-only] [--git-only] [--www-only] [--all]
+#          [--github-only] [--git-only] [--gitlab-only] [--www-only] [--all]
 #
-#  Default behavior is to show this help message. Use '--all' to pull from github, git, and www targets.
+#  Default behavior is to show this help message. Use '--all' to pull from github, git, gitlab, and www targets.
 #
 #  Notes:
-#      Specifying both '--github-only' and '--git-only' selects both trees
-#      (github and git) and does not include www.
+#      Selectors are additive: '--github-only', '--git-only', '--gitlab-only',
+#      and '--www-only' can be combined, and each combination processes only
+#      the selected trees.
 #      '--reset' can be used as an alias of '--hard'.
 #      Pulls prune remote-tracking branches deleted from remotes.
 #      Pruning does not delete local branches.
@@ -36,6 +37,8 @@
 #  except master and main. Review them with '--list-remote' first.
 #
 #  Version History:
+#  v2.5 2026-09-18
+#       Add --gitlab-only and include ~/local/gitlab in --all processing.
 #  v2.4 2026-08-15
 #       Add --list-remote to preview origin branches except master and main,
 #       and --delete-remote-branches to delete them after review.
@@ -79,6 +82,7 @@ LIST_REMOTE_BRANCHES=false
 DELETE_REMOTE_BRANCHES=false
 GITHUB_ONLY=false
 GIT_ONLY=false
+GITLAB_ONLY=false
 ALL=false
 WWW_ONLY=false
 SHOW_HELP=false
@@ -120,6 +124,7 @@ parse_arguments() {
             --delete-remote-branches) DELETE_REMOTE_BRANCHES=true ;;
             --github-only) GITHUB_ONLY=true ;;
             --git-only) GIT_ONLY=true ;;
+            --gitlab-only) GITLAB_ONLY=true ;;
             --www-only) WWW_ONLY=true ;;
             --all) ALL=true ;;
             *) SHOW_HELP=true ;;
@@ -293,6 +298,7 @@ main() {
     if [ "$ALL" = true ]; then
         process_directory "$HOME/local/github"
         process_directory "$HOME/local/git"
+        process_directory "$HOME/local/gitlab"
         process_www_only
     else
         ran=false
@@ -302,6 +308,10 @@ main() {
         fi
         if [ "$GIT_ONLY" = true ]; then
             process_directory "$HOME/local/git"
+            ran=true
+        fi
+        if [ "$GITLAB_ONLY" = true ]; then
+            process_directory "$HOME/local/gitlab"
             ran=true
         fi
         if [ "$WWW_ONLY" = true ]; then
