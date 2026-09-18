@@ -53,6 +53,8 @@ v2.0.2 (Release Date: TBD)
 - Secure sd_extract.sh temporary state and preserve spaces in failed file reports.
 - Add an installer-managed cron definition for scheduled git-all-pull.sh execution,
   with editable host-specific settings and uninstall support.
+- Add GitLab repository tree support to git-all-pull.sh with --gitlab-only and
+  --all.
 
 v2.0.1 (2026-08-26)
 -------------------

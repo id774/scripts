@@ -466,6 +466,7 @@ Target trees can include:
 
 - github
 - git
+- gitlab
 - www
 
 It supports pruning deleted remote-tracking branches, creating home-directory symlinks, and dry-run mode.
