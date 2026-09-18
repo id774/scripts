@@ -5,9 +5,10 @@
 #
 #  Description:
 #  This script removes specified Git repositories from the user's local
-#  directories ($HOME/local/github and $HOME/local/git) and any associated
-#  symbolic links in the home directory. It checks if the directory is a Git
-#  repository before removing it. Includes a dry-run mode for simulation.
+#  directories ($HOME/local/github, $HOME/local/git, and $HOME/local/gitlab)
+#  and any associated symbolic links in the home directory. It checks if the
+#  directory is a Git repository before removing it. Includes a dry-run mode
+#  for simulation.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -27,6 +28,8 @@
 #      ./remove-repo.sh -x repo1 repo2     # remove multiple repositories
 #
 #  Version History:
+#  v2.0 2026-09-18
+#       Remove matching repositories from ~/local/gitlab in addition to existing bases.
 #  v1.8 2026-08-18
 #       Reject repository names that could escape the configured directories.
 #  v1.7 2026-07-11
@@ -117,6 +120,19 @@ remove_from_git() {
     fi
 }
 
+# Remove the Git repository from the gitlab directory if it exists.
+remove_from_gitlab() {
+    repo_path_gitlab="$HOME/local/gitlab/$repo_name"
+    if [ -d "$repo_path_gitlab" ] && is_git_repo "$repo_path_gitlab"; then
+        if [ "$DRY_RUN" = false ]; then
+            echo "[INFO] Removing Git repository: $repo_path_gitlab"
+            rm -rf "$repo_path_gitlab"
+        else
+            echo "[INFO] DRY RUN: Removing Git repository: $repo_path_gitlab"
+        fi
+    fi
+}
+
 # Remove the symbolic link in the home directory if it exists.
 remove_symlink() {
     symlink_path="$HOME/$repo_name"
@@ -140,6 +156,7 @@ remove_repo() {
 
     remove_from_github
     remove_from_git
+    remove_from_gitlab
     remove_symlink
 }
 

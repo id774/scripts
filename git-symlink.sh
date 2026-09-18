@@ -8,6 +8,7 @@
 #  first-level directories under the specified local bases:
 #    - ~/local/github
 #    - ~/local/git
+#    - ~/local/gitlab
 #  In default mode, it also purges ALL broken symlinks directly under the home
 #  directory. With the uninstall option, it removes home symlinks whose names
 #  match first-level directory names under the bases.
@@ -18,12 +19,13 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./git-symlink.sh [--dry-run] [--github-only] [--git-only] [--all]
-#      ./git-symlink.sh -u|--uninstall [--github-only] [--git-only] [--all]
+#      ./git-symlink.sh [--dry-run] [--github-only] [--git-only] [--gitlab-only] [--all]
+#      ./git-symlink.sh -u|--uninstall [--github-only] [--git-only] [--gitlab-only] [--all]
 #
 #  Default behavior (no selector specified) is to show this help message.
-#  Use '--all' to operate on both github and git bases, or select one
-#  with '--github-only' or '--git-only'. In default (sync) mode the script:
+#  Use '--all' to operate on the github, git, and gitlab bases, or select
+#  one or more with '--github-only', '--git-only', or '--gitlab-only'.
+#  In default (sync) mode the script:
 #    1) Force-creates symlinks in $HOME for each first-level directory
 #       under the selected base(s).
 #    2) Purges ALL broken symlinks that exist directly under $HOME.
@@ -39,10 +41,13 @@
 #      --dry-run       Show planned actions without making changes.
 #      --github-only   Operate only on ~/local/github.
 #      --git-only      Operate only on ~/local/git.
-#      --all           Operate on both bases.
+#      --gitlab-only   Operate only on ~/local/gitlab.
+#      --all           Operate on all bases.
 #      -u, --uninstall Remove matching symlinks in $HOME (do not recreate).
 #
 #  Version History:
+#  v1.3 2026-09-18
+#       Add --gitlab-only and include ~/local/gitlab in --all symlink operations.
 #  v1.2 2026-08-22
 #       Use POSIX find for first-level repository and symlink discovery.
 #  v1.1 2026-07-11
@@ -57,6 +62,7 @@
 DRY_RUN=false
 GITHUB_ONLY=false
 GIT_ONLY=false
+GITLAB_ONLY=false
 ALL=false
 UNINSTALL=false
 
@@ -87,12 +93,13 @@ check_commands() {
 
 # Parse and set operation flags from CLI arguments
 parse_arguments() {
-    # Accepts: --dry-run, --github-only, --git-only, --all, -u/--uninstall
+    # Accepts: --dry-run, --github-only, --git-only, --gitlab-only, --all, -u/--uninstall
     for arg in "$@"; do
         case "$arg" in
             --dry-run) DRY_RUN=true ;;
             --github-only) GITHUB_ONLY=true ;;
             --git-only) GIT_ONLY=true ;;
+            --gitlab-only) GITLAB_ONLY=true ;;
             --all) ALL=true ;;
             -u|--uninstall) UNINSTALL=true ;;
             -h|--help|-v|--version) usage ;;
@@ -107,35 +114,24 @@ select_bases() {
     home_dir=$HOME
     github_base="${home_dir}/local/github"
     git_base="${home_dir}/local/git"
+    gitlab_base="${home_dir}/local/gitlab"
 
     # Selection rules:
-    # 1) --all               -> both bases
-    # 2) --github-only       -> github base
-    # 3) --git-only          -> git base
-    # 4) both selectors set  -> both bases
-    # 5) no selector         -> return empty to trigger usage()
+    # 1) --all         -> all bases, in github, git, gitlab order
+    # 2) selectors set -> each selected base, in github, git, gitlab order
+    # 3) no selector   -> return empty to trigger usage()
 
     if [ "$ALL" = true ]; then
-        echo "${github_base} ${git_base}"
+        echo "${github_base} ${git_base} ${gitlab_base}"
         return 0
     fi
 
-    if [ "$GITHUB_ONLY" = true ] && [ "$GIT_ONLY" = true ]; then
-        echo "${github_base} ${git_base}"
-        return 0
-    fi
+    bases=""
+    [ "$GITHUB_ONLY" = true ] && bases="${bases}${github_base} "
+    [ "$GIT_ONLY" = true ] && bases="${bases}${git_base} "
+    [ "$GITLAB_ONLY" = true ] && bases="${bases}${gitlab_base} "
 
-    if [ "$GITHUB_ONLY" = true ]; then
-        echo "${github_base}"
-        return 0
-    fi
-
-    if [ "$GIT_ONLY" = true ]; then
-        echo "${git_base}"
-        return 0
-    fi
-
-    # No selection given -> empty
+    echo "${bases}"
     return 0
 }
 

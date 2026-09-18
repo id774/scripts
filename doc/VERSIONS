@@ -55,6 +55,8 @@ v2.0.2 (Release Date: TBD)
   with editable host-specific settings and uninstall support.
 - Add GitLab repository tree support to git-all-pull.sh with --gitlab-only and
   --all.
+- Add ~/local/gitlab support to git-all-pull.sh, git-symlink.sh, and
+  remove-repo.sh while keeping git-archive-repo.sh GitLab-excluded.
 
 v2.0.1 (2026-08-26)
 -------------------

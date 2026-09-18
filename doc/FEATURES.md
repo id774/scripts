@@ -490,6 +490,8 @@ Creates compressed archives of multiple local Git repository directories.
 
 Source directories and archive output paths are read from `git-archive-repo.conf`.
 
+GitLab repositories under `$HOME/local/gitlab` are intentionally outside this archive workflow.
+
 
 ### git-co-remote-branch.sh
 
@@ -516,6 +518,7 @@ Creates or recreates symlinks in `$HOME` corresponding to repositories directly 
 
     $HOME/local/github
     $HOME/local/git
+    $HOME/local/gitlab
 
 In normal sync mode, it also removes broken symlinks directly under `$HOME`.
 
@@ -528,6 +531,7 @@ Removes specified repositories from:
 
     $HOME/local/github
     $HOME/local/git
+    $HOME/local/gitlab
 
 and removes the corresponding `$HOME` symlinks.
 
