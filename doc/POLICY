@@ -207,6 +207,17 @@ repository is already being edited.
 - Changing continue-on-failure into fail-fast, or fail-fast into
   continue-on-failure, is an observable behavior change. Do not
   introduce either as an incidental error-handling improvement.
+- Treat the operation result, the continuation decision, and the reporting
+  decision as separate interfaces. A failure does not automatically require
+  fail-fast handling, and continuing later work does not automatically require
+  warning-level output.
+- Stop the affected logical operation when a required prerequisite is missing,
+  correct completion is no longer possible, or continuing can produce an
+  invalid, inconsistent, destructive, or otherwise unsafe result. Do not turn
+  such a condition into a warning merely to keep the run moving.
+- Continue later work only when that work is independent, the established
+  contract permits continuation, and the remaining work can still complete to
+  a coherent valid state.
 
 #### 1.2.2 Dependencies and Optional Capabilities
 - Minimize dependencies when doing so does not compromise required
@@ -316,7 +327,10 @@ repository is already being edited.
 
 #### 1.3.2 Error Handling and Exit Codes
 - Detect command failures and unmet prerequisites early.
-- Always log the reason and affected target when an error occurs.
+- Make an error observable at the layer responsible for reporting it, naming
+  the reason and affected target when that context is useful. Do not require a
+  lower layer to emit a duplicate message when its caller already reports the
+  same failure through the established interface.
 - Exit code semantics must follow widely accepted UNIX/GNU/Linux conventions
   and remain consistent across the repository.
 
@@ -351,8 +365,11 @@ repository is already being edited.
 
 #### 1.3.3 Logging and Output
 - Use unified log prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
-- Do not label a successful no-op as `[ERROR]`. Use no output, `[INFO]`, or
-  `[WARN]` according to the operation's user-facing and operational contract.
+- A normal no-op or skip is not a warning merely because no work was performed.
+  It may be silent. Use `[INFO]` when the normal result is useful to the
+  operator, `[WARN]` for a degraded or otherwise abnormal but recoverable
+  condition the operator should know about, and `[ERROR]` when the affected
+  logical operation cannot complete correctly.
 - Log level and process status are separate signals. `[WARN]` may accompany
   exit status `0` when a condition is noteworthy but the requested operation
   still satisfies its contract.
@@ -503,9 +520,10 @@ never asked to touch.
   is a failure. Absence of a target may be success when the operation's
   required postcondition is precisely that the target be absent or require
   no change.
-- A successful no-op may be silent, informational, or warning-level according
-  to its operational significance. A warning does not by itself make the
-  operation fail. Do not label the no-op itself as an error.
+- A successful no-op may be silent or informational according to its
+  operational significance. Use warning level only when the no-op also exposes
+  a degraded or otherwise abnormal condition that the operator should know
+  about. Do not make the absence of work itself a warning or an error.
 - A successful no-op does not waive invocation prerequisites. A supported
   environment, required configuration, required privilege, and other
   prerequisites that belong to a valid invocation are still checked according
