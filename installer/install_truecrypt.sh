@@ -22,6 +22,8 @@
 #  -n   Do not save source files after installation.
 #
 #  Version History:
+#  v1.8 2026-09-20
+#       Apply TrueCrypt ownership changes to each path selected by the permission loop.
 #  v1.7 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -178,7 +180,7 @@ set_truecrypt_permission() {
                 /usr/local/src/crypt /usr/local/src /usr/bin/truecrypt \
                 /usr/bin/truecrypt-uninstall.sh; do
         if [ -e "$truecrypt_path" ]; then
-            sudo chown -R "$OWNER" "$path" 2>/dev/null
+            sudo chown -R "$OWNER" "$truecrypt_path" 2>/dev/null
         fi
     done
 }
