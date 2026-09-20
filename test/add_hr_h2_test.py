@@ -43,8 +43,11 @@
 #    - Reject non-target text input without <h2>
 #    - Accept valid HTML input content
 #    - Read and write UTF-8 text files correctly
+#    - Treat literal help and version input names as file paths
 #
 #  Version History:
+#  v1.1 2026-09-20
+#       Cover explicit argument actions and literal help/version input path names.
 #  v1.0 2026-04-18
 #       Initial release.
 #
@@ -200,40 +203,65 @@ class AddHrH2Test(unittest.TestCase):
         self.assertTrue(version.startswith("v"))
 
     def test_parse_arguments_input_only(self):
-        input_path, output_path, status = add_hr_h2.parse_arguments(["a.html"])
+        action, input_path, output_path, status = add_hr_h2.parse_arguments(
+            ["a.html"]
+        )
+        self.assertEqual(add_hr_h2.ACTION_PROCESS, action)
         self.assertEqual("a.html", input_path)
         self.assertEqual("a.html", output_path)
         self.assertEqual(0, status)
 
     def test_parse_arguments_input_output(self):
-        input_path, output_path, status = add_hr_h2.parse_arguments(
+        action, input_path, output_path, status = add_hr_h2.parse_arguments(
             ["a.html", "b.html"]
         )
+        self.assertEqual(add_hr_h2.ACTION_PROCESS, action)
         self.assertEqual("a.html", input_path)
         self.assertEqual("b.html", output_path)
         self.assertEqual(0, status)
 
     def test_parse_arguments_help(self):
-        input_path, output_path, status = add_hr_h2.parse_arguments(["-h"])
-        self.assertEqual("help", input_path)
+        action, input_path, output_path, status = add_hr_h2.parse_arguments(["-h"])
+        self.assertEqual(add_hr_h2.ACTION_HELP, action)
+        self.assertEqual(None, input_path)
         self.assertEqual(None, output_path)
         self.assertEqual(0, status)
 
     def test_parse_arguments_version(self):
-        input_path, output_path, status = add_hr_h2.parse_arguments(["-v"])
-        self.assertEqual("version", input_path)
+        action, input_path, output_path, status = add_hr_h2.parse_arguments(["-v"])
+        self.assertEqual(add_hr_h2.ACTION_VERSION, action)
+        self.assertEqual(None, input_path)
         self.assertEqual(None, output_path)
         self.assertEqual(0, status)
 
     def test_parse_arguments_invalid_count(self):
         with _StdCapture() as cap:
-            input_path, output_path, status = add_hr_h2.parse_arguments(
+            action, input_path, output_path, status = add_hr_h2.parse_arguments(
                 ["a", "b", "c"]
             )
+        self.assertEqual(None, action)
         self.assertEqual(None, input_path)
         self.assertEqual(None, output_path)
         self.assertEqual(1, status)
         self.assertIn("[ERROR] Invalid arguments", cap.err.getvalue())
+
+    def test_parse_arguments_literal_help_path(self):
+        action, input_path, output_path, status = add_hr_h2.parse_arguments(
+            ["help"]
+        )
+        self.assertEqual(add_hr_h2.ACTION_PROCESS, action)
+        self.assertEqual("help", input_path)
+        self.assertEqual("help", output_path)
+        self.assertEqual(0, status)
+
+    def test_parse_arguments_literal_version_path(self):
+        action, input_path, output_path, status = add_hr_h2.parse_arguments(
+            ["version"]
+        )
+        self.assertEqual(add_hr_h2.ACTION_PROCESS, action)
+        self.assertEqual("version", input_path)
+        self.assertEqual("version", output_path)
+        self.assertEqual(0, status)
 
     def test_validate_input_file_rejects_missing_path(self):
         with _StdCapture() as cap:
