@@ -37,6 +37,9 @@
 #  127. A required command is not found.
 #
 #  Version History:
+#  v1.5 2026-09-20
+#       Preserve mail-spool processing across per-user failures and avoid
+#       reporting create, permission, or truncate operations as successful.
 #  v1.4 2026-09-16
 #       Continue safe alias processing after enumeration or append failures,
 #       then skip mail-spool operations when alias setup is incomplete.
@@ -180,34 +183,60 @@ apply_changes() {
 
 # Ensure /var/mail/username exists and is writable
 ensure_mail_spool() {
-    for user in $( "$SCRIPT_PATH" --name-only ); do
+    if ! users=$("$SCRIPT_PATH" --name-only); then
+        echo "[ERROR] Failed to list interactive users with $SCRIPT_PATH." >&2
+        return 1
+    fi
+
+    status=0
+    for user in $users; do
         mailfile="/var/mail/$user"
         if [ ! -f "$mailfile" ]; then
             echo "[INFO] Creating missing mail spool: $mailfile"
-            sudo touch "$mailfile"
-            sudo chown "$user:mail" "$mailfile"
+            if ! sudo touch "$mailfile"; then
+                echo "[ERROR] Failed to create mail spool: $mailfile" >&2
+                status=1
+                continue
+            fi
+            if ! sudo chown "$user:mail" "$mailfile"; then
+                echo "[ERROR] Failed to set ownership on $mailfile" >&2
+                status=1
+            fi
         fi
     done
+
+    return "$status"
 }
 
 # Set permissions on all /var/mail/* to 600
 set_mail_permissions() {
     echo "[INFO] Enforcing permission 600 on all mail spools in /var/mail..."
+    status=0
     for mailfile in /var/mail/*; do
         [ -f "$mailfile" ] || continue
-        sudo chmod 0600 "$mailfile"
+        if ! sudo chmod 0600 "$mailfile"; then
+            echo "[ERROR] Failed to set permissions on $mailfile" >&2
+            status=1
+        fi
     done
+    return "$status"
 }
 
 # Truncate all mail spool files in /var/mail
 clear_all_mail_spools() {
     echo "[INFO] Clearing all user mail spools in /var/mail..."
+    status=0
     for mailfile in /var/mail/*; do
         if [ -f "$mailfile" ] && [ -s "$mailfile" ]; then
-            sudo truncate -s 0 "$mailfile"
-            echo "[INFO] Emptied $mailfile"
+            if sudo truncate -s 0 "$mailfile"; then
+                echo "[INFO] Emptied $mailfile"
+            else
+                echo "[ERROR] Failed to empty $mailfile" >&2
+                status=1
+            fi
         fi
     done
+    return "$status"
 }
 
 # Main entry point of the script
@@ -217,7 +246,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo grep tee newaliases sed mv id truncate touch chown chmod rm mktemp
+    check_commands grep tee newaliases sed mv id truncate touch chown chmod rm mktemp
     check_scripts
 
     SCRIPT_PATH="$SCRIPTS/usershells.py"
@@ -236,11 +265,12 @@ main() {
         return 1
     fi
 
-    ensure_mail_spool
-    set_mail_permissions
-    clear_all_mail_spools
+    mail_status=0
+    ensure_mail_spool || mail_status=1
+    set_mail_permissions || mail_status=1
+    clear_all_mail_spools || mail_status=1
 
-    return 0
+    return "$mail_status"
 }
 
 # Execute main function

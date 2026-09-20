@@ -61,6 +61,8 @@ v2.0.2 (Release Date: TBD)
   remove-repo.sh while keeping git-archive-repo.sh GitLab-excluded.
 - Keep git-all-pull.sh repository write checks advisory so Git operations still
   run when the precheck reports a possible permission problem.
+- Align setup workflows with script-specific continuation and dependency
+  contracts, including truthful success handling for dependent setup steps.
 
 v2.0.1 (2026-08-26)
 -------------------

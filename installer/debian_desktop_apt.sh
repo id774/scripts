@@ -54,11 +54,16 @@
 #  - Review and modify the package lists as needed for your setup.
 #
 #  Exit Status:
-#  The script checks if each package is already installed to prevent unnecessary reinstallation.
-#  However, it does not explicitly handle errors such as package unavailability or network issues.
-#  These should be resolved based on the output of the apt-get command.
+#  The script requires an existing desktop environment and does not install
+#  one on its own. It checks if each package is already installed to prevent
+#  unnecessary reinstallation. A package install failure is visible in the
+#  apt-get output and does not stop later package attempts. Reaching the end
+#  of a normal batch traversal returns 0.
 #
 #  Version History:
+#  v2.4 2026-09-20
+#       Let desktop validation own its command prerequisites and describe
+#       best-effort package processing without claiming all installs.
 #  v2.3 2026-09-06
 #       Check uname before using it for system detection.
 #  v2.2 2026-07-11
@@ -133,6 +138,8 @@ check_commands() {
 
 # Check if a desktop environment is installed (Debian/Ubuntu)
 check_desktop_installed() {
+    check_commands grep ls
+
     # Prefer tasksel if available
     if command -v tasksel >/dev/null 2>&1; then
         if LC_ALL=C tasksel --list-tasks | grep -q '^i.*desktop'; then
@@ -234,7 +241,7 @@ main() {
 
     check_system
     check_desktop_installed
-    check_commands apt-get dpkg-query grep ls
+    check_commands apt-get dpkg-query
     check_sudo
     apt_upgrade
     desktop_environment
@@ -248,7 +255,7 @@ main() {
     remote_desktop_packages
     optional_packages
 
-    echo "[INFO] All specified desktop packages have been installed."
+    echo "[INFO] Debian desktop package installation processing completed."
     return 0
 }
 

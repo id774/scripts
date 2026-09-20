@@ -72,10 +72,16 @@
 #
 #  Exit Status:
 #  The script checks if each package is already installed to prevent unnecessary reinstallation.
-#  However, it does not explicitly handle errors such as package unavailability or network issues.
-#  These should be resolved based on the output of the apt-get command.
+#  A package update or individual package install failure is visible in the
+#  apt-get output; such a failure does not stop later package attempts.
+#  Reaching the end of a normal batch traversal returns 0.
+#  A missing required command returns 127, and a present but non-executable
+#  required command returns 126.
 #
 #  Version History:
+#  v2.3 2026-09-20
+#       Align APT prerequisite handling with the shared command contract and
+#       describe best-effort batch completion without claiming all installs.
 #  v2.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -121,14 +127,6 @@ check_sudo() {
     check_commands sudo
     if ! sudo -v 2>/dev/null; then
         echo "[ERROR] This script requires sudo privileges. Please run as a user with sudo access." >&2
-        exit 1
-    fi
-}
-
-# Check if the system supports apt-get
-check_environment() {
-    if ! command -v apt-get >/dev/null 2>&1; then
-        echo "[ERROR] apt-get is not available on this system. This script requires a Debian-based environment." >&2
         exit 1
     fi
 }
@@ -240,8 +238,7 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
-    check_environment
-    check_commands dpkg-query grep
+    check_commands apt-get dpkg-query grep
     check_sudo
     apt_upgrade
     basic_packages
@@ -256,7 +253,7 @@ main() {
     optional_packages
     # Further package groups can be added here as needed
 
-    echo "[INFO] All specified packages have been installed."
+    echo "[INFO] Debian package installation processing completed."
     return 0
 }
 

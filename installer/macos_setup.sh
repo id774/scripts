@@ -52,6 +52,9 @@
 #  - Exits if sudo privileges are not granted.
 #
 #  Version History:
+#  v2.3 2026-09-20
+#       Keep local dotfile setup failures from terminating unrelated macOS
+#       setup steps and localize optional prerequisites.
 #  v2.2 2026-09-06
 #       Check uname before using it for system detection.
 #  v2.1 2026-07-11
@@ -127,19 +130,36 @@ install_dot_files() {
 }
 
 install_dot_zsh() {
-    test -d "$HOME/local/github" || mkdir -p "$HOME/local/github"
-    cd "$HOME/local/github" || exit 1
+    if [ ! -d "$HOME/local/github" ] && ! mkdir -p "$HOME/local/github"; then
+        echo "[ERROR] Failed to create $HOME/local/github." >&2
+        return 1
+    fi
+    if ! cd "$HOME/local/github"; then
+        echo "[ERROR] Failed to change directory to $HOME/local/github." >&2
+        return 1
+    fi
 
     if [ ! -d "dot_zsh" ]; then
-        git clone https://github.com/id774/dot_zsh.git
+        if ! command -v git >/dev/null 2>&1; then
+            echo "[INFO] Skipping dot_zsh setup: 'git' is not available."
+            return 0
+        fi
+        if ! git clone https://github.com/id774/dot_zsh.git; then
+            echo "[ERROR] Failed to clone dot_zsh." >&2
+            return 1
+        fi
     else
-        cd dot_zsh || exit 1
-        if [ -d ".git" ]; then
-            git pull
+        if [ -d "dot_zsh/.git" ] && command -v git >/dev/null 2>&1; then
+            if ! (cd dot_zsh && git pull); then
+                echo "[ERROR] Failed to update dot_zsh." >&2
+            fi
         fi
     fi
 
-    cd "$HOME/local/github/dot_zsh" || exit 1
+    if ! cd "$HOME/local/github/dot_zsh"; then
+        echo "[ERROR] Failed to change directory to $HOME/local/github/dot_zsh." >&2
+        return 1
+    fi
     ln -snf "$HOME/local/github/dot_zsh" "$HOME/dot_zsh"
     "$HOME/local/github/dot_zsh/install_dotzsh.sh"
 }
@@ -152,10 +172,27 @@ install_dot_vim() {
 
 install_dot_emacs() {
     if [ ! -d "$HOME/local/github/dot_emacs" ] && [ ! -d "/usr/local/etc/emacs.d/elisp" ] && command -v emacs >/dev/null 2>&1; then
-        test -d "$HOME/local/github" || mkdir -p "$HOME/local/github"
-        cd "$HOME/local/github" || exit 1
-        git clone https://github.com/id774/dot_emacs.git
-        cd || exit 1
+        if ! command -v git >/dev/null 2>&1; then
+            echo "[INFO] Skipping dot_emacs setup: 'git' is not available."
+            return 0
+        fi
+
+        if [ ! -d "$HOME/local/github" ] && ! mkdir -p "$HOME/local/github"; then
+            echo "[ERROR] Failed to create $HOME/local/github." >&2
+            return 1
+        fi
+        if ! cd "$HOME/local/github"; then
+            echo "[ERROR] Failed to change directory to $HOME/local/github." >&2
+            return 1
+        fi
+        if ! git clone https://github.com/id774/dot_emacs.git; then
+            echo "[ERROR] Failed to clone dot_emacs." >&2
+            return 1
+        fi
+        if ! cd; then
+            echo "[ERROR] Failed to change directory to $HOME." >&2
+            return 1
+        fi
         ln -snf "$HOME/local/github/dot_emacs"
         "$HOME/local/github/dot_emacs/install_dotemacs.sh"
     fi
@@ -209,7 +246,6 @@ main() {
 
     check_system
     setup_environment
-    check_commands zsh git ln rm chown mkdir
     check_sudo
     install_dot_files
     install_dot_zsh
@@ -224,7 +260,7 @@ main() {
     set_permissions
     erase_history
 
-    echo "[INFO] All macOS setup completed."
+    echo "[INFO] macOS setup completed."
     return 0
 }
 
