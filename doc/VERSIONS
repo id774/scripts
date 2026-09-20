@@ -3,6 +3,7 @@ scripts Repository Version History
 
 v2.0.2 (Release Date: TBD)
 --------------------------
+- Make send_files.sh mail report the actual timestamped password-file path.
 - Add luksmount.py for confirmed LUKS opening and mounting, and install it as
   luksmount with the Debian system administration scripts.
 - Harden tcmount.py against shell interpretation, preserve the legacy
