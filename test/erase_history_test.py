@@ -39,8 +39,12 @@
 #    - Delete the last line normally when the last entry is not self invocation
 #    - Report a missing history file as status 1.
 #    - Return success without prompting or rewriting when no removable lines exist.
+#    - Abort the atomic replacement and keep the original history file when
+#      permission preservation on the temporary file fails.
 #
 #  Version History:
+#  v1.4 2026-09-20
+#       Cover permission-preservation failure before atomic history replacement.
 #  v1.3 2026-09-08
 #       Cover missing-file failure and no-removable-line no-op behavior.
 #  v1.2 2026-02-25
@@ -578,6 +582,43 @@ class EraseHistoryTest(unittest.TestCase):
             self.assertEqual("", cap.out.getvalue())
             self.assertEqual("", cap.err.getvalue())
             self.assertEqual("", _read_file(history_path))
+        finally:
+            try:
+                for fn in os.listdir(tmpdir):
+                    os.unlink(os.path.join(tmpdir, fn))
+            except Exception:
+                pass
+            try:
+                os.rmdir(tmpdir)
+            except Exception:
+                pass
+
+    def test_chmod_failure_aborts_atomic_replace(self):
+        tmpdir = tempfile.mkdtemp()
+        try:
+            history_path = os.path.join(tmpdir, ".zsh_history")
+            original_lines = ["one\n", "two\n", "three\n"]
+            _write_file(history_path, original_lines)
+
+            old_chmod = os.chmod
+
+            def _fail_chmod(path, mode):
+                raise OSError("simulated chmod failure")
+
+            os.chmod = _fail_chmod
+            try:
+                with _StdCapture() as cap:
+                    try:
+                        erase_history.erase_tail_lines(history_path, 1, True)
+                        self.fail("Expected SystemExit")
+                    except SystemExit as e:
+                        self.assertEqual(1, e.code)
+            finally:
+                os.chmod = old_chmod
+
+            self.assertIn("[ERROR] Failed to update history file", cap.err.getvalue())
+            self.assertEqual("".join(original_lines), _read_file(history_path))
+            self.assertEqual([os.path.basename(history_path)], os.listdir(tmpdir))
         finally:
             try:
                 for fn in os.listdir(tmpdir):

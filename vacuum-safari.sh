@@ -22,11 +22,14 @@
 #
 #  Exit Status:
 #  - 0: No script-detected error.
-#  - 1: Safari cache directory or database prerequisite is unavailable.
+#  - 1: Safari cache prerequisite, directory change, or vacuum operation failed.
 #  - 126: sqlite3 exists but is not executable.
 #  - 127: sqlite3 is not installed.
 #
 #  Version History:
+#  v1.7 2026-09-20
+#       Return failure when entering the Safari cache directory or running
+#       the SQLite vacuum operation fails.
 #  v1.6 2026-09-20
 #       Use the shared check_commands contract for sqlite3 prerequisite
 #       validation.
@@ -77,9 +80,16 @@ vacuum_safari_cache() {
 
     if [ -d "$SAFARI_CACHE_DIR" ]; then
         if [ -w "$SAFARI_CACHE_DIR/Cache.db" ]; then
-            cd "$SAFARI_CACHE_DIR"
-            sqlite3 Cache.db vacuum
+            if ! cd "$SAFARI_CACHE_DIR"; then
+                echo "[ERROR] Failed to enter Safari cache directory: $SAFARI_CACHE_DIR" >&2
+                return 1
+            fi
+            if ! sqlite3 Cache.db vacuum; then
+                echo "[ERROR] Failed to vacuum Safari cache database." >&2
+                return 1
+            fi
             echo "[INFO] Safari cache database vacuumed."
+            return 0
         else
             echo "[ERROR] Safari cache Cache.db not found or not writable." >&2
             exit 1
@@ -98,7 +108,7 @@ main() {
 
     check_commands sqlite3
     vacuum_safari_cache
-    return 0
+    return $?
 }
 
 # Execute main function
