@@ -61,6 +61,9 @@
 #  of a normal batch traversal returns 0.
 #
 #  Version History:
+#  v2.5 2026-09-20
+#       Use executable-path detection before selecting optional tasksel desktop
+#       discovery while preserving session-file fallback behavior.
 #  v2.4 2026-09-20
 #       Let desktop validation own its command prerequisites and describe
 #       best-effort package processing without claiming all installs.
@@ -136,12 +139,18 @@ check_commands() {
     done
 }
 
+# Check whether an optional command resolves to an executable path
+command_is_usable() {
+    optional_cmd_path=$(command -v "$1" 2>/dev/null)
+    [ -n "$optional_cmd_path" ] && [ -x "$optional_cmd_path" ]
+}
+
 # Check if a desktop environment is installed (Debian/Ubuntu)
 check_desktop_installed() {
     check_commands grep ls
 
     # Prefer tasksel if available
-    if command -v tasksel >/dev/null 2>&1; then
+    if command_is_usable tasksel; then
         if LC_ALL=C tasksel --list-tasks | grep -q '^i.*desktop'; then
             echo "[INFO] Desktop environment detected via tasksel."
             return 0

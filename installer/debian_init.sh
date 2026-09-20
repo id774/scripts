@@ -31,20 +31,19 @@
 #
 #  Usage:
 #      ./debian_init.sh                    # base setup only
-#      ./debian_init.sh --xfce             # include XFCE desktop provisioning
-#      ./debian_init.sh --gnome-flashback  # include GNOME Flashback provisioning
-#      ./debian_init.sh --gnome            # include GNOME Shell provisioning
+#      ./debian_init.sh --xfce             # include XFCE packages and settings
+#      ./debian_init.sh --gnome-flashback  # include GNOME Flashback packages and settings
+#      ./debian_init.sh --gnome            # include GNOME Shell packages and settings
 #
 #  - Run the script directly; it will configure base system setup.
-#  - Use --xfce, --gnome-flashback, or --gnome to include desktop provisioning steps.
+#  - Use --xfce, --gnome-flashback, or --gnome to include desktop package and setting steps.
 #
 #  Notes:
 #  - The script is designed for Debian-based systems (Debian, Ubuntu, etc.).
 #  - Internet connectivity is required for package installations.
 #  - Review and modify the installation scripts as needed before execution.
-#  - By default, only minimal system setup is applied. Desktop provisioning
-#    runs only when a desktop option is specified to avoid accidental GUI
-#    stack installation on server hosts.
+#  - By default, only minimal system setup is applied. Desktop package and
+#    setting steps run only when a desktop option is specified.
 #
 #  Exit Status:
 #  - If the system is not Debian-based, the script exits with an error.
@@ -52,6 +51,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v6.5 2026-09-20
+#       Finish desktop-option wording alignment so the interface describes
+#       package and settings application rather than desktop provisioning.
 #  v6.4 2026-09-20
 #       Clarify desktop setup scope and keep broad initial setup completion
 #       independent of individual child-script results.
@@ -160,7 +162,7 @@ confirm_execution() {
     if [ -n "$DESKTOP_OPTION" ]; then
         echo "  - Apply desktop packages and desktop-specific settings: $DESKTOP_OPTION"
     else
-        echo "  - Desktop provisioning is skipped (server-safe minimal setup)"
+        echo "  - Desktop packages and settings are skipped (server-safe minimal setup)"
     fi
     echo
     echo "[INFO] These actions will make significant system-wide changes."
@@ -235,7 +237,7 @@ main() {
     # System customization
     "$SCRIPTS/installer/debian_setup.sh"
 
-    # Optional desktop provisioning when a desktop option is provided
+    # Apply optional desktop packages and settings when a desktop option is provided
     if [ -n "$DESKTOP_OPTION" ]; then
         echo "[INFO] Running desktop setup as requested: $DESKTOP_OPTION"
         "$SCRIPTS/installer/debian_desktop_apt.sh"

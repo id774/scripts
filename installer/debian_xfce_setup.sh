@@ -46,6 +46,9 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
+#  v1.5 2026-09-20
+#       Localize file-install capabilities and use usable-command detection
+#       for optional desktop components.
 #  v1.4 2026-09-20
 #       Continue independent Xfce settings after local failures and make
 #       desktop validation own its prerequisites.
@@ -106,12 +109,18 @@ check_commands() {
     done
 }
 
+# Check whether an optional command resolves to an executable path
+command_is_usable() {
+    optional_cmd_path=$(command -v "$1" 2>/dev/null)
+    [ -n "$optional_cmd_path" ] && [ -x "$optional_cmd_path" ]
+}
+
 # Check if a desktop environment is installed (Debian/Ubuntu)
 check_desktop_installed() {
     check_commands grep ls
 
     # Prefer tasksel if available
-    if command -v tasksel >/dev/null 2>&1; then
+    if command_is_usable tasksel; then
         if LC_ALL=C tasksel --list-tasks | grep -q '^i.*desktop'; then
             echo "[INFO] Desktop environment detected via tasksel."
             return 0
@@ -256,7 +265,7 @@ apply_wallpaper_none() {
 # Apply lock and idle settings (keep manual lock, disable only auto lock/blank)
 apply_lock_settings() {
     # Disable automatic lock/saver if xfce4-screensaver exists
-    if command -v xfce4-screensaver >/dev/null 2>&1; then
+    if command_is_usable xfce4-screensaver; then
         xfconf_settings_bool xfce4-screensaver /lock/enabled  false
         xfconf_settings_bool xfce4-screensaver /saver/enabled false
     else
@@ -355,6 +364,11 @@ install_xfce4_terminal_profile() {
     dst="$HOME/.config/xfce4/terminal"
     src="$SCRIPTS/etc/xfce/terminalrc"
 
+    if ! command_is_usable mkdir || ! command_is_usable cp; then
+        echo "[ERROR] Cannot install the terminal profile because mkdir or cp is not usable." >&2
+        return 1
+    fi
+
     if [ ! -r "$src" ]; then
         echo "[ERROR] terminalrc not found: $src" >&2
         return 1
@@ -376,6 +390,11 @@ install_xfce4_terminal_profile() {
 install_xmodmap_autostart() {
     dst="$HOME/.config/autostart"
     src="$SCRIPTS/dot_files/dot_config/autostart/xmodmap.desktop"
+
+    if ! command_is_usable mkdir || ! command_is_usable cp || ! command_is_usable chmod; then
+        echo "[ERROR] Cannot install the xmodmap autostart entry because mkdir, cp, or chmod is not usable." >&2
+        return 1
+    fi
 
     if [ ! -r "$src" ]; then
         echo "[ERROR] xmodmap.desktop not found: $src" >&2
@@ -405,6 +424,11 @@ install_xmodmap_autostart() {
 install_xset_autostart() {
     dst="$HOME/.config/autostart"
     src="$SCRIPTS/dot_files/dot_config/autostart/xset-rate.desktop"
+
+    if ! command_is_usable mkdir || ! command_is_usable cp || ! command_is_usable chmod; then
+        echo "[ERROR] Cannot install the xset autostart entry because mkdir, cp, or chmod is not usable." >&2
+        return 1
+    fi
 
     if [ ! -r "$src" ]; then
         echo "[ERROR] xset-rate.desktop not found: $src" >&2
@@ -463,7 +487,7 @@ main() {
     check_scripts
     check_session_bus
     check_desktop_installed
-    check_commands xfconf-query mkdir cp chmod
+    check_commands xfconf-query
 
     confirm_apply_settings
 

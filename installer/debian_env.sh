@@ -39,6 +39,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v2.4 2026-09-20
+#       Treat optional locale and group commands as available only when their
+#       resolved command paths are executable.
 #  v2.3 2026-09-20
 #       Localize locale and group prerequisites so optional setup failures do
 #       not stop later Debian environment bootstrap steps.
@@ -99,6 +102,12 @@ check_commands() {
     done
 }
 
+# Check whether an optional command resolves to an executable path
+command_is_usable() {
+    optional_cmd_path=$(command -v "$1" 2>/dev/null)
+    [ -n "$optional_cmd_path" ] && [ -x "$optional_cmd_path" ]
+}
+
 # Check if the user has sudo privileges
 check_sudo() {
     check_commands sudo
@@ -111,7 +120,7 @@ check_sudo() {
 # Set locale ja_JP.UTF-8
 set_locale_jp() {
     for cmd in dpkg tee locale grep; do
-        if ! command -v "$cmd" >/dev/null 2>&1; then
+        if ! command_is_usable "$cmd"; then
             echo "[INFO] Skipping locale setup: '$cmd' is not available."
             return 0
         fi
@@ -165,7 +174,7 @@ apt_upgrade() {
 
 # Create administrative groups
 create_admin_group() {
-    if ! command -v groupadd >/dev/null 2>&1; then
+    if ! command_is_usable groupadd; then
         echo "[INFO] Skipping admin group setup: 'groupadd' is not available."
         return 0
     fi

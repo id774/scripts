@@ -41,6 +41,9 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
+#  v1.5 2026-09-20
+#       Keep only gsettings as a run-level command prerequisite and detect
+#       optional keybinding, profile, and service capabilities where used.
 #  v1.4 2026-09-20
 #       Continue independent GNOME settings after local failures and treat
 #       unavailable optional keys and services as normal skips.
@@ -99,6 +102,12 @@ check_commands() {
             exit 126
         fi
     done
+}
+
+# Check whether an optional command resolves to an executable path
+command_is_usable() {
+    optional_cmd_path=$(command -v "$1" 2>/dev/null)
+    [ -n "$optional_cmd_path" ] && [ -x "$optional_cmd_path" ]
 }
 
 # Ensure we have a user session DBus (required for gsettings/dconf)
@@ -271,6 +280,11 @@ dconf_load_settings() {
 
 # Import GNOME keybindings (media keys and WM bindings)
 import_gnome_keybindings() {
+    if ! command_is_usable dconf || ! command_is_usable grep; then
+        echo "[INFO] Skipping GNOME keybinding import because dconf or grep is not usable."
+        return 0
+    fi
+
     dconf_load_settings "/org/gnome/settings-daemon/plugins/media-keys/" "$SCRIPTS/etc/gnome/gnome-shortcuts.conf"
     dconf_load_settings "/org/gnome/desktop/wm/keybindings/" "$SCRIPTS/etc/gnome/gnome-wm-keys.conf"
 }
@@ -283,8 +297,13 @@ install_xfce4_terminal_profile() {
     src="$SCRIPTS/etc/xfce/terminalrc"
 
     # Ensure xfce4-terminal exists
-    if ! command -v xfce4-terminal >/dev/null 2>&1; then
+    if ! command_is_usable xfce4-terminal; then
         echo "[INFO] xfce4-terminal not found. Skipping terminal profile installation."
+        return 0
+    fi
+
+    if ! command_is_usable mkdir || ! command_is_usable cp; then
+        echo "[INFO] Skipping terminal profile installation because mkdir or cp is not usable."
         return 0
     fi
 
@@ -326,7 +345,7 @@ disable_services() {
         return 0
     fi
 
-    if ! command -v systemctl >/dev/null 2>&1; then
+    if ! command_is_usable systemctl; then
         echo "[INFO] Skipping service mask steps: 'systemctl' is not available."
         return 0
     fi
@@ -383,7 +402,7 @@ main() {
     check_session_bus
 
     # Verify required commands for this script
-    check_commands gsettings dconf mkdir cp grep
+    check_commands gsettings
 
     confirm_apply_settings
 
