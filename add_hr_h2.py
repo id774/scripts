@@ -54,6 +54,8 @@
 #  - Standard library only
 #
 #  Version History:
+#  v1.1 2026-09-20
+#       Separate CLI actions from file paths so literal help/version names remain valid inputs.
 #  v1.0 2026-04-18
 #       Initial release.
 #
@@ -68,6 +70,10 @@ H2_TAG_PATTERN = re.compile(r'<h2\b[^>]*>', re.IGNORECASE)
 
 # Match an <hr> tag at the end of a text fragment.
 HR_AT_END_PATTERN = re.compile(r'<hr>\s*$', re.IGNORECASE)
+
+ACTION_PROCESS = "process"
+ACTION_HELP = "help"
+ACTION_VERSION = "version"
 
 
 def usage():
@@ -262,43 +268,43 @@ def parse_arguments(argv):
 
     if not argv:
         print("[ERROR] Missing input file", file=sys.stderr)
-        return None, None, 1
+        return None, None, None, 1
 
     if len(argv) == 1:
         arg = argv[0]
 
         if arg in ("-h", "--help"):
-            return "help", None, 0
+            return ACTION_HELP, None, None, 0
 
         if arg in ("-v", "--version"):
-            return "version", None, 0
+            return ACTION_VERSION, None, None, 0
 
-        return arg, arg, 0
+        return ACTION_PROCESS, arg, arg, 0
 
     if len(argv) == 2:
         if argv[0] in ("-h", "--help", "-v", "--version"):
             print("[ERROR] Option does not accept an extra argument: %s" % argv[0],
                   file=sys.stderr)
-            return None, None, 1
+            return None, None, None, 1
 
-        return argv[0], argv[1], 0
+        return ACTION_PROCESS, argv[0], argv[1], 0
 
     print("[ERROR] Invalid arguments", file=sys.stderr)
-    return None, None, 1
+    return None, None, None, 1
 
 
 def main():
     """Run the main processing flow."""
 
-    input_path, output_path, status = parse_arguments(sys.argv[1:])
+    action, input_path, output_path, status = parse_arguments(sys.argv[1:])
     if status != 0:
         usage()
         return 1
 
-    if input_path == "help":
+    if action == ACTION_HELP:
         return usage()
 
-    if input_path == "version":
+    if action == ACTION_VERSION:
         return show_version()
 
     status = validate_input_file(input_path)
