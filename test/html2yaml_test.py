@@ -29,16 +29,21 @@
 #
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
-#    - Skip all tests when required dependencies (BeautifulSoup and PyYAML) are not installed.
+#    - Skip all tests when required dependencies (BeautifulSoup, PyYAML, and requests) are not installed.
 #    - Convert a sample HTML document into the expected YAML structure.
 #    - Ensure the generated YAML output includes expected tag names (html, head, title, body, div, ul, li).
+#    - Reject an HTTP error response before parsing remote HTML content.
 #
 #  Version History:
+#  v1.1 2026-09-20
+#       Cover HTTP error responses before remote HTML parsing.
 #  v1.0 2024-01-11
 #       Initial release.
 #
 ########################################################################
 
+import contextlib
+import io
 import os
 import subprocess
 import sys
@@ -47,6 +52,7 @@ import unittest
 # Check if required libraries are installed
 required_libraries_installed = True
 try:
+    import requests
     import yaml
     from bs4 import BeautifulSoup
 except ImportError:
@@ -54,6 +60,7 @@ except ImportError:
 
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import html2yaml
 from html2yaml import html_to_yaml
 
 
@@ -130,6 +137,34 @@ class Html2YamlTest(unittest.TestCase):
 
         # Test if the generated YAML matches the expected structure
         self.assertEqual(yaml_data, expected_yaml)
+
+    def test_remote_http_error_rejected(self):
+        """ Ensure an HTTP error response is rejected before parsing. """
+        class FakeResponse(object):
+            text = '<html><body><p>Not Found</p></body></html>'
+
+            def raise_for_status(self):
+                raise requests.exceptions.HTTPError("404 Client Error")
+
+        original_argv = sys.argv
+        original_get = html2yaml.requests.get
+        html2yaml.requests.get = lambda url: FakeResponse()
+        sys.argv = ['html2yaml.py', 'http://example.com/missing']
+
+        try:
+            captured_stdout = io.StringIO()
+            captured_stderr = io.StringIO()
+            with contextlib.redirect_stdout(captured_stdout), \
+                    contextlib.redirect_stderr(captured_stderr):
+                status = html2yaml.main()
+
+            self.assertEqual(status, 2)
+            self.assertEqual(captured_stdout.getvalue(), '')
+            self.assertIn(
+                '[ERROR] Error processing HTML:', captured_stderr.getvalue())
+        finally:
+            html2yaml.requests.get = original_get
+            sys.argv = original_argv
 
 
 if __name__ == '__main__':

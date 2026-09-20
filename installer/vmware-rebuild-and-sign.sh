@@ -66,7 +66,16 @@
 #      modinfo -F signer /lib/modules/$(uname -r)/misc/vmnet.ko
 #      lsmod | grep -E '^(vmmon|vmnet)'
 #
+#  Exit Status:
+#  0. Required signing and depmod operations completed successfully.
+#  1. Validation, confirmation, signing, privilege, or depmod operation failed.
+#  126. A required command exists but is not executable.
+#  127. A required command is not installed.
+#
 #  Version History:
+#  v1.2 2026-09-20
+#       Validate uname before kernel-path setup and return failure when depmod
+#       fails while preserving documented best-effort rebuild and load checks.
 #  v1.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -75,11 +84,8 @@
 #
 ########################################################################
 
-KVER="$(uname -r)"
-MODDIR="/lib/modules/$KVER/misc"
 KEY="/etc/vmware/module-signing/MOK.key"
 CRT="/etc/vmware/module-signing/MOK.crt"
-SIGN_FILE_PRIMARY="/usr/src/linux-headers-$KVER/scripts/sign-file"
 
 # Display full script header information extracted from the top comment block
 usage() {
@@ -113,6 +119,13 @@ check_commands() {
             exit 126
         fi
     done
+}
+
+# Set up kernel-dependent paths after the system check has passed
+setup_environment() {
+    KVER="$(uname -r)"
+    MODDIR="/lib/modules/$KVER/misc"
+    SIGN_FILE_PRIMARY="/usr/src/linux-headers-$KVER/scripts/sign-file"
 }
 
 # Check if the user has sudo privileges (password may be required)
@@ -224,7 +237,8 @@ main() {
     esac
 
     check_system
-    check_commands vmware-modconfig modinfo modprobe depmod lsmod grep uname
+    setup_environment
+    check_commands vmware-modconfig modinfo modprobe depmod lsmod grep
     check_sudo
 
     # Ask for confirmation before proceeding
@@ -242,19 +256,27 @@ main() {
 
     # Refresh module dependency map for this kernel
     echo "[INFO] Running depmod for $KVER"
+    DEPMOD_FAILED=0
     if ! sudo depmod -a "$KVER"; then
-        echo "[WARN] depmod failed for $KVER" >&2
+        echo "[ERROR] depmod failed for $KVER" >&2
+        DEPMOD_FAILED=1
     fi
 
     # Try to load modules so the host becomes ready immediately
     try_load_modules
 
-    echo "[INFO] Completed: vmmon/vmnet modules processed for kernel $KVER. All signing and depmod steps finished successfully."
+    if [ "$DEPMOD_FAILED" -eq 0 ]; then
+        echo "[INFO] Completed: vmmon/vmnet modules processed for kernel $KVER. All signing and depmod steps finished successfully."
+    fi
 
     echo "[INFO] Verifying signatures and load state..."
     modinfo -F signer "$MODDIR/vmmon.ko" 2>/dev/null || echo "vmmon.ko not found"
     modinfo -F signer "$MODDIR/vmnet.ko" 2>/dev/null || echo "vmnet.ko not found"
     lsmod | grep -E '^(vmmon|vmnet)' || echo "Modules not loaded: vmmon/vmnet"
+
+    if [ "$DEPMOD_FAILED" -eq 1 ]; then
+        return 1
+    fi
 
     return 0
 }

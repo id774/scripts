@@ -43,7 +43,15 @@
 #  - Python Version: 3.2 or later
 #  - Dependencies: bs4, pyyaml, requests
 #
+#  Exit Status:
+#  0. HTML conversion completed successfully.
+#  1. Required Python libraries are unavailable.
+#  2. Remote retrieval, local input, parsing, or conversion failed.
+#  9. Unsupported Python version.
+#
 #  Version History:
+#  v1.7 2026-09-20
+#       Reject HTTP error responses before parsing remote HTML content.
 #  v1.6 2026-07-08
 #       Specify UTF-8 encoding when reading a local HTML file.
 #  v1.5 2025-07-01
@@ -121,6 +129,7 @@ def main():
     try:
         if source.startswith('http://') or source.startswith('https://'):
             response = requests.get(source)
+            response.raise_for_status()
             html = BeautifulSoup(response.text, 'html.parser')
         else:
             with open(source, 'r', encoding='utf-8') as file:

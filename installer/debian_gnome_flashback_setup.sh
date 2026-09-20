@@ -41,10 +41,15 @@
 #    keybinding files and terminal profile.
 #
 #  Exit Status:
-#  - If required commands are missing, execution is halted.
-#  - If DBus session is not available, execution is halted.
+#  - 0: GNOME Flashback settings were applied successfully.
+#  - 1: Environment, desktop-session, confirmation, or settings operation failed.
+#  - 126: A required command exists but is not executable.
+#  - 127: A required command is not installed.
 #
 #  Version History:
+#  v2.6 2026-09-20
+#       Align check_commands with the shared prerequisite contract and keep
+#       usage-only awk out of normal execution checks.
 #  v2.5 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -104,13 +109,12 @@ check_scripts() {
 # Check if required commands are available and executable
 check_commands() {
     for cmd in "$@"; do
-        path="$(command -v "$cmd" 2>/dev/null)"
-        if [ -z "$path" ]; then
-            echo "[ERROR] Command not found: $cmd" >&2
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
-        fi
-        if [ ! -x "$path" ]; then
-            echo "[ERROR] Command not executable: $cmd" >&2
+        elif [ ! -x "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -402,7 +406,7 @@ main() {
     check_scripts
     check_session_bus
     check_desktop_installed
-    check_commands gsettings dconf mkdir cp awk chmod grep ls
+    check_commands gsettings dconf mkdir cp chmod grep ls
 
     confirm_apply_settings
 

@@ -217,7 +217,7 @@ main() {
     esac
 
     check_system
-    check_commands sudo grep tee newaliases sed mv id truncate touch chown chmod rm mktemp
+    check_commands grep tee newaliases sed mv id truncate touch chown chmod rm mktemp
     check_scripts
 
     SCRIPT_PATH="$SCRIPTS/usershells.py"

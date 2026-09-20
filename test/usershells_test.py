@@ -19,8 +19,17 @@
 #    - Lists users with interactive shells from dscl (macOS)
 #    - Outputs usernames only with --name-only
 #    - Outputs in username:/shell format with --colon
+#    - Returns failure and reports an error when /etc/passwd cannot be read
+#    - Returns failure and reports an error when the initial dscl user list
+#      retrieval fails
+#    - Treats a per-user dscl UserShell CalledProcessError as an expected
+#      omission and continues with the remaining users
+#    - Returns failure while still listing the remaining users when a
+#      per-user dscl UserShell lookup raises an unexpected OSError
 #
 #  Version History:
+#  v1.2 2026-09-20
+#       Cover platform source failures and expected per-user dscl omissions.
 #  v1.1 2025-07-08
 #       Fixed compatibility issues with Python 3.4.
 #  v1.0 2025-07-07
@@ -34,7 +43,7 @@ import subprocess
 import sys
 import unittest
 from collections import namedtuple
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from unittest.mock import mock_open, patch
 
 # Adjust the path to import script from the parent directory
@@ -81,11 +90,12 @@ class TestUsershells(unittest.TestCase):
         with patch('builtins.open', m):
             f = io.StringIO()
             with redirect_stdout(f):
-                usershells.main()
+                status = usershells.main()
             output = f.getvalue()
             self.assertIn("user1", output)
             self.assertIn("user3", output)
             self.assertNotIn("user2", output)
+            self.assertEqual(status, 0)
 
     @patch('platform.system', return_value='Darwin')
     @patch('subprocess.check_output')
@@ -105,11 +115,12 @@ class TestUsershells(unittest.TestCase):
 
         f = io.StringIO()
         with redirect_stdout(f):
-            usershells.main()
+            status = usershells.main()
         output = f.getvalue()
         self.assertIn("user1", output)
         self.assertIn("user3", output)
         self.assertNotIn("user2", output)
+        self.assertEqual(status, 0)
 
     @patch('platform.system', return_value='Linux')
     def test_name_only_option(self, mock_platform):
@@ -124,13 +135,14 @@ class TestUsershells(unittest.TestCase):
             sys.argv = ['usershells.py', '--name-only']
             f = io.StringIO()
             with redirect_stdout(f):
-                usershells.main()
+                status = usershells.main()
             output = f.getvalue()
             self.assertIn("user1", output)
             self.assertIn("user3", output)
             self.assertNotIn("user2", output)
             self.assertNotIn(":", output)
             self.assertNotIn("=>", output)
+            self.assertEqual(status, 0)
 
     @patch('platform.system', return_value='Linux')
     def test_colon_option(self, mock_platform):
@@ -145,12 +157,82 @@ class TestUsershells(unittest.TestCase):
             sys.argv = ['usershells.py', '--colon']
             f = io.StringIO()
             with redirect_stdout(f):
-                usershells.main()
+                status = usershells.main()
             output = f.getvalue()
             self.assertIn("user1:/bin/bash", output)
             self.assertIn("user3:/bin/zsh", output)
             self.assertNotIn("user2", output)
             self.assertNotIn("=>", output)
+            self.assertEqual(status, 0)
+
+    @patch('platform.system', return_value='Linux')
+    def test_passwd_read_failure_returns_error_status(self, mock_platform):
+        with patch('builtins.open', side_effect=OSError("Permission denied")):
+            out = io.StringIO()
+            err = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(err):
+                status = usershells.main()
+            self.assertEqual(status, 1)
+            self.assertIn("[ERROR] Failed to read /etc/passwd:", err.getvalue())
+
+    @patch('platform.system', return_value='Darwin')
+    @patch('subprocess.check_output')
+    def test_dscl_user_list_failure_returns_error_status(self, mock_check_output, mock_platform):
+        mock_check_output.side_effect = subprocess.CalledProcessError(
+            1, ['dscl', '.', '-list', '/Users'])
+
+        out = io.StringIO()
+        err = io.StringIO()
+        with redirect_stdout(out), redirect_stderr(err):
+            status = usershells.main()
+        self.assertEqual(status, 1)
+        self.assertIn("[ERROR] Failed to retrieve user list from dscl:", err.getvalue())
+
+    @patch('platform.system', return_value='Darwin')
+    @patch('subprocess.check_output')
+    def test_dscl_per_user_called_process_error_is_skipped(self, mock_check_output, mock_platform):
+        def side_effect(cmd, *args, **kwargs):
+            if cmd == ['dscl', '.', '-list', '/Users']:
+                return b'user1\nuser2\n'
+            elif cmd == ['dscl', '.', '-read', '/Users/user1', 'UserShell']:
+                raise subprocess.CalledProcessError(1, cmd)
+            elif cmd == ['dscl', '.', '-read', '/Users/user2', 'UserShell']:
+                return b'UserShell: /bin/zsh'
+            return b''
+
+        mock_check_output.side_effect = side_effect
+
+        out = io.StringIO()
+        err = io.StringIO()
+        with redirect_stdout(out), redirect_stderr(err):
+            status = usershells.main()
+        output = out.getvalue()
+        self.assertIn("user2", output)
+        self.assertNotIn("user1", output)
+        self.assertEqual(status, 0)
+
+    @patch('platform.system', return_value='Darwin')
+    @patch('subprocess.check_output')
+    def test_dscl_per_user_os_error_continues_remaining_users(self, mock_check_output, mock_platform):
+        def side_effect(cmd, *args, **kwargs):
+            if cmd == ['dscl', '.', '-list', '/Users']:
+                return b'user1\nuser2\n'
+            elif cmd == ['dscl', '.', '-read', '/Users/user1', 'UserShell']:
+                raise OSError("boom")
+            elif cmd == ['dscl', '.', '-read', '/Users/user2', 'UserShell']:
+                return b'UserShell: /bin/zsh'
+            return b''
+
+        mock_check_output.side_effect = side_effect
+
+        out = io.StringIO()
+        err = io.StringIO()
+        with redirect_stdout(out), redirect_stderr(err):
+            status = usershells.main()
+        output = out.getvalue()
+        self.assertIn("user2", output)
+        self.assertIn("[ERROR] Failed to retrieve UserShell for user1:", err.getvalue())
+        self.assertEqual(status, 1)
 
 
 if __name__ == '__main__':

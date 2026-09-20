@@ -16,7 +16,16 @@
 #  Usage:
 #      ./hadoop-start.sh [start|stop] [Hadoop version]
 #
+#  Exit Status:
+#  0. All requested Hadoop service operations succeeded.
+#  1. Validation, sudo privilege, or one or more service operations failed.
+#  126. A required command exists but is not executable.
+#  127. A required command is not installed.
+#
 #  Version History:
+#  v1.0 2026-09-20
+#       Return failure when any requested Hadoop service operation fails while
+#       continuing the remaining service attempts.
 #  v0.9 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -92,9 +101,14 @@ verify_hadoop_scripts() {
 
 # Control Hadoop services
 control_hadoop_services() {
+    status=0
     for service in namenode jobtracker datanode tasktracker; do
-        sudo /etc/init.d/hadoop-${HADOOP_VER}-$service "$1"
+        if ! sudo /etc/init.d/hadoop-${HADOOP_VER}-$service "$1"; then
+            echo "[ERROR] Failed to $1 Hadoop service: $service" >&2
+            status=1
+        fi
     done
+    return $status
 }
 
 # Main entry point of the script
@@ -107,7 +121,7 @@ main() {
     verify_hadoop_scripts
     check_sudo
     control_hadoop_services "$1"
-    return 0
+    return $?
 }
 
 # Execute main function

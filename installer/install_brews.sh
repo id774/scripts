@@ -24,7 +24,7 @@
 #
 #  Exit Status:
 #  0: Success - The batch workflow completed.
-#  1: Error - macOS or Homebrew prerequisite validation failed.
+#  1: Error - macOS validation or one or more Homebrew setup operations failed.
 #  126: Error - A required command exists but is not executable.
 #  127: Error - A required command is not found.
 #
@@ -36,6 +36,9 @@
 #  - `trash` is installed for safer file deletions, replacing `rm`.
 #
 #  Version History:
+#  v1.9 2026-09-20
+#       Use the shared Homebrew prerequisite contract and report batch
+#       operation failures without stopping independent install attempts.
 #  v1.8 2026-09-07
 #       Check uname before system detection and clarify batch completion.
 #  v1.7 2026-07-11
@@ -95,14 +98,6 @@ check_commands() {
     done
 }
 
-# Check if Homebrew is installed
-check_homebrew() {
-    if ! command -v brew >/dev/null 2>&1; then
-        echo "[ERROR] Homebrew is not installed. Please install Homebrew first." >&2
-        exit 1
-    fi
-}
-
 # Main entry point of the script
 main() {
     case "$1" in
@@ -110,42 +105,49 @@ main() {
     esac
 
     check_system
-    check_homebrew
+    check_commands brew
+
+    status=0
 
     # Check Homebrew environment
     echo "[INFO] Running 'brew doctor' to check the system's Homebrew environment..."
-    brew doctor
+    brew doctor || status=1
 
     # Update Homebrew
     echo "[INFO] Updating Homebrew packages..."
-    brew update
+    brew update || status=1
 
     # Install essential tools and libraries
     echo "[INFO] Installing essential tools and libraries using Homebrew..."
-    brew install openssl
-    brew link openssl --force
-    brew install wget
-    brew install nkf
-    brew install vim
-    brew install nvim
-    brew install freetype
-    brew install rsync
-    brew install smartmontools
-    brew install mecab
-    brew install cabocha
-    brew install ta-lib
-    brew install trash
-    brew install coreutils
-    brew install findutils
-    brew install moreutils
-    brew install binutils
+    brew install openssl || status=1
+    brew link openssl --force || status=1
+    brew install wget || status=1
+    brew install nkf || status=1
+    brew install vim || status=1
+    brew install nvim || status=1
+    brew install freetype || status=1
+    brew install rsync || status=1
+    brew install smartmontools || status=1
+    brew install mecab || status=1
+    brew install cabocha || status=1
+    brew install ta-lib || status=1
+    brew install trash || status=1
+    brew install coreutils || status=1
+    brew install findutils || status=1
+    brew install moreutils || status=1
+    brew install binutils || status=1
 
     # Cleanup old versions and caches to free up disk space
     echo "[INFO] Cleaning up old versions and caches..."
-    brew cleanup
+    brew cleanup || status=1
 
-    echo "[INFO] All specified brew packages have been installed."
-    return 0
+    if [ "$status" -eq 0 ]; then
+        echo "[INFO] All specified brew packages have been installed."
+    else
+        echo "[ERROR] One or more Homebrew setup operations failed." >&2
+    fi
+
+    return $status
 }
 
 # Execute main function

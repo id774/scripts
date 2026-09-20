@@ -17,7 +17,16 @@
 #  Usage:
 #      ./fluent-start.sh [fluentd path] [fluentd conf path] [options]
 #
+#  Exit Status:
+#  0. Fluentd setup, launch request, and test-message send completed.
+#  1. Configuration, Fluentd setup, or test-message operation failed.
+#  126. A required Fluentd command exists but is not executable.
+#  127. A required Fluentd command is not installed.
+#
 #  Version History:
+#  v1.1 2026-09-20
+#       Preserve the CLI option argument, use shared prerequisite checks, and
+#       propagate Fluentd setup and test-message failures.
 #  v1.0 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -75,22 +84,13 @@ determine_fluentd_paths() {
         FLUENTD=$1/bin/fluentd
         FLUENT_CAT=$1/bin/fluent-cat
     else
-        FLUENTD=$(command -v fluentd)
-        FLUENT_CAT=$(command -v fluent-cat)
+        FLUENTD=fluentd
+        FLUENT_CAT=fluent-cat
     fi
 }
 
 # Check if Fluentd and Fluent-Cat exist
 check_fluentd_commands() {
-    if [ -z "$FLUENTD" ]; then
-        echo "[ERROR] Fluentd not found. Please specify the path." >&2
-        exit 1
-    fi
-    if [ -z "$FLUENT_CAT" ]; then
-        echo "[ERROR] Fluent-Cat not found. Please specify the path." >&2
-        exit 1
-    fi
-
     check_commands "$FLUENTD" "$FLUENT_CAT"
 }
 
@@ -117,13 +117,26 @@ determine_fluentd_config() {
 
 # Start Fluentd
 start_fluentd() {
-    $FLUENTD --setup "$FLUENT_CONF"
-    $FLUENTD -c "$FLUENT_CONF/fluent.conf" "$3" &
+    if ! "$FLUENTD" --setup "$FLUENT_CONF"; then
+        echo "[ERROR] Fluentd setup failed." >&2
+        return 1
+    fi
+
+    if [ -n "$1" ]; then
+        "$FLUENTD" -c "$FLUENT_CONF/fluent.conf" "$1" &
+    else
+        "$FLUENTD" -c "$FLUENT_CONF/fluent.conf" &
+    fi
+    return 0
 }
 
 # Send test message
 send_test_message() {
-    echo '{"json":"message"}' | "$FLUENT_CAT" debug.test
+    if ! echo '{"json":"message"}' | "$FLUENT_CAT" debug.test; then
+        echo "[ERROR] Failed to send Fluentd test message." >&2
+        return 1
+    fi
+    return 0
 }
 
 # Main entry point of the script
@@ -135,8 +148,15 @@ main() {
     determine_fluentd_paths "$1"
     check_fluentd_commands
     determine_fluentd_config "$2"
-    start_fluentd "$3"
-    send_test_message
+
+    if ! start_fluentd "$3"; then
+        return 1
+    fi
+
+    if ! send_test_message; then
+        return 1
+    fi
+
     return 0
 }
 

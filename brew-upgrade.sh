@@ -25,7 +25,16 @@
 #  Requirements:
 #  - Homebrew must be installed prior to executing this script.
 #
+#  Exit Status:
+#  0. All Homebrew maintenance steps completed successfully.
+#  1. One or more Homebrew maintenance steps failed.
+#  126. brew exists but is not executable.
+#  127. brew is not installed.
+#
 #  Version History:
+#  v1.6 2026-09-20
+#       Use the shared Homebrew prerequisite contract and return failure when
+#       any maintenance step fails.
 #  v1.5 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -67,30 +76,26 @@ check_commands() {
     done
 }
 
-# Check if Homebrew is installed
-check_environment() {
-    if ! command -v brew >/dev/null 2>&1; then
-        echo "[ERROR] Homebrew is not installed. Please install Homebrew first." >&2
-        exit 1
-    fi
-}
-
 # Perform Homebrew maintenance tasks
 brew_maintenance() {
+    status=0
+
     echo "[INFO] Running Homebrew diagnostics..."
-    brew doctor
+    brew doctor || status=1
 
     echo "[INFO] Updating Homebrew package list..."
-    brew update
+    brew update || status=1
 
     echo "[INFO] Checking for outdated packages..."
-    brew outdated
+    brew outdated || status=1
 
     echo "[INFO] Upgrading outdated packages..."
-    brew upgrade
+    brew upgrade || status=1
 
     echo "[INFO] Cleaning up old versions and caches..."
-    brew cleanup
+    brew cleanup || status=1
+
+    return $status
 }
 
 # Main entry point of the script
@@ -98,9 +103,9 @@ main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
     esac
-    check_environment
+    check_commands brew
     brew_maintenance
-    return 0
+    return $?
 }
 
 # Execute main function

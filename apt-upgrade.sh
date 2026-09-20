@@ -26,7 +26,16 @@
 #  - User with sudo(8) privileges.
 #  - Network connectivity for package index and downloads.
 #
+#  Exit Status:
+#  0. System package maintenance completed successfully.
+#  1. Sudo privilege or apt-get maintenance operation failed.
+#  126. A required command exists but is not executable.
+#  127. A required command is not installed.
+#
 #  Version History:
+#  v1.7 2026-09-20
+#       Use the shared apt-get prerequisite contract and propagate package
+#       maintenance failures.
 #  v1.6 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -79,14 +88,6 @@ check_sudo() {
     fi
 }
 
-# Check if the system supports apt-get
-check_environment() {
-    if ! command -v apt-get >/dev/null 2>&1; then
-        echo "[ERROR] apt-get is not available on this system. This script requires a Debian-based environment." >&2
-        exit 1
-    fi
-}
-
 # System update and upgrade
 apt_upgrade() {
     sudo apt-get update &&
@@ -100,9 +101,12 @@ main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
     esac
-    check_environment
+    check_commands apt-get
     check_sudo
-    apt_upgrade
+    if ! apt_upgrade; then
+        echo "[ERROR] System package upgrade failed." >&2
+        return 1
+    fi
     return 0
 }
 
