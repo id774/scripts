@@ -4,6 +4,8 @@ scripts Repository Version History
 v2.0.2 (Release Date: TBD)
 --------------------------
 - Fix install_truecrypt.sh to apply ownership to each intended TrueCrypt path.
+- Make send_files.sh mail report the actual timestamped password-file path.
+- Fix anthy_create_aa_dic.sh to use the bundled MS-IME-to-Canna converter.
 - Add luksmount.py for confirmed LUKS opening and mounting, and install it as
   luksmount with the Debian system administration scripts.
 - Harden tcmount.py against shell interpretation, preserve the legacy
