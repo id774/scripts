@@ -17,8 +17,16 @@
 #    - Shows usage and exits with code 0 when invoked with -h option
 #    - Displays user with UID >= 1000 on Debian-based system
 #    - Displays user from dscacheutil on macOS if UID >= 500
+#    - Returns 0 from main() on successful Debian /etc/passwd retrieval
+#    - Returns 0 from main() on successful macOS dscacheutil retrieval
+#    - Returns 1 from main() and reports the existing error text on stderr
+#      when /etc/passwd cannot be read on a Debian-based system
+#    - Returns 1 from main() and reports the existing error text on stderr
+#      when dscacheutil fails on macOS
 #
 #  Version History:
+#  v1.2 2026-09-20
+#       Cover platform user-source failures and propagated status.
 #  v1.1 2025-07-08
 #       Fixed compatibility issues with Python 3.4.
 #  v1.0 2025-07-07
@@ -32,7 +40,7 @@ import subprocess
 import sys
 import unittest
 from collections import namedtuple
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from unittest.mock import mock_open, patch
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -75,9 +83,10 @@ class TestUserlist(unittest.TestCase):
         with patch('builtins.open', m):
             f = io.StringIO()
             with redirect_stdout(f):
-                userlist.main()
+                rc = userlist.main()
             output = f.getvalue()
             self.assertIn("testuser", output)
+            self.assertEqual(rc, 0)
 
     @patch('platform.system', return_value='Darwin')
     @patch('subprocess.check_output', return_value=b'name: testmac\nuid: 501\n')
@@ -85,9 +94,30 @@ class TestUserlist(unittest.TestCase):
     def test_macos_userlist(self, mock_isfile, mock_check_output, mock_platform):
         f = io.StringIO()
         with redirect_stdout(f):
-            userlist.main()
+            rc = userlist.main()
         output = f.getvalue()
         self.assertIn("testmac", output)
+        self.assertEqual(rc, 0)
+
+    @patch('os.path.isfile', side_effect=lambda path: path == '/etc/debian_version')
+    @patch('platform.system', return_value='Linux')
+    def test_debian_userlist_read_failure(self, mock_system, mock_isfile):
+        with patch('builtins.open', side_effect=OSError("Permission denied")):
+            buf_err = io.StringIO()
+            with redirect_stderr(buf_err):
+                rc = userlist.main()
+            self.assertEqual(rc, 1)
+            self.assertIn("Error reading /etc/passwd:", buf_err.getvalue())
+
+    @patch('platform.system', return_value='Darwin')
+    @patch('subprocess.check_output', side_effect=OSError("dscacheutil not found"))
+    @patch('os.path.isfile', return_value=False)
+    def test_macos_userlist_failure(self, mock_isfile, mock_check_output, mock_platform):
+        buf_err = io.StringIO()
+        with redirect_stderr(buf_err):
+            rc = userlist.main()
+        self.assertEqual(rc, 1)
+        self.assertIn("Error retrieving user list:", buf_err.getvalue())
 
 
 if __name__ == '__main__':

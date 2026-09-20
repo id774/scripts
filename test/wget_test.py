@@ -21,12 +21,14 @@
 #    - Verifies that the script prints usage and exits with code 0 when invoked with the -h option.
 #    - Skip all tests when the requests module is not installed.
 #    - Download a file successfully and write the response content to the expected local filename.
-#    - Raise a RequestException when an HTTP error occurs during download.
+#    - Raise an HTTPError when the response reports an HTTP error status.
 #    - Raise a MissingSchema exception when an invalid URL is provided.
 #    - Overwrite an existing local file with newly downloaded content.
 #    - Raise a Timeout exception when a network timeout occurs during download.
 #
 #  Version History:
+#  v1.1 2026-09-20
+#       Verify HTTP errors are raised before a local output file is opened.
 #  v1.0 2025-01-10
 #       Initial release.
 #
@@ -78,10 +80,14 @@ class TestWget(unittest.TestCase):
         - The downloaded content is saved locally with the correct filename.
         """
         # Mock response content for the GET request
-        mock_requests_get.return_value = MagicMock(status_code=200, content=b'Test content')
+        mock_response = MagicMock(status_code=200, content=b'Test content')
+        mock_requests_get.return_value = mock_response
 
         # Call the download function
         download_file("http://example.com/testfile.txt")
+
+        # Verify that the HTTP status was checked before writing
+        mock_response.raise_for_status.assert_called_once_with()
 
         # Verify that the file is opened for writing in binary mode
         mock_open_file.assert_called_once_with("testfile.txt", 'wb')
@@ -90,18 +96,26 @@ class TestWget(unittest.TestCase):
         mock_open_file().write.assert_called_once_with(b'Test content')
 
     @patch('wget.requests.get')
-    def test_http_error(self, mock_requests_get):
+    @patch('builtins.open', new_callable=mock_open)
+    def test_http_error(self, mock_open_file, mock_requests_get):
         """
         Test case: HTTP error during file download.
         This test verifies that:
-        - HTTP errors such as 404 or 500 are properly raised as exceptions.
+        - An HTTP error response raises HTTPError via raise_for_status().
+        - The local output file is never opened when the response is an error.
         """
-        # Mock a RequestException to simulate an HTTP error
-        mock_requests_get.side_effect = requests.exceptions.RequestException("HTTP Error")
+        # Mock a response whose raise_for_status() raises HTTPError, as a real
+        # error response (e.g. 404 or 500) would.
+        mock_response = MagicMock(status_code=404)
+        mock_response.raise_for_status.side_effect = requests.exceptions.HTTPError("HTTP Error")
+        mock_requests_get.return_value = mock_response
 
         # Verify that the function raises the correct exception
-        with self.assertRaises(requests.exceptions.RequestException):
+        with self.assertRaises(requests.exceptions.HTTPError):
             download_file("http://example.com/testfile.txt")
+
+        mock_response.raise_for_status.assert_called_once_with()
+        mock_open_file.assert_not_called()
 
     @patch('wget.requests.get')
     def test_invalid_url(self, mock_requests_get):

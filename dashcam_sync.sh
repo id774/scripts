@@ -36,6 +36,9 @@
 #  5. One or more configuration variables not set.
 #
 #  Version History:
+#  v2.1 2026-09-20
+#       Align move detection with the entries actually moved and preserve
+#       mv failure diagnostics.
 #  v2.0 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -134,8 +137,12 @@ move_files() {
     src="$1"
     dest="$2"
 
+    # Expand the top-level entries once and reuse the same set for the
+    # no-work check and the move itself, so both operate on the same files.
+    set -- "$src"/*
+
     # Check if there are files to move
-    if [ -z "$(find "$src" -type f | head -n 1)" ]; then
+    if [ "$#" -eq 1 ] && [ "$1" = "$src/*" ]; then
         echo "[WARN] No files to move from $src." >&2
         return 0
     fi
@@ -149,8 +156,7 @@ move_files() {
     fi
 
     echo "Moving files from '$src' to '$dest'..."
-    mv "$src"/* "$dest/" 2>/dev/null
-    if [ $? -ne 0 ]; then
+    if ! mv "$@" "$dest/"; then
         echo "[ERROR] Moving files failed." >&2
         exit 3
     fi

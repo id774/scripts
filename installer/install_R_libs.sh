@@ -21,7 +21,15 @@
 #  - The script must be run with `sudo` if installing system-wide.
 #  - This script is intended for Linux systems only.
 #
+#  Exit Status:
+#  0. R library installation completed successfully.
+#  1. Configuration, sudo privilege, or R library installation failed.
+#  126. Required command is not executable.
+#  127. Required command is not installed.
+#
 #  Version History:
+#  v1.5 2026-09-20
+#       Return failure when the R library installation command fails.
 #  v1.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -99,7 +107,10 @@ check_sudo() {
 # Install R libraries
 install_R_libs() {
     echo "[INFO] Installing R libraries..."
-    sudo R --no-save --no-restore -e "source('$SCRIPTS/etc/install_mylibs.R'); install.packages(required_packages, dependencies=TRUE)"
+    if ! sudo R --no-save --no-restore -e "source('$SCRIPTS/etc/install_mylibs.R'); install.packages(required_packages, dependencies=TRUE)"; then
+        echo "[ERROR] R library installation failed." >&2
+        return 1
+    fi
     echo "[INFO] R library installation completed."
 }
 
@@ -113,7 +124,7 @@ main() {
     check_scripts
     check_config
     check_sudo
-    install_R_libs
+    install_R_libs || return 1
     return 0
 }
 

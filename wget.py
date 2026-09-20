@@ -22,7 +22,14 @@
 #  - Python Version: 3.4 or later
 #  - Dependencies: requests
 #
+#  Exit Status:
+#  0. Download completed successfully.
+#  1. Download or local file processing failed.
+#  9. Unsupported Python version.
+#
 #  Version History:
+#  v1.5 2026-09-20
+#       Reject HTTP error responses before writing downloaded content.
 #  v1.4 2025-07-07
 #       Define download_file function to allow test import and avoid skipping tests.
 #  v1.3 2025-07-01
@@ -68,6 +75,7 @@ def usage():
 def download_file(url):
     """Download the file from the given URL and save it."""
     response = requests.get(url)
+    response.raise_for_status()
     filename = url.split('/')[-1]
 
     with open(filename, 'wb') as file:

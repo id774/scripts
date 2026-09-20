@@ -51,12 +51,15 @@
 #  4. GMAIL_TO address is not set.
 #  5. ARCHIVE_OUTPUT_DIR is not set in config.
 #  6. Archive output directory does not exist.
+#  7. Failed to copy archive to the configured output directory.
 #  8. Unsafe operation: sending .7z archive via email without user confirmation.
 #  9. Failed to send mail.
 #  126. Required command is not executable.
 #  127. Required command is not installed.
 #
 #  Version History:
+#  v2.0 2026-09-20
+#       Return a documented failure when the local archive copy fails.
 #  v1.9 2026-09-20
 #       Use the actual timestamped password-file path in the mail body.
 #  v1.8 2026-07-11
@@ -261,7 +264,10 @@ Password is stored locally in $PASSWORD_FILE"
 
 # Output directory for archive (if not sending)
 store_archive() {
-    cp "$ZIP_PATH" "$ARCHIVE_OUTPUT_DIR"
+    if ! cp "$ZIP_PATH" "$ARCHIVE_OUTPUT_DIR"; then
+        echo "[ERROR] Failed to copy archive to $ARCHIVE_OUTPUT_DIR" >&2
+        return 7
+    fi
     echo "[INFO] Archive copied to $ARCHIVE_OUTPUT_DIR"
 
     # Prefer explicit DOWNLOAD_BASE_URL from config; otherwise derive from host

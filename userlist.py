@@ -23,7 +23,14 @@
 #  Requirements:
 #  - Python Version: 3.1 or later
 #
+#  Exit Status:
+#  0. User list processing completed.
+#  1. Platform user information could not be retrieved or read.
+#  9. Unsupported Python version.
+#
 #  Version History:
+#  v1.7 2026-09-20
+#       Return failure when the platform user source cannot be read.
 #  v1.6 2026-07-08
 #       Specify UTF-8 encoding when reading /etc/passwd.
 #  v1.5 2025-07-08
@@ -92,17 +99,19 @@ def show_userlist(threshold):
     if platform.system() == 'Darwin':
         try:
             output = subprocess.check_output(['dscacheutil', '-q', 'user']).decode('utf-8')
-            users = parse_dscacheutil_output(output)
-            for user_info in users:
-                try:
-                    uid = int(user_info.get('uid', -1))
-                    name = user_info.get('name', '')
-                    if uid >= threshold:
-                        print(name)
-                except (ValueError, TypeError):
-                    continue
         except Exception as e:
             print("Error retrieving user list: %s" % str(e), file=sys.stderr)
+            return 1
+        users = parse_dscacheutil_output(output)
+        for user_info in users:
+            try:
+                uid = int(user_info.get('uid', -1))
+                name = user_info.get('name', '')
+                if uid >= threshold:
+                    print(name)
+            except (ValueError, TypeError):
+                continue
+        return 0
     else:
         try:
             with open('/etc/passwd', 'r', encoding='utf-8') as fo:
@@ -114,6 +123,8 @@ def show_userlist(threshold):
                             print(parts[0])
         except Exception as e:
             print("Error reading /etc/passwd: %s" % str(e), file=sys.stderr)
+            return 1
+        return 0
 
 def main():
     threshold = 0
@@ -125,7 +136,7 @@ def main():
         threshold = 500
 
     if threshold != 0:
-        show_userlist(threshold)
+        return show_userlist(threshold)
 
     return 0
 
