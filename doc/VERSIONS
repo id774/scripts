@@ -3,8 +3,8 @@ scripts Repository Version History
 
 v2.0.2 (Release Date: TBD)
 --------------------------
-- Correct code-quality defects in local path/reference handling and
-  external-operation failure reporting across scripts and installers.
+- Correct code-quality defects in path/reference handling, external-operation
+  failure reporting, and Apache ignore-list fallback behavior.
 - Add luksmount.py for confirmed LUKS opening and mounting, and install it as
   luksmount with the Debian system administration scripts.
 - Harden tcmount.py against shell interpretation, preserve the legacy

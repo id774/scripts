@@ -93,11 +93,16 @@
 #  The script ignores IPs listed in apache_ignore.list, searched relative
 #  to this script's own directory, then /etc/cron.config (search order:
 #  <script_dir>/etc/, <script_dir>/../etc/, /etc/cron.config).
+#  An existing ignore-list candidate that cannot be read is reported with
+#  a warning, and lookup continues to the next configured location.
 #
 #  Requirements:
 #  - Python Version: 3.3 or later
 #
 #  Version History:
+#  v1.2 2026-09-20
+#       Report unreadable ignore-list candidates and continue with the
+#       configured fallback search without retaining partial data.
 #  v1.1 2026-07-31
 #       Recognize WordPress assets served from a WP_SITEURL subdirectory prefix,
 #       which the anchored asset patterns previously never matched.
@@ -343,11 +348,16 @@ def open_log_lines(path):
 
 def load_ignore_list():
     """
-    Load IP addresses to ignore, searching this script's own directory,
-    its parent directory, then /etc/cron.config, matching
-    apache_log_analysis.sh's dirname "$0"-based resolution so both tools
-    agree on which apache_ignore.list to use regardless of the caller's
-    current working directory. Falls back to 127.0.0.1 only.
+    Load IP addresses to ignore from the first readable candidate,
+    searching this script's own directory, its parent directory, then
+    /etc/cron.config, matching apache_log_analysis.sh's dirname "$0"-based
+    resolution so both tools agree on which apache_ignore.list to use
+    regardless of the caller's current working directory. Falls back to
+    127.0.0.1 only when no candidate is present or readable.
+
+    An existing candidate that cannot be read or decoded is reported with
+    a warning on stderr; its partially parsed IPs are discarded, and
+    lookup continues to the next candidate.
     """
     ignore_ips = set([IGNORE_DEFAULT_IP])
 
@@ -359,19 +369,28 @@ def load_ignore_list():
     ]
 
     for ignore_file in candidate_paths:
-        if os.path.isfile(ignore_file):
-            try:
-                with open(ignore_file, "r", encoding="utf-8") as f:
-                    for line in f:
-                        raw = line.split("#", 1)[0].strip()
-                        if not raw:
-                            continue
-                        ip = raw.split()[0]
-                        if ip:
-                            ignore_ips.add(ip)
-                break
-            except Exception:
-                continue
+        if not os.path.isfile(ignore_file):
+            continue
+
+        candidate_ips = set()
+        try:
+            with open(ignore_file, "r", encoding="utf-8") as f:
+                for line in f:
+                    raw = line.split("#", 1)[0].strip()
+                    if not raw:
+                        continue
+                    ip = raw.split()[0]
+                    if ip:
+                        candidate_ips.add(ip)
+        except (OSError, UnicodeError) as exc:
+            print(
+                "[WARN] Failed to read ignore list '%s': %s" % (ignore_file, str(exc)),
+                file=sys.stderr
+            )
+            continue
+
+        ignore_ips.update(candidate_ips)
+        break
 
     return ignore_ips
 

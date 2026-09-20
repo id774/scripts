@@ -40,8 +40,12 @@
 #    - Resolve the ignore list relative to the script directory.
 #    - Produce expected counts for the end-to-end fixture log.
 #    - Show usage information and fail on a missing log file.
+#    - Warn and fall back without retaining partial data when an ignore-list candidate cannot be decoded.
 #
 #  Version History:
+#  v1.2 2026-09-20
+#       Cover warning, fallback, and partial-data discard for unreadable
+#       ignore-list candidates.
 #  v1.1 2026-07-31
 #       Cover subdirectory WordPress installs, whose assets are served below the
 #       WP_SITEURL prefix, and align the fixture log with that layout.
@@ -436,6 +440,43 @@ class TestApacheBlogAnalysis(unittest.TestCase):
         self.assertEqual(
             self.counts_for_section(out.decode('utf-8'), "Blog Entry Access"),
             {"/2026/07/26/5128/": 1})
+
+    # -- Unreadable candidate warns, discards partial data, and falls back ------------
+    def test_ignore_list_warns_and_falls_back_after_decode_failure(self):
+        cron_exec_dir = os.path.join(self.tmp.name, "cron.exec")
+        cron_exec_etc_dir = os.path.join(cron_exec_dir, "etc")
+        etc_dir = os.path.join(self.tmp.name, "etc")
+        os.makedirs(cron_exec_etc_dir)
+        os.makedirs(etc_dir)
+
+        first_candidate = os.path.join(cron_exec_etc_dir, "apache_ignore.list")
+        second_candidate = os.path.join(etc_dir, "apache_ignore.list")
+
+        with open(first_candidate, "wb") as f:
+            f.write(b"203.0.113.10\n")
+            f.write(b"\xff\xfe invalid utf-8 line\n")
+
+        with open(second_candidate, "w", encoding="utf-8") as f:
+            f.write("203.0.113.11\n")
+
+        fake_script_path = os.path.join(cron_exec_dir, "apache_blog_analysis.py")
+
+        orig_file = blog.__file__
+        blog.__file__ = fake_script_path
+        try:
+            buf_err = io.StringIO()
+            with contextlib.redirect_stderr(buf_err):
+                result = self._orig_load_ignore_list()
+        finally:
+            blog.__file__ = orig_file
+
+        self.assertIn("127.0.0.1", result)
+        self.assertNotIn("203.0.113.10", result)
+        self.assertIn("203.0.113.11", result)
+
+        err_out = buf_err.getvalue()
+        self.assertIn("[WARN] Failed to read ignore list", err_out)
+        self.assertIn(first_candidate, err_out)
 
     # -- End-to-end run over the committed log fixture --------------------------------
     def test_fixture_end_to_end_counts(self):

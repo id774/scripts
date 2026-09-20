@@ -28,8 +28,12 @@
 #    - Skip malformed or empty log lines gracefully.
 #    - Format IP hit output as one IP per line with a header for human-readable display.
 #    - Print a clear "(no hits)" message when IP hit list is empty.
+#    - Warn and fall back without retaining partial data when an ignore-list candidate cannot be decoded.
 #
 #  Version History:
+#  v1.4 2026-09-20
+#       Cover warning, fallback, and partial-data discard for unreadable
+#       ignore-list candidates.
 #  v1.3 2026-01-09
 #       Add tests for multi-log aggregation and run() output.
 #       Add tests for clientCacheCounts() and calculatePercent().
@@ -55,6 +59,7 @@ import unittest
 # Adjust the path to import script from the parent directory
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import apache_calculater as calculator
 from apache_calculater import (ApacheCalculater, aggregateLogs,
                                calculatePercent, printIpHits, run)
 
@@ -257,6 +262,42 @@ class TestApacheCalculater(unittest.TestCase):
             printIpHits([])
         out = buf.getvalue().strip()
         self.assertEqual(out, "[INFO] IP Hits: (no hits)")
+
+    def test_ignore_list_warns_and_falls_back_after_decode_failure(self):
+        cron_exec_dir = os.path.join(self.tmp.name, "cron.exec")
+        cron_exec_etc_dir = os.path.join(cron_exec_dir, "etc")
+        etc_dir = os.path.join(self.tmp.name, "etc")
+        os.makedirs(cron_exec_etc_dir)
+        os.makedirs(etc_dir)
+
+        first_candidate = os.path.join(cron_exec_etc_dir, "apache_ignore.list")
+        second_candidate = os.path.join(etc_dir, "apache_ignore.list")
+
+        with open(first_candidate, "wb") as f:
+            f.write(b"203.0.113.10\n")
+            f.write(b"\xff\xfe invalid utf-8 line\n")
+
+        with open(second_candidate, "w", encoding="utf-8") as f:
+            f.write("203.0.113.11\n")
+
+        fake_script_path = os.path.join(cron_exec_dir, "apache_calculater.py")
+
+        orig_file = calculator.__file__
+        calculator.__file__ = fake_script_path
+        try:
+            buf_err = io.StringIO()
+            with contextlib.redirect_stderr(buf_err):
+                result = self._orig_load_ignore_list()
+        finally:
+            calculator.__file__ = orig_file
+
+        self.assertIn("127.0.0.1", result)
+        self.assertNotIn("203.0.113.10", result)
+        self.assertIn("203.0.113.11", result)
+
+        err_out = buf_err.getvalue()
+        self.assertIn("[WARN] Failed to read ignore list", err_out)
+        self.assertIn(first_candidate, err_out)
 
 
 if __name__ == '__main__':
