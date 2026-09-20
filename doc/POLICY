@@ -365,6 +365,9 @@ repository is already being edited.
 
 #### 1.3.3 Logging and Output
 - Use unified log prefixes: `[INFO]`, `[WARN]`, `[ERROR]`.
+- Do not add decorative symbols, status icons, check marks, arrows, progress
+  graphics, or similar embellishment to log messages. The established log
+  prefixes are sufficient.
 - A normal no-op or skip is not a warning merely because no work was performed.
   It may be silent. Use `[INFO]` when the normal result is useful to the
   operator, `[WARN]` for a degraded or otherwise abnormal but recoverable
@@ -560,31 +563,158 @@ never asked to touch.
   Shell Script policy; a Python or Ruby script that raises a privilege is
   bound by the same rule.
 
-#### 1.5.4 Installer Execution Model
-- Scripts under `installer/` are batch-oriented by default. Normal
-  installation and setup work should be able to run without an interactive
-  operator.
-- Do not add interactive confirmation to an established ordinary installation,
-  package update, configuration, or repeatable setup workflow merely as a
-  precaution.
-- Interactive confirmation is a safety tool for destructive, irreversible, or
-  high-impact operations. It is not mandatory for every operation in those
-  categories.
-- Changing an installer's interaction model is an observable behavior change
-  and must not be introduced as an incidental safety improvement.
-- When an installer performs multiple independent operations, failure of one
-  operation does not by itself prevent later independent operations from being
-  attempted. Report the failure and continue with work that can still be
-  performed safely.
-- A required prerequisite whose absence makes the requested work impossible,
-  or a condition that makes further execution unsafe, may still terminate the
-  installer before dependent work is performed.
-- Distinguish that prerequisite or safety failure from fail-fast handling of
-  an otherwise independent operation.
-- Preserve an installer's established continuation, ordering, interaction,
-  and side-effect behavior unless changing that behavior is explicitly part
-  of the requested work.
-- An installer must preserve log files during uninstallation.
+#### 1.5.4 Installer and Setup Execution Contracts
+
+Scripts under `installer/` do not share one execution model merely because
+they are installers or setup tools.
+
+Each script has its own execution contract, derived from its responsibility,
+the relationship between its operations, its documented interface, its
+history, and its established operational use.
+
+Do not force a script into the execution model of another installer merely
+because their names, locations, or individual commands are similar.
+
+Existing installer behaviors are examples of valid contracts, not a closed
+set of installer categories.
+
+##### 1.5.4.1 Contract Is Defined by Responsibility
+
+Before changing an installer or setup tool, establish the contract of that
+script itself.
+
+Do not infer failure handling, continuation, skip behavior, exit status, or
+reporting solely from:
+
+- the `installer/` directory;
+- an `install_` or `setup_` file name;
+- the number of commands it runs;
+- similarity to another installer;
+- a general preference for fail-fast or continue-on-failure behavior.
+
+When the current contract is unclear, establish it from the script's purpose,
+header, implementation, history, callers, and operational intent before
+changing behavior.
+
+A clear defect or regression is not preserved merely because it appears in
+the current implementation.
+
+##### 1.5.4.2 Required Contract Dimensions
+
+For each installer or setup tool, distinguish the following aspects.
+
+- Which prerequisites are required for the run as a whole.
+- Which capabilities are required only by individual operations.
+- Which operations are independent of one another.
+- Which operations depend on the successful result of earlier operations.
+- Which unavailable targets or capabilities are valid skips.
+- Which conditions make an operation fail.
+- Which failures stop only the affected logical operation.
+- Which failures stop the entire run.
+- Which later operations remain meaningful after an earlier failure.
+- What constitutes successful completion of the script as a whole.
+- What exit status represents that completion contract.
+- What information is useful enough to report to the operator.
+
+These aspects are separate decisions. Do not derive one mechanically from
+another.
+
+In particular:
+
+- reporting a failure does not automatically require terminating the run;
+- continuing the run does not automatically require returning failure later;
+- skipping work does not automatically constitute failure;
+- a non-zero child result does not automatically determine the parent's final
+  status;
+- reaching the end of a script does not automatically mean that every
+  operation succeeded.
+
+##### 1.5.4.3 Continuation and Dependency Boundaries
+
+Continue later work when it is independent, remains meaningful, and the
+script's contract permits continuation.
+
+Stop a dependent logical operation when a required earlier stage has failed
+and the later stage can no longer produce a correct or safe result.
+
+Do not continue into validation, activation, reload, replacement, or another
+dependent stage using an incomplete intermediate result.
+
+Do not introduce fail-fast behavior across independent operations merely as an
+error-handling improvement.
+
+Likewise, do not introduce continue-on-failure behavior across dependent
+operations merely to make a script traverse more steps.
+
+Keep the continuation boundary at the smallest logical operation that
+preserves the script's intended behavior.
+
+Changing an installer's interaction model is an observable behavior change and
+must not be introduced as an incidental safety improvement. Do not add
+interactive confirmation to an established ordinary installation, package
+update, configuration, or repeatable setup workflow merely as a precaution.
+
+##### 1.5.4.4 Skips and Partial Applicability
+
+An installer may legitimately operate in an environment where some optional or
+nonessential targets are absent.
+
+When absence affects only one optional or independent operation, the script may
+skip that operation according to its own contract and continue.
+
+A normal skip is not a failure merely because no work was performed.
+
+Do not promote an optional absence into a run-level prerequisite solely to make
+preflight validation more complete.
+
+Likewise, do not silently skip a resource that the script's contract requires
+for the requested operation.
+
+The distinction between required and skippable conditions belongs to the
+individual script contract.
+
+##### 1.5.4.5 Output and Reporting
+
+Keep installer output proportional to what an operator needs to understand the
+run.
+
+Do not add detailed result aggregation merely because individual operation
+statuses are available.
+
+Do not add failure counters, warning counters, skipped-item tables, result
+objects, summary frameworks, progress frameworks, retry frameworks, or similar
+machinery unless the script's actual operational contract requires them.
+
+A normal skip may be silent. When later review benefits from knowing what was
+not applied, use a short informational message.
+
+Do not report the same child failure again at the parent layer merely to state
+that execution will continue.
+
+The repository-wide logging rules in Section 1.3.3 apply without additional
+installer-specific decoration.
+
+##### 1.5.4.6 Established Contract and New Installers
+
+Preserve an established installer's continuation, skip, interaction, output,
+exit-status, ordering, and side-effect behavior unless changing that behavior
+is explicitly part of the work.
+
+When adding a new installer, define its execution contract from the operation
+being implemented rather than copying another installer by default.
+
+If an existing execution pattern is suitable, reuse it.
+
+If the new installer has materially different operational requirements, define
+the contract that fits those requirements instead of forcing it into an
+existing pattern.
+
+Do not expand this policy with a new installer category merely because one new
+script differs from existing scripts. Add a repository-wide rule only when the
+rule is reusable beyond that individual script.
+
+An uninstaller must preserve log files unless the individual tool's explicit
+contract states otherwise.
 
 ### 1.6 Documentation
 
