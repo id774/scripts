@@ -62,7 +62,9 @@
 #  - When the last history entry is this script invocation, deletion is
 #    applied to the preceding lines so that the invocation itself
 #    remains visible in history.
-#  - The file is updated atomically to avoid history corruption.
+#  - The file is updated atomically to avoid history corruption. Original
+#    history file permissions must be preserved on the temporary file
+#    before the replacement is performed.
 #  - Modifying ~/.zsh_history does not automatically update the in-memory
 #    history of already running shell sessions. Users may need to reload
 #    the history manually (for example: `fc -R ~/.zsh_history` or
@@ -97,10 +99,13 @@
 #
 #  Exit Status:
 #  0: Success, including no removable history lines, or help/version output.
-#  1: Missing history file, read/write failure, or user abort.
+#  1: Missing history file, read/write/permission-preservation failure, or user abort.
 #  2: Invalid arguments or invalid line-count request.
 #
 #  Version History:
+#  v1.4 2026-09-20
+#       Abort the atomic replacement when original history permissions cannot
+#       be preserved on the temporary file.
 #  v1.3 2026-09-08
 #       Use status 1 for a missing history file and return success without
 #       rewriting when no history lines are available to remove.
@@ -402,11 +407,8 @@ def erase_tail_lines(history_path, n, quiet):
             for line in keep_lines:
                 w.write(line)
 
-        try:
-            st = os.stat(history_path)
-            os.chmod(tmp_path, st.st_mode)
-        except Exception:
-            pass
+        st = os.stat(history_path)
+        os.chmod(tmp_path, st.st_mode)
 
         os.replace(tmp_path, history_path)
         tmp_path = None

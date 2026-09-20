@@ -22,7 +22,20 @@
 #  - Backup the existing database before running this script as a safety precaution.
 #  - The script requires sqlite3 to be installed on the system.
 #
+#  Requirements:
+#  - Commands: sqlite3, rm, mktemp
+#
+#  Exit Status:
+#  0: Database vacuum and optimized database creation completed.
+#  1: Database directory, SQLite, temporary-file, or cleanup operation failed.
+#  2: Fastladder database file does not exist.
+#  126: A required command exists but is not executable.
+#  127: A required command is not installed.
+#
 #  Version History:
+#  v2.0 2026-09-20
+#       Propagate SQLite and temporary-file failures while creating the
+#       optimized Fastladder database.
 #  v1.9 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -97,13 +110,44 @@ change_to_db_dir() {
 # Vacuum and optimize the database
 vacuum_and_optimize_db() {
     # Remove existing temporary database file if it exists
-    test -f new.db && rm -vf new.db
+    if [ -f new.db ]; then
+        if ! rm -vf new.db; then
+            echo "[ERROR] Failed to remove existing new.db." >&2
+            return 1
+        fi
+    fi
 
     # Vacuum the Fastladder SQLite database
-    sqlite3 "$DB_PATH" vacuum
+    if ! sqlite3 "$DB_PATH" vacuum; then
+        echo "[ERROR] Failed to vacuum Fastladder database." >&2
+        return 1
+    fi
 
-    # Dump the current database and create a new optimized database
-    sqlite3 fastladder.db .dump | sqlite3 new.db
+    # Dump the current database to a temporary file
+    dump_file="$(mktemp "$DB_DIR/.fastladder.dump.XXXXXX")" || {
+        echo "[ERROR] Failed to create temporary SQL dump file." >&2
+        return 1
+    }
+
+    if ! sqlite3 "$DB_PATH" .dump > "$dump_file"; then
+        echo "[ERROR] Failed to dump Fastladder database." >&2
+        rm -f "$dump_file"
+        return 1
+    fi
+
+    # Import the dump into a new optimized database
+    if ! sqlite3 new.db < "$dump_file"; then
+        echo "[ERROR] Failed to create optimized Fastladder database." >&2
+        rm -f "$dump_file"
+        return 1
+    fi
+
+    if ! rm -f "$dump_file"; then
+        echo "[ERROR] Failed to remove temporary SQL dump file." >&2
+        return 1
+    fi
+
+    return 0
 }
 
 # Main entry point of the script
@@ -112,11 +156,11 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
-    check_commands sqlite3 rm
+    check_commands sqlite3 rm mktemp
     check_database
     change_to_db_dir
     vacuum_and_optimize_db
-    return 0
+    return $?
 }
 
 # Execute main function

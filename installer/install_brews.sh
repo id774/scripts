@@ -24,7 +24,7 @@
 #
 #  Exit Status:
 #  0: Success - The batch workflow completed.
-#  1: Error - macOS or Homebrew prerequisite validation failed.
+#  1: Error - macOS validation failed.
 #  126: Error - A required command exists but is not executable.
 #  127: Error - A required command is not found.
 #
@@ -34,8 +34,14 @@
 #  - Force-links OpenSSL to ensure compatibility with applications requiring
 #    the latest version.
 #  - `trash` is installed for safer file deletions, replacing `rm`.
+#  - This is a batch installer. A Homebrew update, package install, link, or
+#    cleanup failure is reported, but does not prevent later independent
+#    operations from being attempted.
 #
 #  Version History:
+#  v1.9 2026-09-20
+#       Align Homebrew prerequisite and best-effort batch handling with the
+#       established package-installer contract.
 #  v1.8 2026-09-07
 #       Check uname before system detection and clarify batch completion.
 #  v1.7 2026-07-11
@@ -95,12 +101,13 @@ check_commands() {
     done
 }
 
-# Check if Homebrew is installed
-check_homebrew() {
-    if ! command -v brew >/dev/null 2>&1; then
-        echo "[ERROR] Homebrew is not installed. Please install Homebrew first." >&2
-        exit 1
+# Install a single Homebrew package, continuing on failure
+install_brew() {
+    echo "[INFO] Installing $1..."
+    if ! brew install "$1"; then
+        echo "[WARN] Failed to install $1; continuing." >&2
     fi
+    return 0
 }
 
 # Main entry point of the script
@@ -110,39 +117,47 @@ main() {
     esac
 
     check_system
-    check_homebrew
+    check_commands brew
 
     # Check Homebrew environment
     echo "[INFO] Running 'brew doctor' to check the system's Homebrew environment..."
-    brew doctor
+    if ! brew doctor; then
+        echo "[WARN] brew doctor failed; continuing." >&2
+    fi
 
     # Update Homebrew
     echo "[INFO] Updating Homebrew packages..."
-    brew update
+    if ! brew update; then
+        echo "[WARN] brew update failed; continuing." >&2
+    fi
 
     # Install essential tools and libraries
     echo "[INFO] Installing essential tools and libraries using Homebrew..."
-    brew install openssl
-    brew link openssl --force
-    brew install wget
-    brew install nkf
-    brew install vim
-    brew install nvim
-    brew install freetype
-    brew install rsync
-    brew install smartmontools
-    brew install mecab
-    brew install cabocha
-    brew install ta-lib
-    brew install trash
-    brew install coreutils
-    brew install findutils
-    brew install moreutils
-    brew install binutils
+    install_brew openssl
+    if ! brew link openssl --force; then
+        echo "[WARN] Failed to link openssl; continuing." >&2
+    fi
+    install_brew wget
+    install_brew nkf
+    install_brew vim
+    install_brew nvim
+    install_brew freetype
+    install_brew rsync
+    install_brew smartmontools
+    install_brew mecab
+    install_brew cabocha
+    install_brew ta-lib
+    install_brew trash
+    install_brew coreutils
+    install_brew findutils
+    install_brew moreutils
+    install_brew binutils
 
     # Cleanup old versions and caches to free up disk space
     echo "[INFO] Cleaning up old versions and caches..."
-    brew cleanup
+    if ! brew cleanup; then
+        echo "[WARN] brew cleanup failed; continuing." >&2
+    fi
 
     echo "[INFO] All specified brew packages have been installed."
     return 0

@@ -27,7 +27,15 @@
 #  Requirements:
 #  - Python Version: 3.1 or later
 #
+#  Exit Status:
+#  0: User shell enumeration completed.
+#  1: Platform user-shell source retrieval or decoding failed.
+#  9: Unsupported Python version.
+#
 #  Version History:
+#  v1.9 2026-09-20
+#       Return failure for user-source errors while continuing expected
+#       per-user UserShell omissions on macOS.
 #  v1.8 2026-07-08
 #       Specify UTF-8 encoding when reading /etc/passwd.
 #  v1.7 2025-08-06
@@ -81,6 +89,7 @@ def usage():
 
 
 def get_shells_from_passwd():
+    """ Return (shells, status); status is 1 on read/decode failure. """
     shells = {}
     try:
         with open("/etc/passwd", 'r', encoding='utf-8') as fo:
@@ -89,28 +98,41 @@ def get_shells_from_passwd():
                 fields = line.split(":")
                 if len(fields) >= 7:
                     shells[fields[0]] = fields[-1]
-    except Exception as e:
-        print("Error reading /etc/passwd: %s" % str(e), file=sys.stderr)
-    return shells
+    except (OSError, UnicodeError) as e:
+        print("[ERROR] Failed to read /etc/passwd: %s" % str(e), file=sys.stderr)
+        return {}, 1
+    return shells, 0
 
 
 def get_shells_from_dscl():
+    """ Return (shells, status); status is 1 on source retrieval/decode failure. """
     shells = {}
+    status = 0
     try:
         users = subprocess.check_output(
             ['dscl', '.', '-list', '/Users']).decode('utf-8').splitlines()
-        for user in users:
-            try:
-                shell_output = subprocess.check_output(
-                    ['dscl', '.', '-read', '/Users/' + user, 'UserShell']
-                ).decode('utf-8').strip().split()
-                if len(shell_output) >= 2:
-                    shells[user] = shell_output[1]
-            except Exception:
-                continue
-    except Exception as e:
-        print("Error retrieving user list from dscl: %s" % str(e), file=sys.stderr)
-    return shells
+    except (subprocess.CalledProcessError, OSError, UnicodeError) as e:
+        print("[ERROR] Failed to retrieve user list from dscl: %s" % str(e),
+              file=sys.stderr)
+        return {}, 1
+
+    for user in users:
+        try:
+            shell_output = subprocess.check_output(
+                ['dscl', '.', '-read', '/Users/' + user, 'UserShell']
+            ).decode('utf-8').strip().split()
+            if len(shell_output) >= 2:
+                shells[user] = shell_output[1]
+        except subprocess.CalledProcessError:
+            # UserShell attribute not present for this account; expected skip.
+            continue
+        except (OSError, UnicodeError) as e:
+            print("[ERROR] Failed to retrieve UserShell for %s: %s" % (user, str(e)),
+                  file=sys.stderr)
+            status = 1
+            continue
+
+    return shells, status
 
 
 def main():
@@ -119,7 +141,10 @@ def main():
     colon_format = '--colon' in args or '-c' in args
 
     os_type = platform.system()
-    shells = get_shells_from_dscl() if os_type == 'Darwin' else get_shells_from_passwd()
+    if os_type == 'Darwin':
+        shells, status = get_shells_from_dscl()
+    else:
+        shells, status = get_shells_from_passwd()
 
     for account, shell in shells.items():
         if all(x not in shell for x in ['false', 'nologin', 'sync', 'shutdown', 'halt']):
@@ -130,7 +155,7 @@ def main():
             else:
                 print("{0:11} => {1}".format(account, shell))
 
-    return 0
+    return status
 
 
 if __name__ == '__main__':
