@@ -26,6 +26,9 @@
 #    "01 03 * * 0   root cd / && run-parts --report /etc/cron.weekend"
 #
 #  Version History:
+#  v1.8 2026-09-20
+#       Remove false no-change reporting and use neutral completion after
+#       independent cron directory and entry processing.
 #  v1.7 2026-09-20
 #       Avoid false success messages for cron directory and entry failures
 #       while continuing independent weekday and weekend setup.
@@ -53,9 +56,6 @@ CRONTAB_FILE="/etc/crontab"
 # Cron job entries to check and add if missing
 WEEKDAY_ENTRY="01 03 * * 1-6 root cd / && run-parts --report /etc/cron.weekday"
 WEEKEND_ENTRY="01 03 * * 0   root cd / && run-parts --report /etc/cron.weekend"
-
-# Track changes
-CHANGES_MADE=0
 
 # Display full script header information extracted from the top comment block
 usage() {
@@ -120,7 +120,6 @@ add_entry() {
     if ! extract_and_check_command "$entry"; then
         if printf "%s\n" "$entry" | sudo tee -a "$CRONTAB_FILE" > /dev/null; then
             echo "[INFO] Added entry: $entry"
-            CHANGES_MADE=1
         else
             echo "[ERROR] Failed to add crontab entry: $entry" >&2
             return 1
@@ -156,13 +155,8 @@ main() {
     create_directories
     add_entry "$WEEKDAY_ENTRY" /etc/cron.weekday
     add_entry "$WEEKEND_ENTRY" /etc/cron.weekend
-    if [ "$CHANGES_MADE" -eq 1 ]; then
-        echo "[INFO] Crontab setup completed."
-        return 0
-    else
-        echo "[INFO] No changes were made. Everything is already set up."
-        return 0
-    fi
+    echo "[INFO] Crontab setup processing completed."
+    return 0
 }
 
 # Execute main function

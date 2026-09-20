@@ -66,6 +66,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v2.5 2026-09-20
+#       Require optional dotfile and shell commands to resolve to executable
+#       paths before selecting the corresponding setup operation.
 #  v2.4 2026-09-20
 #       Keep local dotfile and monitoring failures from terminating unrelated
 #       Debian setup steps, and localize optional prerequisites.
@@ -141,6 +144,12 @@ setup_environment() {
     fi
 }
 
+# Check whether an optional command resolves to an executable path
+command_is_usable() {
+    optional_cmd_path=$(command -v "$1" 2>/dev/null)
+    [ -n "$optional_cmd_path" ] && [ -x "$optional_cmd_path" ]
+}
+
 # Check if the user has sudo privileges
 check_sudo() {
     check_commands sudo
@@ -161,7 +170,7 @@ safe_symlink() {
     fi
 
     # Fast path if readlink exists and already correct
-    if command -v readlink >/dev/null 2>&1 && [ -L "$link" ]; then
+    if command_is_usable readlink && [ -L "$link" ]; then
         tgt="$(readlink "$link" 2>/dev/null || echo)"
         if [ "$tgt" = "$src" ]; then
             echo "[INFO] Unchanged: $link -> $src"
@@ -188,8 +197,8 @@ safe_symlink() {
 
 # Set zsh as the default shell for the user and root
 set_zsh_to_default() {
-    if [ ! -x /bin/zsh ] || ! command -v getent >/dev/null 2>&1 || \
-       ! command -v cut >/dev/null 2>&1 || ! command -v chsh >/dev/null 2>&1; then
+    if [ ! -x /bin/zsh ] || ! command_is_usable getent || \
+       ! command_is_usable cut || ! command_is_usable chsh; then
         echo "[INFO] Skipping default shell setup: a required command is not available."
         return 0
     fi
@@ -219,7 +228,7 @@ install_dot_zsh() {
     fi
 
     if [ ! -d "dot_zsh" ]; then
-        if ! command -v git >/dev/null 2>&1; then
+        if ! command_is_usable git; then
             echo "[INFO] Skipping dot_zsh setup: 'git' is not available."
             return 0
         fi
@@ -228,7 +237,7 @@ install_dot_zsh() {
             return 1
         fi
     else
-        if [ -d "dot_zsh/.git" ] && command -v git >/dev/null 2>&1; then
+        if [ -d "dot_zsh/.git" ] && command_is_usable git; then
             if ! (cd dot_zsh && git pull); then
                 echo "[ERROR] Failed to update dot_zsh." >&2
             fi
@@ -244,14 +253,14 @@ install_dot_zsh() {
 }
 
 install_dot_vim() {
-    if command -v vim >/dev/null 2>&1; then
+    if command_is_usable vim; then
         "$SCRIPTS/installer/install_dotvim.sh"
     fi
 }
 
 install_dot_emacs() {
-    if [ ! -d "$HOME/local/github/dot_emacs" ] && [ ! -d "/usr/local/etc/emacs.d/elisp" ] && command -v emacs >/dev/null 2>&1; then
-        if ! command -v git >/dev/null 2>&1; then
+    if [ ! -d "$HOME/local/github/dot_emacs" ] && [ ! -d "/usr/local/etc/emacs.d/elisp" ] && command_is_usable emacs; then
+        if ! command_is_usable git; then
             echo "[INFO] Skipping dot_emacs setup: 'git' is not available."
             return 0
         fi
@@ -311,7 +320,7 @@ setup_munin() {
 
     if [ "$plugin_ready" -eq 1 ]; then
         if [ ! -d "munin-plugins" ]; then
-            if ! command -v git >/dev/null 2>&1; then
+            if ! command_is_usable git; then
                 echo "[INFO] Skipping munin-plugins setup: 'git' is not available."
                 plugin_ready=0
             elif ! git clone https://github.com/id774/munin-plugins.git; then
@@ -319,7 +328,7 @@ setup_munin() {
                 plugin_ready=0
             fi
         else
-            if [ -d "munin-plugins/.git" ] && command -v git >/dev/null 2>&1; then
+            if [ -d "munin-plugins/.git" ] && command_is_usable git; then
                 if ! (cd munin-plugins && git pull); then
                     echo "[ERROR] Failed to update munin-plugins." >&2
                 fi

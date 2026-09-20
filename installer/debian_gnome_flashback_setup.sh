@@ -45,6 +45,9 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
+#  v2.7 2026-09-20
+#       Localize dconf and file-install capabilities while keeping gsettings
+#       as the run-level Flashback settings prerequisite.
 #  v2.6 2026-09-20
 #       Continue independent Flashback settings after local failures and align
 #       prerequisite ownership and normal-skip reporting.
@@ -118,12 +121,18 @@ check_commands() {
     done
 }
 
+# Check whether an optional command resolves to an executable path
+command_is_usable() {
+    optional_cmd_path=$(command -v "$1" 2>/dev/null)
+    [ -n "$optional_cmd_path" ] && [ -x "$optional_cmd_path" ]
+}
+
 # Check if a desktop environment is installed (Debian/Ubuntu)
 check_desktop_installed() {
     check_commands grep ls
 
     # Prefer tasksel if available
-    if command -v tasksel >/dev/null 2>&1; then
+    if command_is_usable tasksel; then
         if LC_ALL=C tasksel --list-tasks | grep -q '^i.*desktop'; then
             echo "[INFO] Desktop environment detected via tasksel."
             return 0
@@ -301,6 +310,11 @@ dconf_load_settings() {
 
 # Import GNOME keybindings (media keys and WM bindings)
 import_gnome_keybindings() {
+    if ! command_is_usable dconf; then
+        echo "[INFO] Skipping GNOME keybinding import because dconf is not usable."
+        return 0
+    fi
+
     dconf_load_settings "/org/gnome/settings-daemon/plugins/media-keys/" "$SCRIPTS/etc/gnome/gnome-shortcuts.conf"
     dconf_load_settings "/org/gnome/desktop/wm/keybindings/" "$SCRIPTS/etc/gnome/gnome-wm-keys.conf"
 }
@@ -311,6 +325,11 @@ import_gnome_keybindings() {
 install_xfce4_terminal_profile() {
     dst="$HOME/.config/xfce4/terminal"
     src="$SCRIPTS/etc/xfce/terminalrc"
+
+    if ! command_is_usable mkdir || ! command_is_usable cp; then
+        echo "[ERROR] Cannot install the terminal profile because mkdir or cp is not usable." >&2
+        return 1
+    fi
 
     if [ ! -r "$src" ]; then
         echo "[ERROR] terminalrc not found: $src" >&2
@@ -333,6 +352,11 @@ install_xfce4_terminal_profile() {
 install_xmodmap_autostart() {
     dst="$HOME/.config/autostart"
     src="$SCRIPTS/dot_files/dot_config/autostart/xmodmap.desktop"
+
+    if ! command_is_usable mkdir || ! command_is_usable cp || ! command_is_usable chmod; then
+        echo "[ERROR] Cannot install the xmodmap autostart entry because mkdir, cp, or chmod is not usable." >&2
+        return 1
+    fi
 
     if [ ! -r "$src" ]; then
         echo "[ERROR] xmodmap.desktop not found: $src" >&2
@@ -361,6 +385,11 @@ install_xmodmap_autostart() {
 
 # Ask user whether to reset gnome-panel
 reset_gnome_panel() {
+    if ! command_is_usable dconf; then
+        echo "[INFO] Skipping gnome-panel reset because dconf is not usable."
+        return 0
+    fi
+
     printf "[INFO] Do you want to reset gnome-panel? [y/N]: "
     read -r response < /dev/tty
 
@@ -406,7 +435,7 @@ main() {
     check_scripts
     check_session_bus
     check_desktop_installed
-    check_commands gsettings dconf mkdir cp chmod
+    check_commands gsettings
 
     confirm_apply_settings
 

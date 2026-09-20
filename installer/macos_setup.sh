@@ -52,6 +52,9 @@
 #  - Exits if sudo privileges are not granted.
 #
 #  Version History:
+#  v2.4 2026-09-20
+#       Require optional dotfile commands to resolve to executable paths before
+#       selecting the corresponding macOS setup operation.
 #  v2.3 2026-09-20
 #       Keep local dotfile setup failures from terminating unrelated macOS
 #       setup steps and localize optional prerequisites.
@@ -115,6 +118,12 @@ setup_environment() {
     fi
 }
 
+# Check whether an optional command resolves to an executable path
+command_is_usable() {
+    optional_cmd_path=$(command -v "$1" 2>/dev/null)
+    [ -n "$optional_cmd_path" ] && [ -x "$optional_cmd_path" ]
+}
+
 # Check if the user has sudo privileges
 check_sudo() {
     check_commands sudo
@@ -140,7 +149,7 @@ install_dot_zsh() {
     fi
 
     if [ ! -d "dot_zsh" ]; then
-        if ! command -v git >/dev/null 2>&1; then
+        if ! command_is_usable git; then
             echo "[INFO] Skipping dot_zsh setup: 'git' is not available."
             return 0
         fi
@@ -149,7 +158,7 @@ install_dot_zsh() {
             return 1
         fi
     else
-        if [ -d "dot_zsh/.git" ] && command -v git >/dev/null 2>&1; then
+        if [ -d "dot_zsh/.git" ] && command_is_usable git; then
             if ! (cd dot_zsh && git pull); then
                 echo "[ERROR] Failed to update dot_zsh." >&2
             fi
@@ -165,14 +174,14 @@ install_dot_zsh() {
 }
 
 install_dot_vim() {
-    if command -v vim >/dev/null 2>&1; then
+    if command_is_usable vim; then
         "$SCRIPTS/installer/install_dotvim.sh"
     fi
 }
 
 install_dot_emacs() {
-    if [ ! -d "$HOME/local/github/dot_emacs" ] && [ ! -d "/usr/local/etc/emacs.d/elisp" ] && command -v emacs >/dev/null 2>&1; then
-        if ! command -v git >/dev/null 2>&1; then
+    if [ ! -d "$HOME/local/github/dot_emacs" ] && [ ! -d "/usr/local/etc/emacs.d/elisp" ] && command_is_usable emacs; then
+        if ! command_is_usable git; then
             echo "[INFO] Skipping dot_emacs setup: 'git' is not available."
             return 0
         fi
