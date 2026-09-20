@@ -66,6 +66,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v2.4 2026-09-20
+#       Keep local dotfile and monitoring failures from terminating unrelated
+#       Debian setup steps, and localize optional prerequisites.
 #  v2.3 2026-09-06
 #       Check uname before using it for system detection.
 #  v2.2 2026-07-11
@@ -185,6 +188,12 @@ safe_symlink() {
 
 # Set zsh as the default shell for the user and root
 set_zsh_to_default() {
+    if [ ! -x /bin/zsh ] || ! command -v getent >/dev/null 2>&1 || \
+       ! command -v cut >/dev/null 2>&1 || ! command -v chsh >/dev/null 2>&1; then
+        echo "[INFO] Skipping default shell setup: a required command is not available."
+        return 0
+    fi
+
     if [ "$(getent passwd "$USER" | cut -d: -f7)" != "/bin/zsh" ]; then
         chsh -s /bin/zsh
     fi
@@ -200,19 +209,36 @@ install_dot_files() {
 }
 
 install_dot_zsh() {
-    test -d "$HOME/local/github" || mkdir -p "$HOME/local/github"
-    cd "$HOME/local/github" || exit 1
+    if [ ! -d "$HOME/local/github" ] && ! mkdir -p "$HOME/local/github"; then
+        echo "[ERROR] Failed to create $HOME/local/github." >&2
+        return 1
+    fi
+    if ! cd "$HOME/local/github"; then
+        echo "[ERROR] Failed to change directory to $HOME/local/github." >&2
+        return 1
+    fi
 
     if [ ! -d "dot_zsh" ]; then
-        git clone https://github.com/id774/dot_zsh.git
+        if ! command -v git >/dev/null 2>&1; then
+            echo "[INFO] Skipping dot_zsh setup: 'git' is not available."
+            return 0
+        fi
+        if ! git clone https://github.com/id774/dot_zsh.git; then
+            echo "[ERROR] Failed to clone dot_zsh." >&2
+            return 1
+        fi
     else
-        cd dot_zsh || exit 1
-        if [ -d ".git" ]; then
-            git pull
+        if [ -d "dot_zsh/.git" ] && command -v git >/dev/null 2>&1; then
+            if ! (cd dot_zsh && git pull); then
+                echo "[ERROR] Failed to update dot_zsh." >&2
+            fi
         fi
     fi
 
-    cd "$HOME/local/github/dot_zsh" || exit 1
+    if ! cd "$HOME/local/github/dot_zsh"; then
+        echo "[ERROR] Failed to change directory to $HOME/local/github/dot_zsh." >&2
+        return 1
+    fi
     safe_symlink "$HOME/local/github/dot_zsh" "$HOME/dot_zsh"
     "$HOME/local/github/dot_zsh/install_dotzsh.sh"
 }
@@ -225,10 +251,23 @@ install_dot_vim() {
 
 install_dot_emacs() {
     if [ ! -d "$HOME/local/github/dot_emacs" ] && [ ! -d "/usr/local/etc/emacs.d/elisp" ] && command -v emacs >/dev/null 2>&1; then
-        test -d "$HOME/local/github" || mkdir -p "$HOME/local/github"
-        cd "$HOME/local/github" || exit 1
-        git clone https://github.com/id774/dot_emacs.git
-        cd || exit 1
+        if ! command -v git >/dev/null 2>&1; then
+            echo "[INFO] Skipping dot_emacs setup: 'git' is not available."
+            return 0
+        fi
+
+        if [ ! -d "$HOME/local/github" ] && ! mkdir -p "$HOME/local/github"; then
+            echo "[ERROR] Failed to create $HOME/local/github." >&2
+            return 1
+        fi
+        if ! cd "$HOME/local/github"; then
+            echo "[ERROR] Failed to change directory to $HOME/local/github." >&2
+            return 1
+        fi
+        if ! git clone https://github.com/id774/dot_emacs.git; then
+            echo "[ERROR] Failed to clone dot_emacs." >&2
+            return 1
+        fi
         safe_symlink "$HOME/local/github/dot_emacs" "$HOME/dot_emacs"
         "$HOME/local/github/dot_emacs/install_dotemacs.sh"
     fi
@@ -258,19 +297,40 @@ setup_clamscan() {
 }
 
 setup_munin() {
-    test -d "$HOME/local/github" || mkdir -p "$HOME/local/github"
-    cd "$HOME/local/github" || exit 1
+    plugin_ready=1
 
-    if [ ! -d "munin-plugins" ]; then
-        git clone https://github.com/id774/munin-plugins.git
-    else
-        cd munin-plugins || exit 1
-        if [ -d ".git" ]; then
-            git pull
+    if [ ! -d "$HOME/local/github" ] && ! mkdir -p "$HOME/local/github"; then
+        echo "[ERROR] Failed to create $HOME/local/github." >&2
+        plugin_ready=0
+    fi
+
+    if [ "$plugin_ready" -eq 1 ] && ! cd "$HOME/local/github"; then
+        echo "[ERROR] Failed to change directory to $HOME/local/github." >&2
+        plugin_ready=0
+    fi
+
+    if [ "$plugin_ready" -eq 1 ]; then
+        if [ ! -d "munin-plugins" ]; then
+            if ! command -v git >/dev/null 2>&1; then
+                echo "[INFO] Skipping munin-plugins setup: 'git' is not available."
+                plugin_ready=0
+            elif ! git clone https://github.com/id774/munin-plugins.git; then
+                echo "[ERROR] Failed to clone munin-plugins." >&2
+                plugin_ready=0
+            fi
+        else
+            if [ -d "munin-plugins/.git" ] && command -v git >/dev/null 2>&1; then
+                if ! (cd munin-plugins && git pull); then
+                    echo "[ERROR] Failed to update munin-plugins." >&2
+                fi
+            fi
         fi
     fi
-    safe_symlink "$HOME/local/github/munin-plugins" "$HOME/munin-plugins"
-    "$HOME/local/github/munin-plugins/install_process_monitoring.sh"
+
+    if [ "$plugin_ready" -eq 1 ]; then
+        safe_symlink "$HOME/local/github/munin-plugins" "$HOME/munin-plugins"
+        "$HOME/local/github/munin-plugins/install_process_monitoring.sh"
+    fi
 
     "$SCRIPTS/installer/install_munin.sh"
 }
@@ -323,7 +383,6 @@ main() {
 
     check_system
     setup_environment
-    check_commands zsh git cut getent ln rm chown chsh mkdir
     check_sudo
     set_zsh_to_default
     install_dot_files
@@ -342,7 +401,7 @@ main() {
     configure_sysctl
     erase_history
 
-    echo "[INFO] All Debian setup completed."
+    echo "[INFO] Debian setup completed."
     return 0
 }
 

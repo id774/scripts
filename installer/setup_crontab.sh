@@ -26,6 +26,9 @@
 #    "01 03 * * 0   root cd / && run-parts --report /etc/cron.weekend"
 #
 #  Version History:
+#  v1.7 2026-09-20
+#       Avoid false success messages for cron directory and entry failures
+#       while continuing independent weekday and weekend setup.
 #  v1.6 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -106,11 +109,22 @@ extract_and_check_command() {
 # Add an entry to crontab if it does not exist
 add_entry() {
     entry="$1"
+    required_dir="$2"
+
+    if [ ! -d "$required_dir" ]; then
+        echo "[ERROR] Required cron directory is unavailable: $required_dir" >&2
+        return 1
+    fi
+
     echo "[INFO] Verifying crontab entry for: $entry"
     if ! extract_and_check_command "$entry"; then
-        printf "%s\n" "$entry" | sudo tee -a "$CRONTAB_FILE" > /dev/null
-        echo "[INFO] Added entry: $entry"
-        CHANGES_MADE=1
+        if printf "%s\n" "$entry" | sudo tee -a "$CRONTAB_FILE" > /dev/null; then
+            echo "[INFO] Added entry: $entry"
+            CHANGES_MADE=1
+        else
+            echo "[ERROR] Failed to add crontab entry: $entry" >&2
+            return 1
+        fi
     else
         echo "[INFO] Entry already exists based on command. No changes made."
     fi
@@ -121,8 +135,11 @@ create_directories() {
     echo "[INFO] Ensuring cron directories exist..."
     for dir in /etc/cron.weekday /etc/cron.weekend; do
         if [ ! -d "$dir" ]; then
-            sudo mkdir -p "$dir"
-            echo "[INFO] Created directory: $dir"
+            if sudo mkdir -p "$dir"; then
+                echo "[INFO] Created directory: $dir"
+            else
+                echo "[ERROR] Failed to create directory: $dir" >&2
+            fi
         fi
     done
 }
@@ -137,8 +154,8 @@ main() {
     check_commands grep mkdir tee cut
     check_sudo
     create_directories
-    add_entry "$WEEKDAY_ENTRY"
-    add_entry "$WEEKEND_ENTRY"
+    add_entry "$WEEKDAY_ENTRY" /etc/cron.weekday
+    add_entry "$WEEKEND_ENTRY" /etc/cron.weekend
     if [ "$CHANGES_MADE" -eq 1 ]; then
         echo "[INFO] Crontab setup completed."
         return 0

@@ -20,6 +20,9 @@
 #  - The `$SCRIPTS` environment variable must be set.
 #
 #  Version History:
+#  v1.5 2026-09-20
+#       Stop dependent APT configuration steps when deployment, permission,
+#       or ownership setup fails.
 #  v1.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -92,9 +95,19 @@ check_sudo() {
 # Deploy the apt.conf file
 deploy_aptconf() {
     echo "[INFO] Deploying apt.conf..."
-    sudo cp -v "$SCRIPTS/etc/apt.conf" /etc/apt/apt.conf
-    sudo chmod 0644 /etc/apt/apt.conf
-    sudo chown root:root /etc/apt/apt.conf
+    if ! sudo cp -v "$SCRIPTS/etc/apt.conf" /etc/apt/apt.conf; then
+        echo "[ERROR] Failed to deploy /etc/apt/apt.conf." >&2
+        return 1
+    fi
+    if ! sudo chmod 0644 /etc/apt/apt.conf; then
+        echo "[ERROR] Failed to set permissions on /etc/apt/apt.conf." >&2
+        return 1
+    fi
+    if ! sudo chown root:root /etc/apt/apt.conf; then
+        echo "[ERROR] Failed to set ownership on /etc/apt/apt.conf." >&2
+        return 1
+    fi
+    return 0
 }
 
 # Allow manual editing of apt.conf
@@ -114,7 +127,7 @@ main() {
     check_scripts
     check_sudo
 
-    deploy_aptconf
+    deploy_aptconf || return 1
     edit_aptconf
 
     echo "[INFO] APT configuration setup completed successfully."

@@ -30,6 +30,9 @@
 #  - Exits if not running on Linux.
 #
 #  Version History:
+#  v1.7 2026-09-20
+#       Stop iptables setup when package provisioning or rules deployment
+#       fails instead of continuing into dependent activation steps.
 #  v1.6 2026-09-11
 #       Allow iptables-persistent installation to provide iptables-restore
 #       before its first use.
@@ -104,10 +107,22 @@ check_commands() {
 install_persistent() {
     if ! dpkg -s iptables-persistent >/dev/null 2>&1; then
         echo "[INFO] Installing iptables-persistent..."
-        echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections
-        echo iptables-persistent iptables-persistent/autosave_v6 boolean false | sudo debconf-set-selections
-        sudo apt-get update
-        sudo apt-get install -y iptables-persistent
+        if ! echo iptables-persistent iptables-persistent/autosave_v4 boolean true | sudo debconf-set-selections; then
+            echo "[ERROR] Failed to preseed the iptables-persistent IPv4 selection." >&2
+            return 1
+        fi
+        if ! echo iptables-persistent iptables-persistent/autosave_v6 boolean false | sudo debconf-set-selections; then
+            echo "[ERROR] Failed to preseed the iptables-persistent IPv6 selection." >&2
+            return 1
+        fi
+        if ! sudo apt-get update; then
+            echo "[ERROR] Failed to update the package index." >&2
+            return 1
+        fi
+        if ! sudo apt-get install -y iptables-persistent; then
+            echo "[ERROR] Failed to install iptables-persistent." >&2
+            return 1
+        fi
     else
         echo "[INFO] iptables-persistent already installed."
     fi
@@ -119,12 +134,21 @@ install_persistent() {
 apply_template_if_needed() {
     if [ ! -f "$RULES_PATH" ]; then
         echo "[INFO] Copying template to $RULES_PATH."
-        sudo mkdir -p "$(dirname "$RULES_PATH")"
-        sudo cp "$TEMPLATE_PATH" "$RULES_PATH"
+        if ! sudo mkdir -p "$(dirname "$RULES_PATH")"; then
+            echo "[ERROR] Failed to create $(dirname "$RULES_PATH")." >&2
+            return 1
+        fi
+        if ! sudo cp "$TEMPLATE_PATH" "$RULES_PATH"; then
+            echo "[ERROR] Failed to copy $TEMPLATE_PATH to $RULES_PATH." >&2
+            return 1
+        fi
     else
         echo "[INFO] $RULES_PATH already exists, skipping copy."
     fi
-    sudo chmod 0400 "$RULES_PATH"
+    if ! sudo chmod 0400 "$RULES_PATH"; then
+        echo "[ERROR] Failed to set permissions on $RULES_PATH." >&2
+        return 1
+    fi
 }
 
 # Load rules into the running kernel
@@ -172,8 +196,8 @@ main() {
     TEMPLATE_PATH="$SCRIPTS/etc/iptables/rules.v4"
     RULES_PATH="/etc/iptables/rules.v4"
 
-    install_persistent
-    apply_template_if_needed
+    install_persistent || return 1
+    apply_template_if_needed || return 1
     load_rules
     enable_restore
     final_message

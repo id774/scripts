@@ -20,7 +20,7 @@
 #          (iptables, PAM, securetty, rsyslog cron, chkrootkit opts),
 #          user env (crontab, aliases, MOTD), IPython dotfiles,
 #          permissions fixes and sysctl apply, cleanup of shell history
-#    - (Optional) Desktop provisioning:
+#    - (Optional) Desktop packages and settings:
 #        * Desktop packages (debian_desktop_apt.sh) and DE specific settings
 #          (debian_desktop_setup.sh) can be included by passing a desktop option.
 #
@@ -52,6 +52,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v6.4 2026-09-20
+#       Clarify desktop setup scope and keep broad initial setup completion
+#       independent of individual child-script results.
 #  v6.3 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -155,7 +158,7 @@ confirm_execution() {
     echo "  - Install large sets of packages (tools, languages, databases, editors, etc.)"
     echo "  - Apply system customizations (shells, dotfiles, security configs, monitoring)"
     if [ -n "$DESKTOP_OPTION" ]; then
-        echo "  - Install and configure desktop environment: $DESKTOP_OPTION"
+        echo "  - Apply desktop packages and desktop-specific settings: $DESKTOP_OPTION"
     else
         echo "  - Desktop provisioning is skipped (server-safe minimal setup)"
     fi
@@ -239,7 +242,7 @@ main() {
         "$SCRIPTS/installer/debian_desktop_setup.sh" "$DESKTOP_OPTION"
     fi
 
-    echo "[INFO] All Debian initial setup completed successfully."
+    echo "[INFO] Debian initial setup completed."
     return 0
 }
 

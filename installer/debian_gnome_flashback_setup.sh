@@ -45,6 +45,9 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
+#  v2.6 2026-09-20
+#       Continue independent Flashback settings after local failures and align
+#       prerequisite ownership and normal-skip reporting.
 #  v2.5 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -104,13 +107,12 @@ check_scripts() {
 # Check if required commands are available and executable
 check_commands() {
     for cmd in "$@"; do
-        path="$(command -v "$cmd" 2>/dev/null)"
-        if [ -z "$path" ]; then
-            echo "[ERROR] Command not found: $cmd" >&2
+        cmd_path=$(command -v "$cmd" 2>/dev/null)
+        if [ -z "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not installed. Please install $cmd and try again." >&2
             exit 127
-        fi
-        if [ ! -x "$path" ]; then
-            echo "[ERROR] Command not executable: $cmd" >&2
+        elif [ ! -x "$cmd_path" ]; then
+            echo "[ERROR] Command '$cmd' is not executable. Please check the permissions." >&2
             exit 126
         fi
     done
@@ -118,6 +120,8 @@ check_commands() {
 
 # Check if a desktop environment is installed (Debian/Ubuntu)
 check_desktop_installed() {
+    check_commands grep ls
+
     # Prefer tasksel if available
     if command -v tasksel >/dev/null 2>&1; then
         if LC_ALL=C tasksel --list-tasks | grep -q '^i.*desktop'; then
@@ -167,20 +171,20 @@ gsettings_settings() {
     value="$3"
 
     if ! gsettings_can_set "$schema" "$key"; then
-        echo "[WARN] Skipping unknown or read-only key: $schema $key" >&2
+        echo "[INFO] Skipping unknown or read-only key: $schema $key"
         return 0
     fi
 
     echo "[INFO] Setting: $schema $key -> $value"
     if ! gsettings set "$schema" "$key" "$value"; then
         echo "[ERROR] Failed to set $schema $key to $value" >&2
-        exit 1
+        return 1
     fi
 
     printf "%s" "[INFO] Confirming: $schema $key = "
     if ! gsettings get "$schema" "$key"; then
         echo "[ERROR] Failed to read back $schema $key" >&2
-        exit 1
+        return 1
     fi
 }
 
@@ -228,10 +232,10 @@ apply_keyboard_repeat_settings() {
     interval="${KEY_REPEAT_INTERVAL_MS:-25}"
 
     case "$delay" in
-        *[!0-9]*|'') echo "[ERROR] Invalid delay ms: $delay" >&2; exit 1 ;;
+        *[!0-9]*|'') echo "[ERROR] Invalid delay ms: $delay" >&2; return 1 ;;
     esac
     case "$interval" in
-        *[!0-9]*|'') echo "[ERROR] Invalid repeat interval ms: $interval" >&2; exit 1 ;;
+        *[!0-9]*|'') echo "[ERROR] Invalid repeat interval ms: $interval" >&2; return 1 ;;
     esac
 
     # Enable repeat and set timings
@@ -250,19 +254,19 @@ dconf_load_settings() {
 
     if [ ! -r "$dc_file" ]; then
         echo "[ERROR] dconf source not found: $dc_file" >&2
-        exit 1
+        return 1
     fi
 
     echo "[INFO] Loading dconf path $dc_path from $dc_file"
     if ! dconf load "$dc_path" < "$dc_file"; then
         echo "[ERROR] dconf load failed for $dc_path" >&2
-        exit 1
+        return 1
     fi
 
     after_dump="$(dconf dump "$dc_path" 2>/dev/null)"
     if [ -z "$after_dump" ]; then
         echo "[ERROR] dconf dump is empty after load for $dc_path" >&2
-        exit 1
+        return 1
     fi
 
     # Confirm all key=value lines in the source file exist in the loaded dump
@@ -282,7 +286,7 @@ dconf_load_settings() {
                     continue
                 }
                 echo "[ERROR] dconf key not applied under $dc_path: $line" >&2
-                exit 1
+                return 1
                 ;;
             *) continue ;;
         esac
@@ -291,7 +295,7 @@ dconf_load_settings() {
     echo "[INFO] Confirming dconf $dc_path keys applied: expected=$expected applied=$applied"
     if [ "$expected" != "$applied" ]; then
         echo "[ERROR] dconf confirmation mismatch under $dc_path" >&2
-        exit 1
+        return 1
     fi
 }
 
@@ -310,17 +314,17 @@ install_xfce4_terminal_profile() {
 
     if [ ! -r "$src" ]; then
         echo "[ERROR] terminalrc not found: $src" >&2
-        exit 1
+        return 1
     fi
 
     echo "[INFO] Installing xfce4-terminal profile to $dst"
     if ! mkdir -p "$dst"; then
         echo "[ERROR] Failed to create directory: $dst" >&2
-        exit 1
+        return 1
     fi
     if ! cp "$src" "$dst/"; then
         echo "[ERROR] Failed to copy terminalrc to $dst" >&2
-        exit 1
+        return 1
     fi
     echo "[INFO] xfce4-terminal profile installed"
 }
@@ -332,24 +336,24 @@ install_xmodmap_autostart() {
 
     if [ ! -r "$src" ]; then
         echo "[ERROR] xmodmap.desktop not found: $src" >&2
-        exit 1
+        return 1
     fi
 
     echo "[INFO] Installing xmodmap autostart entry to $dst"
     if ! mkdir -p "$dst"; then
         echo "[ERROR] Failed to create directory: $dst" >&2
-        exit 1
+        return 1
     fi
 
     if ! cp "$src" "$dst/"; then
         echo "[ERROR] Failed to copy xmodmap.desktop to $dst" >&2
-        exit 1
+        return 1
     fi
 
     # Ensure readable permissions for .desktop entry
     if ! chmod 0644 "$dst/xmodmap.desktop"; then
         echo "[ERROR] Failed to set permissions on $dst/xmodmap.desktop" >&2
-        exit 1
+        return 1
     fi
 
     echo "[INFO] xmodmap autostart entry installed"
@@ -365,7 +369,7 @@ reset_gnome_panel() {
             echo "[INFO] Resetting gnome-panel..."
             dconf reset -f /org/gnome/gnome-panel/ || {
                 echo "[ERROR] Failed to reset gnome-panel." >&2
-                exit 1
+                return 1
             }
             ;;
         *)
@@ -402,7 +406,7 @@ main() {
     check_scripts
     check_session_bus
     check_desktop_installed
-    check_commands gsettings dconf mkdir cp awk chmod grep ls
+    check_commands gsettings dconf mkdir cp chmod
 
     confirm_apply_settings
 
@@ -416,7 +420,7 @@ main() {
     import_gnome_keybindings
     reset_gnome_panel
 
-    echo "[INFO] GNOME settings have been updated successfully."
+    echo "[INFO] GNOME Flashback settings processing completed."
     return 0
 }
 

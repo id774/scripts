@@ -27,7 +27,8 @@
 #  Exit Status:
 #  - If the system is not Linux, the script exits with an error.
 #  - If required commands are missing, the script exits with an error.
-#  - If no applicable devices are found, execution halts.
+#  - A candidate path that is not a block device is silently skipped, and
+#    finding zero applicable devices still completes with a normal exit.
 #  - Errors from tune2fs should be resolved based on their output.
 #
 #  Version History:

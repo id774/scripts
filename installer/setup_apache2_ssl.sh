@@ -54,6 +54,9 @@
 #      $SCRIPTS/etc/apache/sites-available/hostname.sitename-ssl.conf
 #
 #  Version History:
+#  v1.8 2026-09-20
+#       Require SSL directory and deployed site metadata setup to succeed
+#       before enabling or reloading Apache.
 #  v1.7 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -153,7 +156,10 @@ check_templates() {
 deploy_ssl_cert() {
     echo "[INFO] Setting up SSL certificate..."
     if [ ! -d /etc/apache2/ssl ]; then
-        sudo mkdir -p /etc/apache2/ssl
+        if ! sudo mkdir -p /etc/apache2/ssl; then
+            echo "[ERROR] Failed to create /etc/apache2/ssl." >&2
+            exit 1
+        fi
     fi
     if ! sudo make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /etc/apache2/ssl/apache.pem; then
         echo "[ERROR] Failed to generate SSL certificate." >&2
@@ -177,10 +183,22 @@ deploy_site_configs() {
         exit 1
     fi
 
-    sudo chmod 0644 "/etc/apache2/sites-available/$HOST_FQDN.conf"
-    sudo chmod 0644 "/etc/apache2/sites-available/$HOST_FQDN-ssl.conf"
-    sudo chown root:root "/etc/apache2/sites-available/$HOST_FQDN.conf"
-    sudo chown root:root "/etc/apache2/sites-available/$HOST_FQDN-ssl.conf"
+    if ! sudo chmod 0644 "/etc/apache2/sites-available/$HOST_FQDN.conf"; then
+        echo "[ERROR] Failed to set permissions on /etc/apache2/sites-available/$HOST_FQDN.conf." >&2
+        exit 1
+    fi
+    if ! sudo chmod 0644 "/etc/apache2/sites-available/$HOST_FQDN-ssl.conf"; then
+        echo "[ERROR] Failed to set permissions on /etc/apache2/sites-available/$HOST_FQDN-ssl.conf." >&2
+        exit 1
+    fi
+    if ! sudo chown root:root "/etc/apache2/sites-available/$HOST_FQDN.conf"; then
+        echo "[ERROR] Failed to set ownership on /etc/apache2/sites-available/$HOST_FQDN.conf." >&2
+        exit 1
+    fi
+    if ! sudo chown root:root "/etc/apache2/sites-available/$HOST_FQDN-ssl.conf"; then
+        echo "[ERROR] Failed to set ownership on /etc/apache2/sites-available/$HOST_FQDN-ssl.conf." >&2
+        exit 1
+    fi
 
     echo "[INFO] Installed /etc/apache2/sites-available/$HOST_FQDN.conf"
     echo "[INFO] Installed /etc/apache2/sites-available/$HOST_FQDN-ssl.conf"

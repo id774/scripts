@@ -46,6 +46,9 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
+#  v1.4 2026-09-20
+#       Continue independent Xfce settings after local failures and make
+#       desktop validation own its prerequisites.
 #  v1.3 2026-09-20
 #       Align check_commands with the shared prerequisite contract and keep
 #       usage-only awk out of normal main execution checks.
@@ -105,6 +108,8 @@ check_commands() {
 
 # Check if a desktop environment is installed (Debian/Ubuntu)
 check_desktop_installed() {
+    check_commands grep ls
+
     # Prefer tasksel if available
     if command -v tasksel >/dev/null 2>&1; then
         if LC_ALL=C tasksel --list-tasks | grep -q '^i.*desktop'; then
@@ -149,14 +154,14 @@ xfconf_settings_bool() {
     if ! xfconf-query -c "$channel" -p "$key" -s "$value" >/dev/null 2>&1; then
         if ! xfconf-query -c "$channel" -p "$key" -n -t bool -s "$value"; then
             echo "[ERROR] Failed to create $channel $key" >&2
-            exit 1
+            return 1
         fi
     fi
 
     printf "%s" "[INFO] Confirming: $channel $key = "
     if ! xfconf-query -c "$channel" -p "$key"; then
         echo "[ERROR] Failed to read back $channel $key" >&2
-        exit 1
+        return 1
     fi
 }
 
@@ -168,21 +173,21 @@ xfconf_settings_int() {
     value="$3"
 
     case "$value" in
-        *[!0-9]*|'') echo "[ERROR] Invalid int value: $value" >&2; exit 1 ;;
+        *[!0-9]*|'') echo "[ERROR] Invalid int value: $value" >&2; return 1 ;;
     esac
 
     echo "[INFO] Setting: $channel $key -> $value"
     if ! xfconf-query -c "$channel" -p "$key" -s "$value" >/dev/null 2>&1; then
         if ! xfconf-query -c "$channel" -p "$key" -n -t int -s "$value"; then
             echo "[ERROR] Failed to create $channel $key" >&2
-            exit 1
+            return 1
         fi
     fi
 
     printf "%s" "[INFO] Confirming: $channel $key = "
     if ! xfconf-query -c "$channel" -p "$key"; then
         echo "[ERROR] Failed to read back $channel $key" >&2
-        exit 1
+        return 1
     fi
 }
 
@@ -197,14 +202,14 @@ xfconf_settings_string() {
     if ! xfconf-query -c "$channel" -p "$key" -s "$value" >/dev/null 2>&1; then
         if ! xfconf-query -c "$channel" -p "$key" -n -t string -s "$value"; then
             echo "[ERROR] Failed to create $channel $key" >&2
-            exit 1
+            return 1
         fi
     fi
 
     printf "%s" "[INFO] Confirming: $channel $key = "
     if ! xfconf-query -c "$channel" -p "$key"; then
         echo "[ERROR] Failed to read back $channel $key" >&2
-        exit 1
+        return 1
     fi
 }
 
@@ -352,17 +357,17 @@ install_xfce4_terminal_profile() {
 
     if [ ! -r "$src" ]; then
         echo "[ERROR] terminalrc not found: $src" >&2
-        exit 1
+        return 1
     fi
 
     echo "[INFO] Installing xfce4-terminal profile to $dst"
     if ! mkdir -p "$dst"; then
         echo "[ERROR] Failed to create directory: $dst" >&2
-        exit 1
+        return 1
     fi
     if ! cp "$src" "$dst/"; then
         echo "[ERROR] Failed to copy terminalrc to $dst" >&2
-        exit 1
+        return 1
     fi
     echo "[INFO] xfce4-terminal profile installed"
 }
@@ -374,23 +379,23 @@ install_xmodmap_autostart() {
 
     if [ ! -r "$src" ]; then
         echo "[ERROR] xmodmap.desktop not found: $src" >&2
-        exit 1
+        return 1
     fi
 
     echo "[INFO] Installing xmodmap autostart entry to $dst"
     if ! mkdir -p "$dst"; then
         echo "[ERROR] Failed to create directory: $dst" >&2
-        exit 1
+        return 1
     fi
 
     if ! cp "$src" "$dst/"; then
         echo "[ERROR] Failed to copy xmodmap.desktop to $dst" >&2
-        exit 1
+        return 1
     fi
 
     if ! chmod 0644 "$dst/xmodmap.desktop"; then
         echo "[ERROR] Failed to set permissions on $dst/xmodmap.desktop" >&2
-        exit 1
+        return 1
     fi
 
     echo "[INFO] xmodmap autostart entry installed"
@@ -403,28 +408,28 @@ install_xset_autostart() {
 
     if [ ! -r "$src" ]; then
         echo "[ERROR] xset-rate.desktop not found: $src" >&2
-        exit 1
+        return 1
     fi
 
     echo "[INFO] Installing xset-rate autostart entry to $dst"
     if ! mkdir -p "$dst"; then
         echo "[ERROR] Failed to create directory: $dst" >&2
-        exit 1
+        return 1
     fi
 
     if ! cp "$src" "$dst/"; then
         echo "[ERROR] Failed to copy xset-rate.desktop to $dst" >&2
-        exit 1
+        return 1
     fi
 
     if [ ! -f "$dst/xset-rate.desktop" ]; then
         echo "[ERROR] Copied file not found at $dst/xset-rate.desktop" >&2
-        exit 1
+        return 1
     fi
 
     if ! chmod 0644 "$dst/xset-rate.desktop"; then
         echo "[ERROR] Failed to set permissions on $dst/xset-rate.desktop" >&2
-        exit 1
+        return 1
     fi
 
     echo "[INFO] xset-rate autostart entry installed"
@@ -458,7 +463,7 @@ main() {
     check_scripts
     check_session_bus
     check_desktop_installed
-    check_commands xfconf-query mkdir cp chmod grep ls
+    check_commands xfconf-query mkdir cp chmod
 
     confirm_apply_settings
 
@@ -472,7 +477,7 @@ main() {
     install_xset_autostart
     import_xfce_keybindings
 
-    echo "[INFO] Xfce settings have been updated successfully."
+    echo "[INFO] Xfce settings processing completed."
     return 0
 }
 

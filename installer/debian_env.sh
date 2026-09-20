@@ -39,6 +39,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v2.3 2026-09-20
+#       Localize locale and group prerequisites so optional setup failures do
+#       not stop later Debian environment bootstrap steps.
 #  v2.2 2026-09-11
 #       Let locales package provisioning establish locale-gen and update-locale
 #       instead of requiring them before setup begins.
@@ -71,14 +74,6 @@ usage() {
         in_header && /^# ?/ { print substr($0, 3) }
     ' "$0"
     exit 0
-}
-
-# Check if the system supports apt-get
-check_environment() {
-    if ! command -v apt-get >/dev/null 2>&1; then
-        echo "[ERROR] apt-get is not available on this system. This script requires a Debian-based environment." >&2
-        exit 1
-    fi
 }
 
 # Verify script environment
@@ -115,28 +110,49 @@ check_sudo() {
 
 # Set locale ja_JP.UTF-8
 set_locale_jp() {
+    for cmd in dpkg tee locale grep; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "[INFO] Skipping locale setup: '$cmd' is not available."
+            return 0
+        fi
+    done
+
     # Install `locales` package if not already installed
     if ! dpkg -s locales >/dev/null 2>&1; then
-        sudo apt-get install -y locales
+        if ! sudo apt-get install -y locales; then
+            echo "[ERROR] Failed to install the locales package." >&2
+            return 1
+        fi
     fi
     # The installed locales package guarantees locale-gen and update-locale.
     # Do not recheck those commands after package provisioning.
 
     # Append `ja_JP.UTF-8 UTF-8` to `/etc/locale.gen` if not already present
     if ! grep -q '^ja_JP.UTF-8' /etc/locale.gen; then
-        echo "ja_JP.UTF-8 UTF-8" | sudo tee -a /etc/locale.gen
+        if ! echo "ja_JP.UTF-8 UTF-8" | sudo tee -a /etc/locale.gen; then
+            echo "[ERROR] Failed to update /etc/locale.gen." >&2
+            return 1
+        fi
     fi
 
     # Generate locale if `ja_JP.UTF-8` is not available
     if ! locale -a | grep -q '^ja_JP\.UTF-8$' || [ "$(locale | grep '^LANG=')" != "LANG=ja_JP.UTF-8" ]; then
-        sudo locale-gen
+        if ! sudo locale-gen; then
+            echo "[ERROR] Failed to generate the ja_JP.UTF-8 locale." >&2
+            return 1
+        fi
     fi
 
     # Update `LANG` to `ja_JP.UTF-8` if not set
     if ! locale | grep -q '^LANG=ja_JP.UTF-8$'; then
-        sudo update-locale LANG=ja_JP.UTF-8
+        if ! sudo update-locale LANG=ja_JP.UTF-8; then
+            echo "[ERROR] Failed to update the default LANG setting." >&2
+            return 1
+        fi
         export LANG=ja_JP.UTF-8
     fi
+
+    return 0
 }
 
 # Perform system update and upgrade
@@ -149,6 +165,11 @@ apt_upgrade() {
 
 # Create administrative groups
 create_admin_group() {
+    if ! command -v groupadd >/dev/null 2>&1; then
+        echo "[INFO] Skipping admin group setup: 'groupadd' is not available."
+        return 0
+    fi
+
     sudo groupadd -f admin
     sudo groupadd -f wheel
 }
@@ -164,9 +185,8 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
-    check_environment
     setup_environment
-    check_commands dpkg tee locale grep groupadd
+    check_commands apt-get
     check_sudo
 
     set_locale_jp
@@ -174,7 +194,7 @@ main() {
     create_admin_group
     setup_tune2fs
 
-    echo "[INFO] All Debian environment setup completed."
+    echo "[INFO] Debian environment setup completed."
     return 0
 }
 

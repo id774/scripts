@@ -41,6 +41,9 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
+#  v1.4 2026-09-20
+#       Continue independent GNOME settings after local failures and treat
+#       unavailable optional keys and services as normal skips.
 #  v1.3 2026-09-20
 #       Align check_commands with the shared prerequisite contract and keep
 #       usage-only awk out of normal main execution checks.
@@ -126,21 +129,21 @@ gsettings_settings() {
 
     # Skip keys that are not present or not writable on this GNOME version
     if ! gsettings_can_set "$schema" "$key"; then
-        echo "[WARN] Skipping unknown or read-only key: $schema $key" >&2
+        echo "[INFO] Skipping unknown or read-only key: $schema $key"
         return 0
     fi
 
     echo "[INFO] Setting: $schema $key -> $value"
     if ! gsettings set "$schema" "$key" "$value"; then
         echo "[ERROR] Failed to set $schema $key to $value" >&2
-        exit 1
+        return 1
     fi
 
     # Read back the value for verification
     printf "%s" "[INFO] Confirming: $schema $key = "
     if ! gsettings get "$schema" "$key"; then
         echo "[ERROR] Failed to read back $schema $key" >&2
-        exit 1
+        return 1
     fi
 }
 
@@ -158,11 +161,11 @@ apply_workspace_settings() {
 
     # Validate numeric input
     case "$ws" in
-        *[!0-9]*|'') echo "[ERROR] Invalid workspace count: $ws" >&2; exit 1 ;;
+        *[!0-9]*|'') echo "[ERROR] Invalid workspace count: $ws" >&2; return 1 ;;
     esac
     if [ "$ws" -lt 1 ]; then
         echo "[ERROR] Workspace count must be >= 1: $ws" >&2
-        exit 1
+        return 1
     fi
 
     # Disable dynamic workspaces and set a fixed number
@@ -197,10 +200,10 @@ apply_keyboard_repeat_settings() {
 
     # Validate numeric input
     case "$delay" in
-        *[!0-9]*|'') echo "[ERROR] Invalid delay ms: $delay" >&2; exit 1 ;;
+        *[!0-9]*|'') echo "[ERROR] Invalid delay ms: $delay" >&2; return 1 ;;
     esac
     case "$interval" in
-        *[!0-9]*|'') echo "[ERROR] Invalid repeat interval ms: $interval" >&2; exit 1 ;;
+        *[!0-9]*|'') echo "[ERROR] Invalid repeat interval ms: $interval" >&2; return 1 ;;
     esac
 
     # Enable repeat and set timings
@@ -220,20 +223,20 @@ dconf_load_settings() {
     # Ensure the source file exists
     if [ ! -r "$dc_file" ]; then
         echo "[ERROR] dconf source not found: $dc_file" >&2
-        exit 1
+        return 1
     fi
 
     echo "[INFO] Loading dconf path $dc_path from $dc_file"
     if ! dconf load "$dc_path" < "$dc_file"; then
         echo "[ERROR] dconf load failed for $dc_path" >&2
-        exit 1
+        return 1
     fi
 
     # Dump after load to confirm the subtree is not empty
     after_dump="$(dconf dump "$dc_path" 2>/dev/null)"
     if [ -z "$after_dump" ]; then
         echo "[ERROR] dconf dump is empty after load for $dc_path" >&2
-        exit 1
+        return 1
     fi
 
     # Confirm all key=value lines in the source file exist in the loaded dump
@@ -253,7 +256,7 @@ dconf_load_settings() {
                     continue
                 }
                 echo "[ERROR] dconf key not applied under $dc_path: $line" >&2
-                exit 1
+                return 1
                 ;;
             *) continue ;;
         esac
@@ -262,7 +265,7 @@ dconf_load_settings() {
     echo "[INFO] Confirming dconf $dc_path keys applied: expected=$expected applied=$applied"
     if [ "$expected" != "$applied" ]; then
         echo "[ERROR] dconf confirmation mismatch under $dc_path" >&2
-        exit 1
+        return 1
     fi
 }
 
@@ -281,24 +284,24 @@ install_xfce4_terminal_profile() {
 
     # Ensure xfce4-terminal exists
     if ! command -v xfce4-terminal >/dev/null 2>&1; then
-        echo "[WARN] xfce4-terminal not found. Skipping terminal profile installation."
+        echo "[INFO] xfce4-terminal not found. Skipping terminal profile installation."
         return 0
     fi
 
     # Ensure the source profile exists
     if [ ! -r "$src" ]; then
         echo "[ERROR] terminalrc not found: $src" >&2
-        exit 1
+        return 1
     fi
 
     echo "[INFO] Installing xfce4-terminal profile to $dst"
     if ! mkdir -p "$dst"; then
         echo "[ERROR] Failed to create directory: $dst" >&2
-        exit 1
+        return 1
     fi
     if ! cp "$src" "$dst/"; then
         echo "[ERROR] Failed to copy terminalrc to $dst" >&2
-        exit 1
+        return 1
     fi
     echo "[INFO] xfce4-terminal profile installed"
 }
@@ -311,7 +314,7 @@ mask_user_service() {
     echo "[INFO] Masking user unit: $unit"
     systemctl --user mask --now "$unit" >/dev/null 2>&1 || {
         echo "[ERROR] Failed to mask user unit: $unit" >&2
-        exit 1
+        return 1
     }
 }
 
@@ -320,6 +323,11 @@ disable_services() {
     # Skip only when DISABLE_SERVICES=no (default is yes)
     if [ "${DISABLE_SERVICES:-yes}" != "yes" ]; then
         echo "[INFO] Skip service disable/mask steps (set DISABLE_SERVICES=no to skip)."
+        return 0
+    fi
+
+    if ! command -v systemctl >/dev/null 2>&1; then
+        echo "[INFO] Skipping service mask steps: 'systemctl' is not available."
         return 0
     fi
 
@@ -343,7 +351,7 @@ disable_services() {
     # Disable DLNA media sharing
     mask_user_service rygel.service
 
-    echo "[INFO] Service mask steps applied."
+    echo "[INFO] Service mask processing completed."
 }
 
 # Ask user whether to apply settings
@@ -375,7 +383,7 @@ main() {
     check_session_bus
 
     # Verify required commands for this script
-    check_commands gsettings dconf mkdir cp grep systemctl
+    check_commands gsettings dconf mkdir cp grep
 
     confirm_apply_settings
 
@@ -395,7 +403,7 @@ main() {
     # Mask background services (set DISABLE_SERVICES=no to skip)
     disable_services
 
-    echo "[INFO] GNOME settings have been updated successfully."
+    echo "[INFO] GNOME settings processing completed."
     return 0
 }
 

@@ -46,6 +46,9 @@
 #  - Commands: sudo, awk, find, grep, cmp, chown, chmod, cp, mktemp, mv, rsyslogd, uname, test
 #
 #  Version History:
+#  v1.4 2026-09-20
+#       Validate renamed and deployed file metadata and report rsyslog restart
+#       success only when a restart method actually succeeds.
 #  v1.3 2026-08-22
 #       Use POSIX find for rsyslog drop-in discovery.
 #  v1.2 2026-07-11
@@ -171,8 +174,14 @@ rename_postfix_socket_conf() {
 
     if sudo mv -f "$LEGACY_FILE" "$SOCKET_FILE"; then
         echo "[INFO] Renamed $LEGACY_FILE to $SOCKET_FILE"
-        sudo chown root:root "$SOCKET_FILE"
-        sudo chmod 0644 "$SOCKET_FILE"
+        if ! sudo chown root:root "$SOCKET_FILE"; then
+            echo "[ERROR] Failed to set ownership on $SOCKET_FILE." >&2
+            exit 1
+        fi
+        if ! sudo chmod 0644 "$SOCKET_FILE"; then
+            echo "[ERROR] Failed to set permissions on $SOCKET_FILE." >&2
+            exit 1
+        fi
         RENAME_DONE=1
     else
         echo "[ERROR] Failed to rename $LEGACY_FILE to $SOCKET_FILE" >&2
@@ -183,9 +192,16 @@ rename_postfix_socket_conf() {
 # Deploy the config if needed (content differs or file absent)
 deploy_conf() {
     SRC_FILE="$SCRIPTS/etc/rsyslog.d/30-postfix.conf"
-    TMP_FILE="$(mktemp /tmp/setup_rsyslog_postfix.XXXXXX)" || exit 1
+    TMP_FILE="$(mktemp /tmp/setup_rsyslog_postfix.XXXXXX)" || {
+        echo "[ERROR] Failed to create temporary rsyslog configuration file." >&2
+        exit 1
+    }
 
-    cp "$SRC_FILE" "$TMP_FILE"
+    if ! cp "$SRC_FILE" "$TMP_FILE"; then
+        echo "[ERROR] Failed to stage $SRC_FILE." >&2
+        rm -f "$TMP_FILE"
+        exit 1
+    fi
 
     # Compare with existing target
     if sudo test -f "$TARGET_FILE"; then
@@ -199,8 +215,16 @@ deploy_conf() {
     # Install with correct permissions
     if sudo cp "$TMP_FILE" "$TARGET_FILE"; then
         echo "[INFO] Deployed $TARGET_FILE"
-        sudo chown root:root "$TARGET_FILE"
-        sudo chmod 0644 "$TARGET_FILE"
+        if ! sudo chown root:root "$TARGET_FILE"; then
+            echo "[ERROR] Failed to set ownership on $TARGET_FILE." >&2
+            rm -f "$TMP_FILE"
+            exit 1
+        fi
+        if ! sudo chmod 0644 "$TARGET_FILE"; then
+            echo "[ERROR] Failed to set permissions on $TARGET_FILE." >&2
+            rm -f "$TMP_FILE"
+            exit 1
+        fi
     else
         echo "[ERROR] Failed to install $TARGET_FILE" >&2
         rm -f "$TMP_FILE"
@@ -219,15 +243,35 @@ validate_and_restart() {
         exit 1
     fi
 
+    restarted=0
+
     if command -v systemctl >/dev/null 2>&1; then
-        sudo systemctl restart rsyslog || {
+        if sudo systemctl restart rsyslog; then
+            restarted=1
+        else
             echo "[WARN] systemctl restart failed; trying legacy service manager" >&2
-            sudo service rsyslog restart 2>/dev/null || sudo /etc/init.d/rsyslog restart 2>/dev/null || true
-        }
-    else
-        sudo service rsyslog restart 2>/dev/null || sudo /etc/init.d/rsyslog restart 2>/dev/null || true
+        fi
     fi
-    echo "[INFO] rsyslog restarted"
+
+    if [ "$restarted" -eq 0 ] && command -v service >/dev/null 2>&1; then
+        if sudo service rsyslog restart >/dev/null 2>&1; then
+            restarted=1
+        fi
+    fi
+
+    if [ "$restarted" -eq 0 ] && [ -x /etc/init.d/rsyslog ]; then
+        if sudo /etc/init.d/rsyslog restart >/dev/null 2>&1; then
+            restarted=1
+        fi
+    fi
+
+    if [ "$restarted" -eq 1 ]; then
+        echo "[INFO] rsyslog restarted"
+        return 0
+    fi
+
+    echo "[ERROR] Failed to restart rsyslog." >&2
+    exit 1
 }
 
 # Decide whether to deploy and restart based on existing configs
