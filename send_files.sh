@@ -57,6 +57,8 @@
 #  127. Required command is not installed.
 #
 #  Version History:
+#  v1.9 2026-09-20
+#       Use the actual timestamped password-file path in the mail body.
 #  v1.8 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -233,7 +235,7 @@ create_archive() {
 send_mail() {
     SUBJECT="$MAIL_SUBJECT"
     BODY="The password-protected archive is attached.
-Password is stored locally in $TMP/$PASSWORD_FILE_NAME"
+Password is stored locally in $PASSWORD_FILE"
 
     # Compose and send mail
     echo "$BODY" > "$TMP/mail_body.txt"
