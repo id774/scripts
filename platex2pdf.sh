@@ -16,7 +16,16 @@
 #  Usage:
 #      ./platex2pdf.sh [tex-file]
 #
+#  Exit Status:
+#  0. Conversion completed successfully.
+#  1. LaTeX compilation or PDF conversion failed.
+#  2. Input file does not exist.
+#  126. Required command is not executable.
+#  127. Required command is not installed.
+#
 #  Version History:
+#  v2.1 2026-09-20
+#       Return failure and stop conversion when LaTeX or dvipdfmx fails.
 #  v2.0 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -108,8 +117,17 @@ convert_to_pdf() {
     latex_engine=$(detect_latex_engine "$1")
 
     # Run LaTeX command with the detected engine and encoding
-    $latex_engine $kanji_opt "$1"
-    dvipdfmx "$dvi_file"
+    if ! $latex_engine $kanji_opt "$1"; then
+        echo "[ERROR] LaTeX compilation failed: $1" >&2
+        return 1
+    fi
+
+    if ! dvipdfmx "$dvi_file"; then
+        echo "[ERROR] PDF conversion failed: $dvi_file" >&2
+        return 1
+    fi
+
+    return 0
 }
 
 # Main entry point of the script
@@ -126,7 +144,9 @@ main() {
     # Ensure required commands are available
     check_commands platex uplatex dvipdfmx nkf sed grep
 
-    convert_to_pdf "$1"
+    if ! convert_to_pdf "$1"; then
+        return 1
+    fi
     return 0
 }
 

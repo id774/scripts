@@ -29,14 +29,24 @@
 #
 #  Requirements:
 #  - Python Version: 3.2 or later
+#  - ping(8) must be present on PATH and executable.
 #
 #  Notes:
 #  - Ensure you have permissions to send pings to the target IPs.
 #  - This script may take time to complete based on the range specified.
 #
+#  Exit Status:
+#  0. Ping sweep completed.
+#  1. Invalid range or ping execution failed after startup.
+#  2. Invalid command-line arguments.
+#  9. Unsupported Python version.
+#  126. ping exists on PATH but is not executable.
+#  127. ping is not installed.
+#
 #  Version History:
-#  v2.0 2026-07-14
-#       Add range validation and handle a ping command that cannot be executed.
+#  v2.0 2026-09-20
+#       Validate host ranges and distinguish unreachable hosts from
+#       ping command execution failures.
 #  v1.4 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v1.3 2025-06-23
@@ -81,13 +91,35 @@ def usage():
         sys.exit(1)
     sys.exit(0)
 
-def ping(ip, results):
+def find_command_with_status(command):
+    """
+    Search PATH for the given command.
+
+    Return a tuple (path, status). The status is 0 when an executable
+    candidate is found, 126 when a same-named file exists on PATH but no
+    candidate is executable, and 127 when no candidate exists at all.
+    """
+    found_non_executable = False
+    for directory in os.environ.get("PATH", "").split(os.pathsep):
+        candidate = os.path.join(directory if directory else ".", command)
+        if not os.path.isfile(candidate):
+            continue
+        if os.access(candidate, os.X_OK):
+            return candidate, 0
+        found_non_executable = True
+    if found_non_executable:
+        return None, 126
+    return None, 127
+
+
+def ping(ip, results, errors):
     """
     Send a ping request to the specified IP address.
 
     Args:
         ip (str): The target IP address to ping.
-        results (dict): A shared dictionary to store ping results.
+        results (dict): A shared dictionary to store network reachability results.
+        errors (dict): A shared dictionary to store ping execution errors.
     """
     try:
         with open(os.devnull, 'w') as DEVNULL:
@@ -95,8 +127,10 @@ def ping(ip, results):
             subprocess.check_output(
                 ["ping", "-c", "1", "-i", "1", ip], stderr=DEVNULL)
             results[ip] = "alive"
-    except (subprocess.CalledProcessError, OSError):
+    except subprocess.CalledProcessError:
         results[ip] = "-----"
+    except OSError as e:
+        errors[ip] = str(e)
 
 
 def validate_range(start_ip, end_ip):
@@ -125,13 +159,22 @@ def main(subnet, start_ip, end_ip, ordered):
     if not validate_range(start_ip, end_ip):
         return 1
 
+    cmd_path, cmd_status = find_command_with_status("ping")
+    if cmd_status == 126:
+        print("[ERROR] Command 'ping' is not executable. Please check the permissions.", file=sys.stderr)
+        return 126
+    if cmd_status == 127:
+        print("[ERROR] Command 'ping' is not installed. Please install ping and try again.", file=sys.stderr)
+        return 127
+
     threads = []  # List to store threading.Thread objects
-    results = {}  # Dictionary to store ping results
+    results = {}  # Dictionary to store network reachability results
+    errors = {}   # Dictionary to store ping execution errors
 
     # Create and start threads for each IP in the range
     for n in range(start_ip, end_ip + 1):
         ip = subnet + str(n)
-        thread = threading.Thread(target=ping, args=(ip, results))
+        thread = threading.Thread(target=ping, args=(ip, results, errors))
         threads.append(thread)
         thread.start()
 
@@ -149,6 +192,12 @@ def main(subnet, start_ip, end_ip, ordered):
         # Display results as they are collected
         for ip, status in results.items():
             print("{} --> {}".format(ip, status))
+
+    if errors:
+        # Report ping execution failures in stable numeric IP order
+        for ip in sorted(errors.keys(), key=lambda x: tuple(map(int, x.split('.')))):
+            print("[ERROR] Ping execution failed for %s: %s" % (ip, errors[ip]), file=sys.stderr)
+        return 1
 
     return 0
 

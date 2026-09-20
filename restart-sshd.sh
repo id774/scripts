@@ -21,7 +21,15 @@
 #    - macOS: /System/Library/LaunchDaemons/ssh.plist with launchctl(1)
 #    - Linux: systemctl(1)
 #
+#  Exit Status:
+#  0. SSH daemon restart completed successfully.
+#  1. Required privilege, platform resource, or restart operation failed.
+#  126. Required command is not executable.
+#  127. Required command is not installed.
+#
 #  Version History:
+#  v2.2 2026-09-20
+#       Return failure when the platform SSH restart operation fails.
 #  v2.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -100,7 +108,10 @@ restart_macos_sshd() {
     fi
 
     if [ -f "$SSH_PLIST" ]; then
-        sudo launchctl unload -w "$SSH_PLIST" && sudo launchctl load -w "$SSH_PLIST"
+        if ! { sudo launchctl unload -w "$SSH_PLIST" && sudo launchctl load -w "$SSH_PLIST"; }; then
+            echo "[ERROR] Failed to restart SSH daemon on macOS." >&2
+            return 1
+        fi
     else
         echo "[ERROR] SSH plist file not found: $SSH_PLIST" >&2
         exit 1
@@ -110,7 +121,10 @@ restart_macos_sshd() {
 # Restart SSH daemon on Linux
 restart_linux_sshd() {
     if command_exists systemctl; then
-        sudo systemctl restart ssh.service
+        if ! sudo systemctl restart ssh.service; then
+            echo "[ERROR] Failed to restart SSH daemon." >&2
+            return 1
+        fi
     else
         echo "[ERROR] systemctl not found. Unable to restart SSH." >&2
         exit 1
@@ -128,10 +142,10 @@ main() {
     UNAME=$(uname)
     case "$UNAME" in
         Darwin)
-            restart_macos_sshd
+            restart_macos_sshd || return 1
             ;;
         *)
-            restart_linux_sshd
+            restart_linux_sshd || return 1
             ;;
     esac
     return 0

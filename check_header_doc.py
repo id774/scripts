@@ -38,6 +38,8 @@
 #  Notes:
 #  - This script does not depend on Git and works in non-repository directories.
 #  - When violations are found in readable files, diagnostic lines are printed.
+#  - An unreadable in-scope file is treated as a fatal scan error; independent
+#    readable files continue to be scanned and reported.
 #  - Intended to be used as one automated documentation check in test pipelines.
 #  - This check is wired into the nightly cron job cron/bin/run_tests, which
 #    invokes it once as 'check_header_doc.py -a --root $SCRIPTS' after the
@@ -56,10 +58,12 @@
 #  Exit Status:
 #  - 0: No issues found
 #  - 1: Issues found
-#  - 2: Fatal error (e.g., cannot scan root directory)
+#  - 2: Fatal scan error (e.g., invalid root or unreadable in-scope file)
 #  - 9: Unsupported Python version
 #
 #  Version History:
+#  v1.3 2026-09-20
+#       Treat unreadable in-scope files as fatal scan errors.
 #  v1.2 2026-01-12
 #       Detect non-comment lines inside header doc block.
 #  v1.1 2026-01-10
@@ -102,16 +106,18 @@ def usage():
 
 
 def looks_like_script(path):
-    """Decide whether the file should be checked as a script (sh/python/ruby)."""
+    """
+    Decide whether the file should be checked as a script (sh/python/ruby).
+
+    Raises OSError when an extensionless file cannot be read, so that the
+    caller can treat it as a scan candidate instead of silently excluding it.
+    """
     _, ext = os.path.splitext(path)
     if ext in (".sh", ".py", ".rb"):
         return True
 
-    try:
-        with open(path, "r", encoding="utf-8", errors="replace") as f:
-            first = f.readline()
-    except OSError:
-        return False
+    with open(path, "r", encoding="utf-8", errors="replace") as f:
+        first = f.readline()
 
     if not first.startswith("#!"):
         return False
@@ -130,7 +136,14 @@ def iter_files(root_dir, check_all_files):
             if check_all_files:
                 yield path
             else:
-                if looks_like_script(path):
+                try:
+                    is_script = looks_like_script(path)
+                except OSError:
+                    # Cannot classify an extensionless file; let the caller's
+                    # read-error handling decide instead of dropping it.
+                    yield path
+                    continue
+                if is_script:
                     yield path
 
 
@@ -161,15 +174,15 @@ def check_file(path, quiet_mode):
     """
     Check a single file and return list of hits (strings).
     Detect blank lines inside the header block (between first and second separators).
+
+    Raises OSError when the file cannot be read, so the caller can treat it
+    as a fatal scan error instead of a silent clean result.
     """
     if not os.path.isfile(path):
         return []
 
-    try:
-        with open(path, "r", encoding="utf-8", errors="replace") as f:
-            raw = f.read()
-    except OSError:
-        return []
+    with open(path, "r", encoding="utf-8", errors="replace") as f:
+        raw = f.read()
 
     lines = raw.splitlines()  # no trailing "\n"
     bounds = find_header_bounds(lines)
@@ -239,12 +252,19 @@ def main():
         return 2
 
     all_hits = []
+    read_error = False
     for path in iter_files(root_dir, options.all_files):
-        all_hits.extend(check_file(path, options.quiet_mode))
+        try:
+            all_hits.extend(check_file(path, options.quiet_mode))
+        except OSError as e:
+            print("[ERROR] Cannot read file: %s (%s)" % (path, e), file=sys.stderr)
+            read_error = True
 
     for line in all_hits:
         print(line)
 
+    if read_error:
+        return 2
     return 1 if all_hits else 0
 
 
