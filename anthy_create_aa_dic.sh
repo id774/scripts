@@ -6,7 +6,7 @@
 #  Description:
 #  This script creates a custom dictionary for Anthy, a Japanese input
 #  method, using ASCII art (AA) entries. It converts an MS-IME format
-#  dictionary to the Canna format using the convert_msime2cannna.rb script.
+#  dictionary to the Canna format using the convert_msime2canna.rb script.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -17,6 +17,8 @@
 #      ./anthy_create_aa_dic.sh
 #
 #  Version History:
+#  v1.7 2026-09-20
+#       Fix the MS-IME-to-Canna helper name so dictionary creation uses the bundled converter.
 #  v1.6 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -80,14 +82,14 @@ check_commands() {
 
 # Check for required files and directories
 check_files() {
-    test -f "$SCRIPTS/convert_msime2cannna.rb" || { echo "[ERROR] Missing convert_msime2cannna.rb" >&2; exit 1; }
+    test -f "$SCRIPTS/convert_msime2canna.rb" || { echo "[ERROR] Missing convert_msime2canna.rb" >&2; exit 1; }
     test -f "$SCRIPTS/etc/aa.txt" || { echo "[ERROR] Missing aa.txt" >&2; exit 1; }
     test -d "$HOME/.anthy" || mkdir -p "$HOME/.anthy"
 }
 
 # Create Anthy dictionary for ASCII Art
 create_dictionary() {
-    ruby -Ku "$SCRIPTS/convert_msime2cannna.rb" < "$SCRIPTS/etc/aa.txt" > "$HOME/.anthy/private_words_default"
+    ruby -Ku "$SCRIPTS/convert_msime2canna.rb" < "$SCRIPTS/etc/aa.txt" > "$HOME/.anthy/private_words_default"
     echo "[INFO] Dictionary created."
 }
 
