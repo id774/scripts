@@ -323,7 +323,7 @@ main() {
     esac
 
     # Check if required commands are available and executable
-    check_commands sudo cp mkdir chmod chown id rm ln find zsh uname touch
+    check_commands cp mkdir chmod chown id rm ln find zsh uname touch
     check_scripts
     setup_environment "$1"
     check_sudo

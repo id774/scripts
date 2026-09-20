@@ -28,6 +28,8 @@
 #  127. Required command is not installed.
 #
 #  Version History:
+#  v1.6 2026-09-20
+#       Use the shared check_commands contract for R prerequisite validation.
 #  v1.5 2026-09-20
 #       Return failure when the R library installation command fails.
 #  v1.4 2026-07-11
@@ -71,14 +73,6 @@ check_commands() {
     done
 }
 
-# Check if R is installed
-check_R() {
-    if ! command -v R >/dev/null 2>&1; then
-        echo "[ERROR] R is not installed. Please install R and try again." >&2
-        exit 1
-    fi
-}
-
 # Check if SCRIPTS variable is set
 check_scripts() {
     if [ -z "$SCRIPTS" ]; then
@@ -120,7 +114,7 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
-    check_R
+    check_commands R
     check_scripts
     check_config
     check_sudo

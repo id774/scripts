@@ -20,7 +20,16 @@
 #  - Ensure Safari is not running while executing this script.
 #  - It's recommended to back up the cache database before running.
 #
+#  Exit Status:
+#  - 0: No script-detected error.
+#  - 1: Safari cache directory or database prerequisite is unavailable.
+#  - 126: sqlite3 exists but is not executable.
+#  - 127: sqlite3 is not installed.
+#
 #  Version History:
+#  v1.6 2026-09-20
+#       Use the shared check_commands contract for sqlite3 prerequisite
+#       validation.
 #  v1.5 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -62,14 +71,6 @@ check_commands() {
     done
 }
 
-# Check if sqlite3 command is available
-check_sqlite3() {
-    if ! command -v sqlite3 >/dev/null 2>&1; then
-        echo "[ERROR] sqlite3 command not found. Please install sqlite3." >&2
-        exit 1
-    fi
-}
-
 # Vacuum Safari's cache database
 vacuum_safari_cache() {
     SAFARI_CACHE_DIR="$HOME/Library/Caches/com.apple.Safari"
@@ -95,7 +96,7 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
-    check_sqlite3
+    check_commands sqlite3
     vacuum_safari_cache
     return 0
 }
