@@ -63,6 +63,7 @@ v2.0.2 (Release Date: TBD)
   run when the precheck reports a possible permission problem.
 - Align setup workflows with script-specific continuation, dependency, and
   optional-capability contracts, including truthful completion reporting.
+- Disable macOS press-and-hold accent character selection during macOS setup.
 
 v2.0.1 (2026-08-26)
 -------------------

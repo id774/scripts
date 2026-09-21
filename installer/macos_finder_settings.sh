@@ -1,14 +1,15 @@
 #!/bin/sh
 
 ########################################################################
-# macos_finder_settings.sh: Configure Finder and Screenshot Settings on macOS
+# macos_finder_settings.sh: Configure Finder, Screenshot, and Keyboard Settings on macOS
 #
 #  Description:
-#  This script customizes Finder and screenshot settings on macOS by:
+#  This script customizes Finder, screenshot, and keyboard settings on macOS by:
 #  - Disabling shadows in screenshots.
 #  - Showing hidden files in Finder.
 #  - Changing the default screenshot file name.
 #  - Preventing .DS_Store files on network shares.
+#  - Disabling press-and-hold accent character selection.
 #  - Restarting SystemUIServer to apply changes.
 #
 #  Author: id774 (More info: https://id774.net)
@@ -22,9 +23,12 @@
 #
 #  Requirements:
 #  - Must be executed on macOS.
-#  - The script modifies Finder preferences and requires user permissions.
+#  - The script modifies user preferences and requires user permissions.
 #
 #  Version History:
+#  v1.6 2026-09-21
+#       Disable press-and-hold accent character selection by setting the global
+#       ApplePressAndHoldEnabled preference to false.
 #  v1.5 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -98,6 +102,11 @@ configure_finder_settings() {
 
     if ! defaults write com.apple.desktopservices DSDontWriteNetworkStores true; then
         echo "[ERROR] Failed to prevent .DS_Store file creation on network shares." >&2
+        exit 1
+    fi
+
+    if ! defaults write -g ApplePressAndHoldEnabled -bool false; then
+        echo "[ERROR] Failed to disable press-and-hold accent character selection." >&2
         exit 1
     fi
 
