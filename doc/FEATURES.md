@@ -1113,7 +1113,7 @@ After reinstalling Homebrew, it also performs:
 
 ### macos_finder_settings.sh
 
-Changes Finder and screenshot preferences.
+Changes Finder, screenshot, and keyboard press-and-hold preferences.
 
 Major changes include:
 
