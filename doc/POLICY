@@ -1076,13 +1076,24 @@ document changed.
 #### 1.8.1 One Purpose to a Pull Request
 - A pull request presents the change it proposes, not the sequence of
   corrections that produced it, and it carries one purpose.
+- "Purpose" means the higher-level reason the pull request exists, not an
+  individual finding, issue, file, function, or review comment. Several
+  findings may belong to one purpose when they are part of the same
+  cross-cutting investigation, maintenance task, defect class, migration,
+  release preparation, or quality correction.
+- Do not split a pull request mechanically by finding or file. Before splitting
+  one approved work group, consider semantic coherence, shared files, merge
+  conflicts, duplicated validation, branch and pull-request management cost,
+  and whether the parts truly need independent review, release, rollback, or
+  acceptance.
 - Changes that serve different purposes are proposed separately, as a rule,
   even when they touch one file and even when one was noticed while the other
   was being made. A pull request is accepted or rejected whole, and a mixed one
   leaves no way to take the part that is wanted.
-- A change noticed in passing is proposed on a branch of its own. It is not
-  carried along because the working tree happened to be open at it, and it does
-  not enlarge the request already under review.
+- An unrelated change noticed in passing is proposed on a branch of its own. A
+  finding discovered while carrying out the approved purpose is not "in
+  passing" merely because it was unknown before the investigation. It may
+  remain in the same pull request when it serves that purpose.
 - Tidying, renaming, and reformatting that the change does not require are a
   change of their own. Attached to something else, they bury the change the
   reviewer came to read.
