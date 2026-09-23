@@ -1,8 +1,8 @@
 scripts Repository Version History
 ==================================
 
-v2.0.2 (Release Date: TBD)
---------------------------
+v2.0.2 (2026-09-23)
+-------------------
 - Correct code-quality defects in path/reference and prerequisite handling,
   failure propagation, fallback behavior, and state-preserving updates.
 - Add luksmount.py for confirmed LUKS opening and mounting, and install it as
