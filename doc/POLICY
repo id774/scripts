@@ -1131,19 +1131,7 @@ document changed.
   is confined to the branch under review, and the rewrite is stated whenever
   the branch is shared.
 
-### 1.9 License
-- The parts of the repository copyrighted by id774 are dual licensed under the
-  GPL version 3 or the LGPL version 3, at the user's option. The full texts live
-  in `doc/LICENSE`, `doc/COPYING`, and `doc/COPYING.LESSER`.
-- The Vim related files listed in `doc/LICENSE` contain third-party code and are
-  excluded from that dual license, following the license conditions of each
-  third-party software.
-- Every script header repeats the license line of the standard identifying
-  block, so that a file read on its own still states its terms:
-  `License: The GPL version 3, or LGPL version 3 (Dual License).`
-- Add a dependency only when its license is compatible with that choice.
-
-### 1.10 Testing and Operation
+### 1.9 Testing and Operation
 - `test/check_scripts.sh`, `check_header_doc.py`, `find_pycompat.py`, the
   Python tests, and the Ruby specs are means of checking this policy and
   intended behavior; passing them is not itself what defines correct
@@ -1202,7 +1190,7 @@ document changed.
   the repository's existing Shell Script validation unless creation of
   a dedicated test has been explicitly approved.
 
-### 1.11 Judging a Change
+### 1.10 Judging a Change
 Before a change is proposed, consider these questions:
 
 - Does it widen what a run can delete, overwrite, or send?
@@ -1233,6 +1221,18 @@ Before a change is proposed, consider these questions:
   documentation, `FEATURES.md`, the README, this policy, or `doc/VERSIONS`?
 
 ---
+
+### 1.11 License
+- The parts of the repository copyrighted by id774 are dual licensed under the
+  GPL version 3 or the LGPL version 3, at the user's option. The full texts live
+  in `doc/LICENSE`, `doc/COPYING`, and `doc/COPYING.LESSER`.
+- The Vim related files listed in `doc/LICENSE` contain third-party code and are
+  excluded from that dual license, following the license conditions of each
+  third-party software.
+- Every script header repeats the license line of the standard identifying
+  block, so that a file read on its own still states its terms:
+  `License: The GPL version 3, or LGPL version 3 (Dual License).`
+- Add a dependency only when its license is compatible with that choice.
 
 ## 2. Shell Script Implementation Policy
 
