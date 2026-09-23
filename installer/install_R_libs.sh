@@ -28,10 +28,9 @@
 #  127. Required command is not installed.
 #
 #  Version History:
-#  v1.6 2026-09-20
-#       Use the shared check_commands contract for R prerequisite validation.
 #  v1.5 2026-09-20
-#       Return failure when the R library installation command fails.
+#       Use shared check_commands for R prerequisite validation and return
+#       failure when the R library installation command fails.
 #  v1.4 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.

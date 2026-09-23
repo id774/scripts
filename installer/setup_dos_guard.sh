@@ -35,12 +35,9 @@
 #               systemctl, fail2ban-client, mktemp
 #
 #  Version History:
-#  v1.4 2026-09-16
-#       Stop deployment when Apache module enablement or fail2ban
-#       enable/start fails.
 #  v1.3 2026-09-16
-#       Stage the fallback apache-evasive filter with mktemp instead of a
-#       predictable /tmp path.
+#       Stage the fallback apache-evasive filter with mktemp and stop deployment
+#       when Apache module or fail2ban enablement fails.
 #  v1.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.

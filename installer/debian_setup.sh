@@ -66,12 +66,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
-#  v2.5 2026-09-20
-#       Require optional dotfile and shell commands to resolve to executable
-#       paths before selecting the corresponding setup operation.
 #  v2.4 2026-09-20
-#       Keep local dotfile and monitoring failures from terminating unrelated
-#       Debian setup steps, and localize optional prerequisites.
+#       Keep local dotfile and monitoring failures from stopping unrelated
+#       setup, localize optional prerequisites, and require executable commands.
 #  v2.3 2026-09-06
 #       Check uname before using it for system detection.
 #  v2.2 2026-07-11

@@ -52,12 +52,9 @@
 #  - Exits if sudo privileges are not granted.
 #
 #  Version History:
-#  v2.4 2026-09-20
-#       Require optional dotfile commands to resolve to executable paths before
-#       selecting the corresponding macOS setup operation.
 #  v2.3 2026-09-20
-#       Keep local dotfile setup failures from terminating unrelated macOS
-#       setup steps and localize optional prerequisites.
+#       Keep local dotfile failures from stopping unrelated setup, localize
+#       optional prerequisites, and require resolved commands to be executable.
 #  v2.2 2026-09-06
 #       Check uname before using it for system detection.
 #  v2.1 2026-07-11

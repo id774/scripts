@@ -45,12 +45,9 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
-#  v2.7 2026-09-20
-#       Localize dconf and file-install capabilities while keeping gsettings
-#       as the run-level Flashback settings prerequisite.
 #  v2.6 2026-09-20
-#       Continue independent Flashback settings after local failures and align
-#       prerequisite ownership and normal-skip reporting.
+#       Continue independent Flashback settings after local failures, keep
+#       gsettings run-level, and localize dconf/file capabilities and skips.
 #  v2.5 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
