@@ -40,12 +40,9 @@
 #  v1.5 2026-09-20
 #       Preserve mail-spool processing across per-user failures and avoid
 #       reporting create, permission, or truncate operations as successful.
-#  v1.4 2026-09-16
-#       Continue safe alias processing after enumeration or append failures,
-#       then skip mail-spool operations when alias setup is incomplete.
 #  v1.3 2026-09-16
-#       Stage the self-alias removal temporary file with mktemp instead of
-#       a predictable /tmp path.
+#       Stage self-alias removal with mktemp, continue safe alias processing
+#       after failures, and skip mail-spool work when alias setup is incomplete.
 #  v1.2 2026-07-12
 #       Replace GNU sed -i with a portable root-owned aliases update.
 #  v1.1 2026-07-11

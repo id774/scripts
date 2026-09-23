@@ -61,12 +61,9 @@
 #  of a normal batch traversal returns 0.
 #
 #  Version History:
-#  v2.5 2026-09-20
-#       Use executable-path detection before selecting optional tasksel desktop
-#       discovery while preserving session-file fallback behavior.
 #  v2.4 2026-09-20
-#       Let desktop validation own its command prerequisites and describe
-#       best-effort package processing without claiming all installs.
+#       Own desktop prerequisites locally, detect optional tasksel by executable
+#       path with session fallback, and describe package work as best-effort.
 #  v2.3 2026-09-06
 #       Check uname before using it for system detection.
 #  v2.2 2026-07-11

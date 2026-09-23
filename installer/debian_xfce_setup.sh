@@ -46,15 +46,9 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
-#  v1.5 2026-09-20
-#       Localize file-install capabilities and use usable-command detection
-#       for optional desktop components.
-#  v1.4 2026-09-20
-#       Continue independent Xfce settings after local failures and make
-#       desktop validation own its prerequisites.
 #  v1.3 2026-09-20
-#       Align check_commands with the shared prerequisite contract and keep
-#       usage-only awk out of normal main execution checks.
+#       Align check_commands and keep awk usage-only; localize desktop and file
+#       capabilities via executable detection and continue after local failures.
 #  v1.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.

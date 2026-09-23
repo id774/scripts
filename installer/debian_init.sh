@@ -51,12 +51,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
-#  v6.5 2026-09-20
-#       Finish desktop-option wording alignment so the interface describes
-#       package and settings application rather than desktop provisioning.
 #  v6.4 2026-09-20
-#       Clarify desktop setup scope and keep broad initial setup completion
-#       independent of individual child-script results.
+#       Clarify desktop setup scope and package/settings wording while keeping
+#       broad completion independent of individual child-script results.
 #  v6.3 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.

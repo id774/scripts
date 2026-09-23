@@ -39,12 +39,9 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
-#  v2.4 2026-09-20
-#       Treat optional locale and group commands as available only when their
-#       resolved command paths are executable.
 #  v2.3 2026-09-20
-#       Localize locale and group prerequisites so optional setup failures do
-#       not stop later Debian environment bootstrap steps.
+#       Localize locale and group prerequisites so optional failures do not stop
+#       later setup, and require resolved optional commands to be executable.
 #  v2.2 2026-09-11
 #       Let locales package provisioning establish locale-gen and update-locale
 #       instead of requiring them before setup begins.

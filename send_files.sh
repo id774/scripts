@@ -58,10 +58,9 @@
 #  127. Required command is not installed.
 #
 #  Version History:
-#  v2.0 2026-09-20
-#       Return a documented failure when the local archive copy fails.
 #  v1.9 2026-09-20
-#       Use the actual timestamped password-file path in the mail body.
+#       Use the actual timestamped password-file path in mail and return a
+#       documented failure when the local archive copy fails.
 #  v1.8 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.

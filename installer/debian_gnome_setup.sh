@@ -41,15 +41,9 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
-#  v1.5 2026-09-20
-#       Keep only gsettings as a run-level command prerequisite and detect
-#       optional keybinding, profile, and service capabilities where used.
-#  v1.4 2026-09-20
-#       Continue independent GNOME settings after local failures and treat
-#       unavailable optional keys and services as normal skips.
 #  v1.3 2026-09-20
-#       Align check_commands with the shared prerequisite contract and keep
-#       usage-only awk out of normal main execution checks.
+#       Align check_commands, keep awk usage-only and only gsettings run-level;
+#       localize optional capabilities and continue after local failures/skips.
 #  v1.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.

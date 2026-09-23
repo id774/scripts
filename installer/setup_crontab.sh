@@ -26,12 +26,9 @@
 #    "01 03 * * 0   root cd / && run-parts --report /etc/cron.weekend"
 #
 #  Version History:
-#  v1.8 2026-09-20
-#       Remove false no-change reporting and use neutral completion after
-#       independent cron directory and entry processing.
 #  v1.7 2026-09-20
-#       Avoid false success messages for cron directory and entry failures
-#       while continuing independent weekday and weekend setup.
+#       Continue independent weekday/weekend setup without false success or
+#       no-change reporting, and use neutral completion after processing.
 #  v1.6 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
