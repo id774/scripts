@@ -5,6 +5,8 @@ v2.0.3 (Release Date: TBD)
 --------------------------
 - Add install_nodejs.sh to install a fixed Node.js LTS release from official
   binaries under /opt/node/<major> on supported Linux and macOS systems.
+- Add install_npm.sh to update npm and globally install TypeScript, tsx, and
+  npm-check-updates for Node.js development.
 
 v2.0.2 (2026-09-23)
 -------------------
