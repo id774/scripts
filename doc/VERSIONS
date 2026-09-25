@@ -7,6 +7,8 @@ v2.0.3 (Release Date: TBD)
   binaries under /opt/node/<major> on supported Linux and macOS systems.
 - Add install_npm.sh to update npm and globally install TypeScript, tsx, and
   npm-check-updates for Node.js development.
+- Normalize /opt/node ownership in Linux and macOS permission workflows and
+  skip missing macOS permission target directories.
 
 v2.0.2 (2026-09-23)
 -------------------
