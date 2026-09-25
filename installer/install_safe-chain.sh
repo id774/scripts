@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ########################################################################
-# install_safe_chain.sh: Installer for Aikido Safe Chain
+# install_safe-chain.sh: Installer for Aikido Safe Chain
 #
 #  Description:
 #  This script downloads a selected Aikido Safe Chain release binary from
@@ -14,16 +14,16 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./install_safe_chain.sh [VERSION [PREFIX [--no-sudo]]]
+#      ./install_safe-chain.sh [VERSION [PREFIX [--no-sudo]]]
 #
 #  VERSION defaults to the version fixed in this script, and PREFIX
 #  defaults to /opt/safe-chain/<VERSION>.
 #
 #  Examples:
-#      ./install_safe_chain.sh
-#      ./install_safe_chain.sh 1.5.20
-#      ./install_safe_chain.sh 1.5.20 /opt/safe-chain/1.5.20
-#      ./install_safe_chain.sh 1.5.20 ~/.local/safe-chain/1.5.20 --no-sudo
+#      ./install_safe-chain.sh
+#      ./install_safe-chain.sh 1.5.20
+#      ./install_safe-chain.sh 1.5.20 /opt/safe-chain/1.5.20
+#      ./install_safe-chain.sh 1.5.20 ~/.local/safe-chain/1.5.20 --no-sudo
 #
 #  Options:
 #  -h, --help     Display this help message and exit.
