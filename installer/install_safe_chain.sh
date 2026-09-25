@@ -32,15 +32,23 @@
 #                 prefix must be writable by the caller.
 #
 #  Notes:
-#  - The default version is pinned to a reviewed release instead of the
-#    latest release discovered at run time, so the same invocation selects
-#    the same release and no release discovery API is needed. Before raising
-#    it, confirm that the new release keeps the platform asset names and the
-#    runtime data behavior that this installer and its guidance assume.
+#  - The default version is a provisional convenience value used when VERSION
+#    is omitted. It normally reflects a release selected when this installer
+#    was last maintained and is not automatically kept in sync with upstream
+#    releases.
+#  - An explicit VERSION is downloaded from its GitHub Release using the
+#    platform asset name expected by this installer. The corresponding
+#    release and asset must exist.
+#  - This installer installs only the Safe Chain binary. It does not run Safe
+#    Chain, configure shell integration, modify PATH, or change shell
+#    configuration. Ordinary package-manager commands are therefore not
+#    automatically protected after installation.
 #  - Safe Chain writes runtime data under the installation prefix when it
-#    runs, so the user running it needs write permission there. Managing
-#    that permission is left to the user.
-#  - This installer does not change PATH or shell configuration.
+#    runs, so the user running it needs write permission there. This installer
+#    does not change prefix ownership or permissions for runtime use.
+#  - To enable shell integration, the user may run
+#    <PREFIX>/bin/safe-chain setup and then restart the terminal. For CI
+#    environments, Safe Chain also provides <PREFIX>/bin/safe-chain setup-ci.
 #
 #  Requirements:
 #  - Linux or macOS on x64 or arm64, with network access to GitHub Releases.
@@ -188,10 +196,18 @@ install_safe_chain() {
 # Show usage guidance after installation
 show_usage_guidance() {
     echo "[INFO] Aikido Safe Chain $VERSION installed to $TARGET."
+    echo "[INFO] This installer installs only the Safe Chain binary; it does not run Safe Chain or configure shell integration."
+    echo "[INFO] PATH and shell configuration were not changed, so ordinary package-manager commands are not automatically protected."
     echo "[INFO] Safe Chain writes runtime data under $PREFIX when it runs; the user running it needs write permission there."
-    echo "[INFO] Run Safe Chain directly, for example:"
+    echo "[INFO] Runtime ownership and write permission for $PREFIX are not configured by this installer."
+    echo "[INFO] To use the installed binary directly:"
     echo "[INFO]   $TARGET npm install <package>"
     echo "[INFO]   $TARGET pip install <package>"
+    echo "[INFO] To enable shell integration manually:"
+    echo "[INFO]   $TARGET setup"
+    echo "[INFO] Restart the terminal after setup for the shell integration to take effect."
+    echo "[INFO] For CI environments, Safe Chain also provides:"
+    echo "[INFO]   $TARGET setup-ci"
 }
 
 # Main entry point of the script
