@@ -868,7 +868,7 @@ The `installer/` directory contains many setup and installation scripts.
 | Debian desktop setup | `debian_desktop_apt.sh`, `debian_desktop_setup.sh`, `debian_xfce_setup.sh`, `debian_gnome_flashback_setup.sh`, `debian_gnome_setup.sh` | Debian desktop environments | Desktop packages, workspaces, keybindings, appearance, and desktop services |
 | macOS full setup | `macos_setup.sh`, `create_emergencyadmin.sh`, `install_brews.sh`, `reinstall_brew.sh`, `macos_finder_settings.sh`, `set_ipv6_macos.sh` | macOS | Dotfiles, Homebrew, FileVault recovery user, Finder settings, and network configuration |
 | Dotfiles and editors | `install_dotfiles.sh`, `install_dotvim.sh`, `setup_dot_ipython.sh`, `setup_nvim.sh`, `setup_jupyter_themes.sh`, `setup_xdg_dirs_en.sh` | User environments | Deploys editor, shell, IPython, Jupyter, and desktop user configuration |
-| Languages and runtimes | `install_R_libs.sh`, `install_python.sh`, `install_pip.sh`, `install_conda.sh`, `install_ruby.sh`, `install_gems.sh`, `install_nodejs.sh`, `install_npm.sh`, `install_zsh.sh`, `install_mecab-stack.sh` | Primarily Unix-like systems | Downloads, builds, installs, and configures language runtimes and libraries |
+| Languages, runtimes, and development tools | `install_R_libs.sh`, `install_python.sh`, `install_pip.sh`, `install_conda.sh`, `install_ruby.sh`, `install_gems.sh`, `install_nodejs.sh`, `install_npm.sh`, `install_safe_chain.sh`, `install_zsh.sh`, `install_mecab-stack.sh` | Primarily Unix-like systems | Downloads, builds, installs, and configures language runtimes, libraries, and development tools |
 | Monitoring and scheduled operations | `install_apache_log_analysis.sh`, `install_chkrootkit.sh`, `install_clamscan.sh`, `install_get_resources.sh`, `install_git-pull.sh`, `install_munin.sh`, `install_rsync_backup.sh`, `install_run_tests.sh` | Primarily Linux / Debian | Deploys executables, configuration, cron jobs, logrotate, and monitoring services |
 | System and security configuration | `configure_sysctl.sh`, `setup_iptables.sh`, `setup_pamd.sh`, `setup_securetty.sh`, `setup_dos_guard.sh`, `setup_apache2_ssl.sh`, `setup_crontab.sh`, `purge_kernels.sh`, `remove-tracker.sh` | Primarily Linux / Debian | Changes `/etc`, kernel or security policy, systemd configuration, services, and installed packages |
 | Chrome and GDM | `install_google_chrome.sh`, `install_gdm_themes.sh`, `install_gdm_themes2.sh` | Debian / Linux desktop | Configures the Chrome APT source or installs display-manager themes |
@@ -1276,6 +1276,13 @@ Updates npm and globally installs a compact set of Node.js and TypeScript comman
 It installs TypeScript, tsx, and npm-check-updates.
 
 It accepts an optional Node.js installation prefix and keeps global installation in that prefix.
+
+
+### install_safe_chain.sh
+
+Downloads and installs a selected Aikido Safe Chain release binary under a configurable prefix on supported Linux and macOS systems.
+
+It does not modify shell configuration or run Safe Chain during installation.
 
 
 ### install_zsh.sh
