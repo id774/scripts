@@ -15,17 +15,17 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  Run this script without arguments to install the default Node.js version (24.21.0):
+#  Run this script without arguments to install the default Node.js version:
 #      ./install_nodejs.sh
 #
 #  Specify a different Node.js version:
-#      ./install_nodejs.sh 24.21.0
+#      ./install_nodejs.sh VERSION
 #
 #  Specify an installation prefix:
-#      ./install_nodejs.sh 22.23.3 /opt/node/22
+#      ./install_nodejs.sh VERSION PREFIX
 #
 #  Install without sudo (for local user installation):
-#      ./install_nodejs.sh 24.21.0 ~/.local/node --no-sudo
+#      ./install_nodejs.sh VERSION PREFIX --no-sudo
 #
 #  Options:
 #  -h, --help     Display this help message and exit.
@@ -34,11 +34,15 @@
 #                 following the version and the installation prefix.
 #
 #  Notes:
-#  - The default version is 24.21.0.
+#  - The default version is a provisional convenience value used when no
+#    version is specified. It normally reflects the current release selected
+#    when this installer was last maintained and is not automatically kept in
+#    sync with upstream releases.
+#  - An explicit version is resolved through this installer's configured
+#    download source and path rules. It can be installed only when the
+#    corresponding artifact is available from that source.
 #  - By default, if no installation path is provided, Node.js will be installed under /opt/node/<major>
-#    For example, Node.js 24.21.0 will be installed to /opt/node/24
 #  - Linux and macOS on x64 and arm64 are supported.
-#  - The default version is fixed in this script; LTS releases are not discovered automatically.
 #  - PATH and global symlinks are not changed.
 #
 #  Requirements:

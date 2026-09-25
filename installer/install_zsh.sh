@@ -15,29 +15,32 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  Run this script without arguments to install the default version (5.9):
+#  Run this script without arguments to install the default version:
 #      ./install_zsh.sh
 #
-#  Specify a version to install a different release:
-#      ./install_zsh.sh 5.8.1
+#  Specify an older release available from the upstream `old` directory:
+#      ./install_zsh.sh VERSION
 #
 #  Specify an installation prefix:
-#      ./install_zsh.sh 5.8.1 /usr/local
+#      ./install_zsh.sh VERSION PREFIX
 #
 #  Install without sudo (for local user installation):
-#      ./install_zsh.sh 5.9 ~/.local/zsh --no-sudo
+#      ./install_zsh.sh VERSION PREFIX --no-sudo
 #
 #  Notes:
-#  - By default, if no installation path is provided, Zsh will be installed under /opt/zsh/x.x
-#    For example, Zsh 5.9 will be installed to /opt/zsh/5.9
+#  - By default, if no installation path is provided, Zsh will be installed under /opt/zsh/<major>.<minor>
 #
 #  - Source files are saved to /usr/local/src/zsh only when using sudo.
 #    If installed without sudo (e.g. using `--no-sudo`), source files will not be saved.
 #
-#  - The current default version for installation is 5.9, but it is anticipated that this version
-#    will eventually be moved to the 'old' directory in the future. At that point, to install version
-#    5.9, it will need to be explicitly specified. To install the latest version then, the script's
-#    default version will need to be updated.
+#  - When no version is specified, the default version is downloaded from
+#    the primary https://www.zsh.org/pub/ directory.
+#  - An explicitly specified version is downloaded from
+#    https://www.zsh.org/pub/old/.
+#  - The default is therefore a provisional value for the release available
+#    from the primary directory. When upstream moves that release to `old`,
+#    update the default to a release available from the primary directory;
+#    older releases can be selected explicitly.
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.

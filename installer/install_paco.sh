@@ -15,14 +15,23 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  Run this script without arguments to install the default version (2.0.9):
+#  Run this script without arguments to install the default version:
 #      ./install_paco.sh
 #
 #  Specify a version to install a different release:
-#      ./install_paco.sh 2.0.8
+#      ./install_paco.sh VERSION
 #
 #  Skip saving sources by specifying any second argument:
-#      ./install_paco.sh 2.0.9 skip
+#      ./install_paco.sh VERSION skip
+#
+#  Notes:
+#  - The default version is a provisional convenience value used when no
+#    version is specified. It normally reflects the current release selected
+#    when this installer was last maintained and is not automatically kept in
+#    sync with upstream releases.
+#  - An explicit version is resolved through this installer's configured
+#    download source and path rules. It can be installed only when the
+#    corresponding artifact is available from that source.
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.

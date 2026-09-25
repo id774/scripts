@@ -15,12 +15,21 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  Run this script without arguments to install the default version (5.0.3):
+#  Run this script without arguments to install the default version:
 #      ./install_cassandra.sh
 #  Specify a version to install a different release:
-#      ./install_cassandra.sh 4.1.8
+#      ./install_cassandra.sh VERSION
 #  Skip creating lib and log directories by adding a second argument:
-#      ./install_cassandra.sh 4.1.8 -n
+#      ./install_cassandra.sh VERSION -n
+#
+#  Notes:
+#  - The default version is a provisional convenience value used when no
+#    version is specified. It normally reflects the current release selected
+#    when this installer was last maintained and is not automatically kept in
+#    sync with upstream releases.
+#  - An explicit version is resolved through this installer's configured
+#    download source and path rules. It can be installed only when the
+#    corresponding artifact is available from that source.
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
