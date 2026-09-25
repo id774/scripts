@@ -15,14 +15,23 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  Run this script without arguments to install the default version (2.72):
+#  Run this script without arguments to install the default version:
 #      ./install_autoconf.sh
 #
 #  Specify a version to install a different release:
-#      ./install_autoconf.sh 2.71
+#      ./install_autoconf.sh VERSION
 #
 #  Skip saving sources by specifying any second argument:
-#      ./install_autoconf.sh 2.71 skip
+#      ./install_autoconf.sh VERSION skip
+#
+#  Notes:
+#  - The default version is a provisional convenience value used when no
+#    version is specified. It normally reflects the current release selected
+#    when this installer was last maintained and is not automatically kept in
+#    sync with upstream releases.
+#  - An explicit version is resolved through this installer's configured
+#    download source and path rules. It can be installed only when the
+#    corresponding artifact is available from that source.
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.

@@ -15,21 +15,28 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  Run this script without arguments to install the default Ruby version (4.0.6):
+#  Run this script without arguments to install the default Ruby version:
 #      ./install_ruby.sh
 #
 #  Specify a different Ruby version:
-#      ./install_ruby.sh 3.4.10
+#      ./install_ruby.sh VERSION
 #
 #  Specify an installation prefix:
-#      ./install_ruby.sh 4.0.6 /opt/ruby/4.0
+#      ./install_ruby.sh VERSION PREFIX
 #
 #  Install without sudo (for local user installation):
-#      ./install_ruby.sh 3.4.10 ~/.local/ruby --no-sudo
+#      ./install_ruby.sh VERSION PREFIX --no-sudo
 #
 #  Notes:
-#  - By default, if no installation path is provided, Ruby will be installed under /opt/ruby/x.x
-#    For example, Ruby 3.4.10 will be installed to /opt/ruby/3.4
+#  - The default version is a provisional convenience value used when no
+#    version is specified. It normally reflects the current release selected
+#    when this installer was last maintained and is not automatically kept in
+#    sync with upstream releases.
+#  - An explicit version is resolved through this installer's configured
+#    download source and path rules. It can be installed only when the
+#    corresponding artifact is available from that source.
+#
+#  - By default, if no installation path is provided, Ruby will be installed under /opt/ruby/<major>.<minor>
 #
 #  - Source files are saved to /usr/local/src/ruby only when using sudo.
 #    If installed without sudo (e.g. using `--no-sudo`), source files will not be saved.

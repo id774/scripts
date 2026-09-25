@@ -15,21 +15,28 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#  Run this script without arguments to install the default version (6.5):
+#  Run this script without arguments to install the default version:
 #      ./install_ncurses.sh
 #
 #  Specify a version to install a different release:
-#      ./install_ncurses.sh 5.9
+#      ./install_ncurses.sh VERSION
 #
 #  Specify an installation prefix:
-#      ./install_ncurses.sh 6.5 /opt/ncurses/6.5
+#      ./install_ncurses.sh VERSION PREFIX
 #
 #  Install without sudo (for local user installation):
-#      ./install_ncurses.sh 5.9 ~/.local/ncurses --no-sudo
+#      ./install_ncurses.sh VERSION PREFIX --no-sudo
 #
 #  Notes:
-#  - By default, if no installation path is provided, ncurses will be installed under /opt/ncurses/x.x
-#    For example, version 6.5 will be installed to /opt/ncurses/6.5
+#  - The default version is a provisional convenience value used when no
+#    version is specified. It normally reflects the current release selected
+#    when this installer was last maintained and is not automatically kept in
+#    sync with upstream releases.
+#  - An explicit version is resolved through this installer's configured
+#    download source and path rules. It can be installed only when the
+#    corresponding artifact is available from that source.
+#
+#  - By default, if no installation path is provided, ncurses will be installed under /opt/ncurses/<major>.<minor>
 #
 #  - Source files are saved to /usr/local/src/ncurses only when using sudo.
 #    If installed without sudo (e.g. using `--no-sudo`), source files will not be saved.

@@ -1264,7 +1264,7 @@ Downloads and installs Node.js from the official binary distribution.
 
 It supports a version, installation prefix, and `--no-sudo`.
 
-By default, it installs Node.js 24.21.0 under `/opt/node/24`.
+By default, it installs Node.js under `/opt/node/<major>`.
 
 It supports Linux and macOS on x64 and arm64.
 
