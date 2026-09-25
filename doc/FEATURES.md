@@ -1083,7 +1083,7 @@ Its main operations include:
 - Finder settings
 - System folder localization
 - Zsh compinit permission repair
-- Ownership normalization for `/opt/python`, `/opt/ruby`, and `/usr/local/src`
+- Ownership normalization for `/opt/python`, `/opt/ruby`, `/opt/node`, and `/usr/local/src`
 - `.bash_history` cleanup
 
 

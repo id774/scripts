@@ -23,7 +23,8 @@
 #        * Enable system folder localizations via macos_system_folder_localizations.sh.
 #        * Fix zsh compinit cache issues via fix_compinit.sh.
 #    - Permissions:
-#        * Enforce root:wheel ownership on /opt/python, /opt/ruby, /usr/local/src.
+#        * Enforce root:wheel ownership on /opt/python, /opt/ruby, /opt/node,
+#          and /usr/local/src when those directories exist.
 #    - Cleanup:
 #        * Remove the user's shell history (~/.bash_history only).
 #
@@ -52,6 +53,8 @@
 #  - Exits if sudo privileges are not granted.
 #
 #  Version History:
+#  v2.4 2026-09-25
+#       Add /opt/node ownership normalization and skip missing permission targets.
 #  v2.3 2026-09-20
 #       Keep local dotfile failures from stopping unrelated setup, localize
 #       optional prerequisites, and require resolved commands to be executable.
@@ -234,9 +237,10 @@ fix_compinit() {
 
 # Set permissions for key directories
 set_permissions() {
-    sudo chown -R root:wheel /opt/python
-    sudo chown -R root:wheel /opt/ruby
-    sudo chown -R root:wheel /usr/local/src
+    for dir in /opt/python /opt/ruby /opt/node /usr/local/src; do
+        [ -d "$dir" ] || continue
+        sudo chown -R root:wheel "$dir"
+    done
 }
 
 # Erase history files
