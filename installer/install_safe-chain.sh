@@ -43,9 +43,24 @@
 #    Chain, configure shell integration, modify PATH, or change shell
 #    configuration. Ordinary package-manager commands are therefore not
 #    automatically protected after installation.
-#  - Safe Chain writes runtime data under the installation prefix when it
-#    runs, so the user running it needs write permission there. This installer
-#    does not change prefix ownership or permissions for runtime use.
+#  - Packaged Safe Chain binaries use the installation prefix as the base for
+#    mutable runtime data as well as for the installed binary. The user running
+#    Safe Chain therefore needs ongoing write access to the prefix.
+#  - Runtime data includes CA key and certificate files under <PREFIX>/certs.
+#    Safe Chain may regenerate that CA data during later runs, so write access
+#    is not only a first-run initialization requirement.
+#  - <PREFIX>/bin/safe-chain setup writes startup scripts under
+#    <PREFIX>/scripts, and <PREFIX>/bin/safe-chain setup-ci writes command
+#    shims under <PREFIX>/shims.
+#  - In sudo mode, a newly created default /opt/safe-chain/<VERSION> prefix is
+#    normally owned by root. Before running Safe Chain as a non-root user,
+#    grant the intended user appropriate write access to the runtime prefix.
+#  - This installer intentionally changes ownership only for the installed
+#    binary in sudo mode. It does not choose or overwrite the runtime ownership
+#    policy for the rest of the prefix, because the correct user, group, or ACL
+#    is deployment-specific and existing permissions must survive reinstall.
+#    Configure that policy after installation without making the prefix broadly
+#    writable; <PREFIX>/certs contains a CA private key.
 #  - To enable shell integration, the user may run
 #    <PREFIX>/bin/safe-chain setup and then restart the terminal. For CI
 #    environments, Safe Chain also provides <PREFIX>/bin/safe-chain setup-ci.
@@ -54,6 +69,9 @@
 #  - Linux or macOS on x64 or arm64, with network access to GitHub Releases.
 #  - The commands curl, uname, mkdir, cp, chmod, and rm.
 #  - Sudo mode: sudo, chown, and sudo privileges.
+#  - Runtime use: the intended Safe Chain user needs ongoing write access to
+#    the installation prefix. In sudo mode with the default /opt prefix,
+#    configure that access after installation before non-root use.
 #
 #  Exit Status:
 #  0   Installation succeeded, or usage was displayed.
@@ -198,8 +216,13 @@ show_usage_guidance() {
     echo "[INFO] Aikido Safe Chain $VERSION installed to $TARGET."
     echo "[INFO] This installer installs only the Safe Chain binary; it does not run Safe Chain or configure shell integration."
     echo "[INFO] PATH and shell configuration were not changed, so ordinary package-manager commands are not automatically protected."
-    echo "[INFO] Safe Chain writes runtime data under $PREFIX when it runs; the user running it needs write permission there."
-    echo "[INFO] Runtime ownership and write permission for $PREFIX are not configured by this installer."
+    echo "[INFO] Safe Chain uses $PREFIX for mutable runtime data as well as for the installed binary."
+    echo "[INFO] The user running Safe Chain needs ongoing write access to $PREFIX."
+    echo "[INFO] In sudo mode, a newly created default /opt prefix is normally root-owned; grant the intended non-root user appropriate write access before use."
+    echo "[INFO] CA key and certificate data under $PREFIX/certs may be regenerated during later runs."
+    echo "[INFO] setup and setup-ci also write under $PREFIX/scripts and $PREFIX/shims."
+    echo "[INFO] In sudo mode, this installer changes ownership only for the binary and does not choose runtime user, group, or ACL policy for the rest of $PREFIX."
+    echo "[INFO] Configure that runtime permission policy for the intended user without making $PREFIX broadly writable; $PREFIX/certs contains a CA private key."
     echo "[INFO] To use the installed binary directly:"
     echo "[INFO]   $TARGET npm install <package>"
     echo "[INFO]   $TARGET pip install <package>"

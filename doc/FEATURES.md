@@ -1284,6 +1284,12 @@ Downloads and installs a selected Aikido Safe Chain release binary under a confi
 
 It does not modify shell configuration or run Safe Chain during installation.
 
+Packaged Safe Chain binaries use the installation prefix as the base for mutable runtime data. The user running Safe Chain therefore needs ongoing write access to the prefix. CA key and certificate data under `certs` may be regenerated during later runs, while `setup` and `setup-ci` write to `scripts` and `shims`.
+
+In sudo mode, a newly created default `/opt/safe-chain/<VERSION>` prefix is normally root-owned. Before non-root use, the operator must grant the intended Safe Chain user appropriate write access. The installer deliberately changes ownership only for the binary and leaves runtime user, group, or ACL policy to the operator so that deployment-specific permissions survive reinstall.
+
+The runtime prefix must not be made broadly writable because `certs` contains a CA private key.
+
 
 ### install_zsh.sh
 
