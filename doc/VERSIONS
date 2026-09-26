@@ -11,6 +11,7 @@ v2.0.3 (Release Date: TBD)
   skip missing macOS permission target directories.
 - Add install_safe-chain.sh to install Aikido Safe Chain release binaries under
   a configurable prefix on supported Linux and macOS systems.
+- Keep pyping_test.py from leaking expected ping results to standard output.
 
 v2.0.2 (2026-09-23)
 -------------------
