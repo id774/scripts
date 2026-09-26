@@ -23,13 +23,15 @@
 #    - Return 127 and start no worker threads when the ping command is missing.
 #    - Return 126 and start no worker threads when the ping command is not executable.
 #    - Return 1 from main() when at least one worker reports a ping execution error.
-#    - Return 0 from main() when only unreachable hosts are reported.
+#    - Return 0 from main() for unreachable hosts without leaking its output to test stdout.
 #
 #  Notes:
 #    - This test simulates the pinging process and does not send actual network requests.
 #    - The script is designed to work with Python 3.
 #
 #  Version History:
+#  v1.3 2026-09-26
+#       Suppress expected pyping.main() output in the unreachable-host test.
 #  v1.2 2026-09-20
 #       Cover range validation, unreachable hosts, and ping execution failures.
 #  v1.1 2025-01-06
@@ -162,7 +164,8 @@ class TestPyPing(unittest.TestCase):
     @patch('subprocess.check_output', side_effect=subprocess.CalledProcessError(1, 'ping'))
     def test_main_returns_0_for_unreachable_hosts_only(self, mock_check_output, mock_find_command):
         """ Test that main() returns 0 when only unreachable hosts are reported. """
-        rc = pyping.main("192.168.11.", 1, 2, False)
+        with patch('sys.stdout'):
+            rc = pyping.main("192.168.11.", 1, 2, False)
         self.assertEqual(rc, 0)
 
 
