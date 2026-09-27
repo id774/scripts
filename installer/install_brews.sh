@@ -39,6 +39,9 @@
 #    operations from being attempted.
 #
 #  Version History:
+#  v2.0 2026-09-27
+#       Add Markdown and AWS CLI to the Homebrew package set and document
+#       package-order guidance.
 #  v1.9 2026-09-20
 #       Align Homebrew prerequisite and best-effort batch handling with the
 #       established package-installer contract.
@@ -133,12 +136,15 @@ main() {
 
     # Install essential tools and libraries
     echo "[INFO] Installing essential tools and libraries using Homebrew..."
+    # Roughly order general-purpose tools before larger frameworks and server tools.
+    # Put external-service clients last when practical; the order is only a guide.
     install_brew openssl
     if ! brew link openssl --force; then
         echo "[WARN] Failed to link openssl; continuing." >&2
     fi
     install_brew wget
     install_brew nkf
+    install_brew markdown
     install_brew vim
     install_brew nvim
     install_brew freetype
@@ -152,6 +158,7 @@ main() {
     install_brew findutils
     install_brew moreutils
     install_brew binutils
+    install_brew awscli
 
     # Cleanup old versions and caches to free up disk space
     echo "[INFO] Cleaning up old versions and caches..."

@@ -185,6 +185,9 @@ smart_apt() {
     done
 }
 
+# Roughly order general-purpose tools before larger frameworks and server tools.
+# Put external-service clients last when practical; the order is only a guide.
+
 # Desktop environment packages
 desktop_environment() {
     smart_apt xfwm4 xfwm4-themes xfce4-goodies xfce4-terminal gnome-themes gnome-themes-extras

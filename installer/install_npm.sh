@@ -6,9 +6,10 @@
 #  Description:
 #  This script automates the installation of a compact set of globally
 #  useful Node.js and TypeScript command-line tools. It updates npm itself
-#  to the latest version and globally installs TypeScript, tsx, and
-#  npm-check-updates. This is a batch installer, so a failure of one
-#  package does not stop the remaining packages.
+#  to the latest version and installs general development tools, formatters,
+#  linters, framework and database CLIs, and language servers globally.
+#  This is a batch installer, so a failure of one package does not stop the
+#  remaining packages.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -48,6 +49,9 @@
 #  - Proxy configuration is handled by npm from the inherited environment.
 #
 #  Version History:
+#  v1.1 2026-09-27
+#       Add global formatting, linting, framework, Prisma, and language-server
+#       tools and document package-order guidance.
 #  v1.0 2026-09-25
 #       Initial release.
 #
@@ -123,11 +127,22 @@ install_packages() {
     fi
 
     echo "[INFO] Installing selected npm development tools..."
+    # Roughly order general-purpose tools before larger frameworks and server tools.
+    # Put external-service clients last when practical; the order is only a guide.
     # Define the list of packages as a multi-line string
     packages="
 typescript
 tsx
 npm-check-updates
+prettier
+eslint
+cspell
+sql-formatter
+prisma
+@nestjs/cli
+typescript-language-server
+@prisma/language-server
+@tailwindcss/language-server
 "
 
     # Loop through each package and install it
