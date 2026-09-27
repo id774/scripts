@@ -1292,7 +1292,10 @@ It supports Linux and macOS on x64 and arm64.
 
 Updates npm and globally installs a compact set of Node.js and TypeScript command-line tools.
 
-It installs TypeScript, tsx, and npm-check-updates.
+It installs `typescript`, `tsx`, `npm-check-updates`, `prettier`, `eslint`,
+`cspell`, `sql-formatter`, `prisma`, `@nestjs/cli`,
+`typescript-language-server`, `@prisma/language-server`, and
+`@tailwindcss/language-server`.
 
 It accepts an optional Node.js installation prefix and keeps global installation in that prefix.
 

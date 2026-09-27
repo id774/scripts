@@ -79,6 +79,8 @@
 #  required command returns 126.
 #
 #  Version History:
+#  v2.4 2026-09-27
+#       Add AWS CLI to the bulk package set and document package-order guidance.
 #  v2.3 2026-09-20
 #       Align APT prerequisite handling with the shared command contract and
 #       describe best-effort batch completion without claiming all installs.
@@ -162,6 +164,9 @@ smart_apt() {
     done
 }
 
+# Roughly order general-purpose tools before larger frameworks and server tools.
+# Put external-service clients last when practical; the order is only a guide.
+
 # Basic packages
 basic_packages() {
     smart_apt vim w3m lynx curl wget openssh-server ssh rsync build-essential gcc g++ make \
@@ -229,7 +234,7 @@ optional_packages() {
     smart_apt gnuserv libxml2 libxml2-dev libxslt-dev libxslt1-dev expat \
               libssl-dev libio-socket-ssl-perl libnet-ssleay-perl libtemplate-perl \
               libxml-libxml-perl libcurl4-openssl-dev libapr1-dev libaprutil1-dev \
-              libgpcl-dev
+              libgpcl-dev awscli
 }
 
 # Main entry point of the script
