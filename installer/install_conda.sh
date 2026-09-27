@@ -18,7 +18,7 @@
 #  Run this script in a terminal to set up your Python environment.
 #
 #  Examples:
-#     ./install_conda.sh /path/to/python
+#     ./install_conda.sh /path/to/conda
 #     ./install_conda.sh
 #
 #  Requirements:
@@ -30,8 +30,8 @@
 #  127: Error - A required command was not found.
 #
 #  Notes:
-#  - If no path is provided, the script assumes the default installation
-#    path for Anaconda (`$HOME/local/anaconda3`).
+#  - If no prefix is provided, the script uses `conda` from PATH.
+#  - If a prefix is provided, the script uses `<PREFIX>/bin/conda`.
 #  - Includes a focused set of tools for scientific computing, data
 #    analysis, machine learning, and Hugging Face work.
 #  - This is a batch installer. A failure to update Conda or install one
@@ -41,6 +41,8 @@
 #    confirmation.
 #
 #  Version History:
+#  v2.1 2026-09-27
+#       Use Conda from PATH by default while retaining explicit prefix selection.
 #  v2.0 2026-08-22
 #       Slim the package set, remove Easy Install, and improve portability.
 #  v1.4 2026-07-11
@@ -94,7 +96,7 @@ setup_environment() {
     if [ -n "$1" ]; then
         export CONDA=$1/bin/conda
     else
-        export CONDA=$HOME/local/anaconda3/bin/conda
+        export CONDA=conda
     fi
 
     # Verify that Conda is available

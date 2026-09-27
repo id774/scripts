@@ -1240,6 +1240,10 @@ It provisions the Conda and Mamba runtime itself, which is a separate responsibi
 
 Installs a compact, focused set of libraries and tools into a Conda environment for scientific computing, data analysis, machine learning, and Hugging Face work.
 
+Without a prefix, it uses `conda` from PATH. With a prefix, it uses `<PREFIX>/bin/conda`.
+
+It does not own a Conda runtime version or a default versioned prefix; Miniforge runtime provisioning belongs to `install_miniforge.sh`.
+
 
 ### setup_python_symlink.sh
 
