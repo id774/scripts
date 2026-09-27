@@ -12,8 +12,8 @@ v2.0.3 (Release Date: TBD)
 - Add install_safe-chain.sh to install Aikido Safe Chain release binaries under
   a configurable prefix on supported Linux and macOS systems.
 - Keep pyping_test.py from leaking expected ping results to standard output.
-- Add versioned Miniforge Conda/Mamba runtimes under /opt/conda and align the
-  Conda library installer with standard PATH-or-prefix runtime selection.
+- Add versioned Miniforge Conda/Mamba runtimes under /opt/conda with aligned
+  PATH-or-prefix library installation and Linux ownership normalization.
 - Add Markdown and AWS CLI to the Homebrew package set and AWS CLI to the
   Debian bulk package set for the shared development environment.
 
