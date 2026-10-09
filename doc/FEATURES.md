@@ -435,6 +435,8 @@ When needed, it can be composed with:
 
 Assists with opening and mounting a LUKS encrypted block device after the user has selected the device.
 
+Run `luksmount -l` or `luksmount --list` to display block-device and filesystem information without mounting anything. The listing uses detailed lsblk columns and falls back to `lsblk -f` when that format is unavailable.
+
 Given a device name and mapper name, it retrieves and displays the disk serial number through `get-serial`, asks the user to confirm the selected physical device, opens the device with `cryptsetup open`, and mounts `/dev/mapper/<name>` on `/mnt/user/<name>`.
 
 It does not select devices, create mountpoint directories, unmount volumes, or close mappings.

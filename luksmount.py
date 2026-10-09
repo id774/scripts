@@ -11,10 +11,10 @@
 #  device, opens it with `cryptsetup open`, and mounts the resulting
 #  mapper on /mnt/user/<name>.
 #
-#  Device selection (for example with `lsblk -f`) is outside the scope of
-#  this script and remains a manual step. The mount target is fixed to
-#  /mnt/user/<name>. This script does not unmount volumes and does not
-#  close mappings.
+#  Device listing is available through -l or --list, using detailed lsblk
+#  output with a legacy fallback. Device selection remains manual. The
+#  mount target is fixed to /mnt/user/<name>. This script does not unmount
+#  volumes or close mappings.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -23,6 +23,8 @@
 #
 #  Usage:
 #      luksmount.py <device> <name>
+#      luksmount.py -l
+#      luksmount.py --list
 #
 #  Example:
 #      luksmount.py sdb disk3
@@ -32,6 +34,7 @@
 #  Options:
 #  -h, --help       Display this help message and exit.
 #  -v, --version    Display the script version and exit.
+#  -l, --list       Display block-device information and exit without mounting.
 #
 #  Requirements:
 #  - Linux
@@ -40,6 +43,7 @@
 #  - cryptsetup
 #  - mount
 #  - sudo
+#  - lsblk (required only for -l or --list)
 #
 #  Notes:
 #  - Specify the device without the /dev/ prefix (e.g. sdb, not /dev/sdb).
@@ -53,12 +57,14 @@
 #    open. This script does not close mappers.
 #
 #  Exit Status:
-#  0: Success, help/version display, or user cancellation.
+#  0: Success, successful listing, help/version display, or user cancellation.
 #  1: General failure.
 #  126: Required command exists but is not executable.
 #  127: Required command is not installed.
 #
 #  Version History:
+#  v1.1 2026-10-09
+#       Add read-only block-device listing with detailed and legacy lsblk modes.
 #  v1.0 2026-09-03
 #       Initial release.
 #
@@ -245,6 +251,20 @@ def run_command(command):
         return 1
 
 
+def list_block_devices():
+    """ Display block devices with a fallback for older lsblk versions. """
+    columns = "NAME,SIZE,TYPE,MODEL,SERIAL,FSTYPE,FSVER,UUID,FSAVAIL,FSUSE%,MOUNTPOINTS"
+    if run_command(["lsblk", "-o", columns]) == 0:
+        return 0
+
+    print("[WARN] Detailed lsblk output failed; falling back to lsblk -f.", file=sys.stderr)
+    if run_command(["lsblk", "-f"]) == 0:
+        return 0
+
+    print("[ERROR] Failed to list block devices.", file=sys.stderr)
+    return 1
+
+
 def process_mount(device, name):
     """ Run validation, serial display, confirmation, sudo check, open, and mount in order. """
     source, mapper, target = build_paths(device, name)
@@ -289,6 +309,11 @@ def main():
     if len(args) == 1 and args[0] in ('-v', '--version'):
         print("luksmount.py %s" % get_script_version())
         return 0
+    if len(args) == 1 and args[0] in ('-l', '--list'):
+        status = check_required_commands(["lsblk"])
+        if status != 0:
+            return status
+        return list_block_devices()
 
     if len(args) != 2 or args[0].startswith('-') or args[1].startswith('-'):
         print("Usage: luksmount.py <device> <name>", file=sys.stderr)
