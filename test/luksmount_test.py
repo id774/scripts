@@ -6,7 +6,7 @@
 #  Description:
 #  This test suite verifies the control flow, failure semantics, command
 #  arguments, and side effect boundary of luksmount.py. All external
-#  commands (get-serial, sudo, cryptsetup, mount) and filesystem checks
+#  commands (get-serial, sudo, cryptsetup, mount, lsblk) and filesystem checks
 #  are mocked; no real block device, passphrase, or privilege is used.
 #
 #  Author: id774 (More info: https://id774.net)
@@ -20,7 +20,7 @@
 #
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
-#    - Verifies that --version prints 'luksmount.py v1.0' and exits with code 0.
+#    - Verifies that --version prints 'luksmount.py v1.1' and exits with code 0.
 #    - Build source, mapper, and target paths from a device and a name.
 #    - Build the cryptsetup open command as an argument list.
 #    - Build the mount command as an argument list.
@@ -40,8 +40,14 @@
 #    - has_sudo_privileges() returns False and prints one diagnostic when sudo cannot be executed.
 #    - A sudo failure inside process_mount() prints exactly one [ERROR] line.
 #    - find_command_with_status() resolves an empty PATH component to the current directory.
+#    - -l and --list show the requested lsblk columns without entering the mount workflow.
+#    - A failed detailed lsblk call falls back to lsblk -f, preserving success and failure status.
+#    - Missing and non-executable lsblk commands return 127 and 126 in listing mode.
+#    - Listing rejects extra arguments without running any disk operations.
 #
 #  Version History:
+#  v1.1 2026-10-09
+#       Test read-only device listing, fallback, and error isolation.
 #  v1.0 2026-09-03
 #       Initial release.
 #
@@ -89,10 +95,10 @@ class TestLuksMount(unittest.TestCase):
         self.assertEqual(returncode, 0)
         self.assertIn('Usage:', out)
 
-    def test_version_shows_v1_0(self):
+    def test_version_shows_v1_1(self):
         returncode, out = self.run_script('--version')
         self.assertEqual(returncode, 0)
-        self.assertIn('luksmount.py v1.0', out)
+        self.assertIn('luksmount.py v1.1', out)
 
     def test_build_paths(self):
         self.assertEqual(luksmount.build_paths('sdb', 'disk3'),
@@ -242,6 +248,97 @@ class TestLuksMount(unittest.TestCase):
         with patch.dict(os.environ, {'PATH': directory}):
             with patch.object(sys, 'argv', ['luksmount.py', 'sdb', 'disk3']):
                 self.assertEqual(luksmount.main(), 126)
+        mock_process.assert_not_called()
+
+    LSBLK_DETAILED = ['lsblk', '-o', 'NAME,SIZE,TYPE,MODEL,SERIAL,FSTYPE,FSVER,UUID,FSAVAIL,FSUSE%,MOUNTPOINTS']
+
+    def assert_list_success(self, option):
+        with patch('luksmount.process_mount') as mock_process:
+            with patch('luksmount.run_command', return_value=0) as mock_run:
+                with patch('luksmount.check_required_commands', return_value=0) as mock_check:
+                    with patch.object(sys, 'argv', ['luksmount.py', option]):
+                        self.assertEqual(luksmount.main(), 0)
+        mock_check.assert_called_once_with(['lsblk'])
+        mock_run.assert_called_once_with(self.LSBLK_DETAILED)
+        mock_process.assert_not_called()
+
+    def test_list_short_option(self):
+        self.assert_list_success('-l')
+
+    def test_list_long_option(self):
+        self.assert_list_success('--list')
+
+    @patch('luksmount.process_mount')
+    @patch('luksmount.run_command', side_effect=[1, 0])
+    @patch('luksmount.check_required_commands', return_value=0)
+    def test_list_uses_legacy_fallback(self, mock_check, mock_run, mock_process):
+        with patch.object(sys, 'argv', ['luksmount.py', '--list']):
+            self.assertEqual(luksmount.main(), 0)
+        self.assertEqual([c[0][0] for c in mock_run.call_args_list],
+                         [self.LSBLK_DETAILED, ['lsblk', '-f']])
+        self.assertIn('[WARN] Detailed lsblk output failed; falling back to lsblk -f.',
+                      sys.stderr.getvalue())
+        mock_process.assert_not_called()
+
+    @patch('luksmount.process_mount')
+    @patch('luksmount.run_command', side_effect=[1, 1])
+    @patch('luksmount.check_required_commands', return_value=0)
+    def test_list_both_lsblk_forms_fail(self, mock_check, mock_run, mock_process):
+        with patch.object(sys, 'argv', ['luksmount.py', '-l']):
+            self.assertEqual(luksmount.main(), 1)
+        self.assertEqual([c[0][0] for c in mock_run.call_args_list],
+                         [self.LSBLK_DETAILED, ['lsblk', '-f']])
+        err = sys.stderr.getvalue()
+        self.assertIn('[WARN] Detailed lsblk output failed; falling back to lsblk -f.', err)
+        self.assertIn('[ERROR] Failed to list block devices.', err)
+        mock_process.assert_not_called()
+
+    @patch('luksmount.run_command')
+    @patch('luksmount.process_mount')
+    def test_list_missing_lsblk_returns_127(self, mock_process, mock_run):
+        directory = self.make_fake_path([], [])
+        with patch.dict(os.environ, {'PATH': directory}):
+            with patch.object(sys, 'argv', ['luksmount.py', '-l']):
+                self.assertEqual(luksmount.main(), 127)
+        mock_run.assert_not_called()
+        mock_process.assert_not_called()
+
+    @patch('luksmount.run_command')
+    @patch('luksmount.process_mount')
+    def test_list_non_executable_lsblk_returns_126(self, mock_process, mock_run):
+        directory = self.make_fake_path(['lsblk'], ['lsblk'])
+        with patch.dict(os.environ, {'PATH': directory}):
+            with patch.object(sys, 'argv', ['luksmount.py', '--list']):
+                self.assertEqual(luksmount.main(), 126)
+        mock_run.assert_not_called()
+        mock_process.assert_not_called()
+
+    @patch('luksmount.has_sudo_privileges')
+    @patch('luksmount.confirm')
+    @patch('luksmount.get_serial')
+    @patch('luksmount.validate_paths')
+    @patch('luksmount.process_mount')
+    @patch('luksmount.run_command', return_value=0)
+    @patch('luksmount.check_required_commands', return_value=0)
+    def test_list_does_not_invoke_mount_workflow(self, mock_check, mock_run, mock_process,
+                                                 mock_validate, mock_serial, mock_confirm,
+                                                 mock_sudo):
+        with patch.object(sys, 'argv', ['luksmount.py', '-l']):
+            self.assertEqual(luksmount.main(), 0)
+        for mocked in (mock_process, mock_validate, mock_serial, mock_confirm, mock_sudo):
+            mocked.assert_not_called()
+        self.assertEqual([c[0][0] for c in mock_run.call_args_list], [self.LSBLK_DETAILED])
+
+    @patch('luksmount.process_mount')
+    @patch('luksmount.run_command')
+    @patch('luksmount.check_required_commands')
+    def test_list_rejects_additional_arguments(self, mock_check, mock_run, mock_process):
+        for argv in (['luksmount.py', '-l', 'sdb'], ['luksmount.py', '--list', 'disk3']):
+            with patch.object(sys, 'argv', argv):
+                self.assertEqual(luksmount.main(), 1)
+        self.assertIn('Usage: luksmount.py <device> <name>', sys.stderr.getvalue())
+        mock_check.assert_not_called()
+        mock_run.assert_not_called()
         mock_process.assert_not_called()
 
     @patch('luksmount.subprocess.call', return_value=0)
