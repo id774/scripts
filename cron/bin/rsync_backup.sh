@@ -123,6 +123,8 @@
 #    local disk-to-disk permission normalization decisions.
 #
 #  Version History:
+#  v4.3  2026-10-09 - Report filesystem usage and detailed block-device information
+#                     at existing pre- and post-synchronization checkpoints.
 #  v4.2  2026-07-11 - Replace the awk {n,} interval expression in usage() with a
 #                     portable equivalent, since mawk on some systems matches it
 #                     incorrectly.
@@ -237,6 +239,24 @@ version_info() {
         echo "[INFO] Checking installed version of VeraCrypt."
         /usr/bin/veracrypt -t --version
     fi
+}
+
+# Show disk and filesystem information
+show_disk_information() {
+    echo "[INFO] Retrieving filesystem usage"
+    df -T
+
+    if command -v lsblk >/dev/null 2>&1; then
+        echo "[INFO] Retrieving block device and filesystem information"
+        if ! lsblk -o NAME,SIZE,TYPE,MODEL,SERIAL,FSTYPE,FSVER,UUID,FSAVAIL,FSUSE%,MOUNTPOINTS; then
+            echo "[WARN] Extended lsblk output failed; falling back to lsblk -f" >&2
+            lsblk -f
+        fi
+    else
+        echo "[WARN] lsblk command not found" >&2
+    fi
+
+    return 0
 }
 
 # Retrieve SMART information of the backup and target devices

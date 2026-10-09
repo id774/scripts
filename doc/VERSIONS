@@ -16,6 +16,8 @@ v2.0.3 (Release Date: TBD)
   PATH-or-prefix library installation and Linux ownership normalization.
 - Add Markdown and AWS CLI to the Homebrew package set and AWS CLI to the
   Debian bulk package set for the shared development environment.
+- Report filesystem usage and detailed block-device information before and
+  after removable-disk backup operations, with legacy lsblk fallback.
 
 v2.0.2 (2026-09-23)
 -------------------
