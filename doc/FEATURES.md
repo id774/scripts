@@ -820,11 +820,11 @@ The `installer/` directory contains many setup and installation scripts.
 | Debian full setup | `debian_init.sh`, `debian_env.sh`, `debian_apt.sh`, `debian_setup.sh` | Debian / Ubuntu based systems | Packages, shells, dotfiles, monitoring, security configuration, and sysctl |
 | Debian desktop setup | `debian_desktop_apt.sh`, `debian_desktop_setup.sh`, `debian_xfce_setup.sh`, `debian_gnome_flashback_setup.sh`, `debian_gnome_setup.sh` | Debian desktop environments | Desktop packages, workspaces, keybindings, appearance, and desktop services |
 | macOS full setup | `macos_setup.sh`, `create_emergencyadmin.sh`, `install_brews.sh`, `reinstall_brew.sh`, `macos_finder_settings.sh`, `set_ipv6_macos.sh` | macOS | Dotfiles, Homebrew, FileVault recovery user, Finder settings, and network configuration |
-| Dotfiles and editors | `install_dotfiles.sh`, `install_dotvim.sh`, `setup_dot_ipython.sh`, `setup_nvim.sh`, `setup_jupyter_themes.sh`, `setup_xdg_dirs_en.sh` | User environments | Deploys editor, shell, IPython, Jupyter, and desktop user configuration |
+| Dotfiles and editors | `install_dotfiles.sh`, `install_dotvim.sh`, `setup_dot_ipython.sh`, `setup_nvim.sh`, `setup_xdg_dirs_en.sh` | User environments | Deploys editor, shell, IPython, and desktop user configuration |
 | Languages, runtimes, and development tools | `install_R_libs.sh`, `install_python.sh`, `install_pip.sh`, `install_miniforge.sh`, `install_conda.sh`, `install_ruby.sh`, `install_gems.sh`, `install_nodejs.sh`, `install_npm.sh`, `install_safe-chain.sh`, `install_zsh.sh`, `install_mecab-stack.sh` | Primarily Unix-like systems | Downloads, builds, installs, and configures language runtimes, libraries, and development tools |
 | Monitoring and scheduled operations | `install_apache_log_analysis.sh`, `install_chkrootkit.sh`, `install_clamscan.sh`, `install_get_resources.sh`, `install_git-pull.sh`, `install_munin.sh`, `install_rsync_backup.sh`, `install_run_tests.sh` | Primarily Linux / Debian | Deploys executables, configuration, cron jobs, logrotate, and monitoring services |
 | System and security configuration | `configure_sysctl.sh`, `setup_iptables.sh`, `setup_pamd.sh`, `setup_securetty.sh`, `setup_dos_guard.sh`, `setup_apache2_ssl.sh`, `setup_crontab.sh`, `purge_kernels.sh`, `remove-tracker.sh` | Primarily Linux / Debian | Changes `/etc`, kernel or security policy, systemd configuration, services, and installed packages |
-| Chrome and GDM | `install_google_chrome.sh`, `install_gdm_themes.sh`, `install_gdm_themes2.sh` | Debian / Linux desktop | Configures the Chrome APT source or installs display-manager themes |
+| Google Chrome | `install_google_chrome.sh` | Debian / Linux desktop | Installs Chrome Stable and configures its official APT source |
 
 
 ## 18. Debian Full Setup
@@ -1141,11 +1141,6 @@ Deploys IPython user configuration.
 Configures the NeoVim user environment.
 
 
-### setup_jupyter_themes.sh
-
-Configures Jupyter themes and display settings.
-
-
 ### setup_xdg_dirs_en.sh
 
 Configures XDG user-directory names to use English names.
@@ -1297,13 +1292,6 @@ Downloads, builds, and installs TA-Lib from source.
 Downloads, builds, and installs the Resin application server.
 
 
-### install_des.sh
-
-Downloads, compiles, and installs DES software.
-
-Source preservation can be enabled or disabled.
-
-
 ### install_mecab-stack.sh
 
 Builds a Japanese text-processing stack under a single installation prefix.
@@ -1348,13 +1336,6 @@ It primarily installs and configures:
 - Configuration files
 - Cron jobs
 - Permissions
-
-
-### install_awstats.sh
-
-Installs AWStats through APT and configures it for Apache log analysis.
-
-It also handles Apache configuration, log permissions, service restart, and statistics updates.
 
 
 ### install_chkrootkit.sh
@@ -1632,7 +1613,7 @@ Stops, disables, and removes the Tracker indexing service on Debian-based GNOME 
 Because this affects GNOME search functionality, it should be treated as an explicit system customization.
 
 
-## 25. Chrome, GDM, and Related Installers
+## 25. Google Chrome Installer
 
 ### install_google_chrome.sh
 
@@ -1641,16 +1622,6 @@ Installs Google Chrome Stable on Debian and configures it for management through
 It compares the signing-key fingerprint and refreshes the keyring when key rotation or corruption is detected.
 
 The script intentionally does not run `apt update` itself.
-
-
-### install_gdm_themes.sh
-
-Downloads, extracts, and installs a GDM theme archive into the system.
-
-
-### install_gdm_themes2.sh
-
-Downloads, extracts, and installs a separate GDM Themes 2 series.
 
 
 ## 26. Automated Operations in cron/bin
