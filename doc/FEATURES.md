@@ -52,7 +52,6 @@ The repository contains many such scripts.
 | Git repository management | `git-all-pull.sh`, `git-archive-repo.sh`, `git-create-repo.sh`, `git-symlink.sh`, `remove-repo.sh` | Update, archive, create, link, and remove repositories |
 | Networking and transfers | `pyping.py`, `wakeonlan.py`, `wget.py`, `wget.rb`, `send_files.sh` | Check connectivity, download data, wake hosts, and transfer files |
 | Dashcam, GPX, and Instagram | `dashcam_sync.sh`, `gpx_sync.sh`, `insta_downloader.py`, `insta_sync.sh` | Synchronize and organize personal media or location data |
-| Fastladder | `fav-pins-on-fastladder.sh`, `get-fastladder-db.sh`, `get-feeds-from-fastladder.sh`, `vacuum-fastladder-db.sh` | Maintain Fastladder data and databases |
 | Development and testing | `check_header_doc.py`, `find_pycompat.py`, `pyck.py`, `run_tests.sh`, `setup_scripts.sh` | Validate source code and repository conventions |
 | System administration | `check_reboot.sh`, `check_sshd_config.sh`, `get_resources.sh`, `server_alive_check.sh` | Inspect system state, services, and availability |
 | Other utilities | `namecalc.py`, `namecalc.rb`, `simple_passwd.py`, `simple_passwd.rb` | Small standalone utilities |
@@ -626,45 +625,7 @@ Synchronizes Instagram-related data according to configuration.
 Runs the Instagram-related update workflow.
 
 
-## 14. Fastladder
-
-### fav-pins-on-fastladder.sh
-
-Manages Fastladder favorite pins.
-
-Its operations include:
-
-- Removing feeds with zero subscribers
-- Extracting favorite pinned links
-- Removing existing pins
-
-
-### get-fastladder-db.sh
-
-Retrieves the Fastladder database from a remote server using rsync.
-
-A backup of the local database is created before it is overwritten.
-
-
-### put-fastladder-db.sh
-
-Transfers the local Fastladder database to a remote server.
-
-
-### get-feeds-from-fastladder.sh
-
-Retrieves the following from the Fastladder SQLite database:
-
-- A list of feed titles
-- The total feed count
-
-
-### vacuum-fastladder-db.sh
-
-Performs database cleanup and VACUUM operations on the Fastladder SQLite database.
-
-
-## 15. Development, Testing, and Repository Maintenance
+## 14. Development, Testing, and Repository Maintenance
 
 ### check_header_doc.py
 
@@ -717,7 +678,7 @@ Diagnoses a broad catalog of representative Python packages, checking distributi
 `-i` also shows detailed help for each importable module, and `-p` additionally shows the Python version.
 
 
-## 16. System Administration Utilities
+## 15. System Administration Utilities
 
 ### cal.py
 
@@ -801,16 +762,6 @@ It is also used by `installer/setup_aliases.sh`.
 Performs maintenance on Safari-related databases and data.
 
 
-### fluent-start.sh
-
-Provides a wrapper or startup utility for Fluentd.
-
-
-### hadoop-start.sh
-
-Provides a startup utility for Hadoop-related processes.
-
-
 ### vmplayer-start.sh
 
 Provides a utility for starting VMware Player.
@@ -821,7 +772,7 @@ Provides a utility for starting VMware Player.
 Uses a lock to make multiple processes or jobs wait rather than run concurrently.
 
 
-## 17. Other Utilities
+## 16. Other Utilities
 
 ### namecalc.py
 
@@ -843,7 +794,7 @@ Generates simple passwords in Python.
 Provides the same class of password generation in Ruby.
 
 
-## 18. Role of installer/
+## 17. Role of installer/
 
 `installer/` contains some of the most state-changing functionality in this repository.
 
@@ -876,7 +827,7 @@ The `installer/` directory contains many setup and installation scripts.
 | Chrome and GDM | `install_google_chrome.sh`, `install_gdm_themes.sh`, `install_gdm_themes2.sh` | Debian / Linux desktop | Configures the Chrome APT source or installs display-manager themes |
 
 
-## 19. Debian Full Setup
+## 18. Debian Full Setup
 
 ### debian_init.sh
 
@@ -965,7 +916,7 @@ Its main operations include:
 - Cleaning up `.bash_history`
 
 
-## 20. Debian Desktop Setup
+## 19. Debian Desktop Setup
 
 ### debian_desktop_apt.sh
 
@@ -1067,7 +1018,7 @@ Its main targets include:
 - Masking background services such as Tracker, GOA, Evolution, and Rygel
 
 
-## 21. macOS Full Setup
+## 20. macOS Full Setup
 
 ### macos_setup.sh
 
@@ -1147,7 +1098,7 @@ Deploys and configures Karabiner-Elements settings.
 Assists with rebuilding and code-signing VMware-related components on macOS.
 
 
-## 22. Dotfiles, Editors, and User Environment Installers
+## 21. Dotfiles, Editors, and User Environment Installers
 
 ### install_dotfiles.sh
 
@@ -1200,7 +1151,7 @@ Configures Jupyter themes and display settings.
 Configures XDG user-directory names to use English names.
 
 
-## 23. Language, Runtime, and Build Environment Installers
+## 22. Language, Runtime, and Build Environment Installers
 
 ### install_R_libs.sh
 
@@ -1336,21 +1287,9 @@ Downloads, builds, and installs ncurses from source into a selected prefix.
 It supports version selection, a custom prefix, and `--no-sudo`.
 
 
-### install_paco.sh
-
-Downloads, builds, and installs paco from source.
-
-
 ### install_talib.sh
 
 Downloads, builds, and installs TA-Lib from source.
-
-
-### install_cassandra.sh
-
-Downloads and installs Apache Cassandra and configures required directories and permissions.
-
-It supports version selection.
 
 
 ### install_resin.sh
@@ -1395,7 +1334,7 @@ Downloads, installs, and configures TrueCrypt 7 for Linux.
 Installs and configures VeraCrypt for Linux according to system architecture.
 
 
-## 24. Monitoring and Cron Deployment Installers
+## 23. Monitoring and Cron Deployment Installers
 
 ### install_apache_log_analysis.sh
 
@@ -1525,7 +1464,7 @@ Deploys the cron environment used to run repository tests automatically.
 It manages the script, configuration, cron job, and logrotate definition.
 
 
-## 25. System and Security Configuration Installers
+## 24. System and Security Configuration Installers
 
 ### configure_sysctl.sh
 
@@ -1693,7 +1632,7 @@ Stops, disables, and removes the Tracker indexing service on Debian-based GNOME 
 Because this affects GNOME search functionality, it should be treated as an explicit system customization.
 
 
-## 26. Chrome, GDM, and Related Installers
+## 25. Chrome, GDM, and Related Installers
 
 ### install_google_chrome.sh
 
@@ -1714,7 +1653,7 @@ Downloads, extracts, and installs a GDM theme archive into the system.
 Downloads, extracts, and installs a separate GDM Themes 2 series.
 
 
-## 27. Automated Operations in cron/bin
+## 26. Automated Operations in cron/bin
 
 `cron/bin/` contains executables intended for unattended operation rather than merely copies of manual utilities.
 
@@ -1797,7 +1736,7 @@ Backup data is separated into capacity tiers:
 Runs tests across Python and Ruby versions and performs repository-wide checks.
 
 
-## 28. Cron Configuration
+## 27. Cron Configuration
 
 `cron/etc/` contains the configuration and scheduling assets used by cron jobs.
 
@@ -1830,7 +1769,7 @@ logrotate:
 Installers deploy these files into the corresponding `/etc` locations.
 
 
-## 29. Support Configuration under etc/
+## 28. Support Configuration under etc/
 
 `etc/` contains data files, configuration files, and templates used by executables.
 
@@ -1861,10 +1800,6 @@ fail2ban:
 
     fail2ban/filter.d/apache-evasive.conf
     fail2ban/jail.local
-
-Fluentd:
-
-    fluentd/conf/fluent-automaticruby-mongodb.conf
 
 Git:
 
@@ -1923,7 +1858,7 @@ Xfce:
     xfce/terminalrc
 
 
-## 30. dot_files/
+## 29. dot_files/
 
 `dot_files/` contains configuration assets deployed into user environments by `install_dotfiles.sh` and related installers.
 
@@ -1951,7 +1886,7 @@ This directory also contains bundled third-party trees such as Vim plugins.
 `FEATURES.md` describes what user environment is provided, but it does not redefine every bundled third-party plugin as a feature of the `scripts` repository itself.
 
 
-## 31. Destructive or System-Wide Features
+## 30. Destructive or System-Wide Features
 
 This repository contains many commands that modify system state in addition to read-only utilities.
 
@@ -2014,7 +1949,7 @@ The target and the script's own header documentation should be reviewed before r
     installer/remove-tracker.sh
 
 
-## 32. root and sudo
+## 31. root and sudo
 
 Many top-level utilities can be used as a regular user.
 
@@ -2042,7 +1977,7 @@ support `--no-sudo` together with a custom prefix, making user-local installatio
 The exact privilege requirement for each script is defined by that script's own header documentation.
 
 
-## 33. OS-Specific Behavior
+## 32. OS-Specific Behavior
 
 This repository supports multiple operating systems, but not every script runs on every platform.
 
@@ -2099,7 +2034,7 @@ Many top-level text, file, and Git utilities can be used on both Linux and macOS
 The exact support conditions are defined by each script's own header documentation.
 
 
-## 34. Configuration File Handling
+## 33. Configuration File Handling
 
 Features that require site-specific values read external configuration rather than embedding hostnames, paths, credentials, or similar values directly in the script.
 
@@ -2127,7 +2062,7 @@ After cron deployment, many configurations are installed under:
 Separating code from site-specific configuration is a core operational model of this repository.
 
 
-## 35. Help and Header Documentation
+## 34. Help and Header Documentation
 
 The exact interface of each executable is documented in the header documentation at the top of its source file.
 
@@ -2152,7 +2087,7 @@ For example, `FEATURES.md` tells users what `git-all-pull.sh` can do, but the ex
 and the source header.
 
 
-## 36. Finding a Feature by Purpose
+## 35. Finding a Feature by Purpose
 
 When looking for a command by purpose, the following mapping is generally useful.
 
@@ -2256,7 +2191,7 @@ Deploy monitoring or periodic operations:
     installer/install_run_tests.sh
 
 
-## 37. Scope of This Document
+## 36. Scope of This Document
 
 This `FEATURES.md` answers the following question:
 
