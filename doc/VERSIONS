@@ -7,6 +7,7 @@ v2.0.3 (Release Date: TBD)
 - Add versioned Miniforge Conda/Mamba environments with aligned package
   installation and directory ownership.
 - Add an Aikido Safe Chain installer with a configurable installation prefix.
+- Add a Visual Studio Code installer with a tracked official APT source template.
 - Expand shared development packages to include Markdown and AWS CLI.
 - Expand block-device and filesystem reporting in disk backups, Linux resource
   reports, and LUKS mount operations, with backward-compatible lsblk fallbacks.

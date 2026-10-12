@@ -825,6 +825,7 @@ The `installer/` directory contains many setup and installation scripts.
 | Monitoring and scheduled operations | `install_apache_log_analysis.sh`, `install_chkrootkit.sh`, `install_clamscan.sh`, `install_get_resources.sh`, `install_git-pull.sh`, `install_munin.sh`, `install_rsync_backup.sh`, `install_run_tests.sh` | Primarily Linux / Debian | Deploys executables, configuration, cron jobs, logrotate, and monitoring services |
 | System and security configuration | `configure_sysctl.sh`, `setup_iptables.sh`, `setup_pamd.sh`, `setup_securetty.sh`, `setup_dos_guard.sh`, `setup_apache2_ssl.sh`, `setup_crontab.sh`, `purge_kernels.sh`, `remove-tracker.sh` | Primarily Linux / Debian | Changes `/etc`, kernel or security policy, systemd configuration, services, and installed packages |
 | Google Chrome | `install_google_chrome.sh` | Debian / Linux desktop | Installs Chrome Stable and configures its official APT source |
+| Visual Studio Code | `install_vscode.sh` | Debian / Ubuntu | Installs VS Code Stable using the official Microsoft APT repository |
 
 
 ## 18. Debian Full Setup
