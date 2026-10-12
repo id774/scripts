@@ -123,6 +123,8 @@
 #    local disk-to-disk permission normalization decisions.
 #
 #  Version History:
+#  v4.4  2026-10-12 - Report installed encryption tool versions in compact form,
+#                     including cryptsetup and retaining legacy tools.
 #  v4.3  2026-10-09 - Report filesystem usage and detailed block-device information
 #                     at existing pre- and post-synchronization checkpoints.
 #  v4.2  2026-07-11 - Replace the awk {n,} interval expression in usage() with a
@@ -228,17 +230,35 @@ display_and_update_timestamp() {
     touch "$T_HOME/$T_MOUNT/$T_DEVICE/timestamp"
 }
 
-# Display the installed versions of TrueCrypt and VeraCrypt
+# Display the installed encryption tool versions
+print_encryption_tool_version() (
+    TOOL_NAME=$1
+    shift
+    TOOL_OUTPUT=$("$@" 2>/dev/null) || exit 0
+    case $TOOL_OUTPUT in
+        *[[:space:]]*)
+            TOOL_VERSION=${TOOL_OUTPUT#*[[:space:]]}
+            TOOL_VERSION=${TOOL_VERSION%%[[:space:]]*}
+            [ -n "$TOOL_VERSION" ] &&
+                printf '[INFO] %s: %s\n' "$TOOL_NAME" "$TOOL_VERSION"
+            ;;
+    esac
+)
+
 version_info() {
-    if [ -x /usr/bin/truecrypt ]; then
-        echo "[INFO] Checking installed version of TrueCrypt."
-        /usr/bin/truecrypt -t --version
+    if command -v cryptsetup >/dev/null 2>&1; then
+        print_encryption_tool_version cryptsetup cryptsetup --version
     fi
 
-    if [ -x /usr/bin/veracrypt ]; then
-        echo "[INFO] Checking installed version of VeraCrypt."
-        /usr/bin/veracrypt -t --version
+    if command -v truecrypt >/dev/null 2>&1; then
+        print_encryption_tool_version TrueCrypt truecrypt -t --version
     fi
+
+    if command -v veracrypt >/dev/null 2>&1; then
+        print_encryption_tool_version VeraCrypt veracrypt -t --version
+    fi
+
+    return 0
 }
 
 # Show disk and filesystem information
