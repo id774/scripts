@@ -3,29 +3,16 @@ scripts Repository Version History
 
 v2.0.3 (Release Date: TBD)
 --------------------------
-- Add install_nodejs.sh to install a fixed Node.js LTS release from official
-  binaries under /opt/node/<major> on supported Linux and macOS systems.
-- Add install_npm.sh to update npm and install global TypeScript, formatting,
-  linting, framework, Prisma, and language-server tools for Node.js development.
-- Normalize /opt/node ownership in Linux and macOS permission workflows and
-  skip missing macOS permission target directories.
-- Add install_safe-chain.sh to install Aikido Safe Chain release binaries under
-  a configurable prefix on supported Linux and macOS systems.
-- Keep pyping_test.py from leaking expected ping results to standard output.
-- Add versioned Miniforge Conda/Mamba runtimes under /opt/conda with aligned
-  PATH-or-prefix library installation and Linux ownership normalization.
-- Add Markdown and AWS CLI to the Homebrew package set and AWS CLI to the
-  Debian bulk package set for the shared development environment.
-- Report filesystem usage and detailed block-device information before and
-  after removable-disk backup operations, with legacy lsblk fallback.
-- Include block-device and filesystem details in periodic Linux resource
-  reports, with an lsblk -f fallback for older implementations.
-- Add read-only block-device listing to luksmount with detailed lsblk output
-  and a legacy fallback without changing the confirmed mount workflow.
-- Retire obsolete scripts, installers, and configuration assets for legacy
-  services and tools that are no longer used.
-- Show installed cryptsetup, TrueCrypt, and VeraCrypt versions concisely in
-  removable-disk backup logs, omitting unavailable tools.
+- Add Node.js LTS and npm development tool installers with managed permissions.
+- Add versioned Miniforge Conda/Mamba environments with aligned package
+  installation and directory ownership.
+- Add an Aikido Safe Chain installer with a configurable installation prefix.
+- Expand shared development packages to include Markdown and AWS CLI.
+- Expand block-device and filesystem reporting in disk backups, Linux resource
+  reports, and LUKS mount operations, with backward-compatible lsblk fallbacks.
+- Show available encryption tool versions in removable-disk backup logs.
+- Suppress expected ping results from pyping_test.py standard output.
+- Remove obsolete service management scripts, installers, and configurations.
 
 v2.0.2 (2026-09-23)
 -------------------
