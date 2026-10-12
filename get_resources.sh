@@ -26,6 +26,9 @@
 #      - Security-related logs and fail2ban status
 #
 #  Version History:
+#  v2.7 2026-10-12
+#       Include block-device and filesystem details in Linux resource reports,
+#       with lsblk -f fallback when extended columns are unavailable.
 #  v2.6 2026-08-22
 #       Use POSIX head -n syntax without changing resource report output.
 #  v2.5 2026-07-11
@@ -220,6 +223,13 @@ gather_os_specific_info() {
         execute_command cat /proc/meminfo
         execute_command vmstat
         execute_command df -P -T
+        if command_exists lsblk; then
+            echo "[INFO] Filesystems:"
+            if ! lsblk -o NAME,SIZE,TYPE,MODEL,SERIAL,FSTYPE,FSVER,UUID,FSAVAIL,FSUSE%,MOUNTPOINTS; then
+                echo "[WARN] Extended lsblk output failed; falling back to lsblk -f" >&2
+                lsblk -f
+            fi
+        fi
         execute_command top -b -n 1
         execute_command ps aux
         execute_command ps aux --sort=-rss | head -n 20

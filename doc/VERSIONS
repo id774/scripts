@@ -18,6 +18,8 @@ v2.0.3 (Release Date: TBD)
   Debian bulk package set for the shared development environment.
 - Report filesystem usage and detailed block-device information before and
   after removable-disk backup operations, with legacy lsblk fallback.
+- Include block-device and filesystem details in periodic Linux resource
+  reports, with an lsblk -f fallback for older implementations.
 - Add read-only block-device listing to luksmount with detailed lsblk output
   and a legacy fallback without changing the confirmed mount workflow.
 - Retire obsolete scripts, installers, and configuration assets for legacy
