@@ -214,12 +214,6 @@ configure_repository() {
 
 # Install VS Code only when the package is absent
 install_vscode() {
-    if dpkg-query -W -f='${Status}' code 2>/dev/null |
-       grep -q '^install ok installed$'; then
-        echo "[INFO] Visual Studio Code is already installed."
-        return 0
-    fi
-
     echo "[INFO] Updating APT package metadata..."
     if ! sudo apt-get update; then
         echo "[ERROR] Failed to update APT package metadata." >&2
@@ -249,6 +243,11 @@ main() {
     check_system || return 1
     check_sudo || return 1
     setup_paths || return 1
+    if dpkg-query -W -f='${Status}' code 2>/dev/null |
+       grep -q '^install ok installed$'; then
+        echo "[INFO] Visual Studio Code is already installed."
+        return 0
+    fi
     install_signing_key || return 1
     configure_repository || return 1
     install_vscode || return 1
