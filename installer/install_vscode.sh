@@ -5,12 +5,8 @@
 #
 #  Description:
 #  Install Visual Studio Code Stable from Microsoft's official APT repository.
-#  This script performs the following actions:
-#    1) Validate the Debian-based system and sudo privileges.
-#    2) Check for conflicting existing VS Code APT sources.
-#    3) Install Microsoft's verified signing key when absent.
-#    4) Deploy the repository configuration from the tracked template.
-#    5) Refresh APT metadata and install the code package when needed.
+#  Use APT to identify existing repositories instead of parsing APT source files.
+#  Install the signing key and tracked source only when absent, then install code.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -21,29 +17,29 @@
 #      ./install_vscode.sh
 #
 #  Requirements:
-#  - Debian or Ubuntu based Linux system (amd64, arm64, or armhf).
-#  - The invoking user must have sudo privileges.
+#  - Debian or Ubuntu based Linux (amd64, arm64, or armhf).
+#  - Sudo privileges.
 #  - Repository template: ../etc/apt.conf.d/sources-vscode.sources.
-#  - Internet connectivity for the initial key and package installation.
+#  - Network connectivity when the key or package must be installed.
 #
 #  Exit Status:
-#  0: Success or usage/help/version display.
-#  1: Unsupported environment, configuration conflict, or installation failure.
+#  0: Success or help/version display.
+#  1: Unsupported environment, conflicting configuration, or install failure.
 #  126: Required command exists but is not executable.
-#  127: Required command is not found.
+#  127: Required command is missing.
 #
 #  Notes:
-#  - Existing APT repository entries and Microsoft signing keys are preserved.
-#  - Reinstallation does not overwrite the repository configuration.
-#  - Already installed packages are left to regular APT upgrades.
+#  - This script does not overwrite existing APT sources or signing keys.
+#  - The VS Code package may manage its own APT source during installation.
+#  - An installed code package is left to normal APT upgrades.
 #
 #  Version History:
-#  v1.0 2026-10-12
+#  v1.0 2026-10-13
 #       Initial release.
 #
 ########################################################################
 
-# Display full script header information extracted from the top comment block
+# Display the structured header
 usage() {
     check_commands awk
     awk '
@@ -68,10 +64,9 @@ check_commands() {
     done
 }
 
-# Check if the system is Debian or Ubuntu based Linux with a supported architecture
+# Check the operating system and architecture
 check_system() {
-    check_commands uname
-    if [ "$(uname -s 2>/dev/null)" != "Linux" ] || [ ! -r /etc/os-release ]; then
+    if [ "$(uname -s 2>/dev/null)" != Linux ] || [ ! -r /etc/os-release ]; then
         echo "[ERROR] Debian or Ubuntu based Linux is required." >&2
         return 1
     fi
@@ -90,7 +85,8 @@ check_system() {
             ;;
     esac
 
-    case "$(dpkg --print-architecture)" in
+    architecture=$(dpkg --print-architecture) || return 1
+    case "$architecture" in
         amd64|arm64|armhf) ;;
         *)
             echo "[ERROR] Unsupported Debian package architecture." >&2
@@ -99,7 +95,7 @@ check_system() {
     esac
 }
 
-# Check if the user has sudo privileges (password may be required)
+# Check sudo privileges
 check_sudo() {
     check_commands sudo
     if ! sudo -v 2>/dev/null; then
@@ -108,12 +104,13 @@ check_sudo() {
     fi
 }
 
-# Resolve the tracked APT source template and system installation paths
+# Resolve installation paths
 setup_paths() {
     script_dir=$(CDPATH= cd "$(dirname "$0")" && pwd) || return 1
     source_template="$script_dir/../etc/apt.conf.d/sources-vscode.sources"
     source_target=/etc/apt/sources.list.d/vscode.sources
     keyring=/usr/share/keyrings/microsoft.gpg
+    repository_base=https://packages.microsoft.com/repos/code/dists/stable
     expected_fingerprint=BC528686B50D79E339D3721CEB3E94ADBE1229CF
 
     if [ ! -r "$source_template" ]; then
@@ -122,43 +119,18 @@ setup_paths() {
     fi
 }
 
-# Refuse conflicting repository definitions without changing existing APT sources
-check_repository_conflicts() {
-    if [ -e "$source_target" ] || [ -L "$source_target" ]; then
-        if ! cmp -s "$source_template" "$source_target"; then
-            echo "[ERROR] Existing repository configuration differs: $source_target" >&2
-            return 1
-        fi
-    fi
-
-    # Do not add a second definition of the same Microsoft repository.
-    for file in /etc/apt/sources.list /etc/apt/sources.list.d/*.list \
-                /etc/apt/sources.list.d/*.sources; do
-        [ -f "$file" ] || continue
-        [ "$file" = "$source_target" ] && continue
-        if [ ! -r "$file" ]; then
-            echo "[ERROR] Cannot read APT repository file: $file" >&2
-            return 1
-        fi
-        if awk '
-            /^[[:space:]]*#/ { next }
-            /^[[:space:]]*deb[[:space:]]/ && index($0, "packages.microsoft.com/repos/code") { found = 1 }
-            /^[[:space:]]*URIs:[[:space:]]/ && index($0, "packages.microsoft.com/repos/code") { found = 1 }
-            END { exit !found }
-        ' "$file"; then
-            echo "[ERROR] Another VS Code APT source exists: $file" >&2
-            return 1
-        fi
-    done
-}
-
-# Read the first public key fingerprint from a GPG key file
+# Return the fingerprint only when exactly one primary key exists
 key_fingerprint() {
     gpg --batch --show-keys --with-colons "$1" 2>/dev/null |
-        awk -F: '$1 == "fpr" { print $10; exit }'
+        awk -F: '
+            $1 == "pub" || $1 == "sec" { count++; want = 1; next }
+            $1 == "sub" || $1 == "ssb" { want = 0; next }
+            $1 == "fpr" && want { fingerprint = $10; want = 0 }
+            END { if (count == 1) print fingerprint }
+        '
 }
 
-# Install Microsoft's signing key only after verifying its published fingerprint
+# Install the verified Microsoft signing key when absent
 install_signing_key() {
     if [ -e "$keyring" ] || [ -L "$keyring" ]; then
         if [ "$(key_fingerprint "$keyring")" != "$expected_fingerprint" ]; then
@@ -176,45 +148,71 @@ install_signing_key() {
 
     echo "[INFO] Downloading Microsoft signing key..."
     if ! curl -fsSL https://packages.microsoft.com/keys/microsoft.asc \
-        -o "$temp_dir/microsoft.asc"; then
-        echo "[ERROR] Failed to download Microsoft signing key." >&2
-        return 1
-    fi
-    if ! gpg --batch --dearmor < "$temp_dir/microsoft.asc" \
+        -o "$temp_dir/microsoft.asc" ||
+       ! gpg --batch --dearmor < "$temp_dir/microsoft.asc" \
         > "$temp_dir/microsoft.gpg"; then
-        echo "[ERROR] Failed to convert Microsoft signing key." >&2
+        echo "[ERROR] Failed to download or convert Microsoft signing key." >&2
         return 1
     fi
 
-    # Reject an unexpected key instead of trusting a changed download.
     if [ "$(key_fingerprint "$temp_dir/microsoft.gpg")" != "$expected_fingerprint" ]; then
         echo "[ERROR] Unexpected Microsoft signing key fingerprint." >&2
         return 1
     fi
+
     if ! sudo mkdir -p /usr/share/keyrings ||
-       ! sudo install -o root -g root -m 0644 "$temp_dir/microsoft.gpg" "$keyring"; then
+       ! sudo install -o root -g root -m 0644 \
+        "$temp_dir/microsoft.gpg" "$keyring"; then
         echo "[ERROR] Failed to install Microsoft signing key." >&2
         return 1
     fi
+
     echo "[INFO] Installed Microsoft signing key."
 }
 
-# Deploy the tracked APT source template without overwriting an existing file
+# Let APT interpret its own source files instead of parsing them with awk
 configure_repository() {
     if [ -e "$source_target" ] || [ -L "$source_target" ]; then
-        echo "[INFO] VS Code APT repository is already configured."
-        return 0
+        if [ ! -f "$source_target" ] ||
+           [ -L "$source_target" ] ||
+           [ ! -r "$source_target" ]; then
+            echo "[ERROR] Invalid existing APT source: $source_target" >&2
+            return 1
+        fi
     fi
+
+    uris=$(apt-get --print-uris update) || {
+        echo "[ERROR] Failed to inspect APT sources." >&2
+        return 1
+    }
+
+    case "$uris" in
+        *"'$repository_base/main/binary-$architecture/Packages"*)
+            echo "[INFO] VS Code APT repository is already configured."
+            return 0
+            ;;
+        *"'$repository_base/InRelease'"*)
+            echo "[ERROR] Existing VS Code APT source does not provide $architecture packages." >&2
+            return 1
+            ;;
+    esac
+
+    if [ -e "$source_target" ]; then
+        echo "[ERROR] Existing APT source differs: $source_target" >&2
+        return 1
+    fi
+
     if ! sudo mkdir -p /etc/apt/sources.list.d ||
        ! sudo install -o root -g root -m 0644 \
         "$source_template" "$source_target"; then
         echo "[ERROR] Failed to install VS Code APT repository configuration." >&2
         return 1
     fi
+
     echo "[INFO] Configured VS Code APT repository."
 }
 
-# Install Visual Studio Code only when its Debian package is absent
+# Install VS Code only when the package is absent
 install_vscode() {
     if dpkg-query -W -f='${Status}' code 2>/dev/null |
        grep -q '^install ok installed$'; then
@@ -227,34 +225,33 @@ install_vscode() {
         echo "[ERROR] Failed to update APT package metadata." >&2
         return 1
     fi
+
     echo "[INFO] Installing Visual Studio Code..."
     if ! sudo apt-get install -y code; then
         echo "[ERROR] Failed to install Visual Studio Code." >&2
         return 1
     fi
+
     echo "[INFO] Visual Studio Code installation completed."
 }
 
-# Main entry point of the script
+# Main entry point
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
-        "")
-            [ "$#" -eq 0 ] || usage
-            ;;
+        "") [ "$#" -eq 0 ] || usage ;;
         *) usage ;;
     esac
 
-    check_commands dpkg apt-get dpkg-query gpg awk cmp grep \
+    check_commands uname dpkg dpkg-query apt-get gpg awk grep \
                    install mkdir mktemp rm dirname
+
     check_system || return 1
     check_sudo || return 1
     setup_paths || return 1
-    check_repository_conflicts || return 1
     install_signing_key || return 1
     configure_repository || return 1
     install_vscode || return 1
 }
 
-# Execute main function
 main "$@"
