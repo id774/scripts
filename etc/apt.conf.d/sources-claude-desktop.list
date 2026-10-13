@@ -1,0 +1,6 @@
+# ------------------------------------------------------------
+# Claude Desktop Official APT Repository
+# Stable channel for Debian and Ubuntu
+# Maintainer: id774
+# ------------------------------------------------------------
+deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/claude-desktop-archive-keyring.asc] https://downloads.claude.ai/claude-desktop/apt/stable stable main
