@@ -15,6 +15,11 @@
 #
 #  Usage:
 #      ./install_claude_desktop.sh
+#      ./install_claude_desktop.sh --insecure-tls
+#
+#  Options:
+#  --insecure-tls: Persistently disable APT TLS certificate checks for the
+#                  vendor host on Debian/Ubuntu and use curl -k for key download.
 #
 #  Requirements:
 #  - Debian 12+ or Ubuntu 22.04+ (amd64 or arm64).
@@ -34,8 +39,26 @@
 #  - The package may manage claude-desktop.list during installation or upgrades.
 #  - Existing active APT sources are identified by APT itself.
 #  - Installed packages are left to regular APT upgrades.
+#  - --insecure-tls installs a persistent, host-specific APT configuration;
+#    later APT runs remain insecure until the configuration is removed.
+#  - This bypass weakens TLS authentication; prefer trusting the organization's
+#    inspection CA and remove the bypass when it is no longer needed.
+#  - The configuration is /etc/apt/apt.conf.d/98-insecure-tls-anthropic.conf
+#    for downloads.claude.ai, shared with install_claude_code.sh. It applies
+#    to every later APT operation for that host, and remains when the
+#    installation succeeds, fails, or is skipped because Claude Desktop is
+#    already installed.
+#  - Omitting --insecure-tls later does not remove the configuration. Remove
+#    it manually with: sudo rm /etc/apt/apt.conf.d/98-insecure-tls-anthropic.conf
+#    Removing it also restores verification for Claude Code.
+#  - Package signature and signing-key fingerprint checks stay enabled, but
+#    they do not restore TLS server authentication.
+#  - A differing existing configuration file is never overwritten; other APT
+#    configuration may override this setting.
 #
 #  Version History:
+#  v1.1 2026-10-16
+#       Add opt-in persistent APT TLS verification bypass for inspected networks.
 #  v1.0 2026-10-13
 #       Initial release.
 #
@@ -113,6 +136,9 @@ check_sudo() {
 setup_paths() {
     script_dir=$(CDPATH= cd "$(dirname "$0")" && pwd) || return 1
     source_template="$script_dir/../etc/apt.conf.d/sources-claude-desktop.list"
+    tls_template="$script_dir/../etc/apt.conf.d/98-insecure-tls-anthropic.conf"
+    tls_target=/etc/apt/apt.conf.d/98-insecure-tls-anthropic.conf
+    tls_host=downloads.claude.ai
     source_target=/etc/apt/sources.list.d/claude-desktop.list
     keyring=/usr/share/keyrings/claude-desktop-archive-keyring.asc
     repository_base=https://downloads.claude.ai/claude-desktop/apt/stable/dists/stable
@@ -135,6 +161,39 @@ key_fingerprint() {
         '
 }
 
+# Persistently disable APT TLS verification for the vendor host on request
+configure_insecure_tls() {
+    check_commands cmp
+    if [ ! -r "$tls_template" ]; then
+        echo "[ERROR] Missing TLS configuration template: $tls_template" >&2
+        return 1
+    fi
+
+    tls_present=false
+    if [ -e "$tls_target" ] || [ -L "$tls_target" ]; then
+        if [ -L "$tls_target" ] || [ ! -f "$tls_target" ] ||
+           [ ! -r "$tls_target" ] || ! cmp -s "$tls_template" "$tls_target"; then
+            echo "[ERROR] Existing APT TLS configuration differs: $tls_target" >&2
+            return 1
+        fi
+        tls_present=true
+    fi
+
+    echo "[WARN] Persistently disabling APT TLS certificate checks for $tls_host in $tls_target. Remove the file manually to restore verification." >&2
+    if [ "$tls_present" = true ]; then
+        echo "[INFO] APT TLS configuration is already installed."
+        return 0
+    fi
+
+    if ! sudo mkdir -p /etc/apt/apt.conf.d ||
+       ! sudo install -o root -g root -m 0644 \
+        "$tls_template" "$tls_target"; then
+        echo "[ERROR] Failed to install APT TLS configuration." >&2
+        return 1
+    fi
+    echo "[INFO] Installed APT TLS configuration."
+}
+
 # Install Anthropic's signing key only after verifying its published fingerprint
 install_signing_key() {
     if [ -e "$keyring" ] || [ -L "$keyring" ]; then
@@ -151,8 +210,13 @@ install_signing_key() {
     trap 'rm -rf "$temp_dir"' 0
     trap 'exit 1' 1 2 3 15
 
+    curl_extra_opts=
+    if [ "$insecure_tls" = true ]; then
+        curl_extra_opts=-k
+    fi
+
     echo "[INFO] Downloading Anthropic signing key..."
-    if ! curl -fsSL https://downloads.claude.ai/claude-desktop/key.asc \
+    if ! curl -fsSL $curl_extra_opts https://downloads.claude.ai/claude-desktop/key.asc \
         -o "$temp_dir/claude-desktop-key.asc"; then
         echo "[ERROR] Failed to download Anthropic signing key." >&2
         return 1
@@ -230,10 +294,15 @@ install_claude_desktop() {
 
 # Main entry point of the script
 main() {
+    insecure_tls=false
     case "$1" in
         -h|--help|-v|--version) usage ;;
         "")
             [ "$#" -eq 0 ] || usage
+            ;;
+        --insecure-tls)
+            [ "$#" -eq 1 ] || usage
+            insecure_tls=true
             ;;
         *) usage ;;
     esac
@@ -243,6 +312,9 @@ main() {
     check_system || return 1
     check_sudo || return 1
     setup_paths || return 1
+    if [ "$insecure_tls" = true ]; then
+        configure_insecure_tls || return 1
+    fi
     if dpkg-query -W -f='${Status}' claude-desktop 2>/dev/null |
        grep -q '^install ok installed$'; then
         echo "[INFO] Claude Desktop is already installed."

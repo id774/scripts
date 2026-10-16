@@ -8,7 +8,7 @@ v2.0.3 (Release Date: TBD)
   installation and directory ownership.
 - Add an Aikido Safe Chain installer with a configurable installation prefix.
 - Add VS Code, Claude Desktop, and Claude Code installers with official APT
-  sources, and Homebrew installation for Claude Code on macOS.
+  sources, opt-in persistent TLS bypass, and macOS Homebrew for Claude Code.
 - Expand shared development packages to include Markdown and AWS CLI.
 - Expand block-device and filesystem reporting in disk backups, Linux resource
   reports, and LUKS mount operations, with backward-compatible lsblk fallbacks.

@@ -15,6 +15,12 @@
 #
 #  Usage:
 #      ./install_claude_code.sh
+#      ./install_claude_code.sh --insecure-tls
+#
+#  Options:
+#  --insecure-tls: Persistently disable APT TLS certificate checks for the
+#                  vendor host on Debian/Ubuntu and use curl -k for key download.
+#                  Rejected on macOS; Homebrew TLS behavior is unchanged.
 #
 #  Requirements:
 #  - Debian 10+ or Ubuntu 20.04+ (amd64 or arm64), or macOS 13+
@@ -35,6 +41,22 @@
 #  - An existing Claude Code installation using another method is not replaced.
 #  - Package updates are left to regular APT or Homebrew upgrades.
 #  - Authentication and Claude Code configuration are not performed.
+#  - --insecure-tls installs a persistent, host-specific APT configuration;
+#    later APT runs remain insecure until the configuration is removed.
+#  - This bypass weakens TLS authentication; prefer trusting the organization's
+#    inspection CA and remove the bypass when it is no longer needed.
+#  - The configuration is /etc/apt/apt.conf.d/98-insecure-tls-anthropic.conf
+#    for downloads.claude.ai, shared with install_claude_desktop.sh. It
+#    applies to every later APT operation for that host, and remains when the
+#    installation succeeds, fails, or is skipped because Claude Code is
+#    already installed.
+#  - Omitting --insecure-tls later does not remove the configuration. Remove
+#    it manually with: sudo rm /etc/apt/apt.conf.d/98-insecure-tls-anthropic.conf
+#    Removing it also restores verification for Claude Desktop.
+#  - Package signature and signing-key fingerprint checks stay enabled, but
+#    they do not restore TLS server authentication.
+#  - A differing existing configuration file is never overwritten; other APT
+#    configuration may override this setting.
 #
 #  Version History:
 #  v1.0 2026-10-16
@@ -144,6 +166,9 @@ check_sudo() {
 setup_paths() {
     script_dir=$(CDPATH= cd "$(dirname "$0")" && pwd) || return 1
     source_template="$script_dir/../etc/apt.conf.d/sources-claude-code.list"
+    tls_template="$script_dir/../etc/apt.conf.d/98-insecure-tls-anthropic.conf"
+    tls_target=/etc/apt/apt.conf.d/98-insecure-tls-anthropic.conf
+    tls_host=downloads.claude.ai
     source_target=/etc/apt/sources.list.d/claude-code.list
     keyring=/etc/apt/keyrings/claude-code.asc
     repository_base=https://downloads.claude.ai/claude-code/apt/stable/dists/stable
@@ -179,6 +204,39 @@ key_fingerprint() {
         '
 }
 
+# Persistently disable APT TLS verification for the vendor host on request
+configure_insecure_tls() {
+    check_commands cmp
+    if [ ! -r "$tls_template" ]; then
+        echo "[ERROR] Missing TLS configuration template: $tls_template" >&2
+        return 1
+    fi
+
+    tls_present=false
+    if [ -e "$tls_target" ] || [ -L "$tls_target" ]; then
+        if [ -L "$tls_target" ] || [ ! -f "$tls_target" ] ||
+           [ ! -r "$tls_target" ] || ! cmp -s "$tls_template" "$tls_target"; then
+            echo "[ERROR] Existing APT TLS configuration differs: $tls_target" >&2
+            return 1
+        fi
+        tls_present=true
+    fi
+
+    echo "[WARN] Persistently disabling APT TLS certificate checks for $tls_host in $tls_target. Remove the file manually to restore verification." >&2
+    if [ "$tls_present" = true ]; then
+        echo "[INFO] APT TLS configuration is already installed."
+        return 0
+    fi
+
+    if ! sudo install -d -m 0755 /etc/apt/apt.conf.d ||
+       ! sudo install -o root -g root -m 0644 \
+        "$tls_template" "$tls_target"; then
+        echo "[ERROR] Failed to install APT TLS configuration." >&2
+        return 1
+    fi
+    echo "[INFO] Installed APT TLS configuration."
+}
+
 # Install Anthropic's signing key only after verifying its published fingerprint
 install_signing_key() {
     if [ -e "$keyring" ] || [ -L "$keyring" ]; then
@@ -195,8 +253,13 @@ install_signing_key() {
     trap 'rm -rf "$temp_dir"' 0
     trap 'exit 1' 1 2 3 15
 
+    curl_extra_opts=
+    if [ "$insecure_tls" = true ]; then
+        curl_extra_opts=-k
+    fi
+
     echo "[INFO] Downloading Anthropic signing key..."
-    if ! curl -fsSL https://downloads.claude.ai/keys/claude-code.asc \
+    if ! curl -fsSL $curl_extra_opts https://downloads.claude.ai/keys/claude-code.asc \
         -o "$temp_dir/claude-code.asc"; then
         echo "[ERROR] Failed to download Anthropic signing key." >&2
         return 1
@@ -256,6 +319,9 @@ install_debian() {
     check_commands apt-get dpkg-query gpg awk grep install mktemp rm dirname
     check_sudo || return 1
     setup_paths || return 1
+    if [ "$insecure_tls" = true ]; then
+        configure_insecure_tls || return 1
+    fi
 
     if dpkg-query -W -f='${Status}' claude-code 2>/dev/null |
        grep -q '^install ok installed$'; then
@@ -283,6 +349,10 @@ install_debian() {
 
 # Install Claude Code from the Homebrew stable cask on macOS
 install_macos() {
+    if [ "$insecure_tls" = true ]; then
+        echo "[ERROR] --insecure-tls is only supported on Debian and Ubuntu." >&2
+        return 1
+    fi
     check_commands brew grep
     if brew list --cask --versions claude-code 2>/dev/null | grep -q .; then
         echo "[INFO] Claude Code is already installed with Homebrew."
@@ -309,9 +379,11 @@ verify_claude() {
 
 # Main entry point of the script
 main() {
+    insecure_tls=false
     case "${1:-}" in
         -h|--help|-v|--version) usage ;;
         "") [ "$#" -eq 0 ] || usage ;;
+        --insecure-tls) [ "$#" -eq 1 ] || usage; insecure_tls=true ;;
         *) usage ;;
     esac
 
