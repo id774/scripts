@@ -827,6 +827,7 @@ The `installer/` directory contains many setup and installation scripts.
 | Google Chrome | `install_google_chrome.sh` | Debian / Linux desktop | Installs Chrome Stable and configures its official APT source |
 | Visual Studio Code | `install_vscode.sh` | Debian / Ubuntu | Installs VS Code Stable using the official Microsoft APT repository |
 | Claude Desktop | `install_claude_desktop.sh` | Debian 12+ / Ubuntu 22.04+ | Installs Claude Desktop using the official Anthropic APT repository |
+| Claude Code CLI | `install_claude_code.sh` | Debian 10+ / Ubuntu 20.04+ / macOS 13+ | Installs Claude Code Stable using the official APT repository or Homebrew |
 
 
 ## 18. Debian Full Setup

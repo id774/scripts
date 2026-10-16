@@ -7,7 +7,8 @@ v2.0.3 (Release Date: TBD)
 - Add versioned Miniforge Conda/Mamba environments with aligned package
   installation and directory ownership.
 - Add an Aikido Safe Chain installer with a configurable installation prefix.
-- Add VS Code and Claude Desktop installers with tracked official APT sources.
+- Add VS Code, Claude Desktop, and Claude Code installers with official APT
+  sources, and Homebrew installation for Claude Code on macOS.
 - Expand shared development packages to include Markdown and AWS CLI.
 - Expand block-device and filesystem reporting in disk backups, Linux resource
   reports, and LUKS mount operations, with backward-compatible lsblk fallbacks.

@@ -1,0 +1,6 @@
+# ------------------------------------------------------------
+# Claude Code Official APT Repository
+# Stable channel for Debian and Ubuntu
+# Maintainer: id774
+# ------------------------------------------------------------
+deb [arch=amd64,arm64 signed-by=/etc/apt/keyrings/claude-code.asc] https://downloads.claude.ai/claude-code/apt/stable stable main
