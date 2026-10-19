@@ -1241,7 +1241,7 @@ It supports Linux and macOS on x64 and arm64.
 
 ### install_npm.sh
 
-Updates npm and globally installs a compact set of Node.js and TypeScript command-line tools.
+Updates npm and globally installs a compact set of Node.js and TypeScript command-line tools through Aikido Safe Chain.
 
 It installs `typescript`, `tsx`, `npm-check-updates`, `prettier`, `eslint`,
 `cspell`, `sql-formatter`, `prisma`, `@nestjs/cli`,
@@ -1249,6 +1249,13 @@ It installs `typescript`, `tsx`, `npm-check-updates`, `prettier`, `eslint`,
 `@tailwindcss/language-server`.
 
 It accepts an optional Node.js installation prefix and keeps global installation in that prefix.
+
+Safe Chain is mandatory. By default, its executable is discovered under
+`/opt/safe-chain/<VERSION>/bin/safe-chain`. When multiple versions are present,
+the caller must select one with `--safe-chain PATH`. This option also accepts an
+executable outside `/opt`. The runtime prefix must be writable by the caller.
+Shell aliases and Safe Chain shell integration are not required. The script
+never invokes sudo or falls back to unprotected npm.
 
 
 ### install_safe-chain.sh
