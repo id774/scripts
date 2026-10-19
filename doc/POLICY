@@ -260,6 +260,24 @@ repository is already being edited.
 - Keep that detection in one place. The same question answered separately in
   several places drifts apart as environments change.
 
+##### 1.2.3.1 Versioned /opt Installations
+
+- Multiple installed versions under `/opt/<software>/` are a normal supported
+  operational state, not an error or an ambiguity to reject by itself.
+- Keep version-specific installation prefixes independent. The presence of
+  other installed versions must not invalidate a selected executable.
+- When an installation family provides a `current` symlink, treat it as the
+  operator-selected version for consumers that use that family's default path.
+- A consumer must honor an explicitly configured executable or prefix path.
+  Otherwise, when its contract uses `current`, use that path directly rather
+  than scanning installed version directories to guess the active version.
+- Do not require a particular version count, reject multiple installed
+  versions, or select a version by directory enumeration. A missing or unusable
+  selected path is an error only when that path is required by the consumer.
+- Installation and version selection are separate responsibilities. Do not
+  create, replace, or retarget a `current` symlink as a side effect of an
+  installer unless that installer explicitly owns that behavior.
+
 #### 1.2.4 Comments and Language
 - Comments must be written in **English** only.
 - Use concise imperative phrasing as the normal English comment style. The
