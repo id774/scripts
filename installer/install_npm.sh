@@ -38,8 +38,8 @@
 #  Requirements:
 #  - Node.js and npm must already be installed.
 #  - Aikido Safe Chain must be installed and executable.
-#  - By default, Safe Chain is discovered under
-#    /opt/safe-chain/<VERSION>/bin/safe-chain.
+#  - By default, Safe Chain is used at
+#    /opt/safe-chain/current/bin/safe-chain.
 #  - Network connectivity is required for npm registry access.
 #  - The caller must have permission to write to the selected npm global prefix.
 #  - The Safe Chain runtime prefix must be writable by the caller.
@@ -47,7 +47,7 @@
 #  Exit Status:
 #  0   Batch processing completed, including runs with individual package warnings,
 #      or usage/help/version was displayed.
-#  1   Safe Chain discovery was ambiguous or initialization failed.
+#  1   Safe Chain initialization failed.
 #  126 A required command exists but is not executable.
 #  127 A required command was not found.
 #
@@ -57,8 +57,6 @@
 #  - If a prefix is provided, the Node.js and npm under that prefix are used,
 #    and global packages are installed into the same prefix.
 #  - Safe Chain is required and is never bypassed or replaced with direct npm.
-#  - If multiple Safe Chain installations are found under /opt/safe-chain,
-#    the caller must explicitly select one using --safe-chain.
 #  - Shell aliases and Safe Chain shell integration are not required.
 #  - This script does not run sudo.
 #  - A failure to update npm or install one package is reported as a warning,
@@ -123,26 +121,11 @@ setup_environment() {
 
 # Resolve the Safe Chain executable
 setup_safe_chain() {
-    SAFE_CHAIN="$1"
+    SAFE_CHAIN="${1:-/opt/safe-chain/current/bin/safe-chain}"
 
-    if [ -z "$SAFE_CHAIN" ]; then
-        # Discover a versioned Safe Chain installation under /opt.
-        for candidate in /opt/safe-chain/*/bin/safe-chain; do
-            [ -f "$candidate" ] || continue
-
-            if [ -n "$SAFE_CHAIN" ]; then
-                echo "[ERROR] Multiple Safe Chain installations found under /opt/safe-chain." >&2
-                echo "[ERROR] Specify the executable using --safe-chain PATH." >&2
-                exit 1
-            fi
-
-            SAFE_CHAIN="$candidate"
-        done
-    fi
-
-    if [ -z "$SAFE_CHAIN" ] || [ ! -f "$SAFE_CHAIN" ]; then
+    if [ ! -f "$SAFE_CHAIN" ]; then
         echo "[ERROR] Safe Chain was not found." >&2
-        echo "[ERROR] Install it under /opt/safe-chain/<VERSION>/bin/safe-chain or specify --safe-chain PATH." >&2
+        echo "[ERROR] Install it at /opt/safe-chain/current/bin/safe-chain or specify --safe-chain PATH." >&2
         exit 127
     fi
 
