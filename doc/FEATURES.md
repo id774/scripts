@@ -1250,10 +1250,9 @@ It installs `typescript`, `tsx`, `npm-check-updates`, `prettier`, `eslint`,
 
 It accepts an optional Node.js installation prefix and keeps global installation in that prefix.
 
-Safe Chain is mandatory. By default, its executable is discovered under
-`/opt/safe-chain/<VERSION>/bin/safe-chain`. When multiple versions are present,
-the caller must select one with `--safe-chain PATH`. This option also accepts an
-executable outside `/opt`. The runtime prefix must be writable by the caller.
+Safe Chain is mandatory. By default, the script uses
+`/opt/safe-chain/current/bin/safe-chain`. Use `--safe-chain PATH` to select
+another executable. The runtime prefix must be writable by the caller.
 Shell aliases and Safe Chain shell integration are not required. The script
 never invokes sudo or falls back to unprotected npm.
 
