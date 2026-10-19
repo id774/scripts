@@ -57,6 +57,7 @@
 #  - If a prefix is provided, the Node.js and npm under that prefix are used,
 #    and global packages are installed into the same prefix.
 #  - Safe Chain is required and is never bypassed or replaced with direct npm.
+#  - Each Safe Chain command and its arguments are logged before execution.
 #  - Shell aliases and Safe Chain shell integration are not required.
 #  - This script does not run sudo.
 #  - A failure to update npm or install one package is reported as a warning,
@@ -64,9 +65,9 @@
 #  - Proxy configuration is handled by Safe Chain and npm.
 #
 #  Version History:
-#  v1.2 2026-10-19
-#       Require Safe Chain for all npm installs (incompatible change),
-#       with default /opt discovery and an explicit path override.
+#  v1.2 2026-10-20
+#       Require Safe Chain for npm installs (incompatible change), use
+#       current by default with a path override, and log executed commands.
 #  v1.1 2026-09-27
 #       Add global formatting, linting, framework, Prisma, and language-server
 #       tools and document package-order guidance.
@@ -135,7 +136,9 @@ setup_safe_chain() {
     fi
 
     # Verify that Safe Chain can start before attempting npm installations.
-    if ! "$SAFE_CHAIN" --version > /dev/null; then
+    set -- "$SAFE_CHAIN" --version
+    echo "[INFO] Executing: $*"
+    if ! "$@" > /dev/null; then
         echo "[ERROR] Failed to initialize Safe Chain '$SAFE_CHAIN'." >&2
         exit 1
     fi
@@ -144,10 +147,13 @@ setup_safe_chain() {
 # Run a global npm installation through Safe Chain
 run_global_install() {
     if [ -n "$PREFIX" ]; then
-        "$SAFE_CHAIN" npm install -g --prefix "$PREFIX" "$1"
+        set -- "$SAFE_CHAIN" npm install -g --prefix "$PREFIX" "$1"
     else
-        "$SAFE_CHAIN" npm install -g "$1"
+        set -- "$SAFE_CHAIN" npm install -g "$1"
     fi
+
+    echo "[INFO] Executing: $*"
+    "$@"
 }
 
 # Install a single npm package
