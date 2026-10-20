@@ -40,6 +40,8 @@
 #  - This script is intended for Linux systems only.
 #
 #  Version History:
+#  v1.1 2026-10-20
+#       Limit saved-source ownership changes to the TA-Lib directory.
 #  v1.0 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -127,8 +129,8 @@ save_sources() {
         exit 1
     fi
 
-    if ! sudo chown -R root:root /usr/local/src/; then
-        echo "[ERROR] Failed to change owner of /usr/local/src/." >&2
+    if ! sudo chown -R root:root /usr/local/src/ta-lib; then
+        echo "[ERROR] Failed to change owner of /usr/local/src/ta-lib." >&2
         exit 1
     fi
 }

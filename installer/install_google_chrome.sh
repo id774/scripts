@@ -51,6 +51,8 @@
 #    - Sudo privilege for system modifications
 #
 #  Version History:
+#  v1.3 2026-10-20
+#       Stop when writing the Google Chrome APT repository entry fails.
 #  v1.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -236,7 +238,10 @@ configure_repository() {
 
     # Case 1: No repo file exists -> create a fresh one with the expected line.
     if [ ! -f "$LISTFILE" ]; then
-        echo "$REPO_LINE" | sudo tee "$LISTFILE" >/dev/null
+        if ! echo "$REPO_LINE" | sudo tee "$LISTFILE" >/dev/null; then
+            echo "[ERROR] Failed to write repo file: $LISTFILE" >&2
+            exit 1
+        fi
         echo "[INFO] Created repo file: $LISTFILE"
 
     else
@@ -244,7 +249,10 @@ configure_repository() {
         if ! grep -q "^deb \\[arch=amd64 signed-by=${KEYRING}\\] http://dl.google.com/linux/chrome/deb/ stable main\$" "$LISTFILE"; then
             # Branch 2A: The expected line is missing or differs (e.g., no signed-by).
             # Action: Write the canonical line so that APT uses the dedicated keyring.
-            echo "$REPO_LINE" | sudo tee "$LISTFILE" >/dev/null
+            if ! echo "$REPO_LINE" | sudo tee "$LISTFILE" >/dev/null; then
+                echo "[ERROR] Failed to write repo file: $LISTFILE" >&2
+                exit 1
+            fi
             echo "[INFO] Updated repo file: $LISTFILE"
         else
             # Branch 2B: The expected line already exists and matches exactly.
