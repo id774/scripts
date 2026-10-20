@@ -38,10 +38,12 @@
 #    cleanup failure is reported, but does not prevent later independent
 #    operations from being attempted.
 #  - Executed Homebrew operations are printed before they run.
+#  - The selected brew executable path is also logged after prerequisite checks.
 #
 #  Version History:
 #  v2.1 2026-10-20
-#       Show executed Homebrew installation and maintenance commands.
+#       Show executed Homebrew installation and maintenance commands
+#       and the selected brew executable path.
 #  v2.0 2026-09-27
 #       Add Markdown and AWS CLI to the Homebrew package set and document
 #       package-order guidance.
@@ -127,6 +129,7 @@ main() {
 
     check_system
     check_commands brew
+    echo "[INFO] Using brew: $(command -v brew)"
 
     # Check Homebrew environment
     echo "[INFO] Running 'brew doctor' to check the system's Homebrew environment..."

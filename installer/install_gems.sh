@@ -34,6 +34,7 @@
 #  - If no path is provided, the script assumes default tools in PATH.
 #  - Proxy support can be configured using the HTTP_PROXY environment variable.
 #  - Executed package operations are printed before they run.
+#  - The selected gem executable path is also logged after prerequisite checks.
 #  - Proxy values are redacted from execution logs.
 #  - This is a batch installer. A failure to update RubyGems or install
 #    one gem is reported, but does not prevent later gems from being
@@ -43,7 +44,8 @@
 #
 #  Version History:
 #  v4.1 2026-10-20
-#       Show executed RubyGems commands while redacting proxy values in logs.
+#       Show executed RubyGems commands and the selected gem executable
+#       path while redacting proxy values in logs.
 #  v4.0 2026-08-22
 #       Slim the gem set and improve portability.
 #  v3.4 2026-07-11
@@ -108,6 +110,7 @@ setup_environment() {
 
     # Verify that gem is available
     check_commands "$GEM"
+    echo "[INFO] Using gem: $(command -v "$GEM")"
 
     # Set proxy if HTTP_PROXY is defined
     if [ -n "$HTTP_PROXY" ]; then

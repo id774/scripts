@@ -40,10 +40,12 @@
 #  - Normal installation is non-interactive and does not ask for
 #    confirmation.
 #  - Executed package operations are printed before they run.
+#  - The selected conda executable path is also logged after prerequisite checks.
 #
 #  Version History:
 #  v2.2 2026-10-20
-#       Show executed Conda update and install commands.
+#       Show executed Conda update and install commands and the selected
+#       conda executable path.
 #  v2.1 2026-09-27
 #       Use Conda from PATH by default while retaining explicit prefix selection.
 #  v2.0 2026-08-22
@@ -104,6 +106,7 @@ setup_environment() {
 
     # Verify that Conda is available
     check_commands "$CONDA"
+    echo "[INFO] Using conda: $(command -v "$CONDA")"
 }
 
 # Install a single Python library using Conda

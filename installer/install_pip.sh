@@ -36,6 +36,7 @@
 #  - If no path is provided, the script assumes default tools in PATH.
 #  - Proxy support can be configured using the HTTP_PROXY environment variable.
 #  - Executed package operations are printed before they run.
+#  - The selected pip executable path is also logged after prerequisite checks.
 #  - Proxy values are redacted from execution logs.
 #  - This is a batch installer. A failure to update pip or install one
 #    library is reported, but does not prevent later libraries from being
@@ -45,7 +46,8 @@
 #
 #  Version History:
 #  v2.1 2026-10-20
-#       Show executed pip commands while redacting proxy values in logs.
+#       Show executed pip commands and the selected pip executable path
+#       while redacting proxy values in logs.
 #  v2.0 2026-08-22
 #       Slim the package set, retain the Python code-quality tools
 #       required by pyck.py, and remove Easy Install.
@@ -107,6 +109,7 @@ setup_environment() {
 
     # Verify that pip is available
     check_commands "$PIP"
+    echo "[INFO] Using pip: $(command -v "$PIP")"
 
     # Set proxy if HTTP_PROXY is defined
     if [ -n "$HTTP_PROXY" ]; then
