@@ -26,6 +26,8 @@
 #  that tracks 'origin/feature-branch'.
 #
 #  Version History:
+#  v1.9 2026-10-20
+#       Show executed remote branch checkout commands before execution.
 #  v1.8 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -84,7 +86,9 @@ main() {
     check_commands git
 
     if [ -n "$1" ]; then
-        git checkout -b $1 origin/$1
+        set -- git checkout -b $1 origin/$1
+        echo "[INFO] Executing: $*"
+        "$@"
     else
         usage
     fi

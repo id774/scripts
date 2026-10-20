@@ -37,6 +37,8 @@
 #  except master and main. Review them with '--list-remote' first.
 #
 #  Version History:
+#  v2.7 2026-10-20
+#       Show executed Git maintenance and symlink commands before execution.
 #  v2.6 2026-09-19
 #       Warn when repository writability checks fail but continue with Git
 #       operations instead of skipping the repository.
@@ -157,7 +159,9 @@ delete_remote_branches() {
             echo "[INFO] Remote branch: origin/$branch ($repo)"
         else
             echo "[INFO] Deleting remote branch: origin/$branch ($repo)"
-            if ! git -C "$repo" push origin --delete "$branch"; then
+            set -- git -C "$repo" push origin --delete "$branch"
+            echo "[INFO] Executing: $*"
+            if ! "$@"; then
                 echo "[ERROR] Failed to delete remote branch: origin/$branch ($repo)" >&2
             fi
         fi
@@ -193,8 +197,12 @@ pull_repo() {
     if [ "$HARD_MODE" = true ]; then
         if [ "$DRY_RUN" = false ]; then
             echo "[INFO] Resetting repository: $repo"
-            git -C "$repo" clean -dxf
-            git -C "$repo" reset --hard
+            set -- git -C "$repo" clean -dxf
+            echo "[INFO] Executing: $*"
+            "$@"
+            set -- git -C "$repo" reset --hard
+            echo "[INFO] Executing: $*"
+            "$@"
         else
             echo "[INFO] DRY RUN: Reset repository: $repo"
         fi
@@ -202,7 +210,9 @@ pull_repo() {
 
     if [ "$DRY_RUN" = false ]; then
         echo "[INFO] Pulling repository: $repo"
-        git -C "$repo" pull --prune
+        set -- git -C "$repo" pull --prune
+        echo "[INFO] Executing: $*"
+        "$@"
     else
         echo "[INFO] DRY RUN: Pull repository: $repo"
     fi
@@ -220,7 +230,9 @@ create_symlink() {
     if [ ! -e "$link_path" ]; then
         if [ "$DRY_RUN" = false ]; then
             echo "[INFO] Creating symlink: $link_path -> $repo"
-            ln -s "$repo" "$link_path"
+            set -- ln -s "$repo" "$link_path"
+            echo "[INFO] Executing: $*"
+            "$@"
         else
             echo "[INFO] DRY RUN: Create symlink: $link_path -> $repo"
         fi

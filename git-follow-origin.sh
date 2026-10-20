@@ -24,6 +24,8 @@
 #  This will merge changes from 'exampleUser/exampleRepo' into the local master branch.
 #
 #  Version History:
+#  v2.1 2026-10-20
+#       Show executed checkout, pull, merge, push, and branch deletion commands.
 #  v2.0 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -122,15 +124,27 @@ git_merge() {
     temp_branch="merge-${upstream_branch}-${ts}"
 
     # Create temp branch from local master
-    git checkout -b "$temp_branch" master
+    set -- git checkout -b "$temp_branch" master
+    echo "[INFO] Executing: $*"
+    "$@"
     # Pull only the resolved upstream branch into temp
-    git pull "$url" "$upstream_branch"
+    set -- git pull "$url" "$upstream_branch"
+    echo "[INFO] Executing: $*"
+    "$@"
 
     # Merge into local master and push
-    git checkout master
-    git merge "$temp_branch"
-    git push origin master
-    git branch -D "$temp_branch"
+    set -- git checkout master
+    echo "[INFO] Executing: $*"
+    "$@"
+    set -- git merge "$temp_branch"
+    echo "[INFO] Executing: $*"
+    "$@"
+    set -- git push origin master
+    echo "[INFO] Executing: $*"
+    "$@"
+    set -- git branch -D "$temp_branch"
+    echo "[INFO] Executing: $*"
+    "$@"
 }
 
 # Main entry point of the script

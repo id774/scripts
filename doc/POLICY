@@ -423,6 +423,14 @@ repository is already being edited.
   (e.g. `[cron]`, `[admin]`) in the subject line so recipients can easily
   classify, filter, or route messages.
 
+For Git-related maintenance scripts, print state-changing Git commands and
+persistent archive or symlink modifications with `[INFO] Executing:` on standard
+output immediately before execution. Display the non-sensitive command and
+arguments from the same positional parameters used for execution. Do not print
+`Executing:` for dry-run previews, read-only discovery, or prerequisite checks.
+Never log credentials. Preserve each script's operation order, existing
+progress messages, failure handling, and exit status.
+
 ### 1.4 Configuration and External Resources
 
 #### 1.4.1 Configuration Files
