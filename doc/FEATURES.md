@@ -1255,6 +1255,7 @@ Safe Chain is mandatory. By default, the script uses
 another executable. The runtime prefix must be writable by the caller.
 Shell aliases and Safe Chain shell integration are not required. The script
 never invokes sudo or falls back to unprotected npm.
+The script logs each Safe Chain command and its arguments before execution.
 
 
 ### install_safe-chain.sh
