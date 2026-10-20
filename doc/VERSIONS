@@ -4,7 +4,7 @@ scripts Repository Version History
 v2.0.3 (Release Date: TBD)
 --------------------------
 - Add Node.js LTS and npm development tool installers with managed permissions,
-  require Safe Chain for npm installs, and log executed commands.
+  requiring Safe Chain and logging commands and the selected npm path.
 - Display executed pip, RubyGems, Conda, and Homebrew package commands while
   redacting proxy arguments that may contain credentials.
 - Add versioned Miniforge Conda/Mamba environments with aligned package
