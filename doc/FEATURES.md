@@ -1153,7 +1153,21 @@ Configures XDG user-directory names to use English names.
 
 ### install_R_libs.sh
 
-Uses `etc/install_mylibs.R` to install a predefined set of R libraries in bulk.
+Uses `installer/install_mylibs.R` to install a predefined set of R libraries
+in bulk.
+
+The installer runs `sudo R`, allowing sudo to select R using its configured
+command search path rather than an executable chosen from the caller's PATH.
+The shell invokes `installer/install_R_libs.R` with R's `--file` option and
+passes `installer/install_mylibs.R` as a separate command-line argument.
+No R code or configuration path is interpolated into a shell-built R expression.
+The elevated R process reports its installation directory with `R.home()`,
+validates the first `.libPaths()` entry, and passes that target explicitly
+to `install.packages()`. The configuration retains the CRAN repository and
+package list. Both R files and their parent directories must be trusted and
+access controlled because the wrapper runs them under sudo. The administrator
+remains responsible for a trusted sudo command search path and deployment
+permissions.
 
 
 ### install_python.sh
@@ -1194,6 +1208,14 @@ Installs a compact, focused set of libraries and tools into a Conda environment 
 Without a prefix, it uses `conda` from PATH. With a prefix, it uses `<PREFIX>/bin/conda`.
 
 It does not own a Conda runtime version or a default versioned prefix; Miniforge runtime provisioning belongs to `install_miniforge.sh`.
+
+The installer gets the base environment path from the selected Conda executable
+using `conda info --base`. It updates Conda in base and installs its package
+list explicitly into that same base path, regardless of the caller's active
+environment. If the base path cannot be determined or is invalid, it stops
+before any package operation. The executable and target environment are logged.
+This changes the prior behavior that could install packages into the active
+environment.
 
 
 ### setup_python_symlink.sh
@@ -1807,10 +1829,6 @@ iptables:
 Munin:
 
     munin-apache.conf
-
-R:
-
-    install_mylibs.R
 
 rsyslog:
 

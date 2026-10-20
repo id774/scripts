@@ -7,6 +7,8 @@ v2.0.3 (Release Date: TBD)
   requiring Safe Chain and logging commands and the selected npm path.
 - Display pip, RubyGems, Conda, and Homebrew commands and selected executable
   paths while redacting proxy arguments that may contain credentials.
+- Pin Conda bulk installs to base and R package installs to the validated
+  library of the selected elevated R executable.
 - Add versioned Miniforge Conda/Mamba environments with aligned package
   installation and directory ownership.
 - Add an Aikido Safe Chain installer with a configurable installation prefix.

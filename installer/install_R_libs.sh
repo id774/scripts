@@ -5,7 +5,7 @@
 #
 #  Description:
 #  This script installs a predefined set of R libraries by sourcing
-#  the configuration file `install_mylibs.R`.
+#  the installer configuration file `installer/install_mylibs.R`.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -27,7 +27,20 @@
 #  126. Required command is not executable.
 #  127. Required command is not installed.
 #
+#  Notes:
+#  - R is selected by sudo using its configured command search path.
+#    The elevated R installation is logged from within that process.
+#  - Packages target the validated first library of the elevated R process.
+#    The target is logged before installation.
+#  - The R installation logic is kept in installer/install_R_libs.R.
+#    installer/install_mylibs.R is passed as its package configuration.
+#  - Run the elevated R program and its sourced configuration only from
+#    trusted, access-controlled repository files.
+#
 #  Version History:
+#  v1.6 2026-10-20
+#       Use sudo-selected R and its validated library target, and move the
+#       installer-owned package configuration (incompatible change).
 #  v1.5 2026-09-20
 #       Use shared check_commands for R prerequisite validation and return
 #       failure when the R library installation command fails.
@@ -82,8 +95,12 @@ check_scripts() {
 
 # Check if the config file exists
 check_config() {
-    if [ ! -f "$SCRIPTS/etc/install_mylibs.R" ]; then
-        echo "[ERROR] Configuration file install_mylibs.R not found in $SCRIPTS/etc/." >&2
+    if [ ! -f "$SCRIPTS/installer/install_mylibs.R" ]; then
+        echo "[ERROR] Configuration file install_mylibs.R not found in $SCRIPTS/installer/." >&2
+        exit 1
+    fi
+    if [ ! -f "$SCRIPTS/installer/install_R_libs.R" ]; then
+        echo "[ERROR] R installer program install_R_libs.R not found in $SCRIPTS/installer/." >&2
         exit 1
     fi
 }
@@ -100,7 +117,11 @@ check_sudo() {
 # Install R libraries
 install_R_libs() {
     echo "[INFO] Installing R libraries..."
-    if ! sudo R --no-save --no-restore -e "source('$SCRIPTS/etc/install_mylibs.R'); install.packages(required_packages, dependencies=TRUE)"; then
+    set -- sudo R --no-save --no-restore \
+        --file="$SCRIPTS/installer/install_R_libs.R" \
+        --args "$SCRIPTS/installer/install_mylibs.R"
+    echo "[INFO] Executing: $*"
+    if ! "$@"; then
         echo "[ERROR] R library installation failed." >&2
         return 1
     fi
@@ -117,6 +138,7 @@ main() {
     check_scripts
     check_config
     check_sudo
+
     install_R_libs || return 1
     return 0
 }

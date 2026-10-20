@@ -41,11 +41,13 @@
 #    confirmation.
 #  - Executed package operations are printed before they run.
 #  - The selected conda executable path is also logged after prerequisite checks.
+#  - Bulk packages are installed into the selected Conda base environment,
+#    regardless of the caller's active environment.
 #
 #  Version History:
 #  v2.2 2026-10-20
-#       Show executed Conda update and install commands and the selected
-#       conda executable path.
+#       Log Conda commands and the selected executable, and target the
+#       selected base environment for installs (incompatible change).
 #  v2.1 2026-09-27
 #       Use Conda from PATH by default while retaining explicit prefix selection.
 #  v2.0 2026-08-22
@@ -107,13 +109,30 @@ setup_environment() {
     # Verify that Conda is available
     check_commands "$CONDA"
     echo "[INFO] Using conda: $(command -v "$CONDA")"
+
+    if ! CONDA_BASE=$("$CONDA" info --base); then
+        echo "[ERROR] Failed to determine the selected Conda base environment." >&2
+        exit 1
+    fi
+    case "$CONDA_BASE" in
+        /*) ;;
+        *)
+            echo "[ERROR] Invalid Conda base environment path: $CONDA_BASE" >&2
+            exit 1
+            ;;
+    esac
+    if [ ! -d "$CONDA_BASE" ]; then
+        echo "[ERROR] Conda base environment directory was not found: $CONDA_BASE" >&2
+        exit 1
+    fi
+    echo "[INFO] Target environment: $CONDA_BASE"
 }
 
 # Install a single Python library using Conda
 install_lib() {
     package=$1
     echo "[INFO] Installing $package..."
-    set -- "$CONDA" install -y "$package"
+    set -- "$CONDA" install -p "$CONDA_BASE" -y "$package"
     echo "[INFO] Executing: $*"
     if ! "$@"; then
         echo "[WARN] Failed to install $package; continuing." >&2
