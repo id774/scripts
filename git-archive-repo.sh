@@ -45,6 +45,8 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v1.3 2026-10-20
+#       Show archive removal and creation commands before execution.
 #  v1.2 2026-07-12
 #       Require the configuration file and all its variables, and stop creating
 #       missing source or archive directories, treating them as errors instead.
@@ -131,11 +133,15 @@ create_archive() {
 
     if [ -f "$archive_file" ]; then
         echo "[INFO] Removing existing archive: $archive_file"
-        rm -f "$archive_file" || return 3
+        set -- rm -f "$archive_file"
+        echo "[INFO] Executing: $*"
+        "$@" || return 3
     fi
 
     echo "[INFO] Creating archive: $archive_file from $source_dir"
-    if tar czf "$archive_file" -C "$source_parent" "$source_base"; then
+    set -- tar czf "$archive_file" -C "$source_parent" "$source_base"
+    echo "[INFO] Executing: $*"
+    if "$@"; then
         echo "[INFO] Archive created successfully: $archive_file"
     else
         echo "[ERROR] Failed to create archive: $archive_file" >&2

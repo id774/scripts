@@ -18,6 +18,8 @@ v2.0.3 (Release Date: TBD)
 - Show available encryption tool versions in removable-disk backup logs.
 - Suppress expected ping results from pyping_test.py standard output.
 - Remove obsolete service management scripts, installers, and configurations.
+- Log state-changing Git repository, archive, and symlink commands before
+  execution while preserving dry-run and failure handling.
 
 v2.0.2 (2026-09-23)
 -------------------

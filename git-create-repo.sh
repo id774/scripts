@@ -59,6 +59,8 @@
 #  home directory. This behavior can be overridden with the --sudo or --no-sudo options.
 #
 #  Version History:
+#  v2.3 2026-10-20
+#       Show repository creation, permission, and deletion commands.
 #  v2.2 2026-09-11
 #       Honor explicit --no-sudo regardless of repository path and parse
 #       documented options after positional arguments.
@@ -166,15 +168,27 @@ create_git_repo() {
         return 0
     fi
 
-    $use_sudo mkdir -p "${repo_path}" || return 1
-    cd "${repo_path}" || return 1
-    $use_sudo git init --bare --shared || return 1
-    $use_sudo chmod -R o-rwx,g+ws "${repo_path}" || return 1
+    set -- $use_sudo mkdir -p "${repo_path}"
+    echo "[INFO] Executing: $*"
+    "$@" || return 1
+    set -- cd "${repo_path}"
+    echo "[INFO] Executing: $*"
+    "$@" || return 1
+    set -- $use_sudo git init --bare --shared
+    echo "[INFO] Executing: $*"
+    "$@" || return 1
+    set -- $use_sudo chmod -R o-rwx,g+ws "${repo_path}"
+    echo "[INFO] Executing: $*"
+    "$@" || return 1
 
     if [ -z "$use_sudo" ]; then
-        chmod -R u+rwX "${repo_path}"
+        set -- chmod -R u+rwX "${repo_path}"
+        echo "[INFO] Executing: $*"
+        "$@"
     else
-        $use_sudo chown -R "${user}:${group}" "${repo_path}"
+        set -- $use_sudo chown -R "${user}:${group}" "${repo_path}"
+        echo "[INFO] Executing: $*"
+        "$@"
     fi
 
     echo "[INFO] Repository '${repo_name}' created at '${repo_path}'."
@@ -192,7 +206,9 @@ delete_git_repo() {
     fi
 
     if is_git_repository "$repo_path" "$use_sudo"; then
-        $use_sudo rm -rf "${repo_path}"
+        set -- $use_sudo rm -rf "${repo_path}"
+        echo "[INFO] Executing: $*"
+        "$@"
         echo "[INFO] Repository at '${repo_path}' has been deleted."
     else
         echo "[ERROR] '${repo_path}' is not a Git repository." >&2

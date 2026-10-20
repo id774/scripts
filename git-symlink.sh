@@ -46,6 +46,8 @@
 #      -u, --uninstall Remove matching symlinks in $HOME (do not recreate).
 #
 #  Version History:
+#  v1.4 2026-10-20
+#       Show executed symlink creation and removal commands.
 #  v1.3 2026-09-18
 #       Add --gitlab-only and include ~/local/gitlab in --all symlink operations.
 #  v1.2 2026-08-22
@@ -147,7 +149,9 @@ create_or_replace_link() {
         if [ "$DRY_RUN" = true ]; then
             echo "[INFO] DRY RUN: Remove existing path: $dest"
         else
-            rm -rf -- "$dest"
+            set -- rm -rf -- "$dest"
+            echo "[INFO] Executing: $*"
+            "$@"
         fi
     fi
 
@@ -155,7 +159,9 @@ create_or_replace_link() {
     if [ "$DRY_RUN" = true ]; then
         echo "[INFO] DRY RUN: ln -s \"$src\" \"$dest\""
     else
-        ln -s "$src" "$dest"
+        set -- ln -s "$src" "$dest"
+        echo "[INFO] Executing: $*"
+        "$@"
         echo "[INFO] Linked $dest -> $src"
     fi
 }
@@ -185,7 +191,9 @@ purge_broken_symlinks_in_home() {
             if [ "$DRY_RUN" = true ]; then
                 echo "[INFO] DRY RUN: rm -f \"$l\""
             else
-                rm -f -- "$l"
+                set -- rm -f -- "$l"
+                echo "[INFO] Executing: $*"
+                "$@"
                 echo "[INFO] Removed broken symlink $l"
             fi
         fi
@@ -208,7 +216,9 @@ uninstall_matching_symlinks() {
                 if [ "$DRY_RUN" = true ]; then
                     echo "[INFO] DRY RUN: rm -f \"$path\""
                 else
-                    rm -f -- "$path"
+                    set -- rm -f -- "$path"
+                    echo "[INFO] Executing: $*"
+                    "$@"
                     echo "[INFO] Uninstalled symlink $path"
                 fi
                 removed=$((removed + 1))
