@@ -58,6 +58,7 @@
 #    and global packages are installed into the same prefix.
 #  - Safe Chain is required and is never bypassed or replaced with direct npm.
 #  - Each Safe Chain command and its arguments are logged before execution.
+#  - The selected npm executable path is also logged after prerequisite checks.
 #  - Shell aliases and Safe Chain shell integration are not required.
 #  - This script does not run sudo.
 #  - A failure to update npm or install one package is reported as a warning,
@@ -67,7 +68,8 @@
 #  Version History:
 #  v1.2 2026-10-20
 #       Require Safe Chain for npm installs (incompatible change), use
-#       current by default with a path override, and log executed commands.
+#       current by default with a path override, and log executed commands
+#       and the selected npm executable path.
 #  v1.1 2026-09-27
 #       Add global formatting, linting, framework, Prisma, and language-server
 #       tools and document package-order guidance.
@@ -118,6 +120,7 @@ setup_environment() {
 
     # Verify that node and npm are available
     check_commands "$NODE" "$NPM"
+    echo "[INFO] Using npm: $(command -v "$NPM")"
 }
 
 # Resolve the Safe Chain executable
