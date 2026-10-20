@@ -33,6 +33,8 @@
 #  Notes:
 #  - If no path is provided, the script assumes default tools in PATH.
 #  - Proxy support can be configured using the HTTP_PROXY environment variable.
+#  - Executed package operations are printed before they run.
+#  - Proxy values are redacted from execution logs.
 #  - This is a batch installer. A failure to update RubyGems or install
 #    one gem is reported, but does not prevent later gems from being
 #    attempted.
@@ -40,6 +42,8 @@
 #    confirmation.
 #
 #  Version History:
+#  v4.1 2026-10-20
+#       Show executed RubyGems commands while redacting proxy values in logs.
 #  v4.0 2026-08-22
 #       Slim the gem set and improve portability.
 #  v3.4 2026-07-11
@@ -115,9 +119,16 @@ setup_environment() {
 
 # Install a single Ruby gem
 install_gem() {
-    echo "[INFO] Installing $1..."
-    if ! $GEM install $PROXY "$1"; then
-        echo "[WARN] Failed to install $1; continuing." >&2
+    gem_name=$1
+    echo "[INFO] Installing $gem_name..."
+    set -- "$GEM" install $PROXY "$gem_name"
+    if [ -n "$PROXY" ]; then
+        echo "[INFO] Executing: $GEM install --http-proxy [REDACTED] $gem_name"
+    else
+        echo "[INFO] Executing: $*"
+    fi
+    if ! "$@"; then
+        echo "[WARN] Failed to install $gem_name; continuing." >&2
     fi
     return 0
 }
@@ -125,7 +136,13 @@ install_gem() {
 # Install the necessary Ruby gems
 install_gems() {
     echo "[INFO] Updating gem system to the latest version..."
-    if ! $GEM update --system $PROXY; then
+    set -- "$GEM" update --system $PROXY
+    if [ -n "$PROXY" ]; then
+        echo "[INFO] Executing: $GEM update --system --http-proxy [REDACTED]"
+    else
+        echo "[INFO] Executing: $*"
+    fi
+    if ! "$@"; then
         echo "[WARN] Failed to update RubyGems; continuing." >&2
     fi
 

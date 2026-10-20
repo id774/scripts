@@ -37,8 +37,11 @@
 #  - This is a batch installer. A Homebrew update, package install, link, or
 #    cleanup failure is reported, but does not prevent later independent
 #    operations from being attempted.
+#  - Executed Homebrew operations are printed before they run.
 #
 #  Version History:
+#  v2.1 2026-10-20
+#       Show executed Homebrew installation and maintenance commands.
 #  v2.0 2026-09-27
 #       Add Markdown and AWS CLI to the Homebrew package set and document
 #       package-order guidance.
@@ -106,9 +109,12 @@ check_commands() {
 
 # Install a single Homebrew package, continuing on failure
 install_brew() {
-    echo "[INFO] Installing $1..."
-    if ! brew install "$1"; then
-        echo "[WARN] Failed to install $1; continuing." >&2
+    package=$1
+    echo "[INFO] Installing $package..."
+    set -- brew install "$package"
+    echo "[INFO] Executing: $*"
+    if ! "$@"; then
+        echo "[WARN] Failed to install $package; continuing." >&2
     fi
     return 0
 }
@@ -130,7 +136,9 @@ main() {
 
     # Update Homebrew
     echo "[INFO] Updating Homebrew packages..."
-    if ! brew update; then
+    set -- brew update
+    echo "[INFO] Executing: $*"
+    if ! "$@"; then
         echo "[WARN] brew update failed; continuing." >&2
     fi
 
@@ -139,7 +147,9 @@ main() {
     # Roughly order general-purpose tools before larger frameworks and server tools.
     # Put external-service clients last when practical; the order is only a guide.
     install_brew openssl
-    if ! brew link openssl --force; then
+    set -- brew link openssl --force
+    echo "[INFO] Executing: $*"
+    if ! "$@"; then
         echo "[WARN] Failed to link openssl; continuing." >&2
     fi
     install_brew wget
@@ -162,7 +172,9 @@ main() {
 
     # Cleanup old versions and caches to free up disk space
     echo "[INFO] Cleaning up old versions and caches..."
-    if ! brew cleanup; then
+    set -- brew cleanup
+    echo "[INFO] Executing: $*"
+    if ! "$@"; then
         echo "[WARN] brew cleanup failed; continuing." >&2
     fi
 
