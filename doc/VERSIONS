@@ -22,6 +22,8 @@ v2.0.3 (Release Date: TBD)
 - Remove obsolete service management scripts, installers, and configurations.
 - Log state-changing Git repository, archive, and symlink commands before
   execution while preserving dry-run and failure handling.
+- Limit TA-Lib saved-source ownership changes to its directory.
+- Stop Google Chrome setup when the APT repository entry cannot be written.
 
 v2.0.2 (2026-09-23)
 -------------------
