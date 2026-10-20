@@ -35,6 +35,8 @@
 #  Notes:
 #  - If no path is provided, the script assumes default tools in PATH.
 #  - Proxy support can be configured using the HTTP_PROXY environment variable.
+#  - Executed package operations are printed before they run.
+#  - Proxy values are redacted from execution logs.
 #  - This is a batch installer. A failure to update pip or install one
 #    library is reported, but does not prevent later libraries from being
 #    attempted.
@@ -42,6 +44,8 @@
 #    confirmation.
 #
 #  Version History:
+#  v2.1 2026-10-20
+#       Show executed pip commands while redacting proxy values in logs.
 #  v2.0 2026-08-22
 #       Slim the package set, retain the Python code-quality tools
 #       required by pyck.py, and remove Easy Install.
@@ -114,9 +118,16 @@ setup_environment() {
 
 # Install a single Python library
 install_lib() {
-    echo "[INFO] Installing $1..."
-    if ! $PIP install $PROXY -U "$1"; then
-        echo "[WARN] Failed to install $1; continuing." >&2
+    package=$1
+    echo "[INFO] Installing $package..."
+    set -- "$PIP" install $PROXY -U "$package"
+    if [ -n "$PROXY" ]; then
+        echo "[INFO] Executing: $PIP install --proxy [REDACTED] -U $package"
+    else
+        echo "[INFO] Executing: $*"
+    fi
+    if ! "$@"; then
+        echo "[WARN] Failed to install $package; continuing." >&2
     fi
     return 0
 }
@@ -124,7 +135,13 @@ install_lib() {
 # Install the necessary Python libraries using pip
 install_libs() {
     echo "[INFO] Updating pip to the latest version..."
-    if ! $PIP install $PROXY -U pip; then
+    set -- "$PIP" install $PROXY -U pip
+    if [ -n "$PROXY" ]; then
+        echo "[INFO] Executing: $PIP install --proxy [REDACTED] -U pip"
+    else
+        echo "[INFO] Executing: $*"
+    fi
+    if ! "$@"; then
         echo "[WARN] Failed to update pip; continuing." >&2
     fi
 

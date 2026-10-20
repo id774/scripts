@@ -720,6 +720,23 @@ language over symbol-heavy status fragments when prose is clearer, but retain
 punctuation and symbols when they carry technical meaning or improve clarity.
 Do not add symbols solely for visual decoration or status styling.
 
+For installer operations that install, update, remove, or link software, or
+make significant persistent system changes, print the executed command and
+its non-sensitive arguments immediately before execution when the operation
+is performed. Use `[INFO] Executing:` on standard output. Prefer the existing
+Shell Script pattern of building positional arguments once, displaying `$*`
+for human readability, and executing `"$@"` to preserve argument boundaries.
+The display is not guaranteed to be a reusable shell command line.
+
+Never disclose credentials, tokens, passwords, or credential-bearing proxy
+URLs through execution logs. Where a secret-bearing argument is required,
+show the non-sensitive command structure and mark that value as `[REDACTED]`
+without altering the actual executed arguments. Ordinary prerequisite checks,
+read-only status queries, and transient cleanup do not require command-level
+logging. Preserve each installer's existing progress, failure, continuation,
+and exit-status contract; do not introduce logging frameworks or extra
+preflight checks solely for display.
+
 ##### 1.5.4.6 Established Contract and New Installers
 
 Preserve an established installer's continuation, skip, interaction, output,

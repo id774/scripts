@@ -39,8 +39,11 @@
 #    attempted.
 #  - Normal installation is non-interactive and does not ask for
 #    confirmation.
+#  - Executed package operations are printed before they run.
 #
 #  Version History:
+#  v2.2 2026-10-20
+#       Show executed Conda update and install commands.
 #  v2.1 2026-09-27
 #       Use Conda from PATH by default while retaining explicit prefix selection.
 #  v2.0 2026-08-22
@@ -105,9 +108,12 @@ setup_environment() {
 
 # Install a single Python library using Conda
 install_lib() {
-    echo "[INFO] Installing $1..."
-    if ! $CONDA install -y "$1"; then
-        echo "[WARN] Failed to install $1; continuing." >&2
+    package=$1
+    echo "[INFO] Installing $package..."
+    set -- "$CONDA" install -y "$package"
+    echo "[INFO] Executing: $*"
+    if ! "$@"; then
+        echo "[WARN] Failed to install $package; continuing." >&2
     fi
     return 0
 }
@@ -115,7 +121,9 @@ install_lib() {
 # Install the necessary libraries using Conda
 install_libs() {
     echo "[INFO] Updating Conda base environment..."
-    if ! $CONDA update -n base -y conda; then
+    set -- "$CONDA" update -n base -y conda
+    echo "[INFO] Executing: $*"
+    if ! "$@"; then
         echo "[WARN] Failed to update Conda; continuing." >&2
     fi
 
