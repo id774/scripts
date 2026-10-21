@@ -192,12 +192,11 @@ install_resin() {
 show_sha256() {
     echo "[INFO] Downloaded file: ${1##*/}"
     if command -v sha256sum >/dev/null 2>&1; then
+        check_commands sha256sum
         sha256_line=$(sha256sum "$1")
-    elif command -v shasum >/dev/null 2>&1; then
-        sha256_line=$(shasum -a 256 "$1")
     else
-        echo "[ERROR] Command 'sha256sum' or 'shasum' is not installed. Please install one of them and try again." >&2
-        exit 127
+        check_commands shasum
+        sha256_line=$(shasum -a 256 "$1")
     fi
     sha256_status=$?
     sha256_value=${sha256_line%% *}
