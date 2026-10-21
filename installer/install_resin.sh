@@ -24,6 +24,9 @@
 #  Skip saving sources by specifying any second argument:
 #      ./install_resin.sh VERSION skip
 #
+#  Skip the confirmation prompt by specifying --yes as the last argument:
+#      ./install_resin.sh VERSION skip --yes
+#
 #  Notes:
 #  - The default version is a provisional convenience value used when no
 #    version is specified. It normally reflects the current release selected
@@ -32,14 +35,22 @@
 #  - An explicit version is resolved through this installer's configured
 #    download source and path rules. It can be installed only when the
 #    corresponding artifact is available from that source.
+#  - After downloading, the SHA-256 of the file is displayed and y/yes
+#    approval is required before it is processed. Any other response, or an
+#    unavailable terminal, aborts the installation.
+#  - The optional --yes argument skips only the confirmation prompt; the
+#    SHA-256 is still displayed. It is accepted only as the last argument.
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
 #  - The user must have `wget`, `make`, `sudo`, `unzip`, and `tar` installed.
 #  - Must be executed in a shell environment with internet access.
 #  - This script is intended for Linux systems only.
+#  - The user must have `sha256sum` or `shasum` installed.
 #
 #  Version History:
+#  v1.1 2026-10-21
+#       Show downloaded file SHA-256 and confirm before install, with --yes bypass.
 #  v1.0 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -141,6 +152,9 @@ install_resin() {
     fi
     echo "[INFO] Download complete: $RESIN.zip"
 
+    show_sha256 "$RESIN.zip"
+    [ "$ASSUME_YES" = "true" ] || confirm_installation
+
     echo "[INFO] Extracting archive..."
     if ! unzip "$RESIN.zip"; then
         echo "[ERROR] Failed to extract $RESIN.zip." >&2
@@ -174,11 +188,74 @@ install_resin() {
     rm -rf install_resin
 }
 
+# Display the SHA-256 of a downloaded file
+show_sha256() {
+    echo "[INFO] Downloaded file: ${1##*/}"
+    if command -v sha256sum >/dev/null 2>&1; then
+        sha256_line=$(sha256sum "$1")
+    elif command -v shasum >/dev/null 2>&1; then
+        sha256_line=$(shasum -a 256 "$1")
+    else
+        echo "[ERROR] Command 'sha256sum' or 'shasum' is not installed. Please install one of them and try again." >&2
+        exit 127
+    fi
+    sha256_status=$?
+    sha256_value=${sha256_line%% *}
+    case "$sha256_value" in
+        *[!0-9a-f]*) sha256_status=1 ;;
+    esac
+    if [ "$sha256_status" -ne 0 ] || [ "${#sha256_value}" -ne 64 ]; then
+        echo "[ERROR] Failed to calculate SHA-256 of $1." >&2
+        exit 1
+    fi
+    echo "[INFO] SHA-256: $sha256_value"
+}
+
+# Ask the user to approve processing of the downloaded file
+confirm_installation() {
+    printf '[INFO] Proceed with installation? [y/N]: '
+    if ! read -r response < /dev/tty; then
+        echo >&2
+        echo "[ERROR] Failed to read the confirmation from the terminal." >&2
+        exit 1
+    fi
+
+    case "$response" in
+        y|Y|yes|YES) ;;
+        *)
+            echo "[ERROR] Installation aborted by user." >&2
+            exit 1
+            ;;
+    esac
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
     esac
+
+    # Accept --yes only as the last argument and remove it from the arguments
+    ASSUME_YES=false
+    last_arg=
+    for arg in "$@"; do
+        last_arg="$arg"
+    done
+    if [ "$last_arg" = "--yes" ]; then
+        ASSUME_YES=true
+        i=1
+        while [ "$i" -lt "$#" ]; do
+            set -- "$@" "$1"
+            shift
+            i=$((i + 1))
+        done
+        shift
+    fi
+    for arg in "$@"; do
+        if [ "$arg" = "--yes" ]; then
+            usage
+        fi
+    done
 
     # Perform initial checks
     check_system

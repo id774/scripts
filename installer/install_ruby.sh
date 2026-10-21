@@ -40,13 +40,19 @@
 #
 #  - Source files are saved to /usr/local/src/ruby only when using sudo.
 #    If installed without sudo (e.g. using `--no-sudo`), source files will not be saved.
+#  - After downloading, the SHA-256 of the file is displayed and y/yes
+#    approval is required before it is processed. Any other response, or an
+#    unavailable terminal, aborts the installation.
 #
 #  Requirements:
 #  - Network connectivity is required to download the source files.
 #  - The user must have `curl`, `make`, and `tar` installed.
 #  - Must be executed in a shell environment with internet access.
+#  - The user must have `sha256sum` or `shasum` installed.
 #
 #  Version History:
+#  v3.9 2026-10-21
+#       Show downloaded file SHA-256 and require confirmation before install.
 #  v3.8 2026-09-11
 #       Require sudo only on execution paths that select sudo mode.
 #  v3.7 2026-07-11
@@ -204,6 +210,9 @@ install_ruby() {
         exit 1
     fi
 
+    show_sha256 "ruby-$VERSION.tar.gz"
+    confirm_installation
+
     echo "[INFO] Extracting archive."
     if ! tar xzvf "ruby-$VERSION.tar.gz"; then
         echo "[ERROR] Failed to extract Ruby archive." >&2
@@ -221,6 +230,47 @@ install_ruby() {
         echo "[ERROR] Failed to remove temporary build directory." >&2
         exit 1
     fi
+}
+
+# Display the SHA-256 of a downloaded file
+show_sha256() {
+    echo "[INFO] Downloaded file: ${1##*/}"
+    if command -v sha256sum >/dev/null 2>&1; then
+        sha256_line=$(sha256sum "$1")
+    elif command -v shasum >/dev/null 2>&1; then
+        sha256_line=$(shasum -a 256 "$1")
+    else
+        echo "[ERROR] Command 'sha256sum' or 'shasum' is not installed. Please install one of them and try again." >&2
+        exit 127
+    fi
+    sha256_status=$?
+    sha256_value=${sha256_line%% *}
+    case "$sha256_value" in
+        *[!0-9a-f]*) sha256_status=1 ;;
+    esac
+    if [ "$sha256_status" -ne 0 ] || [ "${#sha256_value}" -ne 64 ]; then
+        echo "[ERROR] Failed to calculate SHA-256 of $1." >&2
+        exit 1
+    fi
+    echo "[INFO] SHA-256: $sha256_value"
+}
+
+# Ask the user to approve processing of the downloaded file
+confirm_installation() {
+    printf '[INFO] Proceed with installation? [y/N]: '
+    if ! read -r response < /dev/tty; then
+        echo >&2
+        echo "[ERROR] Failed to read the confirmation from the terminal." >&2
+        exit 1
+    fi
+
+    case "$response" in
+        y|Y|yes|YES) ;;
+        *)
+            echo "[ERROR] Installation aborted by user." >&2
+            exit 1
+            ;;
+    esac
 }
 
 # Main entry point of the script

@@ -64,6 +64,9 @@
 #  - To enable shell integration, the user may run
 #    <PREFIX>/bin/safe-chain setup and then restart the terminal. For CI
 #    environments, Safe Chain also provides <PREFIX>/bin/safe-chain setup-ci.
+#  - After downloading, the SHA-256 of the file is displayed and y/yes
+#    approval is required before it is processed. Any other response, or an
+#    unavailable terminal, aborts the installation.
 #
 #  Requirements:
 #  - Linux or macOS on x64 or arm64, with network access to GitHub Releases.
@@ -72,6 +75,7 @@
 #  - Runtime use: the intended Safe Chain user needs ongoing write access to
 #    the installation prefix. In sudo mode with the default /opt prefix,
 #    configure that access after installation before non-root use.
+#  - The user must have `sha256sum` or `shasum` installed.
 #
 #  Exit Status:
 #  0   Installation succeeded, or usage was displayed.
@@ -81,6 +85,8 @@
 #  127 A required command was not found.
 #
 #  Version History:
+#  v1.1 2026-10-21
+#       Show downloaded file SHA-256 and require confirmation before install.
 #  v1.0 2026-09-25
 #       Initial release.
 #
@@ -179,6 +185,9 @@ install_safe_chain() {
         exit 1
     fi
 
+    show_sha256 "install_safe_chain/$ASSET"
+    confirm_installation
+
     echo "[INFO] Installing Safe Chain to $TARGET."
     if ! $SUDO mkdir -p "$PREFIX/bin"; then
         echo "[ERROR] Failed to create $PREFIX/bin." >&2
@@ -231,6 +240,47 @@ show_usage_guidance() {
     echo "[INFO] Restart the terminal after setup for the shell integration to take effect."
     echo "[INFO] For CI environments, Safe Chain also provides:"
     echo "[INFO]   $TARGET setup-ci"
+}
+
+# Display the SHA-256 of a downloaded file
+show_sha256() {
+    echo "[INFO] Downloaded file: ${1##*/}"
+    if command -v sha256sum >/dev/null 2>&1; then
+        sha256_line=$(sha256sum "$1")
+    elif command -v shasum >/dev/null 2>&1; then
+        sha256_line=$(shasum -a 256 "$1")
+    else
+        echo "[ERROR] Command 'sha256sum' or 'shasum' is not installed. Please install one of them and try again." >&2
+        exit 127
+    fi
+    sha256_status=$?
+    sha256_value=${sha256_line%% *}
+    case "$sha256_value" in
+        *[!0-9a-f]*) sha256_status=1 ;;
+    esac
+    if [ "$sha256_status" -ne 0 ] || [ "${#sha256_value}" -ne 64 ]; then
+        echo "[ERROR] Failed to calculate SHA-256 of $1." >&2
+        exit 1
+    fi
+    echo "[INFO] SHA-256: $sha256_value"
+}
+
+# Ask the user to approve processing of the downloaded file
+confirm_installation() {
+    printf '[INFO] Proceed with installation? [y/N]: '
+    if ! read -r response < /dev/tty; then
+        echo >&2
+        echo "[ERROR] Failed to read the confirmation from the terminal." >&2
+        exit 1
+    fi
+
+    case "$response" in
+        y|Y|yes|YES) ;;
+        *)
+            echo "[ERROR] Installation aborted by user." >&2
+            exit 1
+            ;;
+    esac
 }
 
 # Main entry point of the script
