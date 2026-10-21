@@ -15,13 +15,27 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Usage:
-#      ./install_veracrypt.sh [OPTION]
+#      ./install_veracrypt.sh [OPTION] [--yes]
 #
 #  Options:
 #  -h   Display this help message.
 #  -n   Do not save source files after installation.
+#  --yes  Skip the confirmation prompt (SHA-256 is still displayed).
+#         Specify it only as the last argument.
+#
+#  Notes:
+#  - After downloading, the SHA-256 of the file is displayed and y/yes
+#    approval is required before it is processed. Any other response, or an
+#    unavailable terminal, aborts the installation.
+#  - The optional --yes argument skips only the confirmation prompt; the
+#    SHA-256 is still displayed. It is accepted only as the last argument.
+#
+#  Requirements:
+#  - The user must have `sha256sum` or `shasum` installed.
 #
 #  Version History:
+#  v1.8 2026-10-21
+#       Show downloaded file SHA-256 and confirm before install, with --yes bypass.
 #  v1.7 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -182,6 +196,9 @@ install_veracrypt() {
         exit 1
     fi
 
+    show_sha256 "$FILE_NAME"
+    [ "$ASSUME_YES" = "true" ] || confirm_installation
+
     [ -n "$1" ] || save_packages "$FILE_NAME" /usr/local/src/crypt/veracrypt
 
     chmod +x "./$FILE_NAME"
@@ -199,11 +216,74 @@ install_veracrypt() {
     echo "[INFO] veracrypt installed successfully."
 }
 
+# Display the SHA-256 of a downloaded file
+show_sha256() {
+    echo "[INFO] Downloaded file: ${1##*/}"
+    if command -v sha256sum >/dev/null 2>&1; then
+        sha256_line=$(sha256sum "$1")
+    elif command -v shasum >/dev/null 2>&1; then
+        sha256_line=$(shasum -a 256 "$1")
+    else
+        echo "[ERROR] Command 'sha256sum' or 'shasum' is not installed. Please install one of them and try again." >&2
+        exit 127
+    fi
+    sha256_status=$?
+    sha256_value=${sha256_line%% *}
+    case "$sha256_value" in
+        *[!0-9a-f]*) sha256_status=1 ;;
+    esac
+    if [ "$sha256_status" -ne 0 ] || [ "${#sha256_value}" -ne 64 ]; then
+        echo "[ERROR] Failed to calculate SHA-256 of $1." >&2
+        exit 1
+    fi
+    echo "[INFO] SHA-256: $sha256_value"
+}
+
+# Ask the user to approve processing of the downloaded file
+confirm_installation() {
+    printf '[INFO] Proceed with installation? [y/N]: '
+    if ! read -r response < /dev/tty; then
+        echo >&2
+        echo "[ERROR] Failed to read the confirmation from the terminal." >&2
+        exit 1
+    fi
+
+    case "$response" in
+        y|Y|yes|YES) ;;
+        *)
+            echo "[ERROR] Installation aborted by user." >&2
+            exit 1
+            ;;
+    esac
+}
+
 # Main entry point of the script
 main() {
     case "$1" in
         -h|--help|-v|--version) usage ;;
     esac
+
+    # Accept --yes only as the last argument and remove it from the arguments
+    ASSUME_YES=false
+    last_arg=
+    for arg in "$@"; do
+        last_arg="$arg"
+    done
+    if [ "$last_arg" = "--yes" ]; then
+        ASSUME_YES=true
+        i=1
+        while [ "$i" -lt "$#" ]; do
+            set -- "$@" "$1"
+            shift
+            i=$((i + 1))
+        done
+        shift
+    fi
+    for arg in "$@"; do
+        if [ "$arg" = "--yes" ]; then
+            usage
+        fi
+    done
 
     install_veracrypt "$@"
     return 0

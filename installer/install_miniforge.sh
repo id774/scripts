@@ -48,12 +48,16 @@
 #    installer refuses the prefix, the installation fails.
 #  - PATH, shell configuration, and global symlinks are not changed, and
 #    conda init is not run.
+#  - After downloading, the SHA-256 of the file is displayed and y/yes
+#    approval is required before it is processed. Any other response, or an
+#    unavailable terminal, aborts the installation.
 #
 #  Requirements:
 #  - Linux on x86_64 or aarch64, with network access to GitHub Releases.
 #  - The commands curl, awk, uname, mkdir, rm, and bash. bash runs the
 #    official Miniforge installer.
 #  - Sudo privileges are required for the normal installation with sudo.
+#  - The user must have `sha256sum` or `shasum` installed.
 #
 #  Exit Status:
 #  0   Installation succeeded, or usage/help/version was displayed.
@@ -64,6 +68,8 @@
 #  127 A required command was not found.
 #
 #  Version History:
+#  v1.1 2026-10-21
+#       Show downloaded file SHA-256 and require confirmation before install.
 #  v1.0 2026-09-27
 #       Initial release.
 #
@@ -151,6 +157,9 @@ install_miniforge() {
         exit 1
     fi
 
+    show_sha256 "install_miniforge/$ASSET"
+    confirm_installation
+
     # Batch mode installs without prompts and without shell initialization;
     # -u is not given, so the installer refuses an existing prefix.
     echo "[INFO] Installing Miniforge to $PREFIX."
@@ -176,6 +185,47 @@ verify_installation() {
         exit 1
     fi
     echo "[INFO] Installed $INSTALLED_CONDA and mamba $INSTALLED_MAMBA."
+}
+
+# Display the SHA-256 of a downloaded file
+show_sha256() {
+    echo "[INFO] Downloaded file: ${1##*/}"
+    if command -v sha256sum >/dev/null 2>&1; then
+        sha256_line=$(sha256sum "$1")
+    elif command -v shasum >/dev/null 2>&1; then
+        sha256_line=$(shasum -a 256 "$1")
+    else
+        echo "[ERROR] Command 'sha256sum' or 'shasum' is not installed. Please install one of them and try again." >&2
+        exit 127
+    fi
+    sha256_status=$?
+    sha256_value=${sha256_line%% *}
+    case "$sha256_value" in
+        *[!0-9a-f]*) sha256_status=1 ;;
+    esac
+    if [ "$sha256_status" -ne 0 ] || [ "${#sha256_value}" -ne 64 ]; then
+        echo "[ERROR] Failed to calculate SHA-256 of $1." >&2
+        exit 1
+    fi
+    echo "[INFO] SHA-256: $sha256_value"
+}
+
+# Ask the user to approve processing of the downloaded file
+confirm_installation() {
+    printf '[INFO] Proceed with installation? [y/N]: '
+    if ! read -r response < /dev/tty; then
+        echo >&2
+        echo "[ERROR] Failed to read the confirmation from the terminal." >&2
+        exit 1
+    fi
+
+    case "$response" in
+        y|Y|yes|YES) ;;
+        *)
+            echo "[ERROR] Installation aborted by user." >&2
+            exit 1
+            ;;
+    esac
 }
 
 # Main entry point of the script

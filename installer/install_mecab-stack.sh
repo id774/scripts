@@ -78,7 +78,19 @@
 #  MeCab bindings are not bundled with the official 0.996 release.
 #  Please refer to third-party projects if Python or Ruby integration is needed.
 #
+#  Notes:
+#  - Each of the five downloaded source archives (MeCab, IPADIC, NAISTDIC,
+#    CRF++, and CaboCha) has its SHA-256 displayed and requires separate
+#    y/yes approval before extraction. Any other response, or an
+#    unavailable terminal, aborts the installation. The NEologd Git clone
+#    is not part of this confirmation.
+#
+#  Requirements:
+#  - The user must have `sha256sum` or `shasum` installed.
+#
 #  Version History:
+#  v1.6 2026-10-21
+#       Show downloaded file SHA-256 and require confirmation before install.
 #  v1.5 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -184,6 +196,9 @@ install_mecab() {
         exit 1
     fi
 
+    show_sha256 "mecab-${MECAB_VERSION}.tar.gz"
+    confirm_installation
+
     if ! tar xzvf "mecab-${MECAB_VERSION}.tar.gz"; then
         echo "[ERROR] Failed to extract mecab-${MECAB_VERSION}.tar.gz." >&2
         exit 1
@@ -220,6 +235,9 @@ install_ipadic() {
         exit 1
     fi
 
+    show_sha256 "mecab-ipadic-${IPADIC_VERSION}.tar.gz"
+    confirm_installation
+
     if ! tar xzvf "mecab-ipadic-${IPADIC_VERSION}.tar.gz"; then
         echo "[ERROR] Failed to extract mecab-ipadic-${IPADIC_VERSION}.tar.gz." >&2
         exit 1
@@ -255,6 +273,9 @@ install_naistdic() {
         echo "[ERROR] Failed to download naistdic.tar.gz." >&2
         exit 1
     fi
+
+    show_sha256 "naistdic.tar.gz"
+    confirm_installation
 
     if ! tar xzvf "naistdic.tar.gz"; then
         echo "[ERROR] Failed to extract naistdic.tar.gz." >&2
@@ -335,6 +356,9 @@ install_crfpp() {
         exit 1
     fi
 
+    show_sha256 "CRF++-${CRF_VERSION}.tar.gz"
+    confirm_installation
+
     if ! tar xzvf "CRF++-${CRF_VERSION}.tar.gz"; then
         echo "[ERROR] Failed to extract CRF++-${CRF_VERSION}.tar.gz." >&2
         exit 1
@@ -373,6 +397,9 @@ install_cabocha() {
         echo "[ERROR] Failed to download cabocha-${CABOCHA_VERSION}.tar.bz2." >&2
         exit 1
     fi
+
+    show_sha256 "cabocha-${CABOCHA_VERSION}.tar.bz2"
+    confirm_installation
 
     if ! tar xjvf "cabocha-${CABOCHA_VERSION}.tar.bz2"; then
         echo "[ERROR] Failed to extract cabocha-${CABOCHA_VERSION}.tar.bz2." >&2
@@ -432,6 +459,47 @@ save_source() {
 cleanup() {
     echo "[INFO] Cleaning up build directory..."
     rm -rf "$BUILD_DIR"
+}
+
+# Display the SHA-256 of a downloaded file
+show_sha256() {
+    echo "[INFO] Downloaded file: ${1##*/}"
+    if command -v sha256sum >/dev/null 2>&1; then
+        sha256_line=$(sha256sum "$1")
+    elif command -v shasum >/dev/null 2>&1; then
+        sha256_line=$(shasum -a 256 "$1")
+    else
+        echo "[ERROR] Command 'sha256sum' or 'shasum' is not installed. Please install one of them and try again." >&2
+        exit 127
+    fi
+    sha256_status=$?
+    sha256_value=${sha256_line%% *}
+    case "$sha256_value" in
+        *[!0-9a-f]*) sha256_status=1 ;;
+    esac
+    if [ "$sha256_status" -ne 0 ] || [ "${#sha256_value}" -ne 64 ]; then
+        echo "[ERROR] Failed to calculate SHA-256 of $1." >&2
+        exit 1
+    fi
+    echo "[INFO] SHA-256: $sha256_value"
+}
+
+# Ask the user to approve processing of the downloaded file
+confirm_installation() {
+    printf '[INFO] Proceed with installation? [y/N]: '
+    if ! read -r response < /dev/tty; then
+        echo >&2
+        echo "[ERROR] Failed to read the confirmation from the terminal." >&2
+        exit 1
+    fi
+
+    case "$response" in
+        y|Y|yes|YES) ;;
+        *)
+            echo "[ERROR] Installation aborted by user." >&2
+            exit 1
+            ;;
+    esac
 }
 
 # Main entry point of the script
