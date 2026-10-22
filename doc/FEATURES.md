@@ -1,6 +1,8 @@
 # Scripts Collection Feature Reference
 
-This document provides a user-facing reference for the features included in the `scripts` repository.
+This document serves as a high-level index of the features available in the `scripts` repository. Its purpose is to describe what each feature provides and help users locate the relevant scripts.
+
+**This document must not be used to record detailed designs, implementation details, or script-specific operational instructions.** Such information belongs in the relevant script's header, source code, or dedicated documentation. Feature descriptions must remain concise and limited to the information necessary to understand each feature's purpose.
 
 This repository is not a single application. It is a collection of independent utilities, system setup installers, operational jobs intended for cron execution, and the configuration files and dotfiles used by those tools.
 
