@@ -107,7 +107,7 @@ check_sudo_mode() {
 
 # Setup version, prefix, sudo mode, and Node.js platform
 setup_environment() {
-    VERSION="${1:-24.21.0}"
+    VERSION="${1:-26.12.1}"
     NODE_MAJOR="$(echo "$VERSION" | awk -F. '{print $1}')"
     PREFIX="${2:-/opt/node/$NODE_MAJOR}"
     if [ "$3" = "--no-sudo" ]; then

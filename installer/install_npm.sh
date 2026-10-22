@@ -22,10 +22,10 @@
 #      ./install_npm.sh
 #
 #  Use the Node.js and npm installed under a Node.js installation prefix:
-#      ./install_npm.sh /opt/node/24
+#      ./install_npm.sh /opt/node/26
 #
 #  Specify a Safe Chain executable outside the default location:
-#      ./install_npm.sh /opt/node/24 --safe-chain /path/to/safe-chain
+#      ./install_npm.sh /opt/node/26 --safe-chain /path/to/safe-chain
 #
 #  Use the Node.js and npm in PATH with a custom Safe Chain executable:
 #      ./install_npm.sh --safe-chain /path/to/safe-chain
