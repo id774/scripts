@@ -44,8 +44,8 @@
 #    Release. The corresponding release and Linux installer asset must exist.
 #  - By default, if no installation path is provided, Miniforge will be
 #    installed under /opt/conda/<major>.<minor>, taken from VERSION.
-#  - An existing prefix is not updated or overwritten. If the official
-#    installer refuses the prefix, the installation fails.
+#  - The official installer uses -u to support a new prefix and reinstallation
+#    into an existing prefix, including updates within the same series.
 #  - PATH, shell configuration, and global symlinks are not changed, and
 #    conda init is not run.
 #  - After downloading, the SHA-256 of the file is displayed and y/yes
@@ -69,7 +69,8 @@
 #
 #  Version History:
 #  v1.1 2026-10-21
-#       Show downloaded file SHA-256 and require confirmation before install.
+#       Fix installation into existing prefixes, display the download SHA-256,
+#       and require confirmation before installation.
 #  v1.0 2026-09-27
 #       Initial release.
 #
@@ -161,9 +162,9 @@ install_miniforge() {
     confirm_installation
 
     # Batch mode installs without prompts and without shell initialization;
-    # -u is not given, so the installer refuses an existing prefix.
+    # -u also permits reinstallation into an existing prefix.
     echo "[INFO] Installing Miniforge to $PREFIX."
-    if ! $SUDO bash "install_miniforge/$ASSET" -b -p "$PREFIX"; then
+    if ! $SUDO bash "install_miniforge/$ASSET" -b -u -p "$PREFIX"; then
         echo "[ERROR] Failed to install Miniforge to $PREFIX." >&2
         exit 1
     fi
