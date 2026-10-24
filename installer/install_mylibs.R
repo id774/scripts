@@ -24,6 +24,8 @@
 #  - This is a configuration source file, not a standalone executable.
 #
 #  Version History:
+#  v1.1 2026-10-24
+#       Refresh the default R development package set for current use.
 #  v1.0 2026-10-20
 #       Initial release.
 #
@@ -34,23 +36,17 @@ options(repos = "https://cloud.r-project.org/")
 
 # List of required R packages
 required_packages <- c(
-    # Machine Learning & Statistics
-    "randomForest", "forecast", "party", "gbm", "e1071", "lme4", "qcc", "DMwR2",
+    # Data Processing & Visualization
+    "data.table", "dplyr", "tidyr", "readr", "readxl",
+    "ggplot2", "stringr", "lubridate",
 
-    # Data Manipulation & Visualization
-    "plyr", "reshape2", "lubridate", "sqldf", "ggplot2", "stringr",
+    # APIs & Data Exchange
+    "jsonlite", "httr2",
 
-    # Time Series Analysis
-    "TTR", "tseries", "xts", "zoo",
+    # Numerical Computing, Statistics & Machine Learning
+    "pracma", "mvtnorm", "lme4", "randomForest",
+    "e1071", "xgboost", "ROI", "igraph",
 
-    # Geospatial & Mapping
-    "XML", "httr", "curl", "ggmap", "classInt", "RColorBrewer",
-    "rgeos", "maptools", "spsurvey", "mapproj", "maps",
-
-    # General Utilities
-    "readxl", "caTools", "aod", "car", "faraway", "scatterplot3d",
-    "pracma", "ROI", "vegan", "xtable",
-
-    # Additional Packages
-    "lavaan", "igraph", "kernlab", "mvtnorm", "plotrix", "pequod"
+    # Time Series & Finance
+    "forecast", "tseries", "xts", "zoo", "TTR", "quantmod"
 )
