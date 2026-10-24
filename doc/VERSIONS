@@ -25,6 +25,7 @@ v2.0.3 (Release Date: TBD)
   execution while preserving dry-run and failure handling.
 - Limit TA-Lib saved-source ownership changes to its directory.
 - Stop Google Chrome setup when the APT repository entry cannot be written.
+- Refresh the R development library set for data analysis, ML, and finance.
 
 v2.0.2 (2026-09-23)
 -------------------

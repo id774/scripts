@@ -1204,6 +1204,7 @@ document changed.
   cover.
 - In plugin-based systems, loaders must collect and propagate plugin return
   codes.
+- This repository intentionally does not use GitHub Actions as its CI/CD platform.
 - `run_tests.sh` is the entry point of the suite. It runs the Python tests and
   the Ruby specs under `test/` for one interpreter pair, reports the counts,
   and exits non-zero when any of them fails.
