@@ -253,10 +253,10 @@ repository is already being edited.
   check unnecessary; it does not merely restate the code.
 
 #### 1.2.3 Environment Differences
-- Branch on what the environment provides, not on what it is called. A
-  distribution name, a release number, and a desktop session name each answer a
-  question the script is not asking. The question is whether the command, the
-  file, the service, or the configuration format it needs is there.
+- Prefer to branch on what the environment provides, not on what it is called.
+  A distribution name, a release number, or a desktop session name does not
+  by itself establish whether the command, file, service, or configuration
+  format needed is available.
 - Keep that detection in one place. The same question answered separately in
   several places drifts apart as environments change.
 
@@ -443,9 +443,9 @@ progress messages, failure handling, and exit status.
   `$SCRIPT_DIR/../etc/NAME.conf`. A `cron/bin/` job reads its deployed path
   under `/etc/cron.config/` directly, since it only ever runs from
   `/etc/cron.exec`.
-- A missing file, and a required value left unset, are both refused before any
-  work starts, each with its own exit status and an `[ERROR]` message naming
-  what is missing.
+- A missing required file, and a required value left unset, are both refused
+  before the dependent work starts, each with its own exit status and an
+  `[ERROR]` message naming what is missing.
 - Every such file opens with the same header block used by scripts: a title
   line naming the file, a sentence saying which script reads it and what it
   decides, and a `Rules` section describing its format. It carries no shebang
@@ -729,15 +729,16 @@ punctuation and symbols when they carry technical meaning or improve clarity.
 Do not add symbols solely for visual decoration or status styling.
 
 For installer operations that install, update, remove, or link software, or
-make significant persistent system changes, print the executed command and
-its non-sensitive arguments immediately before execution when the operation
-is performed. Use `[INFO] Executing:` on standard output. Prefer the existing
+make significant persistent system changes, prefer to print the executed
+command and its non-sensitive arguments immediately before execution when
+useful for the script's operational contract. When reporting executed
+commands, use `[INFO] Executing:` on standard output. Prefer the existing
 Shell Script pattern of building positional arguments once, displaying `$*`
 for human readability, and executing `"$@"` to preserve argument boundaries.
 The display is not guaranteed to be a reusable shell command line.
 
 Never disclose credentials, tokens, passwords, or credential-bearing proxy
-URLs through execution logs. Where a secret-bearing argument is required,
+URLs through execution logs. When reporting a command containing a secret,
 show the non-sensitive command structure and mark that value as `[REDACTED]`
 without altering the actual executed arguments. Ordinary prerequisite checks,
 read-only status queries, and transient cleanup do not require command-level
@@ -1568,7 +1569,7 @@ log_info_time() {
   section.
 - Implement manual PATH search if command lookup is required, and exit `127`
   when the command is not found, matching the shell script helper.
-- Always use `encoding="utf-8"` for file operations.
+- For text file operations, use `encoding="utf-8"`.
 
 ### 3.5 Docstrings
 - Every function and class carries a docstring stating what the call does or
@@ -1637,11 +1638,10 @@ log_info_time() {
 - A required external runtime dependency is part of the executable's
   user-facing prerequisites and must be documented in its `Requirements`
   section.
-- Use `Open3.capture3` for external command execution when stdout, stderr, or
-  exit status must be inspected.
-- `system` may be used only when command output is intentionally ignored and
-  success or failure alone is sufficient.
-- Always specify UTF-8 encoding for file operations.
+- Prefer `Open3.capture3` when stdout or stderr must be captured for inspection.
+- `system` may be used when command output need not be captured and success
+  or failure alone is sufficient.
+- Specify UTF-8 encoding for text file operations.
 - Follow the destructive operation recommendations of the Common Policy.
 
 ### 4.5 Testing
