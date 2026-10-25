@@ -1,8 +1,8 @@
 scripts Repository Version History
 ==================================
 
-v2.0.3 (Release Date: TBD)
---------------------------
+v2.0.3 (2026-10-25)
+-------------------
 - Add Node.js LTS and npm development tool installers with managed permissions,
   requiring Safe Chain and logging commands and the selected npm path.
 - Display pip, RubyGems, Conda, and Homebrew commands and selected executable
