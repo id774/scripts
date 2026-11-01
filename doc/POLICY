@@ -1126,6 +1126,13 @@ document changed.
 
 ### 1.8 Pull Request Scope and History
 
+An automated agent must not commit or push directly to `master`.
+It must commit authorized changes to a work branch and submit them through
+a pull request targeting the approved base branch. Creating or updating a
+pull request does not authorize the agent to merge it or enable auto-merge.
+Either action requires an explicit instruction from the maintainer. This
+paragraph does not change a human maintainer's authority.
+
 #### 1.8.1 One Purpose to a Pull Request
 - A pull request presents the change it proposes, not the sequence of
   corrections that produced it, and it carries one purpose.
