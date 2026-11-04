@@ -7,8 +7,9 @@
 #  This script removes specified Git repositories from the user's local
 #  directories ($HOME/local/github, $HOME/local/git, and $HOME/local/gitlab)
 #  and any associated symbolic links in the home directory. It checks if the
-#  directory is a Git repository before removing it. Includes a dry-run mode
-#  for simulation.
+#  directory is a Git repository before removing it. By default, it lists the
+#  targets and asks for confirmation before removal. The --dry-run option only
+#  previews the targets, and -x removes them without confirmation.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -19,15 +20,20 @@
 #      ./remove-repo.sh [options] [repository_name...]
 #
 #  Options:
-#      -x            Actually remove repositories (default: dry-run)
+#      -x            Remove repositories without confirmation
+#      --dry-run     Show what would be removed without deleting anything
 #      -h, --help    Show this help message
 #
 #  Examples:
-#      ./remove-repo.sh my-repo            # dry run only
-#      ./remove-repo.sh -x my-repo         # actually remove the repository
-#      ./remove-repo.sh -x repo1 repo2     # remove multiple repositories
+#      ./remove-repo.sh my-repo            # confirm before removal
+#      ./remove-repo.sh --dry-run my-repo  # preview only
+#      ./remove-repo.sh -x my-repo         # remove without confirmation
+#      ./remove-repo.sh repo1 repo2        # confirm once for multiple repositories
 #
 #  Version History:
+#  v2.1 2026-11-04
+#       Replace default dry-run with confirmed deletion, retaining -x.
+#       Add explicit --dry-run preview mode.
 #  v2.0 2026-09-18
 #       Remove matching repositories from ~/local/gitlab in addition to existing bases.
 #  v1.8 2026-08-18
@@ -160,11 +166,29 @@ remove_repo() {
     remove_symlink
 }
 
+# Ask the user to confirm the removal from the terminal.
+confirm_execution() {
+    printf '[INFO] Do you want to proceed? [y/N]: '
+    if ! read -r response < /dev/tty; then
+        echo >&2
+        echo '[ERROR] Failed to read the confirmation from the terminal.' >&2
+        return 1
+    fi
+
+    case "$response" in
+        y|Y|yes|Yes|YES) return 0 ;;
+        *)
+            echo '[ERROR] Aborted by user.' >&2
+            return 1
+            ;;
+    esac
+}
+
 # Iterate through arguments and remove each specified repository.
 remove_repos() {
     status=0
     while [ $# -gt 0 ]; do
-        if [ "$1" != "-x" ] && ! remove_repo "$1"; then
+        if [ "$1" != "-x" ] && [ "$1" != "--dry-run" ] && ! remove_repo "$1"; then
             status=1
         fi
         shift
@@ -178,24 +202,54 @@ main() {
         -h|--help|-v|--version) usage ;;
     esac
 
-    DRY_RUN=true
+    if [ -z "$1" ]; then
+        usage
+    fi
 
-    # Check for -x option to execute
+    execute_mode=false
+    dry_run_mode=false
     for arg in "$@"; do
-        if [ "$arg" = "-x" ]; then
-            DRY_RUN=false
-            break
+        case "$arg" in
+            -x) execute_mode=true ;;
+            --dry-run) dry_run_mode=true ;;
+        esac
+    done
+
+    if [ "$execute_mode" = true ] && [ "$dry_run_mode" = true ]; then
+        echo "[ERROR] The -x and --dry-run options cannot be used together." >&2
+        return 1
+    fi
+
+    if [ "$execute_mode" = true ]; then
+        DRY_RUN=false
+        remove_repos "$@"
+        return $?
+    fi
+
+    if [ "$dry_run_mode" = true ]; then
+        DRY_RUN=true
+        remove_repos "$@"
+        return $?
+    fi
+
+    for arg in "$@"; do
+        if ! validate_repo_name "$arg"; then
+            return 1
         fi
     done
 
-    if [ -n "$1" ]; then
-        if ! remove_repos "$@"; then
-            return 1
-        fi
-    else
-        usage
+    DRY_RUN=true
+    if ! remove_repos "$@"; then
+        return 1
     fi
-    return 0
+
+    if ! confirm_execution; then
+        return 1
+    fi
+
+    DRY_RUN=false
+    remove_repos "$@"
+    return $?
 }
 
 # Execute main function
