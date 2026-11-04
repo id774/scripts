@@ -1,6 +1,11 @@
 scripts Repository Version History
 ==================================
 
+v2.0.4 (Release Date: TBD)
+--------------------------
+- Change remove-repo.sh to confirm deletion by default, retaining -x for
+  noninteractive removal and adding --dry-run for preview-only operation.
+
 v2.0.3 (2026-10-25)
 -------------------
 - Add Node.js LTS and npm development tool installers with managed permissions,
