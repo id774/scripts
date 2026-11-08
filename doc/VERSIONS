@@ -3,8 +3,11 @@ scripts Repository Version History
 
 v2.0.4 (Release Date: TBD)
 --------------------------
-- Change remove-repo.sh to confirm deletion by default, retaining -x for
-  noninteractive removal and adding --dry-run for preview-only operation.
+- Change remove-repo.sh to confirm deletion by default, add --dry-run, and
+  remove only symlinks that point to its managed repository paths.
+- Report failures in individual Git repository creation, deletion, and merge
+  operations instead of incorrectly signaling success.
+- Require an explicit base selector for git-symlink.sh uninstall mode.
 
 v2.0.3 (2026-10-25)
 -------------------

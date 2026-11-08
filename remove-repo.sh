@@ -6,7 +6,10 @@
 #  Description:
 #  This script removes specified Git repositories from the user's local
 #  directories ($HOME/local/github, $HOME/local/git, and $HOME/local/gitlab)
-#  and any associated symbolic links in the home directory. It checks if the
+#  and the associated symbolic links in the home directory. A home symlink is
+#  associated only when its stored target is exactly one of
+#  $HOME/local/github/<name>, $HOME/local/git/<name>, or
+#  $HOME/local/gitlab/<name>; other symlinks are left in place. It checks if the
 #  directory is a Git repository before removing it. By default, it lists the
 #  targets and asks for confirmation before removal. The --dry-run option only
 #  previews the targets, and -x removes them without confirmation.
@@ -30,7 +33,20 @@
 #      ./remove-repo.sh -x my-repo         # remove without confirmation
 #      ./remove-repo.sh repo1 repo2        # confirm once for multiple repositories
 #
+#  Requirements:
+#      readlink is used to inspect the target of a home symlink.
+#
+#  Exit Status:
+#      0    Success, dry run, or help displayed.
+#      1    Invalid name, declined confirmation, failed removal, or failed
+#           symlink inspection or removal.
+#      126  A required command is not executable.
+#      127  A required command is not installed.
+#
 #  Version History:
+#  v2.2 2026-11-08
+#       Report removal failures and preserve unrelated home-directory symlinks.
+#       Remove managed links only after the repository removals succeed.
 #  v2.1 2026-11-04
 #       Replace default dry-run with confirmed deletion, retaining -x.
 #       Add explicit --dry-run preview mode.
@@ -106,11 +122,15 @@ remove_from_github() {
     if [ -d "$repo_path_github" ] && is_git_repo "$repo_path_github"; then
         if [ "$DRY_RUN" = false ]; then
             echo "[INFO] Removing Git repository: $repo_path_github"
-            rm -rf "$repo_path_github"
+            if ! rm -rf "$repo_path_github"; then
+                echo "[ERROR] Failed to remove Git repository: $repo_path_github" >&2
+                return 1
+            fi
         else
             echo "[INFO] DRY RUN: Removing Git repository: $repo_path_github"
         fi
     fi
+    return 0
 }
 
 # Remove the Git repository from the git directory if it exists.
@@ -119,11 +139,15 @@ remove_from_git() {
     if [ -d "$repo_path_git" ] && is_git_repo "$repo_path_git"; then
         if [ "$DRY_RUN" = false ]; then
             echo "[INFO] Removing Git repository: $repo_path_git"
-            rm -rf "$repo_path_git"
+            if ! rm -rf "$repo_path_git"; then
+                echo "[ERROR] Failed to remove Git repository: $repo_path_git" >&2
+                return 1
+            fi
         else
             echo "[INFO] DRY RUN: Removing Git repository: $repo_path_git"
         fi
     fi
+    return 0
 }
 
 # Remove the Git repository from the gitlab directory if it exists.
@@ -132,24 +156,43 @@ remove_from_gitlab() {
     if [ -d "$repo_path_gitlab" ] && is_git_repo "$repo_path_gitlab"; then
         if [ "$DRY_RUN" = false ]; then
             echo "[INFO] Removing Git repository: $repo_path_gitlab"
-            rm -rf "$repo_path_gitlab"
+            if ! rm -rf "$repo_path_gitlab"; then
+                echo "[ERROR] Failed to remove Git repository: $repo_path_gitlab" >&2
+                return 1
+            fi
         else
             echo "[INFO] DRY RUN: Removing Git repository: $repo_path_gitlab"
         fi
     fi
+    return 0
 }
 
-# Remove the symbolic link in the home directory if it exists.
+# Remove the symbolic link in the home directory if it points to a managed repository path.
 remove_symlink() {
     symlink_path="$HOME/$repo_name"
-    if [ -L "$symlink_path" ]; then
-        if [ "$DRY_RUN" = false ]; then
-            echo "[INFO] Removing symlink: $symlink_path"
-            rm -f "$symlink_path"
-        else
-            echo "[INFO] DRY RUN: Removing symlink: $symlink_path"
-        fi
+    [ -L "$symlink_path" ] || return 0
+
+    check_commands readlink
+    if ! link_target=$(readlink "$symlink_path") || [ -z "$link_target" ]; then
+        echo "[ERROR] Failed to read symlink target: $symlink_path" >&2
+        return 1
     fi
+
+    case "$link_target" in
+        "$HOME/local/github/$repo_name"|"$HOME/local/git/$repo_name"|"$HOME/local/gitlab/$repo_name") ;;
+        *) return 0 ;;
+    esac
+
+    if [ "$DRY_RUN" = false ]; then
+        echo "[INFO] Removing symlink: $symlink_path"
+        if ! rm -f "$symlink_path"; then
+            echo "[ERROR] Failed to remove symlink: $symlink_path" >&2
+            return 1
+        fi
+    else
+        echo "[INFO] DRY RUN: Removing symlink: $symlink_path"
+    fi
+    return 0
 }
 
 # Remove a Git repository and its related symbolic link.
@@ -160,9 +203,15 @@ remove_repo() {
         return 1
     fi
 
-    remove_from_github
-    remove_from_git
-    remove_from_gitlab
+    remove_status=0
+    remove_from_github || remove_status=1
+    remove_from_git || remove_status=1
+    remove_from_gitlab || remove_status=1
+
+    if [ "$remove_status" -ne 0 ]; then
+        return 1
+    fi
+
     remove_symlink
 }
 

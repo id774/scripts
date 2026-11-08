@@ -184,6 +184,8 @@ is_repo_writable() {
 
 # Pull updates from a Git repository
 pull_repo() {
+    # This is a best-effort batch: failure in one repository's Git operations
+    # must not stop processing other repositories or change the final exit status.
     repo="$1"
 
     if ! is_repo_writable "$repo"; then

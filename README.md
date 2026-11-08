@@ -143,8 +143,7 @@ script is invoked — by hand from the top level, once at setup time from
 
 That last one is why configuration is separated from code. A top-level script
 that needs site-specific values reads them from `etc/<name>.conf`, and a
-`cron/bin/` job reads its deployed copy under `/etc/cron.config/`, so no script
-carries a hostname, a path or a credential in its body.
+`cron/bin/` job reads its deployed copy under `/etc/cron.config/`.
 
 [doc/POLICY](doc/POLICY) is the authoritative version of this layout and of the
 rules above; the summary here is only an orientation.
