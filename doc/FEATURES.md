@@ -287,7 +287,7 @@ Maintains home-directory symlinks for local repositories. It can remove broken o
 
 ### remove-repo.sh
 
-Removes selected local Git repositories and related symlinks. Uses dry-run by default and requires an explicit option for deletion.
+Removes selected local Git repositories and matching home-directory symlinks. By default, it previews targets and asks for confirmation before deletion; --dry-run previews without deletion, and -x deletes without confirmation.
 
 ## 12. Networking, Transfers, and Remote Operations
 

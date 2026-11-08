@@ -57,8 +57,20 @@
 #  especially when dealing with system-wide paths like /var/lib/git. By default,
 #  sudo is used for system-wide paths and not used for paths within the user's
 #  home directory. This behavior can be overridden with the --sudo or --no-sudo options.
+#  - Repository names may include ../ to deliberately select a target outside
+#    the specified base directory; the caller is responsible for that target.
+#
+#  Exit Status:
+#  0    Success, dry run, or help displayed.
+#  1    Repository creation or deletion failed.
+#  3    The base directory does not exist.
+#  4    Deletion was requested for a path that is not a Git repository.
+#  126  A required command is not executable.
+#  127  A required command is not installed.
 #
 #  Version History:
+#  v2.4 2026-11-08
+#       Propagate repository creation and deletion failures to callers.
 #  v2.3 2026-10-20
 #       Show repository creation, permission, and deletion commands.
 #  v2.2 2026-09-11
@@ -184,11 +196,11 @@ create_git_repo() {
     if [ -z "$use_sudo" ]; then
         set -- chmod -R u+rwX "${repo_path}"
         echo "[INFO] Executing: $*"
-        "$@"
+        "$@" || return 1
     else
         set -- $use_sudo chown -R "${user}:${group}" "${repo_path}"
         echo "[INFO] Executing: $*"
-        "$@"
+        "$@" || return 1
     fi
 
     echo "[INFO] Repository '${repo_name}' created at '${repo_path}'."
@@ -208,7 +220,10 @@ delete_git_repo() {
     if is_git_repository "$repo_path" "$use_sudo"; then
         set -- $use_sudo rm -rf "${repo_path}"
         echo "[INFO] Executing: $*"
-        "$@"
+        if ! "$@"; then
+            echo "[ERROR] Failed to delete repository: ${repo_path}" >&2
+            return 1
+        fi
         echo "[INFO] Repository at '${repo_path}' has been deleted."
     else
         echo "[ERROR] '${repo_path}' is not a Git repository." >&2
@@ -289,6 +304,8 @@ parse_arguments() {
     fi
 
     repo_base_path="${repo_base_path:-/var/lib/git}"
+    # Repository names may intentionally contain ../ or path separators.
+    # Do not confine the resolved target to repo_base_path.
     repo_full_path="${repo_base_path}/${repo_name}.git"
 
     # Keep explicit no-sudo distinct from automatic path-based sudo selection;
@@ -321,12 +338,12 @@ main() {
 
     if [ "$delete_repo" = true ]; then
         delete_git_repo "${repo_full_path}" "$dry_run" "$use_sudo"
-        exit 0
+        exit $?
     fi
 
     check_directory "$repo_base_path"
     create_git_repo "${repo_name}" "${repo_full_path}" "$dry_run" "$use_sudo" "$user" "$group"
-    return 0
+    return $?
 }
 
 # Execute main function

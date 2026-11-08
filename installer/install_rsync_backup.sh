@@ -33,6 +33,8 @@
 #      - All files owned by root:adm unless otherwise required
 #      - Permissions: 740 for executables, 640 for configs and logs
 #  - Use --uninstall to remove installed components while preserving log files.
+#  - Each deployment step is run independently. A failed step is not checked,
+#    rolled back, or reflected in the completion message.
 #
 #  Version History:
 #  v3.2 2026-09-06

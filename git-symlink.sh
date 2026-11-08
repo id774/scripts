@@ -46,6 +46,8 @@
 #      -u, --uninstall Remove matching symlinks in $HOME (do not recreate).
 #
 #  Version History:
+#  v1.5 2026-11-08
+#       Require a target selector for uninstall mode, matching the documented usage.
 #  v1.4 2026-10-20
 #       Show executed symlink creation and removal commands.
 #  v1.3 2026-09-18
@@ -242,16 +244,16 @@ main() {
 
     bases=$(select_bases)
 
+    # No target selected -> show help as documented
+    if [ -z "$bases" ]; then
+        usage
+    fi
+
     if [ "$UNINSTALL" = true ]; then
         echo "[INFO] Mode: uninstall matching symlinks"
         # shellcheck disable=SC2086
         uninstall_matching_symlinks $bases
         exit 0
-    fi
-
-    # No target selected -> show help as documented
-    if [ -z "$bases" ]; then
-        usage
     fi
 
     echo "[INFO] Mode: recreate links and purge broken symlinks"

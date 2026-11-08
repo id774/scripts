@@ -23,7 +23,21 @@
 #
 #  This will merge changes from 'exampleUser/exampleRepo' into the local master branch.
 #
+#  Notes:
+#  If a checkout, pull, merge, push, or branch deletion step fails, the
+#  script reports the failed step and stops without running later steps.
+#  It does not restore the original branch or remove the temporary branch.
+#
+#  Exit Status:
+#  0    Success or help displayed.
+#  1    A Git step failed.
+#  126  A required command is not executable.
+#  127  A required command is not installed.
+#
 #  Version History:
+#  v2.2 2026-11-08
+#       Stop dependent Git operations after a failed checkout, pull, merge, or push.
+#       Report cleanup failures instead of masking them.
 #  v2.1 2026-10-20
 #       Show executed checkout, pull, merge, push, and branch deletion commands.
 #  v2.0 2026-07-11
@@ -126,25 +140,43 @@ git_merge() {
     # Create temp branch from local master
     set -- git checkout -b "$temp_branch" master
     echo "[INFO] Executing: $*"
-    "$@"
+    if ! "$@"; then
+        echo "[ERROR] Failed to create temporary branch: $temp_branch" >&2
+        return 1
+    fi
     # Pull only the resolved upstream branch into temp
     set -- git pull "$url" "$upstream_branch"
     echo "[INFO] Executing: $*"
-    "$@"
+    if ! "$@"; then
+        echo "[ERROR] Failed to pull $upstream_branch from: $url" >&2
+        return 1
+    fi
 
     # Merge into local master and push
     set -- git checkout master
     echo "[INFO] Executing: $*"
-    "$@"
+    if ! "$@"; then
+        echo "[ERROR] Failed to checkout branch: master" >&2
+        return 1
+    fi
     set -- git merge "$temp_branch"
     echo "[INFO] Executing: $*"
-    "$@"
+    if ! "$@"; then
+        echo "[ERROR] Failed to merge branch into master: $temp_branch" >&2
+        return 1
+    fi
     set -- git push origin master
     echo "[INFO] Executing: $*"
-    "$@"
+    if ! "$@"; then
+        echo "[ERROR] Failed to push branch: master (origin)" >&2
+        return 1
+    fi
     set -- git branch -D "$temp_branch"
     echo "[INFO] Executing: $*"
-    "$@"
+    if ! "$@"; then
+        echo "[ERROR] Failed to delete temporary branch: $temp_branch" >&2
+        return 1
+    fi
 }
 
 # Main entry point of the script
@@ -156,7 +188,9 @@ main() {
     if [ -n "$2" ]; then
         # Ensure required commands exist
         check_commands git sed date grep
-        git_merge "$@"
+        if ! git_merge "$@"; then
+            return 1
+        fi
     else
         usage
     fi
