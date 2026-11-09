@@ -44,7 +44,8 @@
 #  Warning:
 #  - This script updates files on a remote server under specified directories.
 #  - Ensure proper SSH access and permissions are configured for the target.
-#  - When run on the target server, sync operations are skipped to prevent redundant transfers.
+#  - For a self target, Munin data transfer is skipped; logs are reflected
+#    locally by rsync.
 #
 #  Exit Status:
 #  0: Help/version/unsupported-argument display, or a normal cron run after
@@ -52,6 +53,8 @@
 #  1: Startup prerequisite failure before normal synchronization begins.
 #
 #  Version History:
+#  v2.3 2026-11-09
+#       Recognize localhost as a self target without confusing it with the log directory.
 #  v2.2 2026-09-09
 #       Keep normal cron operation silent and successful after startup checks,
 #       and show usage for unsupported arguments.
@@ -104,7 +107,7 @@ is_self_host() {
     h="$1"
     # Normalize to short hostname to match $(hostname -s)
     h_short=${h%%.*}
-    [ "$CURRENT_HOST" = "$h_short" ] || [ "$SENDING" = "localhost" ]
+    [ "$CURRENT_HOST" = "$h_short" ] || [ "$h_short" = "localhost" ]
 }
 
 # Load configuration from external file

@@ -39,11 +39,12 @@
 #  - Ensure that all specified directories exist and are writable.
 #  - Remote synchronization runs for each host in RSYNC_HOSTS, or for RSYNC_HOST if provided.
 #  - The script updates file permissions as needed and performs clean-up operations.
-#  - Remote synchronization is attempted only if the remote server is reachable.
+#  - Remote synchronization invokes rsync in configured host order and
+#    stops at the first failed host.
 #  - The permissions argument must be a 3-digit or 4-digit octal number. Any other format will result in an error.
 #
 #  Exit Status:
-#  1. No GPX files found in the specified temporary directory.
+#  1. No GPX files found, or a local GPX copy failed.
 #  2. Failed to create the destination directory for copying files.
 #  3. Configuration file not found.
 #  4. Necessary configuration variable(s) not set.
@@ -53,6 +54,8 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v3.2 2026-11-09
+#       Preserve source GPX files when a local copy fails.
 #  v3.1 2026-08-22
 #       Use POSIX find for first-level GPX file operations.
 #  v3.0 2026-07-12
@@ -205,7 +208,16 @@ copy_files_to_user_storage() {
     fi
     echo "[INFO] Copying files from $source_dir to user storage: $destination"
     find "$source_dir" ! -path "$source_dir" -prune \
-        -name '*.gpx' -type f -exec cp {} "$destination" \;
+        -name '*.gpx' -type f \
+        -exec sh -c '
+            destination=$1
+            shift
+            copy_status=0
+            for file do
+                cp "$file" "$destination" || copy_status=1
+            done
+            exit "$copy_status"
+        ' sh "$destination" {} +
 }
 
 # Set permissions for copied GPX files

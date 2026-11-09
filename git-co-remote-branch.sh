@@ -25,7 +25,13 @@
 #  This will create and switch to a local branch called 'feature-branch'
 #  that tracks 'origin/feature-branch'.
 #
+#  Exit Status:
+#  0    Successful checkout or help displayed.
+#  Non-zero  Git checkout failure (Git's exit status), or prerequisite failure.
+#
 #  Version History:
+#  v2.0 2026-11-09
+#       Preserve branch-name argument boundaries and checkout failure status.
 #  v1.9 2026-10-20
 #       Show executed remote branch checkout commands before execution.
 #  v1.8 2026-07-11
@@ -86,13 +92,13 @@ main() {
     check_commands git
 
     if [ -n "$1" ]; then
-        set -- git checkout -b $1 origin/$1
+        set -- git checkout -b "$1" "origin/$1"
         echo "[INFO] Executing: $*"
         "$@"
+        return $?
     else
         usage
     fi
-    return 0
 }
 
 # Execute main function
