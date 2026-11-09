@@ -12,14 +12,16 @@
 #
 #  Features:
 #    - Accepts base disks, partitions, and device-mapper paths.
-#    - Searches both the device itself and its ancestors/descendants
-#      and returns the best matching mountpoint deterministically.
+#    - Prefers a direct mount of the specified device; otherwise searches its related devices.
+#    - Returns one mountpoint, selecting / among multiple direct mounts, otherwise the first direct target.
 #    - Uses findmnt(8) primarily; falls back to lsblk(8) scanning.
 #    - Handles MOUNTPOINTS column used by newer util-linux.
 #    - Deterministic exit codes for robust scripting.
 #
 #  Notes:
 #    - Designed for Linux systems with lsblk(8) and findmnt(8) available.
+#    - Direct mounts take precedence. The following ranking applies when no direct mount is found.
+#
 #    - Selection policy for multiple candidates:
 #        A) Prefer the candidate with the greatest dependency depth
 #           from the base device (deepest descendant).
@@ -51,6 +53,8 @@
 #  127. Required command is not installed.
 #
 #  Version History:
+#  v1.5 2026-11-09
+#       Return a single mountpoint when a device is mounted at multiple targets.
 #  v1.4 2026-09-06
 #       Check system and temporary-file dependencies before use.
 #  v1.3 2026-07-11
@@ -132,11 +136,17 @@ validate_args() {
 find_mountpoint_direct() {
     SRC="$1"
     MP=$(findmnt -nr -S "$SRC" -o TARGET 2>/dev/null || true)
-    if [ -n "$MP" ]; then
-        printf '%s\n' "$MP"
-        return 0
+    if [ -z "$MP" ]; then
+        return 1
     fi
-    return 1
+    printf '%s\n' "$MP" | awk '
+        NF > 0 && first == "" { first = $0 }
+        $0 == "/" { root = 1 }
+        END {
+            if (root) print "/"
+            else if (first != "") print first
+            else exit 1
+        }'
 }
 
 # List dependency chain ancestors for a device (upwards to base)

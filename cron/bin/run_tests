@@ -26,8 +26,8 @@
 #  ADMIN_MAIL_ADDRESS is optional. For manual execution, run the script:
 #      /etc/cron.exec/run_tests
 #
-#  The script iterates through the specified versions, runs tests for each
-#  combination of Python and Ruby versions, concludes with a compatibility
+#  The script tests each configured Python version with the corresponding
+#  Ruby version when present, and concludes with a compatibility
 #  check using the first Python version tested, and optionally sends a summary
 #  email when ADMIN_MAIL_ADDRESS is configured.
 #

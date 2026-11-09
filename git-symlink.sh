@@ -46,6 +46,8 @@
 #      -u, --uninstall Remove matching symlinks in $HOME (do not recreate).
 #
 #  Version History:
+#  v1.6 2026-11-09
+#       Avoid claiming symlink creation succeeded after a failed removal or link.
 #  v1.5 2026-11-08
 #       Require a target selector for uninstall mode, matching the documented usage.
 #  v1.4 2026-10-20
@@ -153,7 +155,7 @@ create_or_replace_link() {
         else
             set -- rm -rf -- "$dest"
             echo "[INFO] Executing: $*"
-            "$@"
+            "$@" || return $?
         fi
     fi
 
@@ -163,8 +165,11 @@ create_or_replace_link() {
     else
         set -- ln -s "$src" "$dest"
         echo "[INFO] Executing: $*"
-        "$@"
-        echo "[INFO] Linked $dest -> $src"
+        if "$@"; then
+            echo "[INFO] Linked $dest -> $src"
+        else
+            return $?
+        fi
     fi
 }
 
