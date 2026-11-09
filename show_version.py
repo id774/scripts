@@ -177,7 +177,6 @@ PACKAGES = [
     ('fabric', 'fabric'),
     # Specialized / user utilities
     ('TA-Lib', 'talib'),
-    ('instaloader', 'instaloader'),
 ]
 
 
