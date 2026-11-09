@@ -75,6 +75,8 @@
 #  3. Source directory does not exist.
 #
 #  Version History:
+#  v2.3 2026-11-09
+#       Preserve spaces in heartbeat paths when grouping monitored hosts.
 #  v2.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -244,7 +246,8 @@ build_groups() {
     OBSOLETE_LIST=""
     TARGET_FILES=""
 
-    for FILE in $FILES; do
+    while IFS= read -r FILE; do
+        [ -n "$FILE" ] || continue
         BASENAME=$(basename "$FILE")
         DIRNAME=$(dirname "$FILE")
         if is_obsolete "$FILE"; then
@@ -258,7 +261,9 @@ build_groups() {
             TARGET_FILES="${TARGET_FILES}
 ${FILE}"
         fi
-    done
+    done <<HEREDOC_END
+$FILES
+HEREDOC_END
 
     # Export group variables for next steps
     CLEAN_TARGETS=$(printf "%s\n" "$TARGET_FILES" | sed '/^[[:space:]]*$/d')

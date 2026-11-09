@@ -48,6 +48,8 @@
 #      ./check_reboot.sh
 #
 #  Version History:
+#  v1.2 2026-11-09
+#       Avoid a false negative result when needrestart exits unexpectedly.
 #  v1.1 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -186,6 +188,11 @@ main() {
     check_needrestart
     nr_res=$?
     [ "$nr_res" -eq 0 ] && reboot_required=1
+
+    if [ "$nr_res" -eq 3 ] && [ "$reboot_required" -ne 1 ]; then
+        echo "[ERROR] Reboot requirement could not be determined" >&2
+        return 1
+    fi
 
     if [ "$reboot_required" -eq 1 ]; then
         echo "[WARN] Reboot is required"
