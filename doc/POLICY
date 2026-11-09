@@ -60,6 +60,8 @@ control flow, less state, fewer dependencies, and fewer moving parts.
 Simplicity is judged by necessary concepts and behavior, not by line count
 alone.
 
+---
+
 ## 1. Common Policy (All Languages)
 
 This section defines rules that apply uniformly to all languages.
@@ -1281,8 +1283,6 @@ Before a change is proposed, consider these questions:
 - Which documentation roles are affected: the executable header, configuration
   documentation, `FEATURES.md`, the README, this policy, or `doc/VERSIONS`?
 
----
-
 ### 1.11 License
 - Follow the repository and third-party license terms documented in
   `doc/LICENSE`, `doc/COPYING`, and `doc/COPYING.LESSER`. Those documents
@@ -1291,6 +1291,8 @@ Before a change is proposed, consider these questions:
   block, so that a file read on its own still states its terms:
   `License: The GPL version 3, or LGPL version 3 (Dual License).`
 - Add a dependency only when its license is compatible with that choice.
+
+---
 
 ## 2. Shell Script Implementation Policy
 
