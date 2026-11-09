@@ -46,6 +46,8 @@
 #  127. Required command(s) not installed.
 #
 #  Version History:
+#  v2.4 2026-11-09
+#       Report all failed copies and return status 7 even if none succeeded.
 #  v2.3 2026-09-16
 #       Secure temporary state and preserve spaces in failed file names.
 #  v2.2 2026-07-13
@@ -226,12 +228,6 @@ main() {
     # Restore the original IFS value to avoid affecting subsequent script behavior
     IFS="$OLD_IFS"
 
-    # Check if any files were copied
-    if [ ! -f "$flag_file" ]; then
-        echo "[ERROR] No matching files found to copy." >&2
-        exit 1
-    fi
-
     # If there are error files, print them and exit with a non-zero status
     if [ -f "$error_file" ]; then
         echo "[ERROR] The following files failed to sync:" >&2
@@ -239,6 +235,12 @@ main() {
             echo "$failed_file" >&2
         done < "$error_file"
         exit 7
+    fi
+
+    # Check if any files were copied
+    if [ ! -f "$flag_file" ]; then
+        echo "[ERROR] No matching files found to copy." >&2
+        exit 1
     else
         echo "[INFO] Operation completed successfully."
     fi

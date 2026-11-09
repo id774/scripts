@@ -14,6 +14,8 @@ v2.0.4 (Release Date: TBD)
 - Recognize localhost as a self target in Munin synchronization.
 - Remove obsolete Instagram download and sync utilities, their tests and
   configuration, and the unused instaloader package diagnostic.
+- Remove Munin links after heartbeat loss; fix SD copy-failure reporting,
+  heartbeat paths with spaces, and needrestart failure classification.
 
 v2.0.3 (2026-10-25)
 -------------------

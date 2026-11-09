@@ -47,6 +47,8 @@
 #        configuration files from /etc/munin/server-available.
 #
 #  Version History:
+#  v1.8 2026-11-09
+#       Remove a stale Munin symlink when the server heartbeat file is missing.
 #  v1.7 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -116,6 +118,9 @@ update_symlink() {
     # Check if the target file exists
     if [ ! -f "$TARGET_FILE" ]; then
         echo "[ERROR] Target file not found: $TARGET_FILE" >&2
+        if [ -L "$SYMLINK" ]; then
+            rm "$SYMLINK"
+        fi
         return 1
     fi
 
