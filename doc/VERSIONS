@@ -12,6 +12,8 @@ v2.0.4 (Release Date: TBD)
 - Preserve GPX source files when local copying fails.
 - Return one mountpoint for a device mounted at multiple direct targets.
 - Recognize localhost as a self target in Munin synchronization.
+- Remove obsolete Instagram download and sync utilities, their tests and
+  configuration, and the unused instaloader package diagnostic.
 
 v2.0.3 (2026-10-25)
 -------------------

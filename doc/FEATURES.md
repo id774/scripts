@@ -36,7 +36,7 @@ Top-level executables are grouped below by their primary purpose. Use the script
 | Storage and encrypted volumes | `get-device.sh`, `luksmount.py`, `tcmount.py` | Inspect devices and access encrypted volumes |
 | Git repositories | `git-all-pull.sh`, `git-archive-repo.sh`, `remove-repo.sh` | Synchronize, archive, or remove repositories |
 | Networking and transfers | `pyping.py`, `wakeonlan.py`, `send_files.sh` | Check reachability and transfer data |
-| Dashcam, GPX, and Instagram | `dashcam_sync.sh`, `gpx_sync.sh`, `insta_sync.sh` | Synchronize media and location data |
+| Dashcam and GPX | `dashcam_sync.sh`, `gpx_sync.sh` | Synchronize media and location data |
 | Development and testing | `pyck.py`, `check_header_doc.py`, `run_tests.sh` | Validate code and repository conventions |
 | System administration | `get_resources.sh`, `check_reboot.sh`, `server_alive_check.sh` | Inspect system state and availability |
 | Other utilities | `namecalc.py`, `simple_passwd.py` | Small standalone tools |
@@ -317,7 +317,7 @@ Builds password-protected archives for file delivery, with optional email transm
 
 Assists with importing GPG keys.
 
-## 13. Dashcam, GPX, and Instagram
+## 13. Dashcam and GPX
 
 Utilities for collecting, organizing, and synchronizing media and location data.
 
@@ -328,22 +328,6 @@ Synchronizes configured dashcam recordings to external storage and organizes the
 ### gpx_sync.sh
 
 Organizes and synchronizes GPX tracks locally and to configured remote hosts.
-
-### insta_downloader.py
-
-Downloads selected Instagram content.
-
-### insta_video_downloader.py
-
-Downloads selected Instagram videos.
-
-### insta_sync.sh
-
-Synchronizes Instagram-related data according to its configuration.
-
-### insta_update.sh
-
-Runs the configured Instagram update workflow.
 
 ## 14. Development, Testing, and Repository Maintenance
 
@@ -888,7 +872,6 @@ Runs the scheduled interpreter-matrix tests and repository checks.
 | Git archives | `git-archive-repo.conf` |
 | GNOME | `gnome/gnome-shortcuts.conf`, `gnome/gnome-wm-keys.conf` |
 | GPX | `gpx_sync.conf` |
-| Instagram | `insta_sync.conf`, `insta_update.conf` |
 | Firewall | `iptables/rules.v4` |
 | Munin | `munin-apache.conf` |
 | rsyslog | `rsyslog.d/10-cron.conf`, `rsyslog.d/30-postfix.conf` |

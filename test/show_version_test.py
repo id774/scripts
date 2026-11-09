@@ -336,7 +336,7 @@ class TestShowVersion(unittest.TestCase):
     def test_catalog_excludes_removed_packages(self):
         names = [distribution_name for distribution_name, _ in show_version.PACKAGES]
         for removed in ('chainer', 'docopt', 'simplejson', 'migrate', 'genshi',
-                        'pyper', 'awscli', 'zipline', 'CaboCha'):
+                        'pyper', 'awscli', 'zipline', 'CaboCha', 'instaloader'):
             self.assertNotIn(removed, names)
 
 
