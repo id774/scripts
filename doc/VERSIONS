@@ -8,7 +8,7 @@ v2.0.4 (Release Date: TBD)
 - Report failures in individual Git repository creation, deletion, merge, and
   remote-branch checkout operations instead of signaling success.
 - Require an explicit base selector for git-symlink.sh uninstall mode.
-- Do not report failed git-symlink.sh replacement operations as successful.
+- Avoid false success reports when git-symlink.sh link or removal fails.
 - Preserve GPX source files when local copying fails.
 - Return one mountpoint for a device mounted at multiple direct targets.
 - Recognize localhost as a self target in Munin synchronization.

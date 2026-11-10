@@ -228,6 +228,8 @@ deploy_dotfiles_to_others() {
         deploy_dotfiles "$1"
         copy_ssh_file_if_exists "$1" "$2" config
         copy_ssh_file_if_exists "$1" "$2" known_hosts
+        # Recursively set ownership of the entire service or system account home.
+        # Descendants are included intentionally, unlike ordinary user homes.
         sudo chown -R "$2:$(id -gn "$2")" "$1"
     fi
 }

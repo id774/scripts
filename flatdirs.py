@@ -22,8 +22,8 @@
 #  Usage:
 #  python flatdirs.py [options]
 #  Options:
-#    -m, --move         Move files instead of copying (default if no option is provided)
-#    -c, --copy         Copy files instead of moving
+#    -m, --move         Move files instead of copying
+#    -c, --copy         Copy files instead of moving (default file operation)
 #    -d, --delete       Delete empty directories
 #    -q, --quiet        Suppress operation info
 #    -x, --execute      Execute file operations (default is dry run)
