@@ -181,7 +181,7 @@ main() {
         echo "[WARN] brew cleanup failed; continuing." >&2
     fi
 
-    echo "[INFO] All specified brew packages have been installed."
+    echo "[INFO] Homebrew package installation completed."
     return 0
 }
 

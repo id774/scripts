@@ -46,8 +46,9 @@
 #      -u, --uninstall Remove matching symlinks in $HOME (do not recreate).
 #
 #  Version History:
-#  v1.6 2026-11-09
-#       Avoid claiming symlink creation succeeded after a failed removal or link.
+#  v1.6 2026-11-10
+#       Prevent false success reports for failed symlink creation,
+#       replacement, and removal.
 #  v1.5 2026-11-08
 #       Require a target selector for uninstall mode, matching the documented usage.
 #  v1.4 2026-10-20
@@ -200,8 +201,9 @@ purge_broken_symlinks_in_home() {
             else
                 set -- rm -f -- "$l"
                 echo "[INFO] Executing: $*"
-                "$@"
-                echo "[INFO] Removed broken symlink $l"
+                if "$@"; then
+                    echo "[INFO] Removed broken symlink $l"
+                fi
             fi
         fi
     done
@@ -225,8 +227,9 @@ uninstall_matching_symlinks() {
                 else
                     set -- rm -f -- "$path"
                     echo "[INFO] Executing: $*"
-                    "$@"
-                    echo "[INFO] Uninstalled symlink $path"
+                    if "$@"; then
+                        echo "[INFO] Uninstalled symlink $path"
+                    fi
                 fi
                 removed=$((removed + 1))
             fi
