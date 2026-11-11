@@ -38,7 +38,7 @@
 #  - python_versions: Space-separated list of Python versions to test.
 #  - ruby_versions: Space-separated list of Ruby versions to test.
 #  Optional variables:
-#  - ADMIN_MAIL_ADDRESS: Email address to notify; unset or empty disables email.
+#  - ADMIN_MAIL_ADDRESS: Notification address (email disabled if unset or empty).
 #
 #  Notes:
 #  - The script is designed to be run in environments where Python and Ruby

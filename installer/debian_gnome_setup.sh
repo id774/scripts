@@ -15,7 +15,8 @@
 #    - Media keys and custom app shortcuts (via dconf load, gnome-shortcuts.conf)
 #    - Lock & idle behavior: keep manual lock, disable auto lock. Set idle-delay=0 and lock-delay=0
 #    - Appearance: prefer dark color scheme
-#    - Keyboard repeat: enable repeat. Default delay=200ms and interval=25ms (overridable via env)
+#    - Keyboard repeat: enabled, with default delay=200ms and interval=25ms
+#      (overridable via env)
 #    - Profiles: install xfce4-terminal profile if xfce4-terminal is installed
 #    - Disable services: mask background services for a server-like desktop (Tracker/GOA/Evolution/Rygel)
 #    - Confirm before applying settings

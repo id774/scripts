@@ -18,12 +18,12 @@
 #
 #  Cache Layers (used by this tool):
 #    - L1: Transients (WordPress built-in “temporary cached values” with TTL)
-#    - L2: Object Cache (wp cache flush. Can be broader impact depending on setup)
+#    - L2: Object Cache (wp cache flush, with potentially broader impact)
 #    - L3: Page Cache Plugin (W3 Total Cache only, if available and active)
-#    - L4: CDN/Browser cache (not automated. Guidance only)
+#    - L4: CDN/Browser cache (guidance only, not automated)
 #
 #  Safety model (intentionally minimal by request):
-#    - Require an explicit target path (--path. Default is /var/www/wordpress).
+#    - Use --path to select a target (default: /var/www/wordpress).
 #    - Require explicit intent (--reason) for state-changing commands.
 #    - Require explicit execution (--yes) unless --dry-run is used.
 #    - Do not attempt to automate CDN/browser cache to avoid over-broad purges.

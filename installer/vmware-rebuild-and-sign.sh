@@ -206,7 +206,8 @@ sign_module_if_needed() {
     return 0
 }
 
-# Attempt to load modules (non-fatal. Useful on Secure Boot to verify)
+# Try loading modules without treating failure as fatal, including during
+# Secure Boot verification.
 try_load_modules() {
     if ! lsmod | grep -q '^vmmon'; then
         sudo modprobe vmmon 2>/dev/null || echo "[WARN] modprobe vmmon failed."

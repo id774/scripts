@@ -16,7 +16,8 @@
 #
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
-#    - In dry-run mode, lists .zip files found in the target directory without creating directories or executing unzip.
+#    - In dry-run mode, lists .zip files found in the target directory without
+#      creating directories or executing unzip.
 #    - Skips extraction (and listing in dry-run) when the target subdirectory already exists.
 #    - In execution mode, creates a subdirectory per .zip file and extracts it with zipfile.
 #    - Rejects archive entries that would be written outside the target directory.

@@ -20,13 +20,16 @@
 #
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
-#    - Verify check_quality_tool does nothing (no output, no exit) when the command exists and is executable.
+#    - Verify check_quality_tool does nothing (no output, no exit) when the
+#      command exists and is executable.
 #    - Verify check_quality_tool prints an error and exits with code 127 when the command does not exist.
-#    - Verify check_quality_tool prints an error and exits with code 126 when the command exists but is not executable.
+#    - Verify check_quality_tool prints an error and exits with code 126 when
+#      the command exists but is not executable.
 #    - Run format_file() to invoke autoflake, autopep8, and isort with expected arguments.
 #    - Verify format_file() quotes a file path containing spaces before passing it to the shell.
 #    - Suppress output on successful run_quality_check() execution.
-#    - Print the provided error prefix and command output when run_quality_check() returns a non-zero status.
+#    - Print the provided error prefix and command output when
+#      run_quality_check() returns a non-zero status.
 #    - Print a single literal message when run_quality_check() is called with literal_message=True.
 #    - In dry-run mode, run flake8/autoflake/autopep8/isort checks for a single Python file.
 #    - In dry-run mode, verify a path containing spaces is quoted before being passed to flake8,
@@ -59,10 +62,12 @@
 #    - dry_run_formatting() and execute_formatting() continue checking or formatting a valid
 #      target and return status 1 when given a mix of valid and invalid paths.
 #    - In execute (auto-fix) mode, format a single Python file via format_file().
-#    - In execute (auto-fix) mode, format a mix of directory and file paths and report an error for invalid paths.
+#    - In execute (auto-fix) mode, format a mix of directory and file paths and
+#      report an error for invalid paths.
 #    - In execute (auto-fix) mode, format a single directory by formatting each .py file under it.
 #    - In execute (auto-fix) mode, format multiple directories by formatting each .py file under them.
-#    - Detect an existing command path with find_quality_tool_candidate() when the command is present in PATH.
+#    - Detect an existing command path with find_quality_tool_candidate() when
+#      the command is present in PATH.
 #    - Return None from find_quality_tool_candidate() when the command is not present in PATH.
 #    - find_quality_tool_candidate() skips a non-executable PATH candidate and returns a later
 #      executable one.
@@ -71,7 +76,8 @@
 #    - Verify check_quality_tool behavior via alternate patching for existing executable commands.
 #    - Verify create_isolated_config() writes the formatter/linter configuration used by pyck.
 #    - Verify format_imports() passes the isolated configuration to isort.
-#    - Verify main() creates one isolated temporary configuration and passes it to dry-run and auto-fix processing.
+#    - Verify main() creates one isolated temporary configuration and passes it
+#      to dry-run and auto-fix processing.
 #    - Verify that pyck keeps autopep8 on E302/E402/E501 while Flake8 additionally ignores
 #      W503/W504, without restoring the rest of Flake8's default ignore set.
 #    - Verify that expected dry-run finding statuses remain success, including a combination

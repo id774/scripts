@@ -120,7 +120,8 @@ comment_ipv6_bind() {
         if ! sudo awk '
             # Leave already commented lines as is
             /^[[:space:]]*#/ { print; next }
-            # Comment any line that starts with "-l ::1" while keeping indentation and the rest of the line
+            # Comment any line that starts with "-l ::1" while keeping
+            # indentation and the rest of the line
             /^[[:space:]]*-l[[:space:]]+::1([[:space:]].*|$)/ {
                 m = match($0, /^[[:space:]]*/); indent = substr($0, 1, RLENGTH)
                 body = substr($0, RLENGTH + 1)

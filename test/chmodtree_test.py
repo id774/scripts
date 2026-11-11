@@ -25,11 +25,16 @@
 #
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
-#    - Verify check_filesystem_tool does nothing (no output, no exit) when the command exists and is executable.
-#    - Verify check_filesystem_tool prints an error and exits with code 127 when the command does not exist.
-#    - Verify check_filesystem_tool prints an error and exits with code 126 when the command exists but is not executable.
-#    - Verify find_filesystem_tool_candidate skips a non-executable PATH candidate and returns a later executable one.
-#    - Verify find_filesystem_tool_candidate returns the non-executable candidate when no PATH entry is executable.
+#    - Verify check_filesystem_tool does nothing (no output, no exit) when the
+#      command exists and is executable.
+#    - Verify check_filesystem_tool prints an error and exits with code 127 when
+#      the command does not exist.
+#    - Verify check_filesystem_tool prints an error and exits with code 126 when
+#      the command exists but is not executable.
+#    - Verify find_filesystem_tool_candidate skips a non-executable PATH
+#      candidate and returns a later executable one.
+#    - Verify find_filesystem_tool_candidate returns the non-executable
+#      candidate when no PATH entry is executable.
 #    - Verify find_filesystem_tool_candidate returns None when no PATH entry contains the command.
 #    - Verify octal permission mode detection for numeric and symbolic modes.
 #    - Verify base find command construction with and without name patterns.

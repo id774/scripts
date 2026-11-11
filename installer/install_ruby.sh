@@ -36,7 +36,8 @@
 #    download source and path rules. It can be installed only when the
 #    corresponding artifact is available from that source.
 #
-#  - By default, if no installation path is provided, Ruby will be installed under /opt/ruby/<major>.<minor>
+#  - By default, if no installation path is provided, Ruby will be installed
+#    under /opt/ruby/<major>.<minor>
 #
 #  - Source files are saved to /usr/local/src/ruby only when using sudo.
 #    If installed without sudo (e.g. using `--no-sudo`), source files will not be saved.

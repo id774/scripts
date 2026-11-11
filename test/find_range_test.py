@@ -23,7 +23,8 @@
 #
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
-#    - List only files modified after a specified start datetime (exclude older and hidden files by default).
+#    - List only files modified after a specified start datetime (exclude older
+#      and hidden files by default).
 #    - Include hidden files when the '-a' option is used.
 #    - Exclude hidden files by default when the '-a' option is not used.
 #    - List filenames only when the '-f' option is used.
@@ -40,7 +41,8 @@
 #    - Print timestamps in local timezone with offset when the '-l' option is used.
 #    - Exit with code 2 when an invalid datetime format is provided with the '-l' option.
 #    - Use the current directory as default when no path is specified with the '-l' option.
-#    - List files within a specified start/end datetime range in local timezone, including boundaries and excluding out-of-range files.
+#    - List files within a specified start/end datetime range in local timezone,
+#      including boundaries and excluding out-of-range files.
 #    - List files modified within a specified start/end datetime range in local timezone (simple case).
 #    - Include hidden files when the '-a' option is used with local timezone output.
 #    - List filenames only within a specified start/end datetime range with local timezone output.

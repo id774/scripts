@@ -1,10 +1,20 @@
 # Scripts Collection Feature Reference
 
-This document serves as a high-level index of the features available in the `scripts` repository. Its purpose is to describe what each feature provides and help users locate the relevant scripts.
+This document serves as a high-level index of the features available in the
+`scripts` repository. Its purpose is to describe what each feature provides and
+help users locate the relevant scripts.
 
-**This document must not be used to record detailed designs, implementation details, or script-specific operational instructions.** Such information belongs in the relevant script's header, source code, or dedicated documentation. Feature descriptions must remain concise and limited to the information necessary to understand each feature's purpose.
+**This document must not be used to record detailed designs, implementation
+details, or script-specific operational instructions.** Such information belongs
+in the relevant script's header, source code, or dedicated documentation.
+Feature descriptions must remain concise and limited to the information
+necessary to understand each feature's purpose.
 
-The repository contains independent utilities, installers, scheduled jobs, and supporting configuration. The README covers repository-wide setup and layout. Individual executable headers define their usage, options, and requirements. This index describes capabilities and important operational boundaries without duplicating those interfaces.
+The repository contains independent utilities, installers, scheduled jobs, and
+supporting configuration. The README covers repository-wide setup and layout.
+Individual executable headers define their usage, options, and requirements.
+This index describes capabilities and important operational boundaries without
+duplicating those interfaces.
 
 ## 1. Repository Feature Structure
 
@@ -21,7 +31,8 @@ The repository contains independent utilities, installers, scheduled jobs, and s
 
 ## 2. Top-Level Scripts
 
-Top-level executables are grouped below by their primary purpose. Use the script header for invocation details.
+Top-level executables are grouped below by their primary purpose. Use the script
+header for invocation details.
 
 ### Top-level capability index
 
@@ -47,19 +58,23 @@ Utilities for preparing, formatting, and converting text, HTML, and documents.
 
 ### add_hr_h2.py
 
-Inserts separators before HTML headings, avoiding duplicate separators. Can write a separate file or update the input.
+Inserts separators before HTML headings, avoiding duplicate separators. Can
+write a separate file or update the input.
 
 ### aozora_prepare.rb
 
-Prepares Aozora Bunko text by normalizing encoding, annotations, spacing, and line breaks.
+Prepares Aozora Bunko text by normalizing encoding, annotations, spacing, and
+line breaks.
 
 ### fix_anchor.py
 
-Normalizes reference-link placement around Japanese punctuation in HTML and Markdown.
+Normalizes reference-link placement around Japanese punctuation in HTML and
+Markdown.
 
 ### format_html.py
 
-Formats HTML while preserving the contents of code and preformatted elements. It is a formatter, not an HTML repair tool.
+Formats HTML while preserving the contents of code and preformatted elements. It
+is a formatter, not an HTML repair tool.
 
 ### html2yaml.py
 
@@ -95,19 +110,26 @@ Utilities for web access analysis and WordPress operations.
 
 ### apache_log_analysis.sh
 
-Summarizes Apache SSL access logs by URL, referrer, client, and time period. Supports configured IP exclusions. Article-specific view estimates are handled by `apache_blog_analysis.py`.
+Summarizes Apache SSL access logs by URL, referrer, client, and time period.
+Supports configured IP exclusions. Article-specific view estimates are handled
+by `apache_blog_analysis.py`.
 
 ### apache_calculater.py
 
-Aggregates Apache access counts and estimates client-cache hit proportions by IP address. Accepts multiple logs, including compressed files.
+Aggregates Apache access counts and estimates client-cache hit proportions by IP
+address. Accepts multiple logs, including compressed files.
 
 ### apache_blog_analysis.py
 
-Estimates WordPress article engagement using candidate page views, asset-confirmed views, and sessions. These are estimates, not exact human visitor counts, because caches and browser behavior affect the evidence.
+Estimates WordPress article engagement using candidate page views,
+asset-confirmed views, and sessions. These are estimates, not exact human
+visitor counts, because caches and browser behavior affect the evidence.
 
 ### wp_cachectl.py
 
-Uses WP-CLI for event-driven cache management following changes or troubleshooting. Covers WordPress transient, object, and page caches. External CDN and browser caches are guidance-only.
+Uses WP-CLI for event-driven cache management following changes or
+troubleshooting. Covers WordPress transient, object, and page caches. External
+CDN and browser caches are guidance-only.
 
 ## 6. Package Updates and Package Management
 
@@ -123,31 +145,39 @@ Runs a grouped Homebrew package maintenance workflow.
 
 ### dpkg-hold.sh
 
-Manages Debian package hold states to prevent selected packages from being upgraded automatically.
+Manages Debian package hold states to prevent selected packages from being
+upgraded automatically.
 
 ## 7. Files, Directories, and Filesystems
 
-Commands for filesystem inspection, conversion, and maintenance. Some commands modify or delete data.
+Commands for filesystem inspection, conversion, and maintenance. Some commands
+modify or delete data.
 
 ### chmodtree.py
 
-Recursively sets directory-tree permissions and ownership according to selected rules. May change filesystem metadata.
+Recursively sets directory-tree permissions and ownership according to selected
+rules. May change filesystem metadata.
 
 ### cleanup-junk-files.sh
 
-Removes common temporary and metadata files from a selected directory tree. Deletes matching files.
+Removes common temporary and metadata files from a selected directory tree.
+Deletes matching files.
 
 ### clear_chromium_cache.sh
 
-Removes Chromium's `Web Data` data. Close Chromium before using this destructive utility.
+Removes Chromium's `Web Data` data. Close Chromium before using this destructive
+utility.
 
 ### cltmp.sh
 
-Cleans temporary and cache files on Linux and macOS using target-specific retention periods. It intentionally clears the contents of `$HOME/.cache` regardless of age.
+Cleans temporary and cache files on Linux and macOS using target-specific
+retention periods. It intentionally clears the contents of `$HOME/.cache`
+regardless of age.
 
 ### dirsize.py
 
-Reports the sizes of files directly within a directory without recursively counting subdirectory contents.
+Reports the sizes of files directly within a directory without recursively
+counting subdirectory contents.
 
 ### du.py
 
@@ -167,7 +197,8 @@ Finds files modified within a time range, with UTC or local-time interpretation.
 
 ### flatdirs.py
 
-Collects files from nested directories by moving, copying, or renaming them. Requests confirmation for changes.
+Collects files from nested directories by moving, copying, or renaming them.
+Requests confirmation for changes.
 
 ### image_resize.py
 
@@ -179,7 +210,8 @@ Counts files in directory trees.
 
 ### md5.py
 
-Computes MD5 digests for supplied input or files. MD5 is not suitable for security-sensitive integrity assurance.
+Computes MD5 digests for supplied input or files. MD5 is not suitable for
+security-sensitive integrity assurance.
 
 ### png_info.py
 
@@ -207,11 +239,13 @@ Utilities that edit Zsh command history.
 
 ### erase_history.py
 
-Removes a selected number of recent entries from Zsh history while handling the utility's own invocation.
+Removes a selected number of recent entries from Zsh history while handling the
+utility's own invocation.
 
 ### filter_history.sh
 
-Filters Zsh history entries by pattern and creates a backup before updating the history file.
+Filters Zsh history entries by pattern and creates a backup before updating the
+history file.
 
 ## 9. Zsh and Shell Environment Maintenance
 
@@ -219,7 +253,8 @@ Tools for shell and user-environment configuration.
 
 ### fix_compinit.sh
 
-Repairs ownership and permissions of Homebrew Zsh completion directories on macOS to resolve insecure-directory warnings.
+Repairs ownership and permissions of Homebrew Zsh completion directories on
+macOS to resolve insecure-directory warnings.
 
 ### unfix_compinit.sh
 
@@ -227,15 +262,18 @@ Reverts the permission and ownership changes made by `fix_compinit.sh`.
 
 ### xmap.sh
 
-Applies the user's Xmodmap configuration when the required command and file are available.
+Applies the user's Xmodmap configuration when the required command and file are
+available.
 
 ## 10. Block Devices, Mounts, and Encrypted Volumes
 
-Storage utilities for locating devices and managing encrypted volumes. Verify the selected device before state-changing operations.
+Storage utilities for locating devices and managing encrypted volumes. Verify
+the selected device before state-changing operations.
 
 ### get-device.sh
 
-Resolves a mountpoint to its underlying block device, including paths through partitions or device-mapper layers.
+Resolves a mountpoint to its underlying block device, including paths through
+partitions or device-mapper layers.
 
 ### get-mountpoint.sh
 
@@ -247,27 +285,36 @@ Retrieves the hardware serial number of a selected block device.
 
 ### luksmount.py
 
-Lists block-device information or opens and mounts a user-selected LUKS volume. Requires explicit confirmation of the physical device and does not automatically select devices.
+Lists block-device information or opens and mounts a user-selected LUKS volume.
+Requires explicit confirmation of the physical device and does not automatically
+select devices.
 
 ### tcmount.py
 
-Mounts or unmounts TrueCrypt and VeraCrypt volumes, including external containers and selectable mount targets.
+Mounts or unmounts TrueCrypt and VeraCrypt volumes, including external
+containers and selectable mount targets.
 
 ### sd_extract.sh
 
-Copies selected files from configured SD-card sources into a destination. Reports copy failures while continuing independent transfers.
+Copies selected files from configured SD-card sources into a destination.
+Reports copy failures while continuing independent transfers.
 
 ## 11. Git Repository Management
 
-Utilities for bulk and individual Git repository operations. Some commands can discard changes or remove repositories.
+Utilities for bulk and individual Git repository operations. Some commands can
+discard changes or remove repositories.
 
 ### git-all-pull.sh
 
-Updates multiple local Git repositories, with optional remote-branch inspection, pruning, and symlink management. Some modes can discard local changes or delete remote branches.
+Updates multiple local Git repositories, with optional remote-branch inspection,
+pruning, and symlink management. Some modes can discard local changes or delete
+remote branches.
 
 ### git-archive-repo.sh
 
-Creates compressed backups of configured GitHub and local Git repositories, excluding GitLab repositories. Existing archives at the configured destinations are removed before replacements are created.
+Creates compressed backups of configured GitHub and local Git repositories,
+excluding GitLab repositories. Existing archives at the configured destinations
+are removed before replacements are created.
 
 ### git-co-remote-branch.sh
 
@@ -275,19 +322,24 @@ Creates local tracking branches from remote-only branches.
 
 ### git-create-repo.sh
 
-Creates or removes Git repositories, with configurable location and permissions. Supports a dry-run mode.
+Creates or removes Git repositories, with configurable location and permissions.
+Supports a dry-run mode.
 
 ### git-follow-origin.sh
 
-Assists in merging changes from another GitHub repository into a local master branch.
+Assists in merging changes from another GitHub repository into a local master
+branch.
 
 ### git-symlink.sh
 
-Maintains home-directory symlinks for local repositories. It can remove broken or repository-related symlinks.
+Maintains home-directory symlinks for local repositories. It can remove broken
+or repository-related symlinks.
 
 ### remove-repo.sh
 
-Removes selected local Git repositories and matching home-directory symlinks. By default, it previews targets and asks for confirmation before deletion; --dry-run previews without deletion, and -x deletes without confirmation.
+Removes selected local Git repositories and matching home-directory symlinks. By
+default, it previews targets and asks for confirmation before deletion. The
+--dry-run option previews without deletion, and -x deletes without confirmation.
 
 ## 12. Networking, Transfers, and Remote Operations
 
@@ -311,7 +363,8 @@ Downloads resources using a Ruby-based command.
 
 ### send_files.sh
 
-Builds password-protected archives for file delivery, with optional email transmission. Sending content externally requires explicit invocation.
+Builds password-protected archives for file delivery, with optional email
+transmission. Sending content externally requires explicit invocation.
 
 ### gpg-import.sh
 
@@ -323,7 +376,8 @@ Utilities for collecting, organizing, and synchronizing media and location data.
 
 ### dashcam_sync.sh
 
-Synchronizes configured dashcam recordings to external storage and organizes them by year.
+Synchronizes configured dashcam recordings to external storage and organizes
+them by year.
 
 ### gpx_sync.sh
 
@@ -343,7 +397,8 @@ Checks source-code compatibility with selected Python versions.
 
 ### pyck.py
 
-Runs Python linting, formatting, and import cleanup, with inspection and modification modes.
+Runs Python linting, formatting, and import cleanup, with inspection and
+modification modes.
 
 ### run_tests.sh
 
@@ -355,7 +410,8 @@ Sets the executable permissions expected for scripts in the repository.
 
 ### show_version.py
 
-Reports installed Python package versions and importability, distinguishing missing packages from import failures.
+Reports installed Python package versions and importability, distinguishing
+missing packages from import failures.
 
 ## 15. System Administration Utilities
 
@@ -367,7 +423,8 @@ Displays calendar information through the Unix `cal` command.
 
 ### check_reboot.sh
 
-Checks whether a reboot is recommended after updates, using Debian/Ubuntu signals and process-state information.
+Checks whether a reboot is recommended after updates, using Debian/Ubuntu
+signals and process-state information.
 
 ### check_sshd_config.sh
 
@@ -375,7 +432,8 @@ Reports selected SSH daemon configuration settings on Linux and macOS.
 
 ### get_resources.sh
 
-Reports system resources, storage, processes, networking, time synchronization, and selected security state.
+Reports system resources, storage, processes, networking, time synchronization,
+and selected security state.
 
 ### restart-sshd.sh
 
@@ -383,7 +441,8 @@ Restarts the SSH daemon with configuration-handling support.
 
 ### server_alive_check.sh
 
-Checks freshness of server liveness markers and reports stale hosts according to its monitoring policy.
+Checks freshness of server liveness markers and reports stale hosts according to
+its monitoring policy.
 
 ### userlist.py
 
@@ -427,7 +486,10 @@ Generates simple passwords in Ruby.
 
 ## 17. Role of installer/
 
-Installers manage operating-system packages, development runtimes, monitoring, and system configuration. Many require elevated privileges and change persistent system state. Use the following capability index to choose the relevant workflow.
+Installers manage operating-system packages, development runtimes, monitoring,
+and system configuration. Many require elevated privileges and change persistent
+system state. Use the following capability index to choose the relevant
+workflow.
 
 ### Installer capability index
 
@@ -446,7 +508,8 @@ Installers manage operating-system packages, development runtimes, monitoring, a
 
 ## 18. Debian Full Setup
 
-Entry points for provisioning Debian-based systems. These scripts make broad system-level changes.
+Entry points for provisioning Debian-based systems. These scripts make broad
+system-level changes.
 
 ### debian_init.sh
 
@@ -458,11 +521,13 @@ Prepares the base environment, locale, package state, and system defaults.
 
 ### debian_apt.sh
 
-Installs the repository's standard and development package collection on Debian-based systems.
+Installs the repository's standard and development package collection on
+Debian-based systems.
 
 ### debian_setup.sh
 
-Applies system and user configuration, including shells, dotfiles, monitoring, security services, and scheduled jobs.
+Applies system and user configuration, including shells, dotfiles, monitoring,
+security services, and scheduled jobs.
 
 ## 19. Debian Desktop Setup
 
@@ -470,23 +535,28 @@ Installers and configuration utilities for Debian desktop environments.
 
 ### debian_desktop_apt.sh
 
-Installs desktop packages for graphical sessions, Japanese input, fonts, applications, and remote access.
+Installs desktop packages for graphical sessions, Japanese input, fonts,
+applications, and remote access.
 
 ### debian_desktop_setup.sh
 
-Selects and invokes the configuration workflow for Xfce, GNOME Flashback, or GNOME Shell.
+Selects and invokes the configuration workflow for Xfce, GNOME Flashback, or
+GNOME Shell.
 
 ### debian_xfce_setup.sh
 
-Configures Xfce workspaces, shortcuts, appearance, input, and power-management behavior.
+Configures Xfce workspaces, shortcuts, appearance, input, and power-management
+behavior.
 
 ### debian_gnome_flashback_setup.sh
 
-Configures GNOME Flashback appearance, workspaces, shortcuts, and session behavior.
+Configures GNOME Flashback appearance, workspaces, shortcuts, and session
+behavior.
 
 ### debian_gnome_setup.sh
 
-Configures GNOME Shell appearance, workspaces, shortcuts, and related background services.
+Configures GNOME Shell appearance, workspaces, shortcuts, and related background
+services.
 
 ## 20. macOS Full Setup
 
@@ -494,19 +564,23 @@ Utilities for provisioning and maintaining macOS systems.
 
 ### macos_setup.sh
 
-Coordinates macOS user and development environment setup, including dotfiles, system scripts, and selected preferences.
+Coordinates macOS user and development environment setup, including dotfiles,
+system scripts, and selected preferences.
 
 ### create_emergencyadmin.sh
 
-Creates an emergency administrator with SecureToken and FileVault access for recovery. Changes macOS account and encryption access state.
+Creates an emergency administrator with SecureToken and FileVault access for
+recovery. Changes macOS account and encryption access state.
 
 ### install_brews.sh
 
-Installs the repository's selected Homebrew packages for development and system administration.
+Installs the repository's selected Homebrew packages for development and system
+administration.
 
 ### reinstall_brew.sh
 
-Removes and reinstalls Homebrew, then restores a selected package environment. This is a destructive operation.
+Removes and reinstalls Homebrew, then restores a selected package environment.
+This is a destructive operation.
 
 ### macos_finder_settings.sh
 
@@ -534,7 +608,8 @@ Utilities for deploying and maintaining user configuration files.
 
 ### install_dotfiles.sh
 
-Deploys predefined shell, editor, Git, SSH, and application dotfiles. May update permissions and creates a private per-user temporary area.
+Deploys predefined shell, editor, Git, SSH, and application dotfiles. May update
+permissions and creates a private per-user temporary area.
 
 ### install_dotvim.sh
 
@@ -554,15 +629,18 @@ Configures XDG user directories with English names.
 
 ## 22. Language, Runtime, and Build Environment Installers
 
-Installers for programming language runtimes, libraries, and development tools. Installation privileges and supported platforms depend on the script.
+Installers for programming language runtimes, libraries, and development tools.
+Installation privileges and supported platforms depend on the script.
 
 ### install_R_libs.sh
 
-Installs a predefined collection of R libraries into the selected elevated R environment. Its library target is validated before package installation.
+Installs a predefined collection of R libraries into the selected elevated R
+environment. Its library target is validated before package installation.
 
 ### install_python.sh
 
-Builds and installs version-selected Python under a selected prefix, including user-local installations.
+Builds and installs version-selected Python under a selected prefix, including
+user-local installations.
 
 ### install_pip.sh
 
@@ -570,11 +648,15 @@ Installs selected Python libraries and Python development tools using pip.
 
 ### install_miniforge.sh
 
-Installs version-selected Miniforge with Conda and Mamba on supported Linux systems. Uses a version-series prefix by default and does not initialize the shell.
+Installs version-selected Miniforge with Conda and Mamba on supported Linux
+systems. Uses a version-series prefix by default and does not initialize the
+shell.
 
 ### install_conda.sh
 
-Installs selected data-science and development packages into the chosen Conda base environment, not the caller's active environment. Miniforge runtime provisioning is handled separately.
+Installs selected data-science and development packages into the chosen Conda
+base environment, not the caller's active environment. Miniforge runtime
+provisioning is handled separately.
 
 ### setup_python_symlink.sh
 
@@ -582,7 +664,8 @@ Maintains Python command symlinks for consistent command paths.
 
 ### install_ruby.sh
 
-Builds and installs version-selected Ruby under a selected prefix, including user-local installations.
+Builds and installs version-selected Ruby under a selected prefix, including
+user-local installations.
 
 ### install_gems.sh
 
@@ -594,15 +677,20 @@ Provides legacy RubyGems compatibility for tools that expect `ubygems.rb`.
 
 ### install_nodejs.sh
 
-Installs version-selected Node.js binaries on supported Linux and macOS platforms, including user-local installations.
+Installs version-selected Node.js binaries on supported Linux and macOS
+platforms, including user-local installations.
 
 ### install_npm.sh
 
-Updates npm and installs selected global Node.js and TypeScript tools using Aikido Safe Chain. Safe Chain is mandatory, and installations remain in the selected Node.js prefix.
+Updates npm and installs selected global Node.js and TypeScript tools using
+Aikido Safe Chain. Safe Chain is mandatory, and installations remain in the
+selected Node.js prefix.
 
 ### install_safe-chain.sh
 
-Installs Aikido Safe Chain under a selected prefix on supported Linux and macOS systems. Its runtime directory requires controlled write access and protection of generated CA private-key material.
+Installs Aikido Safe Chain under a selected prefix on supported Linux and macOS
+systems. Its runtime directory requires controlled write access and protection
+of generated CA private-key material.
 
 ### install_zsh.sh
 
@@ -614,7 +702,8 @@ Builds and installs selected GNU Autoconf releases.
 
 ### install_ncurses.sh
 
-Builds and installs ncurses under a selected prefix, including user-local installations.
+Builds and installs ncurses under a selected prefix, including user-local
+installations.
 
 ### install_talib.sh
 
@@ -626,7 +715,8 @@ Builds and installs the Resin application server.
 
 ### install_mecab-stack.sh
 
-Installs a Japanese text-processing stack containing MeCab, mecab-ipadic-NEologd, and CaboCha.
+Installs a Japanese text-processing stack containing MeCab,
+mecab-ipadic-NEologd, and CaboCha.
 
 ### uninstall_mecab_local.sh
 
@@ -642,15 +732,20 @@ Installs and configures VeraCrypt on supported Linux systems.
 
 ### install_vscode.sh
 
-Installs Visual Studio Code Stable through Microsoft's APT repository on Debian/Ubuntu. Supports an opt-in persistent TLS verification bypass that weakens connection authentication.
+Installs Visual Studio Code Stable through Microsoft's APT repository on
+Debian/Ubuntu. Supports an opt-in persistent TLS verification bypass that
+weakens connection authentication.
 
 ### install_claude_desktop.sh
 
-Installs Claude Desktop through Anthropic's APT repository on supported Debian/Ubuntu versions. Supports an opt-in persistent TLS verification bypass.
+Installs Claude Desktop through Anthropic's APT repository on supported
+Debian/Ubuntu versions. Supports an opt-in persistent TLS verification bypass.
 
 ### install_claude_code.sh
 
-Installs Claude Code using APT on supported Debian/Ubuntu systems or Homebrew on macOS. On Debian/Ubuntu, it supports an opt-in persistent TLS verification bypass.
+Installs Claude Code using APT on supported Debian/Ubuntu systems or Homebrew on
+macOS. On Debian/Ubuntu, it supports an opt-in persistent TLS verification
+bypass.
 
 ## 23. Monitoring and Cron Deployment Installers
 
@@ -666,11 +761,13 @@ Installs periodic rootkit scanning with associated logs and scheduling.
 
 ### install_clamscan.sh
 
-Installs periodic ClamAV scanning and related configuration. Supports uninstallation.
+Installs periodic ClamAV scanning and related configuration. Supports
+uninstallation.
 
 ### disable_freshclam_syslog.sh
 
-Suppresses routine syslog output from `clamav-freshclam` through a systemd service override.
+Suppresses routine syslog output from `clamav-freshclam` through a systemd
+service override.
 
 ### install_fix-permissions.sh
 
@@ -682,7 +779,8 @@ Deploys scheduled system-resource reporting.
 
 ### install_git-pull.sh
 
-Deploys scheduled bulk Git repository updates. Review the installed schedule and execution identity before enabling it.
+Deploys scheduled bulk Git repository updates. Review the installed schedule and
+execution identity before enabling it.
 
 ### install_munin.sh
 
@@ -702,7 +800,8 @@ Deploys scheduled Munin synchronization, with an uninstall mode.
 
 ### install_rsync_backup.sh
 
-Deploys scheduled removable-disk rsync backups and their supporting configuration.
+Deploys scheduled removable-disk rsync backups and their supporting
+configuration.
 
 ### install_run_tests.sh
 
@@ -710,11 +809,13 @@ Deploys automated repository test execution.
 
 ## 24. System and Security Configuration Installers
 
-Scripts that change system configuration, authentication, services, and installed packages. Inspect each script before applying these changes.
+Scripts that change system configuration, authentication, services, and
+installed packages. Inspect each script before applying these changes.
 
 ### configure_sysctl.sh
 
-Applies selected persistent Linux kernel settings, including IPv4 security controls and optional IPv6 disabling.
+Applies selected persistent Linux kernel settings, including IPv4 security
+controls and optional IPv6 disabling.
 
 ### setup_iptables.sh
 
@@ -722,11 +823,13 @@ Deploys and applies the repository's firewall rules.
 
 ### setup_pamd.sh
 
-Configures PAM restrictions on switching to root through wheel-group membership. Alters authentication behavior.
+Configures PAM restrictions on switching to root through wheel-group membership.
+Alters authentication behavior.
 
 ### setup_securetty.sh
 
-Changes root-login TTY restrictions through `/etc/securetty`. This can relax an existing security control.
+Changes root-login TTY restrictions through `/etc/securetty`. This can relax an
+existing security control.
 
 ### setup_dos_guard.sh
 
@@ -734,7 +837,9 @@ Configures Apache denial-of-service protection using mod_evasive and fail2ban.
 
 ### setup_aliases.sh
 
-Configures system mail aliases for login-capable users and maintains local mail spools. It empties non-empty mail spool files under `/var/mail`, permanently discarding their contents.
+Configures system mail aliases for login-capable users and maintains local mail
+spools. It empties non-empty mail spool files under `/var/mail`, permanently
+discarding their contents.
 
 ### setup_crontab.sh
 
@@ -746,7 +851,8 @@ Deploys system APT configuration for later site-specific editing.
 
 ### setup_apache2_ssl.sh
 
-Configures Apache SSL support, certificates, and site settings. Requires review of host-specific configuration.
+Configures Apache SSL support, certificates, and site settings. Requires review
+of host-specific configuration.
 
 ### setup_memcached_conf.sh
 
@@ -754,7 +860,8 @@ Deploys memcached configuration.
 
 ### setup_ntp_restart_policy.sh
 
-Configures automatic restart-on-failure behavior for installed NTP services without immediately restarting them.
+Configures automatic restart-on-failure behavior for installed NTP services
+without immediately restarting them.
 
 ### setup_motd.sh
 
@@ -790,7 +897,8 @@ Removes obsolete Ubuntu kernel packages while preserving the running kernel.
 
 ### remove-tracker.sh
 
-Disables and removes GNOME Tracker indexing. This changes desktop search functionality.
+Disables and removes GNOME Tracker indexing. This changes desktop search
+functionality.
 
 ## 25. Google Chrome Installer
 
@@ -798,11 +906,14 @@ Browser installation through a package manager.
 
 ### install_google_chrome.sh
 
-Installs Google Chrome Stable on Debian and configures its official APT source. Verifies the vendor signing key and leaves regular APT metadata refresh to normal package maintenance.
+Installs Google Chrome Stable on Debian and configures its official APT source.
+Verifies the vendor signing key and leaves regular APT metadata refresh to
+normal package maintenance.
 
 ## 26. Automated Operations in cron/bin
 
-Executables designed for scheduled execution. Installer scripts in §23 deploy many of these jobs.
+Executables designed for scheduled execution. Installer scripts in §23 deploy
+many of these jobs.
 
 ### cron/bin/apache_log_analysis
 
@@ -850,7 +961,9 @@ Runs the scheduled interpreter-matrix tests and repository checks.
 
 ## 27. Cron Configuration
 
-`cron/etc/` supplies configuration, scheduling, and log rotation assets for periodic jobs. Its main files are indexed here to help identify the relevant configuration without documenting its internal settings.
+`cron/etc/` supplies configuration, scheduling, and log rotation assets for
+periodic jobs. Its main files are indexed here to help identify the relevant
+configuration without documenting its internal settings.
 
 | Asset type | Files |
 | --- | --- |
@@ -860,7 +973,9 @@ Runs the scheduled interpreter-matrix tests and repository checks.
 
 ## 28. Support Configuration under etc/
 
-`etc/` holds configuration and templates used by the repository's tools. The following index identifies major configuration groups and their representative files, without reproducing configuration contents.
+`etc/` holds configuration and templates used by the repository's tools. The
+following index identifies major configuration groups and their representative
+files, without reproducing configuration contents.
 
 | Purpose | Representative file or directory |
 | --- | --- |
@@ -883,51 +998,71 @@ Runs the scheduled interpreter-matrix tests and repository checks.
 
 ## 29. dot_files/
 
-`dot_files/` contains user configuration for shells, editors, source control, SSH, terminal utilities, Japanese input, and development tools. It also includes bundled third-party components, which are not automatically treated as distinct repository features.
+`dot_files/` contains user configuration for shells, editors, source control,
+SSH, terminal utilities, Japanese input, and development tools. It also includes
+bundled third-party components, which are not automatically treated as distinct
+repository features.
 
 ## 30. Destructive or System-Wide Features
 
-Some utilities delete data, rewrite repositories, modify authentication or network rules, or change persistent system settings. Check the script header and the selected target before use.
+Some utilities delete data, rewrite repositories, modify authentication or
+network rules, or change persistent system settings. Check the script header and
+the selected target before use.
 
 ### File deletion
 
-`remove-repo.sh`, `cltmp.sh`, `purge_apt_cache.sh`, and other cleanup tools can permanently remove data or configuration.
+`remove-repo.sh`, `cltmp.sh`, `purge_apt_cache.sh`, and other cleanup tools can
+permanently remove data or configuration.
 
 ### Destructive Git operations
 
-Some modes of `git-all-pull.sh`, `git-create-repo.sh`, and `remove-repo.sh` discard local work, delete branches, or remove repositories.
+Some modes of `git-all-pull.sh`, `git-create-repo.sh`, and `remove-repo.sh`
+discard local work, delete branches, or remove repositories.
 
 ### Permission / ownership changes
 
-`chmodtree.py`, `install_dotfiles.sh`, and setup scripts can change filesystem access and ownership.
+`chmodtree.py`, `install_dotfiles.sh`, and setup scripts can change filesystem
+access and ownership.
 
 ### System configuration
 
-Security and administration installers can alter authentication, firewall rules, services, and scheduled jobs.
+Security and administration installers can alter authentication, firewall rules,
+services, and scheduled jobs.
 
 ### Package installation / removal
 
-`installer/install_*.sh`, `installer/purge_*.sh`, and `installer/remove-tracker.sh` modify installed software and may affect services.
+`installer/install_*.sh`, `installer/purge_*.sh`, and
+`installer/remove-tracker.sh` modify installed software and may affect services.
 
 ### TLS verification bypass
 
-`install_vscode.sh`, `install_claude_desktop.sh`, and `install_claude_code.sh` offer an opt-in persistent APT TLS verification bypass. It weakens connection authentication and remains in effect until removed.
+`install_vscode.sh`, `install_claude_desktop.sh`, and `install_claude_code.sh`
+offer an opt-in persistent APT TLS verification bypass. It weakens connection
+authentication and remains in effect until removed.
 
 ## 31. root and sudo
 
-System-level installers generally require root or sudo privileges. Some development runtimes support a user-controlled installation prefix and `--no-sudo`, including `install_python.sh`, `install_ruby.sh`, `install_miniforge.sh`, `install_nodejs.sh`, `install_safe-chain.sh`, `install_zsh.sh`, and `install_ncurses.sh`. Consult each executable header for the exact requirements.
+System-level installers generally require root or sudo privileges. Some
+development runtimes support a user-controlled installation prefix and
+`--no-sudo`, including `install_python.sh`, `install_ruby.sh`,
+`install_miniforge.sh`, `install_nodejs.sh`, `install_safe-chain.sh`,
+`install_zsh.sh`, and `install_ncurses.sh`. Consult each executable header for
+the exact requirements.
 
 ## 32. OS-Specific Behavior
 
-The repository contains platform-specific and cross-platform tools. Individual executable headers define exact supported versions and architectures.
+The repository contains platform-specific and cross-platform tools. Individual
+executable headers define exact supported versions and architectures.
 
 ### Debian / Ubuntu based systems
 
-APT maintenance, full-system setup, desktop provisioning, and security installers mainly target Debian or Ubuntu.
+APT maintenance, full-system setup, desktop provisioning, and security
+installers mainly target Debian or Ubuntu.
 
 ### macOS
 
-Homebrew maintenance, Finder and user-environment setup, and macOS-specific administration tools target macOS.
+Homebrew maintenance, Finder and user-environment setup, and macOS-specific
+administration tools target macOS.
 
 ### Linux
 
@@ -935,15 +1070,24 @@ LUKS, systemd, firewall, and selected monitoring utilities target Linux systems.
 
 ### Multiple Unix-like platforms
 
-Several source-build installers, file utilities, and Git tools work across Unix-like environments. Platform availability depends on each script.
+Several source-build installers, file utilities, and Git tools work across
+Unix-like environments. Platform availability depends on each script.
 
 ## 33. Configuration File Handling
 
-Features requiring site-specific settings use configuration under `etc/`, `cron/etc/`, or installed system paths. For example, `dashcam_sync.sh` uses `dashcam_sync.conf`, `git-archive-repo.sh` uses `git-archive-repo.conf`, `gpx_sync.sh` uses `gpx_sync.conf`, `sd_extract.sh` uses `sd_extract.conf`, and `send_files.sh` uses `send_files.conf`. Refer to the executable header and configuration file for exact settings.
+Features requiring site-specific settings use configuration under `etc/`,
+`cron/etc/`, or installed system paths. For example, `dashcam_sync.sh` uses
+`dashcam_sync.conf`, `git-archive-repo.sh` uses `git-archive-repo.conf`,
+`gpx_sync.sh` uses `gpx_sync.conf`, `sd_extract.sh` uses `sd_extract.conf`, and
+`send_files.sh` uses `send_files.conf`. Refer to the executable header and
+configuration file for exact settings.
 
 ## 34. Help and Header Documentation
 
-Each executable header is the source for its exact usage, options, prerequisites, and exit statuses. Many scripts display this information through help or version options. Option support is script-specific and is not reproduced in full here.
+Each executable header is the source for its exact usage, options,
+prerequisites, and exit statuses. Many scripts display this information through
+help or version options. Option support is script-specific and is not reproduced
+in full here.
 
 ## 35. Finding a Feature by Purpose
 
@@ -970,4 +1114,9 @@ Each executable header is the source for its exact usage, options, prerequisites
 
 ## 36. Scope of This Document
 
-This index identifies available tools, their primary purposes, their main supported contexts, and important operational risks. It does not replace the executable headers, source code, configuration documentation, or version history. A feature description belongs here when it helps a reader choose a tool or avoid a consequential misuse, not merely because a script has a particular internal implementation.
+This index identifies available tools, their primary purposes, their main
+supported contexts, and important operational risks. It does not replace the
+executable headers, source code, configuration documentation, or version
+history. A feature description belongs here when it helps a reader choose a tool
+or avoid a consequential misuse, not merely because a script has a particular
+internal implementation.

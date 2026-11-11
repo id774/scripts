@@ -25,7 +25,8 @@
 #  Test Cases:
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - In dry-run mode, print the planned rename operation and do not call os.rename.
-#    - In execute mode, rename all matching files and call os.rename with expected source/destination paths.
+#    - In execute mode, rename all matching files and call os.rename with
+#      expected source/destination paths.
 #    - Exit with code 1 when a rename operation fails with OSError during execute mode.
 #    - Suppress all output in quiet mode.
 #    - By default (non-recursive), only rename files directly under the target directory.

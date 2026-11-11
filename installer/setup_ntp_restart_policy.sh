@@ -33,7 +33,7 @@
 #      ./setup_ntp_restart_policy.sh
 #
 #  Notes:
-#  - This script requires systemd. Exits if systemctl is not available.
+#  - This script requires systemd and exits if systemctl is unavailable.
 #  - No backups are created. Deployment is applied directly when needed.
 #
 #  Requirements:

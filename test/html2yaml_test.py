@@ -31,7 +31,8 @@
 #    - Verifies that the script prints usage and exits with code 0 when invoked with -h option.
 #    - Skip all tests when required dependencies (BeautifulSoup, PyYAML, and requests) are not installed.
 #    - Convert a sample HTML document into the expected YAML structure.
-#    - Ensure the generated YAML output includes expected tag names (html, head, title, body, div, ul, li).
+#    - Ensure the generated YAML output includes expected tag names (html, head,
+#      title, body, div, ul, li).
 #    - Reject an HTTP error response before parsing remote HTML content.
 #
 #  Version History:

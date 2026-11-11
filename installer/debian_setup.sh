@@ -14,12 +14,14 @@
 #        * dot_emacs: when Emacs is available and local configs are absent, clone id774/dot_emacs,
 #          symlink to $HOME/dot_emacs, then run install_dotemacs.sh.
 #    - Sysadmin utilities & helpers:
-#        * Deploy sysadmin scripts by uninstalling then reinstalling to refresh (setup_sysadmin_scripts.sh).
+#        * Deploy sysadmin scripts by uninstalling then reinstalling to refresh
+#          (setup_sysadmin_scripts.sh).
 #        * Set up a consistent python command symlink (setup_python_symlink.sh).
 #        * Fetch helper resources and tools (install_get_resources.sh).
 #    - Security & AV:
 #        * Install chkrootkit (install_chkrootkit.sh).
-#        * Install clamscan and suppress noisy freshclam syslog entries (install_clamscan.sh, disable_freshclam_syslog.sh).
+#        * Install clamscan and suppress noisy freshclam syslog entries
+#          (install_clamscan.sh, disable_freshclam_syslog.sh).
 #        * Apply security-related configs:
 #            - iptables rules (setup_iptables.sh)
 #            - PAM hardening for su (setup_pamd.sh)
@@ -28,7 +30,8 @@
 #            - chkrootkit runtime options (setup_chkrootkit_opts.sh)
 #    - Monitoring & services:
 #        * Clone or update id774/munin-plugins, symlink to $HOME/munin-plugins,
-#          install the process monitoring plugin, then install/configure Munin (install_process_monitoring.sh, install_munin.sh).
+#          install the process monitoring plugin, then install/configure Munin
+#          (install_process_monitoring.sh, install_munin.sh).
 #        * Configure memcached daemon settings (setup_memcached_conf.sh).
 #    - User environment & system messaging:
 #        * Install standard crontab entries (setup_crontab.sh).

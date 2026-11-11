@@ -49,7 +49,8 @@
 #    - os_exec() runs an argument list via subprocess.call without a shell and returns its status.
 #    - os_exec() returns 1 and prints a diagnostic when the command cannot be executed.
 #    - is_block_device() returns True only for a path whose mode is a block device.
-#    - resolve_real_mountpoint() returns the resolved path when get-device and get-mountpoint both succeed.
+#    - resolve_real_mountpoint() returns the resolved path when get-device and
+#      get-mountpoint both succeed.
 #    - resolve_real_mountpoint() calls get-device with an absolute-looking target kept
 #      under the ~/mnt/<target> namespace.
 #    - resolve_real_mountpoint() returns None and does not call get-mountpoint when get-device fails.
@@ -63,7 +64,8 @@
 #    - run_external_unmount() always detaches by the container file path.
 #    - run_mount_all() continues past a mid-sequence failure and aggregates status 1.
 #    - run_mount_all() returns 0 only when every device mounts successfully.
-#    - In process_mounting(), no shell metacharacter in a device/target value is interpreted as a second command.
+#    - In process_mounting(), no shell metacharacter in a device/target value is
+#      interpreted as a second command.
 #    - In process_mounting(), mount and unmount using mocked orchestration (TrueCrypt path).
 #    - In process_mounting(), mount and unmount using mocked orchestration (VeraCrypt path).
 #    - In process_mounting(), mount and unmount using mocked orchestration (VeraCrypt TC-compat path).

@@ -28,7 +28,8 @@
 #      ./apache_log_analysis.sh /var/log/apache2/ssl_access.log /var/log/apache2/ssl_access.log.1.gz
 #
 #  Options:
-#      -n, --top N: Limit "Access Count" and "Referer" output to top N entries (default: 100). Use 0 for no limit.
+#      -n, --top N: Limit "Access Count" and "Referer" output to top N entries
+#                   (default: 100). Use 0 for no limit.
 #      -a, --all:   No output limit for "Access Count" and "Referer" (same as -n 0).
 #
 #  Version History:

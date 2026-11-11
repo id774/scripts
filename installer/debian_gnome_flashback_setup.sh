@@ -21,7 +21,8 @@
 #        * Custom launchers: xfce4-terminal, emacs, thunar, vmplayer, gthumb
 #    - Lock & idle behavior: keep manual lock, disable auto lock. Set idle-delay=0 and lock-delay=0
 #    - Appearance: prefer dark color scheme and set Adwaita-dark when available
-#    - Keyboard repeat: enable repeat. Default delay=200ms and interval=25ms (overridable via env)
+#    - Keyboard repeat: enabled, with default delay=200ms and interval=25ms
+#      (overridable via env)
 #    - Profiles & autostart: install xfce4-terminal profile. Install xmodmap autostart entry
 #    - Optional: reset gnome-panel to defaults on user confirmation
 #    - Confirm before applying settings and before optional gnome-panel reset

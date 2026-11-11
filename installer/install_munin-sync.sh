@@ -45,7 +45,8 @@
 #  127: Required command is not found.
 #
 #  Notes:
-#  - The configuration file (/var/lib/munin/etc/munin-sync.conf) will not be overwritten if it already exists.
+#  - The configuration file (/var/lib/munin/etc/munin-sync.conf) will not be
+#    overwritten if it already exists.
 #    Please edit it manually if changes are needed after initial deployment.
 #  - The munin-sync.sh script is installed under /var/lib/munin/bin and owned by the 'munin' user.
 #  - Cron jobs are configured under /etc/cron.d/ and run every 5 minutes as the 'munin' user.

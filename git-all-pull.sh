@@ -18,7 +18,8 @@
 #          [--list-remote] [--delete-remote-branches]
 #          [--github-only] [--git-only] [--gitlab-only] [--www-only] [--all]
 #
-#  Default behavior is to show this help message. Use '--all' to pull from github, git, gitlab, and www targets.
+#  Default behavior is to show this help message. Use '--all' to pull from
+#  github, git, gitlab, and www targets.
 #
 #  Notes:
 #      Selectors are additive: '--github-only', '--git-only', '--gitlab-only',

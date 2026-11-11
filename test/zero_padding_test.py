@@ -26,7 +26,8 @@
 #    - Suppress logging output when quiet mode is enabled.
 #    - Do not rename files that are already correctly zero-padded for the specified width.
 #    - Rename files containing special characters or spaces while preserving non-numeric parts.
-#    - Rename files in directories whose path contains digits without using directory digits in renaming logic.
+#    - Rename files in directories whose path contains digits without using
+#      directory digits in renaming logic.
 #
 #  Version History:
 #  v1.1 2024-03-27
@@ -170,7 +171,8 @@ class TestZeroPadding(unittest.TestCase):
 
         zero_padding.rename_files('/2024_photos', 4, True)  # quiet_mode=True
 
-        # Verify that os.rename is called with the expected arguments, ignoring the directory's numeric part
+        # Verify that os.rename is called with the expected arguments, ignoring
+        # the directory's numeric part
         mock_rename.assert_has_calls(expected_renames, any_order=True)
 
 
