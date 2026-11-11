@@ -39,8 +39,8 @@
 #    https://www.zsh.org/pub/old/.
 #  - The default is therefore a provisional value for the release available
 #    from the primary directory. When upstream moves that release to `old`,
-#    update the default to a release available from the primary directory;
-#    older releases can be selected explicitly.
+#    update the default to a release available from the primary directory.
+#    Older releases can be selected explicitly.
 #  - After downloading, the SHA-256 of the file is displayed and y/yes
 #    approval is required before it is processed. Any other response, or an
 #    unavailable terminal, aborts the installation.
@@ -106,7 +106,7 @@ check_commands() {
 
 # Check if the user has sudo privileges (password may be required)
 check_sudo_mode() {
-    # No-sudo mode must not depend on sudo; validate sudo only after sudo mode is selected.
+    # No-sudo mode must not depend on sudo. Validate sudo only after sudo mode is selected.
     [ "$SUDO" = "sudo" ] || return 0
     check_commands sudo
     if ! sudo -v 2>/dev/null; then
@@ -285,7 +285,7 @@ main() {
 
     # Perform initial checks
     # cp and chown are used only by the optional source-saving path, but they
-    # are near-universal coreutils; check them eagerly here so a missing
+    # are near-universal coreutils. Check them eagerly here so a missing
     # command fails fast instead of only after a full build and install
     # have already completed.
     check_commands wget make tar awk mkdir uname rm cp chown

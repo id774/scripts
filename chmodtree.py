@@ -32,7 +32,7 @@
 #  script's contract is to normalize the files and directories inside a tree,
 #  not to perform ownership operations on symbolic links, whose behavior can
 #  vary across platforms and network/FUSE filesystems. Use --chown-symlinks to
-#  opt in to normalizing symbolic link ownership as well; when enabled, chown
+#  opt in to normalizing symbolic link ownership as well. When enabled, chown
 #  is invoked with -h so the link itself is changed instead of its target.
 #  Even when symbolic links are excluded, chown is still invoked with -h as a
 #  defense against a matched path being replaced by a symbolic link between

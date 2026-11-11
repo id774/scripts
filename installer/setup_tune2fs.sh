@@ -22,7 +22,7 @@
 #  Notes:
 #  - The script is designed for ext-based filesystems only.
 #  - Ensure that tune2fs is installed before execution.
-#  - Modifications apply to system partitions; review configurations beforehand.
+#  - Modifications apply to system partitions. Review configurations beforehand.
 #
 #  Exit Status:
 #  - If the system is not Linux, the script exits with an error.

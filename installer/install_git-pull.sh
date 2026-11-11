@@ -38,7 +38,7 @@
 #  - The default sample runs daily at 08:00 as user 'debian', with
 #    MAILTO=debian, SCRIPTS=/home/debian/scripts, and options
 #    '--github-only --www-only'.
-#  - Standard output is discarded; standard error is left for cron's mail
+#  - Standard output is discarded. Standard error is left for cron's mail
 #    delivery.
 #  - The default cron job intentionally has no dedicated job log. It runs as
 #    the repository-owning non-root user, while /var/log/sysadmin is reserved

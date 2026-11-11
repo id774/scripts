@@ -177,7 +177,7 @@ def is_block_device(path):
 
 
 def validate_paths(source, mapper, target):
-    """ Verify the source, mapper, and target paths before any state change; return 0 or 1. """
+    """ Verify the source, mapper, and target paths before any state change. Return 0 or 1. """
     if not os.path.exists(source):
         print("[ERROR] Device not found: %s" % source, file=sys.stderr)
         return 1

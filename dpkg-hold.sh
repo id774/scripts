@@ -35,7 +35,7 @@
 #  - A user with sudo privileges (the script uses sudo only for state changes).
 #
 #  Notes:
-#  - Run this script as a user with sudo privileges; it invokes sudo internally
+#  - Run this script as a user with sudo privileges. It invokes sudo internally
 #    only when changing package states (via apt-mark). Read-only operations
 #    like displaying package status do not require sudo.
 #

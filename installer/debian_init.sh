@@ -35,7 +35,7 @@
 #      ./debian_init.sh --gnome-flashback  # include GNOME Flashback packages and settings
 #      ./debian_init.sh --gnome            # include GNOME Shell packages and settings
 #
-#  - Run the script directly; it will configure base system setup.
+#  - Run the script directly. It will configure base system setup.
 #  - Use --xfce, --gnome-flashback, or --gnome to include desktop package and setting steps.
 #
 #  Notes:

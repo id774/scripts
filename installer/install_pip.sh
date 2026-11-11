@@ -150,7 +150,7 @@ install_libs() {
 
     echo "[INFO] Installing essential Python libraries..."
     # Roughly order general-purpose tools before larger frameworks and server tools.
-    # Put external-service clients last when practical; the order is only a guide.
+    # Put external-service clients last when practical. The order is only a guide.
     # Define the list of libraries as a multi-line string
     libs="
     numpy

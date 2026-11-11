@@ -27,7 +27,7 @@
 #  - After downloading, the SHA-256 of the file is displayed and y/yes
 #    approval is required before it is processed. Any other response, or an
 #    unavailable terminal, aborts the installation.
-#  - The optional --yes argument skips only the confirmation prompt; the
+#  - The optional --yes argument skips only the confirmation prompt. The
 #    SHA-256 is still displayed. It is accepted only as the last argument.
 #
 #  Requirements:

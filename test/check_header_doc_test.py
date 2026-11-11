@@ -325,7 +325,7 @@ class TestCheckHeaderDoc(unittest.TestCase):
             err_out = buf_err.getvalue()
             self.assertIn("[ERROR] Cannot read file:", err_out)
             self.assertIn(bad_path, err_out)
-            # The good file's read error is not raised; the scan continues.
+            # The good file's read error is not raised. The scan continues.
             self.assertNotIn(good_path, err_out)
 
     def test_main_read_error_takes_precedence_over_violation(self):

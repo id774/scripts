@@ -12,7 +12,7 @@
 #  This script intentionally removes all entries under $HOME/.cache.
 #  Per common Unix conventions (e.g., XDG Base Directory), $HOME/.cache is treated as
 #  disposable and must not contain persistent user data. Applications that place
-#  "practically persistent" data in $HOME/.cache are considered nonconforming; this
+#  "practically persistent" data in $HOME/.cache are considered nonconforming. This
 #  script does not preserve such data. Running this script may increase startup time
 #  or trigger re-downloads/rebuilds as caches are regenerated.
 #

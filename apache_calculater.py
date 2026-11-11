@@ -31,7 +31,7 @@
 #
 #  Note:
 #      Only explicitly specified log files are processed.
-#      Rotated logs are not included automatically; specify them explicitly if needed.
+#      Rotated logs are not included automatically. Specify them explicitly if needed.
 #
 #  Requirements:
 #  - Python Version: 3.3 or later
@@ -157,7 +157,7 @@ class ApacheCalculater(object):
         for p in parts:
             if p == "" or not p.isdigit():
                 return False
-            # Avoid octet overflow; allow leading zeros
+            # Avoid octet overflow. Allow leading zeros
             n = int(p, 10)
             if n < 0 or n > 255:
                 return False
@@ -199,7 +199,7 @@ class ApacheCalculater(object):
         <script_dir>/etc/ -> <script_dir>/../etc/ -> /etc/cron.config
 
         An existing candidate that cannot be read or decoded is reported
-        with a warning on stderr; its partially parsed IPs are discarded,
+        with a warning on stderr. Its partially parsed IPs are discarded,
         and lookup continues to the next candidate.
 
         Returns:

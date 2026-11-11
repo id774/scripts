@@ -31,7 +31,7 @@
 #  - Run as a regular non-root user with sudo privileges.
 #
 #  Notes:
-#  - Do not invoke the whole script as root or through sudo; privileged
+#  - Do not invoke the whole script as root or through sudo. Privileged
 #    ownership and permission changes are performed internally with sudo.
 #  - This script is specifically tailored for macOS and will not function
 #    on other operating systems.

@@ -19,10 +19,10 @@
 #        * Screensaver <Primary><Alt>l, screenshot <Primary><Alt>s and area variants
 #        * Open WWW <Primary><Alt>f
 #        * Custom launchers: xfce4-terminal, emacs, thunar, vmplayer, gthumb
-#    - Lock & idle behavior: keep manual lock, disable auto lock; set idle-delay=0 and lock-delay=0
+#    - Lock & idle behavior: keep manual lock, disable auto lock. Set idle-delay=0 and lock-delay=0
 #    - Appearance: prefer dark color scheme and set Adwaita-dark when available
-#    - Keyboard repeat: enable repeat; default delay=200ms and interval=25ms (overridable via env)
-#    - Profiles & autostart: install xfce4-terminal profile; install xmodmap autostart entry
+#    - Keyboard repeat: enable repeat. Default delay=200ms and interval=25ms (overridable via env)
+#    - Profiles & autostart: install xfce4-terminal profile. Install xmodmap autostart entry
 #    - Optional: reset gnome-panel to defaults on user confirmation
 #    - Confirm before applying settings and before optional gnome-panel reset
 #
@@ -229,7 +229,7 @@ apply_dark_mode_settings() {
     gsettings_settings org.gnome.desktop.interface color-scheme prefer-dark
     # Fallback to Adwaita-dark if available
     gsettings_settings org.gnome.desktop.interface gtk-theme Adwaita-dark
-    # Optional: dark icon theme if desired; skipped unless you want it
+    # Optional: dark icon theme if desired. Skipped unless you want it
     # gsettings_settings org.gnome.desktop.interface icon-theme Adwaita
 }
 

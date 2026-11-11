@@ -123,10 +123,10 @@ class TestDuScript(unittest.TestCase):
 
 
 class TestDuCommandLookup(unittest.TestCase):
-    """ Tests for the manual PATH search; these are not macOS-specific. """
+    """ Tests for the manual PATH search. These are not macOS-specific. """
 
     def make_fake_path(self, commands, non_executable):
-        """ Create a temporary PATH directory containing the given commands; return its path. """
+        """ Create a temporary PATH directory containing the given commands. Return its path. """
         directory = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, directory)
         for command in commands:

@@ -152,7 +152,7 @@ check_environment() {
 
 # Derive base URL from host FQDN and optional DOWNLOAD_PATH
 derive_download_base_url() {
-    # Prefer FQDN; fall back to short hostname
+    # Prefer FQDN. Fall back to short hostname
     h="$(hostname -f 2>/dev/null)"
     [ -n "$h" ] || h="$(hostname 2>/dev/null)"
     [ -n "$h" ] || h="localhost"
@@ -269,7 +269,7 @@ store_archive() {
     fi
     echo "[INFO] Archive copied to $ARCHIVE_OUTPUT_DIR"
 
-    # Prefer explicit DOWNLOAD_BASE_URL from config; otherwise derive from host
+    # Prefer explicit DOWNLOAD_BASE_URL from config. Otherwise derive from host
     base="$DOWNLOAD_BASE_URL"
     if [ -z "$base" ]; then
         base="$(derive_download_base_url)"

@@ -27,7 +27,7 @@
 #  The script focuses on reporting the total disk usage of the specified
 #  top-level directory, avoiding the complexities and limitations of the
 #  traditional 'du' command on macOS. It does not sum up the sizes of
-#  subdirectories; instead, it directly reports the size of the top-level
+#  subdirectories. Instead, it directly reports the size of the top-level
 #  directory as the total.
 #
 #  Version History:

@@ -148,7 +148,7 @@ main() {
     # Install essential tools and libraries
     echo "[INFO] Installing essential tools and libraries using Homebrew..."
     # Roughly order general-purpose tools before larger frameworks and server tools.
-    # Put external-service clients last when practical; the order is only a guide.
+    # Put external-service clients last when practical. The order is only a guide.
     install_brew openssl
     set -- brew link openssl --force
     echo "[INFO] Executing: $*"

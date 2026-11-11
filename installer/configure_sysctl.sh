@@ -37,8 +37,8 @@
 #
 #  Security Settings (high level):
 #  - Optionally disable IPv6 (interface-wide) to avoid unintended exposure.
-#  - Disable ICMP redirects, source routing; enable anti-spoof measures.
-#  - Enable SYN cookies; tune TCP keepalive/FIN timeout; RFC1337 protection.
+#  - Disable ICMP redirects, source routing. Enable anti-spoof measures.
+#  - Enable SYN cookies. Tune TCP keepalive/FIN timeout. RFC1337 protection.
 #  - Keep TCP timestamps enabled by default (availability-friendly).
 #
 #  Warning:

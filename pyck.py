@@ -72,7 +72,7 @@
 #  - Dependencies: autopep8, flake8, autoflake, isort
 #
 #  Exit Status:
-#  0. Processing completed; lint findings or dry-run change candidates may remain.
+#  0. Processing completed. Lint findings or dry-run change candidates may remain.
 #  1. An input path is invalid, or a formatter or linter command failed during processing.
 #  9. The Python interpreter is older than the supported minimum version.
 #  126. A required command exists but is not executable.

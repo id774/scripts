@@ -54,10 +54,10 @@
 #  Summary Output:
 #  - regular: non-VM hosts (filenames not starting with 'VM' or 'vm')
 #  - vm     : VM hosts      (filenames starting with 'VM' or 'vm')
-#  - obsolete: hosts with a '<host>_is_obsolete' marker file; excluded from totals
+#  - obsolete: hosts with a '<host>_is_obsolete' marker file. Excluded from totals
 #  - fresh : file mtime <= STALE_THRESHOLD seconds
 #  - stale : file mtime >  STALE_THRESHOLD seconds
-#  - unknown: failed to get mtime; treated as non-fresh for alerting
+#  - unknown: failed to get mtime. Treated as non-fresh for alerting
 #
 #  Example:
 #      [INFO] Hosts: total=12, monitored=10, obsolete=2 (ignored)
@@ -277,7 +277,7 @@ print_grouped_obsolete() {
     fi
 }
 
-# Get mtime and formatted date for a file; echo "TIME DATE" or empty on failure
+# Get mtime and formatted date for a file. Echo "TIME DATE" or empty on failure
 get_file_times() {
     _file="$1"
     _time=$($stat_cmd -c %Y "$_file" 2>/dev/null || stat -f %m "$_file" 2>/dev/null)
@@ -294,7 +294,7 @@ get_file_times() {
     return 0
 }
 
-# Evaluate freshness and print per-file log; update flags and counters
+# Evaluate freshness and print per-file log. Update flags and counters
 evaluate_and_count() {
     FILE="$1"
     CURRENT_TIME="$2"

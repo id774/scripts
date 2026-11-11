@@ -129,7 +129,7 @@ create_vim_symlink() {
 install() {
     check_commands mkdir cp ln nvim
 
-    # nvim was validated above; command -v here retrieves its path for the
+    # nvim was validated above. Command -v here retrieves its path for the
     # symlink and is not a second existence check.
     nvim_path=$(find_nvim_path)
 

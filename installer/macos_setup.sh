@@ -65,7 +65,7 @@
 #       equivalent, since mawk on some systems matches it incorrectly.
 #  v2.0 2025-08-23
 #       Expanded header documentation to enumerate all applied configuration
-#       steps and tweaks; refined cleanup to remove only ~/.bash_history.
+#       steps and tweaks. Refined cleanup to remove only ~/.bash_history.
 #  v1.2 2025-06-23
 #       Unified usage output to display full script header and support common help/version options.
 #  v1.1 2025-04-13

@@ -20,12 +20,12 @@
 #  Options:
 #  --insecure-tls: Persistently disable APT TLS certificate checks for the
 #                  vendor host on Debian/Ubuntu and use curl -k for key download.
-#                  Rejected on macOS; Homebrew TLS behavior is unchanged.
+#                  Rejected on macOS. Homebrew TLS behavior is unchanged.
 #
 #  Requirements:
 #  - Debian 10+ or Ubuntu 20.04+ (amd64 or arm64), or macOS 13+
 #    (Intel or Apple Silicon).
-#  - Sudo privileges on Debian or Ubuntu; Homebrew installed on macOS.
+#  - Sudo privileges on Debian or Ubuntu. Homebrew installed on macOS.
 #  - On Debian or Ubuntu, repository template:
 #    ../etc/apt.conf.d/sources-claude-code.list.
 #  - Network connectivity for the initial installation.
@@ -41,9 +41,9 @@
 #  - An existing Claude Code installation using another method is not replaced.
 #  - Package updates are left to regular APT or Homebrew upgrades.
 #  - Authentication and Claude Code configuration are not performed.
-#  - --insecure-tls installs a persistent, host-specific APT configuration;
-#    later APT runs remain insecure until the configuration is removed.
-#  - This bypass weakens TLS authentication; prefer trusting the organization's
+#  - --insecure-tls installs a persistent, host-specific APT configuration.
+#    Later APT runs remain insecure until the configuration is removed.
+#  - This bypass weakens TLS authentication. Prefer trusting the organization's
 #    inspection CA and remove the bypass when it is no longer needed.
 #  - The configuration is /etc/apt/apt.conf.d/98-insecure-tls-anthropic.conf
 #    for downloads.claude.ai, shared with install_claude_desktop.sh. It
@@ -55,7 +55,7 @@
 #    Removing it also restores verification for Claude Desktop.
 #  - Package signature and signing-key fingerprint checks stay enabled, but
 #    they do not restore TLS server authentication.
-#  - A differing existing configuration file is never overwritten; other APT
+#  - A differing existing configuration file is never overwritten. Other APT
 #    configuration may override this setting.
 #
 #  Version History:

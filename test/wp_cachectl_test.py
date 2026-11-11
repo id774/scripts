@@ -14,7 +14,7 @@
 #    - The script recognizes the layered model and performs correct WP-CLI calls
 #      in dry-run mode for each event command.
 #    - W3 Total Cache (W3TC) branching is applied: when W3TC is not active,
-#      L3 is skipped; when W3TC is active, L3 flush is attempted.
+#      L3 is skipped. When W3TC is active, L3 flush is attempted.
 #
 #  Important Notes for Tests:
 #  - These tests do not require a real WordPress installation.
@@ -275,7 +275,7 @@ class TestWpCachectl(unittest.TestCase):
              "--reason", "stale", "--path", "/tmp/wp"]
         )
         self.assertEqual(rc, 0)
-        # Level 4 should not run L1/L2/L3; it should print L4 guidance.
+        # Level 4 should not run L1/L2/L3. It should print L4 guidance.
         self.assertNotIn("transient delete --all", out)
         self.assertNotIn("cache flush", out)
         self.assertIn("L4: CDN/Browser cache is not automated", out)
@@ -297,7 +297,7 @@ class TestWpCachectl(unittest.TestCase):
         self.assertIn("w3-total-cache flush all", out)
 
     def make_fake_path(self, commands, non_executable):
-        """ Create a temporary PATH directory containing the given commands; return its path. """
+        """ Create a temporary PATH directory containing the given commands. Return its path. """
         directory = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, directory)
         for command in commands:

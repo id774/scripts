@@ -106,7 +106,7 @@ check_commands() {
 
 # Check if the user has sudo privileges (password may be required)
 check_sudo_mode() {
-    # No-sudo mode must not depend on sudo; validate sudo only after sudo mode is selected.
+    # No-sudo mode must not depend on sudo. Validate sudo only after sudo mode is selected.
     [ "$SUDO" = "sudo" ] || return 0
     check_commands sudo
     if ! sudo -v 2>/dev/null; then
@@ -280,7 +280,7 @@ main() {
 
     # Perform initial checks
     # cp and chown are used only by the optional source-saving path, but they
-    # are near-universal coreutils; check them eagerly here so a missing
+    # are near-universal coreutils. Check them eagerly here so a missing
     # command fails fast instead of only after a full build and install
     # have already completed.
     check_commands curl make tar awk mkdir uname rm cp chown

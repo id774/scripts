@@ -13,14 +13,14 @@ The **Common Policy** section defines rules that apply to *all* languages.
 Each language section then specifies only what is unique to that language.
 
 These policies are means to produce correct, safe, portable, maintainable, and
-useful software; compliance with a rule is not an end in itself. When a
+useful software. Compliance with a rule is not an end in itself. When a
 general guideline would prevent required functionality or create an
 unreasonable operational cost, preserve the purpose of the rule and the
 intended behavior rather than applying its wording mechanically.
 
 This document's own wording is held to the same standard. `must`, `always`,
 and `never` are reserved for an invariant that admits no reasonable
-exception; an ordinary design preference, recommendation, or situational
+exception. An ordinary design preference, recommendation, or situational
 judgment is written with `prefer`, `should`, `when appropriate`, or similar
 language that shows its actual weight. A rule is not written so that a
 contributor, an AI, or a checker applying its wording literally is driven to
@@ -44,7 +44,7 @@ configuration documentation.
 **Simplicity is robustness.**
 
 This is the governing principle for every rule below. It does not authorize
-dropping required behavior, compatibility, or safety; it requires meeting
+dropping required behavior, compatibility, or safety. It requires meeting
 them with the least complexity justified by the actual requirement.
 
 Complexity is itself a source of failure, compatibility risk, operational
@@ -73,7 +73,7 @@ or additions to this common policy, in order to avoid redundancy.
 #### 1.1.1 Design Philosophy
 - Prioritize clarity, portability, and explicit control over convenience.
 - Favor predictable behavior and long-term maintainability.
-- Avoid implicit behavior; make control flow, errors, and side effects explicit.
+- Avoid implicit behavior. Make control flow, errors, and side effects explicit.
 
 #### 1.1.2 Repository Layout
 - Top level: the scripts a user runs directly, in Shell Script, Python, and
@@ -103,7 +103,7 @@ which, weigh competing concerns in this order:
    touch, and prefer state changes that remain safe when repeated.
 3. Efficiency: avoid unnecessary processing, unnecessary process creation,
    unnecessary I/O, unnecessary network access, and unnecessary resource
-   cost; meet the required behavior at the smallest reasonable runtime and
+   cost. Meet the required behavior at the smallest reasonable runtime and
    operational cost. Efficiency matters, but not at the cost of
    Compatibility or Safety.
 
@@ -199,7 +199,7 @@ repository is already being edited.
 - Do not rely on implicit termination or language-specific shortcuts
   (e.g. `set -e` in a shell script, bare `except` in Python). For a Shell
   Script, this rule constrains internal control-flow termination the same
-  way; it does not apply to the top-level process simply completing.
+  way. It does not apply to the top-level process simply completing.
 - A change whose stated purpose is portability, diagnostics, error
   handling, cleanup, refactoring, modernization, or standards
   conformance must preserve existing observable behavior unless a
@@ -226,8 +226,8 @@ repository is already being edited.
   functionality or make the implementation unreasonable. Dependency
   reduction is a design preference, not an end in itself.
 - `check_commands` declares what a script requires for its normal main
-  execution. A capability the script can work without is not declared there;
-  it is detected where it is used.
+  execution. A capability the script can work without is not declared there.
+  It is detected where it is used.
 - Detection asks whether the capability is usable, not only whether the
   command exists. A command may be present while the subcommand or the option
   the script needs is not.
@@ -246,13 +246,13 @@ repository is already being edited.
   files, directories, services, configuration state, and other capabilities.
 - For example, when a successful package installation contractually provides a
   command before its first use, do not immediately check that command again.
-  Use it when needed; an unexpected inconsistency is handled by the consuming
+  Use it when needed. An unexpected inconsistency is handled by the consuming
   operation's existing failure path.
 - When omitting a check is non-obvious because an earlier operation or package
   contract establishes the required state, leave a concise adjacent code
   comment if a future maintainer could otherwise reasonably reintroduce the
   redundant check. The comment explains the invariant that makes the extra
-  check unnecessary; it does not merely restate the code.
+  check unnecessary. It does not merely restate the code.
 
 #### 1.2.3 Environment Differences
 - Prefer to branch on what the environment provides, not on what it is called.
@@ -347,7 +347,7 @@ repository is already being edited.
 
 ##### 1.3.1.1 Recommended Option Names
 - The following names are recommendations, not requirements. A script that has
-  a reason to differ may differ; a script that has none should reuse the
+  a reason to differ may differ. A script that has none should reuse the
   established name rather than invent a synonym for it.
   - `--dry-run`: report what would be done, and change nothing.
   - `-q`, `--quiet`: suppress non-error messages.
@@ -498,7 +498,7 @@ progress messages, failure handling, and exit status.
 - Exception: a secret that the script itself generates for local use, that
   authenticates nothing remote, and that exists in order to be handed to the
   operator, may be passed to a local command and printed. `send_files.sh`
-  generates an archive password this way; the password is stored locally and
+  generates an archive password this way. The password is stored locally and
   is never sent together with the archive.
 
 #### 1.4.3 Network Operations
@@ -532,7 +532,7 @@ never asked to touch.
 - Examine the value that names the target before it reaches the command. An
   empty string, an unset or undefined variable, and a pattern that matched
   nothing each turn a deletion or an overwrite into one over something else.
-  The Shell Script policy states how this is done there; the requirement is
+  The Shell Script policy states how this is done there. The requirement is
   not peculiar to that language.
 - Do not let `/`, a home directory, or an empty target become the thing
   operated on. A path assembled from a value that turned out to be empty
@@ -599,11 +599,11 @@ never asked to touch.
 
 #### 1.5.3 Least Privilege
 - A script runs with the privileges its work needs and no more. One that needs
-  a raised privilege for a step takes it for that step; it does not run its
+  a raised privilege for a step takes it for that step. It does not run its
   whole body under it.
 - This holds whatever the language. `check_sudo` is how a Shell Script
   establishes that the privilege is available, and is described under the
-  Shell Script policy; a Python or Ruby script that raises a privilege is
+  Shell Script policy. A Python or Ruby script that raises a privilege is
   bound by the same rule.
 
 #### 1.5.4 Installer and Setup Execution Contracts
@@ -629,10 +629,10 @@ script itself.
 Do not infer failure handling, continuation, skip behavior, exit status, or
 reporting solely from:
 
-- the `installer/` directory;
-- an `install_` or `setup_` file name;
-- the number of commands it runs;
-- similarity to another installer;
+- the `installer/` directory,
+- an `install_` or `setup_` file name,
+- the number of commands it runs,
+- similarity to another installer,
 - a general preference for fail-fast or continue-on-failure behavior.
 
 When the current contract is unclear, establish it from the script's purpose,
@@ -664,12 +664,12 @@ another.
 
 In particular:
 
-- reporting a failure does not automatically require terminating the run;
-- continuing the run does not automatically require returning failure later;
-- skipping work does not automatically constitute failure;
-- a non-zero child result does not automatically determine the parent's final
-  status;
-- reaching the end of a script does not automatically mean that every
+- Reporting a failure does not automatically require terminating the run.
+- Continuing the run does not automatically require returning failure later.
+- Skipping work does not automatically constitute failure.
+- A non-zero child result does not automatically determine the parent's final
+  status.
+- Reaching the end of a script does not automatically mean that every
   operation succeeded.
 
 ##### 1.5.4.3 Continuation and Dependency Boundaries
@@ -754,7 +754,7 @@ show the non-sensitive command structure and mark that value as `[REDACTED]`
 without altering the actual executed arguments. Ordinary prerequisite checks,
 read-only status queries, and transient cleanup do not require command-level
 logging. Preserve each installer's existing progress, failure, continuation,
-and exit-status contract; do not introduce logging frameworks or extra
+and exit-status contract. Do not introduce logging frameworks or extra
 preflight checks solely for display.
 
 ##### 1.5.4.6 Established Contract and New Installers
@@ -1039,7 +1039,7 @@ document changed.
 - An unreleased entry carries `(Release Date: TBD)`, and its version number
   stays provisional until it ships. An entry opened as
   `v1.7.3 (Release Date: TBD)` may be released under a different number once
-  what accumulated in it is known; which number it takes is decided then.
+  what accumulated in it is known. Which number it takes is decided then.
 - Replacing `TBD` with the actual release date is the release itself, not a
   change to record in the entry.
 - A repository that has not yet made its first release is in its initial
@@ -1090,8 +1090,8 @@ document changed.
   settled on a width and a layout of its own, predating this limit. There a
   new bullet is wrapped to that width and balanced against the lines already
   standing, so that the version history stays of a piece. Wrapping to hold an
-  established form does not overturn the two-line, 80-column limit above;
-  where a file has settled on no such form, that limit applies in full.
+  established form does not overturn the two-line, 80-column limit above.
+  Where a file has settled on no such form, that limit applies in full.
 
 ##### 1.7.4.2 Shortening a Long Entry
 - When a bullet runs long, the first move is to abstract it, not to reach
@@ -1196,7 +1196,7 @@ paragraph does not change a human maintainer's authority.
 ### 1.9 Testing and Operation
 - `test/check_scripts.sh`, `check_header_doc.py`, `find_pycompat.py`, the
   Python tests, and the Ruby specs are means of checking this policy and
-  intended behavior; passing them is not itself what defines correct
+  intended behavior. Passing them is not itself what defines correct
   specification, policy, or intended behavior. When a checker and this
   policy or the intended behavior disagree, the checker's implementation may
   be the one that is wrong. Do not distort correct behavior or policy intent
@@ -1210,8 +1210,8 @@ paragraph does not change a human maintainer's authority.
 - A script whose intended use is unattended execution, such as a `cron/bin/`
   job, assumes a cron-like minimal environment and defines `PATH` and
   required environment variables explicitly. A top-level script meant for a
-  user to run as a manual foreground command is not held to that assumption;
-  its execution environment follows its role and intended invocation model,
+  user to run as a manual foreground command is not held to that assumption.
+  Its execution environment follows its role and intended invocation model,
   as distinguished in 1.1.2.
 - Choose validation to match what changed. A change to executable
   implementation includes the applicable syntax check and exit-status
@@ -1357,14 +1357,14 @@ Before a change is proposed, consider these questions:
   fallback exists, refuse the run explicitly before performing dependent
   side effects.
 - If a capability is optional, detect it where it is used. Use a
-  behavior-preserving fallback when available; otherwise skip only that
+  behavior-preserving fallback when available. Otherwise skip only that
   optional operation and report the skip once.
 - A platform check may define the supported scope of a script. For example,
   a script may explicitly be Linux-only or macOS-only.
 - Do not infer the availability of an option, subcommand, or utility
   behavior solely from an operating-system name, distribution name, or
   release number.
-- Platform identity may answer whether a script should run there; capability
+- Platform identity may answer whether a script should run there. Capability
   detection answers whether a specific implementation-dependent operation
   can be performed there.
 - A non-POSIX utility is allowed when it is an explicit dependency or part
@@ -1373,7 +1373,7 @@ Before a change is proposed, consider these questions:
   not by itself a POSIX defect when the script intentionally depends on
   them.
 - POSIX portability requirements apply to the Shell Script language and to
-  portable use of standard utilities; they do not require removing an
+  portable use of standard utilities. They do not require removing an
   explicit external dependency merely because POSIX does not define that
   utility.
 - A portability change is behavior-preserving work. Do not change
@@ -1436,7 +1436,7 @@ still comes before portability.
   require that facility's command or privilege validation. Select the mode
   first, then validate only the prerequisites of that mode.
 - Use the following POSIX-compliant helper for commands checked through
-  `check_commands`; it maps a missing command to `127` and a present but
+  `check_commands`. It maps a missing command to `127` and a present but
   non-executable command to `126`:
 
 ```sh
@@ -1461,7 +1461,7 @@ check_commands() {
 - A validation helper owns the external-command prerequisites that it directly
   uses to make its validation decision. In particular, a `check_system`
   function that invokes `uname` calls `check_commands uname` before its first
-  use of `uname`; callers do not carry `uname` solely on behalf of that
+  use of `uname`. Callers do not carry `uname` solely on behalf of that
   `check_system` call.
 - Moving an existing `uname` prerequisite check into `check_system` and
   removing the now-redundant caller-side `uname` check is a prerequisite
@@ -1514,7 +1514,7 @@ log_info_time() {
 
 ### 2.5 I/O and Side Effects
 - Respect existing temporary file logic and directory structures.
-- Follow the destructive operation recommendations of the Common Policy; in
+- Follow the destructive operation recommendations of the Common Policy. In
   particular, avoid destructive overwrites and validate paths before
   modification.
 - Align log writing and rotation with system log policy.
@@ -1523,7 +1523,7 @@ log_info_time() {
   `mktemp`). Do not build a writable staging path for a privileged update
   from `$$` alone and open it directly.
 - When updating a privileged managed file, do not let a user-owned staging
-  file's owner, group, or mode transfer to the target; preserve the
+  file's owner, group, or mode transfer to the target. Preserve the
   metadata the target is required to keep.
 - Confirm that temporary-file creation and transformed-content generation
   succeeded before a privileged target update. On failure, report
@@ -1538,13 +1538,13 @@ log_info_time() {
 - Code must fully support Python 3.6+.
 - Backward compatibility down to Python 3.1 is maintained on a best-effort basis
   and must not break existing behavior intentionally.
-- Support describes the compatibility target; it does not mean that every
+- Support describes the compatibility target. It does not mean that every
   Python version in the supported range is executed in every test run.
   Compatibility is maintained through language-feature constraints,
   compatibility checks, and the runtime tests that are available.
 - The `+` in "Python 3.6+" and in "Python 3.1 or later" includes a
   maintenance policy of continuing to follow new Python releases as they
-  appear; it does not claim that every future release is verified today.
+  appear. It does not claim that every future release is verified today.
 - When the fully supported minimum or the best-effort minimum should change
   is a maintainer decision.
 - If compatible with general Python 3.x, documentation must state:
@@ -1570,7 +1570,7 @@ log_info_time() {
 - Define `main()` as the entry point.
 - `main()` returns an integer process status.
 - Terminate execution with `sys.exit(main())`.
-- Do not require a return type annotation on `main()`; the supported
+- Do not require a return type annotation on `main()`. The supported
   compatibility range includes Python versions that do not support function
   annotations.
 - Use early returns to simplify control flow.
@@ -1601,7 +1601,7 @@ log_info_time() {
 ### 3.6 Testing
 - Store tests in `test/` as `FILENAME_test.py`.
 - Prefer the standard library for Python tests. An external test dependency is
-  allowed when it is required to test the intended behavior; do not treat a
+  allowed when it is required to test the intended behavior. Do not treat a
   test-only dependency as a production runtime dependency.
 - Any compatibility issue detected by `find_pycompat.py` is a failure of that
   compatibility check.
@@ -1623,12 +1623,12 @@ log_info_time() {
 - Code must fully support Ruby 2.4+.
 - Backward compatibility down to Ruby 2.0 is maintained on a best-effort basis
   and must not break existing behavior intentionally.
-- Support describes the compatibility target; it does not mean that every Ruby
+- Support describes the compatibility target. It does not mean that every Ruby
   version in the supported range is executed in every test run. Compatibility
   is maintained through language-feature constraints and the runtime tests
   that are available.
 - The `+` in "Ruby 2.4+" and in "Ruby 2.0 or later" includes a maintenance
-  policy of continuing to follow new Ruby releases as they appear; it does
+  policy of continuing to follow new Ruby releases as they appear. It does
   not claim that every future release is verified today.
 - When the fully supported minimum or the best-effort minimum should change
   is a maintainer decision.

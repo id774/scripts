@@ -58,7 +58,7 @@
 #  sudo is used for system-wide paths and not used for paths within the user's
 #  home directory. This behavior can be overridden with the --sudo or --no-sudo options.
 #  - Repository names may include ../ to deliberately select a target outside
-#    the specified base directory; the caller is responsible for that target.
+#    the specified base directory. The caller is responsible for that target.
 #
 #  Exit Status:
 #  0    Success, dry run, or help displayed.
@@ -308,8 +308,8 @@ parse_arguments() {
     # Do not confine the resolved target to repo_base_path.
     repo_full_path="${repo_base_path}/${repo_name}.git"
 
-    # Keep explicit no-sudo distinct from automatic path-based sudo selection;
-    # otherwise a system path would silently override the user's no-sudo choice.
+    # Keep explicit no-sudo distinct from automatic path-based sudo selection.
+    # Otherwise a system path would silently override the user's no-sudo choice.
     case "$explicit_sudo" in
         sudo)
             use_sudo="sudo"

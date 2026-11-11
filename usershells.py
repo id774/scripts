@@ -89,7 +89,7 @@ def usage():
 
 
 def get_shells_from_passwd():
-    """ Return (shells, status); status is 1 on read/decode failure. """
+    """ Return (shells, status). Status is 1 on read/decode failure. """
     shells = {}
     try:
         with open("/etc/passwd", 'r', encoding='utf-8') as fo:
@@ -105,7 +105,7 @@ def get_shells_from_passwd():
 
 
 def get_shells_from_dscl():
-    """ Return (shells, status); status is 1 on source retrieval/decode failure. """
+    """ Return (shells, status). Status is 1 on source retrieval/decode failure. """
     shells = {}
     status = 0
     try:
@@ -124,7 +124,7 @@ def get_shells_from_dscl():
             if len(shell_output) >= 2:
                 shells[user] = shell_output[1]
         except subprocess.CalledProcessError:
-            # UserShell attribute not present for this account; expected skip.
+            # UserShell attribute not present for this account. Expected skip.
             continue
         except (OSError, UnicodeError) as e:
             print("[ERROR] Failed to retrieve UserShell for %s: %s" % (user, str(e)),

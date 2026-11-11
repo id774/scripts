@@ -38,7 +38,7 @@
 #  - Existing `/etc/logrotate.d/fix-permissions` is not overwritten.
 #  - Existing `/etc/cron.config/fix-permissions.conf` is not overwritten.
 #  - `/var/log/sysadmin/fix-permissions.log` is preserved by uninstall.
-#  - `--uninstall` attempts all configured removal targets; an individual
+#  - `--uninstall` attempts all configured removal targets. An individual
 #    removal failure is reported with `[WARN]` and does not stop later
 #    removals.
 #

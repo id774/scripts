@@ -48,7 +48,7 @@
 #
 #  Note:
 #      Only explicitly specified log files are processed.
-#      Rotated logs are not included automatically; specify them explicitly if needed.
+#      Rotated logs are not included automatically. Specify them explicitly if needed.
 #
 #  Output:
 #      Exactly three sections are printed to stdout, each a
@@ -356,7 +356,7 @@ def load_ignore_list():
     127.0.0.1 only when no candidate is present or readable.
 
     An existing candidate that cannot be read or decoded is reported with
-    a warning on stderr; its partially parsed IPs are discarded, and
+    a warning on stderr. Its partially parsed IPs are discarded, and
     lookup continues to the next candidate.
     """
     ignore_ips = set([IGNORE_DEFAULT_IP])

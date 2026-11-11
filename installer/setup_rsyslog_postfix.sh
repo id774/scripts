@@ -31,11 +31,11 @@
 #
 #  Usage:
 #      ./setup_rsyslog_postfix.sh
-#  Run as a regular user with sudo privileges; the script will invoke sudo
+#  Run as a regular user with sudo privileges. The script will invoke sudo
 #  where necessary.
 #
 #  Notes:
-#  - No backups are created; deployment is applied directly when needed.
+#  - No backups are created. Deployment is applied directly when needed.
 #  - The environment variable SCRIPTS must point to the root of this repo.
 #  - The source file must exist at $SCRIPTS/etc/rsyslog.d/30-postfix.conf.
 #  - Designed for Debian/Ubuntu systems running rsyslog v8.

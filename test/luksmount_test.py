@@ -7,7 +7,7 @@
 #  This test suite verifies the control flow, failure semantics, command
 #  arguments, and side effect boundary of luksmount.py. All external
 #  commands (get-serial, sudo, cryptsetup, mount, lsblk) and filesystem checks
-#  are mocked; no real block device, passphrase, or privilege is used.
+#  are mocked. No real block device, passphrase, or privilege is used.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -221,7 +221,7 @@ class TestLuksMount(unittest.TestCase):
         mock_run.assert_not_called()
 
     def make_fake_path(self, commands, non_executable):
-        """ Create a temporary PATH directory containing the given commands; return its path. """
+        """ Create a temporary PATH directory containing the given commands. Return its path. """
         directory = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, directory)
         for command in commands:

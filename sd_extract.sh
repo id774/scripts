@@ -79,7 +79,7 @@
 #       Updated to use a default permissions setting from the configuration file.
 #       Users can still override this setting via command-line argument.
 #  v1.1 2024-01-30
-#       Fix subshell variable scope breaking find | while read loops; detect
+#       Fix subshell variable scope breaking find | while read loops. Detect
 #       successful copies with a flag file instead.
 #  v1.0 2024-01-29
 #       Initial release.

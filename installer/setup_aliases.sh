@@ -24,7 +24,7 @@
 #
 #  Usage:
 #      ./setup_alias.sh
-#  Run this script as a general user; it will invoke sudo where necessary.
+#  Run this script as a general user. It will invoke sudo where necessary.
 #
 #  Requirements:
 #  - usershells.py must exist and be executable via $SCRIPTS environment variable.

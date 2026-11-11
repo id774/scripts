@@ -20,12 +20,12 @@
 #
 #  Usage:
 #      ./setup_pamd.sh
-#  Run as a regular user with sudo privileges; the script will invoke sudo
+#  Run as a regular user with sudo privileges. The script will invoke sudo
 #  where necessary.
 #
 #  Notes:
-#  - No backups are created; edits are applied directly when needed.
-#  - Leading spaces in target lines are preserved; "# " is prefixed or removed
+#  - No backups are created. Edits are applied directly when needed.
+#  - Leading spaces in target lines are preserved. "# " is prefixed or removed
 #    only as required.
 #  - 'pam_wheel.so trust' is always commented out if active to avoid unintended
 #    passwordless root access for wheel group members.
@@ -117,7 +117,7 @@ has_active_trust() {
 
 # Stage a transformed copy of $PAM_FILE and replace it atomically while
 # keeping the file's existing owner, group, and mode. $1 is the awk program
-# that produces the transformed content; $2 is a label for diagnostics.
+# that produces the transformed content. $2 is a label for diagnostics.
 apply_pam_update() {
     awk_program=$1
     label=$2

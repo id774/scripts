@@ -73,7 +73,7 @@
 #  Exit Status:
 #  The script checks if each package is already installed to prevent unnecessary reinstallation.
 #  A package update or individual package install failure is visible in the
-#  apt-get output; such a failure does not stop later package attempts.
+#  apt-get output. Such a failure does not stop later package attempts.
 #  Reaching the end of a normal batch traversal returns 0.
 #  A missing required command returns 127, and a present but non-executable
 #  required command returns 126.
@@ -165,7 +165,7 @@ smart_apt() {
 }
 
 # Roughly order general-purpose tools before larger frameworks and server tools.
-# Put external-service clients last when practical; the order is only a guide.
+# Put external-service clients last when practical. The order is only a guide.
 
 # Basic packages
 basic_packages() {
