@@ -45,6 +45,9 @@
 #  - If DBus session is not available, execution is halted.
 #
 #  Version History:
+#  v2.7 2026-11-11
+#       Check gsettings writable output so read-only keys are skipped
+#       instead of attempting an update.
 #  v2.6 2026-09-20
 #       Continue independent Flashback settings after local failures, keep
 #       gsettings run-level, and localize dconf/file capabilities and skips.
@@ -166,7 +169,8 @@ gsettings_can_set() {
     # Args: SCHEMA KEY
     schema="$1"
     key="$2"
-    gsettings writable "$schema" "$key" >/dev/null 2>&1
+    gsettings_writable=$(gsettings writable "$schema" "$key" 2>/dev/null) || return 1
+    [ "$gsettings_writable" = "true" ]
 }
 
 # Set a gsettings key and confirm value

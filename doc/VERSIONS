@@ -16,6 +16,8 @@ v2.0.4 (Release Date: TBD)
   configuration, and the unused instaloader package diagnostic.
 - Remove Munin links after heartbeat loss; fix SD copy-failure reporting,
   heartbeat paths with spaces, and needrestart failure classification.
+- Ignore commented crontab lines when detecting configured scheduled jobs.
+- Skip read-only GNOME Flashback settings based on gsettings writable output.
 
 v2.0.3 (2026-10-25)
 -------------------

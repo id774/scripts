@@ -26,6 +26,8 @@
 #    "01 03 * * 0   root cd / && run-parts --report /etc/cron.weekend"
 #
 #  Version History:
+#  v1.8 2026-11-11
+#       Ignore commented crontab lines when detecting configured jobs.
 #  v1.7 2026-09-20
 #       Continue independent weekday/weekend setup without false success or
 #       no-change reporting, and use neutral completion after processing.
@@ -100,7 +102,8 @@ check_sudo() {
 # Extract and check only the command part of the cron entry
 extract_and_check_command() {
     command_part=$(echo "$1" | cut -d' ' -f6-)
-    grep -q "$command_part" "$CRONTAB_FILE"
+    grep -v '^[[:space:]]*#' "$CRONTAB_FILE" |
+        grep -q "$command_part"
 }
 
 # Add an entry to crontab if it does not exist
