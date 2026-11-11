@@ -6,7 +6,7 @@
 #  Description:
 #  Apply Xfce desktop settings:
 #    - Media handling: disable automount in thunar-volman
-#    - Desktop & workspaces: hide desktop icons; set workspace_count=9
+#    - Desktop & workspaces: hide desktop icons. Set workspace_count=9
 #    - WM keybindings (xfwm4):
 #        * Switch to workspace 1..9 with <Primary>1..9
 #        * Move window to workspace 1..9 with <Primary><Alt>1..9
@@ -19,11 +19,11 @@
 #        * Custom launchers: xfce4-terminal (C-x), emacs, thunar (C-t), vmware, gthumb
 #        * Settings Manager <Primary><Alt>w
 #    - Lock & idle behavior: keep manual lock, disable auto lock/blank
-#    - Appearance: prefer dark color scheme; set GTK theme Adwaita-dark when available
+#    - Appearance: prefer dark color scheme. Set GTK theme Adwaita-dark when available
 #    - Panels: remove panel-2 and keep panel-1 only
 #    - Wallpaper: set to none (no image)
 #    - Power management: disable display power management and sleep timeouts (AC/Battery)
-#    - Profiles & autostart: install xfce4-terminal profile; install xmodmap autostart entry
+#    - Profiles & autostart: install xfce4-terminal profile. Install xmodmap autostart entry
 #                            install xset-rate autostart entry
 #    - Confirm before applying settings
 #
@@ -47,7 +47,7 @@
 #
 #  Version History:
 #  v1.3 2026-09-20
-#       Align check_commands and keep awk usage-only; localize desktop and file
+#       Align check_commands and keep awk usage-only. Localize desktop and file
 #       capabilities via executable detection and continue after local failures.
 #  v1.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable

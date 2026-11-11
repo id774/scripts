@@ -1,6 +1,8 @@
 # Scripts Collection
 
-Welcome to the `scripts` repository! This is a curated collection of scripts in Shell Script, Python, Ruby, and more to help you automate tasks and improve productivity.
+Welcome to the `scripts` repository! This is a curated collection of scripts in
+Shell Script, Python, Ruby, and more to help you automate tasks and improve
+productivity.
 
 ## Contents
 
@@ -17,7 +19,9 @@ Welcome to the `scripts` repository! This is a curated collection of scripts in 
 
 ## 1. About
 
-This repository contains various utility scripts to address common tasks efficiently. Whether you are an experienced developer or just getting started, you'll find tools to optimize your workflow.
+This repository contains various utility scripts to address common tasks
+efficiently. Whether you are an experienced developer or just getting started,
+you'll find tools to optimize your workflow.
 
 Supported languages:
 
@@ -25,7 +29,11 @@ Supported languages:
 - Python
 - Ruby
 
-The scripts are fully supported on Python 3.6+ and Ruby 2.4+, with partial compatibility extending back to Python 3.1 and Ruby 2.0. The repository is also tested against current stable versions of both languages. Support describes the compatibility target; it does not mean that every version in each supported range is executed in every test run.
+The scripts are fully supported on Python 3.6+ and Ruby 2.4+, with partial
+compatibility extending back to Python 3.1 and Ruby 2.0. The repository is also
+tested against current stable versions of both languages. Support describes the
+compatibility target. It does not mean that every version in each supported
+range is executed in every test run.
 
 ---
 
@@ -62,7 +70,8 @@ Ensure all scripts have the correct permissions:
 
 ## 3. Usage
 
-Refer to the comments at the beginning of each script for usage instructions. Example:
+Refer to the comments at the beginning of each script for usage instructions.
+Example:
 
 ```bash
 $SCRIPTS/example_script.sh
@@ -146,7 +155,7 @@ that needs site-specific values reads them from `etc/<name>.conf`, and a
 `cron/bin/` job reads its deployed copy under `/etc/cron.config/`.
 
 [doc/POLICY](doc/POLICY) is the authoritative version of this layout and of the
-rules above; the summary here is only an orientation.
+rules above. The summary here is only an orientation.
 
 ---
 
@@ -167,7 +176,9 @@ and logging are expected to behave.
 
 ### Implementation Policy
 
-See [doc/POLICY](doc/POLICY) for detailed design and development standards across all supported languages, including Shell Script, Python, and Ruby implementations.
+See [doc/POLICY](doc/POLICY) for detailed design and development standards
+across all supported languages, including Shell Script, Python, and Ruby
+implementations.
 
 ---
 
@@ -175,14 +186,20 @@ See [doc/POLICY](doc/POLICY) for detailed design and development standards acros
 
 This repository uses `master` as its primary branch name.
 
-The name is used solely as a technical identifier, following the long-standing convention historically used by Git. It does not express or imply any association with racism, slavery, discrimination, or any political or social ideology.
+The name is used solely as a technical identifier, following the long-standing
+convention historically used by Git. It does not express or imply any
+association with racism, slavery, discrimination, or any political or social
+ideology.
 
 ---
 
 ## 8. License
 
-The parts of this repository copyrighted by id774 are dual licensed under the [GPL version 3](https://www.gnu.org/licenses/gpl-3.0.html) or the [LGPL version 3](https://www.gnu.org/licenses/lgpl-3.0.html), at your option.
-For exclusions and full license details, please refer to the [LICENSE](doc/LICENSE) file.
+The parts of this repository copyrighted by id774 are dual licensed under the
+[GPL version 3](https://www.gnu.org/licenses/gpl-3.0.html) or the
+[LGPL version 3](https://www.gnu.org/licenses/lgpl-3.0.html), at your option.
+For exclusions and full license details, please refer to the
+[LICENSE](doc/LICENSE) file.
 See also [COPYING](doc/COPYING) and [COPYING.LESSER](doc/COPYING.LESSER) for the
 complete license texts.
 

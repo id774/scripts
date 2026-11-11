@@ -28,7 +28,7 @@
 #
 #  Notes:
 #  - Existing archive files are removed before archive creation.
-#  - Archive parent directories must already exist; they are not created
+#  - Archive parent directories must already exist. They are not created
 #    automatically.
 #  - Each archive stores the source directory by its basename, not by its
 #    absolute path.

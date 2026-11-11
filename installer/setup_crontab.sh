@@ -17,7 +17,7 @@
 #
 #  Usage:
 #      ./setup_crontab.sh
-#  Run this script as a general user; it will invoke sudo where necessary.
+#  Run this script as a general user. It will invoke sudo where necessary.
 #
 #  Notes:
 #  It ensures that the necessary cron directories exist before modifying /etc/crontab.

@@ -30,7 +30,7 @@
 #  - The invoking user must have sudo privileges.
 #
 #  Notes:
-#  - Invoke it as the Homebrew user; the script uses sudo only for required
+#  - Invoke it as the Homebrew user. The script uses sudo only for required
 #    ownership and permission changes.
 #  - This script is specifically tailored for macOS and will not function
 #    on other operating systems.

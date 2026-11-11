@@ -96,7 +96,7 @@ check_commands() {
 
 # Check if the user has sudo privileges (password may be required)
 check_sudo_mode() {
-    # No-sudo mode must not depend on sudo; validate sudo only after sudo mode is selected.
+    # No-sudo mode must not depend on sudo. Validate sudo only after sudo mode is selected.
     [ "$SUDO" = "sudo" ] || return 0
     check_commands sudo chown
     if ! sudo -v 2>/dev/null; then

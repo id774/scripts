@@ -13,9 +13,9 @@
 #        * Switch/move by direction with <Control><Alt>Arrow and <Shift><Control><Alt>Arrow
 #        * Disable/adjust other window actions as defined (close/minimize/switch-windows etc.)
 #    - Media keys and custom app shortcuts (via dconf load, gnome-shortcuts.conf)
-#    - Lock & idle behavior: keep manual lock, disable auto lock; set idle-delay=0 and lock-delay=0
+#    - Lock & idle behavior: keep manual lock, disable auto lock. Set idle-delay=0 and lock-delay=0
 #    - Appearance: prefer dark color scheme
-#    - Keyboard repeat: enable repeat; default delay=200ms and interval=25ms (overridable via env)
+#    - Keyboard repeat: enable repeat. Default delay=200ms and interval=25ms (overridable via env)
 #    - Profiles: install xfce4-terminal profile if xfce4-terminal is installed
 #    - Disable services: mask background services for a server-like desktop (Tracker/GOA/Evolution/Rygel)
 #    - Confirm before applying settings
@@ -42,8 +42,8 @@
 #
 #  Version History:
 #  v1.3 2026-09-20
-#       Align check_commands, keep awk usage-only and only gsettings run-level;
-#       localize optional capabilities and continue after local failures/skips.
+#       Align check_commands, keep awk usage-only and only gsettings run-level.
+#       Localize optional capabilities and continue after local failures/skips.
 #  v1.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.

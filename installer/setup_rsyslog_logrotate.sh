@@ -38,9 +38,9 @@
 #      changing files once they are in the desired state.
 #    * Safe metadata handling: updated content is copied into the existing
 #      rsyslog logrotate config file without transferring the temporary
-#      file's owner or mode; the required root:adm 0640 policy is then
+#      file's owner or mode. The required root:adm 0640 policy is then
 #      reasserted explicitly.
-#    * Minimal edits: only the target directives are touched; everything
+#    * Minimal edits: only the target directives are touched. Everything
 #      else (delaycompress, postrotate, comments, ordering) is preserved.
 #    * Separate journald policy: a dedicated drop-in file is managed so
 #      the main journald.conf file remains untouched.
@@ -51,7 +51,7 @@
 #    * "logrotate" reads configuration files describing how to rotate
 #      (rename and compress) logs. rsyslog writes system logs such as
 #      /var/log/auth.log and /var/log/syslog. Placing "daily" reduces
-#      each file’s size by rotating every day; "rotate 90" keeps 90
+#      each file’s size by rotating every day. "rotate 90" keeps 90
 #      generations (roughly 90 days). "maxsize 100M" forces rotation
 #      when the file exceeds 100MB.
 #    * "SystemMaxUse=500M" limits how much disk space persistent journal
@@ -182,7 +182,7 @@ check_target() {
 
 # Remove temp files on normal exit or interruption
 # Each variable below holds the actual mktemp-generated path created by the
-# corresponding function, if any; unset/empty values are ignored by rm -f.
+# corresponding function, if any. Unset/empty values are ignored by rm -f.
 cleanup() {
     rm -f "$TABS_TMP" "$DAILY_TMP" "$ROTATE_TMP" "$MAXSIZE_TMP" "$JOURNALD_TMP"
 }

@@ -10,7 +10,7 @@
 #  - Running that installer in batch mode to install the specified or
 #    default version under a versioned prefix.
 #  It targets Linux on x86_64 and aarch64. It is not a Python library bulk
-#  installer; use install_conda.sh to add libraries to a Conda environment.
+#  installer. Use install_conda.sh to add libraries to a Conda environment.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -161,7 +161,7 @@ install_miniforge() {
     show_sha256 "install_miniforge/$ASSET"
     confirm_installation
 
-    # Batch mode installs without prompts and without shell initialization;
+    # Batch mode installs without prompts and without shell initialization.
     # -u also permits reinstallation into an existing prefix.
     echo "[INFO] Installing Miniforge to $PREFIX."
     if ! $SUDO bash "install_miniforge/$ASSET" -b -u -p "$PREFIX"; then
@@ -246,7 +246,7 @@ main() {
     # Perform initial checks
     check_commands curl awk uname mkdir rm bash
     setup_environment "$@"
-    # No-sudo mode must not depend on sudo; validate sudo only in sudo mode.
+    # No-sudo mode must not depend on sudo. Validate sudo only in sudo mode.
     if [ "$SUDO" = "sudo" ]; then
         check_sudo
     fi

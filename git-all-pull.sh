@@ -239,7 +239,7 @@ create_symlink() {
             echo "[INFO] DRY RUN: Create symlink: $link_path -> $repo"
         fi
     else
-        # Path exists; do not overwrite files or directories
+        # Path exists. Do not overwrite files or directories
         [ "$DRY_RUN" = true ] && echo "[INFO] DRY RUN: Skip symlink creation due to existing path: $link_path"
     fi
 }

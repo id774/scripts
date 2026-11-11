@@ -20,11 +20,11 @@
 #
 #  Usage:
 #      ./setup_memcached_conf.sh
-#  Run as a regular user with sudo privileges; the script will invoke sudo
+#  Run as a regular user with sudo privileges. The script will invoke sudo
 #  where necessary.
 #
 #  Notes:
-#  - No backups are created; edits are applied directly when needed.
+#  - No backups are created. Edits are applied directly when needed.
 #  - Only lines beginning exactly with "-l ::1" (ignoring leading spaces) are
 #    commented.
 #  - Designed for Debian-family Linux systems with memcached installed.

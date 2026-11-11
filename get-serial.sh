@@ -6,7 +6,7 @@
 #  Description:
 #  Accepts a device path (e.g. /dev/sdc, /dev/sdc1, /dev/mapper/foo, /dev/dm-0)
 #  and prints its serial number to stdout. This tool does NOT resolve
-#  mountpoints; compose with get-device if needed.
+#  mountpoints. Compose with get-device if needed.
 #
 #  Responsibilities (UNIX philosophy):
 #    - Input: a /dev/* block device path only.

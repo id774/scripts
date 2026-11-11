@@ -18,12 +18,12 @@
 #
 #  Cache Layers (used by this tool):
 #    - L1: Transients (WordPress built-in “temporary cached values” with TTL)
-#    - L2: Object Cache (wp cache flush; can be broader impact depending on setup)
+#    - L2: Object Cache (wp cache flush. Can be broader impact depending on setup)
 #    - L3: Page Cache Plugin (W3 Total Cache only, if available and active)
-#    - L4: CDN/Browser cache (not automated; guidance only)
+#    - L4: CDN/Browser cache (not automated. Guidance only)
 #
 #  Safety model (intentionally minimal by request):
-#    - Require an explicit target path (--path; default is /var/www/wordpress).
+#    - Require an explicit target path (--path. Default is /var/www/wordpress).
 #    - Require explicit intent (--reason) for state-changing commands.
 #    - Require explicit execution (--yes) unless --dry-run is used.
 #    - Do not attempt to automate CDN/browser cache to avoid over-broad purges.
@@ -303,7 +303,7 @@ def do_l2_object_cache(wp_bin, wp_path, dry_run):
 
 
 def do_l3_w3tc(wp_bin, wp_path, dry_run):
-    """Flush W3 Total Cache (L3) if active; otherwise skip."""
+    """Flush W3 Total Cache (L3) if active. Otherwise skip."""
     if detect_w3tc(wp_bin, wp_path):
         log_info("L3: Flush W3 Total Cache (wp w3-total-cache flush all)")
         rc = run_wp(wp_argv(wp_bin, wp_path, ["w3-total-cache", "flush", "all"]), dry_run)

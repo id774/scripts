@@ -9,7 +9,7 @@
 #  and the associated symbolic links in the home directory. A home symlink is
 #  associated only when its stored target is exactly one of
 #  $HOME/local/github/<name>, $HOME/local/git/<name>, or
-#  $HOME/local/gitlab/<name>; other symlinks are left in place. It checks if the
+#  $HOME/local/gitlab/<name>. Other symlinks are left in place. It checks if the
 #  directory is a Git repository before removing it. By default, it lists the
 #  targets and asks for confirmation before removal. The --dry-run option only
 #  previews the targets, and -x removes them without confirmation.

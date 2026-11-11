@@ -46,7 +46,7 @@
 #  Version History:
 #  v3.7 2026-09-05
 #       Also detect the import forms of pathlib, asyncio, subprocess.run, subprocess.DEVNULL,
-#       and shutil.which; drop the stale "extended unpacking" claim from the Description.
+#       and shutil.which. Drop the stale "extended unpacking" claim from the Description.
 #  v3.6 2025-07-01
 #       Standardized termination behavior for consistent script execution.
 #  v3.5 2025-06-23
@@ -77,7 +77,7 @@
 #       Improved f-strings detection regular expression to accurately identify common patterns.
 #  v1.3 2024-01-14
 #       Add detection of type hints, nonlocal, matrix multiplication, asyncio,
-#       yield from, pathlib and subprocess.run; check grep exists first.
+#       yield from, pathlib and subprocess.run. Check grep exists first.
 #  v1.2 2023-12-23
 #       Added search for async/await keyword usage and subprocess.DEVNULL usage.
 #  v1.1 2023-12-17

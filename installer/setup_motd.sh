@@ -16,11 +16,11 @@
 #
 #  Usage:
 #      ./setup_motd.sh
-#  Run as a regular user with sudo privileges; the script will invoke sudo
+#  Run as a regular user with sudo privileges. The script will invoke sudo
 #  where necessary.
 #
 #  Notes:
-#  - No backups are created; the script edits /etc/motd directly if present.
+#  - No backups are created. The script edits /etc/motd directly if present.
 #  - An absent /etc/motd is a successful no-op.
 #  - An already empty regular /etc/motd is a successful no-op.
 #  - A directory at /etc/motd is an error.

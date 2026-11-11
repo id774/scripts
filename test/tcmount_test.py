@@ -277,7 +277,7 @@ class TestTcMount(unittest.TestCase):
         mock_find.assert_called_with('veracrypt')
 
     def make_fake_path(self, commands, non_executable):
-        """ Create a temporary PATH directory containing the given commands; return its path. """
+        """ Create a temporary PATH directory containing the given commands. Return its path. """
         directory = tempfile.mkdtemp()
         self.addCleanup(shutil.rmtree, directory)
         for command in commands:

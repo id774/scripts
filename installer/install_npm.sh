@@ -177,7 +177,7 @@ install_packages() {
 
     echo "[INFO] Installing selected npm development tools..."
     # Roughly order general-purpose tools before larger frameworks and server tools.
-    # Put external-service clients last when practical; the order is only a guide.
+    # Put external-service clients last when practical. The order is only a guide.
     # Define the list of packages as a multi-line string
     packages="
 typescript

@@ -151,7 +151,7 @@ install_gems() {
 
     echo "[INFO] Installing essential Ruby gems..."
     # Roughly order general-purpose tools before larger frameworks and server tools.
-    # Put external-service clients last when practical; the order is only a guide.
+    # Put external-service clients last when practical. The order is only a guide.
     # Define the list of gems as a multi-line string
     gems="
     automatic

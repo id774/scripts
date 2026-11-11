@@ -116,7 +116,7 @@
 #  - rsync must be installed.
 #  - chmodtree v3.2 or later is required only when permission normalization is
 #    actually run. v3.2 or later is required specifically because it excludes
-#    symbolic links from ownership normalization by default; earlier versions
+#    symbolic links from ownership normalization by default. Earlier versions
 #    dereferenced symlinks preserved by rsync -a and could alter ownership of
 #    files outside the synchronized data area.
 #  - findmnt or stat is used to determine the destination filesystem type for

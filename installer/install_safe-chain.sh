@@ -28,7 +28,7 @@
 #  Options:
 #  -h, --help     Display this help message and exit.
 #  -v, --version  Display this help message and exit.
-#  --no-sudo      Install without sudo. Use it as the third argument; the
+#  --no-sudo      Install without sudo. Use it as the third argument. The
 #                 prefix must be writable by the caller.
 #
 #  Notes:
@@ -60,7 +60,7 @@
 #    policy for the rest of the prefix, because the correct user, group, or ACL
 #    is deployment-specific and existing permissions must survive reinstall.
 #    Configure that policy after installation without making the prefix broadly
-#    writable; <PREFIX>/certs contains a CA private key.
+#    writable. <PREFIX>/certs contains a CA private key.
 #  - To enable shell integration, the user may run
 #    <PREFIX>/bin/safe-chain setup and then restart the terminal. For CI
 #    environments, Safe Chain also provides <PREFIX>/bin/safe-chain setup-ci.
@@ -119,7 +119,7 @@ check_commands() {
 
 # Check if the user has sudo privileges (password may be required)
 check_sudo_mode() {
-    # No-sudo mode must not depend on sudo; validate sudo only after sudo mode is selected.
+    # No-sudo mode must not depend on sudo. Validate sudo only after sudo mode is selected.
     [ "$SUDO" = "sudo" ] || return 0
     check_commands sudo chown
     if ! sudo -v 2>/dev/null; then
@@ -202,7 +202,7 @@ install_safe_chain() {
         exit 1
     fi
 
-    # Chown only the binary; the rest of the prefix holds runtime data whose
+    # Chown only the binary. The rest of the prefix holds runtime data whose
     # ownership the user decides, and a reinstall must not override it.
     if [ "$SUDO" = "sudo" ]; then
         if ! $SUDO chown "$OWNER" "$TARGET"; then

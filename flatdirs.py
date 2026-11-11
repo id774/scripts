@@ -183,7 +183,7 @@ def confirm_execution():
     return confirmation in ('yes', 'y')
 
 def main(options):
-    """Main function to process directories. Check if any options are set; if not, display help."""
+    """Main function to process directories. Check if any options are set. If not, display help."""
     if options.execute_mode:
         if not confirm_execution():
             print("[ERROR] Execution cancelled.", file=sys.stderr)

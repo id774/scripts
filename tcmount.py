@@ -141,7 +141,7 @@ import subprocess
 import sys
 from optparse import OptionParser
 
-__version__ = "unknown"   # default; will be overwritten in main()
+__version__ = "unknown"   # default. Will be overwritten in main()
 version_message = None
 
 def usage():
@@ -177,7 +177,7 @@ def build_version_message():
         versions.append(get_truecrypt_version())
     if is_veracrypt_installed():
         versions.append(get_veracrypt_version())
-    # __version__ may not be set yet if called very early; fall back to "unknown".
+    # __version__ may not be set yet if called very early. Fall back to "unknown".
     try:
         ver = __version__
     except NameError:
@@ -435,7 +435,7 @@ def process_mounting(options, args):
         # - For mount:
         #     * If there are >=2 non-action tokens, use the last one as explicit target.
         #     * If there is exactly 1 non-action token, use it as explicit target
-        #       unless it looks like a device name 'sd[a-z]'; otherwise default to <external_device>.
+        #       unless it looks like a device name 'sd[a-z]'. Otherwise default to <external_device>.
         is_unmount = any(t in ['unmount', 'umount'] for t in args)
         if is_unmount:
             return run_external_unmount(unmount_tool_argv)
@@ -462,7 +462,7 @@ def process_mounting(options, args):
             target = args[1] if len(args) > 1 else None
             return run_single_mount(device, mount_options_str, mount_tool_argv, target)
 
-    # No positional args: keep --all behavior; otherwise show version and return.
+    # No positional args: keep --all behavior. Otherwise show version and return.
     if options.all:
         return run_mount_all(mount_options_str, mount_tool_argv)
 

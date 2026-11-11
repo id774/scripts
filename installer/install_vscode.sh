@@ -37,9 +37,9 @@
 #  - This script does not overwrite existing APT sources or signing keys.
 #  - The VS Code package may manage its own APT source during installation.
 #  - An installed code package is left to normal APT upgrades.
-#  - --insecure-tls installs a persistent, host-specific APT configuration;
-#    later APT runs remain insecure until the configuration is removed.
-#  - This bypass weakens TLS authentication; prefer trusting the organization's
+#  - --insecure-tls installs a persistent, host-specific APT configuration.
+#    Later APT runs remain insecure until the configuration is removed.
+#  - This bypass weakens TLS authentication. Prefer trusting the organization's
 #    inspection CA and remove the bypass when it is no longer needed.
 #  - The configuration is /etc/apt/apt.conf.d/98-insecure-tls-microsoft.conf
 #    for packages.microsoft.com. It applies to every later APT operation for
@@ -49,7 +49,7 @@
 #    it manually with: sudo rm /etc/apt/apt.conf.d/98-insecure-tls-microsoft.conf
 #  - Package signature and signing-key fingerprint checks stay enabled, but
 #    they do not restore TLS server authentication.
-#  - A differing existing configuration file is never overwritten; other APT
+#  - A differing existing configuration file is never overwritten. Other APT
 #    configuration may override this setting.
 #
 #  Version History:

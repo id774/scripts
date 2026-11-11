@@ -11,7 +11,7 @@
 #  apache_ignore.list, searched in <script_dir>/etc/, <script_dir>/../etc/
 #  and /etc/cron.config in that order.
 #  Blog-entry page-view metrics are reported by the separate, independently
-#  deployed apache_blog_analysis.py script; this script does not compute
+#  deployed apache_blog_analysis.py script. This script does not compute
 #  them, to avoid two scripts implementing the same aggregation.
 #
 #  Author: id774 (More info: https://id774.net)
@@ -322,7 +322,7 @@ quote_sh() {
 }
 
 # Parse command-line options, then store remaining arguments as log file paths
-# into LOG_FILE_1..N variables using eval-safe quoting; also record LOG_FILE_COUNT.
+# into LOG_FILE_1..N variables using eval-safe quoting. Also record LOG_FILE_COUNT.
 parse_options() {
     LOG_FILE_COUNT=0
 

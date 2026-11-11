@@ -44,7 +44,7 @@
 #  - If any failures are detected, the script exits with return code 1.
 #
 #  Features:
-#  - POSIX-compliant structure; suitable for use in minimal environments.
+#  - POSIX-compliant structure. Suitable for use in minimal environments.
 #  - No dependencies on non-standard utilities (e.g., mktemp).
 #  - Graceful handling of failures with continued testing across all scripts.
 #  - Summarized reporting for easy identification of issues.

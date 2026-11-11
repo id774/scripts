@@ -156,7 +156,7 @@ check_sudo() {
     fi
 }
 
-# Create safe symlink; $1: source, $2: linkpath
+# Create safe symlink. $1: source, $2: linkpath
 safe_symlink() {
     src="$1"; link="$2"
 
@@ -175,7 +175,7 @@ safe_symlink() {
         fi
     fi
 
-    # Remove existing file or symlink; never remove directories
+    # Remove existing file or symlink. Never remove directories
     if [ -L "$link" ] || [ -f "$link" ]; then
         ${SUDO:-} rm -f "$link" || { echo "[ERROR] Failed to remove $link" >&2; return 1; }
     elif [ -d "$link" ]; then

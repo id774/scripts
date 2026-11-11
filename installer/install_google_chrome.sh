@@ -28,7 +28,7 @@
 #      configuration without harmful side effects.
 #    - Safety: key handling includes fingerprint comparison to gracefully
 #      recover from key rotations.
-#    - Minimal changes: no aggressive cleanup of existing repo lines; only the
+#    - Minimal changes: no aggressive cleanup of existing repo lines. Only the
 #      expected configuration is added or updated when absent.
 #    - Permissions: the Google Linux keyring file is always forced to mode 0644
 #      after repository configuration to guarantee readability by APT. This
@@ -147,7 +147,7 @@ setup_environment() {
 # Perform key acquisition with fingerprint comparison for self-healing behavior.
 # The latest public key is fetched, dearmored to a temporary keyring, and its
 # fingerprint is compared to the installed keyring. Differences trigger a
-# replacement; missing or unreadable keyrings are also replaced.
+# replacement. Missing or unreadable keyrings are also replaced.
 install_or_update_keyring() {
     KEYRING="/usr/share/keyrings/google-linux.gpg"
 
@@ -156,7 +156,7 @@ install_or_update_keyring() {
     TMP_KEY_RING="$(mktemp)"
 
     echo "[INFO] Fetching Google Linux signing key..."
-    # Fetch the current public key from Google; fail fast if unreachable.
+    # Fetch the current public key from Google. Fail fast if unreachable.
     if ! curl -fsSL https://dl.google.com/linux/linux_signing_key.pub > "$TMP_KEY_PUB"; then
         echo "[ERROR] Failed to fetch Google signing key." >&2
         rm -f "$TMP_KEY_PUB" "$TMP_KEY_RING"
@@ -173,7 +173,7 @@ install_or_update_keyring() {
     # Read the fingerprint of the newly fetched key (the "expected" state).
     NEW_FPR="$(gpg --show-keys --with-colons "$TMP_KEY_RING" 2>/dev/null | awk -F: '/^fpr:/ {print $10; exit}')"
     if [ -z "$NEW_FPR" ]; then
-        # If we cannot parse a fingerprint, the fetched key is unusable; abort.
+        # If we cannot parse a fingerprint, the fetched key is unusable. Abort.
         echo "[ERROR] Failed to parse fingerprint from fetched Google key." >&2
         rm -f "$TMP_KEY_PUB" "$TMP_KEY_RING"
         exit 1
@@ -207,7 +207,7 @@ install_or_update_keyring() {
             echo "[INFO] Keyring updated. New fingerprint: $NEW_FPR"
 
         else
-            # Branch C: Fingerprints match; the keyring is already up-to-date.
+            # Branch C: Fingerprints match. The keyring is already up-to-date.
             # Action: No changes needed.
             echo "[INFO] Keyring is up-to-date. Fingerprint: $CUR_FPR"
         fi

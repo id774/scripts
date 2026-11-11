@@ -24,7 +24,7 @@
 #  Options:
 #    -h                Display this help message and exit
 #
-#  Note: this script intentionally supports only -h and --help; -v and --version
+#  Note: this script intentionally supports only -h and --help. -v and --version
 #  are not accepted and are treated as a directory argument.
 #
 #  If no directory is specified, it displays this help message.

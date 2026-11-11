@@ -12,9 +12,9 @@
 #
 #  Features:
 #    - Accepts base disks, partitions, and device-mapper paths.
-#    - Prefers a direct mount of the specified device; otherwise searches its related devices.
+#    - Prefers a direct mount of the specified device. Otherwise searches its related devices.
 #    - Returns one mountpoint, selecting / among multiple direct mounts, otherwise the first direct target.
-#    - Uses findmnt(8) primarily; falls back to lsblk(8) scanning.
+#    - Uses findmnt(8) primarily. Falls back to lsblk(8) scanning.
 #    - Handles MOUNTPOINTS column used by newer util-linux.
 #    - Deterministic exit codes for robust scripting.
 #
@@ -113,7 +113,7 @@ validate_args() {
 
     DEV="$1"
 
-    # Allow symlinks like /dev/disk/by-id/...; ensure it exists
+    # Allow symlinks like /dev/disk/by-id/.... Ensure it exists
     if [ ! -e "$DEV" ]; then
         echo "[ERROR] Device path does not exist: $DEV" >&2
         exit 2

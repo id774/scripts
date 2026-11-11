@@ -25,7 +25,7 @@
 #
 #  Design Notes:
 #  - The script is POSIX sh compatible.
-#  - It is safe to run on non-Debian systems; reboot-required files may
+#  - It is safe to run on non-Debian systems. Reboot-required files may
 #    not exist, and needrestart may be unavailable. In that case it will
 #    only report what it can determine.
 #  - "Reboot required" is a logical OR:
@@ -39,7 +39,7 @@
 #      -v, --version:  Show this help and exit (unified behavior).
 #
 #  Exit Status:
-#      0: Success (check completed; see logs for reboot requirement)
+#      0: Success (check completed. See logs for reboot requirement)
 #      1: General Failure
 #    126: Command exists but is not executable
 #    127: Command not found
@@ -131,7 +131,7 @@ check_reboot_required_files() {
 
 # Check reboot requirement using needrestart (if available)
 check_needrestart() {
-    # needrestart is optional; skip if not installed.
+    # needrestart is optional. Skip if not installed.
     if ! have_command needrestart; then
         echo "[INFO] needrestart not installed; skipping needrestart check"
         return 2

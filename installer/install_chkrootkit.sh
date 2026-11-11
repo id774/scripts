@@ -116,10 +116,10 @@ check_sudo() {
 # - If log.expected does not exist, execute the daily wrapper once to generate
 #   log.today (if needed), then copy log.today to establish the baseline.
 #   This suppresses recurring benign alerts while preserving diffs for future runs.
-# - No effect on non Debian style or older environments; safe no op.
+# - No effect on non Debian style or older environments. Safe no op.
 # - Never overwrite an existing log.expected to avoid masking changes.
 # - Security note: Accepting log.today as baseline implies trust in the current
-#   system state; review the first run output in sensitive contexts.
+#   system state. Review the first run output in sensitive contexts.
 initialize_baseline() {
     # Idempotent guard: skip if baseline already exists
     if [ -f /var/log/chkrootkit/log.expected ]; then
@@ -128,7 +128,7 @@ initialize_baseline() {
     fi
     # Proceed only on Debian style wrapper that supports log.expected
     if [ -x /etc/cron.daily/chkrootkit ] && grep -q 'log\.expected' /etc/cron.daily/chkrootkit 2>/dev/null; then
-        # Run once only when log.today is absent; suppress console noise
+        # Run once only when log.today is absent. Suppress console noise
         if [ ! -f /var/log/chkrootkit/log.today ]; then
             echo "[INFO] Running daily chkrootkit wrapper to generate initial log.today..."
             sudo /etc/cron.daily/chkrootkit >/dev/null 2>&1 || true

@@ -18,7 +18,7 @@
 #
 #  The header block is defined as the content between the first and second
 #  separator lines consisting of 20 or more "#" characters. Only that region
-#  is inspected; the script does not analyze code or comments outside the
+#  is inspected. The script does not analyze code or comments outside the
 #  header block.
 #
 #  Author: id774 (More info: https://id774.net)
@@ -32,13 +32,13 @@
 #  Options:
 #      -R, --root:      Root directory to scan (default: current directory).
 #      -a, --all-files: Check all files under root (not only sh/python/ruby scripts).
-#      -q, --quiet:     Quiet mode; only prints file:line hits (no header text).
+#      -q, --quiet:     Quiet mode. Only prints file:line hits (no header text).
 #      -v, --version:   Show version and exit.
 #
 #  Notes:
 #  - This script does not depend on Git and works in non-repository directories.
 #  - When violations are found in readable files, diagnostic lines are printed.
-#  - An unreadable in-scope file is treated as a fatal scan error; independent
+#  - An unreadable in-scope file is treated as a fatal scan error. Independent
 #    readable files continue to be scanned and reported.
 #  - Intended to be used as one automated documentation check in test pipelines.
 #  - This check is wired into the nightly cron job cron/bin/run_tests, which
@@ -139,7 +139,7 @@ def iter_files(root_dir, check_all_files):
                 try:
                     is_script = looks_like_script(path)
                 except OSError:
-                    # Cannot classify an extensionless file; let the caller's
+                    # Cannot classify an extensionless file. Let the caller's
                     # read-error handling decide instead of dropping it.
                     yield path
                     continue

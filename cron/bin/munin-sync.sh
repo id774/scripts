@@ -44,7 +44,7 @@
 #  Warning:
 #  - This script updates files on a remote server under specified directories.
 #  - Ensure proper SSH access and permissions are configured for the target.
-#  - For a self target, Munin data transfer is skipped; logs are reflected
+#  - For a self target, Munin data transfer is skipped. Logs are reflected
 #    locally by rsync.
 #
 #  Exit Status:
@@ -169,7 +169,7 @@ ensure_log_dir() {
     fi
 }
 
-# Silently copy a file to $LOG_DIR if it is readable; otherwise skip without noise
+# Silently copy a file to $LOG_DIR if it is readable. Otherwise skip without noise
 copy_if_readable() {
     src="$1"
     dst_dir="$LOG_DIR"
@@ -179,7 +179,7 @@ copy_if_readable() {
         return 0
     fi
     #echo "[INFO] Copy $src to $dst_dir"
-    # Delegate quietness to $RSYNC_OPTS (e.g. -q); ignore non-zero exit
+    # Delegate quietness to $RSYNC_OPTS (e.g. -q). Ignore non-zero exit
     rsync $RSYNC_OPTS "$src" "$dst_dir/" || :
     return 0
 }
@@ -217,7 +217,7 @@ sync_local_logs() {
             find "$dir" -type f | while IFS= read -r file; do
                 case "$file" in
                     *.log|*.log.1)
-                        # Only copy when readable; delegate quietness to $RSYNC_OPTS
+                        # Only copy when readable. Delegate quietness to $RSYNC_OPTS
                         if [ -r "$file" ]; then
                             #echo "[INFO] Copy $file to $LOG_DIR/"
                             rsync $RSYNC_OPTS "$file" "$LOG_DIR/" || :

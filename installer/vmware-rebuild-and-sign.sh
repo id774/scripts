@@ -17,11 +17,11 @@
 #
 #  Usage:
 #      ./vmware-rebuild-and-sign.sh
-#  Run as a regular user with sudo privileges; the script will invoke sudo
+#  Run as a regular user with sudo privileges. The script will invoke sudo
 #  where necessary.
 #
 #  Notes:
-#  - No backups are created; operations are safe and idempotent.
+#  - No backups are created. Operations are safe and idempotent.
 #  - If vmware-modconfig fails, the script continues to signing checks so
 #    you can re-run after fixing toolchain issues.
 #  - Requires an enrolled MOK (Machine Owner Key) in UEFI for Secure Boot.
@@ -206,7 +206,7 @@ sign_module_if_needed() {
     return 0
 }
 
-# Attempt to load modules (non-fatal; useful on Secure Boot to verify)
+# Attempt to load modules (non-fatal. Useful on Secure Boot to verify)
 try_load_modules() {
     if ! lsmod | grep -q '^vmmon'; then
         sudo modprobe vmmon 2>/dev/null || echo "[WARN] modprobe vmmon failed."
