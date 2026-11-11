@@ -89,9 +89,11 @@
 #  Exit Status:
 #  This script uses custom return codes to indicate specific error conditions:
 #  - 0: Success. The operation completed without any errors.
-#  - 1: Neither TrueCrypt nor VeraCrypt is installed. The script requires one of them to be installed to function.
+#  - 1: Neither TrueCrypt nor VeraCrypt is installed. The script requires one of
+#       them to be installed to function.
 #  - 11: TrueCrypt is not installed. This is returned when TrueCrypt is required but not found.
-#  - 12: VeraCrypt is not installed but specified for use. This occurs when VeraCrypt is selected but not installed.
+#  - 12: VeraCrypt is not installed but specified for use. This occurs when
+#        VeraCrypt is selected but not installed.
 #  - 13: VeraCrypt compatibility mode is specified but VeraCrypt is not installed.
 #
 #  Refer to the TrueCrypt and VeraCrypt documentation for more detailed information

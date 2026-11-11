@@ -15,7 +15,8 @@
 #  Contact: idnanashi@gmail.com
 #
 #  Test Cases:
-#    - Verifies that the script prints usage information and exits with code 0 when invoked with -h option.
+#    - Verifies that the script prints usage information and exits with code 0
+#      when invoked with -h option.
 #    - Skip all tests when the Pillow (PIL) library is not installed.
 #    - Ensure read_dir() traverses the source directory and attempts to open image files.
 #    - Confirm that image files with supported formats are processed without raising errors.

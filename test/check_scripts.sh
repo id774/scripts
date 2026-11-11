@@ -34,12 +34,14 @@
 #
 #  Expected Behavior:
 #  - Each script should display its help message (if implemented) and exit cleanly with return code 0.
-#  - The script will output an [INFO] log for each test and summarize the total, successful, and failed tests.
+#  - The script will output an [INFO] log for each test and summarize the total,
+#    successful, and failed tests.
 #  - If all scripts succeed, the script exits with return code 0.
 #
 #  Abnormal Behavior:
 #  - If a script exits with a return code greater than 0, it is considered a failure.
-#  - Syntax errors, missing interpreters, execution failures, or incorrect responses to the '-h' option are detected.
+#  - Syntax errors, missing interpreters, execution failures, or incorrect
+#    responses to the '-h' option are detected.
 #  - All failed scripts are listed in the final error report.
 #  - If any failures are detected, the script exits with return code 1.
 #

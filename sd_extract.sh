@@ -31,7 +31,8 @@
 #
 #  Notes:
 #  - Ensure 'rsync' and 'chmod' commands are available on the system.
-#  - Run this script with sufficient permissions to access source directories and write to the destination directory.
+#  - Run this script with sufficient permissions to access source directories
+#    and write to the destination directory.
 #  - The permissions argument must be a 3-digit octal number. Any other format will result in an error.
 #
 #  Exit Status:

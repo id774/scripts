@@ -25,7 +25,8 @@
 #    - Handle symbolic links correctly in get_file_info().
 #    - Return directory listing entries when get_file_info() is called on a directory path.
 #    - Return an [ERROR] message string when get_file_info() is called on a nonexistent path.
-#    - Return an [ERROR] message string when get_file_info() hits a PermissionError while scanning a directory.
+#    - Return an [ERROR] message string when get_file_info() hits a
+#      PermissionError while scanning a directory.
 #
 #  Version History:
 #  v1.1 2025-04-13

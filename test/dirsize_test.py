@@ -24,8 +24,10 @@
 #    - Convert bytes to human-readable size in GiB and TiB units (boundary around 1099511627776).
 #    - Convert bytes to human-readable size in TiB and PiB units (boundary around 1125899906842624).
 #    - Convert bytes to human-readable size in PiB and EiB units (boundary around 1152921504606846976).
-#    - Convert bytes to human-readable size in EiB and ZiB units (boundary around 1180591620717411303424).
-#    - Convert bytes to human-readable size in ZiB and YiB units (boundary around 1208925819614629174706176).
+#    - Convert bytes to human-readable size in EiB and ZiB units (boundary
+#      around 1180591620717411303424).
+#    - Convert bytes to human-readable size in ZiB and YiB units (boundary
+#      around 1208925819614629174706176).
 #    - Exit with non-zero status when a target directory does not exist.
 #
 #  Version History:

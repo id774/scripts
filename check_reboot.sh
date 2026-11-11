@@ -39,7 +39,7 @@
 #      -v, --version:  Show this help and exit (unified behavior).
 #
 #  Exit Status:
-#      0: Success (check completed. See logs for reboot requirement)
+#      0: Check completed successfully (see logs for reboot requirement)
 #      1: General Failure
 #    126: Command exists but is not executable
 #    127: Command not found

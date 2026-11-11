@@ -28,7 +28,8 @@
 #      ./install_zsh.sh VERSION PREFIX --no-sudo
 #
 #  Notes:
-#  - By default, if no installation path is provided, Zsh will be installed under /opt/zsh/<major>.<minor>
+#  - By default, if no installation path is provided, Zsh will be installed
+#    under /opt/zsh/<major>.<minor>
 #
 #  - Source files are saved to /usr/local/src/zsh only when using sudo.
 #    If installed without sudo (e.g. using `--no-sudo`), source files will not be saved.

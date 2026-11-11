@@ -6,7 +6,8 @@
 #  Description:
 #  This script sets permissions for a collection of scripts.
 #  - Grants read/write permissions to the owner, and read-only to group and others.
-#  - Grants execute permissions to all files with .sh, .py, or .rb extensions under the entire collection.
+#  - Grants execute permissions to all files with .sh, .py, or .rb extensions
+#    under the entire collection.
 #  - Grants execute permissions to all files under scripts/cron/bin regardless of extension.
 #
 #  Author: id774 (More info: https://id774.net)

@@ -41,7 +41,8 @@
 #  - The script updates file permissions as needed and performs clean-up operations.
 #  - Remote synchronization invokes rsync in configured host order and
 #    stops at the first failed host.
-#  - The permissions argument must be a 3-digit or 4-digit octal number. Any other format will result in an error.
+#  - The permissions argument must be a 3-digit or 4-digit octal number. Any
+#    other format will result in an error.
 #
 #  Exit Status:
 #  1. No GPX files found, or a local GPX copy failed.

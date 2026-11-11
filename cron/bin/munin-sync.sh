@@ -251,7 +251,8 @@ sync_logs_to_remote() {
         fi
         remote_dir="$TARGET_USER@$th:$TARGET_DIR/"
         #echo "[INFO] Sync logs to $remote_dir" >&2
-        # Layout note: omit trailing slash on $LOG_DIR to create $TARGET_DIR/$SOURCE_HOST/ on remote as well
+        # Layout note: omit trailing slash on $LOG_DIR to create
+        # $TARGET_DIR/$SOURCE_HOST/ on remote as well
         rsync $RSYNC_OPTS "$LOG_DIR" "$remote_dir"
     done
 }
