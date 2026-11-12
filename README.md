@@ -11,9 +11,8 @@ productivity.
 3. [Usage](#3-usage)
 4. [Testing](#4-testing)
 5. [Directory Structure](#5-directory-structure)
-6. [Contribution](#6-contribution)
-7. [Primary Branch](#7-primary-branch)
-8. [License](#8-license)
+6. [Primary Branch](#6-primary-branch)
+7. [License](#7-license)
 
 ---
 
@@ -159,30 +158,7 @@ rules above. The summary here is only an orientation.
 
 ---
 
-## 6. Contribution
-
-We welcome contributions! Here's how you can help:
-1. Fork the repository.
-2. Add or improve a feature, or fix an issue.
-3. Submit a pull request with clear documentation and changes.
-
-Please ensure your code is well-structured and documented.
-
-Every executable carries a structured header block stating what it is, who
-wrote it, how it is driven, and what changed in each version. Read
-[doc/POLICY](doc/POLICY) before adding one: it defines the sections that block
-contains, when a version is bumped, and how configuration files, exit codes,
-and logging are expected to behave.
-
-### Implementation Policy
-
-See [doc/POLICY](doc/POLICY) for detailed design and development standards
-across all supported languages, including Shell Script, Python, and Ruby
-implementations.
-
----
-
-## 7. Primary Branch
+## 6. Primary Branch
 
 This repository uses `master` as its primary branch name.
 
@@ -193,7 +169,7 @@ ideology.
 
 ---
 
-## 8. License
+## 7. License
 
 The parts of this repository copyrighted by id774 are dual licensed under the
 [GPL version 3](https://www.gnu.org/licenses/gpl-3.0.html) or the
@@ -202,5 +178,3 @@ For exclusions and full license details, please refer to the
 [LICENSE](doc/LICENSE) file.
 See also [COPYING](doc/COPYING) and [COPYING.LESSER](doc/COPYING.LESSER) for the
 complete license texts.
-
-Thank you for using and contributing to this repository!
