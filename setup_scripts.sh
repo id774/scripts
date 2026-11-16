@@ -32,6 +32,8 @@
 #      - To all files under scripts/cron/bin (no extension filter)
 #
 #  Version History:
+#  v2.7 2026-11-16
+#       Propagate chmod failures through batched find execution.
 #  v2.6 2026-09-06
 #       Preserve failures from both collection and current-directory execute
 #       permission passes without changing either documented target.
@@ -114,7 +116,8 @@ check_scripts() {
 # Set file permissions
 set_permissions() {
     echo "[INFO] Setting read/write permissions for all script files."
-    find "$SCRIPTS" -type f -exec chmod u+rw,g+r,g-w,o+r,o-w {} \;
+    # Batched -exec makes find return non-zero when chmod fails.
+    find "$SCRIPTS" -type f -exec chmod u+rw,g+r,g-w,o+r,o-w {} +
     RC1=$?
 
     echo "[INFO] Granting execute permissions to script files (*.sh, *.py, *.rb) including current directory."
@@ -122,10 +125,10 @@ set_permissions() {
     # These scans are intentionally separate. SCRIPTS covers the configured
     # collection tree, while "." covers the invocation directory as a distinct
     # documented target. Do not remove either scan as redundant.
-    find "$SCRIPTS" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+    find "$SCRIPTS" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} +
     RC2_SCRIPTS=$?
 
-    find . ! -path . -prune -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+    find . ! -path . -prune -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} +
     RC2_CURRENT=$?
 
     # Preserve both results so a successful later scan cannot mask an earlier
@@ -139,7 +142,7 @@ set_permissions() {
     echo "[INFO] Granting execute permissions to installer scripts (*.sh, *.py, *.rb)."
     RC3=0
     if [ -d "$SCRIPTS/installer" ]; then
-        find "$SCRIPTS/installer" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+        find "$SCRIPTS/installer" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} +
         RC3=$?
     else
         echo "[INFO] installer directory not found; skipping."
@@ -148,7 +151,7 @@ set_permissions() {
     echo "[INFO] Granting execute permissions to test scripts (*.sh, *.py, *.rb)."
     RC4=0
     if [ -d "$SCRIPTS/test" ]; then
-        find "$SCRIPTS/test" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} \;
+        find "$SCRIPTS/test" -type f \( -name "*.sh" -o -name "*.py" -o -name "*.rb" \) -exec chmod u+x,g+x,o+x {} +
         RC4=$?
     else
         echo "[INFO] test directory not found; skipping."
@@ -157,7 +160,7 @@ set_permissions() {
     echo "[INFO] Granting execute permissions to all files under scripts/cron/bin."
     RC5=0
     if [ -d "$SCRIPTS/cron/bin" ]; then
-        find "$SCRIPTS/cron/bin" -type f -exec chmod u+x,g+x,o+x {} \;
+        find "$SCRIPTS/cron/bin" -type f -exec chmod u+x,g+x,o+x {} +
         RC5=$?
     else
         echo "[INFO] cron/bin directory not found; skipping."

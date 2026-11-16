@@ -16,6 +16,10 @@
 #
 #  This script is intended to be executed periodically via cron,
 #  typically every 5 minutes.
+#  Routine progress messages are intentionally suppressed to avoid flooding
+#  the administrator's mailbox with frequent cron mail. Error diagnostics
+#  remain enabled. Individual server failures do not stop the remaining
+#  checks or change the final exit status of a normal cron run.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts

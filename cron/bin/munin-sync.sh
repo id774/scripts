@@ -16,6 +16,7 @@
 #  /var/lib/munin/bin/munin-sync.sh under cron.
 #  After startup prerequisites are validated, normal synchronization is fully
 #  silent and exits 0 even when individual operational steps fail.
+#  This avoids flooding the administrator's mailbox with frequent cron mail.
 #  Startup prerequisite failures remain diagnostic and non-zero.
 #
 #  Author: id774 (More info: https://id774.net)

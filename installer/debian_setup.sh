@@ -82,7 +82,8 @@
 #
 #  Version History:
 #  v2.5 2026-11-16
-#       Reinstall configured cron jobs without installing missing jobs.
+#       Reinstall configured cron jobs without installing missing jobs,
+#       and log setup script execution.
 #  v2.4 2026-09-20
 #       Keep local dotfile and monitoring failures from stopping unrelated
 #       setup, localize optional prerequisites, and require executable commands.
@@ -228,6 +229,7 @@ set_zsh_to_default() {
 
 # Install various dotfiles configurations
 install_dot_files() {
+    echo "[INFO] Executing: $SCRIPTS/installer/install_dotfiles.sh"
     "$SCRIPTS/installer/install_dotfiles.sh"
 }
 
@@ -263,11 +265,13 @@ install_dot_zsh() {
         return 1
     fi
     safe_symlink "$HOME/local/github/dot_zsh" "$HOME/dot_zsh"
+    echo "[INFO] Executing: $HOME/local/github/dot_zsh/install_dotzsh.sh"
     "$HOME/local/github/dot_zsh/install_dotzsh.sh"
 }
 
 install_dot_vim() {
     if command_is_usable vim; then
+        echo "[INFO] Executing: $SCRIPTS/installer/install_dotvim.sh"
         "$SCRIPTS/installer/install_dotvim.sh"
     fi
 }
@@ -292,17 +296,21 @@ install_dot_emacs() {
             return 1
         fi
         safe_symlink "$HOME/local/github/dot_emacs" "$HOME/dot_emacs"
+        echo "[INFO] Executing: $HOME/local/github/dot_emacs/install_dotemacs.sh"
         "$HOME/local/github/dot_emacs/install_dotemacs.sh"
     fi
 }
 
 # Setup various system utilities
 setup_sysadmin_scripts() {
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_sysadmin_scripts.sh uninstall"
     "$SCRIPTS/installer/setup_sysadmin_scripts.sh" uninstall
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_sysadmin_scripts.sh install"
     "$SCRIPTS/installer/setup_sysadmin_scripts.sh" install
 }
 
 setup_python_symlink() {
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_python_symlink.sh"
     "$SCRIPTS/installer/setup_python_symlink.sh"
 }
 
@@ -339,28 +347,41 @@ setup_munin() {
 
     if [ "$plugin_ready" -eq 1 ]; then
         safe_symlink "$HOME/local/github/munin-plugins" "$HOME/munin-plugins"
+        echo "[INFO] Executing: $HOME/local/github/munin-plugins/install_process_monitoring.sh"
         "$HOME/local/github/munin-plugins/install_process_monitoring.sh"
     fi
 
+    echo "[INFO] Executing: $SCRIPTS/installer/install_munin.sh"
     "$SCRIPTS/installer/install_munin.sh"
 }
 
 setup_config_files() {
     # Security hardening
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_iptables.sh"
     "$SCRIPTS/installer/setup_iptables.sh"
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_pamd.sh"
     "$SCRIPTS/installer/setup_pamd.sh"
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_securetty.sh"
     "$SCRIPTS/installer/setup_securetty.sh"
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_rsyslog_cron.sh"
     "$SCRIPTS/installer/setup_rsyslog_cron.sh"
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_rsyslog_logrotate.sh"
     "$SCRIPTS/installer/setup_rsyslog_logrotate.sh"
 
     # System services and daemons
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_memcached_conf.sh"
     "$SCRIPTS/installer/setup_memcached_conf.sh"
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_ntp_restart_policy.sh"
     "$SCRIPTS/installer/setup_ntp_restart_policy.sh"
+    echo "[INFO] Executing: $SCRIPTS/installer/disable_freshclam_syslog.sh"
     "$SCRIPTS/installer/disable_freshclam_syslog.sh"
 
     # User environment and utilities
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_crontab.sh"
     "$SCRIPTS/installer/setup_crontab.sh"
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_aliases.sh"
     "$SCRIPTS/installer/setup_aliases.sh"
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_motd.sh"
     "$SCRIPTS/installer/setup_motd.sh"
 }
 
@@ -370,10 +391,10 @@ reinstall_cronjob() {
         return 0
     fi
 
-    echo "[INFO] Reinstalling cron job: $1"
+    echo "[INFO] Executing: $2"
 
     if ! SCRIPTS="$SCRIPTS" "$2"; then
-        echo "[ERROR] Failed to reinstall cron job: $1" >&2
+        echo "[ERROR] Failed to reinstall cron job: $2" >&2
         return 1
     fi
 }
@@ -395,6 +416,7 @@ reinstall_cronjobs() {
 
 setup_dot_ipython() {
     if [ -x /opt/python/current/bin/python ]; then
+        echo "[INFO] Executing: $SCRIPTS/installer/setup_dot_ipython.sh"
         "$SCRIPTS/installer/setup_dot_ipython.sh"
     fi
 }
@@ -407,6 +429,7 @@ set_permissions() {
 
 # Configure system settings
 configure_sysctl() {
+    echo "[INFO] Executing: $SCRIPTS/installer/configure_sysctl.sh --apply"
     "$SCRIPTS/installer/configure_sysctl.sh" --apply
 }
 

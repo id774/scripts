@@ -5,12 +5,16 @@
 #
 #  Description:
 #  This script is designed to be executed automatically via cron (e.g.,
-#  in /etc/cron.daily) to collect system resource information. It delegates
+#  in /etc/cron.hourly) to collect system resource information. It delegates
 #  the actual collection logic to a separate script (`get_resources.sh`)
 #  and captures the output into a unified job log.
 #  After the main collection, if SERVER_ALIVE_CHECK points to an executable
 #  script (default: /etc/cron.exec/server_alive_check.sh), it will be
 #  executed as an optional post-check. If absent, it is silently skipped.
+#  Routine output and command errors are kept in the job log to avoid
+#  flooding the administrator's mailbox with frequent cron mail. A normal
+#  run returns 0 after attempting collection and the optional post-check.
+#  Startup failures remain diagnostic and non-zero.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -22,7 +26,7 @@
 #      This script is intended to be executed periodically by cron.
 #
 #  Cron Usage:
-#      Place this script into /etc/cron.hourly to run it once a day.
+#      Place this script into /etc/cron.hourly to run it once an hour.
 #      Or create a specific cron entry like the following:
 #      5 * * * * root /path/to/get_resources
 #
