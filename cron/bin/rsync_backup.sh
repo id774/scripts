@@ -9,6 +9,9 @@
 #  metadata files, and synchronizes data between local disks or over SSH.
 #  The script is configured via /etc/cron.config/rsync_backup.conf and is
 #  intended to be run automatically from cron.
+#  Individual backup results are reported through the existing logs.
+#  Normal completion of the configured operations returns 0 rather than
+#  aggregating individual backup results. Startup failures remain non-zero.
 #
 #  Before any device operation, the script resolves the base block device
 #  by running `get-device <mountpoint>` and uses its result.

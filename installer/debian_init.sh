@@ -51,6 +51,8 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v6.5 2026-11-16
+#       Log setup scripts before execution.
 #  v6.4 2026-09-20
 #       Clarify desktop setup scope and package/settings wording while keeping
 #       broad completion independent of individual child-script results.
@@ -226,18 +228,23 @@ main() {
     echo "[INFO] Running base system setup"
 
     # Environment setup
+    echo "[INFO] Executing: $SCRIPTS/installer/debian_env.sh"
     "$SCRIPTS/installer/debian_env.sh"
 
     # Package installation
+    echo "[INFO] Executing: $SCRIPTS/installer/debian_apt.sh"
     "$SCRIPTS/installer/debian_apt.sh"
 
     # System customization
+    echo "[INFO] Executing: $SCRIPTS/installer/debian_setup.sh"
     "$SCRIPTS/installer/debian_setup.sh"
 
     # Apply optional desktop packages and settings when a desktop option is provided
     if [ -n "$DESKTOP_OPTION" ]; then
         echo "[INFO] Running desktop setup as requested: $DESKTOP_OPTION"
+        echo "[INFO] Executing: $SCRIPTS/installer/debian_desktop_apt.sh"
         "$SCRIPTS/installer/debian_desktop_apt.sh"
+        echo "[INFO] Executing: $SCRIPTS/installer/debian_desktop_setup.sh $DESKTOP_OPTION"
         "$SCRIPTS/installer/debian_desktop_setup.sh" "$DESKTOP_OPTION"
     fi
 

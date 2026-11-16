@@ -39,6 +39,8 @@
 #  - Errors from underlying scripts should be resolved based on their output.
 #
 #  Version History:
+#  v2.4 2026-11-16
+#       Log the filesystem tuning script before execution.
 #  v2.3 2026-09-20
 #       Localize locale and group prerequisites so optional failures do not stop
 #       later setup, and require resolved optional commands to be executable.
@@ -182,6 +184,7 @@ create_admin_group() {
 
 # Set up filesystem tuning
 setup_tune2fs() {
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_tune2fs.sh"
     "$SCRIPTS/installer/setup_tune2fs.sh"
 }
 

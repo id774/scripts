@@ -36,6 +36,8 @@
 #  - Target setup script not found or not runnable.
 #
 #  Version History:
+#  v1.3 2026-11-16
+#       Use standard execution logging for desktop setup scripts.
 #  v1.2 2026-07-11
 #       Replace the awk {n,} interval expression in usage() with a portable
 #       equivalent, since mawk on some systems matches it incorrectly.
@@ -88,7 +90,7 @@ run_target() {
         exit 1
     fi
     if [ -x "$target" ]; then
-        echo "[INFO] Running: $target"
+        echo "[INFO] Executing: $target"
         "$target"
         return $?
     fi

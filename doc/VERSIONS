@@ -20,6 +20,8 @@ v2.0.4 (Release Date: TBD)
 - Reinstall configured cron jobs during Debian setup, including deferred-sync,
   without installing unconfigured jobs.
 - Skip read-only GNOME Flashback settings based on gsettings writable output.
+- Log setup script execution consistently on Debian and macOS.
+- Detect chmod failures during repository permission updates.
 
 v2.0.3 (2026-10-25)
 -------------------

@@ -53,6 +53,8 @@
 #  - Exits if sudo privileges are not granted.
 #
 #  Version History:
+#  v2.5 2026-11-16
+#       Log setup scripts before execution.
 #  v2.4 2026-09-25
 #       Add /opt/node ownership normalization and skip missing permission targets.
 #  v2.3 2026-09-20
@@ -135,6 +137,7 @@ check_sudo() {
 
 # Install various dotfiles configurations
 install_dot_files() {
+    echo "[INFO] Executing: $SCRIPTS/installer/install_dotfiles.sh"
     "$SCRIPTS/installer/install_dotfiles.sh"
 }
 
@@ -170,11 +173,13 @@ install_dot_zsh() {
         return 1
     fi
     ln -snf "$HOME/local/github/dot_zsh" "$HOME/dot_zsh"
+    echo "[INFO] Executing: $HOME/local/github/dot_zsh/install_dotzsh.sh"
     "$HOME/local/github/dot_zsh/install_dotzsh.sh"
 }
 
 install_dot_vim() {
     if command_is_usable vim; then
+        echo "[INFO] Executing: $SCRIPTS/installer/install_dotvim.sh"
         "$SCRIPTS/installer/install_dotvim.sh"
     fi
 }
@@ -203,35 +208,43 @@ install_dot_emacs() {
             return 1
         fi
         ln -snf "$HOME/local/github/dot_emacs"
+        echo "[INFO] Executing: $HOME/local/github/dot_emacs/install_dotemacs.sh"
         "$HOME/local/github/dot_emacs/install_dotemacs.sh"
     fi
 }
 
 # Setup various system utilities
 setup_sysadmin_scripts() {
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_sysadmin_scripts.sh uninstall"
     "$SCRIPTS/installer/setup_sysadmin_scripts.sh" uninstall
+    echo "[INFO] Executing: $SCRIPTS/installer/setup_sysadmin_scripts.sh install"
     "$SCRIPTS/installer/setup_sysadmin_scripts.sh" install
 }
 
 setup_dot_ipython() {
     if [ -x /opt/python/current/bin/python ]; then
+        echo "[INFO] Executing: $SCRIPTS/installer/setup_dot_ipython.sh"
         "$SCRIPTS/installer/setup_dot_ipython.sh"
     fi
 }
 
 setup_emergencyadmin() {
+    echo "[INFO] Executing: $SCRIPTS/installer/create_emergencyadmin.sh"
     "$SCRIPTS/installer/create_emergencyadmin.sh"
 }
 
 finder_settings() {
+    echo "[INFO] Executing: $SCRIPTS/installer/macos_finder_settings.sh"
     "$SCRIPTS/installer/macos_finder_settings.sh"
 }
 
 folder_localization() {
+    echo "[INFO] Executing: $SCRIPTS/installer/macos_system_folder_localizations.sh enable"
     "$SCRIPTS/installer/macos_system_folder_localizations.sh" enable
 }
 
 fix_compinit() {
+    echo "[INFO] Executing: $SCRIPTS/fix_compinit.sh"
     "$SCRIPTS/fix_compinit.sh"
 }
 

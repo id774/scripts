@@ -7,6 +7,9 @@
 #  This script checks for the presence of a trigger file to initiate
 #  backup using rsync. If the trigger file is found, it runs the
 #  backup script, logs the result, and optionally sends the log via email.
+#  Backup results are reported through the job log and optional mail, not
+#  the wrapper's exit status. A normal triggered run returns 0 regardless
+#  of the backup result. Startup failures retain their non-zero status.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
