@@ -17,17 +17,13 @@
 #        * Deploy sysadmin scripts by uninstalling then reinstalling to refresh
 #          (setup_sysadmin_scripts.sh).
 #        * Set up a consistent python command symlink (setup_python_symlink.sh).
-#        * Fetch helper resources and tools (install_get_resources.sh).
 #    - Security & AV:
-#        * Install chkrootkit (install_chkrootkit.sh).
-#        * Install clamscan and suppress noisy freshclam syslog entries
-#          (install_clamscan.sh, disable_freshclam_syslog.sh).
+#        * Suppress noisy freshclam syslog entries (disable_freshclam_syslog.sh).
 #        * Apply security-related configs:
 #            - iptables rules (setup_iptables.sh)
 #            - PAM hardening for su (setup_pamd.sh)
 #            - secure TTY configuration (setup_securetty.sh)
 #            - rsyslog configuration for cron (setup_rsyslog_cron.sh)
-#            - chkrootkit runtime options (setup_chkrootkit_opts.sh)
 #    - Monitoring & services:
 #        * Clone or update id774/munin-plugins, symlink to $HOME/munin-plugins,
 #          install the process monitoring plugin, then install/configure Munin
@@ -37,6 +33,16 @@
 #        * Install standard crontab entries (setup_crontab.sh).
 #        * Install common shell aliases (setup_aliases.sh).
 #        * Configure system MOTD (setup_motd.sh).
+#    - Scheduled jobs:
+#        * Reinstall configured cron jobs after applying system configuration.
+#          Select each job only when sudo test -f succeeds for its selection
+#          file. A nonzero check result skips that job, including when the check
+#          fails because of insufficient permissions. For deferred-sync,
+#          /etc/opt/deferred-sync/sync.conf is the selection file.
+#        * Refresh jobs in this order through their existing installers:
+#          deferred-sync, get_resources, chkrootkit, clamscan,
+#          apache_log_analysis, fix-permissions, munin-symlink, munin-sync,
+#          run_tests, rsync_backup, and git-pull.
 #    - Python user environment:
 #        * When /opt/python/current/bin/python exists, configure IPython dotfiles (setup_dot_ipython.sh).
 #    - Permissions & kernel tuning:
@@ -61,14 +67,22 @@
 #  - The script is designed for Debian-based systems (Debian, Ubuntu, etc.).
 #  - Internet connectivity is required for downloading dotfiles and system utilities.
 #  - Review and modify the installation scripts as needed before execution.
+#  - Reinstalling configured jobs does not install jobs that are not selected.
+#  - deferred-sync reinstallation requires $HOME/deferred-sync/install.sh.
+#  - Cron installers run as the invoking user and perform their own privilege
+#    escalation. The caller must already have their required normal access
+#    rights; job selection does not verify access inside each installer.
 #
 #  Exit Status:
 #  - If the system is not Linux, the script exits with an error.
 #  - If required commands are missing, the script exits with an error.
 #  - If the user lacks sudo privileges, execution is halted.
 #  - Errors from underlying scripts should be resolved based on their output.
+#  - Individual cron installer failures are reported without stopping setup.
 #
 #  Version History:
+#  v2.5 2026-11-16
+#       Reinstall configured cron jobs without installing missing jobs.
 #  v2.4 2026-09-20
 #       Keep local dotfile and monitoring failures from stopping unrelated
 #       setup, localize optional prerequisites, and require executable commands.
@@ -292,19 +306,6 @@ setup_python_symlink() {
     "$SCRIPTS/installer/setup_python_symlink.sh"
 }
 
-setup_get_resources() {
-    "$SCRIPTS/installer/install_get_resources.sh"
-}
-
-setup_chkrootkit() {
-    "$SCRIPTS/installer/install_chkrootkit.sh"
-}
-
-setup_clamscan() {
-    "$SCRIPTS/installer/install_clamscan.sh"
-    "$SCRIPTS/installer/disable_freshclam_syslog.sh"
-}
-
 setup_munin() {
     plugin_ready=1
 
@@ -355,11 +356,41 @@ setup_config_files() {
     # System services and daemons
     "$SCRIPTS/installer/setup_memcached_conf.sh"
     "$SCRIPTS/installer/setup_ntp_restart_policy.sh"
+    "$SCRIPTS/installer/disable_freshclam_syslog.sh"
 
     # User environment and utilities
     "$SCRIPTS/installer/setup_crontab.sh"
     "$SCRIPTS/installer/setup_aliases.sh"
     "$SCRIPTS/installer/setup_motd.sh"
+}
+
+# Reinstall a cron job selected by a successful privileged file check
+reinstall_cronjob() {
+    if ! sudo test -f "$1"; then
+        return 0
+    fi
+
+    echo "[INFO] Reinstalling cron job: $1"
+
+    if ! SCRIPTS="$SCRIPTS" "$2"; then
+        echo "[ERROR] Failed to reinstall cron job: $1" >&2
+        return 1
+    fi
+}
+
+# Reinstall configured cron jobs
+reinstall_cronjobs() {
+    reinstall_cronjob /etc/opt/deferred-sync/sync.conf "$HOME/deferred-sync/install.sh"
+    reinstall_cronjob /etc/cron.hourly/get_resources "$SCRIPTS/installer/install_get_resources.sh"
+    reinstall_cronjob /etc/cron.weekly/chkrootkit "$SCRIPTS/installer/install_chkrootkit.sh"
+    reinstall_cronjob /etc/cron.d/clamscan "$SCRIPTS/installer/install_clamscan.sh"
+    reinstall_cronjob /etc/cron.daily/apache_log_analysis "$SCRIPTS/installer/install_apache_log_analysis.sh"
+    reinstall_cronjob /etc/cron.daily/fix-permissions "$SCRIPTS/installer/install_fix-permissions.sh"
+    reinstall_cronjob /etc/cron.d/munin-symlink "$SCRIPTS/installer/install_munin-symlink.sh"
+    reinstall_cronjob /etc/cron.d/munin-sync "$SCRIPTS/installer/install_munin-sync.sh"
+    reinstall_cronjob /etc/cron.d/run_tests "$SCRIPTS/installer/install_run_tests.sh"
+    reinstall_cronjob /etc/cron.hourly/rsync_backup "$SCRIPTS/installer/install_rsync_backup.sh"
+    reinstall_cronjob /etc/cron.d/git-pull "$SCRIPTS/installer/install_git-pull.sh"
 }
 
 setup_dot_ipython() {
@@ -400,11 +431,9 @@ main() {
     install_dot_emacs
     setup_sysadmin_scripts
     setup_python_symlink
-    setup_get_resources
-    setup_chkrootkit
-    setup_clamscan
     setup_munin
     setup_config_files
+    reinstall_cronjobs
     setup_dot_ipython
     set_permissions
     configure_sysctl

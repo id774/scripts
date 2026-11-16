@@ -527,7 +527,9 @@ Debian-based systems.
 ### debian_setup.sh
 
 Applies system and user configuration, including shells, dotfiles, monitoring,
-security services, and scheduled jobs.
+security services, and scheduled jobs. Reinstalls configured cron jobs after
+system configuration without installing unconfigured jobs. This also includes
+deferred-sync when its system configuration file exists.
 
 ## 19. Debian Desktop Setup
 
