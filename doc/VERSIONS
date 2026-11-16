@@ -17,6 +17,8 @@ v2.0.4 (Release Date: TBD)
 - Remove Munin links after heartbeat loss; fix SD copy-failure reporting,
   heartbeat paths with spaces, and needrestart failure classification.
 - Ignore commented crontab lines when detecting configured scheduled jobs.
+- Reinstall configured cron jobs during Debian setup, including deferred-sync,
+  without installing unconfigured jobs.
 - Skip read-only GNOME Flashback settings based on gsettings writable output.
 
 v2.0.3 (2026-10-25)
