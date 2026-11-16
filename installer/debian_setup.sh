@@ -26,23 +26,25 @@
 #            - rsyslog configuration for cron (setup_rsyslog_cron.sh)
 #    - Monitoring & services:
 #        * Clone or update id774/munin-plugins, symlink to $HOME/munin-plugins,
-#          install the process monitoring plugin, then install/configure Munin
-#          (install_process_monitoring.sh, install_munin.sh).
+#          install process_monitoring and systemd_failed only when their
+#          deployed plugin files are missing, then install/configure Munin.
+#          Existing plugin files are preserved during batch setup.
 #        * Configure memcached daemon settings (setup_memcached_conf.sh).
 #    - User environment & system messaging:
 #        * Install standard crontab entries (setup_crontab.sh).
 #        * Install common shell aliases (setup_aliases.sh).
 #        * Configure system MOTD (setup_motd.sh).
 #    - Scheduled jobs:
-#        * Reinstall configured cron jobs after applying system configuration.
-#          Select each job only when sudo test -f succeeds for its selection
-#          file. A nonzero check result skips that job, including when the check
-#          fails because of insufficient permissions. For deferred-sync,
-#          /etc/opt/deferred-sync/sync.conf is the selection file.
+#        * Reinstall selected configured cron jobs after applying system
+#          configuration. Select each job only when sudo test -f succeeds
+#          for its selection file. A nonzero check result skips that job,
+#          including when the check fails because of insufficient
+#          permissions. For deferred-sync, /etc/opt/deferred-sync/sync.conf
+#          is the selection file.
 #        * Refresh jobs in this order through their existing installers:
 #          deferred-sync, get_resources, chkrootkit, clamscan,
 #          apache_log_analysis, fix-permissions, munin-symlink, munin-sync,
-#          run_tests, rsync_backup, and git-pull.
+#          run_tests, and rsync_backup.
 #    - Python user environment:
 #        * When /opt/python/current/bin/python exists, configure IPython dotfiles (setup_dot_ipython.sh).
 #    - Permissions & kernel tuning:
@@ -82,8 +84,8 @@
 #
 #  Version History:
 #  v2.5 2026-11-16
-#       Reinstall configured cron jobs without installing missing jobs,
-#       and log setup script execution.
+#       Refresh selected cron jobs and log setup script execution.
+#       Install missing Munin plugins without overwriting deployed copies.
 #  v2.4 2026-09-20
 #       Keep local dotfile and monitoring failures from stopping unrelated
 #       setup, localize optional prerequisites, and require executable commands.
@@ -347,8 +349,16 @@ setup_munin() {
 
     if [ "$plugin_ready" -eq 1 ]; then
         safe_symlink "$HOME/local/github/munin-plugins" "$HOME/munin-plugins"
-        echo "[INFO] Executing: $HOME/local/github/munin-plugins/install_process_monitoring.sh"
-        "$HOME/local/github/munin-plugins/install_process_monitoring.sh"
+
+        if [ ! -f /usr/local/share/munin/plugins/process_monitoring ]; then
+            echo "[INFO] Executing: $HOME/local/github/munin-plugins/installer/install_process_monitoring.sh"
+            "$HOME/local/github/munin-plugins/installer/install_process_monitoring.sh"
+        fi
+
+        if [ ! -f /usr/local/share/munin/plugins/systemd_failed ]; then
+            echo "[INFO] Executing: $HOME/local/github/munin-plugins/installer/install_systemd_failed.sh"
+            "$HOME/local/github/munin-plugins/installer/install_systemd_failed.sh"
+        fi
     fi
 
     echo "[INFO] Executing: $SCRIPTS/installer/install_munin.sh"
@@ -411,7 +421,6 @@ reinstall_cronjobs() {
     reinstall_cronjob /etc/cron.d/munin-sync "$SCRIPTS/installer/install_munin-sync.sh"
     reinstall_cronjob /etc/cron.d/run_tests "$SCRIPTS/installer/install_run_tests.sh"
     reinstall_cronjob /etc/cron.hourly/rsync_backup "$SCRIPTS/installer/install_rsync_backup.sh"
-    reinstall_cronjob /etc/cron.d/git-pull "$SCRIPTS/installer/install_git-pull.sh"
 }
 
 setup_dot_ipython() {
