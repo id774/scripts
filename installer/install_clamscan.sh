@@ -11,6 +11,8 @@
 #  - Managing log rotation for ClamAV logs.
 #  - Ensuring the necessary directories and log files exist.
 #  - Setting appropriate permissions.
+#  - Disabling competing one-shot updates when the freshclam daemon
+#    is enabled and active.
 #
 #  Author: id774 (More info: https://id774.net)
 #  Source Code: https://github.com/id774/scripts
@@ -26,11 +28,15 @@
 #  Requirements:
 #  - The user must have `sudo` installed.
 #  - This script is intended for Linux systems only.
+#  - Installation requires a running systemd system manager.
 #
 #  Notes:
 #  - Log files are preserved when --uninstall is used.
 #
 #  Version History:
+#  v3.3 2026-11-23
+#       Require systemd and disable competing one-shot updates only when
+#       the FreshClam daemon is enabled and active.
 #  v3.2 2026-09-06
 #       Fix CLI handling, system detection, and ClamAV deployment consistency.
 #  v3.1 2026-07-11
@@ -128,12 +134,69 @@ create_cron_dirs() {
     sudo chmod 0750 /etc/cron.config
 }
 
+# Disable competing one-shot updates only when the daemon can take over.
+disable_conflicting_freshclam_once() {
+    if ! systemctl cat clamav-freshclam-once.timer >/dev/null 2>&1 ||
+       ! systemctl cat clamav-freshclam-once.service >/dev/null 2>&1; then
+        return 0
+    fi
+
+    failed=0
+    if systemctl is-failed --quiet clamav-freshclam-once.service; then
+        failed=1
+    fi
+    if [ "$failed" -eq 0 ] &&
+       ! systemctl is-enabled --quiet clamav-freshclam-once.timer &&
+       ! systemctl is-active --quiet clamav-freshclam-once.timer &&
+       ! systemctl is-enabled --quiet clamav-freshclam-once.service &&
+       ! systemctl is-active --quiet clamav-freshclam-once.service; then
+        return 0
+    fi
+
+    if [ "$(systemctl is-enabled clamav-freshclam.service 2>/dev/null)" != enabled ] ||
+       ! systemctl is-active --quiet clamav-freshclam.service; then
+        echo "[WARN] FreshClam daemon is not enabled and active; leaving one-shot updates unchanged." >&2
+        return 0
+    fi
+
+    if [ "$failed" -eq 1 ]; then
+        echo "[INFO] Executing: sudo systemctl reset-failed clamav-freshclam-once.service"
+        if ! sudo systemctl reset-failed clamav-freshclam-once.service; then
+            echo "[ERROR] Failed to reset the ClamAV one-shot update service." >&2
+            return 1
+        fi
+    fi
+
+    echo "[INFO] Executing: sudo systemctl disable --now clamav-freshclam-once.timer"
+    if ! sudo systemctl disable --now clamav-freshclam-once.timer; then
+        echo "[ERROR] Failed to disable the ClamAV one-shot update timer." >&2
+        return 1
+    fi
+
+    echo "[INFO] Executing: sudo systemctl disable --now clamav-freshclam-once.service"
+    if ! sudo systemctl disable --now clamav-freshclam-once.service; then
+        echo "[ERROR] Failed to disable the ClamAV one-shot update service." >&2
+        return 1
+    fi
+
+    return 0
+}
+
 # Deploy ClamAV setup files
 install() {
     check_system
-    check_commands cp chmod chown mkdir touch
+    check_commands cp chmod chown mkdir touch systemctl
     check_scripts
     check_sudo
+
+    if ! systemctl --system list-units --no-legend >/dev/null 2>&1; then
+        echo "[ERROR] systemd system manager is unavailable." >&2
+        exit 1
+    fi
+
+    if ! disable_conflicting_freshclam_once; then
+        exit 1
+    fi
 
     echo "[INFO] Setting up ClamAV AutoScan environment..."
 

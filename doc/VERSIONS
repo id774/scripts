@@ -24,6 +24,8 @@ v2.0.4 (Release Date: TBD)
 - Install missing process_monitoring and systemd_failed plugins during Debian
   setup without overwriting deployed plugin files.
 - Detect chmod failures during repository permission updates.
+- Require systemd for ClamAV setup and disable competing one-shot units
+  only when the freshclam daemon is enabled and active.
 
 v2.0.3 (2026-10-25)
 -------------------

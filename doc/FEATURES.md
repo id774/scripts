@@ -763,8 +763,9 @@ Installs periodic rootkit scanning with associated logs and scheduling.
 
 ### install_clamscan.sh
 
-Installs periodic ClamAV scanning and related configuration. Supports
-uninstallation.
+Installs periodic ClamAV scanning and related configuration. Requires systemd
+for installation and disables competing one-shot updates only when the
+freshclam daemon is enabled and active. Supports uninstallation.
 
 ### disable_freshclam_syslog.sh
 
