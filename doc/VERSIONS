@@ -10,22 +10,25 @@ v2.0.4 (Release Date: TBD)
 - Require an explicit base selector for git-symlink.sh uninstall mode.
 - Avoid false success reports when git-symlink.sh link or removal fails.
 - Preserve GPX source files when local copying fails.
+- Report SD copy failures even when all copies fail.
 - Return one mountpoint for a device mounted at multiple direct targets.
 - Recognize localhost as a self target in Munin synchronization.
+- Remove stale Munin symlinks when heartbeat files disappear.
+- Handle heartbeat file paths containing spaces in server monitoring.
+- Report indeterminate reboot status when needrestart fails and no reboot
+  requirement is otherwise detected.
 - Remove obsolete Instagram download and sync utilities, their tests and
   configuration, and the unused instaloader package diagnostic.
-- Remove Munin links after heartbeat loss; fix SD copy-failure reporting,
-  heartbeat paths with spaces, and needrestart failure classification.
 - Ignore commented crontab lines when detecting configured scheduled jobs.
+- Skip read-only GNOME Flashback settings based on gsettings writable output.
 - Refresh selected configured cron jobs, including deferred-sync, during
   Debian setup without installing unconfigured jobs.
-- Skip read-only GNOME Flashback settings based on gsettings writable output.
 - Log setup script execution consistently on Debian and macOS.
 - Install missing process_monitoring and systemd_failed plugins during Debian
   setup without overwriting deployed plugin files.
-- Detect chmod failures during repository permission updates.
 - Require systemd for ClamAV setup and disable competing one-shot units
   only when the freshclam daemon is enabled and active.
+- Detect chmod failures during repository permission updates.
 
 v2.0.3 (2026-10-25)
 -------------------
