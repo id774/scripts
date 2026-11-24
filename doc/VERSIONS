@@ -1,8 +1,8 @@
 scripts Repository Version History
 ==================================
 
-v2.0.4 (Release Date: TBD)
---------------------------
+v2.0.4 (2026-11-24)
+-------------------
 - Change remove-repo.sh to confirm deletion by default, add --dry-run, and
   remove only symlinks that point to its managed repository paths.
 - Report failures in individual Git repository creation, deletion, merge, and
